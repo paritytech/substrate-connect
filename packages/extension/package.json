@@ -1,0 +1,27 @@
+{
+  "name": "@substrate/connect-extension",
+  "version": "0.0.1",
+  "description": "A Browser Extension that runs selected Substrate Light Clients.",
+  "repository": "https://github.com/paritytech/substrate-connect.git",
+  "author": "Parity Team <admin@parity.io>",
+  "maintainers": [
+    "Stefanie Doll <stefie@parity.io>",
+    "Sveta Goldstein <sveta@parity.io>"
+  ],
+  "license": "Apache-2.0",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "scripts": {
+    "build": "yarn run build",
+    "clean": "rm -rf node_modules && rm -rf build",
+    "package": "rm -rf ./master-build.zip && cd build && zip -r -FS ../master-build.zip *"
+  },
+  "dependencies": {
+    "@polkadot/extension-base": "^0.31.1",
+    "@polkadot/extension-chains": "^0.31.1"
+  }
+}
