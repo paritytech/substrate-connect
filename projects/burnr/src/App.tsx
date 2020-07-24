@@ -54,6 +54,8 @@ display: flex;
 .main {
   flex-grow: 1;
   padding: ${theme.spacing(3)}px;
+  margin: 0 auto;
+  max-width: ${2 * theme.spacing(3) + 600}px;
 }
 .toolbar {
   ${theme.mixins.toolbar}

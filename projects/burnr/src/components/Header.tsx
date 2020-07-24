@@ -13,7 +13,7 @@ const Header: React.FunctionComponent<Props> = ({ className }: Props) => (
   <AppBar position='fixed' className={className}>
     <Toolbar>
       <Typography variant='h6' noWrap>
-        Substrate Starter UI
+        Burnr
       </Typography>
     </Toolbar>
   </AppBar>
