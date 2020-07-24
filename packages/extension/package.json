@@ -16,7 +16,7 @@
     "not op_mini all"
   ],
   "scripts": {
-    "build": "yarn run build",
+    "build": " rm -rf build",
     "clean": "rm -rf node_modules && rm -rf build",
     "package": "rm -rf ./master-build.zip && cd build && zip -r -FS ../master-build.zip *"
   },
