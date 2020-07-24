@@ -5,7 +5,6 @@ import Identicon from '@polkadot/react-identicon';
 import { Card, CardContent, CardHeader, Typography } from '@material-ui/core';
 
 import { Account } from '../utils/types';
-import { getName } from '../utils/utils';
 
 interface Props {
   account: Account;

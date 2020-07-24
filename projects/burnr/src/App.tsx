@@ -8,15 +8,11 @@ import { ApiContext } from './utils/contexts';
 import { useApiCreate } from './hooks';
 
 import {
-  Home,
-  RouterExample,
-  StyledExample,
-  Usage
+  Home
 } from './pages';
 
 import { 
-  Header,
-  SideMenu
+  Header
 } from './components';
 
 import { theme } from './themes';
@@ -37,16 +33,12 @@ const  App: React.FunctionComponent<Props> = ({ className }: Props) => {
         <ThemeProvider theme={MuiTheme}>
           <CssBaseline />
           <Header />
-          <SideMenu />
           <main className='main'>
             {api && (
               <ApiContext.Provider value={api}>
                   <div className='toolbar' />
                   <Switch>
                     <Route exact path='/' component={Home} />
-                    <Route exact path='/usage' component={Usage} />
-                    <Route path='/styled-example' component={StyledExample} />
-                    <Route path='/account/:address' component={RouterExample} />
                   </Switch>
               </ApiContext.Provider>
             )}
