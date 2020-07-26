@@ -18,6 +18,9 @@ const TemplateAccountData = {
   sessionIndex: 'u32'
 };
 
+const kusama = 'wss://kusama-rpc.polkadot.io/';
+const polkadot = 'wss://rpc.polkadot.io';
+
 export default function useApiCreate (): ApiPromise | null {
   const [api, setApi] = useState<ApiPromise | null>(null);
   const  mountedRef = useIsMountedRef();
@@ -27,8 +30,8 @@ export default function useApiCreate (): ApiPromise | null {
       .create({
         provider:
           process.env.NODE_ENV === 'production'
-            ? new WsProvider('wss://kusama-rpc.polkadot.io/')
-            : new WsProvider('wss://kusama-rpc.polkadot.io/'),
+            ? new WsProvider(polkadot)
+            : new WsProvider(polkadot),
         types: {}
       })
       .then((api): void => {

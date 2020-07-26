@@ -1,22 +1,14 @@
 export const accounts = [
   {
     address: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
-    name: 'Alice',
+    name: 'Alice Dev',
   },
   {
-    address: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3',
-    name: 'Bob',
+    address: 'Fnikp6LeygFCUnQ4fSexzyTw5ST7ZSx8vxSnDXF6oHpEzgs',
+    name: 'Jutta Polkadot',
   },
   {
-    address: '14Gjs1TD93gnwEBfDMHoCgsuf1s2TVKUP6Z1qKmAZnZ8cW5q',
-    name: 'Charlie',
-  },
-  {
-    address: '126TwBzBM4jUEK2gTphmW4oLoBWWnYvPp8hygmduTr4uds57',
-    name: 'Dave',
-  },
-  {
-    address: '16D2eVuK5SWfwvtFD3gVdBC2nc2BafK31BY6PrbZHBAGew7L',
-    name: 'Eve',
-  },
+    address: 'H9eSvWe34vQDJAWckeTHWSqSChRat8bgKHG39GC1fjvEm7y',
+    name: 'Jam Kusama',
+  }
 ];
