@@ -23,7 +23,7 @@ services:
     image: parity/polkadot:latest
     ports:
       - "30335:30335"
-      - "9945:9945"
+      - "9945:9944"
     volumes:
       - "polkadot-data-alice:/alice"
     command:
@@ -48,7 +48,7 @@ services:
     image: parity/polkadot:latest
     ports:
       - "30334:30334"
-      - "9946:9946"
+      - "9946:9944"
     volumes:
       - "polkadot-data-bob:/bob"
     links:
@@ -71,7 +71,7 @@ services:
     image: parity/polkadot:latest
     ports:
       - "30336:30336"
-      - "9947:9947"
+      - "9947:9944"
     volumes:
       - "polkadot-data-charlie:/charlie"
     links:
