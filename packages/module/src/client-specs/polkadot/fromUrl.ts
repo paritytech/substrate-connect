@@ -3,11 +3,11 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 // eslint-disable-next-line @typescript-eslint/camelcase
-import init, { start_client } from '../generated/kusama_cc3/kusama_cc3';
-import { LightClient, WasmRpcClient } from '../types';
+import init, { start_client } from '../../client-packages/polkadot/kusama';
+import { LightClient, WasmRpcClient } from './../../types';
 
-const name = 'westend';
-const version = 'v0.0.0';
+const name = 'polkadot';
+const version = 'v0.8.19';
 let client: WasmRpcClient;
 
 /**
@@ -16,7 +16,7 @@ let client: WasmRpcClient;
 export function fromUrl(url: string): LightClient {
   return {
     name,
-    network: 'Westend', // Result from RPC system_chain
+    network: 'Polkadot', // Result from RPC system_chain
     async startClient(): Promise<WasmRpcClient> {
       if (client) {
         return client;
@@ -27,7 +27,7 @@ export function fromUrl(url: string): LightClient {
       console.log('Successfully loaded WASM, starting client...');
 
       // Dynamic import, because the JSON is quite big.
-      const { default: chainSpec } = await import('./westend.json');
+      const { default: chainSpec } = await import('./polkadot.json');
 
       client = await start_client(JSON.stringify(chainSpec), 'INFO');
 

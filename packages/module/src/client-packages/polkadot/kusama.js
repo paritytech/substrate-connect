@@ -1,4 +1,4 @@
-import { websocket_transport } from './snippets/libp2p-wasm-ext-70c268b265aa8c56/src/websockets.js';
+import { websocket_transport } from './snippets/libp2p-wasm-ext-70c268b265aa8c56/src/websockets.js.js';
 
 let wasm;
 

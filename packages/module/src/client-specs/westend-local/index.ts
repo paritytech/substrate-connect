@@ -4,7 +4,6 @@
 
 import { fromUrl } from './fromUrl';
 
-// eslint-disable-next-line @typescript-eslint/camelcase
-export const kusama_cc3 = {
+export const westendLocal = {
   fromUrl,
 };
