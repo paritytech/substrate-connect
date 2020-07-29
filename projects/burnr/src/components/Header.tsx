@@ -1,24 +1,25 @@
 import React from 'react';
-import styled from 'styled-components';
 
-import { AppBar, Toolbar, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 
-import { theme } from '../themes';
+const useStyles = makeStyles(theme => ({
+	root: {
+		alignItems: 'center',
+		display: 'flex',
+		justifyContent: 'space-between',
+		maxWidth: '1330px',
+		paddingLeft: theme.spacing(2),
+		width: '100vw',
+	},
+}));
 
-interface Props {
-  className?: string;
-}
+const Header: React.FunctionComponent = ({ children }) => {
+	const classes = useStyles();
+	return (
+		<div className={classes.root}>
+			{children}
+		</div>
+	);
+};
 
-const Header: React.FunctionComponent<Props> = ({ className }: Props) => (
-  <AppBar position='fixed' className={className}>
-    <Toolbar>
-      <Typography variant='h6' noWrap>
-        Burnr
-      </Typography>
-    </Toolbar>
-  </AppBar>
-);
-
-export default React.memo(styled(Header)`
-z-index: ${theme.zIndex.drawer + 1} !important;
-`);
+export default Header;
