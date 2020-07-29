@@ -6,6 +6,14 @@ export * from './types';
 export * from './WasmProvider';
 
 /**
+ * Hosts
+ */
+
+/* tslint:disable */
+import * as wasm from './client-packages/polkadot/kusama_bg';
+export { wasm };
+
+/**
  * Light clients
  */
 export * from './client-specs/kusama';

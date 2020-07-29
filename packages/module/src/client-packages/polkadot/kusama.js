@@ -1,4 +1,4 @@
-import { websocket_transport } from './snippets/libp2p-wasm-ext-70c268b265aa8c56/src/websockets.js.js';
+import { websocket_transport } from './snippets/libp2p-wasm-ext-70c268b265aa8c56/src/websockets.js';
 
 let wasm;
 
@@ -349,7 +349,7 @@ async function load(module, imports) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = import.meta.url.replace(/\.js$/, '_bg.wasm');
+        // input = import.meta.url.replace(/\.js$/, '_bg.wasm');
     }
     const imports = {};
     imports.wbg = {};
