@@ -1,11 +1,11 @@
 {
-  "name": "burnr",
+  "name": "@substrate/burnr",
   "version": "0.0.1",
   "description": "",
   "license": "Apache-2.0",
   "main": "index.js",
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf dist && rm -rf node_modules",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "start": "node index.js",
     "start:prod": "cross-env NODE_ENV=production node index.js",
