@@ -10,8 +10,8 @@ export * from './WasmProvider';
  */
 
 /* tslint:disable */
-import * as wasm from './client-packages/polkadot/kusama_bg';
-export { wasm };
+// import * as wasm from './client-packages/polkadot/kusama_bg';
+// export { wasm };
 
 /**
  * Light clients
