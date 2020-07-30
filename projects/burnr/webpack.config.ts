@@ -1,6 +1,5 @@
 import path from 'path';
 import { Configuration } from 'webpack';
-import nodeExternals from 'webpack-node-externals';
 import ManifestPlugin from 'webpack-manifest-plugin';
 import cssnano from 'cssnano';
 
