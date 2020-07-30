@@ -21,7 +21,7 @@ const config: Configuration = {
     publicPath: '/statics/',
   },
   resolve: {
-    extensions: ['.js', '.ts', '.tsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
   optimization: {
     minimize: !IS_DEV,
@@ -45,20 +45,11 @@ const config: Configuration = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.(js|ts|tsx)$/,
         exclude: [/node_modules/, nodeModulesPath],
         use: {
           loader: 'babel-loader',
-          options: {
-            presets: [['@babel/env', { modules: false, targets }], '@babel/react', '@babel/typescript'],
-            plugins: [
-              '@babel/proposal-numeric-separator',
-              '@babel/plugin-transform-runtime',
-              ['@babel/plugin-proposal-decorators', { legacy: true }],
-              ['@babel/plugin-proposal-class-properties', { loose: true }],
-              '@babel/plugin-proposal-object-rest-spread',
-            ],
-          },
+          options: require('@polkadot/dev/config/babel'),
         },
       },
       {
@@ -85,10 +76,26 @@ const config: Configuration = {
         ],
       },
       {
+        test: /\.js$/,
+        // https://github.com/webpack/webpack/issues/6719#issuecomment-546840116
+        loader: require.resolve('@open-wc/webpack-import-meta-loader'),
+      },
+      {
         test: /.jpe?g$|.gif$|.png$|.svg$|.woff$|.woff2$|.ttf$|.eot$/,
         use: 'url-loader?limit=10000',
       },
     ],
+  },
+  node: {
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    child_process: 'empty',
+    dgram: 'empty',
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+  },
+  performance: {
+    hints: false,
   },
   devServer: {
     port: WEBPACK_PORT,
