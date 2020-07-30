@@ -23,5 +23,9 @@
   "dependencies": {
     "@polkadot/extension-base": "^0.31.1",
     "@polkadot/extension-chains": "^0.31.1"
+  },
+  "devDependencies": {
+    "@open-wc/webpack-import-meta-loader": "^0.4.7",
+    "webpack-extension-manifest-plugin": "^0.5.0"
   }
 }
