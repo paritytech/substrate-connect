@@ -9,11 +9,12 @@ const useStyles = makeStyles(theme => ({
 		justifyContent: 'space-between',
 		maxWidth: '1330px',
 		paddingLeft: theme.spacing(2),
+		position: 'fixed',
 		width: '100vw',
 	},
 }));
 
-const Header: React.FunctionComponent = ({ children }) => {
+const ThemeHeader: React.FunctionComponent = ({ children }) => {
 	const classes = useStyles();
 	return (
 		<div className={classes.root}>
@@ -22,4 +23,4 @@ const Header: React.FunctionComponent = ({ children }) => {
 	);
 };
 
-export default Header;
+export default ThemeHeader;
