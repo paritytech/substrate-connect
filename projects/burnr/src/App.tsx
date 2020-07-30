@@ -6,13 +6,13 @@ import { ThemeProvider, createMuiTheme, makeStyles } from '@material-ui/core/sty
 import { ApiContext } from './utils/contexts';
 import { useApiCreate } from './hooks';
 
-import { SubstrateLight, SubstrateDark } from './themes'
+import { SubstrateLight, SubstrateDark } from './themes';
 import {
 	Home
 } from './pages';
 
 import { 
-	Header,
+	ThemeHeader,
 	ThemeButton,
 	LogoSubstrate
 } from './components';
@@ -45,10 +45,10 @@ const  App: React.FunctionComponent<Props> = ({ className }: Props) => {
 			<div className={classes.root + ' ' + className}>
 				<ThemeProvider theme={appliedTheme}>
 					<CssBaseline />
-					<Header>
+					<ThemeHeader>
 						<LogoSubstrate theme={theme} />
 						<ThemeButton theme={theme} onClick={() => setTheme(!theme)} />
-					</Header>
+					</ThemeHeader>
 					<main className={classes.main}>
 						{api && (
 							<ApiContext.Provider value={api}>
