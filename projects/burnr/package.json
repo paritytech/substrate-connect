@@ -1,11 +1,11 @@
 {
-  "name": "burnr",
+  "name": "@substrate/burnr",
   "version": "0.0.1",
   "description": "",
   "license": "Apache-2.0",
   "main": "index.js",
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf dist && rm -rf node_modules",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "start": "node index.js",
     "start:prod": "cross-env NODE_ENV=production node index.js",
@@ -51,6 +51,8 @@
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-react": "^7.9.4",
     "@babel/preset-typescript": "^7.9.0",
+    "@open-wc/webpack-import-meta-loader": "^0.4.7",
+    "@polkadot/dev": "^0.55.29",
     "@types/cssnano": "^4.0.0",
     "@types/enzyme": "^3.10.5",
     "@types/express": "^4.17.6",
@@ -96,7 +98,6 @@
     "webpack-bundle-analyzer": "^3.7.0",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.11.0",
-    "webpack-manifest-plugin": "^2.2.0",
-    "webpack-node-externals": "^2.5.0"
+    "webpack-manifest-plugin": "^2.2.0"
   }
 }

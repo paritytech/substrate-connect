@@ -9,7 +9,6 @@ const useStyles = makeStyles(theme => ({
 		justifyContent: 'space-between',
 		maxWidth: '1330px',
 		paddingLeft: theme.spacing(2),
-		position: 'fixed',
 		width: '100vw',
 	},
 }));

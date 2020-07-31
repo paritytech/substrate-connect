@@ -10,8 +10,8 @@
     "Sveta Goldstein <sveta@parity.io>"
   ],
   "scripts": {
-    "build": "yarn run clean && copyfiles -Eu2 \"src/client-packages/**/*\" lib/client-packages && tsc",
-    "clean": "rimraf lib"
+    "build": "rimraf lib  && copyfiles -Eu2 \"src/client-packages/**/*\" lib/client-packages && tsc",
+    "clean": "rimraf lib && rimraf node_modules"
   },
   "publishConfig": {
     "access": "public"

@@ -15,8 +15,9 @@
     "projects/*"
   ],
   "scripts": {
-    "clean": "rm -rf node_modules && yarn workspaces run clean",
+    "clean": " yarn workspaces run clean && rimraf node_modules",
     "build": "yarn workspaces run build",
+    "dev": " yarn run build && yarn workspace @substrate/burnr run dev",
     "test": " yarn workspaces run test"
   },
   "devDependencies": {
