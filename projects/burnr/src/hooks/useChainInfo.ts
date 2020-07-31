@@ -15,7 +15,6 @@ export default function useChainInfo (): Header {
     const count = 0;
     api.rpc.chain
       .subscribeNewHeads((header) => {
-      console.log(`Chain is at block: #${header}`);
       mountedRef.current && setNewHead(
         header
       )  

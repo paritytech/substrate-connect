@@ -11,15 +11,12 @@ import {
   westend,
 } from '@substrate/connect';
 
+import { endpoints } from '../../constants';
+
 import useIsMountedRef from './useIsMountedRef';
 
-const kusamaWs = 'wss://kusama-rpc.polkadot.io/';
-const westendWs = 'wss://westend-rpc.polkadot.io';
-const polkadotWs = 'wss://rpc.polkadot.io';
-
-const localWs = 'ws://127.0.0.1:9944';
 export const PolkadotWASM = './wasm/kusama_bg.wasm';
-const polkadotLocalWs = polkadotLocal.fromUrl(localWs);
+const polkadotLocalWs = polkadotLocal.fromUrl(endpoints.localHost);
 const wasmclient = new WasmProvider(polkadotLocalWs);
 
 console.log('wasmclient', wasmclient)
@@ -33,7 +30,7 @@ export default function useApiCreate (): ApiPromise | null {
   useEffect((): void => {
     ApiPromise
       .create({
-        provider: new WsProvider(westendWs),
+        provider: new WsProvider(endpoints.localPolkadotNetwork),
         types: {}
       })
       .then((api): void => {
