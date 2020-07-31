@@ -103,10 +103,7 @@ const config: Configuration = {
     openPage: `http://localhost:${SERVER_PORT}`,
   },
   plugins: [
-    new ManifestPlugin(),
-    new HtmlWebpackPlugin({   
-      favicon: 'src/favicon.ico'
-    })
+    new ManifestPlugin()
   ]
 };
 
