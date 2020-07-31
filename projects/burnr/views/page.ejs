@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="utf-8" />
-  <title>Burnr</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-</head>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Burnr</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicons/apple-touch-icon.png">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  </head>
 
-<body>
-  <div class="container">
-    <div id="app">Loading...</div>
-  </div>
-  <% if(process.env.NODE_ENV === 'production') { %>
-  <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
-  <% } else { %>
-  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-  <% } %><% for(var jsLocation of Object.values(manifest)) {%>
-  <script type="module" src="<%- jsLocation %>"></script>
-  <% } %>
-</body>
+  <body>
+    <div class="container">
+      <div id="app">Loading...</div>
+    </div>
+    <% if(process.env.NODE_ENV === 'production') { %>
+      <script crossorigin="crossorigin" src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+      <script crossorigin="crossorigin" src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <% } else { %>
+      <script crossorigin="crossorigin" src="https://unpkg.com/react@16/umd/react.development.js"></script>
+      <script crossorigin="crossorigin" src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <% } %>
+    <% for(var jsLocation of Object.values(manifest)) {%>
+      <script type="module" src="<%- jsLocation %>"></script>
+    <% } %>
+  </body>
 
 </html>

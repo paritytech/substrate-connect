@@ -1,11 +1,10 @@
 import path from 'path';
 import { Configuration } from 'webpack';
 import ManifestPlugin from 'webpack-manifest-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import cssnano from 'cssnano';
 
 import { SERVER_PORT, IS_DEV, WEBPACK_PORT } from './src/server/config';
-
-const plugins = [new ManifestPlugin()];
 
 const nodeModulesPath = path.resolve(__dirname, 'node_modules');
 const targets = IS_DEV ? { chrome: '79', firefox: '72' } : '> 0.25%, not dead';
@@ -103,7 +102,12 @@ const config: Configuration = {
     open: IS_DEV,
     openPage: `http://localhost:${SERVER_PORT}`,
   },
-  plugins
+  plugins: [
+    new ManifestPlugin(),
+    new HtmlWebpackPlugin({   
+      favicon: 'src/favicon.ico'
+    })
+  ]
 };
 
 export default config;
