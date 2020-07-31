@@ -11,7 +11,7 @@ import {
 	Home
 } from './pages';
 
-import { 
+import {
 	ThemeHeader,
 	ThemeButton,
 	LogoSubstrate
@@ -37,7 +37,7 @@ const  App: React.FunctionComponent<Props> = ({ className }: Props) => {
 	const api = useApiCreate();
 
 	const classes = useStyles();
-	const [theme, setTheme] = useState(true)
+	const [theme, setTheme] = useState(true);
 	const appliedTheme = createMuiTheme(theme ? SubstrateLight : SubstrateDark)
 
 	return (
