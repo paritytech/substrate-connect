@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { CardHeader, Card, CardContent, CardMedia, Grid } from '@material-ui/core';
 
 import { useChainInfo, useUserInfo } from '../hooks';
-import { theme } from '../themes';
 
 interface Props {
   className?: string;
@@ -17,9 +16,10 @@ const users = {
 }
 
 function Home ({ className }: Props):  React.ReactElement<Props> {
-  const blockHash = useChainInfo();
+  const newHead = useChainInfo();
   const userInfo = useUserInfo(users.westend);
-  console.log('userInfo', userInfo)
+	console.log('userInfo', userInfo)
+	console.log("newHead", newHead)
 
 	return(
 		<Grid item xs={12}>
@@ -31,8 +31,8 @@ function Home ({ className }: Props):  React.ReactElement<Props> {
 				/>
 				<CardHeader title='Burnr' />
 				<CardContent>
-					<p>Current Block Hash</p>
-					<p>{blockHash}</p>
+					<p>Current Block Number</p>
+					<p>{newHead && `#${newHead.number.toString()}`}</p>
 				</CardContent>
 			</Card>
 		</Grid>

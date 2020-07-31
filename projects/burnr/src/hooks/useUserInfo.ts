@@ -3,8 +3,8 @@ import BN from 'bn.js';
 import { useEffect, useState } from 'react';
 import type { AccountInfo, Balance } from '@polkadot/types/interfaces';
 
-import useApi from './useApi';
-import useIsMountedRef from './useIsMountedRef';
+import useApi from './api/useApi';
+import useIsMountedRef from './api/useIsMountedRef';
 import { UserInfo } from '../utils/types';
 
 export default function useUserInfo (address: string): UserInfo {

@@ -1,25 +1,27 @@
 // SPDX-License-Identifier: Apache-2
 
 import { useEffect, useState } from 'react';
-import useApi from './useApi';
-import useIsMountedRef from './useIsMountedRef';
+import { Header } from '@polkadot/types/interfaces';
 
-export default function useChainInfo (): string {
+import useApi from './api/useApi';
+import useIsMountedRef from './api/useIsMountedRef';
+
+export default function useChainInfo (): Header {
   const api = useApi();
-  const [blockHash, setBlockHash] = useState<string>();
+  const [newHead, setNewHead] = useState<Header>();
   const  mountedRef = useIsMountedRef();
 
   useEffect((): void => {
+    const count = 0;
     api.rpc.chain
-      .getBlockHash()
-      .then((hash): void => {
-        console.log('Current Block', hash.toString())
-        mountedRef.current && setBlockHash(
-          hash.toString()
-        )
-      })
-      .catch(console.error);
+      .subscribeNewHeads((header) => {
+      console.log(`Chain is at block: #${header}`);
+      mountedRef.current && setNewHead(
+        header
+      )  
+    })
+
   }, []);
 
-  return blockHash;
+  return newHead;
 }

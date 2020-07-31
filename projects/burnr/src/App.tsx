@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
 		padding: theme.spacing(3),
 	},
 	main: {
-		maxWidth: theme.spacing(3) + 600 + 'px',
+		width: theme.spacing(3) + 600 + 'px',
 	},
 }));
 
@@ -46,8 +46,8 @@ const  App: React.FunctionComponent<Props> = ({ className }: Props) => {
 				<ThemeProvider theme={appliedTheme}>
 					<CssBaseline />
 					<ThemeHeader>
-						<LogoSubstrate theme={theme} />
-						<ThemeButton theme={theme} onClick={() => setTheme(!theme)} />
+							<LogoSubstrate theme={theme} />
+							<ThemeButton theme={theme} onClick={() => setTheme(!theme)} />
 					</ThemeHeader>
 					<main className={classes.main}>
 						{api && (
