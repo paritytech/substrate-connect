@@ -1,40 +1,55 @@
 import React from 'react';
-import styled from 'styled-components';
 
-import { CardHeader, Card, CardContent, CardMedia, Grid } from '@material-ui/core';
+import { Grid, Paper, Divider, IconButton, Box } from '@material-ui/core';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
-import { useChainInfo } from '../hooks';
+import { NavTabs, LogoApp, NodeSelector, AccountCard, BalanceValue, NavFooter } from '../components';
 
-interface Props {
-  className?: string;
-}
+function Home ():  React.ReactElement {
 
-function Home ({ className }: Props):  React.ReactElement<Props> {
-	const blockHash = useChainInfo();
+	return (
+		<>
+			<Grid container alignItems='center'>
+				<Grid item xs={6}>
+					<Box paddingX={2}>
+						<LogoApp/>
+					</Box>
+				</Grid>
+				<Grid item xs={6}>
+					<Paper>
+						<Box paddingX={2}>
+							<NodeSelector/>
+						</Box>
+					</Paper>
+				</Grid>
+			</Grid>
+			<Divider/>
+			<Paper>
+				<Box paddingX={2}>
+					<Grid container alignItems='center'>
+						<Grid item xs={6}>
+							<AccountCard
+								account={{
+									address: '13HJwtWXxCfpk8iW9BWg1mBiaMvjUjTxytE8prFkKFiMUztM',
+									name: 'account name',
+								}}
+							/>
+						</Grid>
+						<Grid item xs={6}>
+							<BalanceValue value={1234.56} size='Big' />
+							<IconButton>
+								<VisibilityIcon />
+							</IconButton>
+						</Grid>
+					</Grid>
+				</Box>
+			</Paper>
+			<Divider/>
+			<NavTabs />
+			<NavFooter />
+		</>
 
-	return(
-		<Grid item xs={12}>
-			<Card className={className}>
-				<CardMedia
-					className='media'
-					image='/assets/images/logo.png'
-					title="Kusama Logo"
-				/>
-				<CardHeader title='Burnr' />
-				<CardContent>
-					<p>Current Block Hash</p>
-					<p>{blockHash}</p>
-				</CardContent>
-			</Card>
-		</Grid>
 	);
 };
 
-export default React.memo(styled(Home)`
-.media {
-  height: 0;
-  padding-top: 56.25%; // 16:9
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-`);
+export default Home;
