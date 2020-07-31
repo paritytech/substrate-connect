@@ -1,9 +1,9 @@
 export const endpoints = {
   'kusama': 'wss://kusama-rpc.polkadot.io/',
-  'polkadotWs': 'wss://rpc.polkadot.io',
-  'westendWs': 'wss://westend-rpc.polkadot.io',
+  'polkadot': 'wss://rpc.polkadot.io',
+  'westend': 'wss://westend-rpc.polkadot.io',
   'localPolkadotNetwork': 'ws://127.0.0.1:9945',
-  'localHost': 'ws://127.0.0.1:9944'
+  'localHost': 'ws://0.0.0.0:8080'
 };
 
 export const users = {
