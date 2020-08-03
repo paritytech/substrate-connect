@@ -20,7 +20,7 @@ const TabPanel: React.FunctionComponent<TabPanelProps> = ({ children, value, ind
 		>
 			{value === index && (
 				<Box p={2}>
-					<Typography>{children}</Typography>
+					{children}
 				</Box>
 			)}
 		</div>
@@ -52,7 +52,7 @@ const NavTabs: React.FunctionComponent = () => {
 			<Paper>
 				<TabPanel value={value} index={0}>
 					<Typography variant='h2'>
-          Account Controls
+						Account Controls
 					</Typography>
 					<Typography variant='body2'>
 						Lorem Ipsum
@@ -68,7 +68,7 @@ const NavTabs: React.FunctionComponent = () => {
 				</TabPanel>
 				<TabPanel value={value} index={2}>
 					<Typography variant='h2'>
-          Send Funds
+						Send Funds
 					</Typography>
 					<Typography variant='body2'>
 						Lorem Ipsum
