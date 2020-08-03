@@ -4,11 +4,7 @@ import { Typography } from '@material-ui/core';
 
 import { PopoverInfo } from '.';
 
-import { useChainInfo } from '../hooks';
-
 const NodeSelector: React.FunctionComponent = () => {
-	const blockhash = useChainInfo();
-
 	return  (
 		<>
 			<Typography variant='h4'>
@@ -16,9 +12,9 @@ const NodeSelector: React.FunctionComponent = () => {
 
 				<PopoverInfo>
 					<Typography variant='body1'>
-						Current Block Hash
+						Chain Info:
 						<Typography variant='subtitle2'>
-							{blockhash}
+							chain info
 						</Typography>
 					</Typography>
 				</PopoverInfo>

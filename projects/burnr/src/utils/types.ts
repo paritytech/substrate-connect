@@ -77,10 +77,8 @@ export interface AccountInfo extends Codec {
 export interface UserInfo {
   active: boolean; 
   address: string;
-  balance: Balance;
-  frozen: boolean;
-  tx: u32;
   created: Date;
+  balance: Balance;
   reserved: Balance;
   feeFrozen: Balance;
   miscFrozen: Balance;

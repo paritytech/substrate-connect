@@ -16,12 +16,16 @@
     "not op_mini all"
   ],
   "scripts": {
-    "build": " rm -rf build",
-    "clean": "rm -rf node_modules && rm -rf build",
-    "package": "rm -rf ./master-build.zip && cd build && zip -r -FS ../master-build.zip *"
+    "build": "rimraf build",
+    "clean": "rimraf build && rimraf node_modules",
+    "package": "rimraf ./master-build.zip && cd build && zip -r -FS ../master-build.zip *"
   },
   "dependencies": {
     "@polkadot/extension-base": "^0.31.1",
     "@polkadot/extension-chains": "^0.31.1"
+  },
+  "devDependencies": {
+    "@open-wc/webpack-import-meta-loader": "^0.4.7",
+    "webpack-extension-manifest-plugin": "^0.5.0"
   }
 }

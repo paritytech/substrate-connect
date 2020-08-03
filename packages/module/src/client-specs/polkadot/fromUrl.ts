@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 // eslint-disable-next-line @typescript-eslint/camelcase
-import init, { start_client } from '../../client-packages/polkadot/kusama';
+import init, { start_client } from '../../client-packages/polkadot/polkadot_cli';
 import { LightClient, WasmRpcClient } from './../../types';
 
 const name = 'polkadot';
