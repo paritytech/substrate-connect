@@ -3,21 +3,27 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 
 import { PopoverInfo } from '.';
+import { useChainInfo } from '../hooks';
 
 const NodeSelector: React.FunctionComponent = () => {
+	const newHead = useChainInfo();
+
 	return  (
 		<>
 			<Typography variant='h4'>
 				Network Name
 
-				<PopoverInfo>
-					<Typography variant='body1'>
-						Chain Info:
-						<Typography variant='subtitle2'>
-							chain info
+				{
+					newHead &&
+					<PopoverInfo>
+						<Typography variant='body2'>
+							Current block # 
+							<Typography variant='subtitle2' component='span'>
+								{newHead.number.toString()}
+							</Typography>
 						</Typography>
-					</Typography>
-				</PopoverInfo>
+					</PopoverInfo>
+				}
 			</Typography>
 
 			<Typography variant='body2'>Node Provider</Typography>
