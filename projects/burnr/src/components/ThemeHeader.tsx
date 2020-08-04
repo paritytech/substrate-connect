@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core';
 const useStyles = makeStyles(theme => ({
 	root: {
 		position: 'fixed',
-		zIndex: -1,
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'space-between',

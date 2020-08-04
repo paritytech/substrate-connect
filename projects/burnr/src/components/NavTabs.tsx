@@ -11,12 +11,12 @@ interface TabPanelProps {
   value: number;
 }
 
-const TabPanel: React.FunctionComponent<TabPanelProps> = ({ children, value, index, ...rest }: TabPanelProps) => {
+const TabPanel: React.FunctionComponent<TabPanelProps> = ({ children, value, index, ...props }: TabPanelProps) => {
 	return (
 		<div
 			hidden={value !== index}
 			id={`tabpanel-${index}`}
-			{...rest}
+			{...props}
 		>
 			{value === index && (
 				<Box p={2}>
