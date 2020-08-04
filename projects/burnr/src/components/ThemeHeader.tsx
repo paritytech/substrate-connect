@@ -4,12 +4,18 @@ import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
 	root: {
-		alignItems: 'center',
+		position: 'fixed',
 		display: 'flex',
+		alignItems: 'center',
 		justifyContent: 'space-between',
-		maxWidth: '1330px',
-		paddingLeft: theme.spacing(2),
 		width: '100vw',
+		maxWidth: '1330px',
+		padding: theme.spacing(2),
+		paddingRight: theme.spacing(1),
+
+		[theme.breakpoints.down('sm')]: {
+			paddingTop: theme.spacing(1),
+		},
 	},
 }));
 

@@ -1,42 +1,46 @@
 import React from 'react';
-import styled from 'styled-components';
 
-import { CardHeader, Card, CardContent, CardMedia, Grid } from '@material-ui/core';
+import { Grid, Paper, Divider, IconButton, Box } from '@material-ui/core';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
-import { useChainInfo, useUserInfo } from '../hooks';
+import { NavTabs, AccountCard, BalanceValue } from '../components';
+
+import { useUserInfo } from '../hooks';
 import { users } from '../constants';
 
-interface Props {
-  className?: string;
-}
+function Home ():  React.ReactElement {
 
-function Home ({ className }: Props):  React.ReactElement<Props> {
-  const newHead = useChainInfo();
-  const userInfo = useUserInfo(users.westend);
-
-	return(
-		<Grid item xs={12}>
-			<Card className={className}>
-				<CardMedia
-					className='media'
-					image='/assets/images/logo.png'
-					title="Kusama Logo"
-				/>
-				<CardHeader title='Burnr' />
-				<CardContent>
-					<p>Current Block Number</p>
-					<p>{newHead && `#${newHead.number.toString()}`}</p>
-				</CardContent>
-			</Card>
-		</Grid>
+	const userInfo = useUserInfo(users.westend);
+	return (
+		<>
+			<Divider/>
+			<Paper>
+				<Box paddingX={2} paddingY={1}>
+					<Grid container alignItems='center'>
+						<Grid item xs={6}>
+							{
+								userInfo.address &&
+								<AccountCard
+									account={{
+										address: userInfo.address,
+										name: 'account name',
+									}}
+								/>
+							}
+						</Grid>
+						<Grid item xs={6}>
+							<BalanceValue value={1234.56} size='Big' />
+							<IconButton>
+								<VisibilityIcon />
+							</IconButton>
+						</Grid>
+					</Grid>
+				</Box>
+			</Paper>
+			<Divider/>
+			<NavTabs />
+		</>
 	);
 };
 
-export default React.memo(styled(Home)`
-.media {
-  height: 0;
-  padding-top: 56.25%; // 16:9
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-`);
+export default Home;

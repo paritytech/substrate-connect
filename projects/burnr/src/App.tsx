@@ -1,21 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'; // Pages
-import { CssBaseline } from '@material-ui/core';
-import { ThemeProvider, createMuiTheme, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import { ApiContext } from './utils/contexts';
 import { useApiCreate } from './hooks';
 
-import { SubstrateLight, SubstrateDark } from './themes';
-import {
-	Home
-} from './pages';
+import { Home } from './pages';
 
-import { 
-	ThemeHeader,
-	ThemeButton,
-	LogoSubstrate
-} from './components';
+import { NavFooter, ThemeToggleProvider, Head } from './components';
 
 interface Props {
   className?: string;
@@ -23,43 +15,39 @@ interface Props {
 
 const useStyles = makeStyles(theme => ({
 	root: {
-		alignItems: 'center',
 		display: 'flex',
 		flexDirection: 'column',
-		padding: theme.spacing(3),
+		alignItems: 'center',
+		minHeight: '100vh',
 	},
 	main: {
-		width: theme.spacing(3) + 600 + 'px',
+		width: '100%',
+		maxWidth: theme.spacing(3) + 600 + 'px',
+		padding: theme.spacing(2),
+		flex: 1,
 	},
 }));
 
 const  App: React.FunctionComponent<Props> = ({ className }: Props) => {
 	const api = useApiCreate();
-
 	const classes = useStyles();
-	const [theme, setTheme] = useState(true)
-	const appliedTheme = createMuiTheme(theme ? SubstrateLight : SubstrateDark)
 
 	return (
 		<BrowserRouter>
 			<div className={classes.root + ' ' + className}>
-				<ThemeProvider theme={appliedTheme}>
-					<CssBaseline />
-					<ThemeHeader>
-							<LogoSubstrate theme={theme} />
-							<ThemeButton theme={theme} onClick={() => setTheme(!theme)} />
-					</ThemeHeader>
+				<ThemeToggleProvider>
 					<main className={classes.main}>
 						{api && (
 							<ApiContext.Provider value={api}>
-								<div className='toolbar' />
+								<Head />
 								<Switch>
 									<Route exact path='/' component={Home} />
 								</Switch>
 							</ApiContext.Provider>
 						)}
 					</main>
-				</ThemeProvider>
+					<NavFooter />
+				</ThemeToggleProvider>
 			</div>
 		</BrowserRouter>
 	);

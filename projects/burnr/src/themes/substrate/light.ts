@@ -1,7 +1,9 @@
 import { ThemeOptions } from '@material-ui/core/styles';
 import colors from './colors';
+import typography from './typography';
 
 const light: ThemeOptions = {
+	typography: typography.typography,
 	palette: {
 		type: 'light',
 
@@ -37,7 +39,7 @@ const light: ThemeOptions = {
 			disabled: colors.light.dark,
 			hint: colors.yellow.main,
 		},
-		divider: colors.cyan.dark,
+		divider: 'rgba(0, 0, 0, 0)',
 	},
 };
 

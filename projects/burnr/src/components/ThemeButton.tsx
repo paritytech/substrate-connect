@@ -15,10 +15,10 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-const ThemeButton: React.FunctionComponent<Props> = ({ theme, ...rest }: Props) => {
+const ThemeButton: React.FunctionComponent<Props> = ({ theme, ...props }: Props) => {
 	const classes = useStyles();
 	return (
-		<IconButton {...rest} className={classes.root}>
+		<IconButton {...props} className={classes.root}>
 			{theme ? <Brightness3Icon /> : <Brightness7Icon />}
 		</IconButton>
 	);
