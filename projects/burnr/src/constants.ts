@@ -3,7 +3,7 @@ export const endpoints = {
   'polkadot': 'wss://rpc.polkadot.io',
   'westend': 'wss://westend-rpc.polkadot.io',
   'localPolkadotNetwork': 'ws://127.0.0.1:9945',
-  'localHost': 'ws://0.0.0.0:8080'
+  'localHost': 'ws://127.0.0.1:9944'
 };
 
 export const users = {
