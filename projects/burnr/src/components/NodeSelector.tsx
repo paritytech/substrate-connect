@@ -4,11 +4,10 @@ import { Grid,Typography, ButtonBase, InputBase, Popper } from '@material-ui/cor
 import { createStyles,fade, makeStyles, Theme  } from '@material-ui/core/styles';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import DoneIcon from '@material-ui/icons/Done';
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import Autocomplete, { AutocompleteCloseReason } from '@material-ui/lab/Autocomplete';
 
-import { PopoverInfo } from '.';
-import { useChainInfo } from '../hooks';
+import NodeSelectorSelected from './NodeSelectorSelected';
+import { NodeInfo } from './types';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -18,6 +17,8 @@ const useStyles = makeStyles((theme: Theme) =>
 		button: {
 			width: '100%',
 			textAlign: 'left',
+			paddingLeft: theme.spacing(1),
+			paddingRight: theme.spacing(1),
 		},
 		popper: {
 			width: '100%',
@@ -57,12 +58,10 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function NodeSelector() {
-	const newHead = useChainInfo();
-
 	const classes = useStyles();
 
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-	const [value, setValue] = React.useState<LabelType>(labels[1]);
+	const [value, setValue] = React.useState<NodeInfo>(labels[1]);
 
 	const handleOpenDropdown = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
@@ -84,36 +83,8 @@ export default function NodeSelector() {
 				className={classes.button}
 				onClick={handleOpenDropdown}
 			>
-				<Grid
-					container
-					spacing={1}
-					alignItems='center'
-					wrap='nowrap'
-				>
-					<Grid item>
-						<FiberManualRecordIcon fontSize="small" color='primary'/>
-					</Grid>
-					<Grid item xs={12}>
-						<Typography variant='h4'>
-							{value.network}
-							{
-								newHead &&
-								<PopoverInfo>
-									<Typography variant='body2'>
-										Current block # 
-										<Typography variant='subtitle2' component='span'>
-											{newHead.number.toString()}
-										</Typography>
-									</Typography>
-								</PopoverInfo>
-							}
-						</Typography>
-						<Typography variant='body2' color='textSecondary'>Node provider: {value.providerName} </Typography>
-					</Grid>
-					<Grid item>
-						<ArrowDropDownIcon />
-					</Grid>
-				</Grid>
+				<NodeSelectorSelected node={value}/>
+				<ArrowDropDownIcon />
 			</ButtonBase>
 
 			<Popper
@@ -131,7 +102,7 @@ export default function NodeSelector() {
 
 				<Autocomplete
 					options={labels}
-					getOptionLabel={(option) => option.providerName + option.network}
+					getOptionLabel={(option) => option.providerName + option.networkName}
 					open
 					classes={{
 						option: classes.option,
@@ -145,7 +116,7 @@ export default function NodeSelector() {
 						setValue(newValue);
 					}}
 					renderOption={(option) => (
-						<Grid 
+						<Grid
 							container
 							alignItems='center'
 							wrap='nowrap'
@@ -167,37 +138,32 @@ export default function NodeSelector() {
 						/>
 					)}
 
-					groupBy={(option) => option.network}
+					groupBy={(option) => option.networkName}
 				/>
 			</Popper>
 		</div>
 	);
 }
 
-interface LabelType {
-  providerName: string;
-  network?: string;
-}
-
 const labels = [
 	{
+		networkName: 'Westend',
 		providerName: 'Parity',
-		network: 'Westend',
 	},
 	{
+		networkName: 'Kusama',
 		providerName: 'Parity',
-		network: 'Kusama',
 	},
 	{
+		networkName: 'Kusama',
 		providerName: 'Web3',
-		network: 'Kusama',
 	},
 	{
+		networkName: 'Polkadot',
 		providerName: 'Parity',
-		network: 'Polkadot',
 	},
 	{
+		networkName: 'Polkadot',
 		providerName: 'Web3',
-		network: 'Polkadot',
 	}
 ];
