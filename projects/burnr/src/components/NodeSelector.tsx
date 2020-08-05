@@ -8,6 +8,7 @@ import Autocomplete, { AutocompleteCloseReason } from '@material-ui/lab/Autocomp
 
 import NodeSelectorSelected from './NodeSelectorSelected';
 import { NodeInfo } from './types';
+import { NodeSelectorItem } from '.';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -116,18 +117,7 @@ export default function NodeSelector() {
 						setValue(newValue);
 					}}
 					renderOption={(option) => (
-						<Grid
-							container
-							alignItems='center'
-							wrap='nowrap'
-						>
-							<Grid item xs={12}>
-								{option.providerName}
-							</Grid>
-							<Grid item>
-								{ option == value && <DoneIcon/> }
-							</Grid>
-						</Grid>
+						<NodeSelectorItem node={option} selected={option == value} />
 					)}
 					renderInput={(params) => (
 						<InputBase
