@@ -51,7 +51,6 @@ const PopoverInfo: React.FunctionComponent<Props> = ({ children }: Props) => {
 				onClose={handlePopoverClose}
 				open={open}
 				anchorEl={anchorEl}
-
 				elevation={2}
 				transitionDuration={0}
 				className={classes.popover}

@@ -1,14 +1,11 @@
 import React from 'react';
 
-import { Grid,Typography, ButtonBase, InputBase, Popper } from '@material-ui/core';
 import { createStyles,fade, makeStyles, Theme  } from '@material-ui/core/styles';
+import { Typography, ButtonBase, InputBase, Popper } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import DoneIcon from '@material-ui/icons/Done';
 import Autocomplete, { AutocompleteCloseReason } from '@material-ui/lab/Autocomplete';
 
-import NodeSelectorSelected from './NodeSelectorSelected';
-import { NodeInfo } from './types';
-import { NodeSelectorItem } from '.';
+import { NodeSelectorItem, NodeSelectorSelected, NodeInfo } from '.';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -23,17 +20,18 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 		popper: {
 			width: '100%',
+			paddingTop: theme.spacing(2),
+			backgroundColor: theme.palette.background.paper,
+			zIndex: theme.zIndex.tooltip,
 		},
 		header: {
-			paddingLeft: theme.spacing(2) + 'px !important',
-			paddingRight: theme.spacing(2) + 'px !important',
-			paddingTop: theme.spacing(2) + 'px !important',
-			backgroundColor: theme.palette.background.paper,
+			paddingLeft: theme.spacing(2),
+			paddingRight: theme.spacing(2),
 		},
 		inputBase: {
 			width: '100%',
-			paddingLeft: theme.spacing(2) + 'px !important',
-			paddingRight: theme.spacing(2) + 'px !important',
+			paddingLeft: theme.spacing(2),
+			paddingRight: theme.spacing(2),
 			backgroundColor: theme.palette.background.paper,
 			'& input': {
 				borderRadius: 4,
@@ -45,15 +43,16 @@ const useStyles = makeStyles((theme: Theme) =>
 				},
 			},
 		},
+		autocompletePaper: {
+			margin: 0,
+			borderRadius: 0,
+		},
 		option: {
 			padding: theme.spacing(2) + 'px !important',
 			'&:hover': {
 				backgroundColor: theme.palette.primary.main,
-				color: theme.palette.common.white,
+				color: theme.palette.getContrastText(theme.palette.primary.main),
 			},
-		},
-		text: {
-			flexGrow: 1,
 		},
 	})
 );
@@ -95,11 +94,13 @@ export default function NodeSelector() {
 				disablePortal={true}
 				className={classes.popper}
 			>
-				<div className={classes.header}>
-					<Typography variant='overline' color='textSecondary'>
-						Select node provider
-					</Typography>
-				</div>
+				<Typography
+					variant='overline'
+					color='textSecondary'
+					className={classes.header}
+				>
+					Select node provider
+				</Typography>
 
 				<Autocomplete
 					options={labels}
@@ -107,6 +108,7 @@ export default function NodeSelector() {
 					open
 					classes={{
 						option: classes.option,
+						paper: classes.autocompletePaper,
 					}}
 
 					onClose={handleClose}
@@ -116,9 +118,7 @@ export default function NodeSelector() {
 						}
 						setValue(newValue);
 					}}
-					renderOption={(option) => (
-						<NodeSelectorItem node={option} selected={option == value} />
-					)}
+
 					renderInput={(params) => (
 						<InputBase
 							ref={params.InputProps.ref}
@@ -127,7 +127,9 @@ export default function NodeSelector() {
 							className={classes.inputBase}
 						/>
 					)}
-
+					renderOption={(option) => (
+						<NodeSelectorItem node={option} selected={option == value} />
+					)}
 					groupBy={(option) => option.networkName}
 				/>
 			</Popper>
