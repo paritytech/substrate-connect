@@ -23,9 +23,7 @@ const Head: React.FunctionComponent = () => {
 			</Grid>
 			<Grid item xs={6}>
 				<Paper>
-					<Box paddingX={2}>
 						<NodeSelector/>
-					</Box>
 				</Paper>
 			</Grid>
 		</Grid>

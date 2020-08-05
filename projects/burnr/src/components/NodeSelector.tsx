@@ -12,10 +12,15 @@ import { useChainInfo } from '../hooks';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
-		root: {},
+		root: {
+			position: 'relative',
+		},
 		button: {
 			width: '100%',
 			textAlign: 'left',
+		},
+		popper: {
+			width: '100%',
 		},
 		header: {
 			paddingLeft: theme.spacing(2) + 'px !important',
@@ -73,7 +78,7 @@ export default function NodeSelector() {
 	const open = Boolean(anchorEl);
 
 	return (
-		<>
+		<div className={classes.root}>
 			<ButtonBase
 				disableRipple
 				className={classes.button}
@@ -115,6 +120,8 @@ export default function NodeSelector() {
 				open={open}
 				anchorEl={anchorEl}
 				placement="bottom-start"
+				disablePortal={true}
+				className={classes.popper}
 			>
 				<div className={classes.header}>
 					<Typography variant='overline' color='textSecondary'>
@@ -163,7 +170,7 @@ export default function NodeSelector() {
 					groupBy={(option) => option.network}
 				/>
 			</Popper>
-		</>
+		</div>
 	);
 }
 
