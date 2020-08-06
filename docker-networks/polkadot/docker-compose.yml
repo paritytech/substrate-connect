@@ -1,25 +1,27 @@
 # Docker compose file to simulate a Polkadot network setup.
-#
-#
+
+
 # Setup:
 # A basic local network with 3 validators connected to the public internet
-#
+
 # Usage:
-#
+
 # 1. Pull containers: `docker-compose pull`
-#
+
 # 2. Start network and container: `docker-compose up`
-#
+
 # 3. Reach:
 #   - local node on localhost:9944
 #   - validator-alice: localhost:9945
-#
+
 # 4. Shut down network and container: `docker-compose down` to prune the database
+
+# Find more Docker images of Polkadot https://hub.docker.com/r/parity/polkadot/tags
 
 version: "3.7"
 services:
     polkadot-master:
-        image: parity/polkadot:latest
+        image: parity/polkadot:master-0.8.22-9c04ebb-a36ea0f3
         ports:
             - "9944:9944"
             - "9933:9933"
@@ -33,7 +35,7 @@ services:
             - "--chain=polkadot-local"
 
     node_alice:
-        image: parity/polkadot:latest
+        image: parity/polkadot:master-0.8.22-9c04ebb-a36ea0f3
         ports:
             - "30335:30333"
             - "30337:30334" # for `/ws/p2p/`
@@ -61,7 +63,7 @@ services:
                 ipv4_address: 172.28.1.1
 
     node_bob:
-        image: parity/polkadot:latest
+        image: parity/polkadot:master-0.8.22-9c04ebb-a36ea0f3
         ports:
             - "30334:30333"
             - "9946:9944"
@@ -82,7 +84,7 @@ services:
                 ipv4_address: 172.28.1.2
 
     node_charlie:
-        image: parity/polkadot:latest
+        image: parity/polkadot:master-0.8.22-9c04ebb-a36ea0f3
         ports:
             - "30336:30333"
             - "9947:9944"
