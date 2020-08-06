@@ -10,17 +10,19 @@ interface Props {
 
 const NodeSelectorSelected: React.FunctionComponent<Props> = ({ node, selected }: Props) => {
 
+	const visibility = selected ? 'visible' : 'hidden';
+
 	return (
 		<Grid
 			container
 			alignItems='center'
 			wrap='nowrap'
 		>
+			<Grid item>
+				<DoneIcon style={{ fontSize:'16px', visibility: visibility, transform: 'translateX(-4px)' }} />
+			</Grid>
 			<Grid item xs={12}>
 				{node.providerName}
-			</Grid>
-			<Grid item>
-				{ selected && <DoneIcon/> }
 			</Grid>
 		</Grid>
 	);

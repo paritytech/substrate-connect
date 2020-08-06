@@ -1,9 +1,11 @@
 import { ThemeOptions } from '@material-ui/core/styles';
 import colors from './colors';
 import typography from './typography';
+import shadows from './shadows';
 
 const dark: ThemeOptions = {
 	typography: typography.typography,
+	shadows: shadows.shadows,
 	palette: {
 		type: 'dark',
 

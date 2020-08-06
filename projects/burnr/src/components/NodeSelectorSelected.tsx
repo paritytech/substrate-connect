@@ -22,23 +22,26 @@ const NodeSelectorSelected: React.FunctionComponent<Props> = ({ node }: Props) =
 			wrap='nowrap'
 		>
 			<Grid item>
-				<FiberManualRecordIcon fontSize="small" color='primary'/>
+				<FiberManualRecordIcon style={{ fontSize: '16px' }} color='primary'/>
 			</Grid>
 			<Grid item xs={12}>
-				<Typography variant='h4'>
-					{ node.networkName }
-					{
-						newHead &&
-        <PopoverInfo>
-        	<Typography variant='body2'>
-            Current block #
-        		<Typography variant='subtitle2' component='span'>
-        			{newHead.number.toString()}
-        		</Typography>
-        	</Typography>
-        </PopoverInfo>
+
+				<Grid container alignItems='center'>
+					<Typography variant='h4'>
+						{ node.networkName }
+					</Typography>
+					{ newHead &&
+						<PopoverInfo>
+							<Typography variant='body2'>
+								Current block #
+								<Typography variant='subtitle2' component='span'>
+									{newHead.number.toString()}
+								</Typography>
+							</Typography>
+						</PopoverInfo>
 					}
-				</Typography>
+				</Grid>
+
 				<Typography variant='body2' color='textSecondary'>Node provider: {node.providerName} </Typography>
 			</Grid>
 		</Grid>

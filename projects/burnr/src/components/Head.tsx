@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Paper, Box, Grid, makeStyles, Theme } from '@material-ui/core';
+import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
 import { NodeSelector, LogoApp } from '.';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -22,9 +22,7 @@ const Head: React.FunctionComponent = () => {
 				</Box>
 			</Grid>
 			<Grid item xs={6}>
-				<Paper>
-						<NodeSelector/>
-				</Paper>
+				<NodeSelector/>
 			</Grid>
 		</Grid>
 	);

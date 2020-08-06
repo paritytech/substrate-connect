@@ -56,6 +56,10 @@ const typography: ThemeOptions = {
 			lineHeight: '135%',
 			letterSpacing: 0.1,
 		},
+		overline: {
+			fontSize: 11,
+			letterSpacing: 0.7,
+		},
 	},
 };
 export default typography;

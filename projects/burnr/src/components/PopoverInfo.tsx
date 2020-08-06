@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { IconButton, Typography, Popover, Box } from '@material-ui/core';
+import { Typography, Popover, Box, ButtonBase } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
 
 interface Props {
@@ -11,6 +11,15 @@ interface Props {
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
 		display: 'inline-block',
+	},
+	trigger: {
+		display: 'inline-block',
+		transform: 'translateY(3px)',
+		fontSize: theme.typography.h3.fontSize,
+		'& svg' : {
+			margin: theme.spacing(0.5),
+			fontSize: theme.typography.h4.fontSize,
+		},
 	},
 	popover: {
 		pointerEvents: 'none',
@@ -39,13 +48,14 @@ const PopoverInfo: React.FunctionComponent<Props> = ({ children }: Props) => {
 	const open = Boolean(anchorEl);
 
 	return (
-		<Box className={classes.root}>
-			<IconButton
+		<span>
+			<a
 				onMouseEnter={handlePopoverOpen}
 				onMouseLeave={handlePopoverClose}
+				className={classes.trigger}
 			>
-				<InfoIcon fontSize='small' />
-			</IconButton>
+				<InfoIcon />
+			</a>
 
 			<Popover
 				onClose={handlePopoverClose}
@@ -70,7 +80,7 @@ const PopoverInfo: React.FunctionComponent<Props> = ({ children }: Props) => {
 					{children}
 				</Typography>
 			</Popover>
-		</Box>
+		</span>
 	);
 };
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { createStyles,fade, makeStyles, Theme  } from '@material-ui/core/styles';
-import { Typography, ButtonBase, InputBase, Popper } from '@material-ui/core';
+import { Typography, ButtonBase, InputBase } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Autocomplete, { AutocompleteCloseReason } from '@material-ui/lab/Autocomplete';
 
@@ -9,32 +9,42 @@ import { NodeSelectorItem, NodeSelectorSelected, NodeInfo } from '.';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
-		root: {
+		wrapper: {
 			position: 'relative',
+			height: '60px',
+			backgroundColor: theme.palette.background.paper,
+			borderRadius: theme.spacing(0.5),
+		},
+		root: {
+			position: 'absolute',
+			zIndex: theme.zIndex.modal,
+			width: '100%',
+			padding: theme.spacing(1),
+			backgroundColor: theme.palette.background.paper,
+			borderRadius: theme.spacing(0.5),
+			'&#node-selector': {
+				boxShadow: theme.shadows[2],
+			},
 		},
 		button: {
 			width: '100%',
 			textAlign: 'left',
-			paddingLeft: theme.spacing(1),
-			paddingRight: theme.spacing(1),
 		},
 		popper: {
+			position: 'relative',
 			width: '100%',
-			paddingTop: theme.spacing(2),
-			backgroundColor: theme.palette.background.paper,
-			zIndex: theme.zIndex.tooltip,
+			transform: 'none !important',
+			boxShadow: 'none',
 		},
-		header: {
-			paddingLeft: theme.spacing(2),
-			paddingRight: theme.spacing(2),
+		acHeader: {
+			paddingTop: theme.spacing(1),
+			paddingLeft: theme.spacing(3),
+			paddingRight: theme.spacing(3),
 		},
-		inputBase: {
+		acInput: {
 			width: '100%',
-			paddingLeft: theme.spacing(2),
-			paddingRight: theme.spacing(2),
-			backgroundColor: theme.palette.background.paper,
 			'& input': {
-				borderRadius: 4,
+				borderRadius: theme.spacing(0.5),
 				padding: theme.spacing(1),
 				border: '1px solid',
 				'&:focus': {
@@ -43,12 +53,25 @@ const useStyles = makeStyles((theme: Theme) =>
 				},
 			},
 		},
-		autocompletePaper: {
+		acPopper: {
+			position: 'relative',
+		},
+		acPaper: {
 			margin: 0,
-			borderRadius: 0,
+			boxShadow: 'none',
+			backgroundColor: 'rgba(0,0,0,0)',
+			'& .MuiListSubheader-root': {
+				paddingLeft: theme.spacing(3),
+				paddingRight: theme.spacing(3),
+				fontSize: theme.typography.h4.fontSize,
+				lineHeight: theme.spacing(5) + 'px',
+			},
 		},
 		option: {
-			padding: theme.spacing(2) + 'px !important',
+			paddingLeft: theme.spacing(1) + 'px !important',
+			paddingRight: theme.spacing(1) + 'px !important',
+			borderRadius: theme.spacing(0.5),
+			height: theme.spacing(5),
 			'&:hover': {
 				backgroundColor: theme.palette.primary.main,
 				color: theme.palette.getContrastText(theme.palette.primary.main),
@@ -75,64 +98,67 @@ export default function NodeSelector() {
 	};
 
 	const open = Boolean(anchorEl);
+	const id = open ? 'node-selector' : undefined;
 
 	return (
-		<div className={classes.root}>
-			<ButtonBase
-				disableRipple
-				className={classes.button}
-				onClick={handleOpenDropdown}
-			>
-				<NodeSelectorSelected node={value}/>
-				<ArrowDropDownIcon />
-			</ButtonBase>
-
-			<Popper
-				open={open}
-				anchorEl={anchorEl}
-				placement="bottom-start"
-				disablePortal={true}
-				className={classes.popper}
-			>
-				<Typography
-					variant='overline'
-					color='textSecondary'
-					className={classes.header}
+		<div className={classes.wrapper}>
+			<div className={classes.root} id={id}>
+				<ButtonBase
+					disableRipple
+					className={classes.button}
+					onClick={handleOpenDropdown}
 				>
-					Select node provider
-				</Typography>
+					<NodeSelectorSelected node={value}/>
+					<ArrowDropDownIcon />
+				</ButtonBase>
 
-				<Autocomplete
-					options={labels}
-					getOptionLabel={(option) => option.providerName + option.networkName}
-					open
-					classes={{
-						option: classes.option,
-						paper: classes.autocompletePaper,
-					}}
+				{ open &&
+				<>
+					<Typography
+						variant='overline'
+						color='textSecondary'
+						className={classes.acHeader}
+						component='div'
+					>
+						Select node provider
+					</Typography>
 
-					onClose={handleClose}
-					onChange={(event, newValue) => {
-						if (newValue == null || newValue == value || typeof newValue == 'string') {
-							return;
-						}
-						setValue(newValue);
-					}}
+					<Autocomplete
+						options={labels}
+						disablePortal={true}
+						getOptionLabel={(option) => option.providerName + option.networkName}
+						open
+						classes={{
+							popper: classes.acPopper,
+							option: classes.option,
+							paper: classes.acPaper,
+						}}
 
-					renderInput={(params) => (
-						<InputBase
-							ref={params.InputProps.ref}
-							inputProps={params.inputProps}
-							autoFocus
-							className={classes.inputBase}
-						/>
-					)}
-					renderOption={(option) => (
-						<NodeSelectorItem node={option} selected={option == value} />
-					)}
-					groupBy={(option) => option.networkName}
-				/>
-			</Popper>
+						onClose={handleClose}
+						onChange={(event, newValue) => {
+							if (newValue == null || newValue == value || typeof newValue == 'string') {
+								return;
+							}
+							setValue(newValue);
+						}}
+
+						renderInput={(params) => (
+							<InputBase
+								ref={params.InputProps.ref}
+								inputProps={params.inputProps}
+								autoFocus
+								className={classes.acInput}
+							/>
+						)}
+						renderOption={(option) => (
+							<NodeSelectorItem node={option} selected={option == value} />
+						)}
+						groupBy={(option) => option.networkName}
+					/>
+				</>
+				}
+
+			</div>
 		</div>
 	);
 }
