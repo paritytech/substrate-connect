@@ -52,6 +52,10 @@ services:
             - "--alice"
             - "--node-key"
             - "aa788920201122290fc7d3faf00698d9a8e061d7173424da2a31a8130a882a5f"
+            - "--listen-addr" # This changed
+            - "/ip4/0.0.0.0/tcp/30333" # This changed
+            - "--listen-addr" # This changed
+            - "/ip4/0.0.0.0/tcp/30334/ws" # This changed
         networks:
             testing_net:
                 ipv4_address: 172.28.1.1
