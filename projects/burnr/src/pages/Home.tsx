@@ -29,7 +29,7 @@ function Home ():  React.ReactElement {
 							}
 						</Grid>
 						<Grid item xs={6}>
-							<BalanceValue value={1234.56} size='Big' />
+							<BalanceValue value={1234.56} size='large' />
 							<IconButton>
 								<VisibilityIcon />
 							</IconButton>

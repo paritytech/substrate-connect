@@ -5,6 +5,8 @@ import SwapHorizSharpIcon from '@material-ui/icons/SwapHorizSharp';
 import CallMadeSharpIcon from '@material-ui/icons/CallMadeSharp';
 import WhatshotSharpIcon from '@material-ui/icons/WhatshotSharp';
 
+import { HistoryTable } from './index';
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -49,7 +51,7 @@ const NavTabs: React.FunctionComponent = () => {
 
 			<Divider />
 
-			<Paper>
+			<Paper style={{ height:'calc(100vh - 350px)' }} >
 				<TabPanel value={value} index={0}>
 					<Typography variant='h2'>
 						Account Controls
@@ -65,6 +67,7 @@ const NavTabs: React.FunctionComponent = () => {
 					<Typography variant='body2'>
 						Lorem Ipsum
 					</Typography>
+					<HistoryTable />
 				</TabPanel>
 				<TabPanel value={value} index={2}>
 					<Typography variant='h2'>

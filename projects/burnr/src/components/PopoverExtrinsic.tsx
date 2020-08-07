@@ -1,26 +1,15 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 
+import { IconButton, Typography } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { Typography, Popover } from '@material-ui/core';
-import InfoIcon from '@material-ui/icons/Info';
+import Popover from '@material-ui/core/Popover';
+import CachedIcon from '@material-ui/icons/Cached';
+import CheckIcon from '@material-ui/icons/Check';
+import ErrorIcon from '@material-ui/icons/Error';
 
-interface Props {
-  children: ReactNode;
-}
+import { ExtrinsicInfo } from './index';
 
 const useStyles = makeStyles((theme: Theme) => ({
-	root: {
-		display: 'inline-block',
-	},
-	trigger: {
-		display: 'inline-block',
-		transform: 'translateY(3px)',
-		fontSize: theme.typography.h3.fontSize,
-		'& svg' : {
-			margin: theme.spacing(0.5),
-			fontSize: theme.typography.h4.fontSize,
-		},
-	},
 	popover: {
 		pointerEvents: 'none',
 	},
@@ -33,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 })
 );
 
-const PopoverInfo: React.FunctionComponent<Props> = ({ children }: Props) => {
+const PopoverExtrinsic: React.FunctionComponent<ExtrinsicInfo> = ({ status }: ExtrinsicInfo) => {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
@@ -48,25 +37,27 @@ const PopoverInfo: React.FunctionComponent<Props> = ({ children }: Props) => {
 	const open = Boolean(anchorEl);
 
 	return (
-		<span>
-			<a
+		<>
+			<IconButton
 				onMouseEnter={handlePopoverOpen}
 				onMouseLeave={handlePopoverClose}
-				className={classes.trigger}
+				aria-owns={open ? 'mouse-over-popover' : undefined}
 			>
-				<InfoIcon />
-			</a>
+				{status === 0 && <CachedIcon />}
+				{status === 1 && <CheckIcon color='primary' />}
+				{status === 2 && <ErrorIcon color='error' />}
 
+			</IconButton>
 			<Popover
-				onClose={handlePopoverClose}
-				open={open}
-				anchorEl={anchorEl}
 				elevation={2}
 				transitionDuration={0}
+				id="mouse-over-popover"
 				className={classes.popover}
 				classes={{
 					paper: classes.paper,
 				}}
+				open={open}
+				anchorEl={anchorEl}
 				anchorOrigin={{
 					vertical: 'top',
 					horizontal: 'center',
@@ -75,13 +66,15 @@ const PopoverInfo: React.FunctionComponent<Props> = ({ children }: Props) => {
 					vertical: 'bottom',
 					horizontal: 'center',
 				}}
+				onClose={handlePopoverClose}
+				disableRestoreFocus
 			>
-				<Typography variant='body2' component='div'>
-					{children}
+				<Typography variant='body2'>
+          The content of the Popover, link to BlockExplorers
 				</Typography>
 			</Popover>
-		</span>
+		</>
 	);
 };
 
-export default PopoverInfo;
+export default PopoverExtrinsic;
