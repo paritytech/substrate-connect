@@ -15,8 +15,8 @@
 
 version: "3.7"
 services:
-  substrate-master:
-    image: parity/polkadot:latest
+  polkadot-master:
+    image: parity/polkadot:master
     ports:
       - "9944:9944"
       - "9933:9933"

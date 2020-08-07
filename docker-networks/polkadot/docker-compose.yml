@@ -33,6 +33,8 @@ services:
             - "--rpc-external"
             - "-lruntime=debug"
             - "--chain=polkadot-local"
+            - "--bootnodes"
+            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/QmT5MYjkTDpoREKZTS7qHLSKPCJubTwYqfr6YQmhfcFYro"
 
     node_alice:
         image: parity/polkadot:master-0.8.22-9c04ebb-a36ea0f3
@@ -54,10 +56,12 @@ services:
             - "--alice"
             - "--node-key"
             - "aa788920201122290fc7d3faf00698d9a8e061d7173424da2a31a8130a882a5f"
-            - "--listen-addr" # This changed
-            - "/ip4/0.0.0.0/tcp/30333" # This changed
-            - "--listen-addr" # This changed
-            - "/ip4/0.0.0.0/tcp/30334/ws" # This changed
+            - "--listen-addr" 
+            - "/ip4/0.0.0.0/tcp/30333" 
+            - "--listen-addr" 
+            - "/ip4/0.0.0.0/tcp/30334/ws"
+            - "--bootnodes"
+            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/QmT5MYjkTDpoREKZTS7qHLSKPCJubTwYqfr6YQmhfcFYro"
         networks:
             testing_net:
                 ipv4_address: 172.28.1.1
@@ -78,7 +82,7 @@ services:
             - "archive"
             - "--bob"
             - "--bootnodes"
-            - "/ip4/172.28.1.1/tcp/30335/p2p/QmT5MYjkTDpoREKZTS7qHLSKPCJubTwYqfr6YQmhfcFYro"
+            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/QmT5MYjkTDpoREKZTS7qHLSKPCJubTwYqfr6YQmhfcFYro"
         networks:
             testing_net:
                 ipv4_address: 172.28.1.2
@@ -99,7 +103,7 @@ services:
             - "archive"
             - "--charlie"
             - "--bootnodes"
-            - "/ip4/172.28.1.1/tcp/30335/p2p/QmT5MYjkTDpoREKZTS7qHLSKPCJubTwYqfr6YQmhfcFYro"
+            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/QmT5MYjkTDpoREKZTS7qHLSKPCJubTwYqfr6YQmhfcFYro"
         networks:
             testing_net:
                 ipv4_address: 172.28.1.3
