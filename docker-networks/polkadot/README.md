@@ -2,14 +2,15 @@
 
 The images in the docker-compose.yml need to be from the same commit that is used to generate the `polkadot-local.json` chain_spec file used to run the local browser node.
 
-To generate a new chain_spec file, checkout the [Polkadot repository](https://github.com/paritytech/polkadot) from github and navigate to the root and run:
+If you want to use a newer commit for your network, you need change the `ìmage:` of all 4 nodes in the `docker-compose.yml`file and generate a new chain_spec file from the same Docker image.
+
+To do that, run the following command in the `./substrate-connect/docker-networks/polkadot` folder:
 
 ```
-$ cargo build --release
-$ ./target/release/polkadot build-spec --chain polkadot-local --raw > polkadot-local.json
+$ docker run -it parity/polkadot:master-0.8.22-55f69f3-9ed9b8b0 build-spec --raw > polkadot-local.json
 ```
 
-You will then find the chain_spec for a `polkadot-local` chain as `polkadot-local.json` int the root of the repository. Before using it on your local browser node, you need to change the IP address of the bootnode to:
+You will then find the chain_spec for a `polkadot-local` chain as `polkadot-local.json` in this folder. Before using it on your local browser node, you need to change the IP address of the bootnode to:
 
 ```
 "bootNodes": [
@@ -17,9 +18,12 @@ You will then find the chain_spec for a `polkadot-local` chain as `polkadot-loca
 ],
 ```
 
-You can find a list of available genesis config chain_spec [here](https://github.com/paritytech/polkadot/blob/671cc75c4dcc8e05bdf3b722ddd63880f8166d8a/cli/src/command.rs#L55).
+You can find a list of available genesis config chain_spec [here](https://github.com/paritytech/polkadot/blob/55f69f3679192264c38ffff3b3a0f2d833b52c8f/cli/src/command.rs#L55).
 
-The current Polkadotcommit used is [9c04ebb5660634b72cd950dd53e10c9d8c1928ac (06-08-2020)](https://github.com/paritytech/polkadot/commit/9c04ebb5660634b72cd950dd53e10c9d8c1928ac)
+The current Polkadotcommit used is [55f69f3679192264c38ffff3b3a0f2d833b52c8f (10-08-2020)](https://github.com/paritytech/polkadot/commit/55f69f3679192264c38ffff3b3a0f2d833b52c8f)
+
+
+T
 
 **Setup:**
 A basic local network with 3 validators connected to the public internet
