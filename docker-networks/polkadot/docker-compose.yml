@@ -34,7 +34,7 @@ services:
             - "-lruntime=debug"
             - "--chain=polkadot-local"
             - "--bootnodes"
-            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/QmT5MYjkTDpoREKZTS7qHLSKPCJubTwYqfr6YQmhfcFYro"
+            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/12D3KooWCJC43YRmb5WJcJmskPSxbkWY4Vp6jPKdFeggnXPxgBCw"
 
     node_alice:
         image: parity/polkadot:master-0.8.22-55f69f3-9ed9b8b0
@@ -61,7 +61,7 @@ services:
             - "--listen-addr" 
             - "/ip4/0.0.0.0/tcp/30334/ws"
             - "--bootnodes"
-            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/QmT5MYjkTDpoREKZTS7qHLSKPCJubTwYqfr6YQmhfcFYro"
+            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/12D3KooWCJC43YRmb5WJcJmskPSxbkWY4Vp6jPKdFeggnXPxgBCw"
         networks:
             testing_net:
                 ipv4_address: 172.28.1.1
@@ -82,7 +82,7 @@ services:
             - "archive"
             - "--bob"
             - "--bootnodes"
-            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/QmT5MYjkTDpoREKZTS7qHLSKPCJubTwYqfr6YQmhfcFYro"
+            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/12D3KooWCJC43YRmb5WJcJmskPSxbkWY4Vp6jPKdFeggnXPxgBCw"
         networks:
             testing_net:
                 ipv4_address: 172.28.1.2
@@ -103,7 +103,7 @@ services:
             - "archive"
             - "--charlie"
             - "--bootnodes"
-            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/QmT5MYjkTDpoREKZTS7qHLSKPCJubTwYqfr6YQmhfcFYro"
+            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/12D3KooWCJC43YRmb5WJcJmskPSxbkWY4Vp6jPKdFeggnXPxgBCw"
         networks:
             testing_net:
                 ipv4_address: 172.28.1.3
