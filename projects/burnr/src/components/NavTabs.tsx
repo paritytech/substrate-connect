@@ -5,7 +5,7 @@ import SwapHorizSharpIcon from '@material-ui/icons/SwapHorizSharp';
 import CallMadeSharpIcon from '@material-ui/icons/CallMadeSharp';
 import WhatshotSharpIcon from '@material-ui/icons/WhatshotSharp';
 
-import { HistoryTable, InputAddress } from './index';
+import { HistoryTable, AccountMenu } from './index';
 import SendFundsForm from './SendFundsForm';
 
 interface TabPanelProps {
@@ -60,6 +60,7 @@ const NavTabs: React.FunctionComponent = () => {
 					<Typography variant='body2'>
 						Lorem Ipsum
 					</Typography>
+					<AccountMenu />
 				</TabPanel>
 				<TabPanel value={value} index={1}>
 					<Typography variant='h2'>

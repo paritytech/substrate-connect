@@ -1,4 +1,5 @@
 export { default as AccountCard } from './AccountCard';
+export { default as AccountMenu } from './AccountMenu';
 export { default as BalanceValue } from './BalanceValue';
 export { default as Head } from './Head';
 export { default as HistoryTable } from './HistoryTable';
