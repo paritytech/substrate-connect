@@ -17,8 +17,6 @@ export * from './WasmProvider';
  * Light clients
  */
 export * from './client-specs/kusama';
-export * from './client-specs/kusama-local';
 export * from './client-specs/polkadot';
 export * from './client-specs/polkadot-local';
 export * from './client-specs/westend';
-export * from './client-specs/westend-local';
