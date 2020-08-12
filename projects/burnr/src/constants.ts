@@ -1,6 +1,28 @@
 import { WsProvider } from '@polkadot/api';
 import { ProviderMeta } from '@polkadot/extension-inject/types';
 import { ProviderInterface } from '@polkadot/rpc-provider/types';
+import {
+  kusama,
+  polkadot,
+  polkadotLocal,
+  WasmProvider,
+  westend,
+} from '@substrate/connect';
+
+
+export const endpoints = {
+  'kusama': 'wss://kusama-rpc.polkadot.io/',
+  'polkadot': 'wss://rpc.polkadot.io',
+  'westend': 'wss://westend-rpc.polkadot.io',
+  'localPolkadotNetwork': 'ws://127.0.0.1:9945',
+  'local': 'ws://127.0.0.1:9944'
+};
+
+export const users = {
+  'kusama': 'CzugcapJWD8CEHBYHDeFpVcxfzFBCg57ic72y4ryJfXUnk7',
+  'polkadot': '11uMPbeaEDJhUxzU4ZfWW9VQEsryP9XqFcNRfPdYda6aFWJ',
+  'westend': '12gG5fz9A7k7CgZeis8JesCoZiARDioonHYp5W9Vkwc6nFyB'
+}
 
 /**
  * Interface describing a Provider, lazily loaded.
@@ -8,54 +30,92 @@ import { ProviderInterface } from '@polkadot/rpc-provider/types';
 export interface LazyProvider extends ProviderMeta {
   description: string;
   id: string;
+  endpoint?: string;
   start: () => Promise<ProviderInterface>;
 }
 
-export const TAB_WASM_PROVIDERS: Record<string, LazyProvider> = {
-  'Kusama-tab-WasmProvider': {
-    description: 'In-tab WASM light client',
-    id: 'Kusama-tab-WasmProvider',
-    network: 'Kusama',
+export const JS_WASM_PROVIDERS: Record<string, LazyProvider> = {
+  'Local-Network-Wasm-Light-Node': {
+    description: 'Local WASM light client for polkadot-local network',
+    id: 'Polkadot-WasmProvider',
+    network: 'Local Polkadot Network',
     node: 'light',
-    source: 'tab',
+    source: 'browser tab',
+    endpoint: 'Light client running in Browser',
     start: (): Promise<ProviderInterface> =>
-      Promise.resolve(new WasmProvider(kusama_cc3.fromUrl('./hooks/api/polkadot_cli_bg.wasm'))),
+      Promise.resolve(new WasmProvider(polkadotLocal.fromUrl('./hooks/api/polkadot_cli_bg.wasm'))),
     transport: 'WasmProvider',
   },
-  'Westend-tab-WasmProvider': {
-    description: 'In-tab WASM light client',
-    id: 'Westend-tab-WasmProvider',
-    network: 'Westend',
-    node: 'light',
-    source: 'tab',
-    start: (): Promise<ProviderInterface> =>
-      Promise.resolve(new WasmProvider(westend.fromUrl('./hooks/api/polkadot_cli_bg.wasm'))),
-    transport: 'WasmProvider',
-  },
+  // 'Polkadot-Wasm-Light-Node': {
+  //   description: 'Local WASM light client for Polkadot',
+  //   id: 'Polkadot-WasmProvider',
+  //   network: 'Polkadot',
+  //   node: 'light',
+  //   source: 'browser tab',
+  //   endpoint: 'Light client running in Browser',
+  //   start: (): Promise<ProviderInterface> =>
+  //     Promise.resolve(new WasmProvider(polkadot.fromUrl('./hooks/api/polkadot_cli_bg.wasm'))),
+  //   transport: 'WasmProvider',
+  // },
+  // 'Kusama-Wasm-Light-Node': {
+  //   description: 'Local WASM light client for Kusama',
+  //   id: 'Kusama-WasmProvider',
+  //   network: 'Kusama',
+  //   node: 'light',
+  //   source: 'browser tab',
+  //   endpoint: 'Light client running in Browser',
+  //   start: (): Promise<ProviderInterface> =>
+  //     Promise.resolve(new WasmProvider(kusama.fromUrl('./hooks/api/polkadot_cli_bg.wasm'))),
+  //   transport: 'WasmProvider',
+  // },
+  // 'Westend-Wasm-Light-Node': {
+  //   description: 'Local WASM light client for Westend',
+  //   id: 'Westend-WasmProvider',
+  //   network: 'Westend',
+  //   node: 'light',
+  //   source: 'browser tab',
+  //   endpoint: 'Light client running in Browser',
+  //   start: (): Promise<ProviderInterface> =>
+  //     Promise.resolve(new WasmProvider(westend.fromUrl('./hooks/api/polkadot_cli_bg.wasm'))),
+  //   transport: 'WasmProvider',
+  // },
 };
 
 /**
  * These fallback providers connect to a centralized remote RPC node.
  */
-export const FALLBACK_PROVIDERS: Record<string, LazyProvider> = {
+export const REMOTE_PROVIDERS: Record<string, LazyProvider> = {
+  'Local-Network-WsProvider': {
+    description: `Local node running on ${endpoints.local}`,
+    id: 'Local-WsProvider',
+    network: 'Local Polkadot Network',
+    node: 'light',
+    source: 'remote',
+    endpoint: endpoints.local,
+    start: (): Promise<ProviderInterface> =>
+      Promise.resolve(new WsProvider(endpoints.local)),
+    transport: 'WsProvider',
+  },
   'Polkadot-WsProvider': {
     description: 'Remote node hosted by W3F',
     id: 'Polkadot-WsProvider',
     network: 'Polkadot',
     node: 'light',
     source: 'remote',
+    endpoint: endpoints.polkadot,
     start: (): Promise<ProviderInterface> =>
-      Promise.resolve(new WsProvider('wss://polkadot-rpc.polkadot.io')),
+      Promise.resolve(new WsProvider(endpoints.polkadot)),
     transport: 'WsProvider',
   },
   'Kusama-WsProvider': {
     description: 'Remote node hosted by W3F',
-    id: 'Kusama-remote-WsProvider',
+    id: 'Kusama-WsProvider',
     network: 'Kusama',
     node: 'light',
     source: 'remote',
+    endpoint: endpoints.kusama,
     start: (): Promise<ProviderInterface> =>
-      Promise.resolve(new WsProvider('wss://kusama-rpc.polkadot.io')),
+      Promise.resolve(new WsProvider(endpoints.kusama)),
     transport: 'WsProvider',
   },
   'Westend-WsProvider': {
@@ -64,22 +124,11 @@ export const FALLBACK_PROVIDERS: Record<string, LazyProvider> = {
     network: 'Westend',
     node: 'light',
     source: 'remote',
+    endpoint: endpoints.westend,
     start: (): Promise<ProviderInterface> =>
-      Promise.resolve(new WsProvider('wss://westend-rpc.polkadot.io')),
+      Promise.resolve(new WsProvider(endpoints.westend)),
     transport: 'WsProvider',
   },
 };
 
-xport const endpoints = {
-  'kusama': 'wss://kusama-rpc.polkadot.io/',
-  'polkadot': 'wss://rpc.polkadot.io',
-  'westend': 'wss://westend-rpc.polkadot.io',
-  'localPolkadotNetwork': 'ws://127.0.0.1:9945',
-  'localHost': 'ws://127.0.0.1:9944'
-};
-
-export const users = {
-  'kusama': 'CzugcapJWD8CEHBYHDeFpVcxfzFBCg57ic72y4ryJfXUnk7',
-  'polkadot': '11uMPbeaEDJhUxzU4ZfWW9VQEsryP9XqFcNRfPdYda6aFWJ',
-  'westend': '12gG5fz9A7k7CgZeis8JesCoZiARDioonHYp5W9Vkwc6nFyB'
-}
+export const ALL_PROVIDERS = {...REMOTE_PROVIDERS, ...JS_WASM_PROVIDERS};
