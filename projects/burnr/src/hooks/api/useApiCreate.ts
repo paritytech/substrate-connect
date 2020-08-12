@@ -30,13 +30,19 @@ export default function useApiCreate (): ApiPromise | null {
   const  mountedRef = useIsMountedRef();
 
   useEffect((): void => {
+    if(api){
+      console.log('YES API')
+    } else {
+      console.log("NO API")
+    }
     ApiPromise
       .create({
-        provider: new WsProvider(endpoints.localHost),
+        provider: new WsProvider(endpoints.local),
         types: {}
       })
       .then((api): void => {
-        console.log(`Connected to local chain at ${endpoints.localHost}`)
+        console.log(`Connected to local chain at ${endpoints.local}`)
+        console.log("API api", api)
         mountedRef.current && setApi(api);
       })
       .catch((): void => {
