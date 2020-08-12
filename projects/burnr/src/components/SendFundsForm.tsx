@@ -13,6 +13,12 @@ const useStyles = makeStyles((theme: Theme) =>
 			marginTop: theme.spacing(3),
 			alignContent: 'center',
 		},
+		button: {
+			color: theme.palette.getContrastText(theme.palette.secondary.main),
+			'&:hover': {
+				color: theme.palette.getContrastText(theme.palette.secondary.dark),
+			},
+		},
 	})
 );
 
@@ -50,6 +56,7 @@ const SendFundsForm: React.FunctionComponent = () => {
 					size='large'
 					color='secondary'
 					onClick={handleSubmit}
+					className={classes.button}
 				>
           Send
 				</Button>

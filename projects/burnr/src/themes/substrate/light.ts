@@ -19,7 +19,7 @@ const light: ThemeOptions = {
 		},
 		primary: {
 			light: colors.substrate.light,
-			main: colors.substrate.main,
+			main: colors.substrate.dark,
 			dark: colors.substrate.dark,
 			contrastText: colors.black,
 		},

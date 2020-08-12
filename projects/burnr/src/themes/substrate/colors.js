@@ -5,7 +5,7 @@ export default {
 	substrate: {
 		main: '#18FFB2',
 		light: '#E7FAEC',
-		dark: '#45efa9',
+		dark: '#16DB9A',
 	},
 	cyan: {
 		light: 'rgba(92, 255, 200, 1)',
