@@ -1,13 +1,13 @@
 {
-  "name": "basic",
-  "version": "1.0.0",
-  "description": "A very simple demo of how to use the Polkadot{js} Promise API",
+  "name": "raw-js",
+  "version": "0.0.1",
+  "description": "A stripped down development environment to test @substrate/connect",
   "main": "index.js",
   "repository": "",
   "scripts": {
     "start": "webpack-dev-server --mode development --open",
     "build": "webpack --mode production --module-bind js=babel-loader",
-    "clean": "rm -rf node_modules"
+    "clean": "rm -rf dist && rm -rf node_modules"
   },
   "keywords": [
     "Polkadot",
@@ -31,6 +31,7 @@
   "dependencies": {
     "@polkadot/api": "^1.28.1",
     "@polkadot/keyring": "^3.1.1",
-    "@polkadot/util": "^3.1.1"
+    "@polkadot/util": "^3.1.1",
+    "@substrate/connect": "0.0.1"
   }
 }

@@ -29,7 +29,7 @@
     "@polkadot/types": "^1.24.1",
     "@polkadot/util": "^2.18.1",
     "@polkadot/util-crypto": "^2.18.1",
-    "@substrate/light": "^0.3.32",
+    "@substrate/connect": "0.0.1",
     "axios": "^0.19.2",
     "bn.js": "^5.1.2",
     "body-parser": "^1.19.0",
