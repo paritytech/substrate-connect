@@ -3,7 +3,7 @@ import React from 'react';
 import { Grid, Paper, Divider, IconButton, Box, makeStyles, Theme } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
-import { NavTabs, AccountCard, BalanceValue } from '../components';
+import { NavTabs, AccountCard, BalanceValue, Bg } from '../components';
 
 import { useUserInfo } from '../hooks';
 import { users } from '../constants';
@@ -21,6 +21,7 @@ function Home ():  React.ReactElement {
 
 	return (
 		<>
+			<Bg />
 			<Divider/>
 			<Paper square className={classes.paperAccount}>
 				<Box paddingY={1} paddingX={2}>
@@ -37,14 +38,14 @@ function Home ():  React.ReactElement {
 							}
 						</Grid>
 						<Grid item xs={6}>
-							<Grid 
+							<Grid
 								container
 								spacing={1}
 								wrap='nowrap'
 								alignItems='center'
 							>
 								<Grid item xs={12}>
-									<BalanceValue 
+									<BalanceValue
 										value={1234.56}
 										size='large'
 										style={{ width: '100%', justifyContent: 'flex-end' }}
@@ -52,7 +53,7 @@ function Home ():  React.ReactElement {
 								</Grid>
 								<Grid item>
 									<IconButton
-										style={{ backgroundColor: '#e6e6e6', borderRadius: 4 }}
+										style={{ borderRadius: 4 }}
 									>
 										<VisibilityIcon />
 									</IconButton>

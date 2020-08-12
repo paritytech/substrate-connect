@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme: Theme) =>
 			},
 			'& th': {
 				backgroundColor: theme.palette.background.paper,
-				color: theme.palette.text.secondary,
+				color: theme.palette.text.disabled,
 			},
 			'& td, & th': {
 				padding: theme.spacing(0.5),

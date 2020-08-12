@@ -48,7 +48,7 @@ const SendFundsForm: React.FunctionComponent = () => {
 					type='submit'
 					variant='contained'
 					size='large'
-					color='primary'
+					color='secondary'
 					onClick={handleSubmit}
 				>
           Send

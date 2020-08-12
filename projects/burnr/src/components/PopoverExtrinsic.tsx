@@ -42,8 +42,8 @@ const PopoverExtrinsic: React.FunctionComponent<ExtrinsicInfo> = ({ status }: Ex
 				onMouseEnter={handlePopoverOpen}
 				onMouseLeave={handlePopoverClose}
 			>
-				{status === 0 && <CachedIcon />}
-				{status === 1 && <CheckIcon color='primary' />}
+				{status === 0 && <CachedIcon color='disabled' />}
+				{status === 1 && <CheckIcon color='action' />}
 				{status === 2 && <ErrorIcon color='error' />}
 
 			</IconButton>

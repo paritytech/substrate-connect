@@ -23,11 +23,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 		borderRadius: theme.spacing(0.5),
 		backgroundColor: (props: StyleProps) =>
 			props.colored
-				? theme.palette.primary.main
+				? theme.palette.primary.light
 				: '',
 		color: (props: StyleProps) =>
 			props.colored
-				? theme.palette.getContrastText(theme.palette.primary.main)
+				? theme.palette.getContrastText(theme.palette.primary.light)
 				: theme.palette.text.primary,
 	},
 }));

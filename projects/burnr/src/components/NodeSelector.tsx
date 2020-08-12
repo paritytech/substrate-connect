@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme: Theme) =>
 			borderRadius: theme.spacing(0.5),
 			height: theme.spacing(5),
 			'&:hover': {
-				backgroundColor: theme.palette.primary.main,
+				backgroundColor: theme.palette.primary.dark,
 				color: theme.palette.getContrastText(theme.palette.primary.main),
 			},
 		},
