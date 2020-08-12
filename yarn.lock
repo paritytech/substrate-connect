@@ -3097,11 +3097,6 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@substrate/light@^0.3.32":
-  version "0.3.32"
-  resolved "https://registry.yarnpkg.com/@substrate/light/-/light-0.3.32.tgz#f6e7788ef48398b97c2509fc7ce0980647aa38a5"
-  integrity sha512-yRH7MmqM6IBZqzSz0jMWcOWDuCTIsdYBOqBQ5uc59xKavv+4+S5MLUMAGfuxiZqBfuRp6fi7N6NPwxJHe0bjWw==
-
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@szmarczak/http-timer/-/http-timer-1.1.2.tgz#b1665e2c461a2cd92f4c1bbf50d5454de0d4b421"
