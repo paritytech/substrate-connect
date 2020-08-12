@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Tabs, Tab, Typography, Box, Paper, Divider } from '@material-ui/core';
+import { Tabs, Tab, Typography, Box, Paper, Divider, makeStyles, Theme } from '@material-ui/core';
 import SwapHorizSharpIcon from '@material-ui/icons/SwapHorizSharp';
 import CallMadeSharpIcon from '@material-ui/icons/CallMadeSharp';
 import WhatshotSharpIcon from '@material-ui/icons/WhatshotSharp';
@@ -13,6 +13,18 @@ interface TabPanelProps {
   index: number;
   value: number;
 }
+
+const useStyles = makeStyles((theme: Theme) => ({
+	root: {
+		height:'calc(100vh - 265px)',
+		borderTopRightRadius: 0,
+		borderTopLeftRadius: 0,
+
+		[theme.breakpoints.down('sm')]: {
+			height:'calc(100vh - 320px)',
+		},
+	},
+}));
 
 const TabPanel: React.FunctionComponent<TabPanelProps> = ({ children, value, index, ...props }: TabPanelProps) => {
 	return (
@@ -31,6 +43,7 @@ const TabPanel: React.FunctionComponent<TabPanelProps> = ({ children, value, ind
 };
 
 const NavTabs: React.FunctionComponent = () => {
+	const classes = useStyles();
 	const [value, setValue] = React.useState(0);
 	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
 		setValue(newValue);
@@ -38,27 +51,24 @@ const NavTabs: React.FunctionComponent = () => {
 
 	return (
 		<>
-			<Paper>
+			<Paper square>
 				<Tabs
 					value={value}
 					onChange={handleChange}
 					variant='fullWidth'
 				>
-					<Tab label="Account" icon={<WhatshotSharpIcon/>}/>
-					<Tab label="History" icon={<SwapHorizSharpIcon/>} />
-					<Tab label="Send" icon={<CallMadeSharpIcon/>} />
+					<Tab label="Account" icon={<WhatshotSharpIcon/>} style={{ minHeight: 64, paddingTop: 0 }} />
+					<Tab label="History" icon={<SwapHorizSharpIcon/>} style={{ minHeight: 64, paddingTop: 0 }}  />
+					<Tab label="Send" icon={<CallMadeSharpIcon/>} style={{ minHeight: 64, paddingTop: 0 }}  />
 				</Tabs>
 			</Paper>
 
 			<Divider />
 
-			<Paper style={{ height:'calc(100vh - 350px)' }} >
+			<Paper className={classes.root}>
 				<TabPanel value={value} index={0}>
 					<Typography variant='h2'>
 						Account Controls
-					</Typography>
-					<Typography variant='body2'>
-						Lorem Ipsum
 					</Typography>
 					<AccountMenu />
 				</TabPanel>
@@ -66,17 +76,11 @@ const NavTabs: React.FunctionComponent = () => {
 					<Typography variant='h2'>
 						Transaction History
 					</Typography>
-					<Typography variant='body2'>
-						Lorem Ipsum
-					</Typography>
 					<HistoryTable />
 				</TabPanel>
 				<TabPanel value={value} index={2}>
 					<Typography variant='h2'>
 						Send Funds
-					</Typography>
-					<Typography variant='body2'>
-						Lorem Ipsum
 					</Typography>
 					<SendFundsForm />
 				</TabPanel>

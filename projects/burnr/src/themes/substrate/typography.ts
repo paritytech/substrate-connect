@@ -47,7 +47,7 @@ const typography: ThemeOptions = {
 			fontFamily: '\Cousine\, monospace',
 			fontWeight: 400,
 			fontSize: 20,
-			lineHeight: '135%',
+			lineHeight: '200%',
 		},
 		subtitle2: {
 			fontFamily: '\Cousine\, monospace',

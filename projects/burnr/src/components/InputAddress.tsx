@@ -16,11 +16,12 @@ const InputAddress: React.FunctionComponent = () => {
 			<Box marginY={1}>
 				<FormControl required fullWidth >
 					<TextField
-						label="Address"
+						label="Recepient Address"
 						onChange={handleChangeButton}
 						value={value}
 						variant="outlined"
 						InputProps={{
+							spellCheck: 'false',
 							startAdornment:
                 <Box marginRight={1}>
                 	{ (!value || value == '')

@@ -13,13 +13,18 @@ const useStyles = makeStyles((theme: Theme) =>
 			position: 'relative',
 			height: '60px',
 			backgroundColor: theme.palette.background.paper,
-			borderRadius: theme.spacing(0.5),
+			borderTopRightRadius: theme.spacing(0.5),
+			borderTopLeftRadius: theme.spacing(0.5),
+			'&.node-selector': {
+				borderRadius: theme.spacing(0.5),
+			},
 		},
 		root: {
 			position: 'absolute',
 			zIndex: theme.zIndex.modal,
 			width: '100%',
 			padding: theme.spacing(1),
+			paddingTop: theme.spacing(1.5),
 			backgroundColor: theme.palette.background.paper,
 			borderRadius: theme.spacing(0.5),
 			'&#node-selector': {
@@ -101,7 +106,7 @@ export default function NodeSelector() {
 	const id = open ? 'node-selector' : undefined;
 
 	return (
-		<div className={classes.wrapper}>
+		<div className={classes.wrapper + ' ' + id}>
 			<div className={classes.root} id={id}>
 				<ButtonBase
 					disableRipple

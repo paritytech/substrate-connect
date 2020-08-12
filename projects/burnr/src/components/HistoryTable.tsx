@@ -25,7 +25,7 @@ interface Column {
 
 const columns: Column[] = [
 	{ id: 'withWhom', label: '', width: 160 },
-	{ id: 'extrinsic', label: 'Extrinsic', width: 120 },
+	{ id: 'extrinsic', label: 'Extrinsic' },
 	{ id: 'value', label: 'Value', minWidth: 170, align: 'right' },
 	{ id: 'status', label: 'Status', width: 40, align: 'right' }
 ];
@@ -61,9 +61,32 @@ const rows: Data[] = [
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		container: {
-			maxHeight: 'calc(100vh - 408px)',
+			marginTop: theme.spacing(1),
+			width: 'calc(100% + ' + theme.spacing(4) + 'px)',
+    	marginLeft: theme.spacing(-2),
+			maxHeight: 'calc(100vh - 320px)',
+
+			[theme.breakpoints.down('sm')]: {
+				height:'calc(100vh - 380px)',
+			},
 			'& th': {
 				backgroundColor: theme.palette.background.paper,
+				color: theme.palette.text.secondary,
+			},
+			'& td, & th': {
+				padding: theme.spacing(0.5),
+			},
+			'& td:first-child': {
+				paddingLeft: theme.spacing(2),
+			},
+			'& td:last-child, & th:last-child': {
+				textAlign: 'center',
+			},
+			'& tr:hover': {
+				backgroundColor: 'transparent !important',
+				'& button': {
+					backgroundColor: 'rgba(0, 0, 0, 0.03)',
+				},
 			},
 		},
 	})
@@ -75,7 +98,7 @@ export default function HistoryTable() {
 	return (
 		<>
 			<TableContainer className={classes.container}>
-				<Table size="small" stickyHeader className={classes.container}>
+				<Table size="small" stickyHeader>
 					<TableHead>
 						<TableRow>
 							{columns.map((column) => (

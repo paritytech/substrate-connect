@@ -34,7 +34,10 @@ const SendFundsForm: React.FunctionComponent = () => {
 			  <InputAddress />
 			</Grid>
 			<Grid item>
-			  <InputFunds total={100} currency={'KSM'} />
+				<InputFunds 
+					total={100}
+					currency={'KSM'}
+				/>
 			</Grid>
 			<Grid
 				item

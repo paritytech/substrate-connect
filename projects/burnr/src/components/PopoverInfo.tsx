@@ -2,23 +2,17 @@ import React, { ReactNode } from 'react';
 
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { Typography, Popover } from '@material-ui/core';
-import InfoIcon from '@material-ui/icons/Info';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 interface Props {
   children: ReactNode;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
-	root: {
-		display: 'inline-block',
-	},
 	trigger: {
-		display: 'inline-block',
-		transform: 'translateY(3px)',
-		fontSize: theme.typography.h3.fontSize,
+		marginLeft: theme.spacing(0.5),
 		'& svg' : {
-			margin: theme.spacing(0.5),
-			fontSize: theme.typography.h4.fontSize,
+			fontSize: '1em',
 		},
 	},
 	popover: {
@@ -26,7 +20,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 	paper: {
 		padding: theme.spacing(1),
-		marginTop: theme.spacing(-0.5),
 		backgroundColor: theme.palette.common.black,
 		color: theme.palette.common.white,
 	},
@@ -48,13 +41,13 @@ const PopoverInfo: React.FunctionComponent<Props> = ({ children }: Props) => {
 	const open = Boolean(anchorEl);
 
 	return (
-		<span>
+		<>
 			<a
 				onMouseEnter={handlePopoverOpen}
 				onMouseLeave={handlePopoverClose}
 				className={classes.trigger}
 			>
-				<InfoIcon />
+				<InfoOutlinedIcon color='disabled' />
 			</a>
 
 			<Popover
@@ -68,19 +61,20 @@ const PopoverInfo: React.FunctionComponent<Props> = ({ children }: Props) => {
 					paper: classes.paper,
 				}}
 				anchorOrigin={{
-					vertical: 'top',
+					vertical: -4,
 					horizontal: 'center',
 				}}
 				transformOrigin={{
 					vertical: 'bottom',
 					horizontal: 'center',
 				}}
+				marginThreshold={2}
 			>
 				<Typography variant='body2' component='div'>
 					{children}
 				</Typography>
 			</Popover>
-		</span>
+		</>
 	);
 };
 

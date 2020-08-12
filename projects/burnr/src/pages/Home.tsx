@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Grid, Paper, Divider, IconButton, Box } from '@material-ui/core';
+import { Grid, Paper, Divider, IconButton, Box, makeStyles, Theme } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import { NavTabs, AccountCard, BalanceValue } from '../components';
@@ -8,15 +8,23 @@ import { NavTabs, AccountCard, BalanceValue } from '../components';
 import { useUserInfo } from '../hooks';
 import { users } from '../constants';
 
-function Home ():  React.ReactElement {
+const useStyles = makeStyles((theme: Theme) => ({
+	paperAccount: {
+		borderTopLeftRadius: theme.spacing(0.5),
+	},
+})
+);
 
+function Home ():  React.ReactElement {
+	const classes = useStyles();
 	const userInfo = useUserInfo(users.westend);
+
 	return (
 		<>
 			<Divider/>
-			<Paper>
-				<Box paddingX={2} paddingY={1}>
-					<Grid container alignItems='center'>
+			<Paper square className={classes.paperAccount}>
+				<Box paddingY={1} paddingX={2}>
+					<Grid container alignItems='center' spacing={1}>
 						<Grid item xs={6}>
 							{
 								userInfo.address &&
@@ -29,10 +37,27 @@ function Home ():  React.ReactElement {
 							}
 						</Grid>
 						<Grid item xs={6}>
-							<BalanceValue value={1234.56} size='large' />
-							<IconButton>
-								<VisibilityIcon />
-							</IconButton>
+							<Grid 
+								container
+								spacing={1}
+								wrap='nowrap'
+								alignItems='center'
+							>
+								<Grid item xs={12}>
+									<BalanceValue 
+										value={1234.56}
+										size='large'
+										style={{ width: '100%', justifyContent: 'flex-end' }}
+									/>
+								</Grid>
+								<Grid item>
+									<IconButton
+										style={{ backgroundColor: '#e6e6e6', borderRadius: 4 }}
+									>
+										<VisibilityIcon />
+									</IconButton>
+								</Grid>
+							</Grid>
 						</Grid>
 					</Grid>
 				</Box>

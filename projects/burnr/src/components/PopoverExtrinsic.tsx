@@ -41,7 +41,6 @@ const PopoverExtrinsic: React.FunctionComponent<ExtrinsicInfo> = ({ status }: Ex
 			<IconButton
 				onMouseEnter={handlePopoverOpen}
 				onMouseLeave={handlePopoverClose}
-				aria-owns={open ? 'mouse-over-popover' : undefined}
 			>
 				{status === 0 && <CachedIcon />}
 				{status === 1 && <CheckIcon color='primary' />}
