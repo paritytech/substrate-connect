@@ -15,6 +15,7 @@ const NodeSelector: React.FunctionComponent = () => {
 		const selectedEndpoint = event.target.value as string;
 		setEndpoint(selectedEndpoint)
 		setLocalEndpoint(selectedEndpoint);
+		
 		// setChain(REMOTE_PROVIDERS[selectedEndpoint].network);
 		console.log("Burnr wallet is now connected to", ALL_PROVIDERS[selectedEndpoint].endpoint)
   };
