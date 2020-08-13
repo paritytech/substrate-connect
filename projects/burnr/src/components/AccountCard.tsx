@@ -27,7 +27,7 @@ const AccountCard: React.FunctionComponent<Props> = ({ account, addressFormat }:
           </Typography>
 				}
 				<Typography variant='subtitle2'>
-					{ addressFormat == 'Full'
+					{ addressFormat === 'Full'
 						? account.address
 						: account.address.slice(0,4) + '...' + account.address.slice(account.address.length - 4, account.address.length)
 					}

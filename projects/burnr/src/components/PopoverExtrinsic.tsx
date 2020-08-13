@@ -1,32 +1,30 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 
+import { IconButton, Typography } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { Typography, Popover } from '@material-ui/core';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import Popover from '@material-ui/core/Popover';
+import CachedIcon from '@material-ui/icons/Cached';
+import CheckIcon from '@material-ui/icons/Check';
+import ErrorIcon from '@material-ui/icons/Error';
 
-interface Props {
-  children: ReactNode;
-}
+import { ExtrinsicInfo } from './index';
 
 const useStyles = makeStyles((theme: Theme) => ({
-	trigger: {
-		marginLeft: theme.spacing(0.5),
-		'& svg' : {
-			fontSize: '1em',
-		},
-	},
 	popover: {
 		pointerEvents: 'none',
 	},
 	paper: {
 		padding: theme.spacing(1),
+		marginTop: theme.spacing(-0.5),
 		backgroundColor: theme.palette.common.black,
 		color: theme.palette.common.white,
 	},
 })
 );
 
-const PopoverInfo: React.FunctionComponent<Props> = ({ children }: Props) => {
+// @TODO blockexplorer links
+
+const PopoverExtrinsic: React.FunctionComponent<ExtrinsicInfo> = ({ status }: ExtrinsicInfo) => {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
@@ -42,40 +40,42 @@ const PopoverInfo: React.FunctionComponent<Props> = ({ children }: Props) => {
 
 	return (
 		<>
-			<a
+			<IconButton
 				onMouseEnter={handlePopoverOpen}
 				onMouseLeave={handlePopoverClose}
-				className={classes.trigger}
 			>
-				<InfoOutlinedIcon color='disabled' />
-			</a>
+				{status === 0 && <CachedIcon color='disabled' />}
+				{status === 1 && <CheckIcon color='action' />}
+				{status === 2 && <ErrorIcon color='error' />}
 
+			</IconButton>
 			<Popover
-				onClose={handlePopoverClose}
-				open={open}
-				anchorEl={anchorEl}
 				elevation={2}
 				transitionDuration={0}
+				id="mouse-over-popover"
 				className={classes.popover}
 				classes={{
 					paper: classes.paper,
 				}}
+				open={open}
+				anchorEl={anchorEl}
 				anchorOrigin={{
-					vertical: -4,
+					vertical: 'top',
 					horizontal: 'center',
 				}}
 				transformOrigin={{
 					vertical: 'bottom',
 					horizontal: 'center',
 				}}
-				marginThreshold={2}
+				onClose={handlePopoverClose}
+				disableRestoreFocus
 			>
-				<Typography variant='body2' component='div'>
-					{children}
+				<Typography variant='body2'>
+          The content of the Popover, link to BlockExplorers
 				</Typography>
 			</Popover>
 		</>
 	);
 };
 
-export default PopoverInfo;
+export default PopoverExtrinsic;
