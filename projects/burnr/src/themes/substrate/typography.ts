@@ -47,7 +47,7 @@ const typography: ThemeOptions = {
 			fontFamily: '\Cousine\, monospace',
 			fontWeight: 400,
 			fontSize: 20,
-			lineHeight: '135%',
+			lineHeight: '200%',
 		},
 		subtitle2: {
 			fontFamily: '\Cousine\, monospace',
@@ -55,6 +55,10 @@ const typography: ThemeOptions = {
 			fontSize: 13,
 			lineHeight: '135%',
 			letterSpacing: 0.1,
+		},
+		overline: {
+			fontSize: 11,
+			letterSpacing: 0.7,
 		},
 	},
 };

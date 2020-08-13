@@ -1,9 +1,11 @@
 import { ThemeOptions } from '@material-ui/core/styles';
 import colors from './colors';
 import typography from './typography';
+import shadows from './shadows';
 
 const light: ThemeOptions = {
 	typography: typography.typography,
+	shadows: shadows.shadows,
 	palette: {
 		type: 'light',
 
@@ -13,18 +15,18 @@ const light: ThemeOptions = {
 		},
 		background: {
 			paper: colors.light.light,
-			default: colors.white.dark,
+			default: colors.light.dark,
 		},
 		primary: {
-			light: colors.cyan.light,
-			main: colors.cyan.main,
-			dark: colors.cyan.dark,
+			light: colors.substrate.light,
+			main: colors.substrate.dark,
+			dark: colors.substrate.dark,
 			contrastText: colors.black,
 		},
 		secondary: {
-			light: colors.pink.light,
-			main: colors.pink.main,
-			dark: colors.pink.dark,
+			light: '#89a7ce',
+			main: colors.black,
+			dark: '#534c5d',
 			contrastText: colors.white,
 		},
 		error: {
@@ -36,8 +38,11 @@ const light: ThemeOptions = {
 		text: {
 			primary: colors.black,
 			secondary: colors.dark.main,
-			disabled: colors.light.dark,
+			disabled: colors.dark.light,
 			hint: colors.yellow.main,
+		},
+		action: {
+			active: colors.substrate.dark,
 		},
 		divider: 'rgba(0, 0, 0, 0)',
 	},
