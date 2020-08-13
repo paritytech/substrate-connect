@@ -27,7 +27,7 @@ import { useIsMountedRef, useProvider } from './..';
 
 export default function useApiCreate (): ApiPromise | null {
   const [api, setApi] = useState<ApiPromise | null>(null);
-  const [provider] = useProvider();
+  const [provider] = [null] //useProvider();
   const  mountedRef = useIsMountedRef();
 
   useEffect((): void => {
