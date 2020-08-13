@@ -99,7 +99,7 @@ export default function NodeSelector() {
 		if (reason === 'toggleInput') {
 			return;
 		}
-		// setAnchorEl(null);
+		setAnchorEl(null);
 	};
 
 	const open = Boolean(anchorEl);
