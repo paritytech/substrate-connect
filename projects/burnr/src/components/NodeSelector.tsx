@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { FormControl, NativeSelect, Typography } from '@material-ui/core';
+import { FormControl, Select, Typography } from '@material-ui/core';
 
 import { PopoverInfo } from '.';
 import { endpoints, ALL_PROVIDERS } from './../constants';
@@ -37,7 +37,7 @@ const NodeSelector: React.FunctionComponent = () => {
 				}
 			</Typography>
 			<FormControl>
-        <NativeSelect
+        <Select
           value={endpoint}
           onChange={handleChange}
           inputProps={{
@@ -52,7 +52,7 @@ const NodeSelector: React.FunctionComponent = () => {
 							</option>
 						))
 					}
-        </NativeSelect>
+        </Select>
       </FormControl>
 		</>
 	);
