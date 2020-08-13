@@ -22,6 +22,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 })
 );
 
+// @TODO blockexplorer links
+
 const PopoverExtrinsic: React.FunctionComponent<ExtrinsicInfo> = ({ status }: ExtrinsicInfo) => {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);

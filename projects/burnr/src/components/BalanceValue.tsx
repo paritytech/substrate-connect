@@ -13,6 +13,8 @@ interface StyleProps {
   colored?: boolean;
 }
 
+// @TODO get token codes from api
+
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
 		display: 'inline-flex',

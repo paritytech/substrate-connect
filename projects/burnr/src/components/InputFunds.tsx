@@ -7,6 +7,8 @@ interface Props {
   currency: string;
 }
 
+// @TODO bn.js
+
 const InputFunds: React.FunctionComponent<Props> = ({ total, currency }: Props) => {
 	const [value, setValue] = React.useState<number | ''>('');
 	const handleChangeButton = (e) => {
@@ -16,6 +18,8 @@ const InputFunds: React.FunctionComponent<Props> = ({ total, currency }: Props) 
 	const handleChange = (e) => {
 		!isNaN(e.currentTarget.value) && setValue(parseInt(e.currentTarget.value));
 	};
+
+	// @TODO focus/blur TextField and %Buttons at the same time in a React way
 
 	const [focus, setFocus] = React.useState<boolean>(false);
 	const handleFocus = () => {

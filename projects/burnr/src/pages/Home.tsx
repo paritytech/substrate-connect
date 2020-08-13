@@ -15,6 +15,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 })
 );
 
+// @TODO read balance
+// @TODO account name
+
 function Home ():  React.ReactElement {
 	const classes = useStyles();
 	const userInfo = useUserInfo(users.westend);
@@ -52,9 +55,7 @@ function Home ():  React.ReactElement {
 									/>
 								</Grid>
 								<Grid item>
-									<IconButton
-										style={{ borderRadius: 4 }}
-									>
+									<IconButton style={{ borderRadius: 4 }} >
 										<VisibilityIcon />
 									</IconButton>
 								</Grid>

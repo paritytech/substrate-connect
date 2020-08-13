@@ -20,6 +20,8 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
+// @TODO rewrite in a React way?
+
 const ThemeToggleProvider: React.FunctionComponent = ({ children }) => {
 	const classes = useStyles();
 	const [theme, setTheme] = useState(true);

@@ -168,6 +168,8 @@ export default function NodeSelector() {
 	);
 }
 
+// @TODO get providers from constants
+
 const labels = [
 	{
 		networkName: 'Westend',
@@ -190,3 +192,7 @@ const labels = [
 		providerName: 'Web3',
 	}
 ];
+
+// @TODO custom endpoint
+
+// @TODO actually reinitiate api on switch

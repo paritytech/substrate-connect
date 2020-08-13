@@ -40,6 +40,8 @@ function createData(withWhom, extrinsic, value, status): Data {
 	return { withWhom, extrinsic, value, status };
 }
 
+// @TODO real data?
+
 const rows: Data[] = [
 	createData('F7BeW4g5ViG8xGJQAzguGPxiX9QNdoPNc3YqF1bV8d9XkVV', 'balances.transfer', -132417.1354, 0),
 	createData('Gt6HqWBhdu4Sy1u8ASTbS1qf2Ac5gwdegwr8tWN8saMxPt5', 'balances.transfer', 140350.0365, 1),
