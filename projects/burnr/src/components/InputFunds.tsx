@@ -42,50 +42,28 @@ const InputFunds: React.FunctionComponent<Props> = ({ total, currency }: Props) 
 			</Box>
 
 			<Grid container spacing={1}>
-				<Grid item>
-					<Button
-						onClick = { handleChangeButton }
-						variant="outlined"
-						color={focus ? 'primary' : 'default'}
-						size='small'
-						value={0.25}
-					>
-            25%
-					</Button>
-				</Grid>
-				<Grid item>
-					<Button
-						onClick = { handleChangeButton }
-						variant="outlined"
-						color={focus ? 'primary' : 'default'}
-						size='small'
-						value={0.5}
-					>
-            50%
-					</Button>
-				</Grid>
-				<Grid item>
-					<Button
-						onClick = { handleChangeButton }
-						variant="outlined"
-						color={focus ? 'primary' : 'default'}
-						size='small'
-						value={0.75}
-					>
-            75%
-					</Button>
-				</Grid>
-				<Grid item>
-					<Button
-						onClick = { handleChangeButton }
-						variant="outlined"
-						color={focus ? 'primary' : 'default'}
-						size='small'
-						value={1}
-					>
-            100%
-					</Button>
-				</Grid>
+			    {
+			      [
+						{ label: '25%',  value: 0.25 },
+						{ label: '50%',  value: 0.5 },
+						{ label: '75%',  value: 0.75 },
+						{ label: '100%', value: 1 }
+			      ].map((item, index) => {
+						return(
+							<Grid key={index} item>
+					 			 <Button
+									onClick={ handleChangeButton }
+									variant='outlined'
+									color={focus ? 'primary' : 'default'}
+									size='small'
+									value={item.value}
+					    	>
+									{item.label}
+					   		</Button>
+							</Grid>
+						);
+					})
+				}
 			</Grid>
 		</>
 	);

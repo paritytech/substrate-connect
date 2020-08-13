@@ -99,7 +99,7 @@ export default function NodeSelector() {
 		if (reason === 'toggleInput') {
 			return;
 		}
-		setAnchorEl(null);
+		// setAnchorEl(null);
 	};
 
 	const open = Boolean(anchorEl);
@@ -141,7 +141,7 @@ export default function NodeSelector() {
 
 						onClose={handleClose}
 						onChange={(event, newValue) => {
-							if (newValue == null || newValue == value || typeof newValue == 'string') {
+							if (newValue === null || newValue === value || typeof newValue === 'string') {
 								return;
 							}
 							setValue(newValue);
@@ -156,7 +156,7 @@ export default function NodeSelector() {
 							/>
 						)}
 						renderOption={(option) => (
-							<NodeSelectorItem node={option} selected={option == value} />
+							<NodeSelectorItem node={option} selected={option === value} />
 						)}
 						groupBy={(option) => option.networkName}
 					/>

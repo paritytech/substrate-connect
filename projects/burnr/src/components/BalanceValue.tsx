@@ -33,11 +33,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const BalanceValue: React.FunctionComponent<Props> = ({ value, size, style }: Props) => {
-	const isBalance = typeof value == 'number';
+	const isBalance = typeof value === 'number';
 	const isColored = isBalance && value >= 0 ? true : false;
 	const classes = useStyles({ colored: isColored });
 
-	const TypographyVariant = size == 'large' ? 'subtitle1' : 'subtitle2';
+	const TypographyVariant = size === 'large' ? 'subtitle1' : 'subtitle2';
 
 	return  (
 		<Box component='span' className={classes.root} style={style}>

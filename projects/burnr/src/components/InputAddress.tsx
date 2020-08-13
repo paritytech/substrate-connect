@@ -24,7 +24,7 @@ const InputAddress: React.FunctionComponent = () => {
 							spellCheck: 'false',
 							startAdornment:
                 <Box marginRight={1}>
-                	{ (!value || value == '')
+                	{ (!value || value === '')
                 		? <Skeleton variant='circle' width={32} height={32} />
                 		: <Identicon
                 			size={32}
