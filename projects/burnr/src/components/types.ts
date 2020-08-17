@@ -1,7 +1,3 @@
-export interface NodeInfo {
-  networkName: string;
-  providerName: string;
-};
 export interface ExtrinsicInfo {
   status: string | 0 | 1 | 2;
   // extrinsicType: string;

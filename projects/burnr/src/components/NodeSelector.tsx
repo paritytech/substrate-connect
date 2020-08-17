@@ -5,6 +5,8 @@ import { Typography, ButtonBase, InputBase } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Autocomplete, { AutocompleteCloseReason } from '@material-ui/lab/Autocomplete';
 
+import { providers, ALL_PROVIDERS } from './../constants';
+import { useChainInfo, useLocalStorage } from '../hooks';
 import { NodeSelectorItem, NodeSelectorSelected, NodeInfo } from '.';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -85,11 +87,20 @@ const useStyles = makeStyles((theme: Theme) =>
 	})
 );
 
+const options = Object.entries(ALL_PROVIDERS).map(([provider, settings]) => (
+										{	
+											network: settings.network,
+											description: settings.source,
+											provider
+										}
+								));
+
 export default function NodeSelector() {
 	const classes = useStyles();
 
-	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-	const [value, setValue] = React.useState<NodeInfo>(labels[1]);
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const [localEndpoint, setLocalEndpoint] = useLocalStorage('provider');
+	const [provider, setProvider] = useState<string | null>(localEndpoint || options[0].provider);
 
 	const handleOpenDropdown = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
@@ -113,7 +124,7 @@ export default function NodeSelector() {
 					className={classes.button}
 					onClick={handleOpenDropdown}
 				>
-					<NodeSelectorSelected node={value}/>
+					<NodeSelectorSelected node={provider}/>
 					<ArrowDropDownIcon />
 				</ButtonBase>
 
@@ -138,13 +149,13 @@ export default function NodeSelector() {
 							option: classes.option,
 							paper: classes.acPaper,
 						}}
-
 						onClose={handleClose}
-						onChange={(event, newValue) => {
-							if (newValue === null || newValue === value || typeof newValue === 'string') {
+						onChange={(event, newProvider) => {
+							if (newProvider === null || newProvider === provider || typeof newProvider === 'string') {
 								return;
 							}
-							setValue(newValue);
+							console.log('newProvider', newProvider)
+							setProvider(newProvider);
 						}}
 
 						renderInput={(params) => (
@@ -156,7 +167,7 @@ export default function NodeSelector() {
 							/>
 						)}
 						renderOption={(option) => (
-							<NodeSelectorItem node={option} selected={option === value} />
+							<NodeSelectorItem node={option} selected={option === provider} />
 						)}
 						groupBy={(option) => option.networkName}
 					/>
@@ -193,6 +204,6 @@ const labels = [
 	}
 ];
 
-// @TODO custom endpoint
+// @TODO custom provider
 
 // @TODO actually reinitiate api on switch
