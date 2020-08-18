@@ -1,14 +1,16 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import { NodeInfo } from './types';
 import DoneIcon from '@material-ui/icons/Done';
 
+import { LazyProvider } from './../utils/types'; 
+import { Option } from './NodeSelector';
+
 interface Props {
-  node: NodeInfo;
+  provider: Option;
   selected: boolean;
 };
 
-const NodeSelectorSelected: React.FunctionComponent<Props> = ({ node, selected }: Props) => {
+const NodeSelectorSelected: React.FunctionComponent<Props> = ({ provider, selected }: Props) => {
 
 	const visibility = selected ? 'visible' : 'hidden';
 
@@ -22,7 +24,7 @@ const NodeSelectorSelected: React.FunctionComponent<Props> = ({ node, selected }
 				<DoneIcon style={{ fontSize:'16px', visibility: visibility, transform: 'translateX(-4px)' }} />
 			</Grid>
 			<Grid item xs={12}>
-				{node.providerName}
+				{provider.client} client
 			</Grid>
 		</Grid>
 	);

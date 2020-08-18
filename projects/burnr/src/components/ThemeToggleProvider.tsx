@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { ThemeProvider, createMuiTheme, CssBaseline, makeStyles } from '@material-ui/core';
 import { SubstrateLight, SubstrateDark } from '../themes';
+import { useLocalStorage } from '../hooks';
+
 import { LogoSubstrate, ThemeButton } from '.';
 
 const useStyles = makeStyles(theme => ({
@@ -24,15 +26,21 @@ const useStyles = makeStyles(theme => ({
 
 const ThemeToggleProvider: React.FunctionComponent = ({ children }) => {
 	const classes = useStyles();
-	const [theme, setTheme] = useState(true);
+	const [localTheme, setLocalTheme] = useLocalStorage('theme');
+	const [theme, setTheme] = useState(localTheme === 'false' ? false : true);
 	const appliedTheme = createMuiTheme(theme ? SubstrateLight : SubstrateDark);
+
+	const selectTheme = (selected) => {
+		setLocalTheme(selected);
+		setTheme(selected);
+	}
 
 	return (
 		<ThemeProvider theme={appliedTheme}>
 			<CssBaseline />
 			<div className={classes.root}>
 				<LogoSubstrate theme={theme} />
-				<ThemeButton theme={theme} onClick={() => setTheme(!theme)} />
+				<ThemeButton theme={theme} onClick={() => selectTheme(!theme)} />
 			</div>
 			{children}
 		</ThemeProvider>

@@ -5,13 +5,13 @@ import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 
 import { PopoverInfo } from '.';
 import { useChainInfo } from '../hooks';
-import { NodeInfo } from './types';
+import { LazyProvider } from '../utils/types'; 
 
 interface Props {
-  node: NodeInfo;
+  provider: LazyProvider;
 };
 
-const NodeSelectorSelected: React.FunctionComponent<Props> = ({ node }: Props) => {
+const NodeSelectorSelected: React.FunctionComponent<Props> = ({ provider }: Props) => {
 	const newHead = useChainInfo();
 
 	return (
@@ -27,12 +27,12 @@ const NodeSelectorSelected: React.FunctionComponent<Props> = ({ node }: Props) =
 			<Grid item xs={12}>
 
 				<Typography variant='h4'>
-					{ node.networkName }
+					{ provider.network }
 				</Typography>
 
 				<Grid container>
 					<Grid item>
-						<Typography variant='body2' color='textSecondary'>Node provider: {node.providerName} </Typography>
+						<Typography variant='body2' color='textSecondary'>{provider.client} client</Typography>
 					</Grid>
 					{ newHead &&
 					<Grid item>

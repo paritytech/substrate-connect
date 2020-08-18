@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
 import { endpoints } from '../../constants';
-import useIsMountedRef from './useIsMountedRef';
+import { useIsMountedRef, useProvider } from './..';
 
 /**  This part isn't usable until the issues in the Substrate Light CLient implementation have been fixed **/
 // import {
@@ -27,16 +27,29 @@ import useIsMountedRef from './useIsMountedRef';
 
 export default function useApiCreate (): ApiPromise | null {
   const [api, setApi] = useState<ApiPromise | null>(null);
+  const [provider] = [null] //useProvider();
   const  mountedRef = useIsMountedRef();
 
   useEffect((): void => {
+    if(api){
+      console.log('YES API')
+    } else {
+      console.log("NO API")
+    }
+    if(provider) {
+      console.log('YES PROvider')
+    } else {
+      console.log("NO PROvider")
+
+    }
     ApiPromise
       .create({
-        provider: new WsProvider(endpoints.localHost),
+        provider: new WsProvider(endpoints.local),
         types: {}
       })
       .then((api): void => {
-        console.log(`Connected to local chain at ${endpoints.localHost}`)
+        console.log(`Connected to local chain at ${endpoints.local}`)
+        console.log("API api", api)
         mountedRef.current && setApi(api);
       })
       .catch((): void => {

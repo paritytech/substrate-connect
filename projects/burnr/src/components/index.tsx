@@ -18,5 +18,3 @@ export { default as PopoverExtrinsic } from './PopoverExtrinsic';
 export { default as SendFundsForm } from './SendFundsForm';
 export { default as ThemeButton } from './ThemeButton';
 export { default as ThemeToggleProvider } from './ThemeToggleProvider';
-
-export type { NodeInfo, ExtrinsicInfo, SizeScale } from './types';
