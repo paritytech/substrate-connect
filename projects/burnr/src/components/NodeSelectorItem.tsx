@@ -24,7 +24,7 @@ const NodeSelectorSelected: React.FunctionComponent<Props> = ({ provider, select
 				<DoneIcon style={{ fontSize:'16px', visibility: visibility, transform: 'translateX(-4px)' }} />
 			</Grid>
 			<Grid item xs={12}>
-				{provider.client} client {provider.provider}
+				{provider.client} client
 			</Grid>
 		</Grid>
 	);

@@ -5,7 +5,6 @@ import { Typography, ButtonBase, InputBase } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Autocomplete, { AutocompleteCloseReason } from '@material-ui/lab/Autocomplete';
 
-import { LazyProvider } from './../utils/types'; 
 import { ALL_PROVIDERS } from './../constants';
 import { useLocalStorage } from '../hooks';
 import { NodeSelectorItem, NodeSelectorSelected } from '.';
@@ -98,11 +97,11 @@ const options = Object.entries(ALL_PROVIDERS).map(
 				client: settings.client,
 				provider
 			}
-	));
+	)
+).sort((a,b) => (a.network > b.network) ? 1 : ((b.network > a.network) ? -1 : 0));
 
 export default function NodeSelector() {
 	const classes = useStyles();
-
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
 	const [provider, setProvider] = useState<string | null>(ALL_PROVIDERS[localEndpoint].id || ALL_PROVIDERS[0].id);
@@ -121,6 +120,8 @@ export default function NodeSelector() {
 	const updateProvider = (provider: string) => {
 		setLocalEndpoint(provider)
 		setProvider(provider);
+		// setChain(REMOTE_PROVIDERS[selectedEndpoint].network);
+		console.log("Burnr wallet is now connected to", ALL_PROVIDERS[provider].endpoint)
 	};
 
 	const open = Boolean(anchorEl);
@@ -160,7 +161,6 @@ export default function NodeSelector() {
 						}}
 						onClose={handleClose}
 						onChange={(event, {provider: selected}: Option ) => {
-							console.log('newProvider', selected)
 							updateProvider(selected);
 						}}
 
