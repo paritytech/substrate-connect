@@ -1,11 +1,24 @@
 // SPDX-License-Identifier: Apache-2
 
 import type { Balance, Index, RefCount } from '@polkadot/types/interfaces';
-import type { u32 } from '@polkadot/types';
-import type { Codec } from '@polkadot/types/types';
+import { ProviderInterface } from '@polkadot/rpc-provider/types';
+import { ProviderMeta } from '@polkadot/extension-inject/types';
+import { u32 } from '@polkadot/types';
+import { Codec } from '@polkadot/types/types';
 
 import { ApiPromise } from '@polkadot/api';
 import { KeyringPair } from '@polkadot/keyring/types';
+
+/**
+ * Interface describing a Provider, lazily loaded.
+ */
+export interface LazyProvider extends ProviderMeta {
+  description: string;
+  id: string;
+  endpoint?: string;
+  client?: string;
+  start: () => Promise<ProviderInterface>;
+}
 
 export interface Account {
   address: string;
@@ -83,3 +96,10 @@ export interface UserInfo {
   feeFrozen: Balance;
   miscFrozen: Balance;
 }
+
+export interface ExtrinsicInfo {
+  status: string | 0 | 1 | 2;
+};
+export interface SizeScale {
+  size?: 'large' | 'medium' | 'small';
+};
