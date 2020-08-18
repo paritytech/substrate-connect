@@ -12,7 +12,8 @@ import {
 	createStyles
 } from '@material-ui/core';
 
-import { AccountCard, BalanceValue, PopoverExtrinsic, ExtrinsicInfo } from './index';
+import { AccountCard, BalanceValue, PopoverExtrinsic} from './index';
+import { ExtrinsicInfo } from './../utils/types';
 
 interface Column {
   id: 'withWhom' | 'extrinsic' | 'value' | 'status';

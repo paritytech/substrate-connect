@@ -2,7 +2,7 @@ import React from 'react';
 
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { Box, Typography } from '@material-ui/core';
-import { SizeScale } from './types';
+import { SizeScale } from './../utils/types';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 
 interface Props extends SizeScale {

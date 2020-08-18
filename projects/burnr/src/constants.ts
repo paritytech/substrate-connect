@@ -1,6 +1,6 @@
 import { WsProvider } from '@polkadot/api';
-import { ProviderMeta } from '@polkadot/extension-inject/types';
 import { ProviderInterface } from '@polkadot/rpc-provider/types';
+
 import {
   kusama,
   polkadot,
@@ -8,6 +8,8 @@ import {
   WasmProvider,
   westend,
 } from '@substrate/connect';
+
+import { LazyProvider } from './utils/types'; 
 
 
 export const endpoints = {
@@ -24,24 +26,15 @@ export const users = {
   'westend': '12gG5fz9A7k7CgZeis8JesCoZiARDioonHYp5W9Vkwc6nFyB'
 }
 
-/**
- * Interface describing a Provider, lazily loaded.
- */
-export interface LazyProvider extends ProviderMeta {
-  description: string;
-  id: string;
-  endpoint?: string;
-  start: () => Promise<ProviderInterface>;
-}
-
 export const JS_WASM_PROVIDERS: Record<string, LazyProvider> = {
-  'Local-Network-Wasm-Light-Node': {
+  'Polkadot-Local-WasmProvider': {
     description: 'Local WASM light client for polkadot-local network',
-    id: 'Polkadot-WasmProvider',
+    id: 'Polkadot-Local-WasmProvider',
     network: 'Local Polkadot Network',
     node: 'light',
-    source: 'browser tab',
+    source: 'browser',
     endpoint: 'Light client running in Browser',
+    client: 'Wasm light',
     start: (): Promise<ProviderInterface> =>
       Promise.resolve(new WasmProvider(polkadotLocal.fromUrl('./hooks/api/polkadot_cli_bg.wasm'))),
     transport: 'WasmProvider',
@@ -87,11 +80,12 @@ export const JS_WASM_PROVIDERS: Record<string, LazyProvider> = {
 export const REMOTE_PROVIDERS: Record<string, LazyProvider> = {
   'Local-Network-WsProvider': {
     description: `Local node running on ${endpoints.local}`,
-    id: 'Local-WsProvider',
+    id: 'Local-Network-WsProvider',
     network: 'Local Polkadot Network',
     node: 'light',
     source: 'remote',
     endpoint: endpoints.local,
+    client: 'Websocket remote',
     start: (): Promise<ProviderInterface> =>
       Promise.resolve(new WsProvider(endpoints.local)),
     transport: 'WsProvider',
@@ -103,6 +97,7 @@ export const REMOTE_PROVIDERS: Record<string, LazyProvider> = {
     node: 'light',
     source: 'remote',
     endpoint: endpoints.polkadot,
+    client: 'Websocket remote',
     start: (): Promise<ProviderInterface> =>
       Promise.resolve(new WsProvider(endpoints.polkadot)),
     transport: 'WsProvider',
@@ -114,6 +109,7 @@ export const REMOTE_PROVIDERS: Record<string, LazyProvider> = {
     node: 'light',
     source: 'remote',
     endpoint: endpoints.kusama,
+    client: 'Websocket remote',
     start: (): Promise<ProviderInterface> =>
       Promise.resolve(new WsProvider(endpoints.kusama)),
     transport: 'WsProvider',
@@ -125,6 +121,7 @@ export const REMOTE_PROVIDERS: Record<string, LazyProvider> = {
     node: 'light',
     source: 'remote',
     endpoint: endpoints.westend,
+    client: 'Websocket remote',
     start: (): Promise<ProviderInterface> =>
       Promise.resolve(new WsProvider(endpoints.westend)),
     transport: 'WsProvider',
