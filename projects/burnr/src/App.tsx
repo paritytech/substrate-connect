@@ -37,9 +37,11 @@ const  App: React.FunctionComponent<Props> = ({ className }: Props) => {
 			<div className={classes.root + ' ' + className}>
 				<ThemeToggleProvider>
 					<main className={classes.main}>
+						<ApiContext.Provider value={api}>
+							<Head />
+						</ApiContext.Provider>
 						{api && (
 							<ApiContext.Provider value={api}>
-								<Head />
 								<Switch>
 									<Route exact path='/' component={Home} />
 								</Switch>

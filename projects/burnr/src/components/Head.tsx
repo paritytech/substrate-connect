@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
-import { NodeSelector, LogoApp } from '.';
+import { Box, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
+import { NodeSelector } from '.';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
@@ -18,7 +18,7 @@ const Head: React.FunctionComponent = () => {
 		<Grid container alignItems='center' className={classes.root}>
 			<Grid item xs={6}>
 				<Box paddingX={2}>
-					<LogoApp/>
+					<Typography variant='h1'>Burnr</Typography>
 				</Box>
 			</Grid>
 			<Grid item xs={6}>

@@ -6,7 +6,6 @@ export { default as Head } from './Head';
 export { default as HistoryTable } from './HistoryTable';
 export { default as InputAddress } from './InputAddress';
 export { default as InputFunds } from './InputFunds';
-export { default as LogoApp } from './LogoApp';
 export { default as LogoSubstrate } from './LogoSubstrate';
 export { default as NavFooter } from './NavFooter';
 export { default as NavTabs } from './NavTabs';
