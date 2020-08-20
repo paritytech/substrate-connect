@@ -6,7 +6,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Autocomplete, { AutocompleteCloseReason } from '@material-ui/lab/Autocomplete';
 
 import { ALL_PROVIDERS } from './../constants';
-import { useLocalStorage } from '../hooks';
+import { useApiCreate, useLocalStorage } from '../hooks';
 import { NodeSelectorItem, NodeSelectorSelected } from '.';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -104,7 +104,7 @@ export default function NodeSelector() {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
-	const [provider, setProvider] = useState<string | null>(ALL_PROVIDERS[localEndpoint].id || ALL_PROVIDERS[0].id);
+	const [provider, setProvider] = useState<string | null>(ALL_PROVIDERS[localEndpoint].id || ALL_PROVIDERS['Polkadot-WsProvider'].id);
 
 	const handleOpenDropdown = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
@@ -118,10 +118,13 @@ export default function NodeSelector() {
 	};
 
 	const updateProvider = (provider: string) => {
-		setLocalEndpoint(provider)
+		setLocalEndpoint(provider);
 		setProvider(provider);
+		
+		console.log("Burnr wallet is now connected to", ALL_PROVIDERS[provider].endpoint);
+		// Tis is just a temporary work around. Api should be passed on as prop without reload
+		location.reload();
 		// setChain(REMOTE_PROVIDERS[selectedEndpoint].network);
-		console.log("Burnr wallet is now connected to", ALL_PROVIDERS[provider].endpoint)
 	};
 
 	const open = Boolean(anchorEl);

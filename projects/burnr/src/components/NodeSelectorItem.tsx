@@ -21,7 +21,7 @@ const NodeSelectorSelected: React.FunctionComponent<Props> = ({ provider, select
 			wrap='nowrap'
 		>
 			<Grid item>
-				<DoneIcon style={{ fontSize:'16px', visibility: visibility, transform: 'translateX(-4px)' }} />
+				<DoneIcon style={{ fontSize:'16px', visibility: visibility, transform: 'translateX(-4px)'}} />
 			</Grid>
 			<Grid item xs={12}>
 				{provider.client} client
