@@ -14,7 +14,7 @@ You will then find the chain_spec for a `polkadot-local` chain as `polkadot-loca
 
 ```
 "bootNodes": [
-  "/ip4/127.0.0.1/tcp/30337/ws/p2p/QmT5MYjkTDpoREKZTS7qHLSKPCJubTwYqfr6YQmhfcFYro"
+    "/ip4/127.0.0.1/tcp/30337/ws/p2p/12D3KooWCJC43YRmb5WJcJmskPSxbkWY4Vp6jPKdFeggnXPxgBCw"
 ],
 ```
 
