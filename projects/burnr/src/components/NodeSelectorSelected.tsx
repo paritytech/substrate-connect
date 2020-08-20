@@ -13,9 +13,8 @@ interface Props {
 
 const NodeSelectorSelected: React.FunctionComponent<Props> = ({ provider }: Props) => {
 	const api = useApi();
-	const color = api ? 'primary' : 'error';
+	const color = api && api.isReady ? 'primary' : 'error';
 
-	console.log('aspodkasf', api)
 	return (
 		<Grid
 			container

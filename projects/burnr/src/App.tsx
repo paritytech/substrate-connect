@@ -38,15 +38,13 @@ const  App: React.FunctionComponent<Props> = ({ className }: Props) => {
 				<ThemeToggleProvider>
 					<main className={classes.main}>
 						<ApiContext.Provider value={api}>
-							<Head />
-						</ApiContext.Provider>
-						{api && (
-							<ApiContext.Provider value={api}>
+						<Head />
+							{api && api.isReady && (
 								<Switch>
 									<Route exact path='/' component={Home} />
 								</Switch>
-							</ApiContext.Provider>
-						)}
+							)}
+						</ApiContext.Provider>
 					</main>
 					<NavFooter />
 				</ThemeToggleProvider>
