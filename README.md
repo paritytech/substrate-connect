@@ -49,3 +49,23 @@ To clean up all workspaces in the repository, run:
 ```
 $ yarn clean
 ```
+
+## Working with this repository
+
+Substrate Connect is using Yarn worspaces to manage dependencies. 
+
+Read more about it here: https://classic.yarnpkg.com/en/docs/workspaces/
+
+### Adding modules to single repositories
+
+To add new dependencies, please use thefollowing syntax:
+
+```
+$ yarn workspace [module name from package.json] add your-desired-npm-package
+```
+Example to add Jest to the Burnr Wallet:
+```
+$ yarn workspace @substrate/burnr add jest
+```
+
+Also see https://classic.yarnpkg.com/en/docs/cli/workspace/
