@@ -4,10 +4,8 @@
 
 // eslint-disable-next-line @typescript-eslint/camelcase
 import init, { start_client } from '../../client-packages/polkadot/polkadot_cli';
-import { LightClient, WasmRpcClient } from '../../types';
+import { LightClient, WasmRpcClient } from '../../lib/types';
 
-const name = 'ksmcc3';
-const version = 'v0.8.19';
 let client: WasmRpcClient;
 
 /**
@@ -27,7 +25,7 @@ export function fromUrl(url: string): LightClient {
       console.log('Successfully loaded WASM, starting client...');
 
       // Dynamic import, because the JSON is quite big.
-      const { default: chainSpec } = await import('./kusama.json');
+      const { default: chainSpec } = await import(url);
 
       client = await start_client(JSON.stringify(chainSpec), 'INFO');
 

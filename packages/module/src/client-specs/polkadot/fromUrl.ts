@@ -4,7 +4,7 @@
 
 // eslint-disable-next-line @typescript-eslint/camelcase
 import init, { start_client } from '../../client-packages/polkadot/polkadot_cli';
-import { LightClient, WasmRpcClient } from './../../types';
+import { LightClient, WasmRpcClient } from '../../lib/types';
 
 const name = 'polkadot';
 const version = 'v0.8.19';
