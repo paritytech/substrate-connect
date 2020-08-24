@@ -2,8 +2,6 @@ import { WsProvider } from '@polkadot/api';
 import { ProviderInterface } from '@polkadot/rpc-provider/types';
 
 import {
-  kusama,
-  polkadot,
   polkadotLocal,
   WasmProvider,
   westend,

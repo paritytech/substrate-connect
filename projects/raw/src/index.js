@@ -1,5 +1,11 @@
-import { WsProvider } from '@polkadot/rpc-provider';
-import { ApiPromise } from '@polkadot/api';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+
+import {
+  LightClient,
+  WasmProvider,
+  polkadotLocal,
+  westend,
+} from '@substrate/connect';
 
 import {
   createError, createWrapper
@@ -7,7 +13,8 @@ import {
 
 const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
 
-const provider = new WsProvider('ws://127.0.0.1:9944');
+const wsProvider = new WsProvider('ws://127.0.0.1:9944');
+const wasmProvider = new WasmProvider('ws://127.0.0.1:9944');
 // const provider = new WsProvider('wss://poc3-rpc.polkadot.io/');
 // const provider = new WsProvider('wss://substrate-rpc.parity.io/');
 

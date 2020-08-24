@@ -9,9 +9,9 @@ import { useIsMountedRef, useLocalStorage, useProvider } from './..';
 
 /**  This part isn't usable until the issues in the Substrate Light CLient implementation have been fixed **/
 import {
-  kusama,
+  // kusama,
   LightClient,
-  polkadot,
+  // polkadot,
   polkadotLocal,
   WasmProvider,
   westend,
