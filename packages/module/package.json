@@ -10,15 +10,15 @@
     "Sveta Goldstein <sveta@parity.io>"
   ],
   "scripts": {
-    "build": "rimraf lib  && copyfiles -Eu2 \"src/client-packages/**/*\" lib/client-packages && tsc",
-    "clean": "rimraf lib && rimraf node_modules"
+    "build": "rimraf lib  && copyfiles -Eu2 \"src/client-packages/**/*\" dist/client-packages && tsc",
+    "clean": "rimraf dist && rimraf node_modules"
   },
   "publishConfig": {
     "access": "public"
   },
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "releaseFiles": [
-    "lib/**",
+    "src/**",
     "README.md",
     "LICENSE"
   ]

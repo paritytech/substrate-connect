@@ -3,8 +3,7 @@ import { ProviderInterface } from '@polkadot/rpc-provider/types';
 
 import {
   polkadotLocal,
-  WasmProvider,
-  westend,
+  WasmProvider
 } from '@substrate/connect';
 
 import { LazyProvider } from './utils/types'; 
@@ -34,7 +33,7 @@ export const JS_WASM_PROVIDERS: Record<string, LazyProvider> = {
     endpoint: 'Light client running in Browser',
     client: 'Wasm light',
     start: (): Promise<ProviderInterface> =>
-      Promise.resolve(new WasmProvider(polkadotLocal.fromUrl('./hooks/api/polkadot_cli_bg.wasm'))),
+      Promise.resolve(new WasmProvider(polkadotLocal())),
     transport: 'WasmProvider',
   },
   // 'Polkadot-Wasm-Light-Node': {
