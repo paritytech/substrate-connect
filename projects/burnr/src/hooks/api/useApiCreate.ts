@@ -31,7 +31,7 @@ export default function useApiCreate (): ApiPromise | null {
   const [provider, setProvider] = useState<LazyProvider | null>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Polkadot-WsProvider']);
   const  mountedRef = useIsMountedRef();
 
-  const instantiated = provider.source === 'browser' ? new WasmProvider(polkadotLocal.fromUrl('./polkadot_cli_bg.wasm')) : new WsProvider(provider.endpoint);
+  const instantiated = provider.source === 'browser' ? new WasmProvider(polkadotLocal()) : new WsProvider(provider.endpoint);
 
   useEffect((): void => {
     ApiPromise

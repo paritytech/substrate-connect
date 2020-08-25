@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
 const path = require('path');
 
 module.exports = {
@@ -47,7 +48,7 @@ module.exports = {
       files: {
         css: ['./src/style.css']
       }
-    })
+    }),
   ],
   performance: {
     hints: false

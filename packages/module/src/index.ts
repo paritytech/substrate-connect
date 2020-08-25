@@ -15,7 +15,7 @@ export { initClient } from './lib/initClient';
  */
 
 /* tslint:disable */
-// import * as wasm from './client-packages/polkadot/polkadot_cli_bg';
+// import * as wasm from './clients/polkadot/polkadot_cli_bg';
 // export { wasm };
 
 /**

@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 // eslint-disable-next-line @typescript-eslint/camelcase
-import init, { start_client } from '../client-packages/polkadot/polkadot_cli';
+import init, { start_client } from '../clients/polkadot/polkadot_cli';
 import { ClientConfig, LightClient, WasmRpcClient } from './types';
 
 let client: WasmRpcClient;
@@ -20,7 +20,7 @@ export function initClient(config: ClientConfig): LightClient {
       }
 
       console.log(`Loading light client "${config.name}-${config.version}" from ${config.spec_path}...`);
-      await init(config.client);
+      await init();
       console.log('Successfully loaded WASM, starting client...');
 
       // Dynamic import, because the JSON is quite big.

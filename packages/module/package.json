@@ -10,16 +10,19 @@
     "Sveta Goldstein <sveta@parity.io>"
   ],
   "scripts": {
-    "build": "rimraf lib  && copyfiles -Eu2 \"src/client-packages/**/*\" dist/client-packages && tsc",
+    "build": "rimraf dist  && copyfiles -Eu2 \"src/clients/**/*\" dist/clients && copyfiles -Eu2 \"src/client-specs/**/*\" dist/client-specs && tsc",
     "clean": "rimraf dist && rimraf node_modules"
   },
   "publishConfig": {
     "access": "public"
   },
-  "main": "src/index.js",
-  "releaseFiles": [
-    "src/**",
-    "README.md",
-    "LICENSE"
-  ]
+  "main": "dist/index.js",
+  "release": [
+    "dist/**",
+    "dist/clients/**",
+    "dist/client-specs/**"
+  ],
+  "module": "dist/index.js",
+  "types": "dist/lib/wasm_pack_world.d.ts",
+  "sideEffects": "false"
 }
