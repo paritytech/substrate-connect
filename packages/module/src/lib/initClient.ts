@@ -20,8 +20,8 @@ export function initClient(config: string): LightClient {
         return client;
       }
 
-      console.log(`Loading light client "${clients[config].name}-${clients[config].version}" from ${'../client-specs/' + config + '.json'}...`);
-      await init();
+      console.log(`Loading light client "${config} ${clients[config].name}-${clients[config].version}" from ${'../client-specs/' + config + '.json'}...`);
+      await init('../clients/polkadot/polkadot_cli_bg.wasm');
       console.log('Successfully loaded WASM, starting client...');
 
       // Dynamic import, because the JSON is quite big.

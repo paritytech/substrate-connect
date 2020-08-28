@@ -1,17 +1,5 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
-// import {
-//   start_client,
-//   default as init
-// } from 'polkadot-client';
-
-// import {
-//   LightClient,
-//   WasmProvider,
-//   polkadotLocal,
-//   westend,
-// } from './dist';
-
 import {
   LightClient,
   WasmProvider,
