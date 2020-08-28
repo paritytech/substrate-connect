@@ -5,12 +5,19 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 //   default as init
 // } from 'polkadot-client';
 
+// import {
+//   LightClient,
+//   WasmProvider,
+//   polkadotLocal,
+//   westend,
+// } from './dist';
+
 import {
   LightClient,
   WasmProvider,
   polkadotLocal,
   westend,
-} from './dist';
+} from '@substrate/connect';
 
 import {
   createError, createWrapper
@@ -19,9 +26,9 @@ import {
 const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
 
 const wsProvider = new WsProvider('ws://127.0.0.1:9944');
-const wasmProvider = new WasmProvider(westend());
 // const provider = new WsProvider('wss://poc3-rpc.polkadot.io/');
 // const provider = new WsProvider('wss://substrate-rpc.parity.io/');
+const wasmProvider = new WasmProvider(polkadotLocal());
 
 
 (async function main () {
@@ -30,7 +37,7 @@ const wasmProvider = new WasmProvider(westend());
   try {
     // Create our API with a connection to the node
     const api = await ApiPromise.create(wasmProvider);
-    console.log('api', api);
+    console.log('WASM api', api);
 
     // Retrieve the initial data
     let [ , , [data, {free: previous}] ]= await api.query.system.account(ALICE);

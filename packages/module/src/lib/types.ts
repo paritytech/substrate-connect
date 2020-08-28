@@ -52,10 +52,6 @@ export interface ClientConfig {
    * A version for the light client.
    */
   version: string;
-  /**
-   * The path to the chain_spec genesis config file
-   */
-  spec_path: string;
     /**
    * The path to the compiled wasm light client
    */
