@@ -4,8 +4,14 @@ import {
   LightClient,
   WasmProvider,
   polkadotLocal,
-  westend,
+  polkadot,
+  kusama
 } from '@substrate/connect';
+
+// import { wasm } from 'polkadot-cli';
+// console.log("WASM", wasm)
+
+
 
 import {
   createError, createWrapper
@@ -13,10 +19,10 @@ import {
 
 const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
 
-const wsProvider = new WsProvider('ws://127.0.0.1:9944');
+// const wsProvider = new WsProvider('ws://127.0.0.1:9944');
 // const provider = new WsProvider('wss://poc3-rpc.polkadot.io/');
 // const provider = new WsProvider('wss://substrate-rpc.parity.io/');
-const wasmProvider = new WasmProvider(polkadotLocal());
+const wasmProvider = new WasmProvider(kusama());
 
 
 (async function main () {

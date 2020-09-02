@@ -8,7 +8,7 @@ Source files can be found here https://github.com/paritytech/polkadot/tree/maste
 The `browser-demo` was compiled without the `--no-typescript` flag to include the TypeScript definitions.
 
 ```
-wasm-pack build --target web --out-dir ./browser-demo/pkg --release ./.. -- --no-default-features --features "browser"
+wasm-pack build --target nodejs --out-dir ./browser-demo/nodejs --release ./.. -- --no-default-features --features "browser"
 ```
 
 ## ToDo:

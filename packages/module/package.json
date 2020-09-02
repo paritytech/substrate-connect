@@ -23,6 +23,6 @@
     "dist/client-specs/**"
   ],
   "module": "dist/index.js",
-  "types": "dist/lib/wasm_pack_world.d.ts",
+  "types": "dist/lib/types.d.ts",
   "sideEffects": "false"
 }

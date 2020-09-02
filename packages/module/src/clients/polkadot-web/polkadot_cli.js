@@ -355,8 +355,10 @@ async function load(module, imports) {
     }
 }
 
-async function init() {
-    input = 'polkadot_cli_bg.wasm';
+async function init(input) {
+    if (typeof input === 'undefined') {
+        input = import.meta.url.replace(/\.js$/, '_bg.wasm');
+    }
     const imports = {};
     imports.wbg = {};
     imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
