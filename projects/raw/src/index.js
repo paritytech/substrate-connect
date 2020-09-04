@@ -1,17 +1,18 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
-import {
-  LightClient,
-  WasmProvider,
-  polkadotLocal,
-  polkadot,
-  kusama
-} from '@substrate/connect';
+// import {
+//   LightClient,
+//   WasmProvider,
+//   polkadotLocal,
+//   polkadot,
+//   kusama
+// } from '@substrate/connect';
 
-// import { wasm } from 'polkadot-cli';
-// console.log("WASM", wasm)
+import { wasm } from 'polkadot-client';
+console.log("WASM", wasm)
 
-
+// import { start_client, default as init } from 'polkadot-cli-bundle';
+// console.log("start_client", start_client, "init", init)
 
 import {
   createError, createWrapper
@@ -20,9 +21,9 @@ import {
 const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
 
 // const wsProvider = new WsProvider('ws://127.0.0.1:9944');
-// const provider = new WsProvider('wss://poc3-rpc.polkadot.io/');
+const provider = new WsProvider('wss://poc3-rpc.polkadot.io/');
 // const provider = new WsProvider('wss://substrate-rpc.parity.io/');
-const wasmProvider = new WasmProvider(kusama());
+// const wasmProvider = new WasmProvider(kusama());
 
 
 (async function main () {
@@ -30,7 +31,7 @@ const wasmProvider = new WasmProvider(kusama());
 
   try {
     // Create our API with a connection to the node
-    const api = await ApiPromise.create(wasmProvider);
+    const api = await ApiPromise.create(provider);
     console.log('WASM api', api);
 
     // Retrieve the initial data

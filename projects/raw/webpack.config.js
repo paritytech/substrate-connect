@@ -48,9 +48,12 @@ module.exports = {
       files: {
         css: ['./src/style.css']
       }
-    }),
+    })
   ],
   performance: {
     hints: false
+  },
+  node: {
+    fs: 'empty'
   }
 };
