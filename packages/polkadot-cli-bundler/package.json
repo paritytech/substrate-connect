@@ -1,0 +1,16 @@
+{
+  "name": "polkadot-cli-bundle",
+  "collaborators": [
+    "Parity Technologies <admin@parity.io>"
+  ],
+  "description": "Polkadot Relay-chain Client Node",
+  "version": "0.0.1",
+  "files": [
+    "polkadot_cli_bg.wasm",
+    "polkadot_cli.js",
+    "polkadot_cli.d.ts"
+  ],
+  "module": "polkadot_cli.js",
+  "types": "polkadot_cli.d.ts",
+  "sideEffects": false
+}

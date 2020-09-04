@@ -18,11 +18,15 @@
     "clean": " yarn workspaces run clean && rimraf node_modules",
     "build": "yarn workspaces run build",
     "dev": " yarn run build && yarn workspace @substrate/burnr run dev",
-    "test": " yarn workspaces run test"
+    "test": " yarn workspaces run test",
+    "dev:raw": "yarn workspace @substrate/connect run build && yarn workspace raw-js run build && yarn workspace raw-js run start"
   },
   "devDependencies": {
     "copyfiles": "^2.3.0",
     "lerna": "^3.22.1",
     "rimraf": "^3.0.2"
+  },
+  "dependencies": {
+    "@wasm-tool/wasm-pack-plugin": "^1.3.1"
   }
 }

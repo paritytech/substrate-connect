@@ -2,21 +2,21 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-export * from './types';
-export * from './WasmProvider';
+import { LightClient } from './lib/types';
+import { initClient } from './lib/initClient';
 
-/**
- * Hosts
- */
-
-/* tslint:disable */
-// import * as wasm from './client-packages/polkadot/polkadot_cli_bg';
-// export { wasm };
+export * from './lib/types';
+export * from './lib/WasmProvider';
+export { initClient } from './lib/initClient';
 
 /**
  * Light clients
  */
-export * from './client-specs/kusama';
-export * from './client-specs/polkadot';
-export * from './client-specs/polkadot-local';
-export * from './client-specs/westend';
+export function kusama(): LightClient { return initClient('kusama') };
+export function polkadot(): LightClient { return initClient('polkadot') };
+export function polkadotLocal(): LightClient { return initClient('polkadotLocal') };
+export function westend(): LightClient { return initClient('westend') };
+
+
+
+

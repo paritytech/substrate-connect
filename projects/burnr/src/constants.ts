@@ -2,11 +2,8 @@ import { WsProvider } from '@polkadot/api';
 import { ProviderInterface } from '@polkadot/rpc-provider/types';
 
 import {
-  kusama,
-  polkadot,
   polkadotLocal,
-  WasmProvider,
-  westend,
+  WasmProvider
 } from '@substrate/connect';
 
 import { LazyProvider } from './utils/types'; 
@@ -36,7 +33,7 @@ export const JS_WASM_PROVIDERS: Record<string, LazyProvider> = {
     endpoint: 'Light client running in Browser',
     client: 'Wasm light',
     start: (): Promise<ProviderInterface> =>
-      Promise.resolve(new WasmProvider(polkadotLocal.fromUrl('./hooks/api/polkadot_cli_bg.wasm'))),
+      Promise.resolve(new WasmProvider(polkadotLocal())),
     transport: 'WasmProvider',
   },
   // 'Polkadot-Wasm-Light-Node': {
@@ -47,7 +44,7 @@ export const JS_WASM_PROVIDERS: Record<string, LazyProvider> = {
   //   source: 'browser tab',
   //   endpoint: 'Light client running in Browser',
   //   start: (): Promise<ProviderInterface> =>
-  //     Promise.resolve(new WasmProvider(polkadot.fromUrl('./hooks/api/polkadot_cli_bg.wasm'))),
+  //     Promise.resolve(new WasmProvider(polkadot())),
   //   transport: 'WasmProvider',
   // },
   // 'Kusama-Wasm-Light-Node': {
@@ -58,7 +55,7 @@ export const JS_WASM_PROVIDERS: Record<string, LazyProvider> = {
   //   source: 'browser tab',
   //   endpoint: 'Light client running in Browser',
   //   start: (): Promise<ProviderInterface> =>
-  //     Promise.resolve(new WasmProvider(kusama.fromUrl('./hooks/api/polkadot_cli_bg.wasm'))),
+  //     Promise.resolve(new WasmProvider(kusama())),
   //   transport: 'WasmProvider',
   // },
   // 'Westend-Wasm-Light-Node': {
@@ -69,7 +66,7 @@ export const JS_WASM_PROVIDERS: Record<string, LazyProvider> = {
   //   source: 'browser tab',
   //   endpoint: 'Light client running in Browser',
   //   start: (): Promise<ProviderInterface> =>
-  //     Promise.resolve(new WasmProvider(westend.fromUrl('./hooks/api/polkadot_cli_bg.wasm'))),
+  //     Promise.resolve(new WasmProvider(westend())),
   //   transport: 'WasmProvider',
   // },
 };
