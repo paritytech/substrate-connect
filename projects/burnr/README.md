@@ -2,6 +2,9 @@
 
 A light-client-based, in-browser wallet for Substrate. It's meant to be quick and easy to use but less secure than other solutions.
 
+### @TODO
+Try out  https://github.com/tylervipond/use-as-bind hook
+
 ## Quick Start
 
 To quick start the development environment, just follow these steps:
