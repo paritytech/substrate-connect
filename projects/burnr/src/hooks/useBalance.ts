@@ -18,7 +18,6 @@ export default function useBalance (address: string): State {
 
   useEffect((): () => void => {
     let unsubscribe: null | (() => void) = null;
-
     api.query.system
       .account(address, ({ data }): void => {
         mountedRef.current && setState([
