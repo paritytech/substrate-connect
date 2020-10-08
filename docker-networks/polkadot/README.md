@@ -29,9 +29,6 @@ You can find a list of available genesis config chain_spec [here](https://github
 
 The current Polkadot commit used is [c39fbd38b5286b72cddbf8d582f12c3ac3c180aa (18-08-2020)](https://github.com/paritytech/polkadot/commit/c39fbd38b5286b72cddbf8d582f12c3ac3c180aa)
 
-
-T
-
 **Setup:**
 A basic local network with 3 validators connected to the public internet
 
