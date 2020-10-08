@@ -8,10 +8,10 @@ To generate a custom chain_spec, checkout the Polkadot GitHub Repo and navigate 
 The following specs are available:
 https://github.com/paritytech/polkadot/blob/master/cli/src/command.rs#L56
 
-Example: To build the kusama-local chain_spec.json, you'd have to run:
+Example: To build the kusama-local chain_spec.json, you'd have to run the following command in root folder of the checked out polkadot Github repo:
 
 ```
-polkadot build-spec --chain kusama-local --raw > kusama-local.json
+./target/release/polkadot build-spec --chain kusama-local --raw > kusama-local.json
 ```
 
 ## ToDo:
