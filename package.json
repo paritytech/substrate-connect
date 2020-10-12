@@ -18,8 +18,8 @@
     "clean": " yarn workspaces run clean && rimraf node_modules",
     "build": "yarn workspaces run build",
     "dev": " yarn run build && yarn workspace @substrate/burnr run dev",
-    "test": " yarn workspaces run test",
-    "dev:raw": "yarn workspace @substrate/connect run build && yarn workspace raw-js run build && yarn workspace raw-js run start"
+    "dev:raw": "yarn workspace @substrate/connect run build && yarn workspace raw-js run build && yarn workspace raw-js run start",
+    "test": " yarn workspaces run test"
   },
   "devDependencies": {
     "copyfiles": "^2.3.0",
