@@ -8,8 +8,8 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 //   kusama
 // } from '@substrate/connect';
 
-import { wasm } from 'polkadot-client';
-console.log("WASM", wasm)
+// import { wasm } from 'polkadot-client';
+// console.log("WASM", wasm)
 
 // import { start_client, default as init } from 'polkadot-cli-bundle';
 // console.log("start_client", start_client, "init", init)
