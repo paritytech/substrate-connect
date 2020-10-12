@@ -1,3 +1,4 @@
+// @ts-nocheck 
 // Copyright 2018-2020 @paritytech/substrate-light-ui authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
@@ -66,6 +67,7 @@ export interface ClientConfig {
 * @param {string} log_level
 * @returns {any}
 */
+
 export function start_client(chain_spec: string, log_level: string): any;
 /**
 * A running client.
