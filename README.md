@@ -50,6 +50,15 @@ To clean up all workspaces in the repository, run:
 $ yarn clean
 ```
 
+## Run local version of Burnr wallet
+Running the following command will build all necessary dependencies and run the Substrate Burnr Wallet in development mode with hot reloading enabled.
+
+```
+$ yarn run dev
+```
+
+(Make sure to run `$ yarn install` before.)
+
 ## Working with this repository
 
 Substrate Connect is using Yarn worspaces to manage dependencies. 
