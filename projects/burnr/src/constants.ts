@@ -1,11 +1,21 @@
 import { WsProvider } from '@polkadot/api';
 import { ProviderInterface } from '@polkadot/rpc-provider/types';
 
+import { LazyProvider } from './utils/types'; 
+
 // import {
 //   polkadotLocal,
 //   WasmProvider
 // } from '@substrate/connect';
 
+/**
+ * Temporary hard-coded work around to test Wasm Light client 
+ * until @substrate/connect is properly implemented
+ */
+
+import { WasmProvider } from '../assets/wasm_client/WasmProvider';
+import { initClient } from '../assets/wasm_client/initClient';
+const WasmClient = '../assets/wasm_client/polkadot_cli_bg.wasm';
 
 export const endpoints = {
   'kusama': 'wss://kusama-rpc.polkadot.io/',
@@ -31,7 +41,7 @@ export const JS_WASM_PROVIDERS: Record<string, LazyProvider> = {
     endpoint: 'Light client running in Browser',
     client: 'Wasm light',
     start: (): Promise<ProviderInterface> =>
-      Promise.resolve(new WasmProvider( return initClient('polkadotLocal') )),
+      Promise.resolve(new WasmProvider( initClient(WasmClient) )),
     transport: 'WasmProvider',
   }
   // 'Polkadot-Wasm-Light-Node': {
