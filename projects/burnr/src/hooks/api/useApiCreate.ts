@@ -10,17 +10,16 @@ import { useIsMountedRef, useLocalStorage, useProvider } from './..';
 /**  This part isn't usable until the issues in the Substrate Light CLient implementation have been fixed **/
 import {
   // kusama,
-  LightClient,
+  // LightClient,
   // polkadot,
   // polkadotLocal,
   // WasmProvider,
   // westend,
 } from '@substrate/connect';
-
-// const rpc = new Rpc(provider);
-//
-// console.log('wasmclient', wasmclient)
-// console.log('polkadotLocalWs', polkadotLocalWs)
+/* Temporary hard-coded work around to test Wasm Light client 
+* until @substrate/connect is properly implemented
+*/
+import { polkadotLocal, WasmProvider } from '../../../assets/wasm_client';
 
 console.log('ALL_PROVIDERS', ALL_PROVIDERS['Polkadot-WsProvider'])
 
@@ -31,8 +30,8 @@ export default function useApiCreate (): ApiPromise | null {
   const [provider, setProvider] = useState<LazyProvider | null>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Polkadot-WsProvider']);
   const  mountedRef = useIsMountedRef();
 
-  // const instantiated = provider.source === 'browser' ? new WasmProvider(polkadotLocal()) : new WsProvider(provider.endpoint);
-  const instantiated = new WsProvider(provider.endpoint);
+  // @TODO Make dynamic once @substrate/connect is implemented
+  const instantiated = provider.source === 'browser' ? new WasmProvider(polkadotLocal()) : new WsProvider(provider.endpoint);
 
   useEffect((): void => {
     ApiPromise
