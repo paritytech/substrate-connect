@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 // eslint-disable-next-line @typescript-eslint/camelcase
-import init, { start_client } from './polkadot_cli';
+import init, { start_client } from './polkadot/polkadot_cli';
 import { LightClient, WasmRpcClient } from './types';
 
 let client: WasmRpcClient;
@@ -11,7 +11,7 @@ let client: WasmRpcClient;
 /**
  * Create a light client by fetching the WASM blob from an URL.
  */
-export function initClient(): LightClient {
+export function initClient(url: string): LightClient {
   return {
     name: 'Polkadot Local',
     async startClient(): Promise<WasmRpcClient> {
@@ -22,7 +22,11 @@ export function initClient(): LightClient {
       console.log(`Loading Polkadot Wasm light client from "./polkadotLocal.json" ...`);
       await init('./polkadot_cli_bg.wasm');
       console.log('Successfully loaded WASM, starting client...');
-      const { default: chainSpec } = await import('./polkadotLocal.json');
+
+      // Dynamic import, because the JSON is quite big.
+      // Pattern to enable dynamic imports in Webpack see:
+      // https://github.com/webpack/webpack/issues/6680#issuecomment-370800037
+      const { default: chainSpec } = await import(url);
 
       client = await start_client(JSON.stringify(chainSpec), 'INFO');
 
