@@ -52,8 +52,8 @@ export class WasmProvider implements ProviderInterface {
     throw new Error('clone() is unimplemented yet.');
   }
 
-  public connect(): void {
-    this.light
+  public connect(): Promise<void> {
+    return this.light
       .startClient()
       .then((rpcClient) => {
         this.#rpcClient = rpcClient;
@@ -69,10 +69,16 @@ export class WasmProvider implements ProviderInterface {
   /**
    * @description Manually disconnect from the connection.
    */
-  public disconnect(): void {
-    if (this.#rpcClient) {
-      console.log('Destroying WASM light client');
-      this.#rpcClient.free();
+  // eslint-disable-next-line @typescript-eslint/require-await
+  public async disconnect(): Promise<void> {
+    console.log('Destroying WASM light client');
+    try {
+      if (this.#rpcClient) {
+        return this.#rpcClient.free();
+      }
+    } catch(error) {
+      console.error(error);
+      throw error;
     }
   }
 
@@ -80,7 +86,7 @@ export class WasmProvider implements ProviderInterface {
    * @summary Whether the node is connected or not.
    * @return {boolean} true if connected
    */
-  public isConnected(): boolean {
+  public get isConnected (): boolean {
     return this.#isConnected;
   }
 
@@ -185,7 +191,7 @@ export class WasmProvider implements ProviderInterface {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: any[],
     callback: ProviderInterfaceCallback
-  ): Promise<number> {
+  ): Promise<number | string> {
     const id = await this.send(method, params, { callback, type });
 
     return id as number;
@@ -197,7 +203,7 @@ export class WasmProvider implements ProviderInterface {
   public async unsubscribe(
     _type: string,
     method: string,
-    id: number
+    id: number | string
   ): Promise<boolean> {
     const result = await this.send(method, [id]);
 
