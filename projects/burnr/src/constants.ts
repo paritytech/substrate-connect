@@ -13,9 +13,10 @@ import { LazyProvider } from './utils/types';
  * until @substrate/connect is properly implemented
  */
 
-import { WasmProvider } from '../assets/wasm_client/WasmProvider';
-import { initClient } from '../assets/wasm_client/initClient';
-const WasmClient = '../assets/wasm_client/polkadot_cli_bg.wasm';
+import { polkadotLocal } from '../assets/wasm_client';
+// import { initClient } from '../assets/wasm_client/initClient';
+// const WasmClientPath = '../assets/wasm_client/polkadot_cli_bg.wasm';
+// const WasmClient: LightClient = initClient(WasmClientPath)
 
 export const endpoints = {
   'kusama': 'wss://kusama-rpc.polkadot.io/',
@@ -32,18 +33,20 @@ export const users = {
 }
 
 export const JS_WASM_PROVIDERS: Record<string, LazyProvider> = {
-  'Polkadot-Local-WasmProvider': {
-    description: 'Local WASM light client for polkadot-local network',
-    id: 'Polkadot-Local-WasmProvider',
-    network: 'Local Polkadot Network',
-    node: 'light',
-    source: 'browser',
-    endpoint: 'Light client running in Browser',
-    client: 'Wasm light',
-    start: (): Promise<ProviderInterface> =>
-      Promise.resolve(new WasmProvider( initClient(WasmClient) )),
-    transport: 'WasmProvider',
-  }
+  // 'Polkadot-Local-WasmProvider': {
+  //   description: 'Local WASM light client for polkadot-local network',
+  //   id: 'Polkadot-Local-WasmProvider',
+  //   network: 'Local Polkadot Network',
+  //   node: 'light',
+  //   source: 'browser',
+  //   endpoint: 'Light client running in Browser',
+  //   client: 'Wasm light',
+  //   start: (): Promise<ProviderInterface> =>
+  //     Promise.resolve(new WasmProvider(WasmClient)),
+  //   // start: (): Promise<ProviderInterface> =>
+  //   //   Promise.resolve(polkadotLocal()),
+  //   transport: 'WasmProvider',
+  // }
   // 'Polkadot-Wasm-Light-Node': {
   //   description: 'Local WASM light client for Polkadot',
   //   id: 'Polkadot-WasmProvider',
