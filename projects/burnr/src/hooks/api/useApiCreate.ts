@@ -8,25 +8,27 @@ import { LazyProvider } from './../../utils/types';
 import { useIsMountedRef, useLocalStorage, useProvider } from './..';
 
 /**  This part isn't usable until the issues in the Substrate Light CLient implementation have been fixed **/
-import {
-  // kusama,
-  // LightClient,
-  // polkadot,
-  // polkadotLocal,
-  // WasmProvider,
-  // westend,
-} from '@substrate/connect';
+// import {
+//   kusama,
+//   LightClient,
+//   polkadot,
+//   polkadotLocal,
+//   WasmProvider,
+//   westend,
+// } from '@substrate/connect';
+
 /* Temporary hard-coded work around to test Wasm Light client 
 * until @substrate/connect is properly implemented
 */
 import { polkadotLocal, WasmProvider } from '../../../assets/wasm_client';
 
-console.log('ALL_PROVIDERS', ALL_PROVIDERS['Polkadot-WsProvider'])
+console.log('ALL_PROVIDERS', ALL_PROVIDERS)
 
 
 export default function useApiCreate (): ApiPromise | null {
   const [api, setApi] = useState<ApiPromise | null>(null);
   const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
+
   const [provider, setProvider] = useState<LazyProvider | null>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Polkadot-WsProvider']);
   const  mountedRef = useIsMountedRef();
 
