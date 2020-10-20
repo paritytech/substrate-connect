@@ -12,7 +12,7 @@ import { LazyProvider } from './utils/types';
  * Temporary hard-coded work around to test Wasm Light client 
  * until @substrate/connect is properly implemented
  */
-import { polkadotLocal, WasmProvider } from '../assets/wasm_client';
+import { polkadotLocal, WasmProvider } from './wasm_client';
 
 
 export const endpoints = {
