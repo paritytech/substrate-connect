@@ -7,4 +7,4 @@ import { initClient } from './initClient';
 export * from './types';
 export * from './WasmProvider';
 
-export function polkadotLocal(): LightClient { return initClient('./polkadot/polkadotLocal.json') };
+export function polkadotLocal(): LightClient { return initClient('./polkadot/polkadot-local.json') };
