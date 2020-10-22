@@ -12,5 +12,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es2015",
-  }
+    "outDir": "./client"
+  },
+  "include": ["./src"]
 }

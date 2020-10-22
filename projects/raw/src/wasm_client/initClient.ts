@@ -7,19 +7,20 @@ import init, { start_client } from './polkadot/polkadot_cli';
 import { LightClient, WasmRpcClient } from './types';
 
 let client: WasmRpcClient;
-
+const name = 'polkadot_local';
+const version = 'v0.8.25';
 /**
  * Create a light client by fetching the WASM blob from an URL.
  */
 export function initClient(url: string): LightClient {
   return {
-    name: 'Polkadot Local',
+    name,
     async startClient(): Promise<WasmRpcClient> {
       if (client) {
         return client;
       }
 
-      console.log(`Initializing Polkadot Wasm light client from "./polkadot_cli_bg.wasm" ...`);
+      console.log(`Initializing ${name} Wasm light client from "./polkadot_cli_bg.wasm" ...`);
       await init('./polkadot/polkadot_cli_bg.wasm');
       console.log('Successfully loaded WASM, starting client from "./polkadotLocal.wasm"...');
     
@@ -32,6 +33,6 @@ export function initClient(url: string): LightClient {
 
       return client;
     },
-    version: '0.8.25'
+    version
   };
 }

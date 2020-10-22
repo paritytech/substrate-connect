@@ -1,4 +1,3 @@
-// @ts-nocheck 
 // Copyright 2018-2020 @paritytech/substrate-light-ui authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
@@ -42,19 +41,4 @@ export interface LightClient {
    * A version for the light client.
    */
   version: string;
-}
-
-export interface ClientConfig {
-  /**
-   * An identifier for the light client.
-   */
-  name: string;
-  /**
-   * A version for the light client.
-   */
-  version: string;
-    /**
-   * The path to the compiled wasm light client
-   */
-  client: string;
 }
