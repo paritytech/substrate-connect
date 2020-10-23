@@ -3,16 +3,15 @@ import { ProviderInterface } from '@polkadot/rpc-provider/types';
 
 import { LazyProvider } from './utils/types'; 
 
-// import {
-//   polkadotLocal,
-//   WasmProvider
-// } from '@substrate/connect';
+import {
+  polkadotLocal,
+  WasmProvider
+} from '@substrate/wasmclient';
 
 /**
  * Temporary hard-coded work around to test Wasm Light client 
  * until @substrate/connect is properly implemented
  */
-import { polkadotLocal, WasmProvider } from './wasm_client';
 
 
 export const endpoints = {
