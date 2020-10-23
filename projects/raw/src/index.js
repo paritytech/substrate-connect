@@ -1,6 +1,5 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { polkadotLocal, WasmProvider } from './polkadot';
-console.log("WasmProvider", WasmProvider, "polkadotLocal", polkadotLocal)
 
 import {
   createError, createLog, createWrapper
@@ -13,7 +12,7 @@ const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
 const wasmLocal = new WasmProvider(polkadotLocal());
 
 (async function main () {
-  const wrapper = createWrapper('simple-connect', 'Connect to Wasm Light Client');
+  createLog(`Connecting to Wasm Light Client`);
 
   try {
     // Create our API with a connection to the Wasm light client 
@@ -33,7 +32,7 @@ const wasmLocal = new WasmProvider(polkadotLocal());
       // the initial balance change will also be zero)
       if (!change.isZero()) {
         previous = free;
-        console.log('New transaction of: '+ change);
+        createLog('New transaction of: '+ change);
       }
     });
 

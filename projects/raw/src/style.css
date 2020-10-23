@@ -1,9 +1,9 @@
-html *{
+html * {
   box-sizing: border-box;
   font-family: Tahoma, Geneva, sans-serif;
 }
 
-body{
+body {
   padding: 0;
   margin: 0;
   background-color: #f0f0f0;
@@ -11,15 +11,22 @@ body{
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
-  align-content:center;;
+  align-content: center;
+  ;
   min-height: 100vh;
   width: 100vw;
 }
 
 @keyframes fadeIn {
-   0% {opacity: 0;}
-   100% {opacity: 1;}
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
+
 .fadeIn {
   opacity: 1;
   animation-name: fadeIn;
@@ -32,9 +39,10 @@ body{
   align-items: stretch;
   align-content: stretch;
   display: flex;
-  flex:2;
+  flex: 2;
   flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  text-align: center;
 }
 
 .wrapper {
@@ -64,7 +72,8 @@ p {
   word-break: break-word;
 }
 
-a, a:visited {
+a,
+a:visited {
   text-decoration: none;
   color: #d75ea1;
 }
@@ -90,6 +99,7 @@ a:hover {
   .content {
     flex-direction: column;
   }
+
   .wrapper {
     width: 100vw;
     height: auto;
