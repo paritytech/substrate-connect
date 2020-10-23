@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function Home ():  React.ReactElement {
 	const classes = useStyles();
-	const userInfo = useUserInfo(users.westend);
+	const userInfo = useUserInfo(users.polkadot);
 
 	return (
 		<>

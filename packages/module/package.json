@@ -24,5 +24,8 @@
   ],
   "module": "dist/index.js",
   "types": "dist/lib/types.d.ts",
-  "sideEffects": "false"
+  "sideEffects": "false",
+  "dependencies": {
+    "@polkadot/rpc-provider": "^2.2.1"
+  }
 }
