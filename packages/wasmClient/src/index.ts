@@ -6,4 +6,4 @@ import { initClient } from './initClient';
 
 export * from './WasmProvider';
 export * from './types';
-export const polkadot_local = initClient('./polkadot/polkadot-local.json');
+export const polkadotLocal = initClient;

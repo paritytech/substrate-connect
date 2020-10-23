@@ -12,7 +12,7 @@ const version = 'v0.8.25';
 /**
  * Create a light client by fetching the WASM blob from an URL.
  */
-export function initClient(url: string): LightClient {
+export function initClient(): LightClient {
   return {
     name,
     async startClient(): Promise<WasmRpcClient> {
@@ -27,7 +27,7 @@ export function initClient(url: string): LightClient {
       // Dynamic import, because the JSON is quite big.
       // Pattern to enable dynamic imports in Webpack see:
       // https://github.com/webpack/webpack/issues/6680#issuecomment-370800037
-      const { default: chainSpec } = await import(url);
+      const { default: chainSpec } = await import('./polkadot/polkadot-local.json');
 
       client = await start_client(JSON.stringify(chainSpec), 'INFO');
 
