@@ -19,7 +19,21 @@ $ yarn add @polkadot/util
 ## Debugging FAQ
 
 ### Webpack
-**Error `Can't resolve 'fs'`**
+
+#### ERROR: `**Module parse failed: Unexpected token**`
+
+`You may need an additional loader to handle the result of these loaders.`
+
+**This needs to be added to webpack config in order to load Wasm File from module**
+```
+  {
+    test: /\.js$/,
+    // https://github.com/webpack/webpack/issues/6719#issuecomment-546840116
+    loader: require.resolve('@open-wc/webpack-import-meta-loader'),
+  }
+```
+
+#### ERROR: `**Can't resolve 'fs'**`
 ```
 client?9669:159 substrate-connect/packages/nodejs/polkadot_cli.js
 Module not found: Error: Can't resolve 'fs' in 'substrate-connect/packages/nodejs'
