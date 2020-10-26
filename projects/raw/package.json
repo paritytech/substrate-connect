@@ -6,7 +6,7 @@
   "repository": "",
   "scripts": {
     "start": "webpack-dev-server --mode development --open",
-    "build": "rm -rf dist && webpack --mode production --module-bind js=babel-loader && copyfiles -Eu2 \"src/polkadot/polkadot_cli_bg.wasm\" \"./\"",
+    "build": "rm -rf dist && webpack --mode production --module-bind js=babel-loader",
     "clean": "rm -rf dist && rm -rf node_modules"
   },
   "keywords": [

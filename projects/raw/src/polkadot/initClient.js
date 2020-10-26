@@ -26,9 +26,9 @@ export function initClient() {
                 if (client) {
                     return client;
                 }
-                console.log(`Initializing ${name} Wasm light client from "./polkadot_cli_bg.wasm" ...`);
+                console.log(`Initializing ${name} Wasm light client from "./polkadot/polkadot_cli_bg.wasm" ...`);
                 yield init('./src/polkadot/polkadot_cli_bg.wasm');
-                console.log('Successfully loaded WASM, starting client from "./polkadotLocal.wasm"...');
+                console.log('Successfully loaded WASM, starting client from "./polkadot/polkadotLocal.wasm"...');
                 // Dynamic import, because the JSON is quite big.
                 // Pattern to enable dynamic imports in Webpack see:
                 // https://github.com/webpack/webpack/issues/6680#issuecomment-370800037
