@@ -21,9 +21,9 @@
 version: "3.7"
 services:
     polkadot-master:
-        image: parity/polkadot:v0.8.25
+        image: parity/polkadot:v0.8.26-1
         ports:
-            - "9944:9944"
+            - "9943:9944"
             - "9933:9933"
         networks:
             testing_net:
@@ -37,7 +37,7 @@ services:
             - "/ip4/127.0.0.1/tcp/30337/ws/p2p/12D3KooWCJC43YRmb5WJcJmskPSxbkWY4Vp6jPKdFeggnXPxgBCw"
 
     node_alice:
-        image: parity/polkadot:v0.8.25
+        image: parity/polkadot:v0.8.26-1
         ports:
             - "30335:30333"
             - "30337:30334" # for `/ws/p2p/`
@@ -67,7 +67,7 @@ services:
                 ipv4_address: 172.28.1.1
 
     node_bob:
-        image: parity/polkadot:v0.8.25
+        image: parity/polkadot:v0.8.26-1
         ports:
             - "30334:30333"
             - "9946:9944"
@@ -88,7 +88,7 @@ services:
                 ipv4_address: 172.28.1.2
 
     node_charlie:
-        image: parity/polkadot:v0.8.25
+        image: parity/polkadot:v0.8.26-1
         ports:
             - "30336:30333"
             - "9947:9944"
