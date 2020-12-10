@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: Apache-2
-
-import type { Balance, Index, RefCount } from '@polkadot/types/interfaces';
+import type, { Balance, Index, RefCount } from '@polkadot/types/interfaces';
 import { ProviderInterface } from '@polkadot/rpc-provider/types';
 import { ProviderMeta } from '@polkadot/extension-inject/types';
 import { u32 } from '@polkadot/types';
