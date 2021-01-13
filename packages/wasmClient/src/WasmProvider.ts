@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import Coder from '@polkadot/rpc-provider/coder';
+import {RpcCoder} from '@polkadot/rpc-provider/coder';
 import {
   ProviderInterface,
   ProviderInterfaceCallback,
@@ -23,7 +23,7 @@ interface SubscriptionHandler {
 console.timeLog('wasm-provider');
 
 export class WasmProvider implements ProviderInterface {
-  #coder: Coder;
+  #coder: RpcCoder;
   #eventemitter: EventEmitter;
   #isConnected = false;
   #rpcClient: WasmRpcClient | undefined = undefined;
@@ -32,7 +32,7 @@ export class WasmProvider implements ProviderInterface {
 
   public constructor(light: LightClient) {
     this.#eventemitter = new EventEmitter();
-    this.#coder = new Coder();
+    this.#coder = new RpcCoder();
     this.light = light;
 
     this.connect();
