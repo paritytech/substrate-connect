@@ -18,7 +18,7 @@
   ],
   "sideEffects": "false",
   "dependencies": {
-    "@polkadot/rpc-provider": "^2.3.1",
+    "@polkadot/rpc-provider": "^3.4.1",
     "eventemitter3": "^4.0.7"
   }
 }

@@ -1,6 +1,13 @@
+// import both these to make typescript pickup the types properly
+import { Configuration as WebpackConfiguration } from "webpack";
+import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
+
+interface Configuration extends WebpackConfiguration {
+  devServer?: WebpackDevServerConfiguration;
+}
 import path from 'path';
-import { Configuration } from 'webpack';
-import ManifestPlugin from 'webpack-manifest-plugin';
+import { ProvidePlugin } from 'webpack';
+import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import cssnano from 'cssnano';
 
@@ -21,6 +28,11 @@ const config: Configuration = {
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    fallback: {
+      'crypto': require.resolve('crypto-browserify'),
+      'stream': require.resolve('stream-browserify'),
+      'buffer': require.resolve('buffer-browserify')
+    }
   },
   optimization: {
     minimize: !IS_DEV,
@@ -86,12 +98,6 @@ const config: Configuration = {
     ],
   },
   node: {
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    child_process: 'empty',
-    dgram: 'empty',
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
   },
   performance: {
     hints: false,
@@ -103,7 +109,11 @@ const config: Configuration = {
     openPage: `http://localhost:${SERVER_PORT}`,
   },
   plugins: [
-    new ManifestPlugin()
+    new WebpackManifestPlugin(),
+    new ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
+        process: 'process/browser'
+    })
   ]
 };
 
