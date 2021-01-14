@@ -1,5 +1,12 @@
+// import both these to make typescript pickup the types properly
+import { Configuration as WebpackConfiguration } from "webpack";
+import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
+
+interface Configuration extends WebpackConfiguration {
+  devServer?: WebpackDevServerConfiguration;
+}
 import path from 'path';
-import { Configuration, ProvidePlugin } from 'webpack';
+import { ProvidePlugin } from 'webpack';
 import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import cssnano from 'cssnano';
