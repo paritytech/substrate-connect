@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+     "paths": {
+       "*": ["./types/*"]
+    } 
+  },
+  "extends": "../../tsconfig",
+  "include": ["src"]
+}

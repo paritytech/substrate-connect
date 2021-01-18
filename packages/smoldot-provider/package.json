@@ -1,0 +1,25 @@
+{
+  "name": "@substrate/smoldot-provider",
+  "version": "0.0.1",
+  "description": "PolkadotJS provider for smoldot wasm light client",
+  "repository": "https://github.com/paritytech/substrate-connect.git",
+  "author": "Parity Team <admin@parity.io>",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rimraf dist  && copyfiles -Eu2 \"src/polkadot/**/*\" dist/polkadot && tsc",
+    "clean": "rimraf dist && rimraf node_modules"
+  },
+  "release": [
+    "dist/**"
+  ],
+  "sideEffects": "false",
+  "dependencies": {
+    "@polkadot/rpc-provider": "^3.4.1",
+    "eventemitter3": "^4.0.7",
+    "smoldot": "^0.1.0"
+  }
+}
