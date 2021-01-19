@@ -12,7 +12,7 @@ import {
 import { assert } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 
-import smoldot, {SmoldotClient, SmoldotOptions} from 'smoldot';
+import * as smoldot from 'smoldot';
 
 interface SubscriptionHandler {
   callback: ProviderInterfaceCallback;
@@ -24,12 +24,15 @@ export class SmoldotProvider implements ProviderInterface {
   #coder: RpcCoder;
   #eventemitter: EventEmitter;
   #isConnected = false;
-  #client: SmoldotClient | undefined = undefined;
+  #client: smoldot.SmoldotClient | undefined = undefined;
+  #smoldot: smoldot.Smoldot;
 
-  public constructor(chainSpec: string) {
+  // optional client builder for testing
+  public constructor(chainSpec: string, clientBuilder?: any) {
     this.#chainSpec = chainSpec;
     this.#eventemitter = new EventEmitter();
     this.#coder = new RpcCoder();
+    this.#smoldot = clientBuilder || smoldot;
   }
 
   /**
@@ -43,18 +46,22 @@ export class SmoldotProvider implements ProviderInterface {
    * @description Returns a clone of the object
    */
   public clone(): SmoldotProvider {
-    throw new Error('clone() is unimplemented yet.');
+    throw new Error('clone() is not implemented.');
   }
 
-  public connect(): Promise<void> {
-    assert(this.#client === undefined, 'Client already connected');
-    assert(this.#isConnected === false, 'Client already connected');
+  public async connect(): Promise<void> {
+    assert(!this.#client && !this. #isConnected, 'Client is already connected');
 
-    return smoldot.start({
+    return this.#smoldot.start({
         chain_spec: this.#chainSpec,
-        json_rpc_callback: (response: string) => {}
+        json_rpc_callback: (response: string) => {
+          //todo
+        },
+        database_save_callback: (database_content: string) => { 
+          //todo
+        }
       })
-      .then((client: SmoldotClient) => {
+      .then((client: smoldot.SmoldotClient) => {
         this.#client = client;
         this.#isConnected = true;
         this.emit('connected');
@@ -73,7 +80,6 @@ export class SmoldotProvider implements ProviderInterface {
       this.#client = undefined;
     }
     this.#isConnected = false;
-    return Promise.resolve();
   }
 
   /**
@@ -106,7 +112,7 @@ export class SmoldotProvider implements ProviderInterface {
    * @param params Encoded paramaters as appliucable for the method
    * @param subscription Subscription details (internally used)
    */
-  public send(
+  public async send(
     method: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: any[],

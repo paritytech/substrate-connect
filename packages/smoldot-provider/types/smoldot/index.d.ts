@@ -6,9 +6,14 @@ export interface SmoldotClient {
   json_rpc_send(rpc: string): void;
 }
 
+export type SmoldotJsonRpcCallback = (response: string) => void;
+export type SmoldotDatabaseSaveCallback = (response: string) => void;
+
 export interface SmoldotOptions {
   chain_spec: string;
-  json_rpc_callback: (response: string) => void;
+  json_rpc_callback: SmoldotJsonRpcCallback;
+  database_save_callback: SmoldotDatabaseSaveCallback;
+  database_content?: string;
 }
 
 export interface Smoldot {

@@ -1,10 +1,20 @@
 {
+  "ts-node": {
+    "--experimental-module-resolution": "node"
+  },
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
     "outDir": "dist",
      "paths": {
        "*": ["./types/*"]
-    } 
+    },
+    "target": "es2015",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "module": "esnext"
   },
-  "extends": "../../tsconfig",
   "include": ["src"]
 }
