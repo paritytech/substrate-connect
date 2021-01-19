@@ -30,11 +30,12 @@ test('connect resolves and emits', async t => {
 
 });
 
-/*
-test('returns message response', async t => {
-    const echoSmoldot = mockSmoldot(x => x);
-    const provider = new SmoldotProvider("", echoSmoldot);
+test('returns message result', async t => {
+    const replyJson =  '{ "id": 1, "jsonrpc": "2.0", "result": "success" }';
+    const ms = mockSmoldot(_ => replyJson);
+    const provider = new SmoldotProvider("", ms);
 
-    //const reply = await provider.send('hello');
+    await provider.connect();
+    const reply = await provider.send('hello', [ 'world' ]);
+    t.is(reply, 'success');
 });
-*/

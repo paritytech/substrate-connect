@@ -4,20 +4,41 @@
 
 import {RpcCoder} from '@polkadot/rpc-provider/coder';
 import {
+  JsonRpcResponse,
   ProviderInterface,
   ProviderInterfaceCallback,
   ProviderInterfaceEmitCb,
   ProviderInterfaceEmitted,
 } from '@polkadot/rpc-provider/types';
-import { assert } from '@polkadot/util';
+import { assert, isUndefined, logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 
 import * as smoldot from 'smoldot';
+
+const l = logger('smoldot-provider');
+
+interface RpcStateAwaiting {
+  callback: ProviderInterfaceCallback;
+  method: string;
+  params: any[];
+  subscription?: SubscriptionHandler;
+}
 
 interface SubscriptionHandler {
   callback: ProviderInterfaceCallback;
   type: string;
 }
+
+interface StateSubscription extends SubscriptionHandler {
+    method: string;
+      params: any[];
+}
+
+const ANGLICISMS: { [index: string]: string } = {
+  chain_finalisedHead: 'chain_finalizedHead',
+  chain_subscribeFinalisedHeads: 'chain_subscribeFinalizedHeads',
+  chain_unsubscribeFinalisedHeads: 'chain_unsubscribeFinalizedHeads'
+};
 
 export class SmoldotProvider implements ProviderInterface {
   #chainSpec: string;
@@ -26,6 +47,9 @@ export class SmoldotProvider implements ProviderInterface {
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
   #smoldot: smoldot.Smoldot;
+  readonly #handlers: Record<string, RpcStateAwaiting> = {};
+  #subscriptions: Record<string, StateSubscription> = {};
+  readonly #waitingForId: Record<string, JsonRpcResponse> = {};
 
   // optional client builder for testing
   public constructor(chainSpec: string, clientBuilder?: any) {
@@ -49,13 +73,89 @@ export class SmoldotProvider implements ProviderInterface {
     throw new Error('clone() is not implemented.');
   }
 
+  #handleRpcReponse = (res: string) => {
+    l.debug(() => ['received', res]);
+
+    const response = JSON.parse(res) as JsonRpcResponse;
+    console.log(response);
+
+    return isUndefined(response.method)
+      ? this.#onMessageResult(response)
+      : this.#onMessageSubscribe(response);
+  }
+
+ #onMessageResult = (response: JsonRpcResponse): void => {
+    const handler = this.#handlers[response.id];
+
+    if (!handler) {
+      l.debug(() => `Unable to find handler for id=${response.id}`);
+
+      return;
+    }
+
+    try {
+      const { method, params, subscription } = handler;
+      const result = this.#coder.decodeResponse(response) as string;
+
+      // first send the result - in case of subs, we may have an update
+      // immediately if we have some queued results already
+      handler.callback(null, result);
+
+      if (subscription) {
+        const subId = `${subscription.type}::${result}`;
+
+        this.#subscriptions[subId] = {
+          ...subscription,
+          method,
+          params
+        };
+
+        // if we have a result waiting for this subscription already
+        if (this.#waitingForId[subId]) {
+          this.#onMessageSubscribe(this.#waitingForId[subId]);
+        }
+      }
+    } catch (error) {
+      handler.callback(error, undefined);
+    }
+
+    delete this.#handlers[response.id];
+  }
+
+  #onMessageSubscribe = (response: JsonRpcResponse): void => {
+    const method = ANGLICISMS[response.method as string] || response.method || 'invalid';
+    const subId = `${method}::${response.params.subscription}`;
+    const handler = this.#subscriptions[subId];
+
+    if (!handler) {
+     console.log('No handler registered!');
+      // store the response, we could have out-of-order subid coming in
+      this.#waitingForId[subId] = response;
+
+      l.debug(() => `Unable to find handler for subscription=${subId}`);
+
+      return;
+    }
+
+    // housekeeping
+    delete this.#waitingForId[subId];
+
+    try {
+      const result = this.#coder.decodeResponse(response);
+
+      handler.callback(null, result);
+    } catch (error) {
+      handler.callback(error, undefined);
+    }
+  }
+
   public async connect(): Promise<void> {
     assert(!this.#client && !this. #isConnected, 'Client is already connected');
 
     return this.#smoldot.start({
         chain_spec: this.#chainSpec,
         json_rpc_callback: (response: string) => {
-          //todo
+            this.#handleRpcReponse(response);
         },
         database_save_callback: (database_content: string) => { 
           //todo
@@ -120,12 +220,31 @@ export class SmoldotProvider implements ProviderInterface {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     return new Promise((resolve, reject): void => {
-      const json = this.#coder.encodeJson(method, params);
+      try {
+        assert(this.isConnected && this.#client, 'Client is not connected');
 
-      console.log((): string[] => ['calling', method, json]);
+        const json = this.#coder.encodeJson(method, params);
+        const id = this.#coder.getId();
 
-      assert(this.#client, 'Client is not connected');
-      // todo - implement send
+        const callback = (error?: Error | null, result?: any): void => {
+          error
+            ? reject(error)
+            : resolve(result);
+        };
+
+        l.debug(() => ['calling', method, json]);
+
+        this.#handlers[id] = {
+          callback,
+          method,
+          params,
+          subscription
+        };
+
+        this.#client.json_rpc_send(json);
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
