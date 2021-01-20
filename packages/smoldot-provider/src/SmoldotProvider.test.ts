@@ -5,12 +5,15 @@ import { SmoldotClient, SmoldotOptions } from 'smoldot';
 
 type RpcResponder = (message: string) => string;
 
+const EMPTY_CHAIN_SPEC = '{}';
 // Mimics the behaviour of the WASM light client by deferring a call to 
 // `json_rpc_callback` after it is called which returns the response
 // returned by the supplied `responder`.
 const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder) => {
   return (rpc: string) => {
-    process.nextTick(() => options.json_rpc_callback(responder(rpc)));
+    process.nextTick(() => {
+      options.json_rpc_callback(responder(rpc))
+    });
   };
 }
 
@@ -58,7 +61,7 @@ const respondWith = (jsonResponses: string[]) => {
 
 test('connect resolves and emits', async t => {
     const echoSmoldot = mockSmoldot(x => x);
-    const provider = new SmoldotProvider("", echoSmoldot);
+    const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, echoSmoldot);
     let connectedEmitted = false;
 
     provider.on('connected', () => { connectedEmitted = true; });
@@ -73,7 +76,7 @@ test('connect resolves and emits', async t => {
 test('awaiting send returns message result', async t => {
     const mockResponses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
     const ms = mockSmoldot(respondWith(mockResponses));
-    const provider = new SmoldotProvider("", ms);
+    const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
 
     await provider.connect();
     const reply = await provider.send('hello', [ 'world' ]);
@@ -85,7 +88,7 @@ test('send formats JSON RPC request correctly', async t => {
     const mockResponses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
     const rpcSend = sinon.spy();
     const ss = smoldotSpy(respondWith(mockResponses), rpcSend);
-    const provider = new SmoldotProvider("", ss);
+    const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ss);
 
     await provider.connect();
     const reply = await provider.send('hello', [ 'world' ]);
@@ -102,7 +105,7 @@ test('sending twice uses new id', async t => {
     ];
     const rpcSend = sinon.spy();
     const ss = smoldotSpy(respondWith(mockResponses), rpcSend);
-    const provider = new SmoldotProvider("", ss);
+    const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ss);
 
     await provider.connect();
     await provider.send('hello', [ 'world' ]);
@@ -120,7 +123,7 @@ test('sending twice uses new id', async t => {
 test('throws when got error JSON response', async t => {
     const mockResponses =  ['{ "id": 1, "jsonrpc": "2.0", "error": {"code": 666, "message": "boom!" } }'];
     const ms = mockSmoldot(respondWith(mockResponses));
-    const provider = new SmoldotProvider("", ms);
+    const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
 
     await provider.connect();
     await t.throwsAsync(async () => {
@@ -130,9 +133,43 @@ test('throws when got error JSON response', async t => {
 
 test('send can also add subscriptions and returns an id', async t => {
     const ms = mockSmoldot(respondWith(['{ "id": 1, "jsonrpc": "2.0", "result": 1  }']));
-    const provider = new SmoldotProvider("", ms);
+    const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
 
     await provider.connect();
     const reply = await provider.send('test_sub', []);
     t.is(reply, 1);
 });
+
+test('subscribe', async t => {
+    const ms = mockSmoldot(respondWith(['{ "id": 1, "jsonrpc": "2.0", "result": 1  }']));
+    const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+
+    await provider.connect();
+
+    // wrap in a promise returning thunk so that we wait for both the 
+    // subscription callback and the call to subscribe to resolve.
+    const thunk = () => {
+      return new Promise<void>((resolve, reject) => {
+        provider.subscribe('type', 'test_sub', [], (cb): void => {
+          // todo: make assertions on what this gets called back with
+          // todo: which comes first .. this or the subcription added message
+          // and is this consistent?
+
+          // need to use this for real to snoop on the requests and see what
+          // the light client actually responds with for now I'm assuming the
+          // logic in the WsProvider will just work (TM) with the smoldot wasm.  
+          // The tests there aren't any better than this and the JSON RPC
+          // spec isn't helpful: https://www.jsonrpc.org/specification#examples
+        }).then(reply => {
+          t.is(reply, 1);
+          // todo don't always resolve - see above
+          resolve();
+        });
+      });
+
+    }
+
+    return thunk();
+});
+
+test.todo('converts british english method spelling to US');
