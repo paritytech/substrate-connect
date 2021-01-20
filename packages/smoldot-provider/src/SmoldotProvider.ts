@@ -286,13 +286,25 @@ export class SmoldotProvider implements ProviderInterface {
    * @summary Allows unsubscribing to subscriptions made with [[subscribe]].
    */
   public async unsubscribe(
-    _type: string,
+    type: string,
     method: string,
     id: number | string
   ): Promise<boolean> {
-    const result = await this.send(method, [id]);
+    const subscription = `${type}::${id}`;
 
-    return result as boolean;
+    // FIXME This now could happen with re-subscriptions. The issue is that with a re-sub
+    // the assigned id now does not match what the API user originally received. It has
+    // a slight complication in solving - since we cannot rely on the send id, but rather
+    // need to find the actual subscription id to map it
+    if (isUndefined(this.#subscriptions[subscription])) {
+      l.debug(() => `Unable to find active subscription=${subscription}`);
+
+      return false;
+    }
+
+    delete this.#subscriptions[subscription];
+
+    return await this.send(method, [id]) as Promise<boolean>;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
