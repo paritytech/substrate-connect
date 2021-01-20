@@ -71,7 +71,7 @@ test('connect resolves and emits', async t => {
 // response has no method field
 // handler was not registered by `subscribe` I.E. has no associated `subscription`
 test('awaiting send returns message result', async t => {
-    const mockReponses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
+    const mockResponses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
     const ms = mockSmoldot(respondWith(mockResponses));
     const provider = new SmoldotProvider("", ms);
 
@@ -115,4 +115,15 @@ test('sending twice uses new id', async t => {
     t.is(rpcJson1, '{"id":1,"jsonrpc":"2.0","method":"hello","params":["world"]}');
     const rpcJson2 = rpcSend.secondCall.firstArg;
     t.is(rpcJson2, '{"id":2,"jsonrpc":"2.0","method":"hello","params":["world"]}');
+});
+
+test('throws when got error JSON response', async t => {
+    const mockResponses =  ['{ "id": 1, "jsonrpc": "2.0", "error": {"code": 666, "message": "boom!" } }'];
+    const ms = mockSmoldot(respondWith(mockResponses));
+    const provider = new SmoldotProvider("", ms);
+
+    await provider.connect();
+    await t.throwsAsync(async () => {
+      await provider.send('hello', [ 'world' ]);
+    }, {instanceOf: Error, message: '666: boom!'});
 });
