@@ -31,7 +31,7 @@ interface SubscriptionHandler {
 
 interface StateSubscription extends SubscriptionHandler {
     method: string;
-      params: any[];
+    params: any[];
 }
 
 const ANGLICISMS: { [index: string]: string } = {

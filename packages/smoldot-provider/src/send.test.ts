@@ -127,3 +127,12 @@ test('throws when got error JSON response', async t => {
       await provider.send('hello', [ 'world' ]);
     }, {instanceOf: Error, message: '666: boom!'});
 });
+
+test('send can also add subscriptions and returns an id', async t => {
+    const ms = mockSmoldot(respondWith(['{ "id": 1, "jsonrpc": "2.0", "result": 1  }']));
+    const provider = new SmoldotProvider("", ms);
+
+    await provider.connect();
+    const reply = await provider.send('test_sub', []);
+    t.is(reply, 1);
+});
