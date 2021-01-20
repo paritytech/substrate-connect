@@ -77,7 +77,6 @@ export class SmoldotProvider implements ProviderInterface {
     l.debug(() => ['received', res]);
 
     const response = JSON.parse(res) as JsonRpcResponse;
-    console.log(response);
 
     return isUndefined(response.method)
       ? this.#onMessageResult(response)
@@ -128,7 +127,7 @@ export class SmoldotProvider implements ProviderInterface {
     const handler = this.#subscriptions[subId];
 
     if (!handler) {
-     console.log('No handler registered!');
+      l.debug(() => `Unable to find subscription handler for id=${response.id}`);
       // store the response, we could have out-of-order subid coming in
       this.#waitingForId[subId] = response;
 
