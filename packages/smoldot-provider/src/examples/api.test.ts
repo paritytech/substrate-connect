@@ -21,7 +21,7 @@ test.before('Create a smoldot client', async t => {
 });
 
 test.serial('API constants', async t => {
-  const api: ApiPromise = t.context.api;
+  const api = t.context.api;
   const genesisHash = api.genesisHash.toHex();
   l.log('genesis hash: ', genesisHash);
   t.not(genesisHash, '');
@@ -35,9 +35,35 @@ test.serial('API constants', async t => {
 
 // Currently broken awaiting fix: https://github.com/paritytech/smoldot/issues/382
 test.skip('State queries', async t => {
-  const api: ApiPromise = t.context.api;
+  const api = t.context.api;
   const testAddress = '5FHyraDcRvSYCoSrhe8LiBLdKmuL9ptZ5tEtAtqfKfeHxA4y';
   const now = await api.query.timestamp.now();
   const { nonce, data: balance } = await api.query.system.account(testAddress);
   l.log(`balance of ${balance.free} and a nonce of ${nonce}`);
+  t.pass();
+});
+
+test('RPC queries', async t => {
+  const api = t.context.api;
+  const chain = await api.rpc.system.chain();
+  const lastHeader = await api.rpc.chain.getHeader();
+  l.log(`${chain}: last block #${lastHeader.number} has hash ${lastHeader.hash}`);
+  t.pass();
+});
+
+test('RPC query subscriptions', async t=> {
+  const api = t.context.api;
+  const chain = await api.rpc.system.chain();
+
+  return new Promise<void>((resolve, reject) => {
+    let unsubscribe: any = undefined;
+    return api.rpc.chain.subscribeNewHeads((lastHeader) => {
+      l.log(`${chain}: last block #${lastHeader.number} has hash ${lastHeader.hash}`);
+      unsubscribe();
+      t.pass();
+      resolve();
+    }).then(cb => {
+        unsubscribe = cb;
+    });
+  });
 });
