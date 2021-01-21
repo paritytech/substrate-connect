@@ -1,0 +1,43 @@
+import anyTest, {TestInterface} from 'ava';
+import { ApiPromise } from '@polkadot/api';
+import SmoldotProvider from '../';
+import westend_specs from './westend_specs';
+import {logger} from '@polkadot/util';
+import FsDatabase from '../FsDatabase';
+import TEST_DB_PATH from '../TestDatabasePath';
+
+const l = logger('smoldot-provider');
+
+const test = anyTest as TestInterface<{api: ApiPromise}>;
+
+test.before('Create a smoldot client', async t => {
+  const chainSpec = JSON.stringify(westend_specs());
+  const database = new FsDatabase(TEST_DB_PATH);
+  const provider = new SmoldotProvider(chainSpec, database);
+  await provider.connect();
+  t.context.api = await ApiPromise.create({ provider });
+  l.log('API is ready');
+  t.truthy(t.context.api);
+});
+
+test.serial('API constants', async t => {
+  const api: ApiPromise = t.context.api;
+  const genesisHash = api.genesisHash.toHex();
+  l.log('genesis hash: ', genesisHash);
+  t.not(genesisHash, '');
+  const epochDuration = api.consts.babe.epochDuration.toNumber();
+  l.log('epoch duration: ', epochDuration);
+  t.true(epochDuration > 0);
+  const existentialDeposit = api.consts.balances.existentialDeposit.toHuman();
+  l.log('existentialDeposit' , existentialDeposit);
+  t.not(genesisHash, '');
+});
+
+// Currently broken awaiting fix: https://github.com/paritytech/smoldot/issues/382
+test.skip('State queries', async t => {
+  const api: ApiPromise = t.context.api;
+  const testAddress = '5FHyraDcRvSYCoSrhe8LiBLdKmuL9ptZ5tEtAtqfKfeHxA4y';
+  const now = await api.query.timestamp.now();
+  const { nonce, data: balance } = await api.query.system.account(testAddress);
+  l.log(`balance of ${balance.free} and a nonce of ${nonce}`);
+});
