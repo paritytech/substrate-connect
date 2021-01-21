@@ -2,12 +2,16 @@ import { ApiPromise } from '@polkadot/api';
 import SmoldotProvider from '../';
 import westend_specs from './westend_specs';
 import {logger} from '@polkadot/util';
+import FsDatabase from '../FsDatabase';
+import TEST_DB_PATH from '../TestDatabasePath';
+import { twox } from '@polkadot/wasm-crypto';
 
 const l = logger('smoldot-provider');
 
 l.log('Creating a smoldot client');
 const chainSpec = JSON.stringify(westend_specs());
-const provider = new SmoldotProvider(chainSpec);
+const database = new FsDatabase(TEST_DB_PATH);
+const provider = new SmoldotProvider(chainSpec, database);
 await provider.connect();
 const api = await ApiPromise.create({ provider });
 l.log('API is ready');

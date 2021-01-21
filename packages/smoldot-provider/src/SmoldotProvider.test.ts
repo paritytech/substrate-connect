@@ -1,5 +1,6 @@
 import test from 'ava';
 import sinon from 'sinon';
+import Database from './Database';
 import { SmoldotProvider } from './SmoldotProvider';
 import { SmoldotClient, SmoldotOptions } from 'smoldot';
 
@@ -59,9 +60,15 @@ const respondWith = (jsonResponses: string[]) => {
   };
 }
 
+class TestDatabase implements Database {
+  save(state: string) {}
+  delete() {}
+}
+const testDb = () => new TestDatabase();
+
 test('connect resolves and emits', async t => {
   const echoSmoldot = mockSmoldot(x => x);
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, echoSmoldot);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), echoSmoldot);
   let connectedEmitted = false;
 
   provider.on('connected', () => { connectedEmitted = true; });
@@ -75,7 +82,7 @@ test('connect resolves and emits', async t => {
 test('awaiting send returns message result', async t => {
   const mockResponses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
   const ms = mockSmoldot(respondWith(mockResponses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
   const reply = await provider.send('hello', [ 'world' ]);
@@ -87,7 +94,7 @@ test('send formats JSON RPC request correctly', async t => {
   const mockResponses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
   const rpcSend = sinon.spy();
   const ss = smoldotSpy(respondWith(mockResponses), rpcSend);
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ss);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ss);
 
   await provider.connect();
   const reply = await provider.send('hello', [ 'world' ]);
@@ -104,7 +111,7 @@ test('sending twice uses new id', async t => {
   ];
   const rpcSend = sinon.spy();
   const ss = smoldotSpy(respondWith(mockResponses), rpcSend);
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ss);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ss);
 
   await provider.connect();
   await provider.send('hello', [ 'world' ]);
@@ -124,7 +131,7 @@ test('throws when got error JSON response', async t => {
     '{ "id": 1, "jsonrpc": "2.0", "error": {"code": 666, "message": "boom!" } }'
   ];
   const ms = mockSmoldot(respondWith(mockResponses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
   await t.throwsAsync(async () => {
@@ -134,7 +141,7 @@ test('throws when got error JSON response', async t => {
 
 test('send can also add subscriptions and returns an id', async t => {
   const ms = mockSmoldot(respondWith(['{ "id": 1, "jsonrpc": "2.0", "result": 1  }']));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
   const reply = await provider.send('test_sub', []);
@@ -143,7 +150,7 @@ test('send can also add subscriptions and returns an id', async t => {
 
 test('subscribe', async t => {
   const ms = mockSmoldot(respondWith(['{ "id": 1, "jsonrpc": "2.0", "result": 1  }']));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
 
@@ -181,7 +188,7 @@ test('unsubscribe fails when sub not found', async t => {
     '{ "id": 1, "jsonrpc": "2.0", "result": 1  }'
   ];
   const ms = mockSmoldot(respondWith(subscriptionResponses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
   await provider.subscribe('test', 'subscribe_test', [], () => {});
@@ -196,7 +203,7 @@ test('unsubsubscribe removes subscriptions', async t => {
     '{ "id": 2, "jsonrpc": "2.0", "result": true }'
   ];
   const ms = mockSmoldot(respondWith(subscriptionResponses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
   const id = await provider.subscribe('test', 'subscribe_test', [], () => {});

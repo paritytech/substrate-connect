@@ -12,8 +12,8 @@ import {
 } from '@polkadot/rpc-provider/types';
 import { assert, isUndefined, logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
-
 import * as smoldot from 'smoldot';
+import Database from './Database';
 
 const l = logger('smoldot-provider');
 
@@ -46,14 +46,16 @@ export class SmoldotProvider implements ProviderInterface {
   #eventemitter: EventEmitter;
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
+  #db: Database;
   #smoldot: smoldot.Smoldot;
   readonly #handlers: Record<string, RpcStateAwaiting> = {};
   #subscriptions: Record<string, StateSubscription> = {};
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
 
   // optional client builder for testing
-  public constructor(chainSpec: string, clientBuilder?: any) {
+  public constructor(chainSpec: string, db: Database, clientBuilder?: any) {
     this.#chainSpec = chainSpec;
+    this.#db = db;
     this.#eventemitter = new EventEmitter();
     this.#coder = new RpcCoder();
     this.#smoldot = clientBuilder || smoldot;
@@ -157,7 +159,8 @@ export class SmoldotProvider implements ProviderInterface {
             this.#handleRpcReponse(response);
         },
         database_save_callback: (database_content: string) => { 
-          //todo
+          l.debug('saving database', database_content);
+          this.#db.save(database_content);
         }
       })
       .then((client: smoldot.SmoldotClient) => {
