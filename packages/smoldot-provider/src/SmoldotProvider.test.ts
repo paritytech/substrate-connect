@@ -25,7 +25,7 @@ const mockSmoldot = (responder: RpcResponder) => {
       return Promise.resolve({
         // fake the async reply by using the reponder to format
         // a reply via options.json_rpc_callback
-        json_rpc_send: fakeRpcSend(options, responder)
+        send_json_rpc: fakeRpcSend(options, responder)
       });
     }
   };
@@ -37,7 +37,7 @@ const smoldotSpy = (responder: RpcResponder, rpcSpy: any) => {
   return {
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
       return Promise.resolve({
-        json_rpc_send: (rpc: string) => {
+        send_json_rpc: (rpc: string) => {
           // record the message call
           rpcSpy(rpc);
           // fake the async reply using the responder
