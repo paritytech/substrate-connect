@@ -9,26 +9,12 @@
     "access": "public"
   },
   "type": "module",
-  "ava": {
-    "nonSemVerExperiments": {
-      "configurableModuleFormat": true
-    },
-    "extensions": {
-      "ts": "module"
-    },
-    "nodeArguments": [
-      "--loader=ts-node/esm",
-      "--experimental-specifier-resolution=node"
-    ],
-    "require": [
-      "ts-node/register"
-    ]
-  },
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist/ && rm -rf node_modules/",
-    "test": "ava"
+    "test": "ava --config ava.config.js",
+    "examples": "ava --config ava.examples.config.js"
   },
   "release": [
     "dist/**"
