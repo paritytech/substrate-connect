@@ -240,7 +240,7 @@ export class SmoldotProvider implements ProviderInterface {
           subscription
         };
 
-        this.#client.json_rpc_send(json);
+        this.#client.send_json_rpc(json);
       } catch (error) {
         reject(error);
       }

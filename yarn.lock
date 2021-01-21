@@ -2259,6 +2259,20 @@
     memoizee "^0.4.14"
     rxjs "^6.6.3"
 
+"@polkadot/api-derive@3.5.1":
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/@polkadot/api-derive/-/api-derive-3.5.1.tgz#8c939caf6662ca6c37f271ae79f9c3c97fc54751"
+  integrity sha512-hZlWc05+td1SikFdKH0v9sTd5lz0s5LF+JHJNA35m07zG3MISEByxGhEbGDtBtCe5k4e8CL9JNgw4GcdGVOKiA==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    "@polkadot/api" "3.5.1"
+    "@polkadot/rpc-core" "3.5.1"
+    "@polkadot/types" "3.5.1"
+    "@polkadot/util" "^5.3.1"
+    "@polkadot/util-crypto" "^5.3.1"
+    "@polkadot/x-rxjs" "3.5.1"
+    bn.js "^4.11.9"
+
 "@polkadot/api@2.10.1", "@polkadot/api@^2.6.1":
   version "2.10.1"
   resolved "https://registry.yarnpkg.com/@polkadot/api/-/api-2.10.1.tgz#750987bccbf8e607c3690a7bdfed818bfc2c7571"
@@ -2277,6 +2291,25 @@
     bn.js "^4.11.9"
     eventemitter3 "^4.0.7"
     rxjs "^6.6.3"
+
+"@polkadot/api@3.5.1", "@polkadot/api@^3.5.1":
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/@polkadot/api/-/api-3.5.1.tgz#a03c754107d413520037da13de85a1d1eb409a20"
+  integrity sha512-prnWXjzMBZczpIhnF4dgamWAUOn5V4Fhv/D85QyEcrloiLgC5JBhXgdhDwHcESh+fkw8+gFptkuIMu3emWVaHg==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    "@polkadot/api-derive" "3.5.1"
+    "@polkadot/keyring" "^5.3.1"
+    "@polkadot/metadata" "3.5.1"
+    "@polkadot/rpc-core" "3.5.1"
+    "@polkadot/rpc-provider" "3.5.1"
+    "@polkadot/types" "3.5.1"
+    "@polkadot/types-known" "3.5.1"
+    "@polkadot/util" "^5.3.1"
+    "@polkadot/util-crypto" "^5.3.1"
+    "@polkadot/x-rxjs" "3.5.1"
+    bn.js "^4.11.9"
+    eventemitter3 "^4.0.7"
 
 "@polkadot/dev@^0.55.29":
   version "0.55.56"
@@ -2366,7 +2399,7 @@
     "@polkadot/util" "4.2.1"
     "@polkadot/util-crypto" "4.2.1"
 
-"@polkadot/keyring@^5.2.2":
+"@polkadot/keyring@^5.2.2", "@polkadot/keyring@^5.3.1":
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/@polkadot/keyring/-/keyring-5.3.1.tgz#ac523457580acb8fe4946b4250eef368a98e21f6"
   integrity sha512-wbi1kVxNoxY4hJOcqwHjk+17/aVHGkYzVjASj1QPjNbHVho+KKcjrJVRtUu9ekkblh84sWl9DbcjPwyDDr5F0w==
@@ -2443,6 +2476,18 @@
     memoizee "^0.4.14"
     rxjs "^6.6.3"
 
+"@polkadot/rpc-core@3.5.1":
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/@polkadot/rpc-core/-/rpc-core-3.5.1.tgz#ada8751efa9458aef29236f8348833cd622180d3"
+  integrity sha512-iVz8hPMU2y0WR0p0fN+v9CYU1wph9sy4DM/PQjm2gAHun2cAFbK4EGOCUdUWZhE6qWvyGgXJrTja2qH/O1oDrg==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    "@polkadot/metadata" "3.5.1"
+    "@polkadot/rpc-provider" "3.5.1"
+    "@polkadot/types" "3.5.1"
+    "@polkadot/util" "^5.3.1"
+    "@polkadot/x-rxjs" "3.5.1"
+
 "@polkadot/rpc-provider@2.10.1", "@polkadot/rpc-provider@^2.6.1":
   version "2.10.1"
   resolved "https://registry.yarnpkg.com/@polkadot/rpc-provider/-/rpc-provider-2.10.1.tgz#7929b5aa8899033ba127984b4411baef92a1232d"
@@ -2457,7 +2502,7 @@
     bn.js "^4.11.9"
     eventemitter3 "^4.0.7"
 
-"@polkadot/rpc-provider@^3.4.1":
+"@polkadot/rpc-provider@3.5.1", "@polkadot/rpc-provider@^3.4.1":
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/@polkadot/rpc-provider/-/rpc-provider-3.5.1.tgz#b3e2fb2be72266854fdd6921a5f08eca14ff6cb5"
   integrity sha512-WVPTxVIFv3Lx2fNPHp8uWrUyKixiZDDFffI1nrbZbPeFqzKCmCC56wed0VMrZjmtdFnhQD4M1b4ubV6rHeoACw==

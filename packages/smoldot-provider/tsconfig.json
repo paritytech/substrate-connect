@@ -9,7 +9,7 @@
      "paths": {
        "*": ["./types/*"]
     },
-    "target": "es2015",
+    "target": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "skipLibCheck": true,

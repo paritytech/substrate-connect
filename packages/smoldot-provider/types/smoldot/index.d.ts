@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 export interface SmoldotClient {
-  json_rpc_send(rpc: string): void;
+  send_json_rpc(rpc: string): void;
 }
 
 export type SmoldotJsonRpcCallback = (response: string) => void;
