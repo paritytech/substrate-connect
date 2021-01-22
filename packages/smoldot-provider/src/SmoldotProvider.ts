@@ -26,6 +26,8 @@ interface RpcStateAwaiting {
 
 interface SubscriptionHandler {
   callback: ProviderInterfaceCallback;
+  // type is the value of the method property in the JSON responses to this
+  // subscription
   type: string;
 }
 
@@ -39,7 +41,26 @@ const ANGLICISMS: { [index: string]: string } = {
   chain_subscribeFinalisedHeads: 'chain_subscribeFinalizedHeads',
   chain_unsubscribeFinalisedHeads: 'chain_unsubscribeFinalizedHeads'
 };
-
+/**
+ * @name SmoldotProvider
+ *
+ * @description The SmoldotProvider allows interacting with a smoldot-based
+ * WASM light client.  I.e. without doing RPC to a remote server over HTTP
+ * or websockets
+ * 
+ * @example
+ * <BR>
+ *
+ * ```javascript
+ * import readFileSync from 'fs';
+ * import Api from '@polkadot/api/promise';
+ * import { SmoldotPrpovider } from '../';
+ *
+ * const chainSpec = readFileSync('./path/to/chainSpec.json');
+ * const provider = new SmoldotProvider(chainSpec);
+ * const api = new Api(provider);
+ * ```
+ */
 export class SmoldotProvider implements ProviderInterface {
   #chainSpec: string;
   #coder: RpcCoder;
@@ -48,23 +69,29 @@ export class SmoldotProvider implements ProviderInterface {
   #client: smoldot.SmoldotClient | undefined = undefined;
   #db: Database;
   // reference to the smoldot module so we can defer loading the wasm client
-  // until connect is called or use a mock in tests
+  // until connect is called
   #smoldot: smoldot.Smoldot;
   readonly #handlers: Record<string, RpcStateAwaiting> = {};
   #subscriptions: Record<string, StateSubscription> = {};
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
 
-  // optional client builder for testing
-  public constructor(chainSpec: string, db: Database, clientBuilder?: any) {
+   /**
+   * @param {string}   chainSpec  The chainSpec for the WASM client
+   * @param {Database} db         An implementation of Database for saving the chain state
+   * @param {any}      sm         An optional parameter that looks like the smoldot module (only used for testing)
+   *                              defaults to the actual smoldot module
+   */
+   public constructor(chainSpec: string, db: Database, sm?: any) {
     this.#chainSpec = chainSpec;
     this.#db = db;
     this.#eventemitter = new EventEmitter();
     this.#coder = new RpcCoder();
-    this.#smoldot = clientBuilder || smoldot;
+    this.#smoldot = sm || smoldot;
   }
 
   /**
-   * @summary `true` when this provider supports subscriptions
+   * @description Lets polkadot-js know we support subscriptions
+   * @summary `true`
    */
   public get hasSubscriptions(): boolean {
     return true;
@@ -72,9 +99,10 @@ export class SmoldotProvider implements ProviderInterface {
 
   /**
    * @description Returns a clone of the object
+   * @summary throws an error as this is not supported.
    */
   public clone(): SmoldotProvider {
-    throw new Error('clone() is not implemented.');
+    throw new Error('clone() is not supported.');
   }
 
   #handleRpcReponse = (res: string) => {
@@ -131,11 +159,10 @@ export class SmoldotProvider implements ProviderInterface {
     const handler = this.#subscriptions[subId];
 
     if (!handler) {
-      l.debug(() => `Unable to find subscription handler for id=${response.id}`);
       // store the response, we could have out-of-order subid coming in
       this.#waitingForId[subId] = response;
 
-      l.debug(() => `Unable to find handler for subscription=${subId}`);
+      l.debug(() => `Unable to find handler for subscription=${subId} responseId=${response.id}`);
 
       return;
     }
@@ -152,8 +179,11 @@ export class SmoldotProvider implements ProviderInterface {
     }
   }
 
+  /**
+   * @description "Connect" the WASM client - starts the smoldot WASM client
+   */
   public async connect(): Promise<void> {
-    assert(!this.#client && !this. #isConnected, 'Client is already connected');
+    assert(!this.#client && !this.#isConnected, 'Client is already connected');
 
     return this.#smoldot.start({
         chain_spec: this.#chainSpec,
@@ -176,7 +206,7 @@ export class SmoldotProvider implements ProviderInterface {
   }
 
   /**
-   * @description Manually disconnect from the connection.
+   * @description Manually "disconnect" - drops the reference to the WASM client
    */
   // eslint-disable-next-line @typescript-eslint/require-await
   public async disconnect(): Promise<void> {
@@ -184,6 +214,7 @@ export class SmoldotProvider implements ProviderInterface {
       this.#client = undefined;
     }
     this.#isConnected = false;
+    this.emit('disconnected');
   }
 
   /**
@@ -195,7 +226,9 @@ export class SmoldotProvider implements ProviderInterface {
   }
 
   /**
-   * @summary Listens on events after having subscribed using the [[subscribe]] function.
+   * @summary Listen to provider events - in practice the smoldot provider only
+   * emits a `connected` event after successfully starting the smoldot client
+   * and `disconnected` after `disconnect` is called.
    * @param type - Event
    * @param sub - Callback
    */
@@ -214,7 +247,7 @@ export class SmoldotProvider implements ProviderInterface {
    * @summary Send JSON data using WebSockets to the wasm node.
    * @param method The RPC methods to execute
    * @param params Encoded paramaters as appliucable for the method
-   * @param subscription Subscription details (internally used)
+   * @param subscription Subscription details (internally used by `subscribe`)
    */
   public async send(
     method: string,
@@ -224,7 +257,6 @@ export class SmoldotProvider implements ProviderInterface {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     return new Promise((resolve, reject): void => {
-      try {
         assert(this.isConnected && this.#client, 'Client is not connected');
 
         const json = this.#coder.encodeJson(method, params);
@@ -245,6 +277,9 @@ export class SmoldotProvider implements ProviderInterface {
           subscription
         };
 
+      // Should we really catch errors here?  What can we do if the wasm client
+      // throws? Are we in an inconsistent state?
+      try {
         this.#client.send_json_rpc(json);
       } catch (error) {
         reject(error);
@@ -257,15 +292,15 @@ export class SmoldotProvider implements ProviderInterface {
    * @summary Allows subscribing to a specific event.
    * @param  {string}                     type     Subscription type
    * @param  {string}                     method   Subscription method
-   * @param  {any[]}                 params   Parameters
-   * @param  {ProviderInterfaceCallback} callback Callback
-   * @return {Promise<number>}                     Promise resolving to the dd of the subscription you can use with [[unsubscribe]].
+   * @param  {any[]}                      params   Parameters
+   * @param  {ProviderInterfaceCallback}  callback Callback
+   * @return {Promise<number|string>}     Promise resolving to the id of the subscription you can use with [[unsubscribe]].
    *
    * @example
    * <BR>
    *
    * ```javascript
-   * const provider = new WasmProvider(client);
+   * const provider = new SmoldotProvider(client);
    * const rpc = new Rpc(provider);
    *
    * rpc.state.subscribeStorage([[storage.balances.freeBalance, <Address>]], (_, values) => {
@@ -276,7 +311,9 @@ export class SmoldotProvider implements ProviderInterface {
    * ```
    */
   public async subscribe(
+    // the "method" property of the JSON response to this subscription
     type: string,
+    // the "method" property of the JSON request to register the subscription
     method: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: any[],
@@ -297,10 +334,6 @@ export class SmoldotProvider implements ProviderInterface {
   ): Promise<boolean> {
     const subscription = `${type}::${id}`;
 
-    // FIXME This now could happen with re-subscriptions. The issue is that with a re-sub
-    // the assigned id now does not match what the API user originally received. It has
-    // a slight complication in solving - since we cannot rely on the send id, but rather
-    // need to find the actual subscription id to map it
     if (isUndefined(this.#subscriptions[subscription])) {
       l.debug(() => `Unable to find active subscription=${subscription}`);
 
