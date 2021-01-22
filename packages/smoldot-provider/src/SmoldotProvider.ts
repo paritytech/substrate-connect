@@ -244,9 +244,9 @@ export class SmoldotProvider implements ProviderInterface {
   }
 
   /**
-   * @summary Send JSON data using WebSockets to the wasm node.
+   * @summary Send an RPC request  the wasm client
    * @param method The RPC methods to execute
-   * @param params Encoded paramaters as appliucable for the method
+   * @param params Encoded paramaters as applicable for the method
    * @param subscription Subscription details (internally used by `subscribe`)
    */
   public async send(
@@ -277,13 +277,7 @@ export class SmoldotProvider implements ProviderInterface {
           subscription
         };
 
-      // Should we really catch errors here?  What can we do if the wasm client
-      // throws? Are we in an inconsistent state?
-      try {
-        this.#client.send_json_rpc(json);
-      } catch (error) {
-        reject(error);
-      }
+      this.#client.send_json_rpc(json);
     });
   }
 
