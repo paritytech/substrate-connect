@@ -201,7 +201,8 @@ export class SmoldotProvider implements ProviderInterface {
         this.emit('connected');
       })
       .catch((error: Error) => {
-        console.error(error);
+        this.emit('error', error);
+        return Promise.reject(error);
       });
   }
 

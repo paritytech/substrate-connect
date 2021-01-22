@@ -91,14 +91,31 @@ class TestDatabase implements Database {
 const testDb = () => new TestDatabase();
 
 test('connect resolves and emits', async t => {
-  const echoSmoldot = mockSmoldot(x => x);
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), echoSmoldot);
+  const ms = mockSmoldot(x => x);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
   let connectedEmitted = false;
 
   provider.on('connected', () => { connectedEmitted = true; });
   await provider.connect();
   t.true(connectedEmitted);
   t.true(provider.isConnected);
+});
+
+test('connect propagates errors', async t => {
+  const badSmoldot = {
+    start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
+      return Promise.reject(new Error('boom!'));
+    }
+  };
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), badSmoldot);
+  let errored = false;
+
+  provider.on('error', () => { errored = true; });
+  try {
+    await provider.connect();
+  } catch (_) {
+    t.true(errored);
+  }
 });
 
 // response has no method field
