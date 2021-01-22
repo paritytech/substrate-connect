@@ -1,0 +1,20 @@
+{
+  "ts-node": {
+    "--experimental-module-resolution": "node"
+  },
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "outDir": "dist",
+     "paths": {
+       "*": ["./types/*"]
+    },
+    "target": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "module": "esnext"
+  },
+  "include": ["src"]
+}
