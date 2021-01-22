@@ -67,7 +67,7 @@ export class SmoldotProvider implements ProviderInterface {
   #eventemitter: EventEmitter;
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
-  #db: Database;
+  #db: Database | undefined;
   // reference to the smoldot module so we can defer loading the wasm client
   // until connect is called
   #smoldot: smoldot.Smoldot;
@@ -81,12 +81,12 @@ export class SmoldotProvider implements ProviderInterface {
    * @param {any}      sm         An optional parameter that looks like the smoldot module (only used for testing)
    *                              defaults to the actual smoldot module
    */
-   public constructor(chainSpec: string, db: Database, sm?: any) {
+   public constructor(chainSpec: string, db?: Database, sm?: any) {
     this.#chainSpec = chainSpec;
-    this.#db = db;
     this.#eventemitter = new EventEmitter();
     this.#coder = new RpcCoder();
     this.#smoldot = sm || smoldot;
+    this.#db = db;
   }
 
   /**
@@ -192,7 +192,9 @@ export class SmoldotProvider implements ProviderInterface {
         },
         database_save_callback: (database_content: string) => { 
           l.debug('saving database', database_content);
-          this.#db.save(database_content);
+          if (this.#db) {
+            this.#db.save(database_content);
+          }
         }
       })
       .then((client: smoldot.SmoldotClient) => {
