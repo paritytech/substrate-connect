@@ -1,8 +1,26 @@
 # Polkadot JS Provider for Smoldot Light Client
 
-PR Notes:
+This is a prototype for using [@polkadot/api](https://polkadot.js.org/docs/api/start)
+with the [smoldot](https://npmjs.com/package/smoldot) WASM light client. It is
+not published to npm.
 
-* types for smoldot should be upstreamed to smoldot
-* I didn't want to learn and bring in all the polkadot-js test infrastructure
-until we're sure we want to upstream this.  I used ava instead as it has good
-typescript support, runs the tests fast (in parallel) and I know it!
+## Usage
+
+```js
+import { ApiPromise } from '@polkadot/api';
+import westend_specs as chainSpec from './examples/westend_specs';
+import { SmoldotProvider } from './';
+
+const provider = new SmoldotProvider(chainSpec());
+await provider.connect();
+const api = await ApiPromise.create({ provider });
+```
+
+See the examples for examples of how to interact with the API.
+
+## Testing
+
+* `yarn test` to run the unit tests
+* `yarn examples` to run the integration tests
+
+The examples are automated ports of the samples from the getting started guide.
