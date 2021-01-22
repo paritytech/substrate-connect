@@ -185,7 +185,6 @@ test('subscribe', async t => {
   t.plan(2);
   return new Promise<void>((resolve, reject) => {
     return provider.subscribe('state_testSub', 'test_sub', [],  (error: Error | null, result: any) => {
-      console.log('handler');
       if (error !== null) {
         t.fail(error.message);
         reject();
@@ -199,7 +198,31 @@ test('subscribe', async t => {
   });
 });
 
-test.todo('converts british english method spelling to US');
+test('converts british english method spelling to US', async t => {
+  const responses = [
+    '{"jsonrpc":"2.0","result":"SUBSCRIPTIONID","id":1}',
+    '{"jsonrpc":"2.0","method":"chain_finalisedHead","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
+  ];
+  const ms = mockSmoldotForSubscription(respondWith(responses));
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+
+  await provider.connect();
+
+  t.plan(2);
+  return new Promise<void>((resolve, reject) => {
+    return provider.subscribe('chain_finalizedHead', 'chain_subscribeFinalizedHeads', [],  (error: Error | null, result: any) => {
+      if (error !== null) {
+        t.fail(error.message);
+        reject();
+      }
+
+      t.deepEqual(result, { dummy: "state" });
+      resolve();
+    }).then(reply => {
+      t.is(reply, "SUBSCRIPTIONID");
+    });
+  });
+});
 
 test('unsubscribe fails when sub not found', async t => {
   const subscriptionResponses = [
