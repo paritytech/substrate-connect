@@ -14842,10 +14842,10 @@ smart-buffer@^4.1.0:
   resolved "https://registry.yarnpkg.com/smart-buffer/-/smart-buffer-4.1.0.tgz#91605c25d91652f4661ea69ccf45f1b331ca21ba"
   integrity sha512-iVICrxOzCynf/SNaBQCw34eM9jROU/s5rzIhpOvzhzuYHfJR/DhZfDkXiZSgKXfgv26HT3Yni3AV/DGw0cGnnw==
 
-smoldot@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.1.0.tgz#e89e2995bd516a1be6db76184d0d7dc59e920715"
-  integrity sha512-O/9cnpaDhqha0zJId8DUG/+YWk8YJG9v9fJt41CGcRV1fIAABZev1eIsEKUyk+RoEisbkdRdCAd05SD6nnC3pQ==
+smoldot@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.1.1.tgz#71d4c790240a5ffd3164dfd2ac9c7bf469c67567"
+  integrity sha512-T1iSDaQP8U26V/6VeG+0/Z3RST6AquHQ20KdLysL47x9KEPSe6aFZ7ZSa5nRh0cHyJHR7qyugvSRtpCe//p1dA==
   dependencies:
     buffer "^6.0.1"
     performance-now "^2.1.0"

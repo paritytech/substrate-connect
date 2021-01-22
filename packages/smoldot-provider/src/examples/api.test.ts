@@ -6,7 +6,7 @@ import {logger} from '@polkadot/util';
 import FsDatabase from '../FsDatabase';
 import TEST_DB_PATH from '../TestDatabasePath';
 
-const l = logger('smoldot-provider');
+const l = logger('examples');
 
 const test = anyTest as TestInterface<{api: ApiPromise}>;
 
@@ -20,7 +20,7 @@ test.before('Create a smoldot client', async t => {
   t.truthy(t.context.api);
 });
 
-test.serial('API constants', async t => {
+test('API constants', async t => {
   const api = t.context.api;
   const genesisHash = api.genesisHash.toHex();
   l.log('genesis hash: ', genesisHash);
@@ -33,7 +33,8 @@ test.serial('API constants', async t => {
   t.not(genesisHash, '');
 });
 
-// Currently broken awaiting fix: https://github.com/paritytech/smoldot/issues/382
+// This errors and error handling isnt yet implemented for storage queries
+// in smoldot: https://github.com/paritytech/smoldot/issues/388
 test.skip('State queries', async t => {
   const api = t.context.api;
   const testAddress = '5FHyraDcRvSYCoSrhe8LiBLdKmuL9ptZ5tEtAtqfKfeHxA4y';
