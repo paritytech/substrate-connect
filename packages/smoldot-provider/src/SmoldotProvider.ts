@@ -47,6 +47,8 @@ export class SmoldotProvider implements ProviderInterface {
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
   #db: Database;
+  // reference to the smoldot module so we can defer loading the wasm client
+  // until connect is called or use a mock in tests
   #smoldot: smoldot.Smoldot;
   readonly #handlers: Record<string, RpcStateAwaiting> = {};
   #subscriptions: Record<string, StateSubscription> = {};

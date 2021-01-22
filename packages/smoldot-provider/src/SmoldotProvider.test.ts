@@ -32,6 +32,30 @@ const mockSmoldot = (responder: RpcResponder) => {
   };
 };
 
+const fakeRpcSendForSubscription = (options: SmoldotOptions, responder: RpcResponder) => {
+  return (rpc: string) => {
+    process.nextTick(() => {
+      options.json_rpc_callback(responder(rpc))
+      options.json_rpc_callback(responder(rpc))
+    });
+  };
+}
+
+// responder should have 2 mock responses for each request that the test will
+// make.  The first returning the subscription id.  The second a response to
+// the subscription.
+const mockSmoldotForSubscription = (responder: RpcResponder) => {
+  return {
+    start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
+      return Promise.resolve({
+        // fake the async reply by using the reponder to format
+        // a reply via options.json_rpc_callback
+        send_json_rpc: fakeRpcSendForSubscription(options, responder)
+      });
+    }
+  };
+};
+
 // Creates a spying `smoldot` that records calls to `json_rpc_send` in `rpcSpy`
 // and then uses `fakeRpcSend` to mimic the light client behaviour.
 const smoldotSpy = (responder: RpcResponder, rpcSpy: any) => {
@@ -149,36 +173,30 @@ test('send can also add subscriptions and returns an id', async t => {
 });
 
 test('subscribe', async t => {
-  const ms = mockSmoldot(respondWith(['{ "id": 1, "jsonrpc": "2.0", "result": 1  }']));
+  const responses = [
+    '{"jsonrpc":"2.0","result":"SUBSCRIPTIONID","id":1}',
+    '{"jsonrpc":"2.0","method":"state_testSub","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
+  ];
+  const ms = mockSmoldotForSubscription(respondWith(responses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
 
-  // wrap in a promise returning thunk so that we wait for both the 
-  // subscription callback and the call to subscribe to resolve.
-  const thunk = () => {
-    return new Promise<void>((resolve, reject) => {
-      provider.subscribe('type', 'test_sub', [], (cb): void => {
-        // todo: make assertions on what this gets called back with
-        // todo: which comes first .. this or the subcription added message
-        // and is this consistent?
+  t.plan(2);
+  return new Promise<void>((resolve, reject) => {
+    return provider.subscribe('state_testSub', 'test_sub', [],  (error: Error | null, result: any) => {
+      console.log('handler');
+      if (error !== null) {
+        t.fail(error.message);
+        reject();
+      }
 
-        // I need to use this for real and record a session of request /
-        // responses to see what the light client actually responds with. For
-        // now I'm assuming the logic in the WsProvider will just work (TM)
-        // with the smoldot wasm.  The tests there aren't any better than this
-        // and the JSON RPC spec isn't helpful:
-        // https://www.jsonrpc.org/specification#examples
-      }).then(reply => {
-        t.is(reply, 1);
-        // todo don't always resolve, wait for the callback too - see above
-        resolve();
-      });
+      t.deepEqual(result, { dummy: "state" });
+      resolve();
+    }).then(reply => {
+      t.is(reply, "SUBSCRIPTIONID");
     });
-
-  }
-
-  return thunk();
+  });
 });
 
 test.todo('converts british english method spelling to US');
