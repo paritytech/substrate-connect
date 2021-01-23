@@ -1,6 +1,6 @@
 import anyTest, {TestInterface} from 'ava';
 import { ApiPromise } from '@polkadot/api';
-import SmoldotProvider from '../';
+import {SmoldotProvider} from '../';
 import westend_specs from './westend_specs';
 import {logger} from '@polkadot/util';
 import { FsDatabase } from '../FsDatabase';
