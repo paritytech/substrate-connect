@@ -10,10 +10,19 @@ const EMPTY_CHAIN_SPEC = '{}';
 // Mimics the behaviour of the WASM light client by deferring a call to 
 // `json_rpc_callback` after it is called which returns the response
 // returned by the supplied `responder`.
+//
+// If this is called with an rpc string containing the word subscribe (but not
+// unsubscribe), it is considered a subscription and `responder` must have 2
+// mock responses for each subscriptionrequest that the test will make.  The
+// first returning the subscription id.  The second a response to the
+// subscription.
 const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder) => {
   return (rpc: string) => {
     process.nextTick(() => {
       options.json_rpc_callback(responder(rpc))
+      if (/(?<!un)[sS]ubscribe/.test(rpc)) {
+        options.json_rpc_callback(responder(rpc))
+      }
     });
   };
 }
@@ -27,30 +36,6 @@ const mockSmoldot = (responder: RpcResponder) => {
         // fake the async reply by using the reponder to format
         // a reply via options.json_rpc_callback
         send_json_rpc: fakeRpcSend(options, responder)
-      });
-    }
-  };
-};
-
-const fakeRpcSendForSubscription = (options: SmoldotOptions, responder: RpcResponder) => {
-  return (rpc: string) => {
-    process.nextTick(() => {
-      options.json_rpc_callback(responder(rpc))
-      options.json_rpc_callback(responder(rpc))
-    });
-  };
-}
-
-// responder should have 2 mock responses for each request that the test will
-// make.  The first returning the subscription id.  The second a response to
-// the subscription.
-const mockSmoldotForSubscription = (responder: RpcResponder) => {
-  return {
-    start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
-      return Promise.resolve({
-        // fake the async reply by using the reponder to format
-        // a reply via options.json_rpc_callback
-        send_json_rpc: fakeRpcSendForSubscription(options, responder)
       });
     }
   };
@@ -118,8 +103,7 @@ test('connect propagates errors', async t => {
   }
 });
 
-// response has no method field
-// handler was not registered by `subscribe` I.E. has no associated `subscription`
+// non-subssription send
 test('awaiting send returns message result', async t => {
   const mockResponses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
   const ms = mockSmoldot(respondWith(mockResponses));
@@ -131,10 +115,10 @@ test('awaiting send returns message result', async t => {
 });
 
 test('send formats JSON RPC request correctly', async t => {
-  // don't really care what the reply is
-  const mockResponses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
+  // we don't really care what the reponse is
+  const responses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
   const rpcSend = sinon.spy();
-  const ss = smoldotSpy(respondWith(mockResponses), rpcSend);
+  const ss = smoldotSpy(respondWith(responses), rpcSend);
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ss);
 
   await provider.connect();
@@ -145,13 +129,12 @@ test('send formats JSON RPC request correctly', async t => {
 });
 
 test('sending twice uses new id', async t => {
-  // don't really care what the replies are
-  const mockResponses =  [ 
+  const responses =  [ 
     '{ "id": 1, "jsonrpc": "2.0", "result": "success" }',
     '{ "id": 2, "jsonrpc": "2.0", "result": "success" }'
   ];
   const rpcSend = sinon.spy();
-  const ss = smoldotSpy(respondWith(mockResponses), rpcSend);
+  const ss = smoldotSpy(respondWith(responses), rpcSend);
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ss);
 
   await provider.connect();
@@ -168,10 +151,10 @@ test('sending twice uses new id', async t => {
 });
 
 test('throws when got error JSON response', async t => {
-  const mockResponses =  [
+  const responses =  [
     '{ "id": 1, "jsonrpc": "2.0", "error": {"code": 666, "message": "boom!" } }'
   ];
-  const ms = mockSmoldot(respondWith(mockResponses));
+  const ms = mockSmoldot(respondWith(responses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
@@ -181,27 +164,31 @@ test('throws when got error JSON response', async t => {
 });
 
 test('send can also add subscriptions and returns an id', async t => {
-  const ms = mockSmoldot(respondWith(['{ "id": 1, "jsonrpc": "2.0", "result": 1  }']));
+  const responses = [
+    '{"jsonrpc":"2.0","result":"SUBSCRIPTIONID","id":1}',
+    '{"jsonrpc":"2.0","method":"state_test","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
+  ];
+  const ms = mockSmoldot(respondWith(responses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
-  const reply = await provider.send('test_sub', []);
-  t.is(reply, 1);
+  const reply = await provider.send('test_subscribe', []);
+  t.is(reply, 'SUBSCRIPTIONID');
 });
 
 test('subscribe', async t => {
   const responses = [
     '{"jsonrpc":"2.0","result":"SUBSCRIPTIONID","id":1}',
-    '{"jsonrpc":"2.0","method":"state_testSub","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
+    '{"jsonrpc":"2.0","method":"state_test","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
   ];
-  const ms = mockSmoldotForSubscription(respondWith(responses));
+  const ms = mockSmoldot(respondWith(responses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
 
   t.plan(2);
   return new Promise<void>((resolve, reject) => {
-    return provider.subscribe('state_testSub', 'test_sub', [],  (error: Error | null, result: any) => {
+    return provider.subscribe('state_test', 'test_subscribe', [],  (error: Error | null, result: any) => {
       if (error !== null) {
         t.fail(error.message);
         reject();
@@ -220,7 +207,7 @@ test('converts british english method spelling to US', async t => {
     '{"jsonrpc":"2.0","result":"SUBSCRIPTIONID","id":1}',
     '{"jsonrpc":"2.0","method":"chain_finalisedHead","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
   ];
-  const ms = mockSmoldotForSubscription(respondWith(responses));
+  const ms = mockSmoldot(respondWith(responses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
@@ -242,29 +229,31 @@ test('converts british english method spelling to US', async t => {
 });
 
 test('unsubscribe fails when sub not found', async t => {
-  const subscriptionResponses = [
-    '{ "id": 1, "jsonrpc": "2.0", "result": 1  }'
+  const responses = [
+    '{ "id": 1, "jsonrpc": "2.0", "result": "SUBSCRIPTIONID"  }',
+    '{"jsonrpc":"2.0","method":"chain_finalisedHead","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
   ];
-  const ms = mockSmoldot(respondWith(subscriptionResponses));
+  const ms = mockSmoldot(respondWith(responses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
-  await provider.subscribe('test', 'subscribe_test', [], () => {});
-  const reply =  await provider.unsubscribe('test', 'subscribe_test', 666);
+  await provider.subscribe('test', 'test_subscribe', [], () => {});
+  const reply =  await provider.unsubscribe('test', 'test_subscribe', 666);
 
   t.false(reply);
 });
 
-test('unsubsubscribe removes subscriptions', async t => {
-  const subscriptionResponses = [
-    '{ "id": 1, "jsonrpc": "2.0", "result": 1 }',
+test('unsubscribe removes subscriptions', async t => {
+  const responses = [
+    '{ "id": 1, "jsonrpc": "2.0", "result": "SUBSCRIPTIONID" }',
+    '{"jsonrpc":"2.0","method":"test","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}',
     '{ "id": 2, "jsonrpc": "2.0", "result": true }'
   ];
-  const ms = mockSmoldot(respondWith(subscriptionResponses));
+  const ms = mockSmoldot(respondWith(responses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
-  const id = await provider.subscribe('test', 'subscribe_test', [], () => {});
-  const reply =  await provider.unsubscribe('test', 'subscribe_test', id);
+  const id = await provider.subscribe('test', 'test_subscribe', [], () => {});
+  const reply =  await provider.unsubscribe('test', 'test_unsubscribe', id);
   t.true(reply);
 });
