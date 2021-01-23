@@ -63,17 +63,17 @@ const ANGLICISMS: { [index: string]: string } = {
  */
 export class SmoldotProvider implements ProviderInterface {
   #chainSpec: string;
-  #coder: RpcCoder;
-  #eventemitter: EventEmitter;
+  readonly #coder: RpcCoder = new RpcCoder();
+  readonly #eventemitter: EventEmitter = new EventEmitter();
+  readonly #handlers: Record<string, RpcStateAwaiting> = {};
+  readonly #subscriptions: Record<string, StateSubscription> = {};
+  readonly #waitingForId: Record<string, JsonRpcResponse> = {};
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
   #db: Database | undefined;
   // reference to the smoldot module so we can defer loading the wasm client
   // until connect is called
   #smoldot: smoldot.Smoldot;
-  readonly #handlers: Record<string, RpcStateAwaiting> = {};
-  #subscriptions: Record<string, StateSubscription> = {};
-  readonly #waitingForId: Record<string, JsonRpcResponse> = {};
 
    /**
    * @param {string}   chainSpec  The chainSpec for the WASM client
@@ -83,8 +83,6 @@ export class SmoldotProvider implements ProviderInterface {
    */
    public constructor(chainSpec: string, db?: Database, sm?: any) {
     this.#chainSpec = chainSpec;
-    this.#eventemitter = new EventEmitter();
-    this.#coder = new RpcCoder();
     this.#smoldot = sm || smoldot;
     this.#db = db;
   }
