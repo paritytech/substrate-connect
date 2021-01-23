@@ -1,5 +1,11 @@
 import { Database } from './Database';
 
+/**
+ * @name BrowserDatabase
+ *
+ * @description The `BrowserDatabase` saves chain state to localStorage
+ * with the key specified by `name`.
+ */
 export class BrowserDatabase implements Database {
   #name: string;
 

@@ -41,24 +41,37 @@ const ANGLICISMS: { [index: string]: string } = {
   chain_subscribeFinalisedHeads: 'chain_subscribeFinalizedHeads',
   chain_unsubscribeFinalisedHeads: 'chain_unsubscribeFinalizedHeads'
 };
+
 /**
  * @name SmoldotProvider
  *
  * @description The SmoldotProvider allows interacting with a smoldot-based
- * WASM light client.  I.e. without doing RPC to a remote server over HTTP
+ * WASM light client.  I.e. without doing RPC to a remote node over HTTP
  * or websockets
  * 
  * @example
- * <BR>
- *
  * ```javascript
  * import readFileSync from 'fs';
  * import Api from '@polkadot/api/promise';
- * import { SmoldotPrpovider } from '../';
+ * import { SmoldotProvider } from '../';
  *
  * const chainSpec = readFileSync('./path/to/chainSpec.json');
  * const provider = new SmoldotProvider(chainSpec);
  * const api = new Api(provider);
+ * ```
+ * @example
+ * ```javascript
+ * import readFileSync from 'fs';
+ * import Api from '@polkadot/api/promise';
+ * import { SmoldotProvider, database } from '../';
+ *
+ * const chainSpec = readFileSync('./path/to/polkadot.json');
+ * const pp = new SmoldotProvider(chainSpec);
+ * const polkadotApi = new Api(pp);
+ *
+ * const chainSpec = readFileSync('./path/to/kusama.json');
+ * const kp = new SmoldotProvider(chainSpec, databse('kusama'));
+ * const kusamaApi = new Api(pp);
  * ```
  */
 export class SmoldotProvider implements ProviderInterface {

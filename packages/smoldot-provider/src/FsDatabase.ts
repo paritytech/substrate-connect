@@ -4,6 +4,13 @@ import mkdirp from 'mkdirp';
 import { Database } from './Database';
 
 
+/**
+ * @name FsDatabase
+ *
+ * @description The `FsDatabase` saves chain state to the current working 
+ * directory in a subdirectory named ".chains".  The directory is created
+ * on construction if it doesn't exist.
+ */
 export class FsDatabase implements Database {
   #path: string;
 

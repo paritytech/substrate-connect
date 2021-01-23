@@ -10,8 +10,20 @@ if (typeof window === 'object') {
   create = await import('./FsDatabase');
 }
 
+/**
+ * @name Database
+ *
+ * @description `Database` defines the operations needed for managing the
+ * chain state for the smoldot WASM light client.
+ */
 export interface Database {
+  /**
+   * @description Save the provided chain state
+   */
     save: (state: string) => void;
+  /**
+   * @description Delete any saved chain state
+   */
     delete: () => void;
 }
 
@@ -20,6 +32,21 @@ const named = (chain: string): string => {
   return `${pkg.name}.${chain}`;
 }
 
+/**
+ * @name database
+ *
+ * @description Creates a `Database` with an optional name or names it
+ * after this package ("smoldot-provider").  The type of database will be
+ * detected depending on whether running in the browser or nodejs.
+ * 
+ * @example
+ * <BR>
+ *
+ * ```javascript
+ * const provider = new SmoldotProvider(chainSpec, database('polkadot'));
+ * const api = new Api(provider);
+ * ```
+ */
 export default function database(chain?: string): Database {
   chain = chain || pkg.name;
   return create(named(chain));
