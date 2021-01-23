@@ -4,13 +4,13 @@ import { Database } from './Database';
  * @name BrowserDatabase
  *
  * @description The `BrowserDatabase` saves chain state to localStorage
- * with the key specified by `name`.
+ * with the key specified by `name` prefixed with "smoldot::chainstate::"
  */
 export class BrowserDatabase implements Database {
   #name: string;
 
   constructor(name: string) {
-      this.#name = name;
+      this.#name = `smoldot::chainstate::${name}`;
   }
 
   save(state: string) {
