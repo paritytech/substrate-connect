@@ -13,7 +13,7 @@ import {
 import { assert, isUndefined, logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 import * as smoldot from 'smoldot';
-import Database from './Database';
+import database, { Database } from './Database';
 
 const l = logger('smoldot-provider');
 
@@ -77,14 +77,15 @@ export class SmoldotProvider implements ProviderInterface {
 
    /**
    * @param {string}   chainSpec  The chainSpec for the WASM client
-   * @param {Database} db         An implementation of Database for saving the chain state
-   * @param {any}      sm         An optional parameter that looks like the smoldot module (only used for testing)
-   *                              defaults to the actual smoldot module
+   * @param {Database} db         `Database` for saving chain state. Default is detected based on envionnment and 
+   *                              given a generic name.  You must use a unique names if you are connecting to multiple 
+   *                              chains. E.g. `database('polkadot')`
+   * @param {any}      sm         Optional (only used for testing) defaults to the actual smoldot module
    */
    public constructor(chainSpec: string, db?: Database, sm?: any) {
     this.#chainSpec = chainSpec;
     this.#smoldot = sm || smoldot;
-    this.#db = db;
+    this.#db = db || database();
   }
 
   /**

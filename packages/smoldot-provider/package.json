@@ -26,10 +26,12 @@
     "@polkadot/rpc-provider": "^3.4.1",
     "browserify-fs": "^1.0.0",
     "eventemitter3": "^4.0.7",
+    "mkdirp": "^1.0.4",
     "smoldot": "^0.1.2"
   },
   "devDependencies": {
     "@polkadot/api": "^3.5.1",
+    "@types/mkdirp": "^1.0.1",
     "@types/sinon": "^9.0.10",
     "ava": "^3.15.0",
     "sinon": "^9.2.3",

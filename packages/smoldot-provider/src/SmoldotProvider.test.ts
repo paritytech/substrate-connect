@@ -1,6 +1,6 @@
 import test from 'ava';
 import sinon from 'sinon';
-import Database from './Database';
+import { Database } from './Database';
 import { SmoldotProvider } from './SmoldotProvider';
 import { SmoldotClient, SmoldotOptions } from 'smoldot';
 

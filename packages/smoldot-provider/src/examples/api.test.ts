@@ -3,8 +3,7 @@ import { ApiPromise } from '@polkadot/api';
 import SmoldotProvider from '../';
 import westend_specs from './westend_specs';
 import {logger} from '@polkadot/util';
-import FsDatabase from '../FsDatabase';
-import TEST_DB_PATH from '../TestDatabasePath';
+import { FsDatabase } from '../FsDatabase';
 
 const l = logger('examples');
 
@@ -12,7 +11,7 @@ const test = anyTest as TestInterface<{api: ApiPromise}>;
 
 test.before('Create a smoldot client', async t => {
   const chainSpec = JSON.stringify(westend_specs());
-  const database = new FsDatabase(TEST_DB_PATH);
+  const database = new FsDatabase('test');
   const provider = new SmoldotProvider(chainSpec, database);
   await provider.connect();
   t.context.api = await ApiPromise.create({ provider });
