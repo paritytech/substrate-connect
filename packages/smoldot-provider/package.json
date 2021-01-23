@@ -10,11 +10,13 @@
   },
   "type": "module",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "clean": "rm -rf dist/ && rm -rf node_modules/",
+    "clean": "rm -rf dist/",
     "test": "ava --config ava.config.js",
-    "examples": "ava --config ava.examples.config.js"
+    "examples": "ava --config ava.examples.config.js",
+    "prepublish": "yarn test && yarn clean && yarn build"
   },
   "release": [
     "dist/**"

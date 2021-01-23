@@ -4,4 +4,4 @@
 
 import { SmoldotProvider } from './SmoldotProvider';
 
-export default SmoldotProvider
+export default SmoldotProvider;
