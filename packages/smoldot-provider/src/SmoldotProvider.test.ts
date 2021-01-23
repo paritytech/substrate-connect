@@ -202,6 +202,32 @@ test('subscribe', async t => {
   });
 });
 
+test('subscribe copes with out of order responses', async t => {
+  const responses = [
+    '{"jsonrpc":"2.0","method":"state_test","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}',
+    '{"jsonrpc":"2.0","result":"SUBSCRIPTIONID","id":1}'
+  ];
+  const ms = mockSmoldot(respondWith(responses));
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+
+  await provider.connect();
+
+  t.plan(2);
+  return new Promise<void>((resolve, reject) => {
+    return provider.subscribe('state_test', 'test_subscribe', [],  (error: Error | null, result: any) => {
+      if (error !== null) {
+        t.fail(error.message);
+        reject();
+      }
+
+      t.deepEqual(result, { dummy: "state" });
+      resolve();
+    }).then(reply => {
+      t.is(reply, "SUBSCRIPTIONID");
+    });
+  });
+});
+
 test('converts british english method spelling to US', async t => {
   const responses = [
     '{"jsonrpc":"2.0","result":"SUBSCRIPTIONID","id":1}',
