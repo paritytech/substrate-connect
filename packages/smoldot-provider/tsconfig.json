@@ -1,19 +1,11 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": "./",
-    "declaration": true,
-    "outDir": "dist",
-     "paths": {
-       "*": ["./types/*"]
-    },
-    "target": "esnext",
-    "moduleResolution": "node",
+    "rootDir": ".",
+    "outDir": ".",
     "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "module": "esnext"
+    "composite": true
   },
-  "include": ["src"],
-  "exclude": ["src/examples/ws.ts"]
+  "files": [
+    "package.json"
+  ]
 }

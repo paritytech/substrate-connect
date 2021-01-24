@@ -1,0 +1,20 @@
+{
+  "references": [ 
+    { "path": "../" }
+  ],
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "declaration": true,
+    "outDir": "../dist/",
+    "paths": {
+       "*": ["../types/*"]
+    },
+    "target": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "module": "esnext"
+  }
+}

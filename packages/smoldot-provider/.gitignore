@@ -8,3 +8,4 @@
 yarn-error.log*
 .nyc_output/
 .chains/
+tsconfig.tsbuildinfo

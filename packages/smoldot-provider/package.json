@@ -12,7 +12,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --build src",
     "clean": "rm -rf dist/",
     "test": "ava --config ava.config.js",
     "examples": "ava --config ava.examples.config.js",
