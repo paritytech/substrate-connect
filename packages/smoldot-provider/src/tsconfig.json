@@ -6,6 +6,8 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
     "declaration": true,
+    "sourceMap": true,
+    "declarationMap": true,
     "outDir": "../dist/",
     "paths": {
        "*": ["../types/*"]
