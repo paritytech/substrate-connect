@@ -4,11 +4,16 @@ import * as pkg from '../package.json';
 // let create: (name: string) => Database | undefined = undefined;
 let create: any = undefined;
 
-if (typeof window === 'object') {
-  create = await import('./BrowserDatabase');
-} else {
-  create = await import('./FsDatabase');
-}
+// We dont want to force our users into webpack5 / babel
+// This IIFE simulates top level await in the browser
+// https://github.com/tc39/proposal-top-level-await
+(async () => {
+  if (typeof window === 'object') {
+    create = await import('./BrowserDatabase');
+  } else {
+    create = await import('./FsDatabase');
+  }
+})();
 
 /**
  * @name Database
