@@ -1,19 +1,23 @@
 import * as pkg from '../package.json';
 
-// REM: Don't know how to make typescript happy. This doesn't work:
-// let create: (name: string) => Database | undefined = undefined;
+// REM: Don't know how to make typescript happy. This doesn't work: // let create: (name: string) => Database | undefined = undefined;
 let create: any = undefined;
 
 // We dont want to force our users into webpack5 / babel
 // This IIFE simulates top level await in the browser
 // https://github.com/tc39/proposal-top-level-await
 (async () => {
+  let db: any;
+
   if (typeof window === 'object') {
-    create = await import('./BrowserDatabase');
+    db  = await import('./BrowserDatabase');
   } else {
-    create = await import('./FsDatabase');
+    db  = await import('./FsDatabase');
   }
+
+  create = db.create;
 })();
+
 
 /**
  * @name Database

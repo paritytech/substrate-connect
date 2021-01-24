@@ -22,6 +22,6 @@ export class BrowserDatabase implements Database {
   }
 }
 
-export default (name: string): Database => {
+export function create(name: string): Database {
   return new BrowserDatabase(name) as Database;
 }
