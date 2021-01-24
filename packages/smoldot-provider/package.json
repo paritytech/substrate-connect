@@ -16,7 +16,7 @@
     "clean": "rm -rf dist/",
     "test": "ava --config ava.config.js",
     "examples": "ava --config ava.examples.config.js",
-    "prepublish": "yarn test && yarn clean && yarn build"
+    "prepack": "yarn test && yarn clean && yarn build"
   },
   "release": [
     "dist/**"
