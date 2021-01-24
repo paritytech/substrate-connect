@@ -1,9 +1,12 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "rootDir": ".",
     "outDir": ".",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
-    "composite": true
+    "composite": true,
+    "target": "ES2018"
   },
   "files": [
     "package.json"
