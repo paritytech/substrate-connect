@@ -8,9 +8,10 @@
     "last 1 version"
   ],
   "scripts": {
+    "clean": "rm -rf dist/",
     "copy-assets": "cp -R src/assets dist/",
-    "bundle": "parcel build index.html",
-    "dev": "parcel index.html"
+    "bundle": "yarn clean && parcel build index.html --detailed-report",
+    "dev": "parcel index.html --https"
   },
   "devDependencies": {
     "@parcel/config-default": "^2.0.0-alpha.3",
