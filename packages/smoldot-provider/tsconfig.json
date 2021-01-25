@@ -1,20 +1,16 @@
 {
-  "ts-node": {
-    "--experimental-module-resolution": "node"
-  },
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": "./",
-    "outDir": "dist",
-     "paths": {
-       "*": ["./types/*"]
-    },
-    "target": "esnext",
+    "rootDir": ".",
+    "outDir": ".",
+    "esModuleInterop": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "module": "esnext"
+    "composite": true,
+    "module": "ES2020",
+    "target": "ES2018"
   },
-  "include": ["src"]
+  "files": [
+    "package.json"
+  ]
 }

@@ -13,7 +13,7 @@ import {
 import { assert, isUndefined, logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 import * as smoldot from 'smoldot';
-import Database from './Database';
+import database, { Database } from './Database';
 
 const l = logger('smoldot-provider');
 
@@ -41,52 +41,64 @@ const ANGLICISMS: { [index: string]: string } = {
   chain_subscribeFinalisedHeads: 'chain_subscribeFinalizedHeads',
   chain_unsubscribeFinalisedHeads: 'chain_unsubscribeFinalizedHeads'
 };
+
 /**
  * @name SmoldotProvider
  *
  * @description The SmoldotProvider allows interacting with a smoldot-based
- * WASM light client.  I.e. without doing RPC to a remote server over HTTP
+ * WASM light client.  I.e. without doing RPC to a remote node over HTTP
  * or websockets
  * 
  * @example
- * <BR>
- *
  * ```javascript
  * import readFileSync from 'fs';
  * import Api from '@polkadot/api/promise';
- * import { SmoldotPrpovider } from '../';
+ * import { SmoldotProvider } from '../';
  *
  * const chainSpec = readFileSync('./path/to/chainSpec.json');
  * const provider = new SmoldotProvider(chainSpec);
  * const api = new Api(provider);
  * ```
+ * @example
+ * ```javascript
+ * import readFileSync from 'fs';
+ * import Api from '@polkadot/api/promise';
+ * import { SmoldotProvider, database } from '../';
+ *
+ * const chainSpec = readFileSync('./path/to/polkadot.json');
+ * const pp = new SmoldotProvider(chainSpec);
+ * const polkadotApi = new Api(pp);
+ *
+ * const chainSpec = readFileSync('./path/to/kusama.json');
+ * const kp = new SmoldotProvider(chainSpec, databse('kusama'));
+ * const kusamaApi = new Api(pp);
+ * ```
  */
 export class SmoldotProvider implements ProviderInterface {
   #chainSpec: string;
-  #coder: RpcCoder;
-  #eventemitter: EventEmitter;
+  readonly #coder: RpcCoder = new RpcCoder();
+  readonly #eventemitter: EventEmitter = new EventEmitter();
+  readonly #handlers: Record<string, RpcStateAwaiting> = {};
+  readonly #subscriptions: Record<string, StateSubscription> = {};
+  readonly #waitingForId: Record<string, JsonRpcResponse> = {};
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
-  #db: Database;
+  #db: Database | undefined;
   // reference to the smoldot module so we can defer loading the wasm client
   // until connect is called
   #smoldot: smoldot.Smoldot;
-  readonly #handlers: Record<string, RpcStateAwaiting> = {};
-  #subscriptions: Record<string, StateSubscription> = {};
-  readonly #waitingForId: Record<string, JsonRpcResponse> = {};
 
    /**
    * @param {string}   chainSpec  The chainSpec for the WASM client
-   * @param {Database} db         An implementation of Database for saving the chain state
-   * @param {any}      sm         An optional parameter that looks like the smoldot module (only used for testing)
-   *                              defaults to the actual smoldot module
+   * @param {Database} db         `Database` for saving chain state. Default is detected based on envionnment and 
+   *                              given a generic name.  You must use a unique names if you are connecting to multiple 
+   *                              chains. E.g. `database('polkadot')`
+   * @param {any}      sm         Optional (only used for testing) defaults to the actual smoldot module
    */
-   public constructor(chainSpec: string, db: Database, sm?: any) {
+   public constructor(chainSpec: string, db?: Database, sm?: any) {
     this.#chainSpec = chainSpec;
-    this.#db = db;
-    this.#eventemitter = new EventEmitter();
-    this.#coder = new RpcCoder();
     this.#smoldot = sm || smoldot;
+    this.#db = db || database();
   }
 
   /**
@@ -192,7 +204,9 @@ export class SmoldotProvider implements ProviderInterface {
         },
         database_save_callback: (database_content: string) => { 
           l.debug('saving database', database_content);
-          this.#db.save(database_content);
+          if (this.#db) {
+            this.#db.save(database_content);
+          }
         }
       })
       .then((client: smoldot.SmoldotClient) => {

@@ -10,11 +10,13 @@
   },
   "type": "module",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "clean": "rm -rf dist/ && rm -rf node_modules/",
+    "build": "tsc --build src",
+    "clean": "rm -rf dist/",
     "test": "ava --config ava.config.js",
-    "examples": "ava --config ava.examples.config.js"
+    "examples": "ava --config ava.examples.config.js",
+    "prepack": "yarn test && yarn clean && yarn build"
   },
   "release": [
     "dist/**"
@@ -22,11 +24,14 @@
   "sideEffects": "false",
   "dependencies": {
     "@polkadot/rpc-provider": "^3.4.1",
+    "browserify-fs": "^1.0.0",
     "eventemitter3": "^4.0.7",
-    "smoldot": "^0.1.1"
+    "mkdirp": "^1.0.4",
+    "smoldot": "^0.1.2"
   },
   "devDependencies": {
     "@polkadot/api": "^3.5.1",
+    "@types/mkdirp": "^1.0.1",
     "@types/sinon": "^9.0.10",
     "ava": "^3.15.0",
     "sinon": "^9.2.3",
