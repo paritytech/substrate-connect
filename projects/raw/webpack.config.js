@@ -16,17 +16,17 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: require.resolve('babel-loader')
       },
       {
         test: /\.(css)$/,
-        use: ['style-loader', 'css-loader']
+        use: [require.resolve('style-loader'), require.resolve('css-loader')]
       },
       {
         test: /\.(png|jpg|gif)$/,
         use: [
           {
-            loader: 'url-loader',
+            loader: require.resolve('url-loader'),
             options: {
               name: '[path][name].[ext]?hash=[hash:20]',
               limit: 8192
