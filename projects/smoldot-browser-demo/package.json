@@ -11,10 +11,10 @@
     "last 1 version"
   ],
   "scripts": {
-    "clean": "rm -rf dist/",
+    "clean": "rm -rf dist/ && mkdir -p dist/assets",
     "copy-assets": "cp -R src/assets dist/",
-    "bundle": "yarn clean && parcel build index.html --detailed-report",
-    "dev": "parcel index.html --https"
+    "bundle": "yarn clean && yarn copy-assets && parcel build index.html --detailed-report",
+    "dev": "yarn clean && yarn copy-assets && parcel index.html --https"
   },
   "devDependencies": {
     "@parcel/config-default": "^2.0.0-alpha.3",
