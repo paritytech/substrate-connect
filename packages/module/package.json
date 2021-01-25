@@ -26,6 +26,8 @@
   "types": "dist/lib/types.d.ts",
   "sideEffects": "false",
   "dependencies": {
-    "@polkadot/rpc-provider": "^3.4.1"
+    "@polkadot/rpc-provider": "^3.4.1",
+    "@polkadot/util": "^5.4.4",
+    "eventemitter3": "^4.0.7"
   }
 }
