@@ -2,7 +2,10 @@
   "name": "@substrate/smoldot-browser-demo",
   "version": "1.0.0",
   "main": "./dist/index.js",
-  "author": "Raoul Millais",
+  "author": "Parity Team <admin@parity.io>",
+  "contributors": [
+    "Raoul Millais <raoul@parity.io>"
+  ],
   "license": "Apache-2.0",
   "browserslist": [
     "last 1 version"
