@@ -28,10 +28,12 @@
     "@polkadot/extension-inject": "^0.36.1",
     "@polkadot/keyring": "^4.0.1",
     "@polkadot/react-identicon": "^0.65.1",
+    "@polkadot/rpc-provider": "^3.6.4",
     "@polkadot/types": "^2.6.1",
     "@polkadot/util": "^5.2.3",
     "@polkadot/util-crypto": "^5.2.3",
     "@substrate/connect": "0.0.1",
+    "@substrate/wasmclient": "workspace:packages/wasmClient",
     "axios": "^0.19.2",
     "bn.js": "^5.1.2",
     "body-parser": "^1.19.0",
@@ -71,6 +73,7 @@
     "concurrently": "^5.2.0",
     "core-js": "^3.6.5",
     "cross-env": "^7.0.2",
+    "crypto-browserify": "^3.12.0",
     "css-loader": "^3.5.3",
     "cssnano": "^4.1.10",
     "enzyme": "^3.11.0",
@@ -89,6 +92,7 @@
     "react-router-dom": "^5.2.0",
     "request": "^2.88.2",
     "rimraf": "^3.0.2",
+    "stream-browserify": "^3.0.0",
     "style-loader": "^1.2.1",
     "ts-jest": "^25.5.1",
     "ts-node": "^8.10.1",
@@ -101,5 +105,11 @@
     "webpack-cli": "^4.3.1",
     "webpack-dev-server": "^3.11.1",
     "webpack-manifest-plugin": "^3.0.0"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*",
+    "react-is": "*",
+    "webpack": "*"
   }
 }
