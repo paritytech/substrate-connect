@@ -24,6 +24,7 @@
   "sideEffects": "false",
   "dependencies": {
     "@polkadot/rpc-provider": "^3.4.1",
+    "@polkadot/util": "^5.4.4",
     "browserify-fs": "^1.0.0",
     "eventemitter3": "^4.0.7",
     "mkdirp": "^1.0.4",

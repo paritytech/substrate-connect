@@ -59,7 +59,7 @@ const config: Configuration = {
         test: /\.(js|ts|tsx)$/,
         exclude: [/node_modules/, nodeModulesPath],
         use: {
-          loader: 'babel-loader',
+          loader: require.resolve('babel-loader'),
           options: require('@polkadot/dev/config/babel'),
         },
       },
@@ -67,10 +67,10 @@ const config: Configuration = {
         test: /\.css$/,
         use: [
           {
-            loader: 'style-loader',
+            loader: require.resolve('style-loader'),
           },
           {
-            loader: 'css-loader',
+            loader: require.resolve('css-loader'),
             options: {
               modules: true,
               localsConvention: 'camelCase',
@@ -78,7 +78,7 @@ const config: Configuration = {
             },
           },
           {
-            loader: 'postcss-loader',
+            loader: require.resolve('postcss-loader'),
             options: {
               sourceMap: IS_DEV,
               plugins: IS_DEV ? [cssnano()] : [],
@@ -93,7 +93,10 @@ const config: Configuration = {
       },
       {
         test: /.jpe?g$|.gif$|.png$|.svg$|.woff$|.woff2$|.ttf$|.eot$/,
-        use: 'url-loader?limit=10000',
+        use: require.resolve('url-loader')
+        options: {
+          limit: 10000
+        }
       },
     ],
   },
