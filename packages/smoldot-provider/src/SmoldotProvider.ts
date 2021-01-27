@@ -83,7 +83,7 @@ export class SmoldotProvider implements ProviderInterface {
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
-  #db: Database | undefined;
+  #db: Database;
   // reference to the smoldot module so we can defer loading the wasm client
   // until connect is called
   #smoldot: smoldot.Smoldot;
@@ -198,6 +198,7 @@ export class SmoldotProvider implements ProviderInterface {
     assert(!this.#client && !this.#isConnected, 'Client is already connected');
 
     return this.#smoldot.start({
+        database_content: this.#db.load(),
         chain_spec: this.#chainSpec,
         json_rpc_callback: (response: string) => {
             this.#handleRpcReponse(response);

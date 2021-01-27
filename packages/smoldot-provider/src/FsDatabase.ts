@@ -1,4 +1,4 @@
-import { writeFileSync, unlinkSync } from 'fs';
+import { writeFileSync, readFileSync, statSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import mkdirp from 'mkdirp';
 import { Database } from './Database';
@@ -20,6 +20,21 @@ export class FsDatabase implements Database {
     mkdirp.sync(dbDir);
 
     this.#path = join(dbDir, `${name}.json`);
+  }
+
+  load(): string {
+    try {
+      statSync(this.#path);
+    } catch (error: any) { 
+      // Typescript does not allow type annotations on catch blocks :(
+      if (error.code === 'ENOENT') {
+        return '';
+      }
+
+      throw error;
+    }
+
+    return readFileSync(this.#path, { encoding: 'utf-8' });
   }
 
   save(state: string) {
