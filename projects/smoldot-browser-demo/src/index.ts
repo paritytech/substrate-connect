@@ -4,16 +4,16 @@ import "regenerator-runtime/runtime"
 import { ApiPromise } from '@polkadot/api';
 import { SmoldotProvider }  from '@substrate/smoldot-provider';
 
-const timeElapsed = (from: Date, till: Date) => ((till.getTime() - from.getTime())/1000).toFixed(2);
+const timeElapsed = (from: number, till: number) => ((till - from)/1000).toFixed(2);
 
 window.onload = () => {
-  const timeLoad = new Date();
+  const timeLoad = performance.now();
   const timestampHtml = (withTime:boolean | undefined) => {
     const timestampDiv =  document.createElement('time');
     if (withTime) {
-      const time = new Date;
+      const time = performance.now();
       timestampDiv.appendChild(document.createTextNode(
-        `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()} (${timeElapsed(timeLoad, time)}s)`
+        `${new Date().toLocaleTimeString()} (${timeElapsed(timeLoad, time)}s)`
       ));
     }
     return timestampDiv
@@ -69,8 +69,8 @@ window.onload = () => {
       const header = await api.rpc.chain.getHeader()
       const chainName = await api.rpc.system.chain()
 
-      log(`🌱Light client ready!`);
-      log(`${chainName} #${header.number}`, true);
+      log(`🌱 Light client ready!`, true);
+      log(`${chainName} #${header.number}`);
       log(`Genesis hash is ${api.genesisHash.toHex()}`);
       log(`Epoch duration is ${api.consts.babe.epochDuration.toNumber()} blocks`);
       log(`ExistentialDeposit is ${api.consts.balances.existentialDeposit.toHuman()}`);
