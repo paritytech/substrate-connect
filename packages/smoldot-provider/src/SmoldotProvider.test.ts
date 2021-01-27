@@ -70,6 +70,7 @@ const respondWith = (jsonResponses: string[]) => {
 }
 
 class TestDatabase implements Database {
+  load(): string  { return ''; }
   save(state: string) {}
   delete() {}
 }

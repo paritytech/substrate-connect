@@ -27,6 +27,10 @@ let create: any = undefined;
  */
 export interface Database {
   /**
+   * @description Load existing chain state
+   */
+    load: () => string;
+  /**
    * @description Save the provided chain state
    */
     save: (state: string) => void;

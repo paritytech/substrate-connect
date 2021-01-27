@@ -10,15 +10,19 @@ export class BrowserDatabase implements Database {
   #name: string;
 
   constructor(name: string) {
-      this.#name = `smoldot::chainstate::${name}`;
+    this.#name = `smoldot::chainstate::${name}`;
+  }
+
+  load(): string {
+    return window.localStorage.getItem(this.#name) || '';
   }
 
   save(state: string) {
-      window.localStorage.setItem(this.#name, state);
+    window.localStorage.setItem(this.#name, state);
   }
 
   delete() {
-      window.localStorage.removeItem(this.#name);
+    window.localStorage.removeItem(this.#name);
   }
 }
 
