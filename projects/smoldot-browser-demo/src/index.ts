@@ -5,7 +5,6 @@ import { ApiPromise } from '@polkadot/api';
 import { SmoldotProvider }  from '@substrate/smoldot-provider';
 import UI from './view';
 
-const timeElapsed = (from: number, till: number) => ((till - from)/1000).toFixed(2);
 
 window.onload = () => {
   const loadTime = performance.now();
@@ -27,10 +26,15 @@ window.onload = () => {
       const chainName = await api.rpc.system.chain()
 
       ui.log(`🌱 Light client ready!`, true);
-      ui.log(`${chainName} #${header.number}`);
+      ui.log(`Connected to ${chainName} currently at block #${header.number}`);
       ui.log(`Genesis hash is ${api.genesisHash.toHex()}`);
       ui.log(`Epoch duration is ${api.consts.babe.epochDuration.toNumber()} blocks`);
       ui.log(`ExistentialDeposit is ${api.consts.balances.existentialDeposit.toHuman()}`);
+
+      ui.log(`Subscribing to new block headers: new bocks will appear when synced`);
+      await api.rpc.chain.subscribeNewHeads((lastHeader) => {
+        ui.log(`New block #${lastHeader.number} has hash ${lastHeader.hash}`);
+      });
     } catch (error) {
         ui.error(error);
     }
