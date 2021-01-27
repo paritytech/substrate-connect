@@ -2,28 +2,30 @@
 <body>
   <div id="root"></div>
   <style>
+    body {
+      margin: 0;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 14px;
+    }
     section {
-      font-family: monospace;
-      font-weight: bold;
-      width: 700px;
-      height: auto;
       background-color: black;
-      color: green;
       margin: 0 auto;
+      color: #18ffb2;
+      padding: 0.5rem
     }
-
     .message {
-      width: auto;
-      padding: 5px;
+      padding: 0.5rem;
     }
-
+    .message time {
+      display: inline-block;
+      opacity: 0.5;
+      width: 10rem;
+    }
     .error {
       color: red;
     }
   </style>
-  <section id="messages">
-    <div class="message">Loading and syncing chain...</div>
-  </section>
+  <section id="messages"></section>
   <script src="./src/index.ts"></script>
 </body>
 </html>
