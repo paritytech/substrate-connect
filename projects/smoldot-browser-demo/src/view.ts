@@ -100,7 +100,7 @@ export default class UI {
 
   showSyncing() {
     if (!this.#syncMessage) {
-      // mesage container
+      // message container
       const syncState = document.createElement('div');
       syncState.classList.add('message');
 
