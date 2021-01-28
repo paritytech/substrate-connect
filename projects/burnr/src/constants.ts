@@ -3,10 +3,8 @@ import { ProviderInterface } from '@polkadot/rpc-provider/types';
 
 import { LazyProvider } from './utils/types'; 
 
-import {
-  polkadotLocal,
-  WasmProvider
-} from '@substrate/wasmclient';
+// @TODO bundle multiple clients in substrate-connect
+import { SmoldotProvider }  from '@substrate/smoldot-provider';
 
 /**
  * Temporary hard-coded work around to test Wasm Light client 
@@ -29,18 +27,18 @@ export const users = {
 }
 
 export const JS_WASM_PROVIDERS: Record<string, LazyProvider> = {
-  'Polkadot-Local-WasmProvider': {
-    description: 'Local WASM light client for polkadot-local network',
-    id: 'Polkadot-Local-WasmProvider',
-    network: 'Local Polkadot Network',
-    node: 'light',
-    source: 'browser',
-    endpoint: 'Light client running in Browser',
-    client: 'Wasm light',
-    start: (): Promise<ProviderInterface> =>
-      Promise.resolve(new WasmProvider(polkadotLocal())),
-    transport: 'WasmProvider',
-  }
+  // 'Polkadot-Local-WasmProvider': {
+  //   description: 'Local WASM light client for polkadot-local network',
+  //   id: 'Polkadot-Local-WasmProvider',
+  //   network: 'Local Polkadot Network',
+  //   node: 'light',
+  //   source: 'browser',
+  //   endpoint: 'Light client running in Browser',
+  //   client: 'Wasm light',
+  //   start: (): Promise<ProviderInterface> =>
+  //     Promise.resolve(new SmoldotProvider()),
+  //   transport: 'WasmProvider',
+  // }
   // 'Polkadot-Wasm-Light-Node': {
   //   description: 'Local WASM light client for Polkadot',
   //   id: 'Polkadot-WasmProvider',

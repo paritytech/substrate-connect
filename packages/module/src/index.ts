@@ -16,7 +16,3 @@ export function kusama(): LightClient { return initClient('kusama') };
 export function polkadot(): LightClient { return initClient('polkadot') };
 export function polkadotLocal(): LightClient { return initClient('polkadotLocal') };
 export function westend(): LightClient { return initClient('westend') };
-
-
-
-

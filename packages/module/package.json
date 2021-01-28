@@ -26,6 +26,6 @@
   "types": "dist/lib/types.d.ts",
   "sideEffects": "false",
   "dependencies": {
-    "@polkadot/rpc-provider": "^3.4.1"
+    "@polkadot/rpc-provider": "^3.6.4"
   }
 }
