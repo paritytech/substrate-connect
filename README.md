@@ -60,7 +60,7 @@ $ yarn run dev:burnr
 (Make sure to run `$ yarn install` before.)
 
 ## Run local version of the Smoldot browser demo
-Running the following command will build all necessary dependencies and run the Soldot browser demo. It will be served on https://localhost:1234/
+Running the following command will build all necessary dependencies and run the Smoldot browser demo. It will be served on https://localhost:1234/
 
 ```
 $ yarn run dev:smoldot-browser-demo
@@ -70,13 +70,13 @@ $ yarn run dev:smoldot-browser-demo
 
 ## Working with this repository
 
-Substrate Connect is using Yarn worspaces to manage dependencies. 
+Substrate Connect is using Yarn workspaces to manage dependencies. 
 
 Read more about it here: https://classic.yarnpkg.com/en/docs/workspaces/
 
 ### Adding modules to single repositories
 
-To add new dependencies, please use thefollowing syntax:
+To add new dependencies, please use the following syntax:
 
 ```
 $ yarn workspace [module name from package.json] add your-desired-npm-package
