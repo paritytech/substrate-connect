@@ -39,18 +39,25 @@ window.onload = () => {
 
       // Check the state of syncing every 2s and update the syncing state message
       // when done
-      const systemHealthPingerId = setInterval(() => {
-        api.rpc.system.health().then(health => {
-          if (!health.isSyncing) {
-            ui.showSynced();
-            clearInterval(systemHealthPingerId);
-          }
-        }).catch(error => {
-          ui.error(error);
+      const waitForChainToSync = () => {
+        return new Promise<void>((resolve, reject) => {
+          const systemHealthPingerId = setInterval(() => {
+            api.rpc.system.health().then(health => {
+              if (!health.isSyncing) {
+                ui.showSynced();
+                clearInterval(systemHealthPingerId);
+                resolve();
+              }
+            }).catch(error => {
+              ui.error(true);
+              reject(error);
+            });
+          }, 2000);
         });
-      }, 2000);
+      }
 
-      ui.log(`${emojis.newspaper} Subscribing to new block headers: new bocks will appear when synced`);
+      await waitForChainToSync();
+      ui.log(`${emojis.newspaper} Subscribing to new block headers`);
       await api.rpc.chain.subscribeNewHeads((lastHeader) => {
         ui.log(`${emojis.brick} New block #${lastHeader.number} has hash ${lastHeader.hash}`);
       });
