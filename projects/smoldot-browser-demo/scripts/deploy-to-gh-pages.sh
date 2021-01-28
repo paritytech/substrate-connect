@@ -27,7 +27,7 @@ main() {
   git diff-index --quiet HEAD || die "You have uncommitted / staged changes"
   git fetch $REMOTE $GH_PAGES_BRANCH 
 
-  yarn build
+  yarn build --public-url /substrate-connect
 
   # Manually create a commit from the contents of the build dir with a message
   # noting the commit id this new gh-pages branch came from
