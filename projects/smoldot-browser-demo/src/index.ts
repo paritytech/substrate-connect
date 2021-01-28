@@ -35,7 +35,7 @@ window.onload = () => {
       // Show how many peers we are syncing with
       const health = await api.rpc.system.health();
       const peers = health.peers == 1 ? '1 peer' : `${health.peers} peers`;
-      ui.log(`${emojis.stethoscope} chain is syncing with ${peers}`);
+      ui.log(`${emojis.stethoscope} Chain is syncing with ${peers}`);
 
       // Check the state of syncing every 2s and update the syncing state message
       // when done
