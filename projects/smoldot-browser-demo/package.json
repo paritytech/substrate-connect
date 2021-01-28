@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "clean": "rm -rf dist/ && mkdir -p dist/assets",
-    "build": "tsc",
+    "compile": "tsc",
     "copy-assets": "cp -R src/assets dist/",
     "build": "yarn clean && yarn copy-assets && parcel build index.html --detailed-report",
     "dev": "yarn clean && yarn copy-assets && parcel index.html --https"
