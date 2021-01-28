@@ -38,15 +38,23 @@ window.onload = () => {
       ui.log(`${emojis.stethoscope} Chain is syncing with ${peers}`);
 
       // Check the state of syncing every 2s and update the syncing state message
-      // when done
+      //
+      // Resolves the first time the chain is fully synced so we can wait before
+      // adding subscriptions. Carries on pinging to keep the UI consistent 
+      // in case syncing stops or starts.
       const waitForChainToSync = () => {
+        const resolved = false;
         return new Promise<void>((resolve, reject) => {
-          const systemHealthPingerId = setInterval(() => {
+          setInterval(() => {
             api.rpc.system.health().then(health => {
               if (!health.isSyncing) {
                 ui.showSynced();
-                clearInterval(systemHealthPingerId);
-                resolve();
+                if (!resolved) {
+                  resolved = true;
+                  resolve();
+                }
+              } else {
+                ui.showSyncing();
               }
             }).catch(error => {
               ui.error(true);

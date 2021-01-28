@@ -115,8 +115,7 @@ export default class UI {
       this.#syncState = syncState;
       this.#insertAtTopOfContainer(this.#syncState);
     } else {
-      // REM: Cover case that we change from synced state back to syncing.
-      // Would this ever happen?
+      // Cover case that we change from synced state back to syncing.
       this.#syncMessage.innerHTML = `${emojis.chain} Chain is syncing...`;
       this.#ensureClassOn(this.#syncMessage, 'pulse');
     }
