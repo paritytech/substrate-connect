@@ -29,7 +29,7 @@
     "browserify-fs": "^1.0.0",
     "eventemitter3": "^4.0.7",
     "mkdirp": "^1.0.4",
-    "smoldot": "^0.1.2"
+    "smoldot": "0.1.3"
   },
   "devDependencies": {
     "@polkadot/api": "^3.5.1",
