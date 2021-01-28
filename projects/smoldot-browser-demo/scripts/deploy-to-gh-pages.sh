@@ -11,13 +11,13 @@ REMOTE="${REMOTE:-origin}"
 BUILD_DIR="${BUILD_DIR:-projects/smoldot-browser-demo/dist}"
 GH_PAGES_BRANCH="${GH_PAGES_BRANCH:-gh-pages}"
 
+RESET='\033[0m'
+RED='\033[00;31m'
+
 die() {
   local msg="$*"
   [[ -z "${msg}" ]] || {
-    tput setaf 1  # red
-    tput bold
-    echo "${msg}" 1>&2
-    tput sgr0     # reset
+    echo "${RED}${msg}${RESET}" 1>&2
   }
   exit 1
 }
@@ -43,6 +43,7 @@ main() {
     # Put the commit on the head of the gh-pages branch and push it
     git update-ref refs/heads/$GH_PAGES_BRANCH $new_commit_id
     git push --follow-tags $REMOTE refs/heads/$GH_PAGES_BRANCH
+    echo "Deployed to gh-pages"
     exit 0
   fi
 
