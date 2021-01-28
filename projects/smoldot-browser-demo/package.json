@@ -15,7 +15,8 @@
     "compile": "tsc",
     "copy-assets": "cp -R src/assets dist/",
     "build": "yarn clean && yarn copy-assets && parcel build index.html --detailed-report",
-    "dev": "yarn clean && yarn copy-assets && parcel index.html --https"
+    "dev": "yarn clean && yarn copy-assets && parcel index.html --https",
+    "deploy": "./scripts/deploy-to-gh-pages.sh"
   },
   "devDependencies": {
     "@parcel/config-default": "^2.0.0-alpha.3",
