@@ -59,11 +59,11 @@ $ yarn run dev:burnr
 
 (Make sure to run `$ yarn install` before.)
 
-## Run local version of the Soldot browser demo
-Running the following command will build all necessary dependencies and run the Soldot browser demo.   It will be served on http://localhost:1234/
+## Run local version of the Smoldot browser demo
+Running the following command will build all necessary dependencies and run the Soldot browser demo. It will be served on https://localhost:1234/
 
 ```
-$ yarn run dev:smoldotdemo
+$ yarn run dev:smoldot-browser-demo
 ```
 
 (Make sure to run `$ yarn install` before.)
