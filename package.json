@@ -17,13 +17,12 @@
   "scripts": {
     "clean": " yarn workspaces run clean && rimraf node_modules",
     "build": "yarn workspaces run build",
-    "dev": " yarn run build && yarn workspace @substrate/burnr run dev",
-    "dev:raw": "yarn workspace @substrate/connect run build && yarn workspace raw-js run build && yarn workspace raw-js run start",
+    "dev:burnr": "yarn workspace @substrate/connect run build && yarn workspace @substrate/burnr  run build && yarn workspace @substrate/burnr run start",
+    "dev:smoldotdemo": "yarn workspace @substrate/smoldot-browser-demo run dev",
     "test": " yarn workspaces run test"
   },
   "devDependencies": {
     "copyfiles": "^2.3.0",
-    "lerna": "^3.22.1",
     "rimraf": "^3.0.2"
   },
   "dependencies": {
