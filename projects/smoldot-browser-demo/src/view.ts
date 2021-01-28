@@ -7,10 +7,25 @@ export interface Options {
 
 }
 
+export const emojis = {
+  banknote: '💵',
+  brick: '🧱',
+  chain: '🔗',
+  chequeredFlag: '🏁',
+  clock: '🕒',
+  info: 'ℹ️',
+  newspaper: '🗞️',
+  seedling: '🌱',
+  stethoscope: '🩺',
+  tick: '✅'
+};
+
 export default class UI {
   #options: Options;
   #model: Model;
   #container: HTMLElement;
+  #syncState: HTMLElement | undefined;
+  #syncMessage: HTMLElement | undefined;
 
   constructor(options: Options, model: Model) {
     this.#options = options;
@@ -26,7 +41,7 @@ export default class UI {
     return ((till - from)/1000).toFixed(2);
   }
 
-  private timestampHtml(withTime:boolean | undefined): HTMLElement {
+  private timestampHtml(withTime?:boolean): HTMLElement {
     const timestampDiv =  document.createElement('time');
     if (!withTime) {
       return timestampDiv;
@@ -67,5 +82,52 @@ export default class UI {
 
   log(message: string, withTime?: boolean) {
     this.displayMessage(this.messageHtml(message, withTime));
+  }
+
+  #insertAtTopOfContainer = (el: HTMLElement) => {
+    if (this.#container.firstChild == null) {
+      this.#container.appendChild(el);
+    } else {
+      this.#container.insertBefore(el, this.#container.firstChild)
+    }
+  }
+
+  #ensureClassOn = (el: HTMLElement, className: string) => {
+    if (!el.classList.contains(className)) {
+      el.classList.add(className);
+    }
+  }
+
+  showSyncing() {
+    if (!this.#syncMessage) {
+      // mesage container
+      const syncState = document.createElement('div');
+      syncState.classList.add('message');
+
+      //contents - empty timestamp and pulsing message
+      syncState.appendChild(this.timestampHtml())
+      const syncMessage = document.createElement('em');
+      syncMessage.classList.add('pulse');
+      syncMessage.innerHTML = `${emojis.chain} Chain is syncing...`;
+      syncState.appendChild(syncMessage);
+
+      this.#syncMessage = syncMessage;
+      this.#syncState = syncState;
+      this.#insertAtTopOfContainer(this.#syncState);
+    } else {
+      // REM: Cover case that we change from synced state back to syncing.
+      // Would this ever happen?
+      this.#syncMessage.innerHTML = `${emojis.chain} Chain is syncing...`;
+      this.#ensureClassOn(this.#syncMessage, 'pulse');
+    }
+  }
+
+  showSynced() {
+    if (!this.#syncState || !this.#syncMessage) {
+      throw new Error('There is no sync state UI to update. You should have called `showSyncing()` first.');
+    }
+
+    this.#syncMessage.classList.remove('pulse');
+    this.#syncMessage.innerHTML = `${emojis.tick} Chain synced!`;
   }
 }
