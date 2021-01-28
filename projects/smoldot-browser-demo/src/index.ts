@@ -3,62 +3,18 @@ import "regenerator-runtime/runtime"
 
 import { ApiPromise } from '@polkadot/api';
 import { SmoldotProvider }  from '@substrate/smoldot-provider';
+import UI, { emojis } from './view';
 
-const timeElapsed = (from: number, till: number) => ((till - from)/1000).toFixed(2);
 
 window.onload = () => {
-  const timeLoad = performance.now();
-  const timestampHtml = (withTime:boolean | undefined) => {
-    const timestampDiv =  document.createElement('time');
-    if (withTime) {
-      const time = performance.now();
-      timestampDiv.appendChild(document.createTextNode(
-        `${new Date().toLocaleTimeString()} (${timeElapsed(timeLoad, time)}s)`
-      ));
-    }
-    return timestampDiv
-  }
-
-  const messages = document.getElementById('messages');
-  const messageHtml = (message: string, withTime?: boolean) => {
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message');
-    messageDiv.appendChild(timestampHtml(withTime))
-    messageDiv.appendChild(document.createTextNode(message));
-    return messageDiv;
-  };
-
-  const errorHtml = (message: string) => {
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message');
-    messageDiv.classList.add('error');
-    messageDiv.appendChild(document.createTextNode(message));
-    return messageDiv;
-  };
-
-  const displayMessage = (message: any) => {
-    if (messages === null) {
-      throw Error('No messages container. Did you change the Html?');
-    }
-
-    messages.appendChild(message);
-  }
-
-  const error = (error: Error) => {
-    displayMessage(errorHtml(error.message));
-    throw error;
-  };
-
-  const log = (message: string, withTime?: boolean) => {
-    displayMessage(messageHtml(message, withTime));
-  }
-
-  log(`Loading and syncing chain...`, true);
+  const loadTime = performance.now();
+  const ui = new UI({ containerId: 'messages' }, { loadTime });
+  ui.showSyncing();
 
   (async () => {
     const response =  await fetch('./assets/westend.json')
     if (!response.ok) {
-      error(new Error('Error downloading chain spec'));
+      ui.error(new Error('Error downloading chain spec'));
     }
 
     const chainSpec =  await response.text();
@@ -69,13 +25,52 @@ window.onload = () => {
       const header = await api.rpc.chain.getHeader()
       const chainName = await api.rpc.system.chain()
 
-      log(`🌱 Light client ready!`, true);
-      log(`${chainName} #${header.number}`);
-      log(`Genesis hash is ${api.genesisHash.toHex()}`);
-      log(`Epoch duration is ${api.consts.babe.epochDuration.toNumber()} blocks`);
-      log(`ExistentialDeposit is ${api.consts.balances.existentialDeposit.toHuman()}`);
+      // Show chain constants - from chain spec
+      ui.log(`${emojis.seedling} Light client ready`, true);
+      ui.log(`${emojis.info} Connected to ${chainName}: syncing will start at block #${header.number}`);
+      ui.log(`${emojis.chequeredFlag} Genesis hash is ${api.genesisHash.toHex()}`);
+      ui.log(`${emojis.clock} Epoch duration is ${api.consts.babe.epochDuration.toNumber()} blocks`);
+      ui.log(`${emojis.banknote} ExistentialDeposit is ${api.consts.balances.existentialDeposit.toHuman()}`);
+
+      // Show how many peers we are syncing with
+      const health = await api.rpc.system.health();
+      const peers = health.peers == 1 ? '1 peer' : `${health.peers} peers`;
+      ui.log(`${emojis.stethoscope} Chain is syncing with ${peers}`);
+
+      // Check the state of syncing every 2s and update the syncing state message
+      //
+      // Resolves the first time the chain is fully synced so we can wait before
+      // adding subscriptions. Carries on pinging to keep the UI consistent 
+      // in case syncing stops or starts.
+      const waitForChainToSync = () => {
+        const resolved = false;
+        return new Promise<void>((resolve, reject) => {
+          setInterval(() => {
+            api.rpc.system.health().then(health => {
+              if (!health.isSyncing) {
+                ui.showSynced();
+                if (!resolved) {
+                  resolved = true;
+                  resolve();
+                }
+              } else {
+                ui.showSyncing();
+              }
+            }).catch(error => {
+              ui.error(true);
+              reject(error);
+            });
+          }, 2000);
+        });
+      }
+
+      await waitForChainToSync();
+      ui.log(`${emojis.newspaper} Subscribing to new block headers`);
+      await api.rpc.chain.subscribeNewHeads((lastHeader) => {
+        ui.log(`${emojis.brick} New block #${lastHeader.number} has hash ${lastHeader.hash}`);
+      });
     } catch (error) {
-        error(error);
+        ui.error(error);
     }
 
   })();
