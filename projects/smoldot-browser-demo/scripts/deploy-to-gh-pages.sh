@@ -7,7 +7,8 @@ set -euo pipefail
 IFS=$'\n\t'
 
 REMOTE="${REMOTE:-origin}"
-BUILD_DIR="${BUILD_DIR:-dist}"
+# Should be relative to root of git repo
+BUILD_DIR="${BUILD_DIR:-projects/smoldot-browser-demo/dist}"
 GH_PAGES_BRANCH="${GH_PAGES_BRANCH:-gh-pages}"
 
 die() {
@@ -25,13 +26,27 @@ readonly -f die
 main() {
   git diff-index --quiet HEAD || die "You have uncommitted / staged changes"
   git fetch $REMOTE $GH_PAGES_BRANCH 
-  git add -f $BUILD_DIR
+
+  yarn build
+
+  # Manually create a commit from the contents of the build dir with a message
+  # noting the commit id this new gh-pages branch came from
+  git add -f dist
   local tree_to_commit=$(git write-tree --prefix=$BUILD_DIR)
-  git reset -- $BUILD_DIR
-  local head_commit_id=$(git describe HEAD)
-  commit=$(git commit-tree -p refs/remotes/origin/$GH_PAGES_BRANCH -m "Deploy gh-pages from ${head_commit_id}" $tree)
-  git update-ref refs/heads/$GH_PAGES_BRANCH $commit
-  git push --follow-tags $REMOTE refs/heads/$GH_PAGES_BRANCH
+  git reset -- dist
+  local head_commit_id=$(git describe --dirty --always)
+  local new_commit_id=$(git commit-tree -p refs/remotes/$REMOTE/$GH_PAGES_BRANCH \
+    -m "Deploy gh-pages from ${head_commit_id}" $tree_to_commit)
+
+
+  if [ -z ${DRY_RUN+x} ]; then 
+    # Put the commit on the head of the gh-pages branch and push it
+    git update-ref refs/heads/$GH_PAGES_BRANCH $new_commit_id
+    git push --follow-tags $REMOTE refs/heads/$GH_PAGES_BRANCH
+    exit 0
+  fi
+
+  echo "DRY_RUN so did not push"; 
 }
 readonly -f main
 
