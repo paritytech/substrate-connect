@@ -1,0 +1,1 @@
+console.log('Hello Parcel Project 2');
