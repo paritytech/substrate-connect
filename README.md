@@ -53,8 +53,8 @@ yarn clean
 ## Run local version of Burnr wallet
 Running the following command will build all necessary dependencies and run the Substrate Burnr Wallet in development mode with hot reloading enabled. It will be served on http://localhost:8000/
 
-```
-yarn run dev:burnrbash
+```bash
+yarn dev:burnr
 ```
 
 (Make sure to run `$ yarn install` before.)
@@ -63,7 +63,7 @@ yarn run dev:burnrbash
 Running the following command will build all necessary dependencies and run the Smoldot browser demo. It will be served on https://localhost:1234/
 
 ```bash
-yarn run dev:smoldot-browser-demo
+yarn dev:smoldot-browser-demo
 ```
 
 (Make sure to run `$ yarn install` before.)
@@ -81,7 +81,7 @@ branch. The dist folder remains ignored by git.
 You can deploy to Github pages like so:
 
 ```bash
-yarn run deploy:gh-pages:smoldot-browser-demo
+yarn deploy:gh-pages:smoldot-browser-demo
 ```
 
 ## Deploy Smoldot browser demo to IPFS
@@ -97,7 +97,7 @@ PINATA_API_SECRET=<your secret>
 You can then deploy to IPFS like so:
 
 ```bash
-yarn run deploy:ipfs:smoldot-browser-demo
+yarn deploy:ipfs:smoldot-browser-demo
 ```
 
 ## Working with this repository
