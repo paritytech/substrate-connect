@@ -7,7 +7,7 @@
       font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       font-size: 14px;
     }
-    section {
+    #messages {
       background-color: black;
       margin: 0 auto;
       color: #18ffb2;
@@ -23,6 +23,23 @@
     }
     .error {
       color: red;
+    }
+    @keyframes pulse_animation {
+      0% { 
+          opacity: 0.1;
+      }
+      50% { 
+          opacity: 1.0;
+      }
+      100% { 
+          opacity: 0.1;
+      }
+    }
+    .pulse {
+        animation-name: pulse_animation;
+        animation-duration: 5000ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
     }
   </style>
   <section id="messages"></section>
