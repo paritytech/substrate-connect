@@ -1,18 +1,20 @@
 {
   "compilerOptions": {
     "target": "ES2019",
+    "module": "ESNext",
     "moduleResolution": "node",
-    "module": "commonjs",
     "esModuleInterop": true,
-    "declaration": true,
     "sourceMap": true,
+    "noEmit": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
-    "outDir": "../../dist/utils",
-    "lib": ["ES2019"],
-    "composite": true
+    "outDir": "../dist",
+    "lib": ["ES2019", "DOM"],
+    "types": [],
+    "jsx": "react"
   },
-  "include": ["./**/*.ts", "accounts.js"],
-  "exclude": ["./**/*.test.ts"],
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx"],
+  "files": [],
 }

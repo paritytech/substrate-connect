@@ -17,11 +17,4 @@
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["**/*.test.ts", "**/*.test.tsx"],
   "files": [],
-  "references": [{
-      "path": "./server"
-    },
-    {
-      "path": "./utils"
-    }
-  ]
 }
