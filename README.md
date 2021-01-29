@@ -28,33 +28,33 @@ This repository is using [yarn workspaces](https://classic.yarnpkg.com/en/docs/w
 
 1. Clone the whole `substrate-connect` repository.
 
-```
-$ git clone https://github.com/paritytech/substrate-connect.git
+```bash
+git clone https://github.com/paritytech/substrate-connect.git
 ```
 
 2. Install all dependencies
 
-```
-$ yarn install
+```bash
+yarn install
 ```
 
 3. Compile all packages and projects
 
-```
-$ yarn build
+```bash
+yarn build
 ```
 
 To clean up all workspaces in the repository, run:
 
-```
-$ yarn clean
+```bash
+yarn clean
 ```
 
 ## Run local version of Burnr wallet
 Running the following command will build all necessary dependencies and run the Substrate Burnr Wallet in development mode with hot reloading enabled. It will be served on http://localhost:8000/
 
 ```
-$ yarn run dev:burnr
+yarn run dev:burnrbash
 ```
 
 (Make sure to run `$ yarn install` before.)
@@ -62,8 +62,8 @@ $ yarn run dev:burnr
 ## Run local version of the Smoldot browser demo
 Running the following command will build all necessary dependencies and run the Smoldot browser demo. It will be served on https://localhost:1234/
 
-```
-$ yarn run dev:smoldot-browser-demo
+```bash
+yarn run dev:smoldot-browser-demo
 ```
 
 (Make sure to run `$ yarn install` before.)
@@ -81,7 +81,7 @@ branch. The dist folder remains ignored by git.
 
 You can deploy the Smoldot browser demo to Github pages:
 
-```
+```bash
 yarn run deploy:gh-pages:smoldot-browser-demo
 ```
 
@@ -96,11 +96,11 @@ Read more about it here: https://classic.yarnpkg.com/en/docs/workspaces/
 To add new dependencies, please use the following syntax:
 
 ```
-$ yarn workspace [module name from package.json] add your-desired-npm-package
+yarn workspace [module name from package.json] add your-desired-npm-package
 ```
 Example to add Jest to the Burnr Wallet:
 ```
-$ yarn workspace @substrate/burnr add jest
+yarn workspace @substrate/burnr add jest
 ```
 
 Also see https://classic.yarnpkg.com/en/docs/cli/workspace/
