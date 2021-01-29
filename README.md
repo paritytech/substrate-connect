@@ -71,18 +71,33 @@ yarn run dev:smoldot-browser-demo
 ## Deploy Smoldot browser demo to Github Pages
 
 Before deploying make sure you have a clean working copy with no staged changes.
-The deploy script will deploy the current commit.  **I.E. it does not commit the
-head of master but the head of your current branch**.
+The deploy script will deploy the last commit on your current branch.
 
 The deployment will build the smoldot browser demo into the dist folder and 
 construct a commit containing just that folder with a message containing a 
 reference to the SHA of the commit it came from and push that to the gh-pages
 branch. The dist folder remains ignored by git.
 
-You can deploy the Smoldot browser demo to Github pages:
+You can deploy to Github pages like so:
 
 ```bash
 yarn run deploy:gh-pages:smoldot-browser-demo
+```
+
+## Deploy Smoldot browser demo to IPFS
+
+Before deploying make sure you have a Piñata API key and secret and that you
+have exported them in your shell environment:
+
+```bash
+PINATA_API_KEY=<your key>
+PINATA_API_SECRET=<your secret>
+```
+
+You can then deploy to IPFS like so:
+
+```bash
+yarn run deploy:ipfs:smoldot-browser-demo
 ```
 
 ## Working with this repository
