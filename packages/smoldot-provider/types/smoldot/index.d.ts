@@ -10,7 +10,7 @@ export type SmoldotJsonRpcCallback = (response: string) => void;
 export type SmoldotDatabaseSaveCallback = (response: string) => void;
 
 export interface SmoldotOptions {
-  database_content: string;
+  max_log_level?: number;
   chain_spec: string;
   json_rpc_callback: SmoldotJsonRpcCallback;
   database_save_callback: SmoldotDatabaseSaveCallback;

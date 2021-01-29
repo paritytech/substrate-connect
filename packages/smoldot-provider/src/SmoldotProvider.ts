@@ -200,6 +200,7 @@ export class SmoldotProvider implements ProviderInterface {
     return this.#smoldot.start({
         database_content: this.#db.load(),
         chain_spec: this.#chainSpec,
+        max_log_level: 3, /* no debug/trace messages */
         json_rpc_callback: (response: string) => {
             this.#handleRpcReponse(response);
         },
