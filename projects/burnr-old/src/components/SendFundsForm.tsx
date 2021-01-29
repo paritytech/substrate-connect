@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { InputAddress, InputFunds } from '.';
+import { InputAddress, InputFunds } from '../components';
 import { makeStyles, createStyles, Theme, Grid, Button } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>

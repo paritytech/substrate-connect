@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
 import { ALL_PROVIDERS } from '../../constants';
-import { LazyProvider } from './../../utils/types'; 
-import { useIsMountedRef, useLocalStorage, useProvider } from './..';
+import { LazyProvider } from '../../utils/types'; 
+import { useIsMountedRef, useLocalStorage, useProvider } from '../../hooks';
 
 /**  This part isn't usable until the issues in the Substrate Light CLient implementation have been fixed **/
 // import {

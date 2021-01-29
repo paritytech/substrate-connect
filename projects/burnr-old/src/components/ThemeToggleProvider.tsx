@@ -3,7 +3,7 @@ import { ThemeProvider, createMuiTheme, CssBaseline, makeStyles } from '@materia
 import { SubstrateLight, SubstrateDark } from '../themes';
 import { useLocalStorage } from '../hooks';
 
-import { LogoSubstrate, ThemeButton } from '.';
+import { LogoSubstrate, ThemeButton } from '../components';
 
 const useStyles = makeStyles(theme => ({
 	root: {

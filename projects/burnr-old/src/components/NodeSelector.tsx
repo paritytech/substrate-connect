@@ -5,9 +5,9 @@ import { Typography, ButtonBase, InputBase } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Autocomplete, { AutocompleteCloseReason } from '@material-ui/lab/Autocomplete';
 
-import { ALL_PROVIDERS } from './../constants';
+import { ALL_PROVIDERS } from '../constants';
 import { useApiCreate, useLocalStorage } from '../hooks';
-import { NodeSelectorItem, NodeSelectorSelected } from '.';
+import { NodeSelectorItem, NodeSelectorSelected } from '../components';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({

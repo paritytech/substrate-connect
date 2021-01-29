@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Box, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
-import { NodeSelector } from '.';
+import { NodeSelector } from '../components';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
