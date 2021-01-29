@@ -18,5 +18,14 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/paritytech/substrate-connect.git"
+  },
+  "dependencies": {
+    "@polkadot/api": "^3.6.4",
+    "@polkadot/react-identicon": "^0.67.1",
+    "@typescript-eslint/eslint-plugin": "^4.14.1",
+    "@typescript-eslint/parser": "^4.14.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "styled-components": "^5.2.1"
   }
 }
