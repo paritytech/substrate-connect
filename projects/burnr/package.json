@@ -13,8 +13,8 @@
     "build:server": "tsc -b src",
     "dev:client": "NODE_ENV=development cross-env webpack-dev-server -w",
     "dev:server": "NODE_ENV=development tsc-watch --noClear -b ./src/tsconfig.json --onSuccess \"node --enable-source-maps index.js\"",
-    "dev": "NODE_ENV=development yarn run dev-server & yarn run dev-client",
-    "build": "yarn run build-server & yarn run build-client"
+    "dev": "NODE_ENV=development yarn run dev:server & yarn run dev:client",
+    "build": "yarn run build:server & yarn run build:client"
   },
   "repository": {
     "type": "git",
