@@ -68,6 +68,23 @@ $ yarn run dev:smoldot-browser-demo
 
 (Make sure to run `$ yarn install` before.)
 
+## Deploy Smoldot browser demo to Github Pages
+
+Before deploying make sure you have a clean working copy with no staged changes.
+The deploy script will deploy the current commit.  **I.E. it does not commit the
+head of master but the head of your current branch**.
+
+The deployment will build the smoldot browser demo into the dist folder and 
+construct a commit containing just that folder with a message containing a 
+reference to the SHA of the commit it came from and push that to the gh-pages
+branch. The dist folder remains ignored by git.
+
+You can deploy the Smoldot browser demo to Github pages:
+
+```
+yarn run deploy:gh-pages:smoldot-browser-demo
+```
+
 ## Working with this repository
 
 Substrate Connect is using Yarn workspaces to manage dependencies. 

@@ -19,6 +19,7 @@
     "build": "yarn workspaces run build",
     "dev:burnr": "yarn workspace @substrate/connect run build && yarn workspace @substrate/burnr run build && yarn workspace @substrate/burnr run start",
     "dev:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run dev",
+    "deploy:gh-pages:smoldot-browser-demo": "cd projects/smoldot-browser-demo && yarn deploy",
     "test": " yarn workspaces run test"
   },
   "devDependencies": {
