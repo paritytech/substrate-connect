@@ -3,10 +3,10 @@ import React from 'react';
 import { Grid, Paper, Divider, IconButton, Box, makeStyles, Theme } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
-import { NavTabs, AccountCard, BalanceValue, Bg } from '../components';
+import { NavTabs, AccountCard, BalanceValue, Bg } from './components';
 
-import { useUserInfo } from '../hooks';
-import { users } from '../utils/constants';
+import { useUserInfo } from './hooks';
+import { users } from './utils/constants';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	paperAccount: {
@@ -68,6 +68,6 @@ function Home ():  React.ReactElement {
 			<NavTabs />
 		</>
 	);
-};
+}
 
 export default Home;

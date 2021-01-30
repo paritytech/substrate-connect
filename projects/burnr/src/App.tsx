@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { ApiContext } from './utils/contexts';
 import { useApiCreate } from './hooks';
 
-import { Home } from './Home';
+import Home from './Home';
 
 import { NavFooter, ThemeToggleProvider, Head } from './components';
 
