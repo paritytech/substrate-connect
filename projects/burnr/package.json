@@ -32,6 +32,7 @@
     "@substrate/connect": "0.0.1"
   },
   "devDependencies": {
+    "@types/react-dom": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
     "bn.js": "^5.1.3",

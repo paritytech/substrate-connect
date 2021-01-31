@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export interface Option {
   network: string;
-	client: string;
+	client: string|undefined;
 	provider: string;
 }
 

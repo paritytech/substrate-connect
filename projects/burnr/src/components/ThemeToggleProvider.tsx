@@ -30,8 +30,8 @@ const ThemeToggleProvider: React.FunctionComponent = ({ children }) => {
 	const [theme, setTheme] = useState(localTheme === 'false' ? false : true);
 	const appliedTheme = createMuiTheme(theme ? SubstrateLight : SubstrateDark);
 
-	const selectTheme = (selected) => {
-		setLocalTheme(selected);
+	const selectTheme = (selected: boolean) => {
+		setLocalTheme(selected.toString());
 		setTheme(selected);
 	}
 

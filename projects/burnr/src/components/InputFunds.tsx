@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ClickEvent} from 'react';
 
 import { Button, Grid, TextField, Box, InputAdornment } from '@material-ui/core';
 
@@ -11,7 +11,7 @@ interface Props {
 
 const InputFunds: React.FunctionComponent<Props> = ({ total, currency }: Props) => {
 	const [value, setValue] = React.useState<number | ''>('');
-	const handleChangeButton = (e) => {
+	const handleChangeButton = (e: ClickEvent) => {
 		setValue(e.currentTarget.value * total);
 		document.getElementById('SendFundsAmountField').focus();
 	};

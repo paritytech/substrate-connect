@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ChangeEvent} from 'react';
 
 import { FormControl, TextField, Box } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -7,8 +7,8 @@ import Identicon from '@polkadot/react-identicon';
 
 const InputAddress: React.FunctionComponent = () => {
 	const [value, setValue] = React.useState<string>('');
-	const handleChangeButton = (e) => {
-		setValue(e.currentTarget.value);
+	const handleChangeButton = (e: ChangeEvent) => {
+		setValue((e.currentTarget as HTMLTextAreaElement).value);
 	};
 
 	return (

@@ -24,18 +24,16 @@ export default function useApiCreate (): ApiPromise | null {
   const [api, setApi] = useState<ApiPromise | null>(null);
   const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
 
-  const [provider, setProvider] = useState<LazyProvider | null>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Polkadot-WsProvider']);
+  const [provider, setProvider] = useState<LazyProvider>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Polkadot-WsProvider']);
   const  mountedRef = useIsMountedRef();
 
   // @TODO Make dynamic once @substrate/connect is implemented
   // const instantiated = provider.source === 'browser' ? new WasmProvider(polkadotLocal()) : new WsProvider(provider.endpoint);
 
-  const instantiated = new WsProvider(provider.endpoint);
-
   useEffect((): void => {
     ApiPromise
       .create({
-        provider: instantiated,
+        provider: new WsProvider(provider.endpoint),
         types: {}
       })
       .then((api): void => {
