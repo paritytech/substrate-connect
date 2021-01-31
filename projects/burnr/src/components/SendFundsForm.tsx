@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 
 import { InputAddress, InputFunds } from '../components';
 import { makeStyles, createStyles, Theme, Grid, Button } from '@material-ui/core';
@@ -25,8 +25,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const SendFundsForm: React.FunctionComponent = () => {
 	const classes = useStyles();
 
-	function handleSubmit(event) {
-		event.preventDefault();
+	function handleSubmit(e: MouseEvent) {
+		e.preventDefault();
 	}
 
 	return (

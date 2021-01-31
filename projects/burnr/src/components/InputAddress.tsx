@@ -1,4 +1,4 @@
-import React, {ChangeEvent} from 'react';
+import React, { ChangeEvent } from 'react';
 
 import { FormControl, TextField, Box } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
