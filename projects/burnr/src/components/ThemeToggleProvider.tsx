@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ThemeProvider, createMuiTheme, CssBaseline, makeStyles } from '@material-ui/core';
-import { SubstrateLight, SubstrateDark } from '../themes';
+import { SubstrateLight, SubstrateDark } from './../themes';
 import { useLocalStorage } from '../hooks';
 
 import { LogoSubstrate, ThemeButton } from '../components';

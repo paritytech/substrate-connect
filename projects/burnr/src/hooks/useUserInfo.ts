@@ -18,13 +18,13 @@ export default function useUserInfo (address: string): UserInfo {
     api.query.system
         .account(address, ( data ): void => {
           mountedRef.current && setUsersInfo({
-              active: !(data as AccountInfo).refcount.isZero(),
+              active: !(data).refcount.isZero(),
               address: address,
               created: new Date(),
-              balance: new BN((data as AccountInfo).data.free),
-              reserved: new BN((data as AccountInfo).data.reserved),
-              feeFrozen: new BN((data as AccountInfo).data.feeFrozen),
-              miscFrozen: new BN((data as AccountInfo).data.feeFrozen)
+              balance: new BN((data).data.free),
+              reserved: new BN((data).data.reserved),
+              feeFrozen: new BN((data).data.feeFrozen),
+              miscFrozen: new BN((data).data.feeFrozen)
             });
         })
         .then((u: any): void => {
