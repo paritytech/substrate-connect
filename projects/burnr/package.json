@@ -24,12 +24,15 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@polkadot/api": "^3.6.4",
+    "@polkadot/extension-inject": "^0.36.1",
     "@polkadot/keyring": "^5.4.4",
     "@polkadot/react-identicon": "^0.67.1",
     "@polkadot/types": "^3.6.4",
     "@polkadot/util": "^5.4.4",
     "@polkadot/util-crypto": "^5.4.4",
-    "@substrate/connect": "0.0.1"
+    "@substrate/connect": "0.0.1",
+    "react": ">=15",
+    "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
     "@material-ui/core": "^4.11.3",
@@ -43,13 +46,11 @@
     "dotenv": "^8.2.0",
     "eslint": "^7.18.0",
     "eslint-plugin-react": "^7.22.0",
-    "file-loader": "^6.2.0",
     "jest": "^26.6.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "styled-components": "^5.2.1",
     "ts-jest": "^26.5.0",
     "tsc-watch": "^4.2.9",
     "typescript": "^4.1.3"
