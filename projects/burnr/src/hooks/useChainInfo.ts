@@ -6,7 +6,7 @@ import { Header } from '@polkadot/types/interfaces';
 import useApi from './api/useApi';
 import useIsMountedRef from './api/useIsMountedRef';
 
-export default function useChainInfo (): Header {
+export default function useChainInfo (): Header | undefined {
   const api = useApi();
   const [newHead, setNewHead] = useState<Header>();
   const  mountedRef = useIsMountedRef();
@@ -19,6 +19,5 @@ export default function useChainInfo (): Header {
     })
 
   }, []);
-
   return newHead;
 }
