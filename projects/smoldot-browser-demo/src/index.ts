@@ -57,8 +57,11 @@ window.onload = () => {
                 ui.showSyncing();
               }
             }).catch(error => {
-              ui.error(true);
-              reject(error);
+              ui.error(error);
+              if (!resolved) {
+                resolved = true;
+                reject();
+              }
             });
           }, 2000);
         });
