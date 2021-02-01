@@ -10,7 +10,7 @@
   "license": "Apache-2.0",
   "main": "./index.js",
   "scripts": {
-    "build": "parcel ./index.html",
+    "build": "parcel build ./index.html",
     "clean": "rimraf dist && rm -rf node_modules",
     "dev": "tsc --noEmit & parcel ./index.html",
     "test": "echo \"Error: no test specified\" && exit 1"

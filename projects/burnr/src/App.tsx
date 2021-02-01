@@ -37,14 +37,14 @@ const  App: React.FunctionComponent<Props> = ({ className }: Props) => {
 			<div className={classes.root + ' ' + className}>
 				<ThemeToggleProvider>
 					<main className={classes.main}>
-						{/* <ApiContext.Provider value={api}>
-						<Head />
-							{api && api.isReady && (
+						{api && api.isReady && (
+							<ApiContext.Provider value={api}>
+								<Head />
 								<Switch>
 									<Route exact path='/' component={Home} />
 								</Switch>
-							)}
-						</ApiContext.Provider> */}
+							</ApiContext.Provider>
+						)}
 					</main>
 					<NavFooter />
 				</ThemeToggleProvider>

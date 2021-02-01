@@ -105,7 +105,7 @@ export default function NodeSelector() {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
   const endpointName = localEndpoint || 'Polkadot-WsProvider'
-	const [provider, setProvider] = useState<string | null>(ALL_PROVIDERS[endpointName].id);
+	const [provider, setProvider] = useState<string>(ALL_PROVIDERS[endpointName].id);
   const handleOpenDropdown = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
 	};
