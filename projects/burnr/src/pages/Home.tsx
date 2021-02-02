@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 // @TODO read balance
 // @TODO account name
-
 function Home ():  React.ReactElement {
 	const classes = useStyles();
 	const userInfo = useUserInfo(users.polkadot);
