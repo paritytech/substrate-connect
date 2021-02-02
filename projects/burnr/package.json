@@ -23,6 +23,7 @@
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
+    "@material-ui/styles": "^4.11.3",
     "@polkadot/api": "^3.6.4",
     "@polkadot/extension-inject": "^0.36.1",
     "@polkadot/keyring": "^5.5.1",
@@ -40,8 +41,6 @@
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
-    "@material-ui/core": "^4.11.3",
-    "@material-ui/styles": "^4.11.3",
     "@material-ui/types": "^5.1.0",
     "@types/node": "^14.14.22",
     "@types/react": "^17.0.0",
