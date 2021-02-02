@@ -8,7 +8,7 @@ const AppFooter: React.FunctionComponent = () => (
 			<Grid container spacing={1}>
 				<Grid item>
 					<Link href='#' color='textPrimary'>
-        		© 2020 Parity Technologies
+        		© {new Date().getFullYear()} Parity Technologies
 					</Link>
 				</Grid>
 				<Grid item>
