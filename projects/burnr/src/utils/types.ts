@@ -78,7 +78,7 @@ export interface AccountData extends Codec {
   feeFrozen: Balance;
   txCount: u32;
   sessionIndex: u32;
-};
+}
 
 export interface AccountInfo extends Codec {
   nonce: Index;
@@ -97,8 +97,8 @@ export interface UserInfo {
 }
 
 export interface ExtrinsicInfo {
-  status: string | 0 | 1 | 2;
-};
+  status: string|number;
+}
 export interface SizeScale {
-  size?: 'large' | 'medium' | 'small';
-};
+  size?: 'large'|'medium'|'small';
+}

@@ -7,7 +7,7 @@ import CachedIcon from '@material-ui/icons/Cached';
 import CheckIcon from '@material-ui/icons/Check';
 import ErrorIcon from '@material-ui/icons/Error';
 
-import { ExtrinsicInfo } from './../utils/types';
+import { ExtrinsicInfo } from '../utils/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
 	popover: {
