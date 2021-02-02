@@ -6,7 +6,7 @@ import { Header } from '@polkadot/types/interfaces';
 import useApi from './api/useApi';
 import useIsMountedRef from './api/useIsMountedRef';
 
-export default function useChainInfo (): Header {
+export default function useChainInfo (): Header | undefined {
   const api = useApi();
   const [newHead, setNewHead] = useState<Header>();
   const  mountedRef = useIsMountedRef();
@@ -14,13 +14,10 @@ export default function useChainInfo (): Header {
   useEffect((): void => {
     const count = 0;
     api.rpc.chain
-      .subscribeNewHeads((header) => {
-      mountedRef.current && setNewHead(
-        header
-      )  
+      .subscribeNewHeads((lastHeader): void => {
+      mountedRef.current && setNewHead(lastHeader)  
     })
 
   }, []);
-
   return newHead;
 }

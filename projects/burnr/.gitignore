@@ -1,5 +1,13 @@
-dist
+/dist
 .env
 .idea
 .vscode
-node_modules
+.cache/
+yarn-error.log*
+
+# dependencies
+/node_modules
+
+# misc
+.DS_Store
+

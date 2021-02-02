@@ -17,7 +17,7 @@
   "scripts": {
     "clean": " yarn workspaces run clean && rimraf node_modules",
     "build": "yarn workspaces run build",
-    "dev:burnr": "yarn workspace @substrate/connect run build && yarn workspace @substrate/burnr run build && yarn workspace @substrate/burnr run start",
+    "dev:burnr": "yarn workspace @substrate/connect run dev",
     "dev:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run dev",
     "test": " yarn workspaces run test"
   },

@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 
 import { AccountCard, BalanceValue, PopoverExtrinsic} from './index';
-import { ExtrinsicInfo } from './../utils/types';
+import { ExtrinsicInfo } from '../utils/types';
 
 interface Column {
   id: 'withWhom' | 'extrinsic' | 'value' | 'status';
@@ -33,11 +33,11 @@ const columns: Column[] = [
 
 interface Data extends ExtrinsicInfo {
 	withWhom: string;
-	value: string;
+	value: string|number;
 	extrinsic: string;
 }
 
-function createData(withWhom, extrinsic, value, status): Data {
+function createData(withWhom: string, extrinsic: string, value: string|number, status: string|0|2|1): Data {
 	return { withWhom, extrinsic, value, status };
 }
 

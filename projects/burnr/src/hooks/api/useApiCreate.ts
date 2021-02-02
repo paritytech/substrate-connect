@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
-import { ALL_PROVIDERS } from '../../constants';
-import { LazyProvider } from './../../utils/types'; 
-import { useIsMountedRef, useLocalStorage, useProvider } from './..';
+import { ALL_PROVIDERS } from '../../utils/constants';
+import { LazyProvider } from '../../utils/types'; 
+import { useIsMountedRef, useLocalStorage } from '../../hooks';
 
 /**  This part isn't usable until the issues in the Substrate Light CLient implementation have been fixed **/
 // import {
@@ -24,18 +24,16 @@ export default function useApiCreate (): ApiPromise | null {
   const [api, setApi] = useState<ApiPromise | null>(null);
   const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
 
-  const [provider, setProvider] = useState<LazyProvider | null>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Polkadot-WsProvider']);
+  const [provider, setProvider] = useState<LazyProvider>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Polkadot-WsProvider']);
   const  mountedRef = useIsMountedRef();
 
   // @TODO Make dynamic once @substrate/connect is implemented
   // const instantiated = provider.source === 'browser' ? new WasmProvider(polkadotLocal()) : new WsProvider(provider.endpoint);
 
-  const instantiated = new WsProvider(provider.endpoint);
-
   useEffect((): void => {
     ApiPromise
       .create({
-        provider: instantiated,
+        provider: new WsProvider(provider.endpoint),
         types: {}
       })
       .then((api): void => {
