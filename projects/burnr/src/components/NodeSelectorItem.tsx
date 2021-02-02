@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import DoneIcon from '@material-ui/icons/Done';
 
-import { LazyProvider } from './../utils/types'; 
+import { LazyProvider } from '../utils/types'; 
 import { Option } from './NodeSelector';
 
 interface Props {

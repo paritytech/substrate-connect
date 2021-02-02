@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent, MouseEvent } from 'react';
 
 import { Button, Grid, TextField, Box, InputAdornment } from '@material-ui/core';
 
@@ -11,12 +11,13 @@ interface Props {
 
 const InputFunds: React.FunctionComponent<Props> = ({ total, currency }: Props) => {
 	const [value, setValue] = React.useState<number | ''>('');
-	const handleChangeButton = (e) => {
-		setValue(e.currentTarget.value * total);
-		document.getElementById('SendFundsAmountField').focus();
+	const handleChangeButton = (e: MouseEvent) => {
+		setValue(parseInt((e.currentTarget as HTMLButtonElement).value) * total);
+		document.getElementById('SendFundsAmountField')!.focus();
 	};
-	const handleChange = (e) => {
-		!isNaN(e.currentTarget.value) && setValue(parseInt(e.currentTarget.value));
+	const handleChange = (e: ChangeEvent) => {
+		const value = parseInt((e.currentTarget as HTMLTextAreaElement).value);
+		!isNaN(value) && setValue(value);
 	};
 
 	// @TODO focus/blur TextField and %Buttons at the same time in a React way

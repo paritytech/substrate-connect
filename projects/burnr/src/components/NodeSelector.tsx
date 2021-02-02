@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 
 import { createStyles,fade, makeStyles, Theme  } from '@material-ui/core/styles';
 import { Typography, ButtonBase, InputBase } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Autocomplete, { AutocompleteCloseReason } from '@material-ui/lab/Autocomplete';
 
-import { ALL_PROVIDERS } from './../constants';
+import { ALL_PROVIDERS } from '../utils/constants';
 import { useApiCreate, useLocalStorage } from '../hooks';
-import { NodeSelectorItem, NodeSelectorSelected } from '.';
+import { NodeSelectorItem, NodeSelectorSelected } from '../components';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export interface Option {
   network: string;
-	client: string;
+	client: string|undefined;
 	provider: string;
 }
 
@@ -105,12 +105,12 @@ export default function NodeSelector() {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
   const endpointName = localEndpoint || 'Polkadot-WsProvider'
-	const [provider, setProvider] = useState<string | null>(ALL_PROVIDERS[endpointName].id);
+	const [provider, setProvider] = useState<string>(ALL_PROVIDERS[endpointName].id);
   const handleOpenDropdown = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
 	};
 
-	const handleClose = (event: React.ChangeEvent<{}>, reason: AutocompleteCloseReason) => {
+	const handleClose = (event: ChangeEvent<{}>, reason: AutocompleteCloseReason) => {
 		if (reason === 'toggleInput') {
 			return;
 		}
@@ -163,7 +163,7 @@ export default function NodeSelector() {
 							paper: classes.acPaper,
 						}}
 						onClose={handleClose}
-						onChange={(event, {provider: selected}: Option ) => {
+						onChange={(event: ChangeEvent<{}>, {provider: selected}: any ) => {
 							updateProvider(selected);
 						}}
 

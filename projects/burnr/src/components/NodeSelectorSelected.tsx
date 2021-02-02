@@ -3,7 +3,7 @@ import React from 'react';
 import { Typography, Grid } from '@material-ui/core';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 
-import { PopoverInfo } from '.';
+import { PopoverInfo } from '../components';
 import { useApi, useChainInfo } from '../hooks';
 import { LazyProvider } from '../utils/types'; 
 
