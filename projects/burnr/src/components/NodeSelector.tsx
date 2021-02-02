@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 
 import { createStyles,fade, makeStyles, Theme  } from '@material-ui/core/styles';
 import { Typography, ButtonBase, InputBase } from '@material-ui/core';
@@ -110,7 +110,7 @@ export default function NodeSelector() {
 		setAnchorEl(event.currentTarget);
 	};
 
-	const handleClose = (event: React.ChangeEvent<{}>, reason: AutocompleteCloseReason) => {
+	const handleClose = (event: ChangeEvent<{}>, reason: AutocompleteCloseReason) => {
 		if (reason === 'toggleInput') {
 			return;
 		}
@@ -163,7 +163,7 @@ export default function NodeSelector() {
 							paper: classes.acPaper,
 						}}
 						onClose={handleClose}
-						onChange={(event, {provider: selected}: Option ) => {
+						onChange={(event: ChangeEvent<{}>, {provider: selected}: Option ) => {
 							updateProvider(selected);
 						}}
 
