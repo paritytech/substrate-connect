@@ -163,7 +163,7 @@ export default function NodeSelector() {
 							paper: classes.acPaper,
 						}}
 						onClose={handleClose}
-						onChange={(event: ChangeEvent<{}>, {provider: selected}: Option ) => {
+						onChange={(event: ChangeEvent<{}>, {provider: selected}: any ) => {
 							updateProvider(selected);
 						}}
 
