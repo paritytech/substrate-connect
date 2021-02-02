@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link, makeStyles } from '@material-ui/core';
+import LogoLight from '../assets/images/logo_substrate.svg';
+import LogoDark from '../assets/images/logo_substrate_onDark.svg';
 
 interface Props {
   theme: boolean;
@@ -17,10 +19,9 @@ const useStyles = makeStyles({
 
 const LogoSubstrate: React.FunctionComponent<Props> = ({ theme }: Props) => {
 	const classes = useStyles();
-	const logoUrl = theme ? '/assets/images/logo_substrate.svg' : '/assets/images/logo_substrate_onDark.svg';
 	return  (
 		<Link href='http://substrate.io/' target='_blank' className={classes.root}>
-			<img src={logoUrl}/>
+			<img src={theme ? LogoLight : LogoDark}/>
 		</Link>
 	);
 };
