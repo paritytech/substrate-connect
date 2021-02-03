@@ -20,6 +20,11 @@ export const endpoints = {
   'local': 'ws://127.0.0.1:9944'
 };
 
+export const accCrtlEndpoints = {
+  'polkascan': 'polkascan.io',
+  'polkastats': 'polkastats.io'
+};
+
 export const users = {
   'kusama': 'CzugcapJWD8CEHBYHDeFpVcxfzFBCg57ic72y4ryJfXUnk7',
   'polkadot': '11uMPbeaEDJhUxzU4ZfWW9VQEsryP9XqFcNRfPdYda6aFWJ',
