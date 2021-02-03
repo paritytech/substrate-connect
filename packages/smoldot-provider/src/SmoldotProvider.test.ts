@@ -7,6 +7,11 @@ import { SmoldotClient, SmoldotOptions } from 'smoldot';
 type RpcResponder = (message: string) => string;
 
 const EMPTY_CHAIN_SPEC = '{}';
+
+const systemHealthReponse = peerCount => {
+  return `{\"jsonrpc\":\"2.0\",\"id\":42,\"result\":{\"isSyncing\":true,\"peers\":${peerCount},\"shouldHavePeers\":true}}"`;
+}
+
 // Mimics the behaviour of the WASM light client by deferring a call to 
 // `json_rpc_callback` after it is called which returns the response
 // returned by the supplied `responder`.
@@ -19,6 +24,12 @@ const EMPTY_CHAIN_SPEC = '{}';
 const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder) => {
   return (rpc: string) => {
     process.nextTick(() => {
+      if (/system_health/.test(rpc)) {
+        options.json_rpc_callback(systemHealthReponse(1));
+        return;
+      }
+
+      // non-health reponse
       options.json_rpc_callback(responder(rpc))
       if (/(?<!un)[sS]ubscribe/.test(rpc)) {
         options.json_rpc_callback(responder(rpc))
@@ -76,17 +87,6 @@ class TestDatabase implements Database {
 }
 const testDb = () => new TestDatabase();
 
-test('connect resolves and emits', async t => {
-  const ms = mockSmoldot(x => x);
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
-  let connectedEmitted = false;
-
-  provider.on('connected', () => { connectedEmitted = true; });
-  await provider.connect();
-  t.true(connectedEmitted);
-  t.true(provider.isConnected);
-});
-
 test('connect propagates errors', async t => {
   const badSmoldot = {
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
@@ -101,10 +101,11 @@ test('connect propagates errors', async t => {
     await provider.connect();
   } catch (_) {
     t.true(errored);
+    await provider.disconnect();
   }
 });
 
-// non-subssription send
+// non-subscription send
 test('awaiting send returns message result', async t => {
   const mockResponses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
   const ms = mockSmoldot(respondWith(mockResponses));
@@ -113,6 +114,7 @@ test('awaiting send returns message result', async t => {
   await provider.connect();
   const reply = await provider.send('hello', [ 'world' ]);
   t.is(reply, 'success');
+  await provider.disconnect();
 });
 
 test('send formats JSON RPC request correctly', async t => {
@@ -127,6 +129,7 @@ test('send formats JSON RPC request correctly', async t => {
   t.true(rpcSend.called);
   const rpcJson = rpcSend.firstCall.firstArg;
   t.is(rpcJson, '{"id":1,"jsonrpc":"2.0","method":"hello","params":["world"]}');
+  await provider.disconnect();
 });
 
 test('sending twice uses new id', async t => {
@@ -149,6 +152,7 @@ test('sending twice uses new id', async t => {
   t.is(rpcJson1, '{"id":1,"jsonrpc":"2.0","method":"hello","params":["world"]}');
   const rpcJson2 = rpcSend.secondCall.firstArg;
   t.is(rpcJson2, '{"id":2,"jsonrpc":"2.0","method":"hello","params":["world"]}');
+  await provider.disconnect();
 });
 
 test('throws when got error JSON response', async t => {
@@ -162,6 +166,7 @@ test('throws when got error JSON response', async t => {
   await t.throwsAsync(async () => {
     await provider.send('hello', [ 'world' ]);
   }, {instanceOf: Error, message: '666: boom!'});
+  await provider.disconnect();
 });
 
 test('send can also add subscriptions and returns an id', async t => {
@@ -175,6 +180,7 @@ test('send can also add subscriptions and returns an id', async t => {
   await provider.connect();
   const reply = await provider.send('test_subscribe', []);
   t.is(reply, 'SUBSCRIPTIONID');
+  await provider.disconnect();
 });
 
 test('subscribe', async t => {
@@ -196,6 +202,7 @@ test('subscribe', async t => {
       }
 
       t.deepEqual(result, { dummy: "state" });
+      provider.disconnect();
       resolve();
     }).then(reply => {
       t.is(reply, "SUBSCRIPTIONID");
@@ -222,7 +229,9 @@ test('subscribe copes with out of order responses', async t => {
       }
 
       t.deepEqual(result, { dummy: "state" });
-      resolve();
+      provider.disconnect().then(() => {
+        resolve();
+      });
     }).then(reply => {
       t.is(reply, "SUBSCRIPTIONID");
     });
@@ -248,7 +257,9 @@ test('converts british english method spelling to US', async t => {
       }
 
       t.deepEqual(result, { dummy: "state" });
-      resolve();
+      provider.disconnect().then(() => {
+        resolve();
+      });
     }).then(reply => {
       t.is(reply, "SUBSCRIPTIONID");
     });
@@ -268,6 +279,7 @@ test('unsubscribe fails when sub not found', async t => {
   const reply =  await provider.unsubscribe('test', 'test_subscribe', 666);
 
   t.false(reply);
+  await provider.disconnect();
 });
 
 test('unsubscribe removes subscriptions', async t => {
@@ -283,4 +295,5 @@ test('unsubscribe removes subscriptions', async t => {
   const id = await provider.subscribe('test', 'test_subscribe', [], () => {});
   const reply =  await provider.unsubscribe('test', 'test_unsubscribe', id);
   t.true(reply);
+  provider.disconnect();
 });

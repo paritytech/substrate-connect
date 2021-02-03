@@ -14,6 +14,7 @@ import { assert, isUndefined, logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 import * as smoldot from 'smoldot';
 import database, { Database } from './Database';
+import { PeerTimeoutError, HealthCheckError } from './errors';
 
 const l = logger('smoldot-provider');
 
@@ -41,6 +42,12 @@ const ANGLICISMS: { [index: string]: string } = {
   chain_subscribeFinalisedHeads: 'chain_subscribeFinalizedHeads',
   chain_unsubscribeFinalisedHeads: 'chain_unsubscribeFinalizedHeads'
 };
+
+/*
+ * Number of milliseconds to wait between checks to see if we have any 
+ * connected peers in the smoldot client
+ */
+const CONNECTION_STATE_PINGER_INTERVAL = 2000;
 
 /**
  * @name SmoldotProvider
@@ -81,6 +88,8 @@ export class SmoldotProvider implements ProviderInterface {
   readonly #handlers: Record<string, RpcStateAwaiting> = {};
   readonly #subscriptions: Record<string, StateSubscription> = {};
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
+  #connectionStatePingerId: ReturnType<typeof setInterval> | null;
+  #hasHadPeers: false;
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
   #db: Database;
@@ -99,6 +108,7 @@ export class SmoldotProvider implements ProviderInterface {
     this.#chainSpec = chainSpec;
     this.#smoldot = sm || smoldot;
     this.#db = db || database();
+    this.#connectionStatePingerId = null;
   }
 
   /**
@@ -191,6 +201,42 @@ export class SmoldotProvider implements ProviderInterface {
     }
   }
 
+  #checkClientPeercount = () => {
+    this.send('system_health', []).then(health => {
+        const peerCount = health.peers;
+        if (peerCount === 0) {
+          if (this.#hasHadPeers) {
+            // we've seen some peers before but now there are none
+            this.#isConnected = false;
+            this.emit('disconnected');
+            return;
+          }
+
+          // we have never seen any peers and CONNECTION_STATE_PINGER_INTERVAL ms 
+          // has elapsed so emit an error event to mimic the behaviour of other 
+          // providers when they fail to connect
+          this.#isConnected = false;
+          this.emit('error', new PeerTimeoutError());
+          // Stop checking for peers. it is the clients reposnsibilty to attempt
+          // to "reconnect" by calling `connect` again. 
+          // (this is silly - we're forced to do this to fulfill the assumption 
+          // that we are responsible of establishing connections when actually
+          // that is the responsibility of the smoldot client).
+          clearInterval(this.#connectionStatePingerId);
+          return;
+        }
+
+        if (!this.isConnected) {
+          // we weren't connected (but were at some time in the past) but now we 
+          // have peers again.
+          this.#isConnected = true;
+          this.emit('connected');
+        }
+    }).catch(error => {
+      this.emit('error', new HealthCheckError(error));
+    });
+  }
+
   /**
    * @description "Connect" the WASM client - starts the smoldot WASM client
    */
@@ -213,8 +259,9 @@ export class SmoldotProvider implements ProviderInterface {
       })
       .then((client: smoldot.SmoldotClient) => {
         this.#client = client;
-        this.#isConnected = true;
-        this.emit('connected');
+        this.#connectionStatePingerId = setInterval(
+          this.#checkClientPeercount,
+          CONNECTION_STATE_PINGER_INTERVAL);
       })
       .catch((error: Error) => {
         this.emit('error', error);
@@ -230,8 +277,14 @@ export class SmoldotProvider implements ProviderInterface {
     if (this.#client) {
       this.#client = undefined;
     }
+
+    clearInterval(this.#connectionStatePingerId);
+
     this.#isConnected = false;
+    this.#hasHadPeers = false; 
     this.emit('disconnected');
+
+    return Promise.resolve();
   }
 
   /**
@@ -274,7 +327,7 @@ export class SmoldotProvider implements ProviderInterface {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     return new Promise((resolve, reject): void => {
-        assert(this.isConnected && this.#client, 'Client is not connected');
+        assert(this.#client, 'Client is not initialised');
 
         const json = this.#coder.encodeJson(method, params);
         const id = this.#coder.getId();
