@@ -6,7 +6,8 @@ import LanguageIcon from '@material-ui/icons/Language';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
 
-import { openInNewTab, downloadFile } from '../utils/utils';
+import { LocalStorageUserAccount } from '../utils/types';
+import { openInNewTab, downloadFile, createLocalStorageAccount } from '../utils/utils';
 import { POLKA_ACCOUNT_ENDPOINTS } from '../utils/constants';
 import { useLocalStorage } from '../hooks';
 
@@ -20,17 +21,27 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const { polkastats, polkascan } = POLKA_ACCOUNT_ENDPOINTS;
 
-const AccountMenu: React.FunctionComponent = () => {
+interface Props {
+	setUser: (arg0: LocalStorageUserAccount) => void;
+}
+
+const AccountMenu: React.FunctionComponent<Props> = ({ setUser }: Props) => {
 	const classes = useStyles();
 	const [endpoint] = useLocalStorage('endpoint');
 	const minEndpoint = endpoint?.split('-')[0]?.toLowerCase();
-	const [localStorage] = useLocalStorage(minEndpoint);
+	const [lclStorage, setLclStorage] = useLocalStorage(minEndpoint);
 	const [polkastatsUri] = useState(
 		`https://${minEndpoint}.${polkastats}`
 	);
 	const [polkascanUri] = useState(`https://${polkascan}/${minEndpoint}`);
+	const { address, json, seed } = JSON.parse(lclStorage);
 
-	const { address, json, seed } = JSON.parse(localStorage);
+	const burnAndCreate = (): void => {
+		localStorage.removeItem(minEndpoint);
+		const userTmp = createLocalStorageAccount();
+		setLclStorage(JSON.stringify(userTmp));
+		setUser(userTmp);
+	  };
 	return (
 		<Grid
 			container
@@ -76,7 +87,10 @@ const AccountMenu: React.FunctionComponent = () => {
 				</Grid>
 			</Grid>
 			<Grid item className={classes.section}>
-				<Button style={{ color: red[500] }} startIcon={<WhatshotIcon />}>
+				<Button
+					style={{ color: red[500] }}
+					startIcon={<WhatshotIcon />}
+					onClick={() => burnAndCreate()}>
           Burn
 				</Button>
 			</Grid>
