@@ -19,7 +19,8 @@
     "dev": "yarn clean && yarn copy-assets && concurrently \"yarn typecheck:watch\" \"parcel index.html --https\"",
     "deploy:gh-pages": "./scripts/deploy-to-gh-pages.sh",
     "deploy:ipfs": "yarn build && ./scripts/deploy-to-ipfs.js",
-    "deploy": "yarn deploy:gh-pages && yarn deploy:ipfs"
+    "deploy": "yarn deploy:gh-pages && yarn deploy:ipfs",
+    "test": "echo \"Warning: No test specified for @substrate/smoldot-browser-demo\""
   },
   "devDependencies": {
     "@pinata/sdk": "^1.1.11",

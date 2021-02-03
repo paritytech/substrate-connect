@@ -11,7 +11,8 @@
   ],
   "scripts": {
     "build": "rimraf dist  && copyfiles -Eu2 \"src/clients/**/*\" dist/clients && copyfiles -Eu2 \"src/client-specs/**/*\" dist/client-specs && tsc",
-    "clean": "rimraf dist && rimraf node_modules"
+    "clean": "rimraf dist && rimraf node_modules",
+    "test": "echo \"Warning: No test specified for @substrate/connect\""
   },
   "publishConfig": {
     "access": "public"
@@ -26,6 +27,6 @@
   "types": "dist/lib/types.d.ts",
   "sideEffects": "false",
   "dependencies": {
-    "@polkadot/rpc-provider": "^3.6.4"
+    "@polkadot/rpc-provider": "^3.7.3"
   }
 }
