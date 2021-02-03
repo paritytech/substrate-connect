@@ -13,7 +13,7 @@ export class HealthCheckError extends Error {
     return this.#cause;
   }
 
-  constructor(response: any, message = "Got error reponse asking for system health") {
+  constructor(response: any, message = "Got error response asking for system health") {
     super(message); 
     this.#cause = response;
     // 'Error' breaks the prototype chain - restore it

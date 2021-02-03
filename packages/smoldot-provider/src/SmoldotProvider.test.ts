@@ -24,6 +24,12 @@ const unhealthyResponder = requestJSON => {
   return systemHealthReponse(id, 0);
 }
 
+// Always responds with an error reponse
+const erroringResponder = requestJSON => {
+  const id = JSON.parse(requestJSON).id;
+  return `{ "id": ${id}, "jsonrpc": "2.0", "error": {"code": 666, "message": "boom!" } }`;
+}
+
 // Orchestrates a sequence of has peers / has no peers responses
 const customHealthResponder = (hasPeers: boolean[]) => {
   return requestJSON => {
@@ -139,6 +145,21 @@ test('awaiting send returns message result', async t => {
   await provider.disconnect();
 });
 
+test('emits error when system_health responds with error', async t => {
+  const ms = mockSmoldot(respondWith([]), erroringResponder);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
+  return new Promise<void>((resolve, reject) => {
+    provider.on('error', error => {
+      t.is(error.message, 'Got error response asking for system health');
+      return provider.disconnect().then(() => resolve());
+    });
+  });
+});
+
 test('emits error when it does not receive peers > 0', async t => {
   const ms = mockSmoldot(respondWith([]), unhealthyResponder);
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
@@ -235,10 +256,7 @@ test('sending twice uses new id', async t => {
 });
 
 test('throws when got error JSON response', async t => {
-  const responses =  [
-    '{ "id": 1, "jsonrpc": "2.0", "error": {"code": 666, "message": "boom!" } }'
-  ];
-  const ms = mockSmoldot(respondWith(responses));
+  const ms = mockSmoldot(erroringResponder);
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
