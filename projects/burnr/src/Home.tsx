@@ -11,7 +11,6 @@ import { UserAccount } from './utils/types';
 import { NavTabs, AccountCard, BalanceValue, Bg } from './components';
 
 import { useUserInfo, useLocalStorage } from './hooks';
-import { users } from './utils/constants';
 
 const useStyles = makeStyles((theme: Theme) => ({
 		paperAccount: {
@@ -32,7 +31,7 @@ function Home ():  React.ReactElement {
 	const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint?.split('-')[0]?.toLowerCase());
 	const [user, setUser] = useState<UserAccount>();
 
-	useEffect(() => {
+	useEffect((): void => {
 		let userTmp;
 		if (!localStorageAccount) {
 			const mnemonic = mnemonicGenerate();
