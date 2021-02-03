@@ -6,7 +6,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import { uniqueNamesGenerator, Config, starWars } from 'unique-names-generator';
 import { Keyring } from '@polkadot/api';
 import { mnemonicGenerate } from '@polkadot/util-crypto';
-import { UserAccount } from './utils/types';
+import { LocalStorageUserAccount } from './utils/types';
 
 import { NavTabs, AccountCard, BalanceValue, Bg } from './components';
 
@@ -29,24 +29,22 @@ function Home ():  React.ReactElement {
 	const classes = useStyles();
 	const [endpoint] = useLocalStorage('endpoint');
 	const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint?.split('-')[0]?.toLowerCase());
-	const [user, setUser] = useState<UserAccount>();
+	const [user, setUser] = useState<LocalStorageUserAccount>();
 
 	useEffect((): void => {
-		let userTmp;
 		if (!localStorageAccount) {
-			const mnemonic = mnemonicGenerate();
+			const mnemonic = mnemonicGenerate(12);
 			const pair = new Keyring({ type: 'sr25519' })
 				.addFromUri(mnemonic, { name: uniqueNamesGenerator(config) }, 'sr25519');
-			userTmp = {
+			const userTmp = {
 				address: pair.address,
-				name: pair.meta.name || '____ _____'
-				// mnemonic,	// just saving the mnemonic for now - will drop if not needed
+				name: pair.meta.name || '____ _____',
+				seed: mnemonic,	// just saving the mnemonic for now - will drop if not needed
+				json: pair.toJson()
 			}
 			setLocalStorageAccount(JSON.stringify(userTmp));
-			// delete userTmp.mnemonic; // this is temp
 			setUser(userTmp);
 		} else {
-			// delete userTmp.mnemonic; // this is temp
 			setUser(JSON.parse(localStorageAccount));
 		}
 	}, [localStorageAccount]);
@@ -66,7 +64,7 @@ function Home ():  React.ReactElement {
 								<AccountCard
 									account={{
 										address: userInfo.address,
-										name: user.name
+										name: user?.name
 									}}
 								/>
 							}

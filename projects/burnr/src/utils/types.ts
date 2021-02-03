@@ -6,7 +6,7 @@ import { u32 } from '@polkadot/types';
 import { Codec } from '@polkadot/types/types';
 
 import { ApiPromise } from '@polkadot/api';
-import { KeyringPair } from '@polkadot/keyring/types';
+import { KeyringPair, KeyringPair$Json } from '@polkadot/keyring/types';
 
 /**
  * Interface describing a Provider, lazily loaded.
@@ -24,9 +24,11 @@ export interface Account {
   name: string;
 }
 
-export interface UserAccount {
+export interface LocalStorageUserAccount {
 	address: string;
-	name: any;
+  name: any;
+  seed: string;
+  json: KeyringPair$Json;
 }
 export interface DeriveCtx {
   deriveAddress: (username: string) => string;
