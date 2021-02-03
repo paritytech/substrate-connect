@@ -89,13 +89,18 @@ export class SmoldotProvider implements ProviderInterface {
   readonly #subscriptions: Record<string, StateSubscription> = {};
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
   #connectionStatePingerId: ReturnType<typeof setInterval> | null;
-  #hasHadPeers: false;
+  #seenPeers = false;
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
   #db: Database;
   // reference to the smoldot module so we can defer loading the wasm client
   // until connect is called
   #smoldot: smoldot.Smoldot;
+
+  /*
+   * How frequently to see if we have any peers
+   */
+  healthPingerInterval = CONNECTION_STATE_PINGER_INTERVAL;
 
    /**
    * @param {string}   chainSpec  The chainSpec for the WASM client
@@ -203,38 +208,36 @@ export class SmoldotProvider implements ProviderInterface {
 
   #checkClientPeercount = () => {
     this.send('system_health', []).then(health => {
-        const peerCount = health.peers;
+      const peerCount = health.peers;
+      if (this.#seenPeers) {
         if (peerCount === 0) {
-          if (this.#hasHadPeers) {
-            // we've seen some peers before but now there are none
-            this.#isConnected = false;
-            this.emit('disconnected');
-            return;
-          }
-
-          // we have never seen any peers and CONNECTION_STATE_PINGER_INTERVAL ms 
-          // has elapsed so emit an error event to mimic the behaviour of other 
-          // providers when they fail to connect
+          // we've seen some peers before but now there are none
           this.#isConnected = false;
-          this.emit('error', new PeerTimeoutError());
-          // Stop checking for peers. it is the clients reposnsibilty to attempt
-          // to "reconnect" by calling `connect` again. 
-          // (this is silly - we're forced to do this to fulfill the assumption 
-          // that we are responsible of establishing connections when actually
-          // that is the responsibility of the smoldot client).
-          clearInterval(this.#connectionStatePingerId);
+          this.emit('disconnected');
           return;
         }
+      }
 
-        if (!this.isConnected) {
-          // we weren't connected (but were at some time in the past) but now we 
-          // have peers again.
-          this.#isConnected = true;
-          this.emit('connected');
-        }
-    }).catch(error => {
-      this.emit('error', new HealthCheckError(error));
-    });
+      if (!this.#seenPeers && !this.#isConnected && peerCount === 0) {
+        // we have never seen any peers and CONNECTION_STATE_PINGER_INTERVAL ms 
+        // has elapsed and we still don't have peers so emit an error event 
+        // to mimic the behaviour of other providers when they fail to connect
+        this.#isConnected = false;
+        this.emit('error', new PeerTimeoutError());
+        // Stop checking for peers. it is the consumer's reposnsibilty to attempt
+        // to "reconnect" by calling `connect` again. 
+        clearInterval(this.#connectionStatePingerId);
+        return;
+      }
+
+      if (!this.#isConnected) {
+        // we weren't connected (but were at some time in the past) but now we 
+        // have peers again.
+        this.#isConnected = true;
+        this.#seenPeers = true;
+        this.emit('connected');
+      }
+    }).catch(error => this.emit('error', new HealthCheckError(error)));
   }
 
   /**
@@ -260,8 +263,7 @@ export class SmoldotProvider implements ProviderInterface {
       .then((client: smoldot.SmoldotClient) => {
         this.#client = client;
         this.#connectionStatePingerId = setInterval(
-          this.#checkClientPeercount,
-          CONNECTION_STATE_PINGER_INTERVAL);
+          this.#checkClientPeercount, this.healthPingerInterval);
       })
       .catch((error: Error) => {
         this.emit('error', error);
@@ -281,7 +283,7 @@ export class SmoldotProvider implements ProviderInterface {
     clearInterval(this.#connectionStatePingerId);
 
     this.#isConnected = false;
-    this.#hasHadPeers = false; 
+    this.#seenPeers = false; 
     this.emit('disconnected');
 
     return Promise.resolve();

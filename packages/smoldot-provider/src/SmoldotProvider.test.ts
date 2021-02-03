@@ -4,14 +4,36 @@ import { Database } from './Database';
 import { SmoldotProvider } from './SmoldotProvider';
 import { SmoldotClient, SmoldotOptions } from 'smoldot';
 
-type RpcResponder = (message: string) => string;
+type RpcResponder = (request: string) => string;
 
 const EMPTY_CHAIN_SPEC = '{}';
 
-const systemHealthReponse = peerCount => {
-  return `{\"jsonrpc\":\"2.0\",\"id\":42,\"result\":{\"isSyncing\":true,\"peers\":${peerCount},\"shouldHavePeers\":true}}"`;
+const systemHealthReponse = (id: number, peerCount: number) => {
+  return `{"jsonrpc":"2.0","id":${id} ,"result":{"isSyncing":true,"peers":${peerCount},"shouldHavePeers":true}}`;
 }
 
+// Always responds to a health request with a response that has peers
+const healthyResponder = requestJSON => {
+  const id = JSON.parse(requestJSON).id;
+  return systemHealthReponse(id, 1);
+}
+
+// Always responds to a health request with a response that has no peers
+const unhealthyResponder = requestJSON => {
+  const id = JSON.parse(requestJSON).id;
+  return systemHealthReponse(id, 0);
+}
+
+// Orchestrates a sequence of has peers / has no peers responses
+const customHealthResponder = (hasPeers: boolean[]) => {
+  return requestJSON => {
+    if (hasPeers.shift()) {
+      return healthyResponder(requestJSON);
+    } else {
+      return unhealthyResponder(requestJSON);
+    }
+  };
+}
 // Mimics the behaviour of the WASM light client by deferring a call to 
 // `json_rpc_callback` after it is called which returns the response
 // returned by the supplied `responder`.
@@ -21,18 +43,18 @@ const systemHealthReponse = peerCount => {
 // mock responses for each subscriptionrequest that the test will make.  The
 // first returning the subscription id.  The second a response to the
 // subscription.
-const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder) => {
-  return (rpc: string) => {
+const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder, healthResponder: RpcResponder) => {
+  return (rpcRequest: string) => {
     process.nextTick(() => {
-      if (/system_health/.test(rpc)) {
-        options.json_rpc_callback(systemHealthReponse(1));
+      if (/system_health/.test(rpcRequest)) {
+        options.json_rpc_callback(healthResponder(rpcRequest));
         return;
       }
 
       // non-health reponse
-      options.json_rpc_callback(responder(rpc))
-      if (/(?<!un)[sS]ubscribe/.test(rpc)) {
-        options.json_rpc_callback(responder(rpc))
+      options.json_rpc_callback(responder(rpcRequest))
+      if (/(?<!un)[sS]ubscribe/.test(rpcRequest)) {
+        options.json_rpc_callback(responder(rpcRequest))
       }
     });
   };
@@ -40,13 +62,13 @@ const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder) => {
 
 // Creates a fake smoldot. Calls to send use `fakeRpcSend` to mimic the light
 // client behaviour
-const mockSmoldot = (responder: RpcResponder) => {
+const mockSmoldot = (responder: RpcResponder, healthResponder = healthyResponder) => {
   return {
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
       return Promise.resolve({
         // fake the async reply by using the reponder to format
         // a reply via options.json_rpc_callback
-        send_json_rpc: fakeRpcSend(options, responder)
+        send_json_rpc: fakeRpcSend(options, responder, healthResponder)
       });
     }
   };
@@ -54,7 +76,7 @@ const mockSmoldot = (responder: RpcResponder) => {
 
 // Creates a spying `smoldot` that records calls to `json_rpc_send` in `rpcSpy`
 // and then uses `fakeRpcSend` to mimic the light client behaviour.
-const smoldotSpy = (responder: RpcResponder, rpcSpy: any) => {
+const smoldotSpy = (responder: RpcResponder, rpcSpy: any, healthResponder = healthyResponder) => {
   return {
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
       return Promise.resolve({
@@ -62,7 +84,7 @@ const smoldotSpy = (responder: RpcResponder, rpcSpy: any) => {
           // record the message call
           rpcSpy(rpc);
           // fake the async reply using the responder
-          fakeRpcSend(options, responder)(rpc);
+          fakeRpcSend(options, responder, healthResponder)(rpc);
         }
       });
     }
@@ -115,6 +137,63 @@ test('awaiting send returns message result', async t => {
   const reply = await provider.send('hello', [ 'world' ]);
   t.is(reply, 'success');
   await provider.disconnect();
+});
+
+test('emits error when it does not receive peers > 0', async t => {
+  const ms = mockSmoldot(respondWith([]), unhealthyResponder);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
+  return new Promise<void>((resolve, reject) => {
+    provider.on('error', error => {
+      t.is(error.message, 'Timed out waiting for smoldot to connect to peers');
+      return provider.disconnect().then(() => resolve());
+    });
+  });
+});
+
+test('emits events when it connects then disconnects', async t => {
+  const ms = mockSmoldot(respondWith([]), customHealthResponder([true, false]));
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
+  return new Promise<void>((resolve, reject) => {
+    provider.on('connected', () => {
+      const off = provider.on('disconnected', () => {
+        t.pass();
+        off(); // stop listening
+        provider.disconnect().then(() => resolve());
+
+      });
+    });
+  });
+});
+
+test('emits events when it connects / disconnects / reconnects', async t => {
+  const ms = mockSmoldot(respondWith([]), customHealthResponder([true, false, true]));
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
+
+  // callback hell caused by using event handlers for control flow
+  return new Promise<void>((resolve, reject) => {
+    provider.on('connected', () => {
+      const off = provider.on('disconnected', () => {
+        off(); // stop listening
+        provider.on('connected', () => {
+          t.pass();
+          provider.disconnect().then(() => resolve());
+        });
+      });
+    });
+  });
+
 });
 
 test('send formats JSON RPC request correctly', async t => {
@@ -257,9 +336,7 @@ test('converts british english method spelling to US', async t => {
       }
 
       t.deepEqual(result, { dummy: "state" });
-      provider.disconnect().then(() => {
-        resolve();
-      });
+      return provider.disconnect().then(() => resolve());
     }).then(reply => {
       t.is(reply, "SUBSCRIPTIONID");
     });
