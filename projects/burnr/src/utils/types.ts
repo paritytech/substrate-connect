@@ -24,6 +24,10 @@ export interface Account {
   name: string;
 }
 
+export interface UserAccount {
+	address: string;
+	name: any;
+}
 export interface DeriveCtx {
   deriveAddress: (username: string) => string;
 }

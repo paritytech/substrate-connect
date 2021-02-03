@@ -18,7 +18,7 @@ export default function useUserInfo (address: string): UserInfo {
     api.query.system
         .account(address, ( data ): void => {
           mountedRef.current && setUsersInfo({
-              active: !(data).refcount.isZero(),
+              active: !(data).refcount?.isZero(),
               address: address,
               created: new Date(),
               balance: new BN((data).data.free),
