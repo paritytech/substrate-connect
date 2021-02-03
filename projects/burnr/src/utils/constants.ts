@@ -20,7 +20,7 @@ export const endpoints = {
   'local': 'ws://127.0.0.1:9944'
 };
 
-export const accCrtlEndpoints = {
+export const POLKA_ACCOUNT_ENDPOINTS = {
   'polkascan': 'polkascan.io',
   'polkastats': 'polkastats.io'
 };
