@@ -13,7 +13,7 @@
     "build": "parcel build ./index.html",
     "clean": "rimraf dist && rm -rf node_modules",
     "dev": "tsc --noEmit & parcel ./index.html",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Warning: No test specified for @substrate/burnr\""
   },
   "repository": {
     "type": "git",
@@ -24,14 +24,14 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.11.3",
-    "@polkadot/api": "^3.6.4",
+    "@polkadot/api": "^3.7.3",
     "@polkadot/extension-inject": "^0.36.1",
-    "@polkadot/keyring": "^5.5.1",
-    "@polkadot/networks": "^5.5.1",
+    "@polkadot/keyring": "^5.5.2",
+    "@polkadot/networks": "^5.5.2",
     "@polkadot/react-identicon": "^0.68.1",
     "@polkadot/ui-settings": "^0.68.1",
-    "@polkadot/util": "^5.5.1",
-    "@polkadot/util-crypto": "^5.5.1",
+    "@polkadot/util": "^5.5.2",
+    "@polkadot/util-crypto": "^5.5.2",
     "@substrate/connect": "0.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
