@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { Grid, Paper, Divider, IconButton, Box, makeStyles, Theme } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-
-import { uniqueNamesGenerator, Config, starWars } from 'unique-names-generator';
-import { Keyring } from '@polkadot/api';
-import { mnemonicGenerate } from '@polkadot/util-crypto';
 import { LocalStorageUserAccount } from './utils/types';
 
 import { NavTabs, AccountCard, BalanceValue, Bg } from './components';
@@ -18,38 +14,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 		},
 	})
 );
-
-const config: Config = {
-	dictionaries: [starWars]
-}
-
 // @TODO read balance
 // @TODO account name
 function Home ():  React.ReactElement {
 	const classes = useStyles();
 	const [endpoint] = useLocalStorage('endpoint');
-	const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint?.split('-')[0]?.toLowerCase());
-	const [user, setUser] = useState<LocalStorageUserAccount>();
+	const [localStorageAccount] = useLocalStorage(endpoint?.split('-')[0]?.toLowerCase());
+	const [user, setUser] = useState<LocalStorageUserAccount>(JSON.parse(localStorageAccount));
 
-	useEffect((): void => {
-		if (!localStorageAccount) {
-			const mnemonic = mnemonicGenerate(12);
-			const pair = new Keyring({ type: 'sr25519' })
-				.addFromUri(mnemonic, { name: uniqueNamesGenerator(config) }, 'sr25519');
-			const userTmp = {
-				address: pair.address,
-				name: pair.meta.name || '____ _____',
-				seed: mnemonic,	// just saving the mnemonic for now - will drop if not needed
-				json: pair.toJson()
-			}
-			setLocalStorageAccount(JSON.stringify(userTmp));
-			setUser(userTmp);
-		} else {
-			setUser(JSON.parse(localStorageAccount));
-		}
-	}, [localStorageAccount]);
-
-	const userInfo = useUserInfo(localStorageAccount && JSON.parse(localStorageAccount).address);
+	const userInfo = useUserInfo(user.address);
 
 	return (
 		<>
@@ -94,7 +67,7 @@ function Home ():  React.ReactElement {
 				</Box>
 			</Paper>
 			<Divider/>
-			<NavTabs />
+			<NavTabs setUser={setUser} />
 		</>
 	);
 }

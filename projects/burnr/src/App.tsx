@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'; // Pages
 import { makeStyles } from '@material-ui/core/styles';
 
 import { ApiContext } from './utils/contexts';
-import { useApiCreate } from './hooks';
+import { useApiCreate, useLocalStorage } from './hooks';
+import { createLocalStorageAccount } from './utils/utils';
 
 import Home from './Home';
 
@@ -22,13 +23,23 @@ const useStyles = makeStyles(theme => ({
 	},
 	main: {
 		width: '100%',
-		maxWidth: theme.spacing(3) + 600 + 'px',
+		maxWidth: theme.spacing(3) + 650 + 'px',
 		padding: theme.spacing(2),
 		flex: 1,
 	},
 }));
 
-const  App: React.FunctionComponent<Props> = ({ className }: Props) => {
+const App: React.FunctionComponent<Props> = ({ className }: Props) => {
+	const [endpoint] = useLocalStorage('endpoint');
+	const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint?.split('-')[0]?.toLowerCase());
+	
+	useEffect((): void => {
+		if (!localStorageAccount) {
+			const userTmp = createLocalStorageAccount();
+			setLocalStorageAccount(JSON.stringify(userTmp));
+		}
+	}, [localStorageAccount]);
+
 	const api = useApiCreate();
 	const classes = useStyles();
 
