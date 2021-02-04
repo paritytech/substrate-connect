@@ -14,7 +14,7 @@ import { assert, isUndefined, logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 import * as smoldot from 'smoldot';
 import database, { Database } from './Database';
-import { PeerTimeoutError, HealthCheckError } from './errors';
+import { HealthCheckError } from './errors';
 
 const l = logger('smoldot-provider');
 

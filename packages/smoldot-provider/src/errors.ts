@@ -1,11 +1,3 @@
-export class PeerTimeoutError extends Error {
-  constructor(message = "Timed out waiting for smoldot to connect to peers") {
-    super(message); 
-    // 'Error' breaks the prototype chain - restore it
-    Object.setPrototypeOf(this, new.target.prototype);
-  }
-}
-
 export class HealthCheckError extends Error {
   readonly #cause: any;
 
