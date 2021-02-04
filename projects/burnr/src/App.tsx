@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime';
 import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'; // Pages
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,8 +31,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const App: React.FunctionComponent<Props> = ({ className }: Props) => {
-	const [endpoint] = useLocalStorage('endpoint');
-	const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint?.split('-')[0]?.toLowerCase());
+	const api = useApiCreate();
+	const [endpoint, useEndpoint] = useLocalStorage('endpoint');
+	if (!endpoint) useEndpoint('Polkadot-WsProvider');
+	const end = endpoint || 'Polkadot-WsProvider';
+	const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(end.split('-')[0]?.toLowerCase());
 	
 	useEffect((): void => {
 		if (!localStorageAccount) {
@@ -39,8 +43,6 @@ const App: React.FunctionComponent<Props> = ({ className }: Props) => {
 			setLocalStorageAccount(JSON.stringify(userTmp));
 		}
 	}, [localStorageAccount]);
-
-	const api = useApiCreate();
 	const classes = useStyles();
 
 	return (
