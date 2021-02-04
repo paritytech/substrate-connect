@@ -206,38 +206,48 @@ export class SmoldotProvider implements ProviderInterface {
     }
   }
 
-  #checkClientPeercount = () => {
-    this.send('system_health', []).then(health => {
-      const peerCount = health.peers;
-      if (this.#seenPeers) {
-        if (peerCount === 0) {
-          // we've seen some peers before but now there are none
-          this.#isConnected = false;
-          this.emit('disconnected');
-          return;
-        }
-      }
+  #simulateLifecycle = health => {
+    const peerCount = health.peers;
 
-      if (!this.#seenPeers && !this.#isConnected && peerCount === 0) {
-        // we have never seen any peers and CONNECTION_STATE_PINGER_INTERVAL ms 
-        // has elapsed and we still don't have peers so emit an error event 
-        // to mimic the behaviour of other providers when they fail to connect
+    l.debug(`Simulating lifecylce events from system_health`);
+    l.debug(`seenPeers: ${this.#seenPeers}, isConnected: ${this.#isConnected}, new peerCount: ${peerCount}`);
+    if (this.#seenPeers) {
+      if (peerCount === 0) {
+        // we've seen some peers before but now there are none
         this.#isConnected = false;
-        this.emit('error', new PeerTimeoutError());
-        // Stop checking for peers. it is the consumer's reposnsibilty to attempt
-        // to "reconnect" by calling `connect` again. 
-        clearInterval(this.#connectionStatePingerId);
+        this.emit('disconnected');
+        l.debug(`emitted DISCONNECTED`);
         return;
       }
+    }
 
-      if (!this.#isConnected) {
-        // we weren't connected (but were at some time in the past) but now we 
-        // have peers again.
-        this.#isConnected = true;
-        this.#seenPeers = true;
-        this.emit('connected');
-      }
-    }).catch(error => this.emit('error', new HealthCheckError(error)));
+    if (!this.#seenPeers && !this.#isConnected && peerCount === 0) {
+      // we have never seen any peers and CONNECTION_STATE_PINGER_INTERVAL ms 
+      // has elapsed and we still don't have peers so emit an error event 
+      // to mimic the behaviour of other providers when they fail to connect
+      this.#isConnected = false;
+      this.emit('error', new PeerTimeoutError());
+      l.debug(`emitted ERROR`);
+      // Stop checking for peers. it is the consumer's reposnsibilty to attempt
+      // to "reconnect" by calling `connect` again. 
+      clearInterval(this.#connectionStatePingerId);
+      return;
+    }
+
+    if (!this.#isConnected) {
+      // we weren't connected (but were at some time in the past) but now we 
+      // have peers again.
+      this.#isConnected = true;
+      this.#seenPeers = true;
+      this.emit('connected');
+      l.debug(`emitted CONNECTED`);
+    }
+  }
+
+  #checkClientPeercount = () => {
+    this.send('system_health', [])
+      .then(this.#simulateLifecycle)
+      .catch(error => this.emit('error', new HealthCheckError(error)));
   }
 
   /**
