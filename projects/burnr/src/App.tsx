@@ -33,8 +33,7 @@ const App: React.FunctionComponent<Props> = ({ className }: Props) => {
 	const api = useApiCreate();
 	const [endpoint, useEndpoint] = useLocalStorage('endpoint');
 	if (!endpoint) useEndpoint('Polkadot-WsProvider');
-	const end = endpoint || 'Polkadot-WsProvider';
-	const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(end.split('-')[0]?.toLowerCase());
+	const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint.split('-')[0]?.toLowerCase());
 	
 	useEffect((): void => {
 		if (!localStorageAccount) {
