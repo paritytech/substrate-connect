@@ -40,6 +40,18 @@ const customHealthResponder = (hasPeers: boolean[]) => {
     }
   };
 }
+
+// dev chains never have peers
+const devChainHealthResponse = (id: number) => {
+  return `{"jsonrpc":"2.0","id":${id} ,"result":{"isSyncing":true,"peers":0,"shouldHavePeers":false}}`;
+}
+
+const devChainHealthResponder = requestJSON => {
+  const id = JSON.parse(requestJSON).id;
+  return devChainHealthResponse(id);
+
+}
+
 // Mimics the behaviour of the WASM light client by deferring a call to 
 // `json_rpc_callback` after it is called which returns the response
 // returned by the supplied `responder`.
@@ -187,7 +199,6 @@ test('emits events when it connects / disconnects / reconnects', async t => {
   provider.healthPingerInterval = 1;
   await provider.connect();
 
-  // callback hell caused by using event handlers for control flow
   return new Promise<void>((resolve, reject) => {
     provider.on('connected', () => {
       const off = provider.on('disconnected', () => {
@@ -199,8 +210,33 @@ test('emits events when it connects / disconnects / reconnects', async t => {
       });
     });
   });
-
 });
+
+test('emits connect and never emits disconnect for development chain', async t => {
+  const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
+
+  return new Promise<void>((resolve, reject) => {
+    provider.on('connected', () => {
+      setTimeout(() => {
+        // wait for later health messages to come in to be sure disconnect
+        // does not get emitted
+        t.pass();
+        resolve();
+      }, 20);
+
+      provider.on('disconnected', () => {
+        t.fail('should never disconnect');
+        reject();
+      });
+    });
+  });
+});
+
 
 test('send formats JSON RPC request correctly', async t => {
   // we don't really care what the reponse is

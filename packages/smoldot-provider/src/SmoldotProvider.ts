@@ -206,6 +206,20 @@ export class SmoldotProvider implements ProviderInterface {
   }
 
   #simulateLifecycle = health => {
+    // development chains should not have peers so we only emit connected
+    // once and never disconnect
+    if (health.shouldHavePeers == false) {
+      
+      if (!this.#isConnected) {
+        this.#isConnected = true;
+        this.emit('connected');
+        l.debug(`emitted CONNECTED`);
+        return;
+      }
+
+      return;
+    }
+
     const peerCount = health.peers;
 
     l.debug(`Simulating lifecylce events from system_health`);
