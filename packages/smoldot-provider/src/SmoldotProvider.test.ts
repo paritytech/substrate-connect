@@ -160,21 +160,6 @@ test('emits error when system_health responds with error', async t => {
   });
 });
 
-test('emits error when it does not receive peers > 0', async t => {
-  const ms = mockSmoldot(respondWith([]), unhealthyResponder);
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
-
-  // we don't want the test to be slow
-  provider.healthPingerInterval = 1;
-  await provider.connect();
-  return new Promise<void>((resolve, reject) => {
-    provider.on('error', error => {
-      t.is(error.message, 'Timed out waiting for smoldot to connect to peers');
-      return provider.disconnect().then(() => resolve());
-    });
-  });
-});
-
 test('emits events when it connects then disconnects', async t => {
   const ms = mockSmoldot(respondWith([]), customHealthResponder([true, false]));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);

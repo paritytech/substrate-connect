@@ -89,7 +89,6 @@ export class SmoldotProvider implements ProviderInterface {
   readonly #subscriptions: Record<string, StateSubscription> = {};
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
   #connectionStatePingerId: ReturnType<typeof setInterval> | null;
-  #seenPeers = false;
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
   #db: Database;
@@ -210,38 +209,28 @@ export class SmoldotProvider implements ProviderInterface {
     const peerCount = health.peers;
 
     l.debug(`Simulating lifecylce events from system_health`);
-    l.debug(`seenPeers: ${this.#seenPeers}, isConnected: ${this.#isConnected}, new peerCount: ${peerCount}`);
-    if (this.#seenPeers) {
-      if (peerCount === 0) {
-        // we've seen some peers before but now there are none
-        this.#isConnected = false;
-        this.emit('disconnected');
-        l.debug(`emitted DISCONNECTED`);
-        return;
-      }
-    }
+    l.debug(`isConnected: ${this.#isConnected}, new peerCount: ${peerCount}`);
 
-    if (!this.#seenPeers && !this.#isConnected && peerCount === 0) {
-      // we have never seen any peers and CONNECTION_STATE_PINGER_INTERVAL ms 
-      // has elapsed and we still don't have peers so emit an error event 
-      // to mimic the behaviour of other providers when they fail to connect
-      this.#isConnected = false;
-      this.emit('error', new PeerTimeoutError());
-      l.debug(`emitted ERROR`);
-      // Stop checking for peers. it is the consumer's reposnsibilty to attempt
-      // to "reconnect" by calling `connect` again. 
-      clearInterval(this.#connectionStatePingerId);
+    if (this.#isConnected && peerCount > 0) {
+      // still connected
       return;
     }
 
-    if (!this.#isConnected) {
-      // we weren't connected (but were at some time in the past) but now we 
-      // have peers again.
+    if (this.#isConnected && peerCount === 0) {
+      this.#isConnected = false;
+      this.emit('disconnected');
+      l.debug(`emitted DISCONNECTED`);
+      return;
+    }
+
+    if (!this.#isConnected && peerCount > 0) {
       this.#isConnected = true;
-      this.#seenPeers = true;
       this.emit('connected');
       l.debug(`emitted CONNECTED`);
+      return;
     }
+
+    // still not connected
   }
 
   #checkClientPeercount = () => {
@@ -293,7 +282,6 @@ export class SmoldotProvider implements ProviderInterface {
     clearInterval(this.#connectionStatePingerId);
 
     this.#isConnected = false;
-    this.#seenPeers = false; 
     this.emit('disconnected');
 
     return Promise.resolve();
