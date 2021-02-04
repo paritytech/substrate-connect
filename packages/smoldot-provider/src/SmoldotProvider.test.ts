@@ -320,8 +320,7 @@ test('subscribe', async t => {
       }
 
       t.deepEqual(result, { dummy: "state" });
-      provider.disconnect();
-      resolve();
+      provider.disconnect().then(() => resolve());
     }).then(reply => {
       t.is(reply, "SUBSCRIPTIONID");
     });
@@ -411,5 +410,5 @@ test('unsubscribe removes subscriptions', async t => {
   const id = await provider.subscribe('test', 'test_subscribe', [], () => {});
   const reply =  await provider.unsubscribe('test', 'test_unsubscribe', id);
   t.true(reply);
-  provider.disconnect();
+  await provider.disconnect();
 });
