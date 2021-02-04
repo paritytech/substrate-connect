@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime';
 import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'; // Pages
 import { makeStyles } from '@material-ui/core/styles';
