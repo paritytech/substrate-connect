@@ -4,9 +4,54 @@ import { Database } from './Database';
 import { SmoldotProvider } from './SmoldotProvider';
 import { SmoldotClient, SmoldotOptions } from 'smoldot';
 
-type RpcResponder = (message: string) => string;
+type RpcResponder = (request: string) => string;
 
 const EMPTY_CHAIN_SPEC = '{}';
+
+const systemHealthReponse = (id: number, peerCount: number) => {
+  return `{"jsonrpc":"2.0","id":${id} ,"result":{"isSyncing":true,"peers":${peerCount},"shouldHavePeers":true}}`;
+}
+
+// Always responds to a health request with a response that has peers
+const healthyResponder = requestJSON => {
+  const id = JSON.parse(requestJSON).id;
+  return systemHealthReponse(id, 1);
+}
+
+// Always responds to a health request with a response that has no peers
+const unhealthyResponder = requestJSON => {
+  const id = JSON.parse(requestJSON).id;
+  return systemHealthReponse(id, 0);
+}
+
+// Always responds with an error reponse
+const erroringResponder = requestJSON => {
+  const id = JSON.parse(requestJSON).id;
+  return `{ "id": ${id}, "jsonrpc": "2.0", "error": {"code": 666, "message": "boom!" } }`;
+}
+
+// Orchestrates a sequence of has peers / has no peers responses
+const customHealthResponder = (hasPeers: boolean[]) => {
+  return requestJSON => {
+    if (hasPeers.shift()) {
+      return healthyResponder(requestJSON);
+    } else {
+      return unhealthyResponder(requestJSON);
+    }
+  };
+}
+
+// dev chains never have peers
+const devChainHealthResponse = (id: number) => {
+  return `{"jsonrpc":"2.0","id":${id} ,"result":{"isSyncing":true,"peers":0,"shouldHavePeers":false}}`;
+}
+
+const devChainHealthResponder = requestJSON => {
+  const id = JSON.parse(requestJSON).id;
+  return devChainHealthResponse(id);
+
+}
+
 // Mimics the behaviour of the WASM light client by deferring a call to 
 // `json_rpc_callback` after it is called which returns the response
 // returned by the supplied `responder`.
@@ -16,12 +61,18 @@ const EMPTY_CHAIN_SPEC = '{}';
 // mock responses for each subscriptionrequest that the test will make.  The
 // first returning the subscription id.  The second a response to the
 // subscription.
-const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder) => {
-  return (rpc: string) => {
+const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder, healthResponder: RpcResponder) => {
+  return (rpcRequest: string) => {
     process.nextTick(() => {
-      options.json_rpc_callback(responder(rpc))
-      if (/(?<!un)[sS]ubscribe/.test(rpc)) {
-        options.json_rpc_callback(responder(rpc))
+      if (/system_health/.test(rpcRequest)) {
+        options.json_rpc_callback(healthResponder(rpcRequest));
+        return;
+      }
+
+      // non-health reponse
+      options.json_rpc_callback(responder(rpcRequest))
+      if (/(?<!un)[sS]ubscribe/.test(rpcRequest)) {
+        options.json_rpc_callback(responder(rpcRequest))
       }
     });
   };
@@ -29,13 +80,13 @@ const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder) => {
 
 // Creates a fake smoldot. Calls to send use `fakeRpcSend` to mimic the light
 // client behaviour
-const mockSmoldot = (responder: RpcResponder) => {
+const mockSmoldot = (responder: RpcResponder, healthResponder = healthyResponder) => {
   return {
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
       return Promise.resolve({
         // fake the async reply by using the reponder to format
         // a reply via options.json_rpc_callback
-        send_json_rpc: fakeRpcSend(options, responder)
+        send_json_rpc: fakeRpcSend(options, responder, healthResponder)
       });
     }
   };
@@ -43,7 +94,7 @@ const mockSmoldot = (responder: RpcResponder) => {
 
 // Creates a spying `smoldot` that records calls to `json_rpc_send` in `rpcSpy`
 // and then uses `fakeRpcSend` to mimic the light client behaviour.
-const smoldotSpy = (responder: RpcResponder, rpcSpy: any) => {
+const smoldotSpy = (responder: RpcResponder, rpcSpy: any, healthResponder = healthyResponder) => {
   return {
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
       return Promise.resolve({
@@ -51,7 +102,7 @@ const smoldotSpy = (responder: RpcResponder, rpcSpy: any) => {
           // record the message call
           rpcSpy(rpc);
           // fake the async reply using the responder
-          fakeRpcSend(options, responder)(rpc);
+          fakeRpcSend(options, responder, healthResponder)(rpc);
         }
       });
     }
@@ -76,17 +127,6 @@ class TestDatabase implements Database {
 }
 const testDb = () => new TestDatabase();
 
-test('connect resolves and emits', async t => {
-  const ms = mockSmoldot(x => x);
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
-  let connectedEmitted = false;
-
-  provider.on('connected', () => { connectedEmitted = true; });
-  await provider.connect();
-  t.true(connectedEmitted);
-  t.true(provider.isConnected);
-});
-
 test('connect propagates errors', async t => {
   const badSmoldot = {
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
@@ -101,10 +141,11 @@ test('connect propagates errors', async t => {
     await provider.connect();
   } catch (_) {
     t.true(errored);
+    await provider.disconnect();
   }
 });
 
-// non-subssription send
+// non-subscription send
 test('awaiting send returns message result', async t => {
   const mockResponses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
   const ms = mockSmoldot(respondWith(mockResponses));
@@ -113,7 +154,89 @@ test('awaiting send returns message result', async t => {
   await provider.connect();
   const reply = await provider.send('hello', [ 'world' ]);
   t.is(reply, 'success');
+  await provider.disconnect();
 });
+
+test('emits error when system_health responds with error', async t => {
+  const ms = mockSmoldot(respondWith([]), erroringResponder);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
+  return new Promise<void>((resolve, reject) => {
+    provider.on('error', error => {
+      t.is(error.message, 'Got error response asking for system health');
+      return provider.disconnect().then(() => resolve());
+    });
+  });
+});
+
+test('emits events when it connects then disconnects', async t => {
+  const ms = mockSmoldot(respondWith([]), customHealthResponder([true, false]));
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
+  return new Promise<void>((resolve, reject) => {
+    provider.on('connected', () => {
+      const off = provider.on('disconnected', () => {
+        t.pass();
+        off(); // stop listening
+        provider.disconnect().then(() => resolve());
+
+      });
+    });
+  });
+});
+
+test('emits events when it connects / disconnects / reconnects', async t => {
+  const ms = mockSmoldot(respondWith([]), customHealthResponder([true, false, true]));
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
+
+  return new Promise<void>((resolve, reject) => {
+    provider.on('connected', () => {
+      const off = provider.on('disconnected', () => {
+        off(); // stop listening
+        provider.on('connected', () => {
+          t.pass();
+          provider.disconnect().then(() => resolve());
+        });
+      });
+    });
+  });
+});
+
+test('emits connect and never emits disconnect for development chain', async t => {
+  const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
+
+  return new Promise<void>((resolve, reject) => {
+    provider.on('connected', () => {
+      setTimeout(() => {
+        // wait for later health messages to come in to be sure disconnect
+        // does not get emitted
+        t.pass();
+        resolve();
+      }, 20);
+
+      provider.on('disconnected', () => {
+        t.fail('should never disconnect');
+        reject();
+      });
+    });
+  });
+});
+
 
 test('send formats JSON RPC request correctly', async t => {
   // we don't really care what the reponse is
@@ -127,6 +250,7 @@ test('send formats JSON RPC request correctly', async t => {
   t.true(rpcSend.called);
   const rpcJson = rpcSend.firstCall.firstArg;
   t.is(rpcJson, '{"id":1,"jsonrpc":"2.0","method":"hello","params":["world"]}');
+  await provider.disconnect();
 });
 
 test('sending twice uses new id', async t => {
@@ -149,19 +273,18 @@ test('sending twice uses new id', async t => {
   t.is(rpcJson1, '{"id":1,"jsonrpc":"2.0","method":"hello","params":["world"]}');
   const rpcJson2 = rpcSend.secondCall.firstArg;
   t.is(rpcJson2, '{"id":2,"jsonrpc":"2.0","method":"hello","params":["world"]}');
+  await provider.disconnect();
 });
 
 test('throws when got error JSON response', async t => {
-  const responses =  [
-    '{ "id": 1, "jsonrpc": "2.0", "error": {"code": 666, "message": "boom!" } }'
-  ];
-  const ms = mockSmoldot(respondWith(responses));
+  const ms = mockSmoldot(erroringResponder);
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
   await provider.connect();
   await t.throwsAsync(async () => {
     await provider.send('hello', [ 'world' ]);
   }, {instanceOf: Error, message: '666: boom!'});
+  await provider.disconnect();
 });
 
 test('send can also add subscriptions and returns an id', async t => {
@@ -175,6 +298,7 @@ test('send can also add subscriptions and returns an id', async t => {
   await provider.connect();
   const reply = await provider.send('test_subscribe', []);
   t.is(reply, 'SUBSCRIPTIONID');
+  await provider.disconnect();
 });
 
 test('subscribe', async t => {
@@ -196,7 +320,7 @@ test('subscribe', async t => {
       }
 
       t.deepEqual(result, { dummy: "state" });
-      resolve();
+      provider.disconnect().then(() => resolve());
     }).then(reply => {
       t.is(reply, "SUBSCRIPTIONID");
     });
@@ -222,7 +346,9 @@ test('subscribe copes with out of order responses', async t => {
       }
 
       t.deepEqual(result, { dummy: "state" });
-      resolve();
+      provider.disconnect().then(() => {
+        resolve();
+      });
     }).then(reply => {
       t.is(reply, "SUBSCRIPTIONID");
     });
@@ -248,7 +374,7 @@ test('converts british english method spelling to US', async t => {
       }
 
       t.deepEqual(result, { dummy: "state" });
-      resolve();
+      return provider.disconnect().then(() => resolve());
     }).then(reply => {
       t.is(reply, "SUBSCRIPTIONID");
     });
@@ -268,6 +394,7 @@ test('unsubscribe fails when sub not found', async t => {
   const reply =  await provider.unsubscribe('test', 'test_subscribe', 666);
 
   t.false(reply);
+  await provider.disconnect();
 });
 
 test('unsubscribe removes subscriptions', async t => {
@@ -283,4 +410,5 @@ test('unsubscribe removes subscriptions', async t => {
   const id = await provider.subscribe('test', 'test_subscribe', [], () => {});
   const reply =  await provider.unsubscribe('test', 'test_unsubscribe', id);
   t.true(reply);
+  await provider.disconnect();
 });
