@@ -7,13 +7,13 @@ import { formatBalance } from '@polkadot/util';
 import useApi from './api/useApi';
 import useIsMountedRef from './api/useIsMountedRef';
 
-type State = [string, BN, boolean];
+type State = [string, BN, boolean, string];
 
 const ZERO = new BN(0);
 
 export default function useBalance (address: string): State {
   const api = useApi();
-  const [state, setState] = useState<State>(['0', ZERO, true]);
+  const [state, setState] = useState<State>(['0', ZERO, true, 'Units']);
   const  mountedRef = useIsMountedRef();
 
   useEffect((): () => void => {
@@ -23,7 +23,8 @@ export default function useBalance (address: string): State {
         mountedRef.current && setState([
           formatBalance(data.free, { decimals: api.registry.chainDecimals[0], forceUnit: '-', withSi: false }),
           data.free,
-          data.free.isZero()
+          data.free.isZero(),
+          data.free.registry.chainTokens[0]
         ]);
       })
       .then((u): void => {

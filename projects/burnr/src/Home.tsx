@@ -6,7 +6,7 @@ import { LocalStorageUserAccount } from './utils/types';
 
 import { NavTabs, AccountCard, BalanceValue, Bg } from './components';
 
-import { useUserInfo, useLocalStorage } from './hooks';
+import { useUserInfo, useLocalStorage, useBalance } from './hooks';
 
 const useStyles = makeStyles((theme: Theme) => ({
 		paperAccount: {
@@ -23,7 +23,9 @@ function Home ():  React.ReactElement {
 	const [user, setUser] = useState<LocalStorageUserAccount>(JSON.parse(localStorageAccount));
 
 	const userInfo = useUserInfo(user.address);
-
+	const balanceArr = useBalance(user.address);
+	const balance = balanceArr[0];
+	const unit = balanceArr[3];
 	return (
 		<>
 			<Bg />
@@ -51,7 +53,8 @@ function Home ():  React.ReactElement {
 							>
 								<Grid item xs={12}>
 									<BalanceValue
-										value={1234.56}
+										value={balance}
+										unit={unit}
 										size='large'
 										style={{ width: '100%', justifyContent: 'flex-end' }}
 									/>
