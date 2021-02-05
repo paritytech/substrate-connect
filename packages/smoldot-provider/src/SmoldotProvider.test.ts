@@ -13,26 +13,26 @@ const systemHealthReponse = (id: number, peerCount: number) => {
 }
 
 // Always responds to a health request with a response that has peers
-const healthyResponder = requestJSON => {
+const healthyResponder = (requestJSON: string) => {
   const id = JSON.parse(requestJSON).id;
   return systemHealthReponse(id, 1);
 }
 
 // Always responds to a health request with a response that has no peers
-const unhealthyResponder = requestJSON => {
+const unhealthyResponder = (requestJSON: string) => {
   const id = JSON.parse(requestJSON).id;
   return systemHealthReponse(id, 0);
 }
 
 // Always responds with an error reponse
-const erroringResponder = requestJSON => {
+const erroringResponder = (requestJSON: string) => {
   const id = JSON.parse(requestJSON).id;
   return `{ "id": ${id}, "jsonrpc": "2.0", "error": {"code": 666, "message": "boom!" } }`;
 }
 
 // Orchestrates a sequence of has peers / has no peers responses
 const customHealthResponder = (hasPeers: boolean[]) => {
-  return requestJSON => {
+  return (requestJSON: string) => {
     if (hasPeers.shift()) {
       return healthyResponder(requestJSON);
     } else {
@@ -46,7 +46,7 @@ const devChainHealthResponse = (id: number) => {
   return `{"jsonrpc":"2.0","id":${id} ,"result":{"isSyncing":true,"peers":0,"shouldHavePeers":false}}`;
 }
 
-const devChainHealthResponder = requestJSON => {
+const devChainHealthResponder = (requestJSON: string) => {
   const id = JSON.parse(requestJSON).id;
   return devChainHealthResponse(id);
 

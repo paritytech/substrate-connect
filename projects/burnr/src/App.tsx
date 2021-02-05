@@ -40,7 +40,6 @@ const App: React.FunctionComponent<Props> = ({ className }: Props) => {
 			setLocalStorageAccount(JSON.stringify(userTmp));
 		}
 	}, [localStorageAccount]);
-
 	const classes = useStyles();
 
 	return (
