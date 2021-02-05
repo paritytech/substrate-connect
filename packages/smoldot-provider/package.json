@@ -12,13 +12,14 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prebuild": "yarn test && yarn clean",
+    "prebuild": "yarn clean",
     "build": "tsc --build src",
     "clean": "rm -rf dist/",
+    "pretest": "yarn build",
     "test": "ava --config ava.config.js --verbose",
     "examples": "ava --config ava.examples.config.js",
-    "prepack": "yarn build",
-    "postinstall": "yarn build"
+    "prepack": "yarn test && yarn examples",
+    "postinstall": "yarn test"
   },
   "release": [
     "dist/**"

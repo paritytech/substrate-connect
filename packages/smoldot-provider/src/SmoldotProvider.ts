@@ -37,6 +37,13 @@ interface StateSubscription extends SubscriptionHandler {
     params: any[];
 }
 
+interface HealthResponse {
+  isSyncing: boolean;
+  peers: number;
+  shouldHavePeers: boolean;
+}
+
+
 const ANGLICISMS: { [index: string]: string } = {
   chain_finalisedHead: 'chain_finalizedHead',
   chain_subscribeFinalisedHeads: 'chain_subscribeFinalizedHeads',
@@ -205,7 +212,7 @@ export class SmoldotProvider implements ProviderInterface {
     }
   }
 
-  #simulateLifecycle = health => {
+  #simulateLifecycle = (health: HealthResponse) => {
     // development chains should not have peers so we only emit connected
     // once and never disconnect
     if (health.shouldHavePeers == false) {
@@ -293,7 +300,9 @@ export class SmoldotProvider implements ProviderInterface {
       this.#client = undefined;
     }
 
-    clearInterval(this.#connectionStatePingerId);
+    if (this.#connectionStatePingerId !== null) {
+      clearInterval(this.#connectionStatePingerId);
+    }
 
     this.#isConnected = false;
     this.emit('disconnected');
