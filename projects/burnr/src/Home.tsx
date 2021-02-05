@@ -22,10 +22,11 @@ function Home ():  React.ReactElement {
 	const [localStorageAccount] = useLocalStorage(endpoint?.split('-')[0]?.toLowerCase());
 	const [user, setUser] = useState<LocalStorageUserAccount>(JSON.parse(localStorageAccount));
 
-	const userInfo = useUserInfo(user.address);
-	const balanceArr = useBalance(user.address);
+	const userInfo = useUserInfo(user.userAddress);
+	const balanceArr = useBalance(user.userAddress);
 	const balance = balanceArr[0];
 	const unit = balanceArr[3];
+
 	return (
 		<>
 			<Bg />
@@ -39,7 +40,7 @@ function Home ():  React.ReactElement {
 								<AccountCard
 									account={{
 										address: userInfo.address,
-										name: user?.name
+										name: user?.userName
 									}}
 								/>
 							}

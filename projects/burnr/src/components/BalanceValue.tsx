@@ -7,7 +7,7 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 
 interface Props extends SizeScale {
 	value: number | string;
-	unit: string;
+	unit?: string;
 	style?: CSSProperties;
 }
 interface StyleProps {
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const BalanceValue: React.FunctionComponent<Props> = ({ value, unit, size, style }: Props) => {
 	const isBalance = typeof value === 'number';
-	const isColored = (isBalance && value >= 0) || (!isBalance && parseFloat(value) > 0);
+	const isColored = (isBalance && value >= 0 || (!isBalance && typeof value === 'string' && parseFloat(value) > 0));
 	const classes = useStyles({ colored: isColored });
 
 	const TypographyVariant = size === 'large' ? 'subtitle1' : 'subtitle2';

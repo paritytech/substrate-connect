@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'; // Pages
 import { makeStyles } from '@material-ui/core/styles';
 
-import { ApiContext } from './utils/contexts';
+import { ApiContext, AccountContext } from './utils/contexts';
 import { useApiCreate, useLocalStorage } from './hooks';
 import { createLocalStorageAccount } from './utils/utils';
 
@@ -30,9 +30,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const App: React.FunctionComponent<Props> = ({ className }: Props) => {
-	const [endpoint] = useLocalStorage('endpoint');
-	const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint?.split('-')[0]?.toLowerCase());
-	
+	const api = useApiCreate();
+	const [endpoint, useEndpoint] = useLocalStorage('endpoint');
+	if (!endpoint) useEndpoint('Polkadot-WsProvider');
+	const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint.split('-')[0]?.toLowerCase());
 	useEffect((): void => {
 		if (!localStorageAccount) {
 			const userTmp = createLocalStorageAccount();
@@ -40,7 +41,6 @@ const App: React.FunctionComponent<Props> = ({ className }: Props) => {
 		}
 	}, [localStorageAccount]);
 
-	const api = useApiCreate();
 	const classes = useStyles();
 
 	return (
@@ -50,11 +50,13 @@ const App: React.FunctionComponent<Props> = ({ className }: Props) => {
 					<main className={classes.main}>
 						{api && api.isReady && (
 							<ApiContext.Provider value={api}>
-								<Head />
-								<Switch>
-									<Route exact path='/' component={Home} />
-								</Switch>
-							</ApiContext.Provider>
+								<AccountContext.Provider value={JSON.parse(localStorageAccount)}>
+									<Head />
+									<Switch>
+										<Route exact path='/' component={Home} />
+									</Switch>
+								</AccountContext.Provider>
+						</ApiContext.Provider>
 						)}
 					</main>
 					<NavFooter />

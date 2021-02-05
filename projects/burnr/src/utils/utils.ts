@@ -31,12 +31,13 @@ export const downloadFile = (fileName: string, data: string, type: string): void
 
   export const createLocalStorageAccount = (): LocalStorageUserAccount => {
     const mnemonic = mnemonicGenerate(12);
-    const keyring = new Keyring({ type: 'sr25519' });
-    const pair = keyring.addFromUri(mnemonic, { name: uniqueNamesGenerator(config) }, 'sr25519');
+    const pair = new Keyring().addFromMnemonic(mnemonic, { name: uniqueNamesGenerator(config) }, 'sr25519');
+    // const pair = keyring.addFromUri('//Charlie', { name: 'Charlie default' });
     return {
-        address: pair.address,
-        name: pair.meta.name || '____ _____',
-        seed: mnemonic,
-        json: pair.toJson()
+        userAddress: pair.address,
+        userName: pair.meta.name || '____ _____',
+        userSeed: mnemonic,
+        userJson: pair.toJson(),
+        userHistory: []
     }
   }

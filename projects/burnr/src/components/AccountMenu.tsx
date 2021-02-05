@@ -41,7 +41,7 @@ const AccountMenu: React.FunctionComponent<Props> = ({ setUser }: Props) => {
 		const userTmp = createLocalStorageAccount();
 		setLclStorage(JSON.stringify(userTmp));
 		setUser(userTmp);
-	  };
+	};
 	return (
 		<Grid
 			container

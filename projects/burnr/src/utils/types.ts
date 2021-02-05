@@ -25,10 +25,11 @@ export interface Account {
 }
 
 export interface LocalStorageUserAccount {
-	address: string;
-  name: any;
-  seed: string;
-  json: KeyringPair$Json;
+	userAddress: string;
+  userName: string;
+  userSeed: string;
+  userJson: KeyringPair$Json;
+  userHistory: EvtTxCtx;
 }
 export interface DeriveCtx {
   deriveAddress: (username: string) => string;
