@@ -22,7 +22,6 @@
     "dev:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run dev",
     "deploy:gh-pages:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run deploy:gh-pages",
     "deploy:ipfs:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run deploy:ipfs",
-    "test": " yarn workspaces run test",
     "postinstall": "husky install"
   },
   "devDependencies": {
