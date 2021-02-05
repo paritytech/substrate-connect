@@ -30,8 +30,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const App: React.FunctionComponent<Props> = ({ className }: Props) => {
-	const [endpoint] = useLocalStorage('endpoint');
-	const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint?.split('-')[0]?.toLowerCase());
+	const api = useApiCreate();
+	const [endpoint, useEndpoint] = useLocalStorage('endpoint');
+	if (!endpoint) useEndpoint('Polkadot-WsProvider');
+	const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint.split('-')[0]?.toLowerCase());
 	
 	useEffect((): void => {
 		if (!localStorageAccount) {
@@ -39,8 +41,6 @@ const App: React.FunctionComponent<Props> = ({ className }: Props) => {
 			setLocalStorageAccount(JSON.stringify(userTmp));
 		}
 	}, [localStorageAccount]);
-
-	const api = useApiCreate();
 	const classes = useStyles();
 
 	return (

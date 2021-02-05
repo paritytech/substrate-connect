@@ -31,8 +31,7 @@ export const downloadFile = (fileName: string, data: string, type: string): void
 
   export const createLocalStorageAccount = (): LocalStorageUserAccount => {
     const mnemonic = mnemonicGenerate(12);
-    const pair = new Keyring({ type: 'sr25519' })
-        .addFromUri(mnemonic, { name: uniqueNamesGenerator(config) }, 'sr25519');
+    const pair = new Keyring().addFromMnemonic(mnemonic, { name: uniqueNamesGenerator(config) }, 'sr25519');
     return {
         address: pair.address,
         name: pair.meta.name || '____ _____',
