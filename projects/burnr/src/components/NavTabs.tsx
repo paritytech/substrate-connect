@@ -6,8 +6,6 @@ import CallMadeSharpIcon from '@material-ui/icons/CallMadeSharp';
 import CallReceivedSharpIcon from '@material-ui/icons/CallReceivedSharp';
 import WhatshotSharpIcon from '@material-ui/icons/WhatshotSharp';
 
-import { LocalStorageUserAccount } from '../utils/types';
-
 import { HistoryTable, AccountMenu } from './index';
 import SendFundsForm from './SendFundsForm';
 
@@ -15,10 +13,6 @@ interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
-}
-
-interface Props {
-	setUser: (arg0: LocalStorageUserAccount) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -49,7 +43,7 @@ const TabPanel: React.FunctionComponent<TabPanelProps> = ({ children, value, ind
 	);
 };
 
-const NavTabs: React.FunctionComponent<Props> = ({ setUser }: Props) => {
+const NavTabs: React.FunctionComponent = () => {
 	const classes = useStyles();
 	const [value, setValue] = React.useState(0);
 	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -78,7 +72,7 @@ const NavTabs: React.FunctionComponent<Props> = ({ setUser }: Props) => {
 					<Typography variant='h2'>
 						Account Controls
 					</Typography>
-					<AccountMenu setUser={setUser} />
+					<AccountMenu />
 				</TabPanel>
 				<TabPanel value={value} index={1}>
 					<Typography variant='h2'>

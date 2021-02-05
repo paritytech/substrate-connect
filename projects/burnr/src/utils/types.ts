@@ -23,30 +23,33 @@ export interface Account {
   address: string;
   name: string;
 }
-
-export interface LocalStorageUserAccount {
-	userAddress: string;
-  userName: string;
-  userSeed: string;
-  userJson: KeyringPair$Json;
-  userHistory: EvtTxCtx;
-}
 export interface DeriveCtx {
-  deriveAddress: (username: string) => string;
+  deriveAddress?: (userName: string) => string;
 }
 
 export interface AccountCtx extends DeriveCtx {
   userAddress: string;
-  userPair: KeyringPair;
-  username: string;
+  userPair?: KeyringPair;
+  userName: string;
+}
+
+export interface LocalStorageAccountCtx extends AccountCtx{
+  userSeed: string;
+  userJson: KeyringPair$Json;
+  userHistory: EvtTxCtx;
+}
+
+export interface CreateAccountCtx {
+  account: LocalStorageAccountCtx,
+  setCurrentAccount: (account: LocalStorageAccountCtx) => void  
 }
 
 export interface AdminCtx extends DeriveCtx {
   adminAddress: string;
   adminPair: KeyringPair;
-  deriveAdmin: (username: string) => string;
+  deriveAdmin: (userName: string) => string;
   treasuryAddress: string;
-  username: string;
+  userName: string;
 }
 
 export interface ApiCtx {

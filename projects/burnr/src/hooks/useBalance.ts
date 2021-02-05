@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: Apache-2
 
 import BN from 'bn.js';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { formatBalance } from '@polkadot/util';
+// import { useLocalStorage } from '.';
+// import { AccountContext } from '../utils/contexts';
 
 import useApi from './api/useApi';
 import useIsMountedRef from './api/useIsMountedRef';
@@ -15,12 +17,25 @@ export default function useBalance (address: string): State {
   const api = useApi();
   const [state, setState] = useState<State>(['0', ZERO, true, 'Units']);
   const  mountedRef = useIsMountedRef();
+  // const { account } = useContext(AccountContext);
+  // const [userAddress] = useLocalStorage(account.userAddress);
+
 
   useEffect((): () => void => {
     let unsubscribe: null | (() => void) = null;
     api.query.system
       .account(address, ({ data }): void => {
-        console.log('something arrived?', data.free)
+        // const history = account.userHistory;
+        // history.push({
+        //   amount: data.free,
+        //   key: '',
+        //   from: '',
+        //   to: userAddress,
+        //   wasSent: true,
+        //   when: new Date(),
+        //   method: 'transfer'
+        // })
+        // account.userHistory = [...history];
         mountedRef.current && setState([
           formatBalance(data.free, { decimals: api.registry.chainDecimals[0], forceUnit: '-', withSi: false }),
           data.free,

@@ -1,4 +1,4 @@
-import { Account, LocalStorageUserAccount } from './types';
+import { Account, LocalStorageAccountCtx } from './types';
 import { uniqueNamesGenerator, Config, starWars } from 'unique-names-generator';
 import { mnemonicGenerate } from '@polkadot/util-crypto';
 import { Keyring } from '@polkadot/api';
@@ -29,13 +29,13 @@ export const downloadFile = (fileName: string, data: string, type: string): void
     window.URL.revokeObjectURL(anchor.href);
   }
 
-  export const createLocalStorageAccount = (): LocalStorageUserAccount => {
+  export const createLocalStorageAccount = (): LocalStorageAccountCtx => {
     const mnemonic = mnemonicGenerate(12);
     const pair = new Keyring().addFromMnemonic(mnemonic, { name: uniqueNamesGenerator(config) }, 'sr25519');
     // const pair = keyring.addFromUri('//Charlie', { name: 'Charlie default' });
     return {
         userAddress: pair.address,
-        userName: pair.meta.name || '____ _____',
+        userName: pair.meta.name as string || '____ _____',
         userSeed: mnemonic,
         userJson: pair.toJson(),
         userHistory: []

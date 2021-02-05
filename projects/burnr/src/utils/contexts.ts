@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: Apache-2
 
-import { AccountCtx, AdminCtx, EvtMgrCtx, EvtTxCtx } from './types';
+import { LocalStorageAccountCtx, AdminCtx, EvtMgrCtx, EvtTxCtx, CreateAccountCtx } from './types';
 
 import React from 'react';
 import { ApiPromise } from '@polkadot/api';
 
-const AccountContext = React.createContext<AccountCtx>({} as AccountCtx);
+const AccountContext = React.createContext<CreateAccountCtx>({
+    account: {} as LocalStorageAccountCtx,
+    setCurrentAccount: () => {}
+  });
 const AdminContext = React.createContext<AdminCtx>({} as AdminCtx);
 const ApiContext = React.createContext<ApiPromise>({} as ApiPromise);
 const EvtMgrContext = React.createContext<EvtMgrCtx>([]);
