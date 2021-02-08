@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 
 import { Grid, Paper, Divider, IconButton, Box, makeStyles, Theme } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import { LocalStorageUserAccount } from './utils/types';
+
+import { AccountContext } from './utils/contexts';
 
 import { NavTabs, AccountCard, BalanceValue, Bg } from './components';
 
-import { useUserInfo, useLocalStorage } from './hooks';
+import { useUserInfo, useBalance } from './hooks';
 
 const useStyles = makeStyles((theme: Theme) => ({
 		paperAccount: {
@@ -17,12 +18,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 // @TODO read balance
 // @TODO account name
 function Home ():  React.ReactElement {
+	const { account } = useContext(AccountContext);
 	const classes = useStyles();
-	const [endpoint] = useLocalStorage('endpoint');
-	const [localStorageAccount] = useLocalStorage(endpoint?.split('-')[0]?.toLowerCase());
-	const [user, setUser] = useState<LocalStorageUserAccount>(JSON.parse(localStorageAccount));
-
-	const userInfo = useUserInfo(user.address);
+	const userInfo = useUserInfo(account.userAddress);
+	const balanceArr = useBalance(account.userAddress);
+	const balance = balanceArr[0];
+	const unit = balanceArr[3];
 
 	return (
 		<>
@@ -37,7 +38,7 @@ function Home ():  React.ReactElement {
 								<AccountCard
 									account={{
 										address: userInfo.address,
-										name: user?.name
+										name: account?.userName
 									}}
 								/>
 							}
@@ -51,7 +52,8 @@ function Home ():  React.ReactElement {
 							>
 								<Grid item xs={12}>
 									<BalanceValue
-										value={1234.56}
+										value={balance}
+										unit={unit}
 										size='large'
 										style={{ width: '100%', justifyContent: 'flex-end' }}
 									/>
@@ -67,7 +69,7 @@ function Home ():  React.ReactElement {
 				</Box>
 			</Paper>
 			<Divider/>
-			<NavTabs setUser={setUser} />
+			<NavTabs />
 		</>
 	);
 }

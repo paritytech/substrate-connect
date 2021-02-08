@@ -83,9 +83,9 @@ export const JS_WASM_PROVIDERS: Record<string, LazyProvider> = {
  * These fallback providers connect to a centralized remote RPC node.
  */
 export const REMOTE_PROVIDERS: Record<string, LazyProvider> = {
-  'Polkadot-Local-WsProvider': {
+  'Local-Polkadot-WsProvider': {
     description: `Local node running on ${endpoints.local}`,
-    id: 'Polkadot-Local-WsProvider',
+    id: 'Local-Polkadot-WsProvider',
     network: 'Local Polkadot Network',
     node: 'light',
     source: 'remote',
