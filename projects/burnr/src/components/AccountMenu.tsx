@@ -10,9 +10,7 @@ import { POLKA_ACCOUNT_ENDPOINTS } from '../utils/constants';
 import { useLocalStorage } from '../hooks';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Menu } from '@material-ui/core';
-import { ListItem } from '@material-ui/core';
-import { MenuItem } from '@material-ui/core';
+import { ListItem, Menu, MenuItem } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -56,10 +54,6 @@ const AccountMenu: React.FunctionComponent = () => {
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 	
 	return (
 		<>
@@ -72,7 +66,7 @@ const AccountMenu: React.FunctionComponent = () => {
 				anchorEl={anchorEl}
 				keepMounted
 				open={Boolean(anchorEl)}
-				onClose={handleClose}
+				onClose={() => setAnchorEl(null)}
 				className={classes.menu}
 			>
 				<ListItem dense autoFocus={false} selected={false}>
