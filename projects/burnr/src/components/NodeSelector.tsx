@@ -6,7 +6,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Autocomplete, { AutocompleteCloseReason } from '@material-ui/lab/Autocomplete';
 
 import { ALL_PROVIDERS } from '../utils/constants';
-import { useApiCreate, useLocalStorage } from '../hooks';
+import { useLocalStorage } from '../hooks';
 import { NodeSelectorItem, NodeSelectorSelected } from '../components';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -100,13 +100,13 @@ const options = Object.entries(ALL_PROVIDERS).map(
 	)
 ).sort((a,b) => (a.network > b.network) ? 1 : ((b.network > a.network) ? -1 : 0));
 
-export default function NodeSelector() {
+export default function NodeSelector(): React.ReactElement {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
-  const endpointName = localEndpoint || 'Polkadot-WsProvider'
+  	const endpointName = localEndpoint || 'Polkadot-WsProvider'
 	const [provider, setProvider] = useState<string>(ALL_PROVIDERS[endpointName].id);
-  const handleOpenDropdown = (event: React.MouseEvent<HTMLElement>) => {
+  	const handleOpenDropdown = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
 	};
 
