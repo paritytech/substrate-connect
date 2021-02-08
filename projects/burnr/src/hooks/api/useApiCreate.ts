@@ -22,9 +22,9 @@ console.log('ALL_PROVIDERS', ALL_PROVIDERS)
 
 export default function useApiCreate (): ApiPromise | null {
   const [api, setApi] = useState<ApiPromise | null>(null);
-  const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
+  const [localEndpoint] = useLocalStorage('endpoint');
 
-  const [provider, setProvider] = useState<LazyProvider>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Polkadot-WsProvider']);
+  const [provider] = useState<LazyProvider>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Polkadot-WsProvider']);
   const  mountedRef = useIsMountedRef();
 
   // @TODO Make dynamic once @substrate/connect is implemented

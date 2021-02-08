@@ -40,14 +40,18 @@ const App: React.FunctionComponent<Props> = ({ className }: Props) => {
 	const [account, setCurrentAccount] = useState<LocalStorageAccountCtx>({} as LocalStorageAccountCtx);
 	
 	useEffect((): void => {
-		if (!localStorageAccount) {
-			const userTmp = createLocalStorageAccount();
-			setLocalStorageAccount(JSON.stringify(userTmp));
-			setCurrentAccount(userTmp);
-		} else {
-			setCurrentAccount(JSON.parse(localStorageAccount));
+		if (api && api.isReady) {
+			if (!localStorageAccount) {
+				const userTmp = createLocalStorageAccount();
+				setLocalStorageAccount(JSON.stringify(userTmp));
+				setCurrentAccount(userTmp);
+			} else {
+				setCurrentAccount(JSON.parse(localStorageAccount));
+			}
 		}
-	}, [localStorageAccount]);
+	}, [localStorageAccount, api]);
+
+	const isEmpty = (obj: any): boolean => (Object.keys(obj).length === 0 && obj.constructor === Object)
 
 	return (
 		<BrowserRouter>
@@ -55,7 +59,7 @@ const App: React.FunctionComponent<Props> = ({ className }: Props) => {
 				<ThemeToggleProvider>
 					<AccountContext.Provider value={{ account, setCurrentAccount }}>
 						<main className={classes.main}>
-							{api && api.isReady && account && (
+							{api && api.isReady && !isEmpty(account) && (
 								<ApiContext.Provider value={api}>
 									<Head />
 									<Switch>
