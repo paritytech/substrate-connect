@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'; // Pages
 import { makeStyles } from '@material-ui/core/styles';
-
+import { Paper, CircularProgress } from '@material-ui/core';
 import { ApiContext, AccountContext } from './utils/contexts';
 import { LocalStorageAccountCtx } from './utils/types';
 import { useApiCreate, useLocalStorage } from './hooks';
@@ -28,7 +28,18 @@ const useStyles = makeStyles(theme => ({
 		padding: theme.spacing(2),
 		flex: 1,
 	},
+	loadingPaper: {
+		height: '90vh',
+		textAlign: 'center',
+	},
+	loader: {
+		height: '50px',
+		width: '50px',
+		marginTop: '10vh',
+	},
 }));
+
+const isEmpty = (obj: any): boolean => (Object.keys(obj).length === 0 && obj.constructor === Object)
 
 const App: React.FunctionComponent<Props> = ({ className }: Props) => {
 	const api = useApiCreate();
@@ -38,7 +49,8 @@ const App: React.FunctionComponent<Props> = ({ className }: Props) => {
 	const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint.split('-')[0]?.toLowerCase());
 
 	const [account, setCurrentAccount] = useState<LocalStorageAccountCtx>({} as LocalStorageAccountCtx);
-	
+	const [loader, setLoader] = useState(true)
+
 	useEffect((): void => {
 		if (api && api.isReady) {
 			if (!localStorageAccount) {
@@ -48,10 +60,9 @@ const App: React.FunctionComponent<Props> = ({ className }: Props) => {
 			} else {
 				setCurrentAccount(JSON.parse(localStorageAccount));
 			}
+			setLoader(false)
 		}
 	}, [localStorageAccount, api]);
-
-	const isEmpty = (obj: any): boolean => (Object.keys(obj).length === 0 && obj.constructor === Object)
 
 	return (
 		<BrowserRouter>
@@ -59,14 +70,18 @@ const App: React.FunctionComponent<Props> = ({ className }: Props) => {
 				<ThemeToggleProvider>
 					<AccountContext.Provider value={{ account, setCurrentAccount }}>
 						<main className={classes.main}>
-							{api && api.isReady && !isEmpty(account) && (
-								<ApiContext.Provider value={api}>
-									<Head />
+							<ApiContext.Provider value={api}>
+								<Head />
+								{loader ?
+								(<Paper className={classes.loadingPaper}>
+									<CircularProgress className={classes.loader} />
+								</Paper>) :
+								api && api.isReady && !isEmpty(account) && (
 									<Switch>
 										<Route exact path='/' component={Home} />
 									</Switch>
-								</ApiContext.Provider>
-							)}
+								)}
+							</ApiContext.Provider>
 						</main>
 						<NavFooter />
 					</AccountContext.Provider>

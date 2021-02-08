@@ -15,8 +15,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 		},
 	})
 );
-// @TODO read balance
-// @TODO account name
+
 function Home ():  React.ReactElement {
 	const { account } = useContext(AccountContext);
 	const classes = useStyles();

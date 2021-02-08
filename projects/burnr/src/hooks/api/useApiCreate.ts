@@ -20,8 +20,8 @@ import { useIsMountedRef, useLocalStorage } from '../../hooks';
 console.log('ALL_PROVIDERS', ALL_PROVIDERS)
 
 
-export default function useApiCreate (): ApiPromise | null {
-  const [api, setApi] = useState<ApiPromise | null>(null);
+export default function useApiCreate (): ApiPromise {
+  const [api, setApi] = useState<ApiPromise>({} as ApiPromise);
   const [localEndpoint] = useLocalStorage('endpoint');
 
   const [provider] = useState<LazyProvider>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Polkadot-WsProvider']);
@@ -45,7 +45,6 @@ export default function useApiCreate (): ApiPromise | null {
         console.error
       });
   }, []);
-
 
   return api;
 }
