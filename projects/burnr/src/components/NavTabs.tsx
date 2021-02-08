@@ -6,7 +6,7 @@ import CallMadeSharpIcon from '@material-ui/icons/CallMadeSharp';
 import CallReceivedSharpIcon from '@material-ui/icons/CallReceivedSharp';
 import WhatshotSharpIcon from '@material-ui/icons/WhatshotSharp';
 
-import { HistoryTable, AccountMenu } from './index';
+import { HistoryTable, AccountMenu, AccountBurn } from './index';
 import SendFundsForm from './SendFundsForm';
 
 interface TabPanelProps {
@@ -70,9 +70,9 @@ const NavTabs: React.FunctionComponent = () => {
 			<Paper className={classes.root}>
 				<TabPanel value={value} index={0}>
 					<Typography variant='h2'>
-						Account Controls
+						Account Controls <AccountMenu />
 					</Typography>
-					<AccountMenu />
+					<AccountBurn />
 				</TabPanel>
 				<TabPanel value={value} index={1}>
 					<Typography variant='h2'>
