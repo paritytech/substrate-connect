@@ -16,9 +16,6 @@ import { MenuItem } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
-		section: {
-			paddingTop: theme.spacing(2),
-		},
 		menu: {
 			'& .MuiListItem-dense:focus': {
 				outline: 'transparent !important',
