@@ -1,8 +1,14 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import light from './theme';
 
 const Options: React.FunctionComponent = () => {
+	const appliedTheme = createMuiTheme(light);
+	
 	return (
-		<div>Options Main page</div>
+		<ThemeProvider theme={appliedTheme}>
+			<div>Options Main page</div>
+		</ThemeProvider>
 	);
 };
 
