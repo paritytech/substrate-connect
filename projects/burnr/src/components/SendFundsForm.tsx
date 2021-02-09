@@ -1,10 +1,13 @@
-import React, { MouseEvent } from 'react';
+import React, { MouseEvent, useContext } from 'react';
+import { AccountContext } from '../utils/contexts';
 
 import { InputAddress, InputFunds } from '../components';
 import { makeStyles, createStyles, Theme, Grid, Button } from '@material-ui/core';
+import { useBalance } from '../hooks'
 
 const useStyles = makeStyles((theme: Theme) =>
-	createStyles({
+	{
+		return createStyles({
 		container: {
 			marginTop: theme.spacing(3),
 		},
@@ -19,11 +22,15 @@ const useStyles = makeStyles((theme: Theme) =>
 				color: theme.palette.getContrastText(theme.palette.secondary.dark),
 			},
 		},
-	})
+	})}
 );
 
 const SendFundsForm: React.FunctionComponent = () => {
 	const classes = useStyles();
+    const { account } = useContext(AccountContext);
+	const balanceArr = useBalance(account.userAddress)
+	const amount = parseFloat(balanceArr[0]);
+	const unit = balanceArr[3];
 
 	function handleSubmit(e: MouseEvent) {
 		e.preventDefault();
@@ -41,8 +48,8 @@ const SendFundsForm: React.FunctionComponent = () => {
 			</Grid>
 			<Grid item>
 				<InputFunds 
-					total={100}
-					currency={'KSM'}
+					total={amount}
+					currency={unit}
 				/>
 			</Grid>
 			<Grid

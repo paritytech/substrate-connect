@@ -33,6 +33,7 @@
     "@polkadot/util": "^5.5.2",
     "@polkadot/util-crypto": "^5.5.2",
     "@substrate/connect": "0.0.1",
+    "qrcode.react": "^1.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-is": "^17.0.1",
@@ -44,6 +45,7 @@
   "devDependencies": {
     "@material-ui/types": "^5.1.0",
     "@types/node": "^14.14.22",
+    "@types/qrcode.react": "^1.0.1",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",

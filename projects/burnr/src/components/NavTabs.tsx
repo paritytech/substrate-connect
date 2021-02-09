@@ -7,7 +7,7 @@ import CallReceivedSharpIcon from '@material-ui/icons/CallReceivedSharp';
 import WhatshotSharpIcon from '@material-ui/icons/WhatshotSharp';
 
 import { HistoryTable, AccountMenu, AccountBurn } from './index';
-import SendFundsForm from './SendFundsForm';
+import { SendFundsForm, ReceiveFundsForm } from '.';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -90,6 +90,7 @@ const NavTabs: React.FunctionComponent = () => {
 					<Typography variant='h2'>
 						Receive Funds
 					</Typography>
+					<ReceiveFundsForm />
 					{/*  TO-DO:
 						Need to create the <ReceiveFundsFrom />
 						Needs some more brainstorming/research on what will be put here
