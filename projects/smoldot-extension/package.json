@@ -1,5 +1,5 @@
 {
-  "name": "smoldot-extension",
+  "name": "@substrate/smoldot-extension",
   "version": "0.0.1",
   "description": "Browser extension to manage substrate-based blockchain light clients",
   "main": "index.js",
