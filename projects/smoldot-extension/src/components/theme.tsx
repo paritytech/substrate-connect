@@ -1,5 +1,14 @@
 import { ThemeOptions } from '@material-ui/core/styles';
 
+export const substrateGreen = {
+  100: '#7E8D96',
+  200: '#5CFFC8',
+  300: '#18FFB2',
+  400: '#16DB9A',
+  500: '#11B37C',
+  600: '#1A9A6C',
+};
+
 const light: ThemeOptions = {
 	typography: {
 		fontFamily: '\Inter\, \-apple-system\, \BlinkMacSystemFont\, \Segoe UI\, \Helvetica\, \Arial\, \Segoe UI\, \Arial\, sans-serif, \"Apple Color Emoji"\, \"Segoe UI Emoji"',
