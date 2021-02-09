@@ -1,0 +1,29 @@
+{
+  "name": "smoldot-extension",
+  "version": "0.0.1",
+  "description": "Browser extension to manage substrate-based blockchain light clients",
+  "main": "index.js",
+  "author": "Parity Technologies",
+  "license": "Apache-2.0",
+  "browserslist": [
+    "last 2 versions"
+  ],
+  "staticFiles": {
+    "staticPath": "src/assets"
+  },
+  "scripts": {
+    "build": "parcel build src/popup.html src/background.ts src/content.ts --no-source-maps --public-url ./",
+    "dev": "parcel watch src/popup.html src/background.ts src/content.ts --public-url ./",
+    "test": "echo \"Warning: No test specified for smoldot-extension\""
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/chrome": "^0.0.129",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-static-files-copy": "^2.5.1",
+    "parcel-plugin-web-ext-tool": "^0.2.1",
+    "typescript": "^4.1.3",
+    "web-ext": "^5.5.0",
+    "webextension-polyfill-ts": "^0.24.0"
+  }
+}
