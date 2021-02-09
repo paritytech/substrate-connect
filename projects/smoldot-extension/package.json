@@ -9,11 +9,13 @@
     "last 2 versions"
   ],
   "staticFiles": {
-    "staticPath": "src/assets"
+    "staticPath": "src/assets",
+    "watcherGlob": "**"
   },
   "scripts": {
-    "build": "parcel build src/popup.html src/background.ts src/content.ts --no-source-maps --public-url ./",
-    "dev": "parcel watch src/popup.html src/background.ts src/content.ts --public-url ./",
+    "clean": "rm -rf dist",
+    "build": "yarn run clean && parcel build src/*.html src/background.ts src/content.ts --no-source-maps --public-url ./",
+    "dev": "yarn run clean && parcel watch src/*.html src/background.ts src/content.ts --public-url ./",
     "test": "echo \"Warning: No test specified for smoldot-extension\""
   },
   "private": true,
