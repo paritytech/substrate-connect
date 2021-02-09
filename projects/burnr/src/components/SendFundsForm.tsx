@@ -7,7 +7,6 @@ import { useBalance } from '../hooks'
 
 const useStyles = makeStyles((theme: Theme) =>
 	{
-		console.log(theme)
 		return createStyles({
 		container: {
 			marginTop: theme.spacing(3),
@@ -28,7 +27,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const SendFundsForm: React.FunctionComponent = () => {
 	const classes = useStyles();
-	console.log('classes0, 0', classes)
     const { account } = useContext(AccountContext);
 	const balanceArr = useBalance(account.userAddress)
 	const amount = parseFloat(balanceArr[0]);

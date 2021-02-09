@@ -17,7 +17,6 @@ const InputFunds: React.FunctionComponent<Props> = ({ total, currency, hidePerce
 		document.getElementById('SendFundsAmountField')!.focus();
 	};
 	const handleChange = (e: ChangeEvent) => {
-		console.log('e', e)
 		const value = parseInt((e.currentTarget as HTMLTextAreaElement).value);
 		!isNaN(value) && setValue(value);
 	};

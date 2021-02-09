@@ -3,8 +3,6 @@ import React, { useContext } from 'react';
 import { AccountContext } from '../utils/contexts';
 
 import QRCode from 'qrcode.react';
-// import { InputFunds } from '../components';
-// import { useBalance } from '../hooks'
 import { makeStyles, createStyles, Theme, Grid } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -17,24 +15,13 @@ const useStyles = makeStyles((theme: Theme) =>
 			marginTop: theme.spacing(3),
 			alignContent: 'center',
             justifyContent: 'center',
-		},
-        qr: {
-            color: theme.palette.getContrastText(theme.palette.secondary.main),
-            backgroundColor: theme.palette.getContrastText(theme.palette.secondary.dark)
-        },
-		button: {
-			color: theme.palette.getContrastText(theme.palette.secondary.main),
-			'&:hover': {
-				color: theme.palette.getContrastText(theme.palette.secondary.dark),
-			},
-		},
+		}
 	})
 );
   
 
 const ReceiveFundsForm: React.FunctionComponent = () => {
     const { account } = useContext(AccountContext);
-    // const balanceArr = useBalance(account.userAddress)
 	const classes = useStyles();
 	return (
 		<Grid
@@ -43,13 +30,6 @@ const ReceiveFundsForm: React.FunctionComponent = () => {
 			direction='column'
 			className={classes.container}
 		>
-			{/*<Grid item>
-				<InputFunds
-                    hidePercentages
-					total={100}
-					currency={ballanceArr[3]}
-				/>
-            </Grid>*/}
 			<Grid
 				item
 				xs={12}
