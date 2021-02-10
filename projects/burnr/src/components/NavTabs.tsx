@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { Tabs, Tab, Typography, Box, Paper, Divider, makeStyles, Theme } from '@material-ui/core';
 import SwapHorizSharpIcon from '@material-ui/icons/SwapHorizSharp';
@@ -6,7 +6,11 @@ import CallMadeSharpIcon from '@material-ui/icons/CallMadeSharp';
 import CallReceivedSharpIcon from '@material-ui/icons/CallReceivedSharp';
 import WhatshotSharpIcon from '@material-ui/icons/WhatshotSharp';
 
-import { HistoryTable, AccountBurn } from './index';
+import { useLocalStorage } from '../hooks';
+import { AccountContext } from '../utils/contexts';
+import { createLocalStorageAccount } from '../utils/utils';
+
+import { HistoryTable } from './index';
 import { SendFundsForm, ReceiveFundsForm } from '.';
 
 interface TabPanelProps {
@@ -59,10 +63,14 @@ const TabPanel: React.FunctionComponent<TabPanelProps> = ({ children, value, ind
 const NavTabs: React.FunctionComponent = () => {
 	const classes = useStyles();
 	const [value, setValue] = React.useState(1);
+	const [endpoint] = useLocalStorage('endpoint');
+	const minEndpoint = endpoint?.split('-')[0]?.toLowerCase();
+	const { setCurrentAccount } = useContext(AccountContext);
 	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
 		if (newValue === 0) {
-			// TO-DO:
-			// AccountBurn();
+			localStorage.removeItem(minEndpoint);
+			const userTmp = createLocalStorageAccount();
+			setCurrentAccount(userTmp);
 			return
 		}
 		setValue(newValue);
