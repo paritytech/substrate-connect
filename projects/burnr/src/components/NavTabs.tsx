@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { Tabs, Tab, Typography, Box, Paper, Divider, makeStyles, Theme } from '@material-ui/core';
 import SwapHorizSharpIcon from '@material-ui/icons/SwapHorizSharp';
@@ -6,9 +6,12 @@ import CallMadeSharpIcon from '@material-ui/icons/CallMadeSharp';
 import CallReceivedSharpIcon from '@material-ui/icons/CallReceivedSharp';
 import WhatshotSharpIcon from '@material-ui/icons/WhatshotSharp';
 
-import { HistoryTable, AccountBurn } from './index';
+import { HistoryTable } from './index';
 import { SendFundsForm, ReceiveFundsForm } from '.';
 
+import { useApi, useBalance, useLocalStorage } from '../hooks';
+import { AccountContext } from '../utils/contexts';
+import { createLocalStorageAccount } from '../utils/utils';
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -59,10 +62,21 @@ const TabPanel: React.FunctionComponent<TabPanelProps> = ({ children, value, ind
 const NavTabs: React.FunctionComponent = () => {
 	const classes = useStyles();
 	const [value, setValue] = React.useState(1);
+
+	const api = useApi()
+	const [endpoint] = useLocalStorage('endpoint');
+	const minEndpoint = endpoint?.split('-')[0]?.toLowerCase();
+	const { account, setCurrentAccount } = useContext(AccountContext);
+	const balance = useBalance(account.userAddress);
+
 	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
 		if (newValue === 0) {
-			// TO-DO:
-			// AccountBurn();
+			if (!balance[2] && !window.confirm(`Burn keys from account with ${balance[0]} ${api.registry.chainTokens}?`)) {
+				return
+			}
+			localStorage.removeItem(minEndpoint);
+			const userTmp = createLocalStorageAccount();
+			setCurrentAccount(userTmp);
 			return
 		}
 		setValue(newValue);
