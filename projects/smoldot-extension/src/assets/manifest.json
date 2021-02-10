@@ -15,6 +15,7 @@
     "default_title": "Substrate Connect",
     "default_popup": "popup.html"
   },
+  "options_page": "options.html",
   "content_scripts": [{
     "js": ["content.js"],
     "matches": ["http://*/*", "https://*/*"],
