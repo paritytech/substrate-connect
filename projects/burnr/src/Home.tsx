@@ -5,7 +5,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import { AccountContext } from './utils/contexts';
 
-import { NavTabs, AccountCard, BalanceValue, Bg } from './components';
+import { NavTabs, AccountCard, BalanceValue, Bg, AccountMenu } from './components';
 
 import { useUserInfo, useBalance } from './hooks';
 
@@ -34,12 +34,19 @@ function Home ():  React.ReactElement {
 						<Grid item xs={6}>
 							{
 								userInfo?.address &&
-								<AccountCard
-									account={{
-										address: userInfo.address,
-										name: account?.userName
-									}}
-								/>
+								<Grid container wrap='nowrap' alignItems='center'>
+									<Grid item>
+										<AccountCard
+											account={{
+												address: userInfo.address,
+												name: account?.userName
+											}}
+										/>
+									</Grid>
+									<Grid item>
+										<AccountMenu />
+									</Grid>
+								</Grid>
 							}
 						</Grid>
 						<Grid item xs={6}>

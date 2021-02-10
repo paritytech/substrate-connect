@@ -6,7 +6,7 @@ import CallMadeSharpIcon from '@material-ui/icons/CallMadeSharp';
 import CallReceivedSharpIcon from '@material-ui/icons/CallReceivedSharp';
 import WhatshotSharpIcon from '@material-ui/icons/WhatshotSharp';
 
-import { HistoryTable, AccountMenu, AccountBurn } from './index';
+import { HistoryTable, AccountBurn } from './index';
 import { SendFundsForm, ReceiveFundsForm } from '.';
 
 interface TabPanelProps {
@@ -25,6 +25,19 @@ const useStyles = makeStyles((theme: Theme) => ({
 			height:'calc(100vh - 320px)',
 		},
 	},
+	tabBurn: {
+		'& svg, & .MuiTab-wrapper': {
+			color: theme.palette.error.main
+		}
+	},
+	rootTabs: {
+		'& .MuiTab-root': {
+			minHeight: theme.spacing(8),
+			padding: 0,
+			...theme.typography.overline,
+			lineHeight: 1
+		}
+	}
 }));
 
 const TabPanel: React.FunctionComponent<TabPanelProps> = ({ children, value, index, ...props }: TabPanelProps) => {
@@ -45,8 +58,13 @@ const TabPanel: React.FunctionComponent<TabPanelProps> = ({ children, value, ind
 
 const NavTabs: React.FunctionComponent = () => {
 	const classes = useStyles();
-	const [value, setValue] = React.useState(0);
+	const [value, setValue] = React.useState(1);
 	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+		if (newValue === 0) {
+			// TO-DO:
+			// AccountBurn();
+			return
+		}
 		setValue(newValue);
 	};
 
@@ -57,23 +75,18 @@ const NavTabs: React.FunctionComponent = () => {
 					value={value}
 					onChange={handleChange}
 					variant='fullWidth'
+					className={classes.rootTabs}
 				>
-					<Tab label="Account" icon={<WhatshotSharpIcon/>} style={{ minHeight: 64, paddingTop: 0 }} />
-					<Tab label="History" icon={<SwapHorizSharpIcon/>} style={{ minHeight: 64, paddingTop: 0 }}  />
-					<Tab label="Send" icon={<CallMadeSharpIcon/>} style={{ minHeight: 64, paddingTop: 0 }}  />
-					<Tab label="Receive" icon={<CallReceivedSharpIcon/>} style={{ minHeight: 64, paddingTop: 0 }}  />
+					<Tab label="Burn Account" icon={<WhatshotSharpIcon fontSize='small'/>} className={classes.tabBurn}/>
+					<Tab label="Receipts" icon={<SwapHorizSharpIcon fontSize='small'/>} />
+					<Tab label="Send" icon={<CallMadeSharpIcon fontSize='small'/>} />
+					<Tab label="Receive" icon={<CallReceivedSharpIcon fontSize='small'/>} />
 				</Tabs>
 			</Paper>
 
 			<Divider />
 
 			<Paper className={classes.root}>
-				<TabPanel value={value} index={0}>
-					<Typography variant='h2'>
-						Account Controls <AccountMenu />
-					</Typography>
-					<AccountBurn />
-				</TabPanel>
 				<TabPanel value={value} index={1}>
 					<Typography variant='h2'>
 						Transaction History
