@@ -14,8 +14,8 @@ interface Props {
 
 const AntSwitch: FunctionComponent<Props> = ({
         deactiveBorderColor='#BDBDBD',
-        deactiveBgColor='white',
-        deactiveColor = '#ccc',
+        deactiveBgColor='#E0E0E0',
+        deactiveColor = '#FCFCFC',
         activeBorderColor = '#FCFCFC',
         activeBgColor = '#16DB9A',
         activeColor='#FCFCFC',
