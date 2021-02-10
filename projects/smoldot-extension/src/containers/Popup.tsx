@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createMuiTheme, ThemeProvider, Grid } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import GlobalFonts from '../assets/fonts/fonts';
@@ -26,11 +26,11 @@ const Popup: React.FunctionComponent = () => {
                     alignItems='center'
                     style={{ margin: '15px 0'}}>
                         <h2 style={{ margin: '0' }}>Burnr</h2>
-                        <AntSwitch
-                            />
+                        <AntSwitch />
                 </Grid>
                 <Grid item xs={12}>
                     <div>is connected to <PolkaFont>polkadot</PolkaFont> and <PolkaFont>kusama</PolkaFont></div>
+                    <AntSwitch size='s'/>
                 </Grid>
                 <Grid item xs={12}>
                     <div  style={{
