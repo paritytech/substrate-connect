@@ -1,0 +1,20 @@
+{
+  "name": "@substrate/smoldot-test-utils",
+  "version": "0.1.0",
+  "description": "Testing utilities for smoldot",
+  "main": "dist/index.js",
+  "type": "module",
+  "repository": "https://github.com/paritytech/substrate-connect",
+  "author": "Parity Team <admin@parity.io>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "clean": "rm -rf dist/",
+    "build": "tsc",
+    "test": "echo \"No tests for smoldot-test-utils\"",
+    "postinstall": "yarn build"
+  },
+  "dependencies": {
+    "sinon": "^9.2.4",
+    "smoldot": "^0.1.11"
+  }
+}
