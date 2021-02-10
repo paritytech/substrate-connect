@@ -10208,7 +10208,7 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-smoldot@^0.1.11, smoldot@latest:
+smoldot@^0.1.11:
   version "0.1.11"
   resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.1.11.tgz#890cfbadb790148f2df9b63be676c9035066f2bb"
   integrity sha512-983NvZXYa49fJ+GFy/bsUV7w/h0idRsS73mFuuHATCFH1rR4xCPkg+IL1IFtQpb4oTcG09rL28ItpAkwoijnNA==
