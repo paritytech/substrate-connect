@@ -22,8 +22,7 @@ const Logo: React.FunctionComponent = () => {
 	return (
 		<Typography variant='h4' className={classes.root}>
 			substrate
-			<span className='green'>_</span>
-			<br/>
+			<span className='green'>_</span>&nbsp;
 			<span className='lighter'>connect</span>
 		</Typography>
 	);

@@ -5,7 +5,7 @@ import { Paper, CircularProgress } from '@material-ui/core';
 import { ApiContext, AccountContext } from './utils/contexts';
 import { LocalStorageAccountCtx } from './utils/types';
 import { useApiCreate, useLocalStorage } from './hooks';
-import { createLocalStorageAccount } from './utils/utils';
+import { createLocalStorageAccount, isEmpty } from './utils/utils';
 
 import Home from './Home';
 
@@ -38,8 +38,6 @@ const useStyles = makeStyles(theme => ({
 		marginTop: '10vh',
 	},
 }));
-
-const isEmpty = (obj: any): boolean => (Object.keys(obj).length === 0 && obj.constructor === Object)
 
 const App: React.FunctionComponent<Props> = ({ className }: Props) => {
 	const api = useApiCreate();
