@@ -42,7 +42,7 @@ const AntSwitch: FunctionComponent<Props> = ({
                 "& + $track": {
                     opacity: 1,
                     border: `1px solid ${activeBorderColor}`,
-                    backgroundColor: activeBgColor, // background color of switch active
+                    backgroundColor: activeBgColor,
                     borderColor: activeColor
                 }
             }

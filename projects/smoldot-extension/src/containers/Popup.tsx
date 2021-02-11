@@ -5,6 +5,7 @@ import GlobalFonts from '../assets/fonts/fonts';
 import { light, PolkaFont, AntSwitch, NodeArea, TabInfo } from '../components';
 import { NetworkEnum, isEmpty } from '../utils/utils';
 
+// MOCK DATA for filed tabs
 const tabs = {
     kusama: {
         "url.net/kusama": true,
@@ -23,6 +24,7 @@ const tabs = {
     }
 }
 
+// MOCK DATA for empty tabs
 // const tabs = {
 //     kusama: {},
 //     polkadot: {},
