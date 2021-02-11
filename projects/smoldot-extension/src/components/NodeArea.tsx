@@ -10,14 +10,16 @@ interface Props {
 const NodeArea: FunctionComponent<Props> = ({ network, children }) => {
     
     return (
-        <Grid container spacing={3}>
+        <Grid container item justify="center" spacing={1}>
             <Grid item xs={2}>
                 <PolkaFont size={'15'}>{network}</PolkaFont>
             </Grid>
             <Grid item xs={10}>
                 <h4 style={{margin: 0}}>{capitalizeFirstLetter(network)}</h4>
             </Grid>
-            <div>{children}</div>
+            <Grid container item spacing={1}>
+                {children}
+            </Grid>
         </Grid>
     );
 }

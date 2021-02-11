@@ -3,6 +3,7 @@ import { Switch } from '@material-ui/core';
 import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 interface Props {
+    isActive?: boolean;
     activeColor?: string;
     activeBgColor?: string;
     activeBorderColor?: string;    
@@ -13,6 +14,7 @@ interface Props {
 }
 
 const AntSwitch: FunctionComponent<Props> = ({
+        isActive = true,
         deactiveBorderColor='#BDBDBD',
         deactiveBgColor='#E0E0E0',
         deactiveColor = '#FCFCFC',
@@ -21,7 +23,7 @@ const AntSwitch: FunctionComponent<Props> = ({
         activeColor='#FCFCFC',
         size='m'
     }) => {
-    const [extConnect, setExtConnect] = useState(true);
+    const [extConnect, setExtConnect] = useState(isActive);
     const ASwitch = withStyles((theme: Theme) =>
         createStyles({
         root: {
