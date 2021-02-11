@@ -5,15 +5,16 @@ interface Props {
     size?: string;
 }
 
+const PFont = styled.div<Props>`
+    font-family: 'Font Name';
+    font-size: ${props => props.size || '13'}px;
+    display: contents;
+`;
+
 const PolkaFont: FunctionComponent<Props> = ({ size, children }) => {
-    const PFont = styled.div`
-        font-family: 'Font Name';
-        font-size: ${size || '13'}px;
-        display: contents;
-    `;
 
     return (
-        <PFont>{children}</PFont>
+        <PFont size={size}>{children}</PFont>
     );
 }
 

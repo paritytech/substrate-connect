@@ -54,7 +54,7 @@ interface NodeProps {
 
 const NodeRow: React.FC<NodeProps> = ({ nodeEnum, network }): ReactElement => (
     <NodeArea network={nodeEnum}>
-        {!isEmpty(network) && (<TabInfo tabs={network} />)}
+        {!isEmpty(network) && (<TabInfo key={nodeEnum} tabs={network} />)}
     </NodeArea>
 )
 
@@ -90,7 +90,7 @@ const Popup: React.FunctionComponent = () => {
                     </Grid>
                     <Grid item xs={12}>
                         {counter > 0 ?
-                            (<div>is connected to {foundNetworks.map(v => (<PolkaFont>{v}</PolkaFont>))}.</div>) :
+                            (<div>is connected to {foundNetworks.map(v => (<PolkaFont key={v}>{v}</PolkaFont>))}.</div>) :
                             (<h3 className={classes.margin0}>no web3 apps.</h3>)
                         }
                     </Grid>

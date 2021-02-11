@@ -14,14 +14,14 @@ const TabInfo: FunctionComponent<Props> = ({ size = 's', tabs = {} }) => (
         </Grid>
         <Grid container item justify="flex-start" spacing={1}>
             {Object.entries(tabs).map((v, k) => (
-                <>
-                    <Grid item xs={10}>
+                <Grid container key={k + '0_' + v[0]}>
+                    <Grid key={k + '1_' + v[0]} item xs={10}>
                         {v[0]} - {v[1] ? 'active' : 'inactive'}
                     </Grid>
-                    <Grid item xs={1}>
+                    <Grid key={k + '2_' + v[0]} item xs={1}>
                         <AntSwitch size={size} isActive={v[1]}/>
                     </Grid>
-                </>
+                </Grid>
             ))}
         </Grid>
     </Grid>
