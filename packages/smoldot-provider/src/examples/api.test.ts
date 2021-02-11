@@ -1,16 +1,22 @@
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { readFile } from 'fs/promises';
 import anyTest, {TestInterface} from 'ava';
 import { ApiPromise } from '@polkadot/api';
 import {SmoldotProvider} from '../';
-import westend_specs from './westend_specs';
 import {logger} from '@polkadot/util';
 import { FsDatabase } from '../FsDatabase';
+
+// polyfill for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const l = logger('examples');
 
 const test = anyTest as TestInterface<{api: ApiPromise}>;
 
 test.before('Create a smoldot client', async t => {
-  const chainSpec = JSON.stringify(westend_specs());
+  const chainSpec = await readFile(join(__dirname, 'westend.json'), 'utf-8');
   const database = new FsDatabase('test');
   const provider = new SmoldotProvider(chainSpec, database);
   await provider.connect();
