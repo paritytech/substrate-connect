@@ -10235,6 +10235,16 @@ smoldot@^0.1.11:
     randombytes "^2.1.0"
     websocket "^1.0.32"
 
+smoldot@latest:
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.1.12.tgz#ff73d718cb3cd6d194232050547d4f54fdfe5389"
+  integrity sha512-cUpe8V7SRUtaQvpEi82/QpvdNb6KdcE7hvTcSJ7ZE8TvTOugutEeu+a5XBbS6rXMqXjbxgTDzEGEebCdegwo2g==
+  dependencies:
+    buffer "^6.0.1"
+    performance-now "^2.1.0"
+    randombytes "^2.1.0"
+    websocket "^1.0.32"
+
 snapdragon-node@^2.0.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/snapdragon-node/-/snapdragon-node-2.1.1.tgz#6c175f86ff14bdb0724563e8f3c1b021a286853b"
@@ -10658,7 +10668,7 @@ strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
 
-styled-components@^5, styled-components@^5.2.1:
+styled-components@^5.2.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-5.2.1.tgz#6ed7fad2dc233825f64c719ffbdedd84ad79101a"
   integrity sha512-sBdgLWrCFTKtmZm/9x7jkIabjFNVzCUeKfoQsM6R3saImkUnjx0QYdLwJHBjY9ifEcmjDamJDVfknWm1yxZPxQ==
