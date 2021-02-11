@@ -10,7 +10,7 @@ It also provides an interface that enables Dapp developers to effortlessly make 
 
 ### **Multiple building blocks on different levels are necessary to achieve this:**
 
-1. **Ready-to-use Substrate Wasm Light-Clients** to be executed in the browser**.** They are part of the Substrate framework and with that, available for every Substrate based project. If developers want to generate a light client of their chain, all it takes is just one command to compile a library that contains everything that's needed to run a light client in the browser.
+1. **Ready-to-use Substrate Wasm Light-Clients** to be executed in the browser. They are part of the Substrate framework and with that, available for every Substrate based project. If developers want to generate a light client of their chain, all it takes is just one command to compile a library that contains everything that's needed to run a light client in the browser.
 
 2) A **node module that bundles the light-clients** of different chains. It provides an interface that allows developers to run light nodes of different chains and to add runtimes and genesis configs of their own chain.
 
