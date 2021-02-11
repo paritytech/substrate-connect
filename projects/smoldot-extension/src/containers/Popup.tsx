@@ -36,7 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             minWidth: '240px',
-            height: '500px',
+            height: 'auto',
+            displau: 'flex'
         },
         margin0: {
             margin: '0'

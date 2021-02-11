@@ -6,7 +6,7 @@ interface Props {
 }
 
 const PFont = styled.div<Props>`
-    font-family: 'Font Name';
+    font-family: 'PolkaFont';
     font-size: ${props => props.size || '13'}px;
     display: contents;
 `;
