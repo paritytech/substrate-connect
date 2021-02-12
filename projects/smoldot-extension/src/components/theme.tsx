@@ -56,7 +56,7 @@ const light: ThemeOptions = {
 		allVariants: {
       color: palette.text.primary,
     },
-		fontFamily: '\Inter\, \-apple-system\, \BlinkMacSystemFont\, \Segoe UI\, \Helvetica\, \Arial\, \Segoe UI\, \Arial\, sans-serif, \"Apple Color Emoji"\, \"Segoe UI Emoji"',
+		fontFamily: '\Inter\, \-apple-system\, \BlinkMacSystemFont\, \Segoe UI\, \Helvetica\, \Arial\, \Segoe UI\, \Arial\, sans-serif, \"Apple Color Emoji"\, \"Segoe UI Emoji",\"Web3-Regular"',
 		h1: {
 			fontWeight: 500,
 			fontSize: 30,
