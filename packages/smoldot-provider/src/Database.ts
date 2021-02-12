@@ -26,7 +26,6 @@ const named = (chain: string): string => {
   return `${pkg.name}.${chain}`;
 }
 
-// REM: Don't know how to make typescript happy. This doesn't work: // let create: (name: string) => Database | undefined = undefined;
 let create: (name: string) => Database;
 
 // We dont want to force our users into webpack5 / babel
