@@ -41,14 +41,14 @@ const palette = {
 	},
 	text: {
 		primary: grey[900],
-		secondary: grey[400],
+		secondary: grey[500],
 		disabled: grey[300],
 		hint: grey[700],
 	},
 	action: {
 		active: substrateGreen[300],
 	},
-	divider: 'black',
+	divider: grey[300],
 }
 
 const light: ThemeOptions = {

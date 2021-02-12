@@ -97,16 +97,15 @@ const Popup: React.FunctionComponent = () => {
                 {counter && 
                     <Input className={classes.searchRoot} fullWidth placeholder="Search by network, uApp or url" />
                 }
-                <Grid container spacing={1}>
-                    <NodeRow nodeEnum={NetworkEnum.kusama} network={kusama} />
-                    <NodeRow nodeEnum={NetworkEnum.polkadot} network={polkadot} />
-                    <NodeRow nodeEnum={NetworkEnum.westend} network={westend} />
-                    <NodeRow nodeEnum={NetworkEnum.kulupu} network={kulupu} />
-                    
-                    <Button fullWidth>All Nodes</Button>
-                    <Button fullWidth>Url to uApps list</Button>
-                    <Button fullWidth>Stop all connections</Button>
-                </Grid>
+                
+                <NodeRow nodeEnum={NetworkEnum.kusama} network={kusama} />
+                <NodeRow nodeEnum={NetworkEnum.polkadot} network={polkadot} />
+                <NodeRow nodeEnum={NetworkEnum.westend} network={westend} />
+                <NodeRow nodeEnum={NetworkEnum.kulupu} network={kulupu} />
+                
+                <Button fullWidth>All Nodes</Button>
+                <Button fullWidth>Url to uApps list</Button>
+                <Button fullWidth>Stop all connections</Button>
             </div>
         </ThemeProvider>
 	);
