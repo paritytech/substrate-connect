@@ -47,7 +47,7 @@ window.onload = () => {
         return new Promise<void>((resolve, reject) => {
           setInterval(() => {
             api.rpc.system.health().then(health => {
-              if (!health.isSyncing) {
+              if (health.isSyncing.eq(false)) {
                 ui.showSynced();
                 if (!resolved) {
                   resolved = true;
