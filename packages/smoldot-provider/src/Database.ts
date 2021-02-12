@@ -1,5 +1,23 @@
 import * as pkg from '../package.json';
 
+let create: (name: string) => Database;
+
+// We dont want to force our users into webpack5 / babel
+// This IIFE simulates top level await in the browser
+// https://github.com/tc39/proposal-top-level-await
+(async () => {
+  let db: any;
+
+  if (typeof window === 'object') {
+    db  = await import('./BrowserDatabase');
+  } else {
+    db  = await import('./FsDatabase');
+  }
+
+  create = db.create;
+})();
+
+
 /**
  * @name Database
  *
@@ -25,23 +43,6 @@ export interface Database {
 const named = (chain: string): string => {
   return `${pkg.name}.${chain}`;
 }
-
-let create: (name: string) => Database;
-
-// We dont want to force our users into webpack5 / babel
-// This IIFE simulates top level await in the browser
-// https://github.com/tc39/proposal-top-level-await
-(async () => {
-  let db: any;
-
-  if (typeof window === 'object') {
-    db  = await import('./BrowserDatabase');
-  } else {
-    db  = await import('./FsDatabase');
-  }
-
-  create = db.create;
-})();
 
 /**
  * @name database
