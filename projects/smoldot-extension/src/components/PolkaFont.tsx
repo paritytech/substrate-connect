@@ -6,7 +6,7 @@ interface Props {
 }
 
 const PFont = styled.div<Props>`
-    font-family: 'PolkaFont';
+    font-family: 'Web3-Regular';
     font-size: ${props => props.size || '13'}px;
     display: contents;
 `;
