@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { createMuiTheme, ThemeProvider, Input, Button, Typography, Box } from '@material-ui/core';
-import GlobalFonts from '../assets/fonts/fonts';
+import GlobalFonts from '../fonts/fonts';
 import { light, IconWeb3, NodeArea, TabInfo } from '../components';
 import { NetworkEnum } from '../utils/enums';
 import { isEmpty } from '../utils/utils';

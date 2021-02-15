@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { Box, Typography, Divider } from '@material-ui/core';
-import { PolkaFont } from '../components';
+import { IconWeb3 } from '../components';
 import { NetworkTypes } from '../utils/types';
 import { capitalizeFirstLetter } from '../utils/utils';
 
@@ -12,7 +12,7 @@ const NodeArea: FunctionComponent<Props> = ({ network, children }) => (
     <>
         <Box mb={1} mt={1}>
             <Typography variant='h4' gutterBottom>
-                <PolkaFont>{network}</PolkaFont>
+                <IconWeb3>{network}</IconWeb3>
                 {capitalizeFirstLetter(network)}
             </Typography>
             {children}
