@@ -3,7 +3,8 @@ import { createMuiTheme, ThemeProvider, Grid, Input, Button, ButtonGroup } from 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import GlobalFonts from '../assets/fonts/fonts';
 import { light, PolkaFont, AntSwitch, NodeArea, TabInfo } from '../components';
-import { NetworkEnum, isEmpty } from '../utils/utils';
+import { NetworkEnum } from '../utils/enums';
+import { isEmpty } from '../utils/utils';
 
 // MOCK DATA for filed tabs
 const tabs = {
