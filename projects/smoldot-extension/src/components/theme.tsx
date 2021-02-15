@@ -1,4 +1,5 @@
 import { ThemeOptions } from '@material-ui/core/styles';
+import { PaletteOptions } from '@material-ui/core/styles/createPalette';
 import grey from '@material-ui/core/colors/grey';
 import red from '@material-ui/core/colors/red';
 
@@ -11,7 +12,7 @@ export const substrateGreen = {
   600: '#1A9A6C',
 };
 
-const palette = {
+const palette: PaletteOptions = {
 	type: 'light',
 	common: {
 		black: 'black',
@@ -54,7 +55,7 @@ const palette = {
 const light: ThemeOptions = {
 	typography: {
 		allVariants: {
-      color: palette.text.primary,
+      color: palette.text && palette.text.primary,
     },
 		fontFamily: '\Inter\, \-apple-system\, \BlinkMacSystemFont\, \Segoe UI\, \Helvetica\, \Arial\, \Segoe UI\, \Arial\, sans-serif, \"Apple Color Emoji"\, \"Segoe UI Emoji",\"Web3-Regular"',
 		h1: {
