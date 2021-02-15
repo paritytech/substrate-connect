@@ -1,7 +1,8 @@
 import React, { FunctionComponent } from 'react';
 import { Grid } from '@material-ui/core';
 import { PolkaFont } from '../components';
-import { NetworkTypes, capitalizeFirstLetter } from '../utils/utils';
+import { NetworkTypes } from '../utils/types';
+import { capitalizeFirstLetter } from '../utils/utils';
 
 interface Props {
     network: NetworkTypes;
