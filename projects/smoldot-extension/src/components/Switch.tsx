@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
-import { Switch } from '@material-ui/core';
+import { Switch as MUISwitch } from '@material-ui/core';
 import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 interface Props {
@@ -13,14 +13,14 @@ interface Props {
     size?: 'small' | 'medium';
 }
 
-const AntSwitch: FunctionComponent<Props> = ({
+const Switch: FunctionComponent<Props> = ({
         isActive = true,
         size='small',
         ...props
     }) => {
     const [extConnect, setExtConnect] = useState(isActive);
 
-    const ASwitch = withStyles((theme: Theme) =>
+    const StyledSwitch = withStyles((theme: Theme) =>
         createStyles({
         root: {
             width: size === 'small' ? 15 : 38,
@@ -55,11 +55,11 @@ const AntSwitch: FunctionComponent<Props> = ({
             boxSizing: 'border-box',
         },
         })
-    )(Switch);
+    )(MUISwitch);
     
     return (
-        <ASwitch checked={extConnect} onChange={e => setExtConnect(e.target.checked)} />
+        <StyledSwitch checked={extConnect} onChange={e => setExtConnect(e.target.checked)} />
     );
 }
 
-export default AntSwitch;
+export default Switch;

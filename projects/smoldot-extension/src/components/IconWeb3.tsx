@@ -3,13 +3,13 @@ import styled from 'styled-components';
 
 // TODO: more icon-like props
 
-const PFont = styled.span`
+const Icon = styled.span`
     font-family: 'Web3-Regular' !important;
     letter-spacing: 0 !important;
     display: inline-block;
     margin-right: 0.2em;
 `;
 
-const PolkaFont: FunctionComponent = ({ children }) => <PFont> {children}</PFont>;
+const IconWeb3: FunctionComponent = ({ children }) => <Icon> {children}</Icon>;
 
-export default PolkaFont;
+export default IconWeb3;
