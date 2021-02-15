@@ -3,7 +3,7 @@ import { Grid, Typography } from '@material-ui/core';
 import { AntSwitch } from './';
 
 interface Props {
-    size?: string;
+    size?: 'small' | 'medium';
     tabs?: object;
 }
 
@@ -11,7 +11,7 @@ interface Props {
 // each uApp will be associated with one url
 // if the same uApp, or uApp with the same title will be opened in >1 tab, it's ok to duplicate it on the UI too
 
-const TabInfo: FunctionComponent<Props> = ({ size = 's', tabs = {} }) => (
+const TabInfo: FunctionComponent<Props> = ({ size = 'small', tabs = {} }) => (
     <>
         <Typography variant='body1'>uApp title</Typography>
         {Object.entries(tabs).map((v, k) => (

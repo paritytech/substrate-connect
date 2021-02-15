@@ -10,55 +10,50 @@ interface Props {
     deactiveColor?: string;
     deactiveBgColor?: string;
     deactiveBorderColor?: string;
-    size?: string;
+    size?: 'small' | 'medium';
 }
 
 const AntSwitch: FunctionComponent<Props> = ({
         isActive = true,
-        deactiveBorderColor='#BDBDBD',
-        deactiveBgColor='#E0E0E0',
-        deactiveColor = '#FCFCFC',
-        activeBorderColor = '#FCFCFC',
-        activeBgColor = '#16DB9A',
-        activeColor='#FCFCFC',
-        size='m'
+        size='small',
+        ...props
     }) => {
     const [extConnect, setExtConnect] = useState(isActive);
+
     const ASwitch = withStyles((theme: Theme) =>
         createStyles({
         root: {
-            width: size === 's' ? 20 : 28,
-            height: size === 's' ? 10 : 16,
+            width: size === 'small' ? 15 : 38,
+            height: size === 'small' ? 8 : 18,
             padding: 0,
             display: "flex",
             overflow: "inherit"
         },
         switchBase: {
-            padding: size === 's' ? 1 : 2,
-            color: deactiveColor,
-            "&$checked": {
-                transform: "translateX(10px)",
-                color: activeColor,
-                "& + $track": {
+            padding: 1,
+            color: props.deactiveColor || theme.palette.common.white,
+            '&.Mui-checked': {
+                transform: size === 'small' ? 'translateX(7px)' : 'translateX(20px)',
+                color: props.activeColor || theme.palette.common.white,
+                '& + $track': {
                     opacity: 1,
-                    border: `1px solid ${activeBorderColor}`,
-                    backgroundColor: activeBgColor,
-                    borderColor: activeColor
+                    border: `1px solid ${props.activeBorderColor || theme.palette.primary.main}`,
+                    backgroundColor: props.activeBgColor || theme.palette.primary.main,
                 }
             }
         },
         thumb: {
-            width: size === 's' ? 10 : 14,
-            height: size === 's' ? 10 : 14,
+            width: size === 'small' ? 6 : 16,
+            height: size === 'small' ? 6 : 16,
             boxShadow: "none"
         },
         track: {
             borderRadius: 20,
             opacity: 1,
-            border: `1px solid ${deactiveBorderColor}`,
-            backgroundColor: deactiveBgColor
+            border: `1px solid ${props.deactiveBorderColor || theme.palette.grey[400]}`,
+            backgroundColor: props.deactiveBgColor || theme.palette.grey[300],
+            boxSizing: 'border-box',
         },
-        checked: {}
         })
     )(Switch);
     
