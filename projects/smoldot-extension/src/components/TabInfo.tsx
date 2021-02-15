@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { Grid, Typography } from '@material-ui/core';
-import { AntSwitch } from './';
+import { Switch } from './';
 
 interface Props {
     size?: 'small' | 'medium';
@@ -23,7 +23,7 @@ const TabInfo: FunctionComponent<Props> = ({ size = 'small', tabs = {} }) => (
                 >
                     {v[0]}
                 </Typography>
-                <AntSwitch size={size} isActive={v[1]}/>
+                <Switch size={size} isActive={v[1]}/>
             </Grid>
 
         ))}

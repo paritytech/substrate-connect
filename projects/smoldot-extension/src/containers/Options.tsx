@@ -1,7 +1,7 @@
 import React from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
-import { light, PolkaFont } from '../components/';
-import GlobalFonts from '../assets/fonts/fonts';
+import { light, IconWeb3 } from '../components/';
+import GlobalFonts from '../fonts/fonts';
 import { Logo } from '.';
 
 const Options: React.FunctionComponent = () => {
@@ -11,7 +11,7 @@ const Options: React.FunctionComponent = () => {
 		<ThemeProvider theme={appliedTheme}>
         	<GlobalFonts />
 			<Logo />
-			<PolkaFont>polkadot kusama</PolkaFont>
+			<IconWeb3>polkadot kusama</IconWeb3>
 			<div>Options Main page</div>
 		</ThemeProvider>
 	);
