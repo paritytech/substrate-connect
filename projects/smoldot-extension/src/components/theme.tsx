@@ -1,4 +1,7 @@
 import { ThemeOptions } from '@material-ui/core/styles';
+import { PaletteOptions } from '@material-ui/core/styles/createPalette';
+import grey from '@material-ui/core/colors/grey';
+import red from '@material-ui/core/colors/red';
 
 export const substrateGreen = {
   100: '#7E8D96',
@@ -9,9 +12,52 @@ export const substrateGreen = {
   600: '#1A9A6C',
 };
 
+const palette: PaletteOptions = {
+	type: 'light',
+	common: {
+		black: 'black',
+		white: 'white',
+	},
+	background: {
+		paper: 'white',
+		default: 'white',
+	},
+	primary: {
+		light: substrateGreen[100],
+		main: substrateGreen[400],
+		dark: substrateGreen[500],
+		contrastText: 'black',
+	},
+	secondary: {
+		light: substrateGreen[100],
+		main: substrateGreen[400],
+		dark: substrateGreen[500],
+		contrastText: 'black',
+	},
+	error: {
+		light: red[100],
+		main: red[400],
+		dark: red[500],
+		contrastText: 'black',
+	},
+	text: {
+		primary: grey[900],
+		secondary: grey[500],
+		disabled: grey[300],
+		hint: grey[700],
+	},
+	action: {
+		active: substrateGreen[300],
+	},
+	divider: grey[300],
+}
+
 const light: ThemeOptions = {
 	typography: {
-		fontFamily: '\Inter\, \-apple-system\, \BlinkMacSystemFont\, \Segoe UI\, \Helvetica\, \Arial\, \Segoe UI\, \Arial\, sans-serif, \"Apple Color Emoji"\, \"Segoe UI Emoji"',
+		allVariants: {
+      color: palette.text && palette.text.primary,
+    },
+		fontFamily: '\Inter\, \-apple-system\, \BlinkMacSystemFont\, \Segoe UI\, \Helvetica\, \Arial\, \Segoe UI\, \Arial\, sans-serif, \"Apple Color Emoji"\, \"Segoe UI Emoji",\"Web3-Regular"',
 		h1: {
 			fontWeight: 500,
 			fontSize: 30,
@@ -71,6 +117,7 @@ const light: ThemeOptions = {
 			letterSpacing: 0.7,
 		},
 	},
+	palette: palette
 };
 
 export default light;

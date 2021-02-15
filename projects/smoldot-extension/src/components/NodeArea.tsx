@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { Grid } from '@material-ui/core';
+import { Box, Typography, Divider } from '@material-ui/core';
 import { PolkaFont } from '../components';
 import { NetworkTypes } from '../utils/types';
 import { capitalizeFirstLetter } from '../utils/utils';
@@ -9,17 +9,16 @@ interface Props {
 }
 
 const NodeArea: FunctionComponent<Props> = ({ network, children }) => (
-    <Grid container item justify="center" spacing={1}>
-        <Grid item xs={2}>
-            <PolkaFont size={'15'}>{network}</PolkaFont>
-        </Grid>
-        <Grid item xs={10}>
-            <h4 style={{margin: 0}}>{capitalizeFirstLetter(network)}</h4>
-        </Grid>
-        <Grid container item spacing={1}>
+    <>
+        <Box mb={1} mt={1}>
+            <Typography variant='h4' gutterBottom>
+                <PolkaFont>{network}</PolkaFont>
+                {capitalizeFirstLetter(network)}
+            </Typography>
             {children}
-        </Grid>
-    </Grid>
+        </Box>
+        <Divider />
+    </>
 );
 
 export default NodeArea;

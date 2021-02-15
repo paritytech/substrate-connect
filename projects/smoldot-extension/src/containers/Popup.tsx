@@ -1,8 +1,7 @@
 import React, { ReactElement } from 'react';
-import { createMuiTheme, ThemeProvider, Grid, Input, Button, ButtonGroup } from '@material-ui/core';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider, Input, Button, Typography, Box } from '@material-ui/core';
 import GlobalFonts from '../assets/fonts/fonts';
-import { light, PolkaFont, AntSwitch, NodeArea, TabInfo } from '../components';
+import { light, IconWeb3, NodeArea, TabInfo } from '../components';
 import { NetworkEnum } from '../utils/enums';
 import { isEmpty } from '../utils/utils';
 
@@ -32,23 +31,6 @@ const tabs = {
 //     westend: {},
 //     kulupu: {}
 // }
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            minWidth: '240px',
-            height: 'auto',
-            displau: 'flex'
-        },
-        margin0: {
-            margin: '0'
-        },
-        marginTop15: {
-            margin: '15px 0'
-        }
-  }),
-);
-
 interface NodeProps {
     nodeEnum: NetworkEnum;
     network: object;
@@ -62,7 +44,6 @@ const NodeRow: React.FC<NodeProps> = ({ nodeEnum, network }): ReactElement => (
 
 const Popup: React.FunctionComponent = () => {
     const appliedTheme = createMuiTheme(light);
-    const classes = useStyles();
     /* this is kinda of how  the access is to chrome tabs */
     // chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT}, 
     // (tabs) => {
@@ -85,38 +66,30 @@ const Popup: React.FunctionComponent = () => {
 	return (
         <ThemeProvider theme={appliedTheme}>
             <GlobalFonts />
-            <div className={classes.root}>
-                <Grid container spacing={0}>
-                    <Grid item xs={12}>
-                        <h2 className={classes.margin0}>Substrate Connect</h2>
-                    </Grid>
-                    <Grid item xs={12}>
-                        {counter > 0 ?
-                            (<div>is connected to {foundNetworks.map(v => (<PolkaFont key={v}>{v}</PolkaFont>))}.</div>) :
-                            (<h3 className={classes.margin0}>no web3 apps.</h3>)
-                        }
-                    </Grid>
-                    {counter > 0  && (
-                        <Grid item xs={12}>
-                            <Input fullWidth placeholder="Search by network, uApp or url" />
-                        </Grid>
-                    )}
-                </Grid>
-                <Grid
-                    container
-                    spacing={3}
-                    className={classes.marginTop15}>
-                    <NodeRow nodeEnum={NetworkEnum.kusama} network={kusama} />
-                    <NodeRow nodeEnum={NetworkEnum.polkadot} network={polkadot} />
-                    <NodeRow nodeEnum={NetworkEnum.westend} network={westend} />
-                    <NodeRow nodeEnum={NetworkEnum.kulupu} network={kulupu} />
-                    <Grid container item xs={10}>
-                        <Button fullWidth>All Nodes</Button>
-                        <Button fullWidth>Url to uApps list</Button>
-                        <Button fullWidth>Stop all connections</Button>
-                    </Grid>
-                </Grid>
-            </div>
+
+            <Typography variant='h3'>Substrate Connect</Typography>
+            <Typography variant='body1'>
+            {counter 
+                ? <>is connected to {foundNetworks.map(v => (<IconWeb3 key={v}>{v}</IconWeb3>))}</>
+                : `no web3 apps`
+            }
+            </Typography>
+            {counter &&
+                <Box mt={1} mb={2}>
+                    <Input fullWidth placeholder="Search by network, uApp or url" />
+                </Box>
+            }
+            
+            <NodeRow nodeEnum={NetworkEnum.kusama} network={kusama} />
+            <NodeRow nodeEnum={NetworkEnum.polkadot} network={polkadot} />
+            <NodeRow nodeEnum={NetworkEnum.westend} network={westend} />
+            <NodeRow nodeEnum={NetworkEnum.kulupu} network={kulupu} />
+            
+            <Box mt={1}>
+                <Button fullWidth>All Nodes</Button>
+                <Button fullWidth>Url to uApps list</Button>
+                <Button fullWidth>Stop all connections</Button>
+            </Box>
         </ThemeProvider>
 	);
 };
