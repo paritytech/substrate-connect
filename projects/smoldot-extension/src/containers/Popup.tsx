@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { createMuiTheme, ThemeProvider, Grid, Input, Button, Typography } from '@material-ui/core';
+import { createMuiTheme, ThemeProvider, Input, Button, Typography } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import GlobalFonts from '../assets/fonts/fonts';
 import { light, PolkaFont, NodeArea, TabInfo } from '../components';
@@ -82,21 +82,15 @@ const Popup: React.FunctionComponent = () => {
         <ThemeProvider theme={appliedTheme}>
             <GlobalFonts />
             <div className={classes.root}>
-                <Grid container spacing={0}>
-                    <Grid item xs={12}>
-                        <Typography variant='h3'>Substrate Connect</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant='body1'>
-                        {counter 
-                            ? <>is connected to {foundNetworks.map(v => (<PolkaFont key={v}>{v}</PolkaFont>))}</>
-                            : `no web3 apps`
-                        }
-                        </Typography>
-                    </Grid>
-                </Grid>
+                <Typography variant='h3'>Substrate Connect</Typography>
+                <Typography variant='body1'>
+                {counter 
+                    ? <>is connected to {foundNetworks.map(v => (<PolkaFont key={v}>{v}</PolkaFont>))}</>
+                    : `no web3 apps`
+                }
+                </Typography>
                 {counter && 
-                    <Input className={classes.searchRoot} fullWidth placeholder="Search by network, uApp or url" />
+                <Input className={classes.searchRoot} fullWidth placeholder="Search by network, uApp or url" />
                 }
                 
                 <NodeRow nodeEnum={NetworkEnum.kusama} network={kusama} />
