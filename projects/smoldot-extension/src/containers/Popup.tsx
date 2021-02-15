@@ -1,8 +1,7 @@
 import React, { ReactElement } from 'react';
-import { createMuiTheme, ThemeProvider, Input, Button, Typography } from '@material-ui/core';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider, Input, Button, Typography, Box } from '@material-ui/core';
 import GlobalFonts from '../assets/fonts/fonts';
-import { light, PolkaFont, NodeArea, TabInfo } from '../components';
+import { light, IconWeb3, NodeArea, TabInfo } from '../components';
 import { NetworkEnum } from '../utils/enums';
 import { isEmpty } from '../utils/utils';
 
@@ -32,19 +31,6 @@ const tabs = {
 //     westend: {},
 //     kulupu: {}
 // }
-
-const useStyles = makeStyles((theme: Theme) => createStyles({
-    root: {
-        width: '100%',
-        height: 'auto',
-        displau: 'flex',
-    },
-    searchRoot: {
-        marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(2),
-    },
-}));
-
 interface NodeProps {
     nodeEnum: NetworkEnum;
     network: object;
@@ -58,7 +44,6 @@ const NodeRow: React.FC<NodeProps> = ({ nodeEnum, network }): ReactElement => (
 
 const Popup: React.FunctionComponent = () => {
     const appliedTheme = createMuiTheme(light);
-    const classes = useStyles();
     /* this is kinda of how  the access is to chrome tabs */
     // chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT}, 
     // (tabs) => {
@@ -81,27 +66,30 @@ const Popup: React.FunctionComponent = () => {
 	return (
         <ThemeProvider theme={appliedTheme}>
             <GlobalFonts />
-            <div className={classes.root}>
-                <Typography variant='h3'>Substrate Connect</Typography>
-                <Typography variant='body1'>
-                {counter 
-                    ? <>is connected to {foundNetworks.map(v => (<PolkaFont key={v}>{v}</PolkaFont>))}</>
-                    : `no web3 apps`
-                }
-                </Typography>
-                {counter && 
-                <Input className={classes.searchRoot} fullWidth placeholder="Search by network, uApp or url" />
-                }
-                
-                <NodeRow nodeEnum={NetworkEnum.kusama} network={kusama} />
-                <NodeRow nodeEnum={NetworkEnum.polkadot} network={polkadot} />
-                <NodeRow nodeEnum={NetworkEnum.westend} network={westend} />
-                <NodeRow nodeEnum={NetworkEnum.kulupu} network={kulupu} />
-                
+
+            <Typography variant='h3'>Substrate Connect</Typography>
+            <Typography variant='body1'>
+            {counter 
+                ? <>is connected to {foundNetworks.map(v => (<IconWeb3 key={v}>{v}</IconWeb3>))}</>
+                : `no web3 apps`
+            }
+            </Typography>
+            {counter &&
+                <Box mt={1} mb={2}>
+                    <Input fullWidth placeholder="Search by network, uApp or url" />
+                </Box>
+            }
+            
+            <NodeRow nodeEnum={NetworkEnum.kusama} network={kusama} />
+            <NodeRow nodeEnum={NetworkEnum.polkadot} network={polkadot} />
+            <NodeRow nodeEnum={NetworkEnum.westend} network={westend} />
+            <NodeRow nodeEnum={NetworkEnum.kulupu} network={kulupu} />
+            
+            <Box mt={1}>
                 <Button fullWidth>All Nodes</Button>
                 <Button fullWidth>Url to uApps list</Button>
                 <Button fullWidth>Stop all connections</Button>
-            </div>
+            </Box>
         </ThemeProvider>
 	);
 };
