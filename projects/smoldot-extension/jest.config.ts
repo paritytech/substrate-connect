@@ -2,9 +2,8 @@ import type { Config } from '@jest/types';
 
 const config: Config.InitialOptions = {
   // The root of your source code, typically /src
-  // `<rootDir>` is a token Jest substitutes
   roots: ["<rootDir>/src"],
-    // Jest transformations -- this adds support for TypeScript
+  // Jest transformations -- this adds support for TypeScript
   // using ts-jest
   transform: {
     "^.+\\.tsx?$": "ts-jest"
@@ -12,11 +11,7 @@ const config: Config.InitialOptions = {
   // Runs special logic, such as cleaning up components
   // when using React Testing Library and adds special
   // extended assertions to Jest
-  setupFilesAfterEnv: ['<rootDir>/jest-setup.ts'],
-  // setupFilesAfterEnv: [
-  //   "@testing-library/react/cleanup-after-each",
-  //   "@testing-library/jest-dom/extend-expect"
-  // ],
+  setupFilesAfterEnv: ['@testing-library/jest-dom'],
   // Test spec file resolution pattern
   // Matches parent folder `__tests__` and filename
   // should contain `test` or `spec`.
