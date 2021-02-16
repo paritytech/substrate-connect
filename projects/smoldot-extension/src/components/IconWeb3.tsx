@@ -10,6 +10,6 @@ const Icon = styled.span`
     margin-right: 0.2em;
 `;
 
-const IconWeb3: FunctionComponent = ({ children }) => <Icon> {children}</Icon>;
+const IconWeb3: FunctionComponent = ({ children }) => <Icon>{children}</Icon>;
 
 export default IconWeb3;

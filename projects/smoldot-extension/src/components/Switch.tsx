@@ -22,38 +22,38 @@ const Switch: FunctionComponent<Props> = ({
 
     const StyledSwitch = withStyles((theme: Theme) =>
         createStyles({
-        root: {
-            width: size === 'small' ? 15 : 38,
-            height: size === 'small' ? 8 : 18,
-            padding: 0,
-            display: "flex",
-            overflow: "inherit"
-        },
-        switchBase: {
-            padding: 1,
-            color: props.deactiveColor || theme.palette.common.white,
-            '&.Mui-checked': {
-                transform: size === 'small' ? 'translateX(7px)' : 'translateX(20px)',
-                color: props.activeColor || theme.palette.common.white,
-                '& + $track': {
-                    opacity: 1,
-                    border: `1px solid ${props.activeBorderColor || theme.palette.primary.main}`,
-                    backgroundColor: props.activeBgColor || theme.palette.primary.main,
+            root: {
+                width: size === 'small' ? 15 : 38,
+                height: size === 'small' ? 8 : 18,
+                padding: 0,
+                display: "flex",
+                overflow: "inherit"
+            },
+            switchBase: {
+                padding: 1,
+                color: props.deactiveColor || theme.palette.common.white,
+                '&.Mui-checked': {
+                    transform: size === 'small' ? 'translateX(7px)' : 'translateX(20px)',
+                    color: props.activeColor || theme.palette.common.white,
+                    '& + $track': {
+                        opacity: 1,
+                        border: `1px solid ${props.activeBorderColor || theme.palette.primary.main}`,
+                        backgroundColor: props.activeBgColor || theme.palette.primary.main,
+                    }
                 }
-            }
-        },
-        thumb: {
-            width: size === 'small' ? 6 : 16,
-            height: size === 'small' ? 6 : 16,
-            boxShadow: "none"
-        },
-        track: {
-            borderRadius: 20,
-            opacity: 1,
-            border: `1px solid ${props.deactiveBorderColor || theme.palette.grey[400]}`,
-            backgroundColor: props.deactiveBgColor || theme.palette.grey[300],
-            boxSizing: 'border-box',
-        },
+            },
+            thumb: {
+                width: size === 'small' ? 6 : 16,
+                height: size === 'small' ? 6 : 16,
+                boxShadow: "none"
+            },
+            track: {
+                borderRadius: 20,
+                opacity: 1,
+                border: `1px solid ${props.deactiveBorderColor || theme.palette.grey[400]}`,
+                backgroundColor: props.deactiveBgColor || theme.palette.grey[300],
+                boxSizing: 'border-box',
+            },
         })
     )(MUISwitch);
     
