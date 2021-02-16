@@ -3,7 +3,7 @@ import { render, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import 'jest-styled-components';
 
-import StatusCircle from '../components/StatusCircle'
+import StatusCircle from './StatusCircle'
 
 afterEach(cleanup);
 
