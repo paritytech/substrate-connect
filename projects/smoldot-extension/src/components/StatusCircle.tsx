@@ -8,23 +8,35 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
 
-interface Props {
-    size?: string;
+export interface Props {
+    size?: 'small' | 'medium' | 'large';
     color?: string;
     borderColor?: string;
 }
 
-const StatusCircle: FunctionComponent<Props> = ({ size, color, borderColor }) => {
-    const SCircle = styled.div`
-        width: ${size === 's' ? '5px' : (size === 'm' ? '10px' : (size === 'l' ? '15px' : '10px'))};
-        height: ${size === 's' ? '5px' : (size === 'm' ? '10px' : (size === 'l' ? '15px' : '10px'))};
-        border-radius: ${size === 's' ? '5px' : (size === 'm' ? '10px' : (size === 'l' ? '15px' : '10px'))};
-        border: 1px solid ${borderColor || '#000'};
-        background-color: ${color || '#fff'};
-        box-shadow: 0 0 5px 0px ${color || '#fff'};
+const SCircle = styled('div')<Props>`
+        width: ${props =>
+            props.size === 'small' ? '5px' :
+            (props.size === 'medium' ? '10px' :
+            (props.size === 'large' && '15px'))
+        };
+        height: ${props =>
+            props.size === 'small' ? '5px' :
+            (props.size === 'medium' ? '10px' :
+            (props.size === 'large' && '15px'))
+        };
+        border-radius: ${props =>
+            props.size === 'small' ? '5px' :
+            (props.size === 'medium' ? '10px' :
+            (props.size === 'large' && '15px'))
+        };
+        border: 1px solid ${props => props.borderColor || '#000'};
+        background-color: ${props => props.color || '#fff'};
+        box-shadow: 0 0 5px 0px ${props => props.color || '#fff'};
     `;
 
-    return (<SCircle />);
+const StatusCircle: FunctionComponent<Props> = ({ size='medium', color, borderColor }: Props) => {
+    return (<SCircle data-testid='circle' {...{size, color, borderColor}} />);
 }
 
 export default StatusCircle;

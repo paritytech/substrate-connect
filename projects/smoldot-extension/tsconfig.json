@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-	"jsx": "react",
+	  "jsx": "react",
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
     "outDir": "dist",
@@ -13,7 +13,8 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "module": "ES2015"
+    "module": "ES2015",
+    "esModuleInterop": true
   },
   "include": ["src"]
 }

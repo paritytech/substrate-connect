@@ -68,6 +68,15 @@ yarn dev:smoldot-browser-demo
 
 (Make sure to run `$ yarn install` before.)
 
+## Run local version of Smoldot Extension
+Running the following command will build all necessary dependencies and run the Smoldot Extension in development mode with hot reloading enabled. Once run a new (Chrome) browser will appear with the extension added.
+
+```bash
+yarn dev:smoldot-extension
+```
+
+(Make sure to run `$ yarn install` before.)
+
 ## Deploy Smoldot browser demo to Github Pages
 
 Before deploying make sure you have a clean working copy with no staged changes.
