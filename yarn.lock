@@ -13505,18 +13505,6 @@ web-ext@^5.5.0:
     yargs "15.4.1"
     zip-dir "1.0.2"
 
-webextension-polyfill-ts@^0.24.0:
-  version "0.24.0"
-  resolved "https://registry.yarnpkg.com/webextension-polyfill-ts/-/webextension-polyfill-ts-0.24.0.tgz#bd40232b5fa8cd3de6701bac6507904fe57e16ab"
-  integrity sha512-JUHpVzu8WeDVFsVeyzi1Hsd7N2ylKXMlQPAfpYGktzflzwFXlvqiA48UnaH5rmv/CTQEHI0T3qfK3wVBW6nbUA==
-  dependencies:
-    webextension-polyfill "^0.7.0"
-
-webextension-polyfill@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/webextension-polyfill/-/webextension-polyfill-0.7.0.tgz#0df1120ff0266056319ce1a622b09ad8d4a56505"
-  integrity sha512-su48BkMLxqzTTvPSE1eWxKToPS2Tv5DLGxKexLEVpwFd6Po6N8hhSLIvG6acPAg7qERoEaDL+Y5HQJeJeml5Aw==
-
 webidl-conversions@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.2.tgz#a855980b1f0b6b359ba1d5d9fb39ae941faa63ad"

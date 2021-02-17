@@ -11,7 +11,7 @@
     "tabs"
   ],
   "background": {
-    "scripts": ["background.js"],
+    "scripts": ["background/index.js"],
     "persistent": true
   },
   "browser_action": {

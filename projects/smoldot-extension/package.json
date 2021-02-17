@@ -14,8 +14,8 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "yarn run clean && parcel build src/*.html src/background.ts src/content.ts --no-source-maps --public-url ./",
-    "dev": "yarn run clean && parcel watch src/*.html src/background.ts src/content.ts --public-url ./",
+    "build": "yarn run clean && parcel build src/*.html src/background/index.ts src/content.ts --no-source-maps --public-url ./",
+    "dev": "yarn run clean && parcel watch src/*.html src/background/index.ts src/content.ts --public-url ./",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
