@@ -7,7 +7,7 @@ import {
     AccordionSummary,
     AccordionDetails } from '@material-ui/core';
 import { Switch, IconWeb3 } from '.';
-import { TabInterface, uApp, Networks } from '../utils/types';
+import { TabInterface, uApp, Networks } from '../types';
 
 interface TabProps {
     size?: 'small' | 'medium';

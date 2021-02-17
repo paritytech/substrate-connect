@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2
 import { useEffect, useState } from 'react';
-import { NetworkCtx, TabInterface } from '../utils/types';
+import { NetworkCtx, TabInterface } from '../types';
 
 const sampleNetworkCtx: TabInterface[] = [{
 	tabId: 0,

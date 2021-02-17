@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { Box, Typography, Divider } from '@material-ui/core';
 import { IconWeb3 } from '../components';
-import { NetworkTypes } from '../utils/types';
+import { NetworkTypes } from '../types';
 import { capitalizeFirstLetter } from '../utils/utils';
 
 interface Props {
