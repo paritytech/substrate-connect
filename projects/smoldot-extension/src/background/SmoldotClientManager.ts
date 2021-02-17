@@ -6,6 +6,13 @@ export class SmoldotClientManager {
   readonly #smoldots: SmoldotMediator[] = [];
   readonly #apps:  AppMediator[] = [];
 
+  constructor() {
+    chrome.runtime.onConnect.addListener(port => {
+      const { name } = port;
+      this.#apps.push(new AppMediator(name, port, this));
+    });
+  }
+
   get registedApps() {
     return this.#apps.map(a => a.name);
   }
@@ -61,12 +68,5 @@ export class SmoldotClientManager {
       const sm = new SmoldotMediator(name, sc);
 
       this.#smoldots.push(sm);
-  }
-
-  constructor() {
-    chrome.runtime.onConnect.addListener(port => {
-      const { name } = port;
-      this.#apps.push(new AppMediator(name, port, this));
-    });
   }
 }

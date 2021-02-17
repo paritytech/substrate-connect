@@ -22,6 +22,16 @@ export class AppMediator {
   readonly subscriptions: SubscriptionMapping[];
   readonly requests: MessageIDMapping[];
 
+  constructor(name: string, port: chrome.runtime.Port, manager: SmoldotClientManager) {
+    this.name = name;
+    this.subscriptions = [];
+    this.requests = [];
+    this.#port = port;
+    this.#manager = manager;
+    this.#port.onMessage.addListener(this.#handlePortMessage);
+    this.#port.onDisconnect.addListener(() => { this.#handleDisconnect(false) });
+  }
+
   #sendError = (message: string) => {
     const error: ExtensionMessage = { type: 'error', payload: message };
     this.#port.postMessage(error);
@@ -131,15 +141,5 @@ export class AppMediator {
     this.#state = 'disconnecting';
     // TODO: clean up subs
     // TODO: send disconnected message if it was requested 
-  }
-
-  constructor(name: string, port: chrome.runtime.Port, manager: SmoldotClientManager) {
-    this.name = name;
-    this.subscriptions = [];
-    this.requests = [];
-    this.#port = port;
-    this.#manager = manager;
-    this.#port.onMessage.addListener(this.#handlePortMessage);
-    this.#port.onDisconnect.addListener(() => { this.#handleDisconnect(false) });
   }
 }
