@@ -8,8 +8,10 @@ import {
 import { SmoldotClientManager } from './SmoldotClientManager';
 
 export class AppMediator {
-  readonly name: string;
+  readonly #name: string;
   readonly #port: chrome.runtime.Port;
+  readonly #tabId: number;
+  readonly #url: string;
   readonly #manager: SmoldotClientManager;
   #smoldotName: string | undefined  = undefined;
   #state: AppState = 'connected';
@@ -17,13 +19,31 @@ export class AppMediator {
   readonly requests: MessageIDMapping[];
 
   constructor(name: string, port: chrome.runtime.Port, manager: SmoldotClientManager) {
-    this.name = name;
+    this.#name = name;
     this.subscriptions = [];
     this.requests = [];
     this.#port = port;
+    this.#tabId = port.sender.tab.id;
+    this.#url = port.sender.url;
     this.#manager = manager;
     this.#port.onMessage.addListener(this.#handlePortMessage);
     this.#port.onDisconnect.addListener(() => { this.#handleDisconnect(false) });
+  }
+
+  get name() {
+    return this.#name;
+  }
+
+  get tabId() {
+    return this.#tabId;
+  }
+
+  get url() {
+    return this.#url;
+  }
+
+  get state() {
+    return this.#state;
   }
 
   #sendError = (message: string) => {
