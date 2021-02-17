@@ -14,4 +14,16 @@ export interface ExtensionMessage {
   payload: string;
 }
 
+export type AppState = 'connected' | 'ready' | 'disconnecting' | 'disconnected';
+
+export interface MessageIDMapping {
+  readonly appID: number;
+  readonly smoldotID: number;
+}
+
+export interface SubscriptionMapping {
+  readonly appIDForRequest: number;
+  subID: number | string  | undefined;
+}
+
 

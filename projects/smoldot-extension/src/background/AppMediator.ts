@@ -1,17 +1,11 @@
-import { AppMessage, ExtensionMessage } from './Messages';
+import { 
+  AppMessage, 
+  ExtensionMessage, 
+  AppState, 
+  MessageIDMapping, 
+  SubscriptionMapping 
+} from './types';
 import { SmoldotClientManager } from './SmoldotClientManager';
-
-type AppState = 'connected' | 'ready' | 'disconnecting' | 'disconnected';
-
-interface MessageIDMapping {
-  readonly appID: number;
-  readonly smoldotID: number;
-}
-
-interface SubscriptionMapping {
-  readonly appIDForRequest: number;
-  subID: number | string  | undefined;
-}
 
 export class AppMediator {
   readonly name: string;
