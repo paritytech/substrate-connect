@@ -6,7 +6,7 @@
   "type": "module",
   "repository": "https://github.com/paritytech/substrate-connect.git",
   "author": "Parity Team <admin@parity.io>",
-  "license": "Apache-2.0",
+  "license": "GPL-3.0-only",
   "scripts": {
     "prebuild": "yarn clean",
     "clean": "rm -rf dist/",

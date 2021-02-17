@@ -4,7 +4,7 @@
   "description": "WASM light clients from various chains, bundled in a single package.",
   "repository": "https://github.com/paritytech/substrate-connect.git",
   "author": "Parity Team <admin@parity.io>",
-  "license": "Apache-2.0",
+  "license": "GPL-3.0-only",
   "contributors": [
     "Stefanie Doll <stefie@parity.io>",
     "Sveta Goldstein <sveta@parity.io>"

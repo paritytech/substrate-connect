@@ -4,7 +4,7 @@
   "description": "Browser extension to manage substrate-based blockchain light clients",
   "main": "index.js",
   "author": "Parity Technologies",
-  "license": "Apache-2.0",
+  "license": "GPL-3.0-only",
   "browserslist": [
     "last 2 versions"
   ],
