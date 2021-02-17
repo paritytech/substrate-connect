@@ -4,7 +4,7 @@
   "description": "PolkadotJS provider for smoldot wasm light client",
   "repository": "https://github.com/paritytech/substrate-connect.git",
   "author": "Parity Team <admin@parity.io>",
-  "license": "Apache-2.0",
+  "license": "GPL-3.0-only",
   "publishConfig": {
     "access": "public"
   },
