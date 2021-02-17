@@ -2,6 +2,7 @@ import React from 'react';
 import { render, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import 'jest-styled-components';
+import { substrateGreen } from './theme';
 
 import StatusCircle from './StatusCircle'
 
@@ -45,7 +46,7 @@ describe('<StatusCircle /> Component', () => {
   it('shows correct default border color', () => {
     const { getByTestId } = render(<StatusCircle />);
     const circle = getByTestId('circle')
-    expect(circle).toHaveStyle('border-color: #000');
+    expect(circle).toHaveStyle('border-color: #11B37C');
   });
   it('shows correct border color with prop borderColor', () => {
     const { getByTestId } = render(<StatusCircle borderColor='blue' />);
@@ -56,8 +57,8 @@ describe('<StatusCircle /> Component', () => {
   it('shows correct default color', () => {
     const { getByTestId } = render(<StatusCircle />);
     const circle = getByTestId('circle')
-    expect(circle).toHaveStyle('background-color: #fff');
-    expect(circle).toHaveStyle('box-shadow: 0 0 5px 0px #fff');
+    expect(circle).toHaveStyle('background-color: #7E8D96');
+    expect(circle).toHaveStyle('box-shadow: 0 0 5px 0px #7E8D96');
   });
   it('shows correct border color with prop color', () => {
     const { getByTestId } = render(<StatusCircle color='blue' />);

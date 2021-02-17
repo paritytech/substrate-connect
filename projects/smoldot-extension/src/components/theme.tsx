@@ -1,7 +1,6 @@
 import { ThemeOptions } from '@material-ui/core/styles';
 import { PaletteOptions } from '@material-ui/core/styles/createPalette';
-import grey from '@material-ui/core/colors/grey';
-import red from '@material-ui/core/colors/red';
+import { grey, red } from '@material-ui/core/colors';
 
 export const substrateGreen = {
   100: '#7E8D96',

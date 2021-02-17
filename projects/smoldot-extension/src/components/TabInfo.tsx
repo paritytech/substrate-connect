@@ -1,33 +1,36 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import { Switch } from './';
+import { useTabs } from '../hooks';
+import { NetworkEnum } from '../utils/enums';
+import { TabInterface } from '../utils/types';
 
 interface Props {
     size?: 'small' | 'medium';
-    tabs?: object;
+    network: NetworkEnum;
 }
 
 // TDODO: data structure. Will we ever need map here at all?
 // each uApp will be associated with one url
 // if the same uApp, or uApp with the same title will be opened in >1 tab, it's ok to duplicate it on the UI too
 
-const TabInfo: FunctionComponent<Props> = ({ size = 'small', tabs = {} }) => (
-    <>
-        <Typography variant='body1'>uApp title</Typography>
-        {Object.entries(tabs).map((v, k) => (
-
-            <Grid justify='space-between' container key={k + '0_' + v[0]}>
+const TabInfo: FunctionComponent<Props> = ({ size = 'small', network }) => {
+    const tabs = useTabs();
+    return (
+        <>
+        {tabs.map((t:TabInterface) => (
+            <Grid justify='space-between' container key={t.tabId}>
                 <Typography
                     variant='body2'
-                    color={v[1] ? 'textPrimary' : 'textSecondary'}
+                    color={true ? 'textPrimary' : 'textSecondary'}
                 >
-                    {v[0]}
+                    {t.tabId}
                 </Typography>
-                <Switch size={size} isActive={v[1]}/>
+                <Switch size={size} isActive={!!t.tabId}/>
             </Grid>
-
         ))}
-    </>
-)
+        </>
+    )
+}
 
 export default TabInfo;

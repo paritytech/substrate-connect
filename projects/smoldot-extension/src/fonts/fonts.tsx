@@ -14,8 +14,6 @@ export default createGlobalStyle`
     }
 
     body {
-        width: 240px;
-        display: flex;
-        overflow: hidden;
+        margin: 0 !important;
     }
 `;

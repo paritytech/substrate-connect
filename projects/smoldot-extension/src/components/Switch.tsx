@@ -1,7 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { Switch as MUISwitch } from '@material-ui/core';
 import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
-
 interface Props {
     isActive?: boolean;
     activeColor?: string;
@@ -18,13 +17,13 @@ const Switch: FunctionComponent<Props> = ({
         size='small',
         ...props
     }) => {
-    const [extConnect, setExtConnect] = useState(isActive);
+    const  [active, setActive] = useState(isActive);
 
     const StyledSwitch = withStyles((theme: Theme) =>
         createStyles({
             root: {
-                width: size === 'small' ? 15 : 38,
-                height: size === 'small' ? 8 : 18,
+                width: size === 'small' ? 16 : 34,
+                height: size === 'small' ? 8 : 14,
                 padding: 0,
                 display: "flex",
                 overflow: "inherit"
@@ -43,8 +42,8 @@ const Switch: FunctionComponent<Props> = ({
                 }
             },
             thumb: {
-                width: size === 'small' ? 6 : 16,
-                height: size === 'small' ? 6 : 16,
+                width: size === 'small' ? 6 : 12,
+                height: size === 'small' ? 6 : 12,
                 boxShadow: "none"
             },
             track: {
@@ -58,7 +57,7 @@ const Switch: FunctionComponent<Props> = ({
     )(MUISwitch);
     
     return (
-        <StyledSwitch checked={extConnect} onChange={e => setExtConnect(e.target.checked)} />
+        <StyledSwitch checked={active} onChange={e => setActive(e.target.checked)} />
     );
 }
 
