@@ -6,7 +6,7 @@ import { IconWeb3 } from '../components';
 import { InputButton, InputText, InputWrap } from './Inputs';
 
 interface Props {
-	isKnown?: boolean
+  isKnown?: boolean
 }
 
 const useStyles = makeStyles<Theme, Props>(theme => ({
@@ -20,18 +20,18 @@ const useStyles = makeStyles<Theme, Props>(theme => ({
     marginBottom: theme.spacing(1),
     borderRadius: theme.spacing(0.5),
   },
-	networkIconRoot: {
+  networkIconRoot: {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-		width: theme.spacing(5),
+    width: theme.spacing(5),
     height: theme.spacing(5),
-		marginRight: theme.spacing(2),
-		backgroundColor: grey[100],
-		borderRadius: '50%',
-	},
+    marginRight: theme.spacing(2),
+    backgroundColor: grey[100],
+    borderRadius: '50%',
+  },
   // TODO Popup to use the same component
-	popoverRoot: {
+  popoverRoot: {
     '& .MuiPopover-paper': {
       width: theme.spacing(45),
       paddingTop: theme.spacing(1.5),
@@ -50,7 +50,7 @@ const useStyles = makeStyles<Theme, Props>(theme => ({
 
 const ClientMenu: React.FunctionComponent<Props> = ({isKnown}) => {
   const classes = useStyles({isKnown});
-	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -88,18 +88,25 @@ const ClientMenu: React.FunctionComponent<Props> = ({isKnown}) => {
 
           <Typography variant='overline'>Chainspec</Typography>
           <InputWrap>
+
             <InputText readOnly defaultValue='chainspec.json'/>
             <Divider orientation='vertical' flexItem/>
             <InputButton>
               <InsertDriveFile fontSize='small'/>
             </InputButton>
             <Divider orientation='vertical' flexItem/>
-            <InputButton>
-              <Publish fontSize='small'/>
-            </InputButton>
+            { isKnown
+              ? <InputButton>
+                <Publish fontSize='small'/>
+              </InputButton>
+              : <InputButton>
+                <SystemUpdateAlt fontSize='small' />
+              </InputButton>
+            }
+
           </InputWrap>
           <InputWrap>
-            <InputText defaultValue='<networkName>'/>
+            <InputText readOnly={!isKnown} defaultValue='<networkName>'/>
           </InputWrap>
           <Divider/>
           <Button onClick={handleClose} fullWidth>Cancel</Button>
@@ -111,9 +118,9 @@ const ClientMenu: React.FunctionComponent<Props> = ({isKnown}) => {
 
 
 const ClientItem: React.FunctionComponent<Props> = ({isKnown = true}) => {
-	const classes = useStyles({isKnown});
+  const classes = useStyles({isKnown});
 
-	return (
+  return (
     <Grid container wrap='nowrap' justify='space-between' className={classes.root} >
     <Typography variant='h2' component='div'>
       <Box component='span' className={classes.networkIconRoot}>
@@ -123,7 +130,7 @@ const ClientItem: React.FunctionComponent<Props> = ({isKnown = true}) => {
     </Typography>
     <ClientMenu isKnown={isKnown}/>
   </Grid>
-	);
+  );
 };
 
 export default ClientItem;
