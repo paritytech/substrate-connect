@@ -2,8 +2,8 @@ import React, { FunctionComponent, useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import { Switch } from './';
 import { useTabs } from '../hooks';
-import { NetworkEnum } from '../utils/enums';
-import { TabInterface } from '../utils/types';
+import { NetworkEnum } from '../types/enums';
+import { TabInterface } from '../types';
 
 interface Props {
     size?: 'small' | 'medium';
