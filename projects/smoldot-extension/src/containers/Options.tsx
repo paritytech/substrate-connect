@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, createMuiTheme, ThemeProvider, Typography } from '@material-ui/core';
-import { light, IconWeb3, ClientSearch, Logo } from '../components/';
+import { createMuiTheme, ThemeProvider, Typography, Box } from '@material-ui/core';
+import { light, ClientSearch, Logo, ClientItem } from '../components/';
 import GlobalFonts from '../fonts/fonts';
 
 const ClientTypeTitle: React.FunctionComponent = ({children}) => (
@@ -9,7 +9,7 @@ const ClientTypeTitle: React.FunctionComponent = ({children}) => (
 			{children}
 		</Typography>
 	</Box>
-)
+);
 
 const Options: React.FunctionComponent = () => {
 	const appliedTheme = createMuiTheme(light);
@@ -20,9 +20,9 @@ const Options: React.FunctionComponent = () => {
 			<Logo />
 			<ClientSearch />
 			<ClientTypeTitle children='Local chainspecs'/>
+			<ClientItem />
+
 			<ClientTypeTitle children='Chainspecs from uApps'/>
-			<IconWeb3>polkadot kusama</IconWeb3>
-			<div>Options Main page</div>
 		</ThemeProvider>
 	);
 };

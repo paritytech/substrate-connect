@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-const NodeSearch: React.FunctionComponent = () => {
+const ClientSearch: React.FunctionComponent = () => {
 	const classes = useStyles();
 
 	return (
@@ -45,4 +45,4 @@ const NodeSearch: React.FunctionComponent = () => {
 	);
 };
 
-export default NodeSearch;
+export default ClientSearch;
