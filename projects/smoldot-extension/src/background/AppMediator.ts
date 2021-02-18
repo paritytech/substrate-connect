@@ -4,9 +4,9 @@ import {
   AppState, 
   MessageIDMapping, 
   SubscriptionMapping,
-  ClientManagerInterface
+  ConnectionManagerInterface
 } from './types';
-import { SmoldotClientManager } from './SmoldotClientManager';
+import { ConnectionManager } from './ConnectionManager';
 
 export class AppMediator {
   readonly #name: string;
@@ -14,13 +14,13 @@ export class AppMediator {
   // REM: what to do about the fact these might be undefined?
   readonly #tabId: number | undefined;
   readonly #url: string | undefined;
-  readonly #manager: ClientManagerInterface;
+  readonly #manager: ConnectionManagerInterface;
   #smoldotName: string | undefined  = undefined;
   #state: AppState = 'connected';
   readonly subscriptions: SubscriptionMapping[];
   readonly requests: MessageIDMapping[];
 
-  constructor(name: string, port: chrome.runtime.Port, manager: ClientManagerInterface) {
+  constructor(name: string, port: chrome.runtime.Port, manager: ConnectionManagerInterface) {
     this.#name = name;
     this.subscriptions = [];
     this.requests = [];

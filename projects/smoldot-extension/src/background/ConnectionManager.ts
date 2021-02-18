@@ -1,9 +1,9 @@
 import smoldot from 'smoldot';
 import { AppMediator } from './AppMediator';
 import { SmoldotMediator } from './SmoldotMediator';
-import { ClientManagerInterface } from './types';
+import { ConnectionManagerInterface } from './types';
 
-export class SmoldotClientManager implements ClientManagerInterface {
+export class ConnectionManager implements ConnectionManagerInterface {
   readonly #smoldots: SmoldotMediator[] = [];
   readonly #apps:  AppMediator[] = [];
 

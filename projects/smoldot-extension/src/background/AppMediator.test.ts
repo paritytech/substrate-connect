@@ -1,11 +1,11 @@
 import { AppMediator } from './AppMediator';
-import { MockPort, MockClientManager } from './mocks';
+import { MockPort, MockConnectionManager } from './mocks';
 
 describe('AppMediator setup', () => {
 
   it('initialises correctly', () => {
     const port = new MockPort('test');
-    const manager = new MockClientManager(true);
+    const manager = new MockConnectionManager(true);
     const am = new AppMediator('test', port, manager);
     expect(am.name).toBe('test');
     expect(am.url).toBe(port.sender.url);
@@ -18,7 +18,7 @@ describe('AppMediator - protocol with content script', () => {
 
   it('becomes ready after associating with a client and can send messages', () => {
     const port = new MockPort('test');
-    const manager = new MockClientManager(true);
+    const manager = new MockConnectionManager(true);
     const am = new AppMediator('test', port, manager);
 
     port.triggerMessage({ type: 'associate', payload: 'westend' });
@@ -30,7 +30,7 @@ describe('AppMediator - protocol with content script', () => {
 
   it('emits error when manager does not have client for the network', () => {
     const port = new MockPort('test');
-    const manager = new MockClientManager(false);
+    const manager = new MockConnectionManager(false);
     const am = new AppMediator('test', port, manager);
     const network = 'westend';
 
@@ -44,7 +44,7 @@ describe('AppMediator - protocol with content script', () => {
 
   it('emits error when recieves RPC message before associated', () => {
     const port = new MockPort('test');
-    const manager = new MockClientManager(false);
+    const manager = new MockConnectionManager(false);
     const am = new AppMediator('test', port, manager);
     const network = 'westend';
 

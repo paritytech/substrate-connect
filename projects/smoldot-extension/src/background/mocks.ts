@@ -1,4 +1,4 @@
-import { AppMessage, ClientManagerInterface } from './types';
+import { AppMessage, ConnectionManagerInterface } from './types';
 
 export class MockPort implements chrome.runtime.Port {
   sender: any;
@@ -37,7 +37,7 @@ export class MockPort implements chrome.runtime.Port {
   } as any;
 }
 
-export class MockClientManager implements ClientManagerInterface {
+export class MockConnectionManager implements ConnectionManagerInterface {
   readonly #willFindClient: boolean;
 
   constructor(willFindClient: boolean) {
