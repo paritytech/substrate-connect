@@ -26,4 +26,7 @@ export interface SubscriptionMapping {
   subID: number | string  | undefined;
 }
 
-
+export interface ClientManagerInterface {
+  hasClientFor: (name: string) => boolean;
+  sendRpcMessageTo: (name: string, message: any) => number;
+}

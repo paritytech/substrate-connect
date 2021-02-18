@@ -3,28 +3,33 @@ import {
   ExtensionMessage, 
   AppState, 
   MessageIDMapping, 
-  SubscriptionMapping 
+  SubscriptionMapping,
+  ClientManagerInterface
 } from './types';
 import { SmoldotClientManager } from './SmoldotClientManager';
 
 export class AppMediator {
   readonly #name: string;
   readonly #port: chrome.runtime.Port;
-  readonly #tabId: number;
-  readonly #url: string;
-  readonly #manager: SmoldotClientManager;
+  // REM: what to do about the fact these might be undefined?
+  readonly #tabId: number | undefined;
+  readonly #url: string | undefined;
+  readonly #manager: ClientManagerInterface;
   #smoldotName: string | undefined  = undefined;
   #state: AppState = 'connected';
   readonly subscriptions: SubscriptionMapping[];
   readonly requests: MessageIDMapping[];
 
-  constructor(name: string, port: chrome.runtime.Port, manager: SmoldotClientManager) {
+  constructor(name: string, port: chrome.runtime.Port, manager: ClientManagerInterface) {
     this.#name = name;
     this.subscriptions = [];
     this.requests = [];
     this.#port = port;
-    this.#tabId = port.sender.tab.id;
-    this.#url = port.sender.url;
+    // REM: `sender` is guaranteed to be defined because we know this port came
+    // from a handler for chrome.runtime.onConnect `tab` is guaranteed to be
+    // defined because our content script will only run in a tab.
+    this.#tabId = port.sender?.tab?.id;
+    this.#url = port.sender?.url;
     this.#manager = manager;
     this.#port.onMessage.addListener(this.#handlePortMessage);
     this.#port.onDisconnect.addListener(() => { this.#handleDisconnect(false) });
