@@ -110,7 +110,7 @@ export default function NodeSelector(): React.ReactElement {
 		setAnchorEl(event.currentTarget);
 	};
 
-	const handleClose = (event: ChangeEvent<{}>, reason: AutocompleteCloseReason) => {
+	const handleClose = (event: ChangeEvent<unknown>, reason: AutocompleteCloseReason) => {
 		if (reason === 'toggleInput') {
 			return;
 		}
@@ -163,7 +163,7 @@ export default function NodeSelector(): React.ReactElement {
 							paper: classes.acPaper,
 						}}
 						onClose={handleClose}
-						onChange={(event: ChangeEvent<{}>, {provider: selected}: any ) => {
+						onChange={(event: ChangeEvent<unknown>, {provider: selected}: unknown ) => {
 							updateProvider(selected);
 						}}
 

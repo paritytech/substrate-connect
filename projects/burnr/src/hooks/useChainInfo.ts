@@ -12,7 +12,6 @@ export default function useChainInfo (): Header | undefined {
   const  mountedRef = useIsMountedRef();
 
   useEffect((): void => {
-    const count = 0;
     api.rpc.chain
       .subscribeNewHeads((lastHeader): void => {
       mountedRef.current && setNewHead(lastHeader)  

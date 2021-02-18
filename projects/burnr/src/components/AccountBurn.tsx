@@ -6,7 +6,6 @@ import WhatshotIcon from '@material-ui/icons/Whatshot';
 import { AccountContext } from '../utils/contexts';
 
 import { createLocalStorageAccount } from '../utils/utils';
-import { POLKA_ACCOUNT_ENDPOINTS } from '../utils/constants';
 import { useApi, useBalance, useLocalStorage } from '../hooks';
 
 const useStyles = makeStyles((theme: Theme) =>

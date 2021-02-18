@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2
 
 import BN from 'bn.js';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import { formatBalance } from '@polkadot/util';
 // import { useLocalStorage } from '.';
 // import { AccountContext } from '../utils/contexts';

@@ -3,13 +3,12 @@ import React from 'react';
 import { Typography, Grid } from '@material-ui/core';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 
-import { PopoverInfo } from '../components';
-import { useApi, useChainInfo } from '../hooks';
+import { useApi } from '../hooks';
 import { LazyProvider } from '../utils/types'; 
 
 interface Props {
   provider: LazyProvider;
-};
+}
 
 const NodeSelectorSelected: React.FunctionComponent<Props> = ({ provider }: Props) => {
 	const api = useApi();

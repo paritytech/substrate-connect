@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Apache-2
 import BN from 'bn.js';
 import { useEffect, useState } from 'react';
-import type { AccountInfo, Balance } from '@polkadot/types/interfaces';
 
 import useApi from './api/useApi';
 import useIsMountedRef from './api/useIsMountedRef';
@@ -10,7 +9,7 @@ import { UserInfo } from '../utils/types';
 export default function useUserInfo (address: string): UserInfo {
   const api = useApi();
   const  mountedRef = useIsMountedRef();
-  const [usersInfo, setUsersInfo] = useState<any>([]);
+  const [usersInfo, setUsersInfo] = useState<unknown>([]);
 
   useEffect((): () => void => {
     let unsubscribe: null | (() => void) = null;
@@ -27,7 +26,7 @@ export default function useUserInfo (address: string): UserInfo {
               miscFrozen: new BN((data).data.feeFrozen)
             });
         })
-        .then((u: any): void => {
+        .then((u: null | (() => void)): void => {
           unsubscribe = u;
         })
         .catch(console.error);
@@ -37,5 +36,5 @@ export default function useUserInfo (address: string): UserInfo {
     }
   }, [address, api]);
 
-  return usersInfo as any;
+  return usersInfo as UserInfo;
 }

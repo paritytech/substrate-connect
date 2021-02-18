@@ -43,5 +43,4 @@ export const downloadFile = (fileName: string, data: string, type: string): void
     }
   }
 
-export  const isEmpty = (obj: any): boolean => (Object.keys(obj).length === 0 && obj.constructor === Object)
-
+  export const isEmpty = (obj: unknown): boolean => ((typeof obj === 'object' && obj !== null) && Object.keys(obj).length === 0 && obj.constructor === Object)

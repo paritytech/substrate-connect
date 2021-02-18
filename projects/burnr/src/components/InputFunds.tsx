@@ -14,7 +14,7 @@ const InputFunds: React.FunctionComponent<Props> = ({ total, currency, hidePerce
 	const [value, setValue] = React.useState<number | ''>('');
 	const handleChangeButton = (e: MouseEvent) => {
 		setValue(parseInt((e.currentTarget as HTMLButtonElement).value) * total);
-		document.getElementById('SendFundsAmountField')!.focus();
+		document.getElementById('SendFundsAmountField')?.focus();
 	};
 	const handleChange = (e: ChangeEvent) => {
 		const value = parseInt((e.currentTarget as HTMLTextAreaElement).value);

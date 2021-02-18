@@ -95,7 +95,7 @@ const useStyles = makeStyles((theme: Theme) =>
 	})
 );
 
-export default function HistoryTable() {
+const HistoryTable: React.FunctionComponent = () => {
 	const classes = useStyles();
 
 	return (
@@ -149,3 +149,5 @@ export default function HistoryTable() {
 		</>
 	);
 }
+
+export default HistoryTable;

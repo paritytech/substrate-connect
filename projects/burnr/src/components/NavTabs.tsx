@@ -69,7 +69,7 @@ const NavTabs: React.FunctionComponent = () => {
 	const { account, setCurrentAccount } = useContext(AccountContext);
 	const balance = useBalance(account.userAddress);
 
-	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+	const handleChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
 		if (newValue === 0) {
 			if (!balance[2] && !window.confirm(`Burn keys from account with ${balance[0]} ${api.registry.chainTokens}?`)) {
 				return
