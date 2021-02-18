@@ -1,10 +1,24 @@
 import React from 'react';
-import { makeStyles, Typography, Box, ButtonBase, Grid, Menu, MenuItem } from '@material-ui/core';
+import { makeStyles, Theme, Typography, Box, ButtonBase, ButtonGroup, Grid, Menu, MenuItem, Tooltip } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import { IconWeb3 } from '../components';
-import { ExpandMore } from '@material-ui/icons';
+import { ExpandMore, SystemUpdateAlt } from '@material-ui/icons';
 
-const useStyles = makeStyles(theme => ({
+interface Props {
+	isKnown?: boolean
+}
+
+const useStyles = makeStyles<Theme, Props>(theme => ({
+  root: {
+    background: ({ isKnown }) => !isKnown ? grey[100] : 'transparent',
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+    marginLeft: theme.spacing(-4),
+    marginBottom: theme.spacing(1),
+    borderRadius: theme.spacing(0.5),
+  },
 	networkIconRoot: {
     display: 'inline-flex',
     alignItems: 'center',
@@ -17,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-const ClientMenu: React.FunctionComponent = ({children}) => {
+const ClientMenu: React.FunctionComponent<Props> = ({isKnown}) => {
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -26,13 +40,23 @@ const ClientMenu: React.FunctionComponent = ({children}) => {
 
   return (
     <>
-      <ButtonBase 
-				onClick={handleClick}
-				disableRipple
-			>
+    <ButtonGroup disableRipple>
+      { !isKnown &&
+      <Tooltip
+        title='Save <network> chainspec to extension'
+        placement='top'
+        arrow
+      >
+        <ButtonBase>
+          <SystemUpdateAlt fontSize='small' />
+        </ButtonBase>
+      </Tooltip>
+      }
+      <ButtonBase onClick={handleClick}>
 				<ExpandMore fontSize='small' />
 			</ButtonBase>
-			
+      </ButtonGroup>
+
       <Menu
         anchorEl={anchorEl}
         keepMounted
@@ -48,18 +72,18 @@ const ClientMenu: React.FunctionComponent = ({children}) => {
 }
 
 
-const ClientItem: React.FunctionComponent = () => {
-	const classes = useStyles();
+const ClientItem: React.FunctionComponent<Props> = ({isKnown = true}) => {
+	const classes = useStyles({isKnown});
 
 	return (
-    <Grid container wrap='nowrap' justify='space-between'>
+    <Grid container wrap='nowrap' justify='space-between' className={classes.root} >
     <Typography variant='h2' component='div'>
       <Box component='span' className={classes.networkIconRoot}>
           <IconWeb3>polkadot</IconWeb3>
       </Box>
       Polkadot
     </Typography>
-    <ClientMenu />
+    <ClientMenu isKnown={isKnown}/>
   </Grid>
 	);
 };

@@ -21,8 +21,8 @@ const Options: React.FunctionComponent = () => {
 			<ClientSearch />
 			<ClientTypeTitle children='Local chainspecs'/>
 			<ClientItem />
-
 			<ClientTypeTitle children='Chainspecs from uApps'/>
+			<ClientItem isKnown={false}/>
 		</ThemeProvider>
 	);
 };
