@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles, Grid, InputBase, Divider, ButtonBase } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
+import { SystemUpdateAlt } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -39,7 +39,7 @@ const NodeSearch: React.FunctionComponent = () => {
 			/>
 			<Divider orientation='vertical' flexItem/>
       <ButtonBase className={classes.buttonRoot}>
-        <SystemUpdateAltIcon fontSize='small' />
+        <SystemUpdateAlt fontSize='small' />
       </ButtonBase>
     </Grid>
 	);
