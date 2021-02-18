@@ -16,7 +16,6 @@
     "postinstall": "yarn build"
   },
   "dependencies": {
-    "sinon": "^9.2.4",
     "smoldot": "^0.1.11"
   },
   "devDependencies": {
