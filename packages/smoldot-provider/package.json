@@ -17,6 +17,7 @@
     "clean": "rm -rf dist/",
     "pretest": "yarn build",
     "test": "ava --config ava.config.js --verbose",
+    "lint": "echo \"No lint yet for smoldot-provider\"",
     "examples": "ava --config ava.examples.config.js",
     "prepack": "yarn test && yarn examples",
     "postinstall": "yarn test"

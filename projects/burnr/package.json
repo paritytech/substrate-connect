@@ -13,7 +13,8 @@
     "build": "parcel build ./index.html",
     "clean": "rimraf dist && rm -rf node_modules",
     "dev": "tsc --noEmit & parcel ./index.html",
-    "test": "echo \"Warning: No test specified for @substrate/burnr\"",
+    "test": "echo \"Warning: Jest has been setup but no tests exist.\"",
+    "test:watch": "jest --watch",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "repository": {
@@ -45,11 +46,15 @@
   },
   "devDependencies": {
     "@material-ui/types": "^5.1.0",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@types/jest": "^26.0.20",
     "@types/node": "^14.14.22",
     "@types/qrcode.react": "^1.0.1",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
+    "@types/react-test-renderer": "^17.0.1",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
     "bn.js": "^5.1.3",
@@ -59,8 +64,9 @@
     "jest": "^26.6.3",
     "react-dom": "^17.0.1",
     "react-router": "^5.2.0",
+    "react-test-renderer": "^17.0.1",
     "rimraf": "^3.0.2",
-    "ts-jest": "^26.5.0",
+    "ts-jest": "^26.5.1",
     "tsc-watch": "^4.2.9",
     "typescript": "^4.1.3"
   },
@@ -85,13 +91,26 @@
       "react/prop-types": 0,
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
-      "@typescript-eslint/no-misused-promises": ["error", { "checksConditionals": false }],
-      "@typescript-eslint/restrict-plus-operands": ["error", { "checkCompoundAssignments": false }],
-      "@typescript-eslint/restrict-template-expressions": ["error", {
-        "allowNumber": true,
-        "allowBoolean": true,
-        "allowNullable": true
-      }]
+      "@typescript-eslint/no-misused-promises": [
+        "error",
+        {
+          "checksConditionals": false
+        }
+      ],
+      "@typescript-eslint/restrict-plus-operands": [
+        "error",
+        {
+          "checkCompoundAssignments": false
+        }
+      ],
+      "@typescript-eslint/restrict-template-expressions": [
+        "error",
+        {
+          "allowNumber": true,
+          "allowBoolean": true,
+          "allowNullable": true
+        }
+      ]
     },
     "extends": [
       "eslint:recommended",

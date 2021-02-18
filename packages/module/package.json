@@ -12,7 +12,8 @@
   "scripts": {
     "build": "rimraf dist  && copyfiles -Eu2 \"src/clients/**/*\" dist/clients && copyfiles -Eu2 \"src/client-specs/**/*\" dist/client-specs && tsc",
     "clean": "rimraf dist && rimraf node_modules",
-    "test": "echo \"Warning: No test specified for @substrate/connect\""
+    "test": "echo \"Warning: No test specified for @substrate/connect\"",
+    "lint": "echo \"No lint yet for @substrate/connect\""
   },
   "publishConfig": {
     "access": "public"

@@ -12,6 +12,7 @@
     "clean": "rm -rf dist/",
     "build": "tsc",
     "test": "echo \"No tests for smoldot-test-utils\"",
+    "lint": "echo \"No lint yet for smoldot-test-utils\"",
     "postinstall": "yarn build"
   },
   "dependencies": {

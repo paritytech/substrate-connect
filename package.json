@@ -17,6 +17,7 @@
   ],
   "scripts": {
     "clean": " yarn workspaces run clean && rimraf node_modules",
+    "lint": "yarn workspaces run lint",
     "build": "yarn workspaces run build",
     "test": "yarn workspaces run test",
     "dev:burnr": "yarn workspace @substrate/burnr run dev",
