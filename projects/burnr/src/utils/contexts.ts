@@ -7,7 +7,7 @@ import { ApiPromise } from '@polkadot/api';
 
 const AccountContext = React.createContext<CreateAccountCtx>({
     account: {} as LocalStorageAccountCtx,
-    setCurrentAccount: () => {}
+    setCurrentAccount: () => console.log()
   });
 const AdminContext = React.createContext<AdminCtx>({} as AdminCtx);
 const ApiContext = React.createContext<ApiPromise>({} as ApiPromise);

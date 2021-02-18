@@ -84,7 +84,14 @@
     "rules": {
       "react/prop-types": 0,
       "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn"
+      "react-hooks/exhaustive-deps": "warn",
+      "@typescript-eslint/no-misused-promises": ["error", { "checksConditionals": false }],
+      "@typescript-eslint/restrict-plus-operands": ["error", { "checkCompoundAssignments": false }],
+      "@typescript-eslint/restrict-template-expressions": ["error", {
+        "allowNumber": true,
+        "allowBoolean": true,
+        "allowNullable": true
+      }]
     },
     "extends": [
       "eslint:recommended",
@@ -93,8 +100,7 @@
       "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
     "env": {
-      "node": true,
-      "react": true
+      "node": true
     }
   }
 }

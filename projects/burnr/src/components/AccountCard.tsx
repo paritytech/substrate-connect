@@ -22,9 +22,9 @@ const AccountCard: React.FunctionComponent<Props> = ({ account, addressFormat }:
 			</Grid>
 			<Grid item>
 				{ account.name !== '' &&
-          <Typography variant='h4'>
-          	{account.name}
-          </Typography>
+			<Typography variant='h4'>
+				{account.name}
+			</Typography>
 				}
 				<Typography variant='subtitle2'>
 					{ addressFormat === 'Full'

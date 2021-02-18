@@ -12,7 +12,7 @@ export default function useProvider (): string | null {
       console.log("NO endpoint")
     }
 
-  }, []);
+  }, [endpoint]);
 
   return endpoint;
 }

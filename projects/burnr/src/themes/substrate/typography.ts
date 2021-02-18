@@ -2,7 +2,7 @@ import { ThemeOptions } from '@material-ui/core/styles';
 
 const typography: ThemeOptions = {
 	typography: {
-		fontFamily: '\Inter\, \Helvetica\, \Roboto\, \Arial\, sans-serif',
+		fontFamily: 'Inter, Helvetica, Roboto, Arial, sans-serif',
 		h1: {
 			fontWeight: 500,
 			fontSize: 30,
@@ -44,13 +44,13 @@ const typography: ThemeOptions = {
 			textTransform: 'none',
 		},
 		subtitle1: {
-			fontFamily: '\Cousine\, monospace',
+			fontFamily: 'Cousine, monospace',
 			fontWeight: 400,
 			fontSize: 20,
 			lineHeight: '200%',
 		},
 		subtitle2: {
-			fontFamily: '\Cousine\, monospace',
+			fontFamily: 'Cousine monospace',
 			fontWeight: 400,
 			fontSize: 13,
 			lineHeight: '135%',

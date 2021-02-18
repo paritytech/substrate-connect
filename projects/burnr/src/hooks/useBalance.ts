@@ -51,7 +51,7 @@ export default function useBalance (address: string): State {
     return (): void => {
       unsubscribe && unsubscribe();
     }
-  }, [address, api]);
+  }, [address, api, mountedRef]);
 
   return state;
 }

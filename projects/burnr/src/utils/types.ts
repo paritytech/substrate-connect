@@ -14,7 +14,7 @@ import { KeyringPair, KeyringPair$Json } from '@polkadot/keyring/types';
 export interface LazyProvider extends ProviderMeta {
   description: string;
   id: string;
-  endpoint?: string;
+  endpoint?: string | undefined;
   client?: string;
   start: () => Promise<ProviderInterface>;
 }

@@ -71,7 +71,7 @@ const NavTabs: React.FunctionComponent = () => {
 
 	const handleChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
 		if (newValue === 0) {
-			if (!balance[2] && !window.confirm(`Burn keys from account with ${balance[0]} ${api.registry.chainTokens}?`)) {
+			if (!balance[2] && !window.confirm(`Burn keys from account with ${balance[0].toString()} ${api.registry.chainTokens.toString()}?`)) {
 				return
 			}
 			localStorage.removeItem(minEndpoint);

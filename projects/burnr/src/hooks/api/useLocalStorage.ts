@@ -7,7 +7,7 @@ const useLocalStorage = (localStorageKey: string): [string, React.Dispatch<React
  
   useEffect((): void => {
     localStorage.setItem(localStorageKey, localValue);
-  }, [localValue]);
+  }, [localValue, localStorageKey]);
  
   return [localValue, setLocalValue];
 }

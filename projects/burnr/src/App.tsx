@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 	},
 	main: {
 		width: '100%',
-		maxWidth: theme.spacing(3) + 650 + 'px',
+		maxWidth: `${theme.spacing(3) + 650}px`,
 		padding: theme.spacing(2),
 		flex: 1,
 	},
@@ -39,11 +39,11 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-const App: React.FunctionComponent<Props> = ({ className }: Props) => {
+const App: React.FunctionComponent<Props> = ({ className = '' }: Props) => {
 	const api = useApiCreate();
 	const classes = useStyles();
-	const [endpoint, useEndpoint] = useLocalStorage('endpoint');
-	if (!endpoint) useEndpoint('Polkadot-WsProvider');
+	const [endpoint, setEndpoint] = useLocalStorage('endpoint');
+	if (!endpoint) setEndpoint('Polkadot-WsProvider');
 	const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint.split('-')[0]?.toLowerCase());
 
 	const [account, setCurrentAccount] = useState<LocalStorageAccountCtx>({} as LocalStorageAccountCtx);
@@ -60,11 +60,11 @@ const App: React.FunctionComponent<Props> = ({ className }: Props) => {
 			}
 			setLoader(false)
 		}
-	}, [localStorageAccount, api]);
+	}, [localStorageAccount, setLocalStorageAccount, api]);
 
 	return (
 		<BrowserRouter>
-			<div className={classes.root + ' ' + className}>
+			<div className={`${classes.root} ${className}`}>
 				<ThemeToggleProvider>
 					<AccountContext.Provider value={{ account, setCurrentAccount }}>
 						<main className={classes.main}>

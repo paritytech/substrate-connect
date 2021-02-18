@@ -15,8 +15,8 @@ export default function useChainInfo (): Header | undefined {
     api.rpc.chain
       .subscribeNewHeads((lastHeader): void => {
       mountedRef.current && setNewHead(lastHeader)  
-    })
+    }).catch(err => console.log('There was an error', err));
 
-  }, []);
+  }, [api.rpc.chain, mountedRef]);
   return newHead;
 }

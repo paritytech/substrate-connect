@@ -33,10 +33,10 @@ const AccountBurn: React.FunctionComponent = () => {
 
 	const { account, setCurrentAccount } = useContext(AccountContext);
 
-	const balance = useBalance(account.userAddress)
+	const balance = useBalance(account.userAddress);
 
 	const burnAndCreate = (): void => {
-    if (!balance[2] && !window.confirm(`Burn keys from account with ${balance[0]} ${chainTokens}?`)) {
+    if (!balance[2] && !window.confirm(`Burn keys from account with ${balance[0]} ${chainTokens.join('')}?`)) {
 			return
 		}
 		localStorage.removeItem(minEndpoint);

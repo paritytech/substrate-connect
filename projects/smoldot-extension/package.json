@@ -79,8 +79,7 @@
       "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
     "env": {
-      "node": true,
-      "react": true
+      "node": true
     }
   }
 }
