@@ -30,6 +30,11 @@ const useStyles = makeStyles<Theme, Props>(theme => ({
     backgroundColor: grey[100],
     borderRadius: '50%',
   },
+  buttonBaseGroup: {
+    '& button:not(last-child)': {
+      marginRight: theme.spacing(1),
+    }
+  },
   // TODO Popup to use the same component
   popoverRoot: {
     '& .MuiPopover-paper': {
@@ -61,7 +66,7 @@ const ClientMenu: React.FunctionComponent<Props> = ({isKnown}) => {
 
   return (
     <>
-      <ButtonGroup disableRipple>
+      <div className={classes.buttonBaseGroup}>
         { !isKnown &&
         <Tooltip
           title='Save <network> chainspec to extension'
@@ -76,42 +81,42 @@ const ClientMenu: React.FunctionComponent<Props> = ({isKnown}) => {
         <ButtonBase onClick={handleClick}>
           <ExpandMore fontSize='small' />
         </ButtonBase>
-        </ButtonGroup>
+      </div>
 
-        <Popover
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-          className={classes.popoverRoot}
-        >
+      <Popover
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        className={classes.popoverRoot}
+      >
 
-          <Typography variant='overline'>Chainspec</Typography>
-          <InputWrap>
+        <Typography variant='overline'>Chainspec</Typography>
+        <InputWrap>
 
-            <InputText readOnly defaultValue='chainspec.json'/>
-            <Divider orientation='vertical' flexItem/>
-            <InputButton>
-              <InsertDriveFile fontSize='small'/>
+          <InputText readOnly defaultValue='chainspec.json'/>
+          <Divider orientation='vertical' flexItem/>
+          <InputButton>
+            <InsertDriveFile fontSize='small'/>
+          </InputButton>
+          <Divider orientation='vertical' flexItem/>
+          { isKnown
+            ? <InputButton>
+              <Publish fontSize='small'/>
             </InputButton>
-            <Divider orientation='vertical' flexItem/>
-            { isKnown
-              ? <InputButton>
-                <Publish fontSize='small'/>
-              </InputButton>
-              : <InputButton>
-                <SystemUpdateAlt fontSize='small' />
-              </InputButton>
-            }
+            : <InputButton>
+              <SystemUpdateAlt fontSize='small' />
+            </InputButton>
+          }
 
-          </InputWrap>
-          <InputWrap>
-            <InputText readOnly={!isKnown} defaultValue='<networkName>'/>
-          </InputWrap>
-          <Divider/>
-          <Button onClick={handleClose} fullWidth>Cancel</Button>
+        </InputWrap>
+        <InputWrap>
+          <InputText readOnly={!isKnown} defaultValue='<networkName>'/>
+        </InputWrap>
+        <Divider/>
+        <Button onClick={handleClose} fullWidth>Cancel</Button>
 
-        </Popover>
+      </Popover>
     </>
   );
 }
@@ -121,15 +126,15 @@ const ClientItem: React.FunctionComponent<Props> = ({isKnown = true}) => {
   const classes = useStyles({isKnown});
 
   return (
-    <Grid container wrap='nowrap' justify='space-between' className={classes.root} >
-    <Typography variant='h2' component='div'>
-      <Box component='span' className={classes.networkIconRoot}>
-          <IconWeb3>polkadot</IconWeb3>
-      </Box>
-      Polkadot
-    </Typography>
-    <ClientMenu isKnown={isKnown}/>
-  </Grid>
+    <Grid container wrap='nowrap' justify='space-between' alignItems='center' className={classes.root} >
+      <Typography variant='h2' component='div'>
+        <Box component='span' className={classes.networkIconRoot}>
+            <IconWeb3>polkadot</IconWeb3>
+        </Box>
+        Polkadot
+      </Typography>
+      <ClientMenu isKnown={isKnown}/>
+    </Grid>
   );
 };
 
