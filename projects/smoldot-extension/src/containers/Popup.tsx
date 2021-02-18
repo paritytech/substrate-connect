@@ -1,13 +1,12 @@
 import React, { ReactElement } from 'react';
-import { createMuiTheme, ThemeProvider, Input, Button, Typography, Box } from '@material-ui/core';
+import { createMuiTheme, ThemeProvider, Input, Button, Box } from '@material-ui/core';
 import GlobalFonts from '../fonts/fonts';
-import { light, IconWeb3, Tab, NodeArea, TabInfo } from '../components';
-import { NetworkEnum } from '../types/enums';
-import { isEmpty } from '../utils/utils';
+import { light, Tab } from '../components';
+// import { NetworkEnum } from '../types/enums';
 import { useTabs } from '../hooks';
-interface NodeProps {
-    nodeEnum: NetworkEnum;
-}
+// interface NodeProps {
+//     nodeEnum: NetworkEnum;
+// }
 
 /*** Keep this in comments for a little while (in case needed) */ 
 // const NodeRow: React.FC<NodeProps> = ({ nodeEnum }): ReactElement => {

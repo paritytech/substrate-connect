@@ -9,7 +9,7 @@ const Options: React.FunctionComponent = () => {
 	
 	return (
 		<ThemeProvider theme={appliedTheme}>
-        	<GlobalFonts />
+			<GlobalFonts />
 			<Logo />
 			<IconWeb3>polkadot kusama</IconWeb3>
 			<div>Options Main page</div>

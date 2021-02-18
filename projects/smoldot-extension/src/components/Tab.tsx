@@ -2,10 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import {
     Grid,
     Typography,
-    Box,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails } from '@material-ui/core';
+    Box } from '@material-ui/core';
 import { Switch, IconWeb3 } from '.';
 import { TabInterface, uApp, Networks } from '../types';
 
@@ -56,7 +53,7 @@ const Tab: FunctionComponent<TabProps> = ({ tab, current=false, size = 'small' }
             </Grid>
             { // This mapping is fine as soon as we will be receiving information concerning all TAB and not only specific uApp
                 apps && apps.map((a:uApp) => {
-                    let nets: string[] = [];
+                    const nets: string[] = [];
                     a.networks.forEach((n:Networks) => nets.push(n.name));
                     return (
                         <Grid

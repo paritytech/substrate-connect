@@ -1,31 +1,30 @@
 // SPDX-License-Identifier: Apache-2
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { NetworkCtx, TabInterface } from '../types';
 
 const sampleNetworkCtx: TabInterface[] = [{
 	tabId: 0,
 	url: 'my-awesome-uapp1.com/index.html',
 	uApps: [{
-	    networks: [
+		networks: [
 			{name: 'westend', status: 'connected'},
 			{name: 'kusama', status: 'connected'},
 			{name: 'polkadot', status: 'connected'},
 			{name: 'kulupu', status: 'connected'},
 		],
-	    name: 'First uApp First uApp First uApp First uApp',
-	    enabled: true,
-	  },
-	  {
-	    networks: [{name: 'kusama', status: 'disconnected'}],
-	    name: 'Second uApp',
-	    enabled: false
-	  },
-	  {
-	    networks: [{name: 'polkadot', status: 'connected'}],
-	    name: 'Third uApp',
-	    enabled: true
-	  }
-	 ]   
+		name: 'First uApp First uApp First uApp First uApp',
+		enabled: true,
+	},
+	{
+		networks: [{name: 'kusama', status: 'disconnected'}],
+		name: 'Second uApp',
+		enabled: false
+	},
+	{
+		networks: [{name: 'polkadot', status: 'connected'}],
+		name: 'Third uApp',
+		enabled: true
+	}]   
 	},
 	{
 	tabId: 1,
@@ -49,7 +48,7 @@ const sampleNetworkCtx: TabInterface[] = [{
 		networks: [{name: 'westend', status: 'connected'}],
 		name: 'uApp4',
 		enabled: true
-	  }]
+	}]
 	}]
 
 export default function useTabs (): TabInterface[] {

@@ -56,7 +56,7 @@ const light: ThemeOptions = {
 		allVariants: {
       color: palette.text && palette.text.primary,
     },
-		fontFamily: '\Inter\, \-apple-system\, \BlinkMacSystemFont\, \Segoe UI\, \Helvetica\, \Arial\, \Segoe UI\, \Arial\, sans-serif, \"Apple Color Emoji"\, \"Segoe UI Emoji",\"Web3-Regular"',
+		fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, Segoe UI, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Web3-Regular"',
 		h1: {
 			fontWeight: 500,
 			fontSize: 30,
@@ -98,13 +98,13 @@ const light: ThemeOptions = {
 			textTransform: 'none',
 		},
 		subtitle1: {
-			fontFamily: '\SFMono-Regular\, \Consolas\ , \Liberation Mono\, \Menlo\, monospace',
+			fontFamily: 'SFMono-Regular, Consolas , Liberation Mono, Menlo, monospace',
 			fontWeight: 400,
 			fontSize: 20,
 			lineHeight: '120%',
 		},
 		subtitle2: {
-			fontFamily: '\SFMono-Regular\, \Consolas\ , \Liberation Mono\, \Menlo\, monospace',
+			fontFamily: 'SFMono-Regular, Consolas , Liberation Mono, Menlo, monospace',
 			fontWeight: 400,
 			fontSize: 13,
 			lineHeight: '135%',
