@@ -44,7 +44,8 @@ export class ConnectionManager implements ConnectionManagerInterface {
     return sm.sendRpcMessage(message);
   }
 
-  async addSmoldot(name: string,  chainSpec: string) {
+  async addSmoldot(name: string,  chainSpec: string, testSmoldot?: any) {
+    this.#smoldot = testSmoldot || smoldot;
     if (this.#smoldots.find(s => s.name == name)) {
       throw new Error(`Extension already has a smoldot client named ${name}`);
     }
