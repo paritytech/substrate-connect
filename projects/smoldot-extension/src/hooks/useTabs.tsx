@@ -49,7 +49,7 @@ const sampleNetworkCtx: TabInterface[] = [{
 		name: 'uApp4',
 		enabled: true
 	}]
-	}]
+}]
 
 export default function useTabs (): TabInterface[] {
   const [tabs] = useState<NetworkCtx>(sampleNetworkCtx);
