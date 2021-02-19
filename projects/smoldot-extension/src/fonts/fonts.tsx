@@ -16,4 +16,12 @@ export default createGlobalStyle`
     body {
         margin: 0 !important;
     }
+    #options {
+        margin: 16px 16px 0 120px !important;
+        max-width: 655px;
+        @media (max-width: 840px) {
+            max-width: none;
+            margin: 16px 32px 0 !important;
+        }
+    }
 `;
