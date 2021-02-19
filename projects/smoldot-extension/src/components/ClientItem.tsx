@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, Popover, Theme, Typography, Box, ButtonBase, Button, ButtonGroup, Grid, Menu, MenuItem, Tooltip, Divider } from '@material-ui/core';
+import { makeStyles, Theme, Popover, Typography, Box, ButtonBase, Button, Grid, Tooltip, Divider } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import { ExpandMore, SystemUpdateAlt, InsertDriveFile, Publish } from '@material-ui/icons';
 import { IconWeb3 } from '../components';
@@ -12,13 +12,18 @@ interface Props {
 const useStyles = makeStyles<Theme, Props>(theme => ({
   root: {
     background: ({ isKnown }) => !isKnown ? grey[100] : 'transparent',
+    width: `calc(100% + ${theme.spacing(8)}px)`,
+    marginLeft: theme.spacing(-4),
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
     paddingLeft: theme.spacing(4),
     paddingRight: theme.spacing(4),
-    marginLeft: theme.spacing(-4),
     marginBottom: theme.spacing(1),
     borderRadius: theme.spacing(0.5),
+    border: `1px solid transparent`,
+    '&:hover': {
+      border: `1px solid ${theme.palette.grey[200]}`,
+    }
   },
   networkIconRoot: {
     display: 'inline-flex',
@@ -26,6 +31,7 @@ const useStyles = makeStyles<Theme, Props>(theme => ({
     justifyContent: 'center',
     width: theme.spacing(5),
     height: theme.spacing(5),
+    marginLeft: -4,
     marginRight: theme.spacing(2),
     backgroundColor: grey[100],
     borderRadius: '50%',

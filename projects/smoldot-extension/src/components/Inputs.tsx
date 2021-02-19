@@ -15,6 +15,7 @@ export const InputWrap = withStyles((theme: Theme) =>
     root: {
       display: 'flex',
       flexWrap: 'nowrap',
+      marginLeft: -2,
       backgroundColor: grey[100],
       borderRadius: theme.spacing(0.5),
       border: `1px solid ${grey[200]}`,

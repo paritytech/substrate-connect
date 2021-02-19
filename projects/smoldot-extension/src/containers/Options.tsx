@@ -4,7 +4,7 @@ import { light, ClientSearch, Logo, ClientItem } from '../components/';
 import GlobalFonts from '../fonts/fonts';
 
 const ClientTypeTitle: React.FunctionComponent = ({children}) => (
-	<Box marginY={4}>
+	<Box mt={5} mb={2}>
 		<Typography variant='overline'>
 			{children}
 		</Typography>
