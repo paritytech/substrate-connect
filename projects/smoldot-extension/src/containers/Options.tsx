@@ -19,9 +19,9 @@ const Options: React.FunctionComponent = () => {
 			<GlobalFonts />
 			<Logo />
 			<ClientSearch />
-			<ClientTypeTitle children='Local chainspecs'/>
+			<ClientTypeTitle>Local chainspecs</ClientTypeTitle>
 			<ClientItem />
-			<ClientTypeTitle children='Chainspecs from uApps'/>
+			<ClientTypeTitle>Chainspecs from uApps</ClientTypeTitle>
 			<ClientItem isKnown={false}/>
 		</ThemeProvider>
 	);

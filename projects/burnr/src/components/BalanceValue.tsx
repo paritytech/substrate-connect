@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 }));
 
-const BalanceValue: React.FunctionComponent<Props> = ({ value, unit, size, style }: Props) => {
+const BalanceValue: React.FunctionComponent<Props> = ({ value = '', unit = '', size, style }: Props) => {
 	const isBalance = typeof value === 'number';
 	const isColored = (isBalance && value >= 0 || (!isBalance && typeof value === 'string' && parseFloat(value) > 0));
 	const classes = useStyles({ colored: isColored });
@@ -45,8 +45,7 @@ const BalanceValue: React.FunctionComponent<Props> = ({ value, unit, size, style
 	return  (
 		<Box component='span' className={classes.root} style={style}>
 			<Typography variant={TypographyVariant}>
-				{value}
-				{` ${unit}`}
+				{`${value} ${unit}`}
 			</Typography>
 		</Box>
 	);

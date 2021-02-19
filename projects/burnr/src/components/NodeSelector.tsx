@@ -68,12 +68,12 @@ const useStyles = makeStyles((theme: Theme) =>
 				paddingLeft: theme.spacing(3),
 				paddingRight: theme.spacing(3),
 				fontSize: theme.typography.h4.fontSize,
-				lineHeight: theme.spacing(5) + 'px',
+				lineHeight: `${theme.spacing(5)}px`,
 			},
 		},
 		option: {
-			paddingLeft: theme.spacing(1) + 'px !important',
-			paddingRight: theme.spacing(1) + 'px !important',
+			paddingLeft: `${theme.spacing(1)}px !important`,
+			paddingRight: `${theme.spacing(1)}px !important`,
 			borderRadius: theme.spacing(0.5),
 			height: theme.spacing(5),
 			'&:hover': {
@@ -104,13 +104,13 @@ export default function NodeSelector(): React.ReactElement {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
-  	const endpointName = localEndpoint || 'Polkadot-WsProvider'
+	const endpointName = localEndpoint || 'Polkadot-WsProvider'
 	const [provider, setProvider] = useState<string>(ALL_PROVIDERS[endpointName].id);
-  	const handleOpenDropdown = (event: React.MouseEvent<HTMLElement>) => {
+	const handleOpenDropdown = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
 	};
 
-	const handleClose = (event: ChangeEvent<{}>, reason: AutocompleteCloseReason) => {
+	const handleClose = (event: ChangeEvent<unknown>, reason: AutocompleteCloseReason) => {
 		if (reason === 'toggleInput') {
 			return;
 		}
@@ -155,7 +155,10 @@ export default function NodeSelector(): React.ReactElement {
 					<Autocomplete
 						options={options}
 						disablePortal={true}
-						getOptionLabel={(option) => `${option.client} client`}
+						getOptionLabel={(option) => (option.client === 'string')
+							? `${option.client} client`
+							: `client`
+						}
 						open
 						classes={{
 							popper: classes.acPopper,
@@ -163,7 +166,7 @@ export default function NodeSelector(): React.ReactElement {
 							paper: classes.acPaper,
 						}}
 						onClose={handleClose}
-						onChange={(event: ChangeEvent<{}>, {provider: selected}: any ) => {
+						onChange={(event: ChangeEvent<unknown>, {provider: selected}: unknown ) => {
 							updateProvider(selected);
 						}}
 

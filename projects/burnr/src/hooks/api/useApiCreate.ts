@@ -37,14 +37,14 @@ export default function useApiCreate (): ApiPromise {
         types: {}
       })
       .then((api): void => {
-        console.log(`Burnr is now connected to ${provider.endpoint}`)
-        console.log("API api", api)
+        console.log(`Burnr is now connected to ${provider.endpoint === 'string' && provider.endpoint}`);
+        console.log("API api", api);
         mountedRef.current && setApi(api);
       })
       .catch((): void => {
         console.error
       });
-  }, []);
+  }, [mountedRef, provider.endpoint]);
 
   return api;
 }

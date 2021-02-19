@@ -11,6 +11,7 @@
     "module": "ES2020",
     "target": "ES2018"
   },
+  "include": ["src","."],
   "files": [
     "package.json"
   ]

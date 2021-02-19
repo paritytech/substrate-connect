@@ -65,8 +65,8 @@ const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		container: {
 			marginTop: theme.spacing(1),
-			width: 'calc(100% + ' + theme.spacing(4) + 'px)',
-    	marginLeft: theme.spacing(-2),
+			width: `calc(100% + ${theme.spacing(4)} px)`,
+			marginLeft: theme.spacing(-2),
 			maxHeight: 'calc(100vh - 320px)',
 
 			[theme.breakpoints.down('sm')]: {
@@ -95,7 +95,7 @@ const useStyles = makeStyles((theme: Theme) =>
 	})
 );
 
-export default function HistoryTable() {
+const HistoryTable: React.FunctionComponent = () => {
 	const classes = useStyles();
 
 	return (
@@ -119,13 +119,13 @@ export default function HistoryTable() {
 
 						{rows.map((row, i) => {
 							return (
-								<TableRow hover key={'transaction-' + i}>
+								<TableRow hover key={`transaction-${i}`}>
 
 									{columns.map((column) => {
 										const value = row[column.id];
 
 										return (
-											<TableCell key={'transaction-' + i + column.id} align={column.align}>
+											<TableCell key={`transaction-${i}${column.id}`} align={column.align}>
 												{column.id === 'withWhom' &&
 													<AccountCard
 														account={{ address: value.toString(), name: '' }}
@@ -149,3 +149,5 @@ export default function HistoryTable() {
 		</>
 	);
 }
+
+export default HistoryTable;

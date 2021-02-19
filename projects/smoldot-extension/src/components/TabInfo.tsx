@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import { Switch } from './';
 import { useTabs } from '../hooks';
@@ -14,7 +14,7 @@ interface Props {
 // each uApp will be associated with one url
 // if the same uApp, or uApp with the same title will be opened in >1 tab, it's ok to duplicate it on the UI too
 
-const TabInfo: FunctionComponent<Props> = ({ size = 'small', network }) => {
+const TabInfo: FunctionComponent<Props> = ({ size = 'small' }) => {
     const tabs = useTabs();
     return (
         <>
@@ -22,7 +22,7 @@ const TabInfo: FunctionComponent<Props> = ({ size = 'small', network }) => {
             <Grid justify='space-between' container key={t.tabId}>
                 <Typography
                     variant='body2'
-                    color={true ? 'textPrimary' : 'textSecondary'}
+                    color={'textPrimary'}
                 >
                     {t.tabId}
                 </Typography>

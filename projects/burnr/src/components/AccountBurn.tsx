@@ -6,7 +6,6 @@ import WhatshotIcon from '@material-ui/icons/Whatshot';
 import { AccountContext } from '../utils/contexts';
 
 import { createLocalStorageAccount } from '../utils/utils';
-import { POLKA_ACCOUNT_ENDPOINTS } from '../utils/constants';
 import { useApi, useBalance, useLocalStorage } from '../hooks';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,10 +33,10 @@ const AccountBurn: React.FunctionComponent = () => {
 
 	const { account, setCurrentAccount } = useContext(AccountContext);
 
-	const balance = useBalance(account.userAddress)
+	const balance = useBalance(account.userAddress);
 
 	const burnAndCreate = (): void => {
-    if (!balance[2] && !window.confirm(`Burn keys from account with ${balance[0]} ${chainTokens}?`)) {
+    if (!balance[2] && !window.confirm(`Burn keys from account with ${balance[0]} ${chainTokens.join('')}?`)) {
 			return
 		}
 		localStorage.removeItem(minEndpoint);

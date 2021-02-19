@@ -23,16 +23,16 @@ const InputAddress: React.FunctionComponent = () => {
 						InputProps={{
 							spellCheck: 'false',
 							startAdornment:
-                <Box marginRight={1}>
-                	{ (!value || value === '')
-                		? <Skeleton variant='circle' width={32} height={32} />
-                		: <Identicon
-                			size={32}
-                			theme='polkadot'
-                			value={value}
-                		/>
-                	}
-                </Box>,
+				<Box marginRight={1}>
+					{ (!value || value === '')
+						? <Skeleton variant='circle' width={32} height={32} />
+						: <Identicon
+							size={32}
+							theme='polkadot'
+							value={value}
+						/>
+					}
+				</Box>,
 						}}
 					/>
 				</FormControl>

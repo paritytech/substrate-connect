@@ -5,7 +5,7 @@ import { Typography, makeStyles, Theme, createStyles, IconButton, Divider } from
 
 import { AccountContext } from '../utils/contexts';
 
-import { openInNewTab, downloadFile, createLocalStorageAccount } from '../utils/utils';
+import { openInNewTab, downloadFile } from '../utils/utils';
 import { POLKA_ACCOUNT_ENDPOINTS } from '../utils/constants';
 import { useLocalStorage } from '../hooks';
 
@@ -33,23 +33,12 @@ const AccountMenu: React.FunctionComponent = () => {
 	const classes = useStyles();
 	const [endpoint] = useLocalStorage('endpoint');
 	const minEndpoint = endpoint?.split('-')[0]?.toLowerCase();
-	const [, setLclStorage] = useLocalStorage(minEndpoint);
 	const [polkastatsUri] = useState(
 		`https://${minEndpoint}.${polkastats}`
 	);
 	const [polkascanUri] = useState(`https://${polkascan}/${minEndpoint}`);
-
-	const { account, setCurrentAccount } = useContext(AccountContext);
-
-	const burnAndCreate = (): void => {
-		localStorage.removeItem(minEndpoint);
-		const userTmp = createLocalStorageAccount();
-		setLclStorage(JSON.stringify(userTmp));
-		setCurrentAccount(userTmp);
-	};
-
+	const { account } = useContext(AccountContext);
 	const { userAddress, userJson, userSeed } = account;
-
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);

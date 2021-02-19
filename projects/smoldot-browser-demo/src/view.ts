@@ -37,11 +37,11 @@ export default class UI {
     this.#container = container;
   }
 
-  private timeElapsed(from: number, till: number) {
+  private timeElapsed = (from: number, till: number) => {
     return ((till - from)/1000).toFixed(2);
   }
 
-  private timestampHtml(withTime?:boolean): HTMLElement {
+  private timestampHtml = (withTime?:boolean): HTMLElement => {
     const timestampDiv =  document.createElement('time');
     if (!withTime) {
       return timestampDiv;
@@ -55,7 +55,7 @@ export default class UI {
     return timestampDiv
   }
 
-  private messageHtml(message: string, withTime?: boolean): HTMLElement {
+  private messageHtml = (message: string, withTime?: boolean): HTMLElement => {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message');
     messageDiv.appendChild(this.timestampHtml(withTime))
@@ -63,7 +63,7 @@ export default class UI {
     return messageDiv;
   }
 
-  private errorHtml(message: string): HTMLElement {
+  private errorHtml = (message: string): HTMLElement => {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message');
     messageDiv.classList.add('error');
@@ -71,20 +71,20 @@ export default class UI {
     return messageDiv;
   }
 
-  private displayMessage(message: any) {
+  private displayMessage = (message: Node) => {
     this.#container.appendChild(message);
   }
 
-  error(error: Error) {
+  error = (error: Error): void => {
     this.displayMessage(this.errorHtml(error.message));
     throw error;
   };
 
-  log(message: string, withTime?: boolean) {
+  log = (message: string, withTime?: boolean): void => {
     this.displayMessage(this.messageHtml(message, withTime));
   }
 
-  #insertAtTopOfContainer = (el: HTMLElement) => {
+  #insertAtTopOfContainer = (el: HTMLElement): void => {
     if (this.#container.firstChild == null) {
       this.#container.appendChild(el);
     } else {
@@ -92,13 +92,13 @@ export default class UI {
     }
   }
 
-  #ensureClassOn = (el: HTMLElement, className: string) => {
+  #ensureClassOn = (el: HTMLElement, className: string): void => {
     if (!el.classList.contains(className)) {
       el.classList.add(className);
     }
   }
 
-  showSyncing() {
+  showSyncing = (): void => {
     if (!this.#syncMessage) {
       // message container
       const syncState = document.createElement('div');
@@ -121,7 +121,7 @@ export default class UI {
     }
   }
 
-  showSynced() {
+  showSynced = (): void => {
     if (!this.#syncState || !this.#syncMessage) {
       throw new Error('There is no sync state UI to update. You should have called `showSyncing()` first.');
     }

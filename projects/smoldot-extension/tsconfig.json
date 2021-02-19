@@ -16,5 +16,5 @@
     "module": "ES2015",
     "esModuleInterop": true
   },
-  "include": ["src"]
+  "include": ["src", "."]
 }

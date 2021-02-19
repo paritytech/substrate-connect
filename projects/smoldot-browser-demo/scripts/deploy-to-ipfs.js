@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-const { join } = require('path');
+const path = require('path');
 const pinataSDK = require('@pinata/sdk');
 const chalk = require('chalk');
 
+const { join } = path;
 const PIN_NAME = 'Smoldot Browser Demo';
 const folderToUpload = join(__dirname, '..', 'dist');
 
@@ -12,7 +13,7 @@ const log = msg => {
 };
 
 const warn = msg => {
-  console.log(`⚠️ ${chalk.keyword('orange')('msg')}`);
+  console.log(`⚠️ ${chalk.keyword('orange')(msg)}`);
 };
 
 const error = msg => {
@@ -69,7 +70,7 @@ async function unPinOldDeployments(pinata, currentDeploymentHash) {
       .then(() => log(`Unpinned ${hash}`))
       .catch(err => {
         error(`Error unpinning ${hash}`);
-        error(`Message from pinata API: ${error.message}`);
+        error(`Message from pinata API: ${err.message}`);
       })
     ));
 }

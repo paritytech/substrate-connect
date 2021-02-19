@@ -2,15 +2,10 @@ import React from 'react';
 import { render, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import 'jest-styled-components';
-import { substrateGreen } from './theme';
 
 import StatusCircle from './StatusCircle'
 
 afterEach(cleanup);
-
-function renderLoginForm() {
-  return render(<StatusCircle />);
-}
 
 describe('<StatusCircle /> Component', () => {
   // size prop testing

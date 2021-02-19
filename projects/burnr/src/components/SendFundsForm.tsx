@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const SendFundsForm: React.FunctionComponent = () => {
 	const classes = useStyles();
-    const { account } = useContext(AccountContext);
+	const { account } = useContext(AccountContext);
 	const balanceArr = useBalance(account.userAddress)
 	const amount = parseFloat(balanceArr[0]);
 	const unit = balanceArr[3];
@@ -44,7 +44,7 @@ const SendFundsForm: React.FunctionComponent = () => {
 			className={classes.container}
 		>
 			<Grid item>
-			  <InputAddress />
+				<InputAddress />
 			</Grid>
 			<Grid item>
 				<InputFunds 
@@ -65,7 +65,7 @@ const SendFundsForm: React.FunctionComponent = () => {
 					onClick={handleSubmit}
 					className={classes.button}
 				>
-          Send
+			Send
 				</Button>
 			</Grid>
 		</Grid>

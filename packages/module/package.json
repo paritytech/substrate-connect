@@ -12,7 +12,8 @@
   "scripts": {
     "build": "rimraf dist  && copyfiles -Eu2 \"src/clients/**/*\" dist/clients && copyfiles -Eu2 \"src/client-specs/**/*\" dist/client-specs && tsc",
     "clean": "rimraf dist && rimraf node_modules",
-    "test": "echo \"Warning: No test specified for @substrate/connect\""
+    "test": "echo \"Warning: No test specified for @substrate/connect\"",
+    "lint": "echo \"No lint yet for @substrate/connect: actual command -> yarn eslint . --ext .js,.ts\""
   },
   "publishConfig": {
     "access": "public"
@@ -28,5 +29,34 @@
   "sideEffects": "false",
   "dependencies": {
     "@polkadot/rpc-provider": "^3.7.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
+    "@typescript-eslint/parser": "^4.15.1",
+    "eslint": "^7.20.0",
+    "typescript": "^4.1.5"
+  },
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    ],
+    "env": {
+      "node": true
+    }
   }
 }
