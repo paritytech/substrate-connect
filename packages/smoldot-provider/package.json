@@ -58,7 +58,7 @@
       "@typescript-eslint"
     ],
     "parserOptions": {
-      "project": "./tsconfig.json"
+      "project": "./src/tsconfig.json"
     },
     "extends": [
       "eslint:recommended",
