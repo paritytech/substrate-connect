@@ -17,7 +17,7 @@
     "clean": "rm -rf dist/",
     "pretest": "yarn build",
     "test": "ava --config ava.config.js --verbose",
-    "lint": "echo \"No lint yet for smoldot-provider\"",
+    "lint": "echo \"No lint yet for @smoldot/provider: actual command -> yarn eslint . --ext .js,.ts\"",
     "examples": "ava --config ava.examples.config.js",
     "prepack": "yarn test && yarn examples",
     "postinstall": "yarn test"
@@ -45,5 +45,28 @@
   },
   "peerDependencies": {
     "@polkadot/wasm-crypto": "^3.2.2"
+  },
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    ],
+    "env": {
+      "node": true
+    }
   }
 }
