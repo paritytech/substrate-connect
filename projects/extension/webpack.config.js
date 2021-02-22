@@ -1,6 +1,7 @@
-import path from "path";
-import HtmlMinimizerPlugin from "html-minimizer-webpack-plugin";
-import CopyPlugin from "copy-webpack-plugin";
+/* eslint-disable @typescript-eslint/no-var-requires */
+const path = require("path");
+const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
+const CopyPlugin  = require("copy-webpack-plugin");
 
 const config = {
   mode: "development",
