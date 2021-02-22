@@ -8,4 +8,10 @@ const common = require('./webpack.config.js');
      contentBase: './dist',
      hot: true,
    },
+   watch: true,
+   watchOptions: {
+    ignored: /node_modules/,
+    aggregateTimeout: 1000,
+    poll: 1000
+  },
  });
