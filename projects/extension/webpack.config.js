@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-const webpack = require("webpack");
-const path = require("path");
-const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
+import path from "path";
+import HtmlMinimizerPlugin from "html-minimizer-webpack-plugin";
+import CopyPlugin from "copy-webpack-plugin";
 
 const config = {
   mode: "development",
@@ -87,6 +85,7 @@ const config = {
     minimize: true,
     minimizer: [
       `...`,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       new HtmlMinimizerPlugin(),
     ],
   },
