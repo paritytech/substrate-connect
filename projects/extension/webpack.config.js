@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
 const CopyPlugin  = require("copy-webpack-plugin");
 
