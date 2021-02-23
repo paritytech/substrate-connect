@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "jsx": "react",
+        "baseUrl": ".",
+        "outDir": "dist",
+        "lib": ["es6", "dom"],
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "target": "es6",
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "module": "ES2015",
+        "allowSyntheticDefaultImports" : true,
+        "esModuleInterop": true
+    },
+    "include": ["src", "."],
+    "exclude": ["./webpack.*", "jes.config.js"]
+}
