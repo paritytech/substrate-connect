@@ -166,6 +166,7 @@ export default function NodeSelector(): React.ReactElement {
 							paper: classes.acPaper,
 						}}
 						onClose={handleClose}
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
 						onChange={(event: ChangeEvent<unknown>, {provider: selected}: any ) => {
 							updateProvider(selected)
 						}}

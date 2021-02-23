@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from 'react';
 import { Link, makeStyles } from '@material-ui/core';
 import LogoLight from '../assets/images/logo_substrate.svg';
