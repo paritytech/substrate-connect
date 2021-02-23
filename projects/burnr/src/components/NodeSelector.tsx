@@ -166,8 +166,8 @@ export default function NodeSelector(): React.ReactElement {
 							paper: classes.acPaper,
 						}}
 						onClose={handleClose}
-						onChange={(event: ChangeEvent<unknown>, {provider: selected}: unknown ) => {
-							updateProvider(selected);
+						onChange={(event: ChangeEvent<unknown>, {provider: selected}: any ) => {
+							updateProvider(selected)
 						}}
 
 						renderInput={(params) => (

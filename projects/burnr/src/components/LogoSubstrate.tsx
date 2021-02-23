@@ -21,7 +21,7 @@ const LogoSubstrate: React.FunctionComponent<Props> = ({ theme }: Props) => {
 	const classes = useStyles();
 	return  (
 		<Link href='http://substrate.io/' target='_blank' className={classes.root}>
-			{theme ? <LogoLight /> : <LogoDark />}
+			<img src={theme ? LogoLight : LogoDark}/>
 		</Link>
 	);
 };
