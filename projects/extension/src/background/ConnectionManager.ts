@@ -1,7 +1,7 @@
 import smoldot, { Smoldot } from 'smoldot';
 import { AppMediator } from './AppMediator';
 import { SmoldotMediator } from './SmoldotMediator';
-import { JsonRpcResponse, ConnectionManagerInterface } from './types';
+import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface } from './types';
 
 export class ConnectionManager implements ConnectionManagerInterface {
   readonly #smoldots: SmoldotMediator[] = [];
@@ -10,7 +10,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
   constructor() {
     chrome.runtime.onConnect.addListener(port => {
       const { name } = port;
-      this.#apps.push(new AppMediator(name, port, this));
+      this.#apps.push(new AppMediator(name, port, this as ConnectionManagerInterface));
     });
   }
 
@@ -38,9 +38,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
     return '';
   }
 
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-  sendRpcMessageTo(name: string, message: any): number {
+  sendRpcMessageTo(name: string, message: JsonRpcRequest): number {
     const sm = this.#smoldots.find(s => s.name === name);
     if (!sm) {
       throw new Error(`No smoldot client named ${name}`);

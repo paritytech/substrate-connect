@@ -28,7 +28,7 @@ export interface SubscriptionMapping {
 
 export interface ConnectionManagerInterface {
   hasClientFor: (name: string) => boolean;
-  sendRpcMessageTo: (name: string, message: unknown) => number;
+  sendRpcMessageTo: (name: string, message: JsonRpcRequest) => number;
 }
 
 export interface JsonRpcObject {

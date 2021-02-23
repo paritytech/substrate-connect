@@ -1,3 +1,4 @@
+import { JsonRpcRequest } from './types';
 import { SmoldotClient } from 'smoldot';
 
 export class SmoldotMediator {
@@ -11,9 +12,7 @@ export class SmoldotMediator {
     this.#id = 0;
   }
 
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-  sendRpcMessage(message: any): number {
+  sendRpcMessage(message: JsonRpcRequest): number {
     const nextID = ++this.#id;
     /* eslint-disable @typescript-eslint/no-unsafe-member-access */
     message.id = nextID;
