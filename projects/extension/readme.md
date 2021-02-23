@@ -1,4 +1,4 @@
-# Chrome Extension boilerplate created with React Typescript
+# Extension
 
 ## Getting started
 Navigate to the project directory and install the dependencies.
