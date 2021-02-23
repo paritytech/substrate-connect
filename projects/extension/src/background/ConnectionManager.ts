@@ -45,12 +45,12 @@ export class ConnectionManager implements ConnectionManagerInterface {
   }
 
   async addSmoldot(name: string,  chainSpec: string, testSmoldot?: any) {
-    this.#smoldot = testSmoldot || smoldot;
+    const client = testSmoldot || smoldot;
     if (this.#smoldots.find(s => s.name == name)) {
       throw new Error(`Extension already has a smoldot client named ${name}`);
     }
 
-    const sc = await smoldot.start({
+    const sc = await client.start({
         database_content: this.#loadDatabase(name),
         chain_spec: chainSpec,
         max_log_level: 3,
