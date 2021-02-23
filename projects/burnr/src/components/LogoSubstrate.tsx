@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from 'react';
 import { Link, makeStyles } from '@material-ui/core';
 import LogoLight from '../assets/images/logo_substrate.svg';
@@ -21,7 +22,7 @@ const LogoSubstrate: React.FunctionComponent<Props> = ({ theme }: Props) => {
 	const classes = useStyles();
 	return  (
 		<Link href='http://substrate.io/' target='_blank' className={classes.root}>
-			{theme ? <LogoLight /> : <LogoDark />}
+			<img src={theme ? LogoLight : LogoDark}/>
 		</Link>
 	);
 };
