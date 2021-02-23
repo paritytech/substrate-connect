@@ -408,7 +408,7 @@ export class SmoldotProvider implements ProviderInterface {
   ): Promise<number | string> {
     const id = await this.send(method, params, { callback, type });
 
-    return id as number;
+    return id;
   }
 
   /**

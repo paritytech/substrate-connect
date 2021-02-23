@@ -10,7 +10,7 @@ const config = {
     popup: path.join(__dirname, "src/popup.tsx"),
     options: path.join(__dirname, "src/options.tsx"),
     content: path.join(__dirname, "src/content.ts"),
-    background: path.join(__dirname, "src/background.ts"),
+    background: path.join(__dirname, "src/background/index.ts"),
   },
   output: {
     path: path.join(__dirname, "dist"),

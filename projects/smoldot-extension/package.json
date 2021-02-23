@@ -14,8 +14,8 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "yarn run clean && parcel build src/*.html src/background.ts src/content.ts --no-source-maps --public-url ./",
-    "dev": "yarn run clean && parcel watch src/*.html src/background.ts src/content.ts --public-url ./",
+    "build": "yarn run clean && parcel build src/*.html src/background/index.ts src/content.ts --no-source-maps --public-url ./",
+    "dev": "yarn run clean && parcel watch src/*.html src/background/index.ts src/content.ts --public-url ./",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
@@ -25,6 +25,7 @@
   },
   "private": true,
   "devDependencies": {
+    "@substrate/smoldot-test-utils": "file:../../packages/smoldot-test-utils",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@types/chrome": "^0.0.129",
@@ -43,8 +44,7 @@
     "react-test-renderer": "^17.0.1",
     "ts-jest": "^26.5.1",
     "typescript": "^4.1.3",
-    "web-ext": "^5.5.0",
-    "webextension-polyfill-ts": "^0.24.0"
+    "web-ext": "^5.5.0"
   },
   "dependencies": {
     "eslint-config-tslinter": "^0.0.1",

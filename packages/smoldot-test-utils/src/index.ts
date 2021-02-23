@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import { SmoldotClient, SmoldotOptions } from 'smoldot';
 
 type RpcResponder = (request: string) => string;
