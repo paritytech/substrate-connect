@@ -1,4 +1,9 @@
 import { 
+  JsonRpcRequest,
+  JsonRpcResponse,
+  JsonRpcResponseSubscription,
+} from './types';
+import { 
   AppMessage, 
   ExtensionMessage, 
   AppState, 
@@ -6,7 +11,6 @@ import {
   SubscriptionMapping,
   ConnectionManagerInterface
 } from './types';
-import { ConnectionManager } from './ConnectionManager';
 
 export class AppMediator {
   readonly #name: string;
@@ -35,31 +39,31 @@ export class AppMediator {
     this.#port.onDisconnect.addListener(() => { this.#handleDisconnect(false) });
   }
 
-  get name() {
+  get name(): string {
     return this.#name;
   }
 
-  get tabId() {
+  get tabId(): number | undefined {
     return this.#tabId;
   }
 
-  get url() {
+  get url(): string | undefined {
     return this.#url;
   }
 
-  get state() {
+  get state(): AppState {
     return this.#state;
   }
 
-  #sendError = (message: string) => {
+  #sendError = (message: string): void => {
     const error: ExtensionMessage = { type: 'error', payload: message };
     this.#port.postMessage(error);
   }
 
-  processSmoldotMessage(message: any):  boolean {
+  processSmoldotMessage(message: JsonRpcResponse): boolean {
     // subscription message
     if (message.method) {
-      if(!message.result?.params?.subscription) {
+      if(!(message as JsonRpcResponseSubscription).params.subscription) {
         throw new Error('Got a subscription message without a subscription id');
       }
 
@@ -94,7 +98,8 @@ export class AppMediator {
       if (!message.result) {
         throw new Error('Got a message which we expected to return us a subid but it wasnt there');
       }
-      sub.subID = message.result;
+
+      sub.subID = message.result as (string | number | undefined);
     }
 
     // change the message ID to the ID the app is expecting
@@ -104,7 +109,7 @@ export class AppMediator {
     return true;
   }
 
-  #handleRpcRequest = (message: string) => {
+  #handleRpcRequest = (message: string): void => {
     if (this.#state !== 'ready' || this.#smoldotName === undefined) {
       const message = this.#state === 'connected'
         ? `The app is not associated with a blockchain client`
@@ -115,14 +120,14 @@ export class AppMediator {
       return;
     }
 
-    const parsed =  JSON.parse(message);
+    const parsed =  JSON.parse(message) as JsonRpcRequest;
     const appID = parsed.id;
     const smoldotID = this.#manager.sendRpcMessageTo(this.#smoldotName, parsed);
     this.requests.push({ appID, smoldotID });
   }
 
-  #handleAssociateRequest = (name: string) => {
-    if (this.#state !== 'connected') {
+  #handleAssociateRequest = (name: string): void => {
+    if (this.#state !== 'connected' && this.#smoldotName) {
       this.#sendError(`Cannot reassociate, app is already associated with ${this.#smoldotName}`);
       return;
     }
@@ -137,7 +142,7 @@ export class AppMediator {
     return;
   }
 
-  #handlePortMessage = (message: AppMessage) => {
+  #handlePortMessage = (message: AppMessage): void => {
     if (message.type == 'associate') {
       this.#handleAssociateRequest(message.payload);
       return;
@@ -147,16 +152,14 @@ export class AppMediator {
       this.#handleRpcRequest(message.payload);
       return;
     }
-
-    // Should be unreachable - you forgot to extend the AppMessageType
-    throw new Error(`Unrecognised message type: ${message.type}`);
   }
 
-  disconnect() {
+  disconnect(): void {
     this.#handleDisconnect(true);
   }
 
-  #handleDisconnect = (notify: boolean) => {
+  #handleDisconnect = (notify: boolean): void => {
+    console.log(`Disconnecting and notify is set to ${notify.toString()}`);
     this.#state = 'disconnecting';
     // TODO: clean up subs
     // TODO: send disconnected message if it was requested 

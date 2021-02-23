@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-private-methods": "^7.12.13",
+    "@polkadot/rpc-provider": "^3.10.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hot-loader": "^4.13.0",

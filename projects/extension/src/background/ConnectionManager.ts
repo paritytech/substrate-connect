@@ -1,7 +1,7 @@
-import smoldot from 'smoldot';
+import smoldot, { Smoldot } from 'smoldot';
 import { AppMediator } from './AppMediator';
 import { SmoldotMediator } from './SmoldotMediator';
-import { ConnectionManagerInterface } from './types';
+import { JsonRpcResponse, ConnectionManagerInterface } from './types';
 
 export class ConnectionManager implements ConnectionManagerInterface {
   readonly #smoldots: SmoldotMediator[] = [];
@@ -14,28 +14,33 @@ export class ConnectionManager implements ConnectionManagerInterface {
     });
   }
 
-  get registedApps() {
+  get registedApps(): string[] {
     return this.#apps.map(a => a.name);
   }
 
-  get registeredClients() {
+  get registeredClients(): string[] {
     return this.#smoldots.map(s => s.name);
   }
 
-  hasClientFor(name: string) {
-    return this.#smoldots.find(s => s.name) !== undefined;
+  hasClientFor(name: string): boolean {
+    return this.#smoldots.find(s => s.name === name) !== undefined;
   }
 
-  #saveDatabase = (name: string, content: string) => {
+  #saveDatabase = (name: string, content: string): void => {
+    // not really bytws but im just using this to make the linter happy!
+    console.log(`Saving ${content.length} bytes of JSON for ${name} client`);
     // TODO: save database in extension local storage
   }
 
-  #loadDatabase = (name: string) => {
+  #loadDatabase = (name: string): string => {
+    console.log(`Loading ${name} client database`);
     // TODO: load database from extension local storage
     return '';
   }
 
-  sendRpcMessageTo(name: string, message: any) {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+  sendRpcMessageTo(name: string, message: any): number {
     const sm = this.#smoldots.find(s => s.name === name);
     if (!sm) {
       throw new Error(`No smoldot client named ${name}`);
@@ -44,7 +49,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
     return sm.sendRpcMessage(message);
   }
 
-  async addSmoldot(name: string,  chainSpec: string, testSmoldot?: any) {
+  async addSmoldot(name: string,  chainSpec: string, testSmoldot?: Smoldot): Promise<void> {
     const client = testSmoldot || smoldot;
     if (this.#smoldots.find(s => s.name == name)) {
       throw new Error(`Extension already has a smoldot client named ${name}`);
@@ -55,7 +60,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
         chain_spec: chainSpec,
         max_log_level: 3,
         json_rpc_callback: (message: string) => {
-          const parsed = JSON.parse(message);
+          const parsed = JSON.parse(message) as JsonRpcResponse;
           for (const app of this.#apps) {
             if (app.processSmoldotMessage(parsed)) {
               break;

@@ -31,7 +31,7 @@ describe('AppMediator - protocol with content script', () => {
   it('emits error when manager does not have client for the network', () => {
     const port = new MockPort('test');
     const manager = new MockConnectionManager(false);
-    const am = new AppMediator('test', port, manager);
+    new AppMediator('test', port, manager);
     const network = 'westend';
 
     port.triggerMessage({ type: 'associate', payload: network });

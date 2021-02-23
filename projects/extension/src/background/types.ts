@@ -28,5 +28,39 @@ export interface SubscriptionMapping {
 
 export interface ConnectionManagerInterface {
   hasClientFor: (name: string) => boolean;
-  sendRpcMessageTo: (name: string, message: any) => number;
+  sendRpcMessageTo: (name: string, message: unknown) => number;
 }
+
+export interface JsonRpcObject {
+  id: number;
+  jsonrpc: '2.0';
+}
+
+export interface JsonRpcRequest extends JsonRpcObject {
+  method: string;
+  params: unknown[];
+}
+
+export interface JsonRpcResponseBaseError {
+  code: number;
+  data?: number | string;
+  message: string;
+}
+
+export interface JsonRpcResponseSingle {
+  error?: JsonRpcResponseBaseError;
+  result?: unknown;
+}
+
+export interface JsonRpcResponseSubscription {
+  method?: string;
+  params: {
+    error?: JsonRpcResponseBaseError;
+    result: unknown;
+    subscription: number | string;
+  };
+}
+
+export type JsonRpcResponseBase = JsonRpcResponseSingle & JsonRpcResponseSubscription;
+
+export type JsonRpcResponse = JsonRpcObject & JsonRpcResponseBase

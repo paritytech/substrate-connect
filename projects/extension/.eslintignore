@@ -4,3 +4,5 @@ node_modules
 dist
 # don't lint .cache
 .cache
+src/background/*.test.ts
+src/background/mocks.ts

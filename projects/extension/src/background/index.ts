@@ -3,6 +3,7 @@ import westend from '../assets/westend.json';
 
 const manager = new ConnectionManager();
 
-chrome.runtime.onStartup.addListener(async () => {
-  await manager.addSmoldot('westend', JSON.stringify(westend));
+chrome.runtime.onStartup.addListener(() => {
+  manager.addSmoldot('westend', JSON.stringify(westend))
+    .catch((e) => { console.error(e); });
 });
