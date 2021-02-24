@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 
 import BN from 'bn.js';
-import { TypeRegistry } from '@polkadot/types/create';
 import { AccountContext } from '../utils/contexts';
+import { Balance } from '@polkadot/types/interfaces';
 import { useBalance } from '../hooks';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -143,7 +143,7 @@ const HistoryTable: React.FunctionComponent = () => {
 												column.id === 'value'
 													&& typeof value === 'number'
 													&& <BalanceValue
-														value={new TypeRegistry().createType('Balance', new BN(value))}
+														value={new BN(value) as Balance}
 														unit={balanceArr[3]} />}
 												{column.id === 'status' && <PopoverExtrinsic status={value} />}
 

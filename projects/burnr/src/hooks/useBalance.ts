@@ -4,7 +4,6 @@ import BN from 'bn.js';
 import { useEffect, useState } from 'react';
 import { formatBalance } from '@polkadot/util';
 import { Balance } from '@polkadot/types/interfaces';
-import { TypeRegistry } from '@polkadot/types/create';
 
 import useApi from './api/useApi';
 import useIsMountedRef from './api/useIsMountedRef';
@@ -17,7 +16,7 @@ export default function useBalance (address: string): State {
   const api = useApi();
   const [state, setState] = useState<State>([
     '0',
-    new TypeRegistry().createType('Balance', new BN(ZERO)),
+    new BN(ZERO) as Balance,
     true,
     'Units'
   ]);
