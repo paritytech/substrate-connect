@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import BN from 'bn.js';
 import { TypeRegistry } from '@polkadot/types/create';
+import { AccountContext } from '../utils/contexts';
+import { useBalance } from '../hooks';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -100,6 +102,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const HistoryTable: React.FunctionComponent = () => {
 	const classes = useStyles();
+	const { account } = useContext(AccountContext);
+	const balanceArr = useBalance(account.userAddress);
 
 	return (
 		<>
@@ -138,9 +142,9 @@ const HistoryTable: React.FunctionComponent = () => {
 												{ // This may look overwhelming but is just for "dump" data until page is fixed
 												column.id === 'value'
 													&& typeof value === 'number'
-													&& <BalanceValue value={
-														new TypeRegistry().createType('Balance', new BN(value))
-													} />}
+													&& <BalanceValue
+														value={new TypeRegistry().createType('Balance', new BN(value))}
+														unit={balanceArr[3]} />}
 												{column.id === 'status' && <PopoverExtrinsic status={value} />}
 
 											</TableCell>

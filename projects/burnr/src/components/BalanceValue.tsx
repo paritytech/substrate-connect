@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const BalanceValue: React.FunctionComponent<Props> = ({ value, unit = '', size, style }: Props) => {
-	const fBalance = formatBalance(value);
+	const fBalance = formatBalance(value, { withSi: false });
 	const isColored = parseInt(fBalance) >= 0;
 	const classes = useStyles({ colored: isColored });
 
