@@ -1,5 +1,8 @@
 import React from 'react';
 
+import BN from 'bn.js';
+import { TypeRegistry } from '@polkadot/types/create';
+
 import { makeStyles } from '@material-ui/core/styles';
 import {
 	Table,
@@ -44,11 +47,11 @@ function createData(withWhom: string, extrinsic: string, value: string|number, s
 // @TODO real data?
 
 const rows: Data[] = [
-	createData('F7BeW4g5ViG8xGJQAzguGPxiX9QNdoPNc3YqF1bV8d9XkVV', 'balances.transfer', -132417.1354, 0),
+	createData('F7BeW4g5ViG8xGJQAzguGPxiX9QNdoPNc3YqF1bV8d9XkVV', 'balances.transfer', 132417.1354, 0),
 	createData('Gt6HqWBhdu4Sy1u8ASTbS1qf2Ac5gwdegwr8tWN8saMxPt5', 'balances.transfer', 140350.0365, 1),
 	createData('Czugcaso8uTUyA5ptvpZp1jthoWSESrR6aFPCh7DnswH7TQ', 'balances.transfer', 6048.3973, 2),
 	createData('Eodfj4xjkw8ZFLLSS5RfP6vCMw8aM6qfM7BfeQMf6ivFWHy', 'balances.transfer', 32716.7434, 0),
-	createData('GxxV8DAcHCSzBbspu83AK9UoTYxzSQ6VVfdopjnkXfPtE8d', 'claims.attest', '[...]', 1),
+	// createData('GxxV8DAcHCSzBbspu83AK9UoTYxzSQ6VVfdopjnkXfPtE8d', 'claims.attest', '[...]', 1),
 	createData('F7Wa1su7NRSr6LWuhPWdXcQALDyzm8Vmev7WtV5jVPtJELs', 'democracy.vote', 2547.5400, 1),
 	createData('FApDgUYw47GJMfwFaa7xPeR5FGtMkPWSoozW7n5tTPWwrNv', 'democracy.vote', 8301.9200, 1),
 	createData('GLVeryFRbg5hEKvQZcAnLvXZEXhiYaBjzSDwrXBXrfPF7wj', 'balances.transfer', 485.7000, 1),
@@ -57,7 +60,7 @@ const rows: Data[] = [
 	createData('EK8veMNH6sVtvhSRo4q1ZRh6huCDm69gxK4eN5MFoZzo3G7', 'balances.transfer', 12657.7691, 1),
 	createData('EK8veMNH6sVtvhSRo4q1ZRh6huCDm69gxK4eN5MFoZzo3G7', 'balances.transfer', 12657.7691, 0),
 	createData('J9nD3s7zssCX7bion1xctAF6xcVexcpy2uwy4jTm9JL8yuK', 'balances.transfer', 14679.3744, 1),
-	createData('GxxV8DAcHCSzBbspu83AK9UoTYxzSQ6VVfdopjnkXfPtE8d', 'claims.attest', '[...]', 1),
+	// createData('GxxV8DAcHCSzBbspu83AK9UoTYxzSQ6VVfdopjnkXfPtE8d', 'claims.attest', '[...]', 1),
 	createData('J9nD3s7zssCX7bion1xctAF6xcVexcpy2uwy4jTm9JL8yuK', 'balances.transfer', 21014.7125, 1)
 ];
 
@@ -132,7 +135,12 @@ const HistoryTable: React.FunctionComponent = () => {
 													/>
 												}
 												{column.id === 'extrinsic' && value}
-												{column.id === 'value' && <BalanceValue value={value} />}
+												{ // This may look overwhelming but is just for "dump" data until page is fixed
+												column.id === 'value'
+													&& typeof value === 'number'
+													&& <BalanceValue value={
+														new TypeRegistry().createType('Balance', new BN(value))
+													} />}
 												{column.id === 'status' && <PopoverExtrinsic status={value} />}
 
 											</TableCell>

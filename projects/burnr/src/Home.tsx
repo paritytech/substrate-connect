@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-
 import { Grid, Paper, Divider, IconButton, Box, makeStyles, Theme } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
@@ -21,7 +20,7 @@ function Home ():  React.ReactElement {
 	const classes = useStyles();
 	const userInfo = useUserInfo(account.userAddress);
 	const balanceArr = useBalance(account.userAddress);
-	const balance = balanceArr[0];
+	const balance = balanceArr[1];
 	const unit = balanceArr[3];
 
 	return (
