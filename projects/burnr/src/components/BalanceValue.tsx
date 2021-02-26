@@ -4,9 +4,10 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import { Box, Typography } from '@material-ui/core';
 import { SizeScale } from '../utils/types';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-
+import { Balance } from '@polkadot/types/interfaces';
+import { formatBalance } from '@polkadot/util';
 interface Props extends SizeScale {
-	value: number | string;
+	value: Balance;
 	unit?: string;
 	style?: CSSProperties;
 }
@@ -35,9 +36,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 }));
 
-const BalanceValue: React.FunctionComponent<Props> = ({ value = '', unit = '', size, style }: Props) => {
-	const isBalance = typeof value === 'number';
-	const isColored = (isBalance && value >= 0 || (!isBalance && typeof value === 'string' && parseFloat(value) > 0));
+const BalanceValue: React.FunctionComponent<Props> = ({ value, unit = '', size, style }: Props) => {
+	const fBalance = formatBalance(value, { withSi: false });
+	const isColored = parseInt(fBalance) >= 0;
 	const classes = useStyles({ colored: isColored });
 
 	const TypographyVariant = size === 'large' ? 'subtitle1' : 'subtitle2';
@@ -45,7 +46,7 @@ const BalanceValue: React.FunctionComponent<Props> = ({ value = '', unit = '', s
 	return  (
 		<Box component='span' className={classes.root} style={style}>
 			<Typography variant={TypographyVariant}>
-				{`${value} ${unit}`}
+				{`${fBalance} ${unit}`}
 			</Typography>
 		</Box>
 	);

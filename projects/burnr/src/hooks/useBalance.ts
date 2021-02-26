@@ -3,39 +3,28 @@
 import BN from 'bn.js';
 import { useEffect, useState } from 'react';
 import { formatBalance } from '@polkadot/util';
-// import { useLocalStorage } from '.';
-// import { AccountContext } from '../utils/contexts';
+import { Balance } from '@polkadot/types/interfaces';
 
 import useApi from './api/useApi';
 import useIsMountedRef from './api/useIsMountedRef';
 
-type State = [string, BN, boolean, string];
+type State = [string, Balance, boolean, string];
 
 const ZERO = new BN(0);
 
 export default function useBalance (address: string): State {
   const api = useApi();
-  const [state, setState] = useState<State>(['0', ZERO, true, 'Units']);
+  const [state, setState] = useState<State>([
+    '0',
+    new BN(ZERO) as Balance,
+    true,
+    'Units'
+  ]);
   const  mountedRef = useIsMountedRef();
-  // const { account } = useContext(AccountContext);
-  // const [userAddress] = useLocalStorage(account.userAddress);
-
-
   useEffect((): () => void => {
     let unsubscribe: null | (() => void) = null;
     api.query.system
       .account(address, ({ data }): void => {
-        // const history = account.userHistory;
-        // history.push({
-        //   amount: data.free,
-        //   key: '',
-        //   from: '',
-        //   to: userAddress,
-        //   wasSent: true,
-        //   when: new Date(),
-        //   method: 'transfer'
-        // })
-        // account.userHistory = [...history];
         mountedRef.current && setState([
           formatBalance(data.free, { decimals: api.registry.chainDecimals[0], forceUnit: '-', withSi: false }),
           data.free,
