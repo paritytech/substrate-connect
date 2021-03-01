@@ -9,16 +9,6 @@ window.addEventListener('message', ({ data, source }: Message): void => {
   if (source !== window || data.origin !== 'content') {
     return;
   }
-  console.log('data', data);
-  console.log('source', source);
-
-  // From POLKADOT-JS EXTENSION
-  // if (data.id) {
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   handleResponse(data as any);
-  // } else {
-  //   console.error('Missing id for response.');
-  // }
 });
 
 injectExtension();
