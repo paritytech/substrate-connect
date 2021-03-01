@@ -31,3 +31,23 @@ script.onload = (): void => {
 };
 
 (document.head || document.documentElement).appendChild(script);
+
+// // listen FROM the page TO the content
+// port.onMessage.addListener((message, sender) => {
+//     console.log('message is ', message, sender);
+//     if(message === "hello"){
+//         console.log("HELLO!!!", message);
+        
+//         // communicate something FROM the extension -> TO the page
+//         window.postMessage({ message: 'hello', origin: 'content' }, '*');
+//     }
+//     if (message == 'version') {
+//         const manifest = chrome.runtime.getManifest();
+//         // const url = chrome.runtime.getURL();
+//         console.log('-------- manifest', manifest);
+
+//         // communicate something FROM the extension -> TO the page
+//         window.postMessage({ message: 'manifest', origin: 'content' }, '*');
+//     }
+//     return true;
+// });

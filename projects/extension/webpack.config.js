@@ -2,9 +2,9 @@ const path = require("path");
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
 const CopyPlugin  = require("copy-webpack-plugin");
-
+const webpack = require('webpack');
+const pkgJson = require('./package.json');
 const config = {
-  mode: "development",
   devtool: "inline-source-map",
   entry: {
     popup: path.join(__dirname, "src/popup.tsx"),
@@ -82,6 +82,10 @@ const config = {
     new CopyPlugin({
       patterns: [{ from: "public", to: "." }],
     }),
+    new webpack.EnvironmentPlugin({
+      PKG_NAME: pkgJson.name,
+      PKG_VERSION: pkgJson.version
+    })
   ],
   optimization: {
     minimize: true,
