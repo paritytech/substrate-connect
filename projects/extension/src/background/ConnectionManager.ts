@@ -1,4 +1,4 @@
-import smoldot, { Smoldot } from 'smoldot';
+import * as smoldot from 'smoldot';
 import { AppMediator } from './AppMediator';
 import { SmoldotMediator } from './SmoldotMediator';
 import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface } from './types';
@@ -47,12 +47,15 @@ export class ConnectionManager implements ConnectionManagerInterface {
     return sm.sendRpcMessage(message);
   }
 
-  async addSmoldot(name: string,  chainSpec: string, testSmoldot?: Smoldot): Promise<void> {
+  async addSmoldot(name: string,  chainSpec: string, testSmoldot?: smoldot.Smoldot): Promise<void> {
     const client = testSmoldot || smoldot;
     if (this.#smoldots.find(s => s.name == name)) {
       throw new Error(`Extension already has a smoldot client named ${name}`);
     }
 
+    try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const sc = await client.start({
         database_content: this.#loadDatabase(name),
         chain_spec: chainSpec,
@@ -73,5 +76,8 @@ export class ConnectionManager implements ConnectionManagerInterface {
       const sm = new SmoldotMediator(name, sc);
 
       this.#smoldots.push(sm);
+    } catch (err) {
+      console.log('err', err);
+    }
   }
 }
