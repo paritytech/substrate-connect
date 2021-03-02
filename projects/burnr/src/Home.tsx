@@ -1,11 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Grid, Paper, Divider, IconButton, Box, makeStyles, Theme } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { AccountContext } from './utils/contexts';
-
 import { NavTabs, AccountCard, BalanceValue, Bg, AccountMenu } from './components';
-
 import { useUserInfo, useBalance } from './hooks';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -22,6 +20,8 @@ function Home ():  React.ReactElement {
 	const balanceArr = useBalance(account.userAddress);
 	const balance = balanceArr[1];
 	const unit = balanceArr[3];
+
+	const [isVisible, setIsVisible] = useState<boolean>(true);
 
 	return (
 		<>
@@ -57,6 +57,7 @@ function Home ():  React.ReactElement {
 							>
 								<Grid item xs={12}>
 									<BalanceValue
+										isVisible={isVisible}
 										value={balance}
 										unit={unit}
 										size='large'
@@ -64,8 +65,11 @@ function Home ():  React.ReactElement {
 									/>
 								</Grid>
 								<Grid item>
-									<IconButton style={{ borderRadius: 4 }} >
-										<VisibilityIcon />
+									<IconButton style={{ borderRadius: 4 }} onClick={() => setIsVisible(!isVisible)}>
+										{isVisible ?
+											(<VisibilityIcon />) :
+											(<VisibilityOffIcon />)
+										}
 									</IconButton>
 								</Grid>
 							</Grid>
@@ -74,7 +78,7 @@ function Home ():  React.ReactElement {
 				</Box>
 			</Paper>
 			<Divider/>
-			<NavTabs />
+			<NavTabs isVisible={isVisible} />
 		</>
 	);
 }

@@ -8,7 +8,6 @@ const dark: ThemeOptions = {
 	shadows: shadows.shadows,
 	palette: {
 		type: 'dark',
-
 		common: {
 			black: colors.black,
 			white: colors.white,

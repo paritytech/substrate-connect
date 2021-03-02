@@ -5,7 +5,7 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 
 import { ALL_PROVIDERS } from '../../utils/constants';
 import { LazyProvider } from '../../utils/types'; 
-import { useIsMountedRef, useLocalStorage } from '../../hooks';
+import { useIsMountedRef, useLocalStorage } from '..';
 
 /**  This part isn't usable until the issues in the Substrate Light CLient implementation have been fixed **/
 // import {

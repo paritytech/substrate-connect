@@ -143,6 +143,7 @@ const HistoryTable: React.FunctionComponent = () => {
 												column.id === 'value'
 													&& typeof value === 'number'
 													&& <BalanceValue
+														isVisible={true}
 														value={new BN(value) as Balance}
 														unit={balanceArr[3]} />}
 												{column.id === 'status' && <PopoverExtrinsic status={value} />}
