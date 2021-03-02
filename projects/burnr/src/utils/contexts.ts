@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: Apache-2
 
-import { LocalStorageAccountCtx, AdminCtx, EvtMgrCtx, EvtTxCtx, CreateAccountCtx } from './types';
+import { LocalStorageAccountCtx, AdminCtx, BalanceVisibilityCtx, EvtMgrCtx, EvtTxCtx, CreateAccountCtx } from './types';
 
 import React from 'react';
 import { ApiPromise } from '@polkadot/api';
 
+const BalanceVisibleContext = React.createContext<BalanceVisibilityCtx>({
+  balanceVisibility: true,
+  setBalanceVisibility: () => console.log()
+});
 const AccountContext = React.createContext<CreateAccountCtx>({
     account: {} as LocalStorageAccountCtx,
     setCurrentAccount: () => console.log()
@@ -18,6 +22,7 @@ export {
   AccountContext,
   AdminContext,
   ApiContext,
+  BalanceVisibleContext,
   EvtMgrContext,
   EvtTxContext
 };

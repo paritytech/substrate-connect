@@ -27,10 +27,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 		paddingLeft: theme.spacing(1),
 		paddingRight: theme.spacing(1),
 		borderRadius: theme.spacing(0.5),
-		filter:  (props: StyleProps) =>
-			props.visible
-				? 'unset'
-				: 'blur(5px)',
 		backgroundColor: (props: StyleProps) =>
 			props.colored
 				? theme.palette.primary.light
@@ -40,6 +36,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 				? theme.palette.getContrastText(theme.palette.primary.light)
 				: theme.palette.text.primary,
 	},
+	blur: {
+		filter: (props: StyleProps) =>
+			props.visible
+				? 'unset'
+				: 'blur(3px)'
+	}
 }));
 
 const BalanceValue: React.FunctionComponent<Props> = ({ value, isVisible, unit = '', size, style }: Props) => {
@@ -51,7 +53,7 @@ const BalanceValue: React.FunctionComponent<Props> = ({ value, isVisible, unit =
 
 	return  (
 		<Box component='span' className={classes.root} style={style}>
-			<Typography variant={TypographyVariant}>
+			<Typography variant={TypographyVariant} className={classes.blur} >
 				{`${fBalance} ${unit}`}
 			</Typography>
 		</Box>
