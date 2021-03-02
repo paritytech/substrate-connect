@@ -25,7 +25,7 @@ export default function useBalance (address: string): State {
     let unsubscribe: null | (() => void) = null;
     api.query.system
       .account(address, ({ data }): void => {
-        console.log('address', address, 'data', formatBalance(data.free, { decimals: api.registry.chainDecimals[0], forceUnit: '-', withSi: false }));
+        // console.log('address', address, 'data', formatBalance(data.free, { decimals: api.registry.chainDecimals[0], forceUnit: '-', withSi: false }));
         mountedRef.current && setState([
           formatBalance(data.free, { decimals: api.registry.chainDecimals[0], forceUnit: '-', withSi: false }),
           data.free,
