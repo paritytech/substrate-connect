@@ -1,24 +1,32 @@
-import React, { ChangeEvent, MouseEvent } from 'react';
-
+import React, { ChangeEvent, MouseEvent, SetStateAction, Dispatch } from 'react';
 import { Button, Grid, TextField, Box, InputAdornment } from '@material-ui/core';
 
 interface Props {
   total: number;
   currency: string;
   hidePercentages?: boolean;
+  setAmount: Dispatch<SetStateAction<number>>;
 }
 
 // @TODO bn.js
 
-const InputFunds: React.FunctionComponent<Props> = ({ total, currency, hidePercentages = false }: Props) => {
+const InputFunds: React.FunctionComponent<Props> = ({ total, setAmount, currency, hidePercentages = false }: Props) => {
 	const [value, setValue] = React.useState<number | ''>('');
 	const handleChangeButton = (e: MouseEvent) => {
-		setValue(parseInt((e.currentTarget as HTMLButtonElement).value) * total);
+		const val = parseFloat((e.currentTarget as HTMLButtonElement).value) * total;
+		setValue(val);
+		setAmount(val);
 		document.getElementById('SendFundsAmountField')?.focus();
 	};
 	const handleChange = (e: ChangeEvent) => {
-		const value = parseInt((e.currentTarget as HTMLTextAreaElement).value);
-		!isNaN(value) && setValue(value);
+		const value = parseFloat((e.currentTarget as HTMLTextAreaElement).value);
+		if (!isNaN(value)) {
+			setValue(value);
+			setAmount(value);
+		} else{ 
+			setValue('');
+			setAmount(0);
+		} 
 	};
 
 	// @TODO focus/blur TextField and %Buttons at the same time in a React way
@@ -26,7 +34,6 @@ const InputFunds: React.FunctionComponent<Props> = ({ total, currency, hidePerce
 	const [focus, setFocus] = React.useState<boolean>(false);
 	const handleFocus = () => {
 		setFocus(!focus);
-
 	};
 
 	return (
@@ -34,6 +41,7 @@ const InputFunds: React.FunctionComponent<Props> = ({ total, currency, hidePerce
 			<Box marginBottom={1}>
 				<TextField
 					id='SendFundsAmountField'
+					type="number"
 					value={value}
 					label="Amount"
 					fullWidth
