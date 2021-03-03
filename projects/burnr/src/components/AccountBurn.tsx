@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const AccountBurn: React.FunctionComponent = () => {
 	const classes = useStyles();
-  
-  const api = useApi()
+
+	const api = useApi()
 	const chainTokens = api.registry.chainTokens
 
 	const [endpoint] = useLocalStorage('endpoint');
@@ -36,7 +36,7 @@ const AccountBurn: React.FunctionComponent = () => {
 	const balance = useBalance(account.userAddress);
 
 	const burnAndCreate = (): void => {
-    if (!balance[2] && !window.confirm(`Burn keys from account with ${balance[0]} ${chainTokens.join('')}?`)) {
+	if (!balance[2] && !window.confirm(`Burn keys from account with ${balance[0]} ${chainTokens.join('')}?`)) {
 			return
 		}
 		localStorage.removeItem(minEndpoint);

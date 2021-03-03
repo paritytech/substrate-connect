@@ -1,14 +1,24 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useEffect, useState, SetStateAction, Dispatch } from 'react';
 
 import { FormControl, TextField, Box } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import Identicon from '@polkadot/react-identicon';
 
-const InputAddress: React.FunctionComponent = () => {
-	const [value, setValue] = React.useState<string>('');
+interface Props {
+	setAddress: Dispatch<SetStateAction<string>>;
+}
+
+const InputAddress: React.FunctionComponent<Props> = ({ setAddress }) => {
+	const [value, setValue] = useState<string>('');
+
+	useEffect((): void => {
+		setAddress(value);
+	}, [value, setAddress]);
+
 	const handleChangeButton = (e: ChangeEvent) => {
-		setValue((e.currentTarget as HTMLTextAreaElement).value);
+		const val = (e.currentTarget as HTMLTextAreaElement).value;
+		setValue(val);
 	};
 
 	return (
@@ -18,6 +28,8 @@ const InputAddress: React.FunctionComponent = () => {
 					<TextField
 						label="Recepient Address"
 						onChange={handleChangeButton}
+						onFocus={handleChangeButton}
+						onBlur={handleChangeButton}
 						value={value}
 						variant="outlined"
 						InputProps={{
