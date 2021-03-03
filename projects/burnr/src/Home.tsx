@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Grid, Paper, Divider, IconButton, Box, makeStyles, Theme } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { AccountContext, BalanceVisibleContext } from './utils/contexts';
 import { NavTabs, AccountCard, BalanceValue, Bg, AccountMenu } from './components';
-import { useUserInfo, useBalance } from './hooks';
+import { useUserInfo, useBalance, useLocalStorage } from './hooks';
 
 const useStyles = makeStyles((theme: Theme) => ({
 		paperAccount: {
@@ -14,13 +14,18 @@ const useStyles = makeStyles((theme: Theme) => ({
 );
 
 function Home ():  React.ReactElement {
+	const [localBalance, setLocalBalance] = useLocalStorage('balanceVisibility');
+	const [balanceVisibility, setBalanceVisibility] = useState<boolean>(localBalance !== 'false');
 	const { account } = useContext(AccountContext);
 	const classes = useStyles();
 	const userInfo = useUserInfo(account.userAddress);
 	const balanceArr = useBalance(account.userAddress);
 	const balance = balanceArr[1];
 	const unit = balanceArr[3];
-	const [balanceVisibility, setBalanceVisibility] = useState<boolean>(true);
+
+	useEffect((): void => {
+		setLocalBalance(balanceVisibility ? 'true' : 'false')
+	}, [balanceVisibility, setLocalBalance])
 
 	return (
 		<BalanceVisibleContext.Provider value={{ balanceVisibility, setBalanceVisibility }}>
