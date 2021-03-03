@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import BN from 'bn.js';
-import { AccountContext } from '../utils/contexts';
+import { AccountContext, BalanceVisibleContext } from '../utils/contexts';
 import { Balance } from '@polkadot/types/interfaces';
 import { useBalance } from '../hooks';
 
@@ -104,6 +104,7 @@ const HistoryTable: React.FunctionComponent = () => {
 	const classes = useStyles();
 	const { account } = useContext(AccountContext);
 	const balanceArr = useBalance(account.userAddress);
+	const { balanceVisibility } = useContext(BalanceVisibleContext);
 
 	return (
 		<>
@@ -143,6 +144,7 @@ const HistoryTable: React.FunctionComponent = () => {
 												column.id === 'value'
 													&& typeof value === 'number'
 													&& <BalanceValue
+														isVisible={balanceVisibility}
 														value={new BN(value) as Balance}
 														unit={balanceArr[3]} />}
 												{column.id === 'status' && <PopoverExtrinsic status={value} />}

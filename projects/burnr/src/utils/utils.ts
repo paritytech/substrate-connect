@@ -44,3 +44,12 @@ export const downloadFile = (fileName: string, data: string, type: string): void
   }
 
   export const isEmpty = (obj: unknown): boolean => ((typeof obj === 'object' && obj !== null) && Object.keys(obj).length === 0 && obj.constructor === Object)
+
+  export const copyToClipboard = (text: string): void => {
+    const dummy = document.createElement("textarea");
+    document.body.appendChild(dummy);
+    dummy.value = text;
+    dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
+}

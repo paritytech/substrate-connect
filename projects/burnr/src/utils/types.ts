@@ -56,6 +56,11 @@ export interface ApiCtx {
   api: ApiPromise;
 }
 
+export interface BalanceVisibilityCtx {
+  balanceVisibility: boolean;
+  setBalanceVisibility: (bal: boolean) => void
+}
+
 export interface MgrEvent {
   when: Date;
   method: string;

@@ -63,7 +63,7 @@ const NavTabs: React.FunctionComponent = () => {
 	const classes = useStyles();
 	const [value, setValue] = React.useState(1);
 
-	const api = useApi()
+	const api = useApi();
 	const [endpoint] = useLocalStorage('endpoint');
 	const minEndpoint = endpoint?.split('-')[0]?.toLowerCase();
 	const { account, setCurrentAccount } = useContext(AccountContext);
