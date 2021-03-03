@@ -13,9 +13,19 @@ export type uApp = {
 }
 
 export type Networks = {
-    name: NetworkTypes;
-    status: NetworkStatus; 
+  name: string;
+  status: NetworkStatus;
+  isKnown?: boolean;
+  chainspecPath?:  string;
+  // parachains: Parachain[];
 }
+
+// type Parachain = {
+//   name: string;
+//   status: NetworkStatus;
+//   isKnown?: boolean;
+//   chainspecPath?:  string;
+// }
 export interface Message extends MessageEvent {
     data: {
       error?: string;

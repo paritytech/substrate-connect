@@ -4,14 +4,13 @@ import { grey } from '@material-ui/core/colors';
 import { ExpandMore, SystemUpdateAlt, InsertDriveFile, Publish } from '@material-ui/icons';
 import { IconWeb3 } from '../components';
 import { InputButton, InputText, InputWrap } from './Inputs';
+import { Networks } from '../types';
 
-interface Props {
-  isKnown?: boolean
-}
-
-const useStyles = makeStyles<Theme, Props>(theme => ({
+const useStyles = makeStyles<Theme>(theme => ({
   root: {
-    background: ({ isKnown }) => !isKnown ? grey[100] : 'transparent',
+    flexWrap: 'nowrap',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     width: `calc(100% + ${theme.spacing(8)}px)`,
     marginLeft: theme.spacing(-4),
     paddingTop: theme.spacing(2),
@@ -21,9 +20,12 @@ const useStyles = makeStyles<Theme, Props>(theme => ({
     marginBottom: theme.spacing(1),
     borderRadius: theme.spacing(0.5),
     border: `1px solid transparent`,
+    '&.unknown': {
+      background: grey[100],
+    },
     '&:hover': {
       border: `1px solid ${theme.palette.grey[200]}`,
-    }
+    },
   },
   networkIconRoot: {
     display: 'inline-flex',
@@ -59,8 +61,8 @@ const useStyles = makeStyles<Theme, Props>(theme => ({
   },
 }));
 
-const ClientMenu: React.FunctionComponent<Props> = ({isKnown}) => {
-  const classes = useStyles({isKnown});
+const ClientMenu: React.FunctionComponent<Networks> = ({isKnown, name, chainspecPath}) => {
+  const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -100,12 +102,13 @@ const ClientMenu: React.FunctionComponent<Props> = ({isKnown}) => {
         <Typography variant='overline'>Chainspec</Typography>
         <InputWrap>
 
-          <InputText readOnly defaultValue='chainspec.json'/>
+          <InputText readOnly defaultValue={chainspecPath}/>
           <Divider orientation='vertical' flexItem/>
           <InputButton>
             <InsertDriveFile fontSize='small'/>
           </InputButton>
           <Divider orientation='vertical' flexItem/>
+
           { isKnown
             ? <InputButton>
               <Publish fontSize='small'/>
@@ -117,7 +120,7 @@ const ClientMenu: React.FunctionComponent<Props> = ({isKnown}) => {
 
         </InputWrap>
         <InputWrap>
-          <InputText readOnly={!isKnown} defaultValue='<networkName>'/>
+          <InputText readOnly defaultValue={name}/>
         </InputWrap>
         <Divider/>
         <Button onClick={handleClose} fullWidth>Cancel</Button>
@@ -128,18 +131,18 @@ const ClientMenu: React.FunctionComponent<Props> = ({isKnown}) => {
 }
 
 
-const ClientItem: React.FunctionComponent<Props> = ({isKnown = true}) => {
-  const classes = useStyles({isKnown});
+const ClientItem: React.FunctionComponent<Networks> = ({...props}) => {
+  const classes = useStyles();
 
   return (
-    <Grid container wrap='nowrap' justify='space-between' alignItems='center' className={classes.root} >
+    <Grid container className={`${classes.root} ${!props.isKnown && 'unknown'}`} >
       <Typography variant='h2' component='div'>
         <Box component='span' className={classes.networkIconRoot}>
-            <IconWeb3>polkadot</IconWeb3>
+          <IconWeb3>{props.name}</IconWeb3>
         </Box>
-        Polkadot
+        {props.name}
       </Typography>
-      <ClientMenu isKnown={isKnown}/>
+      <ClientMenu {...props}/>
     </Grid>
   );
 };
