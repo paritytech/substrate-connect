@@ -16,5 +16,15 @@ export type Networks = {
     name: NetworkTypes;
     status: NetworkStatus; 
 }
+export interface Message extends MessageEvent {
+    data: {
+      error?: string;
+      id: string;
+      origin: string;
+      response?: string;
+      subscription?: string;
+    }
+  }
+  
 
 export type NetworkCtx = TabInterface[];

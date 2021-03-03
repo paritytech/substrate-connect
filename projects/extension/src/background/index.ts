@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { ConnectionManager } from './ConnectionManager';
-import westend from '../assets/westend.json';
 
+// secure ws - test chainspec
+import westend from '../assets/westend-wss.json';
+// Non secure ws - test chainspec
+// import westend from '../assets/westend-ws.json';
 const manager = new ConnectionManager();
 
-chrome.runtime.onStartup.addListener(() => {
+chrome.runtime.onConnect.addListener(() => {
   manager.addSmoldot('westend', JSON.stringify(westend))
     .catch((e) => { console.error(e); });
 });

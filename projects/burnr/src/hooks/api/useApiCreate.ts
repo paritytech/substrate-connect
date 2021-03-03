@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ApiPromise, WsProvider } from '@polkadot/api';
+import { SmoldotProvider }  from '@substrate/smoldot-provider';
 
 import { ALL_PROVIDERS } from '../../utils/constants';
 import { LazyProvider } from '../../utils/types'; 
@@ -20,18 +21,41 @@ import { useIsMountedRef, useLocalStorage } from '../../hooks';
 console.log('ALL_PROVIDERS', ALL_PROVIDERS)
 
 
-export default function useApiCreate (): ApiPromise {
+export default function useApiCreate (extensionExists: boolean): ApiPromise {
   const [api, setApi] = useState<ApiPromise>({} as ApiPromise);
   const [localEndpoint] = useLocalStorage('endpoint');
 
+  const [isWestend, setIsWestend] = useState(false);
   const [provider] = useState<LazyProvider>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Polkadot-WsProvider']);
   const  mountedRef = useIsMountedRef();
 
   // @TODO Make dynamic once @substrate/connect is implemented
   // const instantiated = provider.source === 'browser' ? new WasmProvider(polkadotLocal()) : new WsProvider(provider.endpoint);
 
+  useEffect(() => {
+    if (localEndpoint === 'Westend-WsProvider') {
+      console.log('Westend-WsProvider was chosen');
+      setIsWestend(true);
+    }
+  }, [localEndpoint]);
+
   useEffect((): void => {
-    ApiPromise
+    const myFunct = async () => {
+      const response =  await fetch('../../assets/westend.json');
+      if (!response.ok) {
+        console.error(new Error('Error downloading chain spec'));
+      }
+
+      console.log('----- extensionInstalled ------ ', extensionExists);
+
+      const chainSpec =  await response.text();
+      const provider = new SmoldotProvider(chainSpec);
+      await provider.connect();
+      const api = await ApiPromise.create({ provider });
+      mountedRef.current && setApi(api);
+    }
+
+    !isWestend && ApiPromise
       .create({
         provider: new WsProvider(provider.endpoint),
         types: {}
@@ -44,7 +68,9 @@ export default function useApiCreate (): ApiPromise {
       .catch((): void => {
         console.error
       });
-  }, [mountedRef, provider.endpoint]);
+
+      isWestend && myFunct()
+  }, [extensionExists, isWestend, mountedRef, provider.endpoint]);
 
   return api;
 }
