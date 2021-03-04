@@ -114,6 +114,21 @@ export interface UserInfo {
 export interface ExtrinsicInfo {
   status: string|number;
 }
+
+export interface Data extends ExtrinsicInfo {
+	withWhom: string;
+	value: string|number;
+	extrinsic: string;
+}
 export interface SizeScale {
   size?: 'large'|'medium'|'small';
+}
+
+export interface Column {
+  id: 'withWhom' | 'extrinsic' | 'value' | 'status';
+  label: string;
+  minWidth?: number;
+  maxWidth?: number;
+  width?: number;
+  align?: 'right';
 }

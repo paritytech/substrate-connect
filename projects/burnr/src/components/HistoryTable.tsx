@@ -1,9 +1,4 @@
-import React, { useContext } from 'react';
-
-import BN from 'bn.js';
-import { AccountContext, BalanceVisibleContext } from '../utils/contexts';
-import { Balance } from '@polkadot/types/interfaces';
-import { useBalance } from '../hooks';
+import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -17,30 +12,15 @@ import {
 	createStyles
 } from '@material-ui/core';
 
-import { AccountCard, BalanceValue, PopoverExtrinsic} from './index';
-import { ExtrinsicInfo } from '../utils/types';
-
-interface Column {
-  id: 'withWhom' | 'extrinsic' | 'value' | 'status';
-  label: string;
-  minWidth?: number;
-  maxWidth?: number;
-  width?: number;
-  align?: 'right';
-}
+import { HistoryTableRow } from '.';
+import { Data, Column } from '../utils/types';
 
 const columns: Column[] = [
-	{ id: 'withWhom', label: '', width: 160 },
-	{ id: 'extrinsic', label: 'Extrinsic' },
+	{ id: 'withWhom', label: '', width: 160},
+	{ id: 'extrinsic', label: 'Extrinsic'},
 	{ id: 'value', label: 'Value', minWidth: 170, align: 'right' },
 	{ id: 'status', label: 'Status', width: 40, align: 'right' }
 ];
-
-interface Data extends ExtrinsicInfo {
-	withWhom: string;
-	value: string|number;
-	extrinsic: string;
-}
 
 function createData(withWhom: string, extrinsic: string, value: string|number, status: string|0|2|1): Data {
 	return { withWhom, extrinsic, value, status };
@@ -102,9 +82,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const HistoryTable: React.FunctionComponent = () => {
 	const classes = useStyles();
-	const { account } = useContext(AccountContext);
-	const balanceArr = useBalance(account.userAddress);
-	const { balanceVisibility } = useContext(BalanceVisibleContext);
 
 	return (
 		<>
@@ -124,36 +101,13 @@ const HistoryTable: React.FunctionComponent = () => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-
 						{rows.map((row, i) => {
 							return (
-								<TableRow hover key={`transaction-${i}`}>
-
-									{columns.map((column) => {
-										const value = row[column.id];
-
-										return (
-											<TableCell key={`transaction-${i}${column.id}`} align={column.align}>
-												{column.id === 'withWhom' &&
-													<AccountCard
-														account={{ address: value.toString(), name: '' }}
-													/>
-												}
-												{column.id === 'extrinsic' && value}
-												{ // This may look overwhelming but is just for "dump" data until page is fixed
-												column.id === 'value'
-													&& typeof value === 'number'
-													&& <BalanceValue
-														isVisible={balanceVisibility}
-														value={new BN(value) as Balance}
-														unit={balanceArr[3]} />}
-												{column.id === 'status' && <PopoverExtrinsic status={value} />}
-
-											</TableCell>
-										);
-									})}
-
-								</TableRow>
+								<HistoryTableRow
+									key={i}
+									row={row}
+									columns={columns}
+								/>
 							);
 						})}
 

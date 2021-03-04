@@ -1,9 +1,21 @@
-import React, { MouseEvent, useContext, useState } from 'react';
+import React, { MouseEvent, useContext, useState, useEffect, FunctionComponent } from 'react';
 import { AccountContext } from '../utils/contexts';
 import { Keyring } from '@polkadot/api';
 import { InputAddress, InputFunds } from '../components';
-import { makeStyles, createStyles, Theme, Grid, Button, CircularProgress } from '@material-ui/core';
+import { 
+	makeStyles,
+	createStyles,
+	Theme,
+	Grid,
+	Button,
+	Typography,
+	LinearProgress,
+	Table,
+	TableContainer } from '@material-ui/core';
 import { useBalance, useApi } from '../hooks'
+import { HistoryTableRow } from '.';
+import { Column } from '../utils/types';
+
 import { green } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -27,16 +39,15 @@ const useStyles = makeStyles((theme: Theme) => {
 			position: 'relative',
 		},
 		buttonProgress: {
+			display: 'flex',
 			color: green[500],
 			position: 'relative',
-			top: '50%',
-			left: '20px',
-			marginTop: -12,
-			marginLeft: -12,
+			marginTop: '5px',
+			marginLeft: '15px',
 		},
 		textProgress: {
 			position: 'relative',
-			left: '30px',
+			left: '10px',
 			textAlign: 'left'
 		},
 		buttonSuccess: {
@@ -44,11 +55,21 @@ const useStyles = makeStyles((theme: Theme) => {
 			'&:hover': {
 				backgroundColor: green[700],
 			},
-		}
+		},
+		linear: {
+			width: '100%'
+		},
 	})
-})
+});
 
-const SendFundsForm: React.FunctionComponent = () => {
+const columns: Column[] = [
+	{ id: 'withWhom', label: '', width: 160},
+	{ id: 'extrinsic', label: 'Extrinsic'},
+	{ id: 'value', label: 'Value', minWidth: 170, align: 'right' },
+	{ id: 'status', label: 'Status', width: 40, align: 'right' }
+];
+
+const SendFundsForm: FunctionComponent = () => {
 	const classes = useStyles();
 	const { account } = useContext(AccountContext);
 	const balanceArr = useBalance(account.userAddress);
@@ -60,24 +81,57 @@ const SendFundsForm: React.FunctionComponent = () => {
 	const [amount, setAmount] = useState<number>(0);  
 	const [loading, setLoading] = useState<boolean>(false);
 	const [message, setMessage] = useState<string>('');
+	const [countdownNo, setCountdownNo] = useState<number>(0);
+	const [rowStatus, setRowStatus] = useState<number>(0);
+
+	useEffect((): () => void => {
+		let countdown: ReturnType<typeof setInterval>;
+		if(!loading) {
+			if (message != '') {
+				countdown = setInterval((): void => {
+					setCountdownNo((oldCountdownNo) => {
+						if (oldCountdownNo === 0) {
+							setMessage('');
+							return 0;
+						} else {
+							return oldCountdownNo - 1;
+						}
+					})
+				}, 100);
+			}
+		}
+		return () => {
+			clearInterval(countdown);
+		}
+	}, [loading, message, setMessage])
 
 	const handleSubmit = async (e: MouseEvent) => {
-		e.preventDefault();
-		const keyring = new Keyring({ type: 'sr25519' });
-		const sender = keyring.addFromUri(account.userSeed);
-		await api.tx.balances.transfer(address, amount * 1000000000000).signAndSend(sender, (result) => {
+		try {
+			e.preventDefault();
 			setLoading(true);
-			setMessage(`Current status is ${result.status}`);
-			console.log(`Current status is ${result.status}`);
-			if (result.status.isInBlock) {
-				setMessage(`Transaction included at blockHash ${result.status.asInBlock}`);
-				console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
-			} else if (result.status.isFinalized) {
-				setLoading(false);
-				setMessage(`Transaction finalized at blockHash ${result.status.asFinalized}`);
-				console.log(`Transaction finalized at blockHash ${result.status.asFinalized}`);
-			}
-		});
+			setCountdownNo(100);
+			setRowStatus(0);
+			const keyring = new Keyring({ type: 'sr25519' });
+			const sender = keyring.addFromUri(account.userSeed);
+			await api.tx.balances.transfer(address, amount * 1000000000000).signAndSend(sender, (result) => {
+				// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+				setMessage(`Current transaction status ${result.status}`);
+				if (result.status.isInBlock) {
+					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+					setMessage(`Pending. Transaction blockHash: ${result.status.asInBlock}`);
+				} else if (result.status.isFinalized) {
+					setRowStatus(1);
+					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+					setMessage(`😉 Finalized. Block hash:: ${result.status.asFinalized}.`);
+					setLoading(false);
+				}
+			});
+		} catch (err) {
+			console.log('There is an error: ', err);
+			setLoading(false);
+			setRowStatus(2);
+			setMessage(`😞 Error: ${err}`);
+		}
 	}
 
 	return (
@@ -97,28 +151,39 @@ const SendFundsForm: React.FunctionComponent = () => {
 					setAmount={setAmount}
 				/>
 			</Grid>
-			<Grid
-				item
-				xs={12}
-				className={classes.formSubmitContainer}
-			>
+			<Grid item xs={12} className={classes.formSubmitContainer}>
 				<Button
 					type='submit'
 					variant='contained'
 					size='large'
 					color='secondary'
-					disabled={loading}
+					disabled={loading || !amount || amount > maxAmount}
 					onClick={handleSubmit}
 					className={classes.button}
-				>
-			Send
-				</Button>
-				{loading && (
-					<>
-						<CircularProgress size={24} className={classes.buttonProgress} />
-						<div className={classes.textProgress}>{message}</div>
-					</>)
-				}
+				>Send</Button>
+			</Grid>
+			{ countdownNo !== 0 && (
+				<Grid item xs={12}>
+					<TableContainer className={classes.container}>
+						<Table size="small" stickyHeader>
+							<HistoryTableRow
+								row={{
+									withWhom: address,
+									extrinsic: 'Transfer',
+									value: amount,
+									status: rowStatus
+								}}
+								columns={columns} />
+						</Table>
+					</TableContainer>
+				</Grid>	
+			)}
+			<Grid item xs={12} className={classes.formSubmitContainer}>
+				<Typography variant='subtitle2' className={classes.textProgress}>{message}</Typography>
+			</Grid>
+			<Grid item xs={12} className={classes.formSubmitContainer}>
+				{loading && <div className={classes.linear}><LinearProgress /></div>}
+				{!loading && countdownNo !== 0 && <div className={classes.linear}><LinearProgress variant="determinate" value={countdownNo} /></div>}
 			</Grid>
 		</Grid>
 	);
