@@ -1,21 +1,24 @@
 import * as pkg from '../package.json';
 
-let create: (name: string) => Database;
+// TODO: Temporary use this import and comment out the code below this until resolve the race condition that exists (between database and ()() below)
+import * as db from './BrowserDatabase';
 
-// We dont want to force our users into webpack5 / babel
-// This IIFE simulates top level await in the browser
-// https://github.com/tc39/proposal-top-level-await
-(async () => {
-  let db: any;
+// let create: (name: string) => Database;
 
-  if (typeof window === 'object') {
-    db  = await import('./BrowserDatabase');
-  } else {
-    db  = await import('./FsDatabase');
-  }
+// // We dont want to force our users into webpack5 / babel
+// // This IIFE simulates top level await in the browser
+// // https://github.com/tc39/proposal-top-level-await
+// (async () => {
+//   let db: any;
 
-  create = db.create;
-})();
+//   if (typeof window === 'object') {
+//     db  = await import('./BrowserDatabase');
+//   } else {
+//     db  = await import('./FsDatabase');
+//   }
+
+//   create = db.create;
+// })();
 
 
 /**
@@ -61,5 +64,6 @@ const named = (chain: string): string => {
  */
 export default function database(chain?: string): Database {
   chain = chain || pkg.name;
-  return create(named(chain));
+  // TODO: use db. instead of create as a workadround for now
+  return db.create(named(chain));
 }

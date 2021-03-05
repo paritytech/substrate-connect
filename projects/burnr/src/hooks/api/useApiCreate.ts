@@ -8,6 +8,8 @@ import { ALL_PROVIDERS } from '../../utils/constants';
 import { LazyProvider } from '../../utils/types'; 
 import { useIsMountedRef, useLocalStorage } from '..';
 
+import westend from '../../assets/westend.json';
+
 /**  This part isn't usable until the issues in the Substrate Light CLient implementation have been fixed **/
 // import {
 //   kusama,
@@ -25,7 +27,7 @@ export default function useApiCreate (extensionExists: boolean): ApiPromise {
   const [api, setApi] = useState<ApiPromise>({} as ApiPromise);
   const [localEndpoint] = useLocalStorage('endpoint');
 
-  const [isWestend, setIsWestend] = useState(false);
+  const [isWestend, setIsWestend] = useState(true);
   const [provider] = useState<LazyProvider>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Polkadot-WsProvider']);
   const  mountedRef = useIsMountedRef();
 
@@ -36,21 +38,17 @@ export default function useApiCreate (extensionExists: boolean): ApiPromise {
     if (localEndpoint === 'Westend-WsProvider') {
       console.log('Westend-WsProvider was chosen');
       setIsWestend(true);
+    } else {
+      setIsWestend(false);
     }
   }, [localEndpoint]);
 
   useEffect((): void => {
     const myFunct = async () => {
-      const response =  await fetch('../../assets/westend.json');
-      if (!response.ok) {
-        console.error(new Error('Error downloading chain spec'));
-      }
-
-      console.log('----- extensionInstalled ------ ', extensionExists);
-
-      const chainSpec =  await response.text();
+      const chainSpec =  JSON.stringify(westend);
       const provider = new SmoldotProvider(chainSpec);
       await provider.connect();
+      // TODO: API should be included inside the substrate connect (Both SmoldotProvider and extension should return an API most probably)
       const api = await ApiPromise.create({ provider });
       mountedRef.current && setApi(api);
     }
