@@ -12,19 +12,17 @@ export type uApp = {
     enabled: boolean;
 }
 
-export type Network = {
+interface ChainSpec {
   name: string;
+  logo?: string;
   status: NetworkStatus;
   isKnown: boolean;
-  chainspecPath?:  string;
+  chainspecPath:  string;
+}
+export interface Network extends ChainSpec {
   parachains?: Parachain[];
 }
-export type Parachain = {
-  name: string;
-  status: NetworkStatus;
-  isKnown: boolean;
-  chainspecPath?:  string;
-}
+export interface Parachain extends ChainSpec {}
 export interface Message extends MessageEvent {
     data: {
       error?: string;

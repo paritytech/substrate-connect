@@ -131,6 +131,7 @@ const ClientMenu: React.FunctionComponent<Network> = ({isKnown, name, chainspecP
 }
 
 
+
 const ClientItem: React.FunctionComponent<Network | Parachain> = ({...props}) => {
   const classes = useStyles();
 
@@ -138,7 +139,7 @@ const ClientItem: React.FunctionComponent<Network | Parachain> = ({...props}) =>
     <Grid container className={`${classes.root} ${!props.isKnown && 'unknown'}`} >
       <Typography variant='h2' component='div'>
         <Box component='span' className={classes.networkIconRoot}>
-          <IconWeb3>{props.name}</IconWeb3>
+          <IconWeb3>{props.logo || props.name}</IconWeb3>
         </Box>
         {props.name}
       </Typography>

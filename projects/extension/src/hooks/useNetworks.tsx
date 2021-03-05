@@ -23,18 +23,21 @@ const sampleNetworks: Network[] = [
     parachains: [
       {
         name: 'tick',
+        logo: 'rococo',
         status: 'connected',
         isKnown: true,
         chainspecPath: '<tick.json>',
       },
       {
         name: 'trick',
+        logo: 'rococo',
         status: 'connected',
         isKnown: true,
         chainspecPath: '<trick.json>',
       },
       {
         name: 'track',
+        logo: 'rococo',
         status: 'connected',
         isKnown: true,
         chainspecPath: '<track.json>',
