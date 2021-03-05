@@ -60,7 +60,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const HistoryTable: React.FunctionComponent = () => {
 	const classes = useStyles();
 	const { account } = useContext(AccountContext);
-	console.log('account', account);
 	const rows:Data[] = account.userHistory;
 
 	return (
