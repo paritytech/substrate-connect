@@ -4,7 +4,7 @@ import { grey } from '@material-ui/core/colors';
 import { ExpandMore, SystemUpdateAlt, InsertDriveFile, Publish } from '@material-ui/icons';
 import { IconWeb3 } from '../components';
 import { InputButton, InputText, InputWrap } from './Inputs';
-import { Networks } from '../types';
+import { Network, Parachain } from '../types';
 
 const useStyles = makeStyles<Theme>(theme => ({
   root: {
@@ -61,7 +61,7 @@ const useStyles = makeStyles<Theme>(theme => ({
   },
 }));
 
-const ClientMenu: React.FunctionComponent<Networks> = ({isKnown, name, chainspecPath}) => {
+const ClientMenu: React.FunctionComponent<Network> = ({isKnown, name, chainspecPath}) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -131,7 +131,7 @@ const ClientMenu: React.FunctionComponent<Networks> = ({isKnown, name, chainspec
 }
 
 
-const ClientItem: React.FunctionComponent<Networks> = ({...props}) => {
+const ClientItem: React.FunctionComponent<Network | Parachain> = ({...props}) => {
   const classes = useStyles();
 
   return (

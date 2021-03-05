@@ -7,25 +7,24 @@ export interface TabInterface {
     uApps: uApp[];
 }
 export type uApp = {
-    networks: Networks[];
+    networks: Network[];
     name: string;
     enabled: boolean;
 }
 
-export type Networks = {
+export type Network = {
   name: string;
   status: NetworkStatus;
-  isKnown?: boolean;
+  isKnown: boolean;
   chainspecPath?:  string;
-  // parachains: Parachain[];
+  parachains?: Parachain[];
 }
-
-// type Parachain = {
-//   name: string;
-//   status: NetworkStatus;
-//   isKnown?: boolean;
-//   chainspecPath?:  string;
-// }
+export type Parachain = {
+  name: string;
+  status: NetworkStatus;
+  isKnown: boolean;
+  chainspecPath?:  string;
+}
 export interface Message extends MessageEvent {
     data: {
       error?: string;

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2
 import { useState } from 'react';
-import { Networks } from '../types';
+import { Network } from '../types';
 
-const sampleNetworks: Networks[] = [
+const sampleNetworks: Network[] = [
   {
     name: 'polkadot',
     status: 'connected',
@@ -20,26 +20,26 @@ const sampleNetworks: Networks[] = [
     status: 'connected',
     isKnown: true,
     chainspecPath: '<rococo.json>',
-    // parachains: [
-    //   {
-    //     name: 'tick',
-    //     status: 'connected',
-    //     isKnown: true,
-    //     chainspecPath: '<path.json>',
-    //   },
-    //   {
-    //     name: 'trick',
-    //     status: 'connected',
-    //     isKnown: true,
-    //     chainspecPath: '<path.json>',
-    //   },
-    //   {
-    //     name: 'track',
-    //     status: 'connected',
-    //     isKnown: true,
-    //     chainspecPath: '<path.json>',
-    //   }
-    // ]
+    parachains: [
+      {
+        name: 'tick',
+        status: 'connected',
+        isKnown: true,
+        chainspecPath: '<tick.json>',
+      },
+      {
+        name: 'trick',
+        status: 'connected',
+        isKnown: true,
+        chainspecPath: '<trick.json>',
+      },
+      {
+        name: 'track',
+        status: 'connected',
+        isKnown: true,
+        chainspecPath: '<track.json>',
+      }
+    ]
   },
   {
     name: '<Unknown network>',
@@ -49,7 +49,7 @@ const sampleNetworks: Networks[] = [
   },
 ]
 
-export default function useNetworks (): Networks[] {
+export default function useNetworks (): Network[] {
   const [networks] = useState(sampleNetworks);
   return networks;
 }
