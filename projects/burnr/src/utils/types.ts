@@ -75,13 +75,17 @@ export interface MgrEvent {
 export type EvtMgrCtx = MgrEvent[];
 
 export interface TxEvent {
-  amount: Balance;
-  key: string;
-  from: string;
-  to: string;
-  wasSent: boolean;
-  when: Date;
-  method: string;
+  withWhom: string;
+  extrinsic: string;
+  value: string|number;
+  status: string|number;
+  // amount: Balance;
+  // key: string;
+  // from: string;
+  // to: string;
+  // wasSent: boolean;
+  // when: Date;
+  // method: string;
 }
 
 export type EvtTxCtx = TxEvent[];

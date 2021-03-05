@@ -12,7 +12,7 @@ import {
 	LinearProgress,
 	Table,
 	TableContainer } from '@material-ui/core';
-import { useBalance, useApi } from '../hooks'
+import { useBalance, useApi, useLocalStorage } from '../hooks'
 import { HistoryTableRow } from '.';
 import { Column } from '../utils/types';
 
@@ -71,12 +71,16 @@ const columns: Column[] = [
 
 const SendFundsForm: FunctionComponent = () => {
 	const classes = useStyles();
-	const { account } = useContext(AccountContext);
+	const { account, setCurrentAccount } = useContext(AccountContext);
 	const balanceArr = useBalance(account.userAddress);
 	const api = useApi();
 	const maxAmount = parseFloat(balanceArr[0]);
 	const unit = balanceArr[3];
-
+	// TODO: This must be prettier and reusable (exists already on App)
+	const [endpoint, setEndpoint] = useLocalStorage('endpoint');
+	if (!endpoint) setEndpoint('Polkadot-WsProvider');
+	const [ ,setLocalStorageAccount] = useLocalStorage(endpoint.split('-')[0]?.toLowerCase());
+	// TODO END: This must be prettier and reusable (exists already on App)
 	const [address, setAddress] = useState<string>('');
 	const [amount, setAmount] = useState<number>(0);  
 	const [loading, setLoading] = useState<boolean>(false);
@@ -110,7 +114,7 @@ const SendFundsForm: FunctionComponent = () => {
 			e.preventDefault();
 			setLoading(true);
 			setCountdownNo(100);
-			setRowStatus(0);
+			setRowStatus(3);
 			const keyring = new Keyring({ type: 'sr25519' });
 			const sender = keyring.addFromUri(account.userSeed);
 			await api.tx.balances.transfer(address, amount * 1000000000000).signAndSend(sender, (result) => {
@@ -118,12 +122,20 @@ const SendFundsForm: FunctionComponent = () => {
 				setMessage(`Current transaction status ${result.status}`);
 				if (result.status.isInBlock) {
 					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-					setMessage(`Pending. Transaction blockHash: ${result.status.asInBlock}`);
+					setMessage(`Transaction Block hash: ${result.status.asInBlock}`);
 				} else if (result.status.isFinalized) {
+					setLoading(false);
 					setRowStatus(1);
 					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-					setMessage(`😉 Finalized. Block hash:: ${result.status.asFinalized}.`);
-					setLoading(false);
+					setMessage(`Block hash:: ${result.status.asFinalized}.`);
+					account.userHistory.unshift({
+						withWhom: address,
+						extrinsic: 'Transfer',
+						value: amount * 1000000000000, 
+						status: 1
+					})
+					setCurrentAccount(account);
+					setLocalStorageAccount(JSON.stringify(account));
 				}
 			});
 		} catch (err) {
@@ -131,6 +143,14 @@ const SendFundsForm: FunctionComponent = () => {
 			setLoading(false);
 			setRowStatus(2);
 			setMessage(`😞 Error: ${err}`);
+			account.userHistory.unshift({
+				withWhom: address,
+				extrinsic: 'Transfer',
+				value: amount * 1000000000000, 
+				status: 2
+			})
+			setCurrentAccount(account);
+			setLocalStorageAccount(JSON.stringify(account));
 		}
 	}
 
@@ -182,7 +202,6 @@ const SendFundsForm: FunctionComponent = () => {
 				<Typography variant='subtitle2' className={classes.textProgress}>{message}</Typography>
 			</Grid>
 			<Grid item xs={12} className={classes.formSubmitContainer}>
-				{loading && <div className={classes.linear}><LinearProgress /></div>}
 				{!loading && countdownNo !== 0 && <div className={classes.linear}><LinearProgress variant="determinate" value={countdownNo} /></div>}
 			</Grid>
 		</Grid>

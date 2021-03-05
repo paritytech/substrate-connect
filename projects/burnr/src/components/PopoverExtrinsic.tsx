@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IconButton, Typography } from '@material-ui/core';
+import { IconButton, Typography, CircularProgress } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Popover from '@material-ui/core/Popover';
 import CachedIcon from '@material-ui/icons/Cached';
@@ -47,6 +47,7 @@ const PopoverExtrinsic: React.FunctionComponent<ExtrinsicInfo> = ({ status }: Ex
 				{status === 0 && <CachedIcon color='disabled' />}
 				{status === 1 && <CheckIcon color='action' />}
 				{status === 2 && <ErrorIcon color='error' />}
+				{status === 3 && <CircularProgress />}
 
 			</IconButton>
 			<Popover
@@ -71,7 +72,7 @@ const PopoverExtrinsic: React.FunctionComponent<ExtrinsicInfo> = ({ status }: Ex
 				disableRestoreFocus
 			>
 				<Typography variant='body2'>
-          The content of the Popover, link to BlockExplorers
+          			The content of the Popover, link to BlockExplorers
 				</Typography>
 			</Popover>
 		</>
