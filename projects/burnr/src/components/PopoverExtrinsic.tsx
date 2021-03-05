@@ -72,7 +72,7 @@ const PopoverExtrinsic: React.FunctionComponent<ExtrinsicInfo> = ({ status }: Ex
 				disableRestoreFocus
 			>
 				<Typography variant='body2'>
-          			The content of the Popover, link to BlockExplorers
+					The content of the Popover, link to BlockExplorers
 				</Typography>
 			</Popover>
 		</>
