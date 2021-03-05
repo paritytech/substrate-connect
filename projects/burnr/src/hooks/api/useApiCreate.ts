@@ -48,7 +48,7 @@ export default function useApiCreate (extensionExists: boolean): ApiPromise {
       const chainSpec =  JSON.stringify(westend);
       const provider = new SmoldotProvider(chainSpec);
       await provider.connect();
-      // TODO: API should be included inside the substrate connect (Both SmoldotProvider and extension should return an API most probably)
+      // TODO:  API should be included inside the substrate connect (Both SmoldotProvider and extension should return an API most probably)
       const api = await ApiPromise.create({ provider });
       mountedRef.current && setApi(api);
     }
