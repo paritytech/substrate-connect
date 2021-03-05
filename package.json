@@ -25,7 +25,7 @@
     "dev:smoldot-extension": "yarn workspace @substrate/smoldot-extension run dev",
     "deploy:gh-pages:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run deploy:gh-pages",
     "deploy:ipfs:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run deploy:ipfs",
-    "postinstall": "husky install"
+    "postinstall": "yarn husky install"
   },
   "devDependencies": {
     "copyfiles": "^2.3.0",
