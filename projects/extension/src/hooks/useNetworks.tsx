@@ -23,6 +23,7 @@ const sampleNetworks: Network[] = [
     parachains: [
       {
         name: 'tick',
+        relaychain: 'rococo',
         logo: 'rococo',
         status: 'connected',
         isKnown: true,
@@ -30,6 +31,7 @@ const sampleNetworks: Network[] = [
       },
       {
         name: 'trick',
+        relaychain: 'rococo',
         logo: 'rococo',
         status: 'connected',
         isKnown: true,
@@ -37,6 +39,7 @@ const sampleNetworks: Network[] = [
       },
       {
         name: 'track',
+        relaychain: 'rococo',
         logo: 'rococo',
         status: 'connected',
         isKnown: true,

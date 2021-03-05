@@ -17,12 +17,14 @@ interface ChainSpec {
   logo?: string;
   status: NetworkStatus;
   isKnown: boolean;
-  chainspecPath:  string;
+  chainspecPath: string;
 }
 export interface Network extends ChainSpec {
   parachains?: Parachain[];
 }
-export interface Parachain extends ChainSpec {}
+export interface Parachain extends ChainSpec {
+  relaychain?: string;
+}
 export interface Message extends MessageEvent {
     data: {
       error?: string;

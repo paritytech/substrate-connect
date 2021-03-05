@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { makeStyles, Theme, Popover, Typography, Box, ButtonBase, Button, Grid, Tooltip, Divider } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import { ExpandMore, SystemUpdateAlt, InsertDriveFile, Publish } from '@material-ui/icons';
+import { ExpandMore, SystemUpdateAlt, InsertDriveFile, Publish, ArrowDropDown } from '@material-ui/icons';
 import { IconWeb3 } from '../components';
-import { InputButton, InputText, InputWrap } from './Inputs';
+import { InputButton, InputText, InputWrap, InputSelect } from './Inputs';
 import { Network, Parachain } from '../types';
 
 const useStyles = makeStyles<Theme>(theme => ({
   root: {
+    position: 'relative',
     flexWrap: 'nowrap',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -20,6 +21,22 @@ const useStyles = makeStyles<Theme>(theme => ({
     marginBottom: theme.spacing(1),
     borderRadius: theme.spacing(0.5),
     border: `1px solid transparent`,
+    '&.parachain': {
+      paddingLeft: theme.spacing(8),
+      '&::before': {
+        content: '""',
+        display: 'block',
+        position: 'absolute',
+        zIndex: -1,
+        bottom: '50%',
+        left: theme.spacing(6),
+        width: theme.spacing(1),
+        height: theme.spacing(11),
+        border: `1px solid ${grey[500]}`,
+        borderWidth: '0px 0px 1px 1px',
+        borderBottomLeftRadius: theme.spacing(1),
+      },
+    },
     '&.unknown': {
       background: grey[100],
     },
@@ -61,8 +78,9 @@ const useStyles = makeStyles<Theme>(theme => ({
   },
 }));
 
-const ClientMenu: React.FunctionComponent<Network> = ({isKnown, name, chainspecPath}) => {
+const ClientMenu: React.FunctionComponent<Network | Parachain> = ({isKnown, name, chainspecPath, ...props}) => {
   const classes = useStyles();
+  const isParachain = 'relaychain' in props;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -110,18 +128,33 @@ const ClientMenu: React.FunctionComponent<Network> = ({isKnown, name, chainspecP
           <Divider orientation='vertical' flexItem/>
 
           { isKnown
-            ? <InputButton>
-              <Publish fontSize='small'/>
-            </InputButton>
-            : <InputButton>
-              <SystemUpdateAlt fontSize='small' />
-            </InputButton>
+          ? <InputButton>
+            <Publish fontSize='small'/>
+          </InputButton>
+          : <InputButton>
+            <SystemUpdateAlt fontSize='small' />
+          </InputButton>
           }
 
         </InputWrap>
         <InputWrap>
           <InputText readOnly defaultValue={name}/>
         </InputWrap>
+
+        { isParachain &&
+        <>
+          <Typography variant='overline'>Relay Chain</Typography>
+          <InputWrap>
+            <InputSelect defaultValue={props.relaychain}/>
+            <Divider orientation='vertical' flexItem/>
+            <InputButton>
+              <ArrowDropDown fontSize='small'/>
+            </InputButton>
+            <Divider orientation='vertical' flexItem/>
+          </InputWrap>
+        </>
+        }
+
         <Divider/>
         <Button onClick={handleClose} fullWidth>Cancel</Button>
 
@@ -134,9 +167,10 @@ const ClientMenu: React.FunctionComponent<Network> = ({isKnown, name, chainspecP
 
 const ClientItem: React.FunctionComponent<Network | Parachain> = ({...props}) => {
   const classes = useStyles();
+  const isParachain = 'relaychain' in props;
 
   return (
-    <Grid container className={`${classes.root} ${!props.isKnown && 'unknown'}`} >
+    <Grid container className={`${classes.root} ${!props.isKnown && 'unknown'} ${isParachain && 'parachain'}`} >
       <Typography variant='h2' component='div'>
         <Box component='span' className={classes.networkIconRoot}>
           <IconWeb3>{props.logo || props.name}</IconWeb3>

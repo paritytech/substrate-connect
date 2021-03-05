@@ -44,6 +44,27 @@ export const InputText = withStyles((theme: Theme) =>
 )(InputBase);
 
 /**
+ * TODO: make select
+ * `InputSelect` is used inside `InputWrap` next to `InputButton`
+ *
+ * API:
+ *
+ * - [InputBase API](https://material-ui.com/api/input-base/)
+ * 
+ */
+export const InputSelect = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: '100%',
+      background: 'white',
+      '& input': {
+        padding: theme.spacing(1),
+      },
+    },
+  })
+)(InputBase);
+
+/**
  * `InputButton` is used inside `InputWrap` next to `InputText`
  *
  * API:
