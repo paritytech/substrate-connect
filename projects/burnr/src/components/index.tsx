@@ -5,6 +5,7 @@ export { default as Bg } from './Bg';
 export { default as BalanceValue } from './BalanceValue';
 export { default as Head } from './Head';
 export { default as HistoryTable } from './HistoryTable';
+export { default as HistoryTableRow } from './HistoryTableRow';
 export { default as InputAddress } from './InputAddress';
 export { default as InputFunds } from './InputFunds';
 export { default as LogoSubstrate } from './LogoSubstrate';

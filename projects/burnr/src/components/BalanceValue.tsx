@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 		filter: (props: StyleProps) =>
 			props.visible
 				? 'unset'
-				: 'blur(3px)'
+				: 'blur(5px)'
 	}
 }));
 
