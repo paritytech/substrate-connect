@@ -18,11 +18,11 @@ function Home ():  React.ReactElement {
 	const [balanceVisibility, setBalanceVisibility] = useState<boolean>(localBalance !== 'false');
 	const { account } = useContext(AccountContext);
 	const classes = useStyles();
-	const userInfo = useUserInfo(account.userAddress);
+	// Im not sure if the useUserInfo will/should be used
+	// const userInfo = useUserInfo(account.userAddress);
 	const balanceArr = useBalance(account.userAddress);
 	const balance = balanceArr[1];
 	const unit = balanceArr[3];
-
 	useEffect((): void => {
 		setLocalBalance(balanceVisibility ? 'true' : 'false')
 	}, [balanceVisibility, setLocalBalance])
@@ -36,12 +36,12 @@ function Home ():  React.ReactElement {
 					<Grid container alignItems='center' spacing={1}>
 						<Grid item xs={6}>
 							{
-								userInfo?.address &&
+								account?.userAddress &&
 								<Grid container wrap='nowrap' alignItems='center'>
 									<Grid item>
 										<AccountCard
 											account={{
-												address: userInfo.address,
+												address: account?.userAddress,
 												name: account?.userName
 											}}
 										/>

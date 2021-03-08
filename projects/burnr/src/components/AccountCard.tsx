@@ -16,6 +16,8 @@ const Alert = (props: AlertProps) => {
 
 const AccountCard: React.FunctionComponent<Props> = ({ account, addressFormat }: Props) => {
 	const [showCopied, setShowCopied] = useState<boolean>(false);
+	console.log('account.address', account.address);
+	console.log('account.name', account.name);
 	return (
 		<Grid container wrap='nowrap' spacing={1} alignItems='center'>
 			<Grid item>

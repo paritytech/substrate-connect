@@ -22,37 +22,30 @@ import westend from '../../assets/westend.json';
 
 console.log('ALL_PROVIDERS', ALL_PROVIDERS)
 
-
 export default function useApiCreate (extensionExists: boolean): ApiPromise {
   const [api, setApi] = useState<ApiPromise>({} as ApiPromise);
   const [localEndpoint] = useLocalStorage('endpoint');
 
-  const [isWestend, setIsWestend] = useState(true);
   const [provider] = useState<LazyProvider>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Polkadot-WsProvider']);
   const  mountedRef = useIsMountedRef();
 
   // @TODO Make dynamic once @substrate/connect is implemented
   // const instantiated = provider.source === 'browser' ? new WasmProvider(polkadotLocal()) : new WsProvider(provider.endpoint);
 
-  useEffect(() => {
-    if (localEndpoint === 'Westend-WsProvider') {
-      console.log('Westend-WsProvider was chosen');
-      setIsWestend(true);
-    } else {
-      setIsWestend(false);
-    }
-  }, [localEndpoint]);
-
   useEffect((): void => {
     const choseSmoldot = async () => {
-      const chainSpec =  JSON.stringify(westend);
-      //TODO: Here we must check if extension exists before choosing
-      console.log('----- Check if extension is installed ------ ', extensionExists);
-      const provider = new SmoldotProvider(chainSpec);
-      await provider.connect();
-      // TODO:  API should be included inside the substrate connect (Both SmoldotProvider and extension should return an API most probably)
-      const api = await ApiPromise.create({ provider });
-      mountedRef.current && setApi(api);
+      try {
+        const chainSpec =  JSON.stringify(westend);
+        //TODO: Here we must check if extension exists before choosing
+        console.log('----- Check if extension is installed ------ ', extensionExists);
+        const provider = new SmoldotProvider(chainSpec);
+        await provider.connect();
+        // TODO:  API should be included inside the substrate connect (Both SmoldotProvider and extension should return an API most probably)
+        const api = await ApiPromise.create({ provider });
+        mountedRef.current && setApi(api);
+      } catch (err) {
+        console.log('A wild error appeared:', err);
+      }
     }
 
     localEndpoint !== 'Westend-WsProvider' && ApiPromise
@@ -70,7 +63,7 @@ export default function useApiCreate (extensionExists: boolean): ApiPromise {
       });
 
       localEndpoint === 'Westend-WsProvider' && choseSmoldot()
-  }, [extensionExists, mountedRef, provider.endpoint]);
+  }, [extensionExists, mountedRef, provider.endpoint, localEndpoint]);
 
   return api;
 }
