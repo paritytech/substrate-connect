@@ -8,7 +8,6 @@ import { SmoldotProvider }  from '@substrate/smoldot-provider';
 import { ExtensionProvider }  from '@substrate/extension-provider';
 import UI, { emojis } from './view';
 
-
 window.onload = () => {
   const extensionExists = !!document.getElementById('substrateExtension');
   console.log('--> extensionExists', extensionExists);
@@ -21,8 +20,15 @@ window.onload = () => {
     if (!response.ok) {
       ui.error(new Error('Error downloading chain spec'));
     }
-
     const chainSpec =  await response.text();
+    window.postMessage(
+      JSON.parse(
+        JSON.stringify(
+          { chainName: 'westend', chainSpec: chainSpec, origin: 'page' }
+        )
+      ), '*'
+    );
+
     let provider;
     if (extensionExists) {
       provider = new ExtensionProvider();

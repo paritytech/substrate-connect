@@ -109,6 +109,13 @@ export default class UI {
       const syncMessage = document.createElement('em');
       syncMessage.classList.add('pulse');
       syncMessage.innerHTML = `${emojis.chain} Chain is syncing...`;
+      const button = document.createElement('button');
+      button.innerHTML = 'click me';
+      button.onclick = function(){
+        window.postMessage({ data: 'send a message', origin: 'page' }, '*');
+        return false;
+      };
+      syncState.appendChild(button);
       syncState.appendChild(syncMessage);
 
       this.#syncMessage = syncMessage;

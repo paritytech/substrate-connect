@@ -12,14 +12,3 @@ export class Detect {
         return api;
     }
 }
-
-// let provider;
-//     if (extensionExists) {
-//       provider = new ExtensionProvider();
-//     } else {
-//       provider = new SmoldotProvider(chainSpec);
-//     }
-//     // const provider = new SmoldotProvider(chainSpec);
-//     await provider.connect();
-//     try {
-//       const api = await ApiPromise.create({ provider })

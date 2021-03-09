@@ -6,6 +6,11 @@ export interface AppMessage {
   payload: string; // smoldot name / json / message_id / subscription_id
 }
 
+export type InitNameSpec = {
+  chainName: string,
+  chainSpec: string
+}
+
 // Messages that we send to the app
 export type ExtensionMessageType = 'error' | 'rpc';
 
