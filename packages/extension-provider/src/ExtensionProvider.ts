@@ -12,7 +12,6 @@ import {
 } from '@polkadot/rpc-provider/types';
 import { assert, isUndefined, logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
-import * as smoldot from 'smoldot';
 
 const l = logger('smoldot-provider');
 
@@ -51,37 +50,14 @@ const ANGLICISMS: { [index: string]: string } = {
 const CONNECTION_STATE_PINGER_INTERVAL = 2000;
 
 export class ExtensionProvider implements ProviderInterface {
-  #chainSpec: string;
   readonly #coder: RpcCoder = new RpcCoder();
   readonly #eventemitter: EventEmitter = new EventEmitter();
   readonly #handlers: Record<string, RpcStateAwaiting> = {};
   readonly #subscriptions: Record<string, StateSubscription> = {};
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
-  #connectionStatePingerId: ReturnType<typeof setInterval> | null;
   #isConnected = false;
-  #client: smoldot.SmoldotClient | undefined = undefined;
-  // reference to the smoldot module so we can defer loading the wasm client
-  // until connect is called
-  #smoldot: smoldot.Smoldot;
 
-  /*
-   * How frequently to see if we have any peers
-   */
-  healthPingerInterval = CONNECTION_STATE_PINGER_INTERVAL;
-
-   /**
-   * @param {string}   chainSpec  The chainSpec for the WASM client
-   * @param {Database} db         `Database` for saving chain state. Default is detected based on envionnment and 
-   *                              given a generic name.  You must use a unique names if you are connecting to multiple 
-   *                              chains. E.g. `database('polkadot')`
-   * @param {any}      sm         Optional (only used for testing) defaults to the actual smoldot module
-   */
-   public constructor() {
-    let sm: any;
-    this.#chainSpec = '';
-    this.#smoldot = sm || smoldot;
-    this.#connectionStatePingerId = null;
-  }
+   public constructor() {}
 
   /**
    * @description Lets polkadot-js know we support subscriptions
@@ -225,27 +201,7 @@ export class ExtensionProvider implements ProviderInterface {
    * @description "Connect" the WASM client - starts the smoldot WASM client
    */
   public async connect(): Promise<void> {
-    assert(!this.#client && !this.#isConnected, 'Client is already connected');
-
-    return this.#smoldot.start({
-        chain_spec: this.#chainSpec,
-        max_log_level: 3, /* no debug/trace messages */
-        json_rpc_callback: (response: string) => {
-            this.#handleRpcReponse(response);
-        },
-        database_save_callback: (database_content: string) => { 
-          l.debug('saving database', database_content);
-        }
-      })
-      .then((client: smoldot.SmoldotClient) => {
-        this.#client = client;
-        this.#connectionStatePingerId = setInterval(
-          this.#checkClientPeercount, this.healthPingerInterval);
-      })
-      .catch((error: Error) => {
-        this.emit('error', error);
-        return Promise.reject(error);
-      });
+    console.log('this wont be implemented');
   }
 
   /**
@@ -253,18 +209,7 @@ export class ExtensionProvider implements ProviderInterface {
    */
   // eslint-disable-next-line @typescript-eslint/require-await
   public async disconnect(): Promise<void> {
-    if (this.#client) {
-      this.#client = undefined;
-    }
-
-    if (this.#connectionStatePingerId !== null) {
-      clearInterval(this.#connectionStatePingerId);
-    }
-
-    this.#isConnected = false;
-    this.emit('disconnected');
-
-    return Promise.resolve();
+    console.log('this wont be implemented');
   }
 
   /**
@@ -307,8 +252,6 @@ export class ExtensionProvider implements ProviderInterface {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     return new Promise((resolve, reject): void => {
-        assert(this.#client, 'Client is not initialised');
-
         const json = this.#coder.encodeJson(method, params);
         const id = this.#coder.getId();
 
@@ -326,8 +269,6 @@ export class ExtensionProvider implements ProviderInterface {
           params,
           subscription
         };
-
-      this.#client.send_json_rpc(json);
     });
   }
 

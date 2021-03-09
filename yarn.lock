@@ -2117,14 +2117,6 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
   integrity sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
 
-"@substrate/extension-provider@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@substrate/extension-provider/-/extension-provider-0.0.1.tgz#7f032443dd5af5e0b7b56dd1c13962e74f2ff0df"
-  integrity sha512-xVC5fLHbpHCvQOmI+/j0KT02zjrqjcqQfgBBGCM5Q3udtzFXRBU7f37BmQLKglrjUohbLNA/8ow0VwHK8yGhjw==
-  dependencies:
-    file-entry-cache "^6.0.1"
-    mkdirp "^1.0.4"
-
 "@substrate/smoldot-test-utils@file:packages/smoldot-test-utils":
   version "0.1.0"
   dependencies:

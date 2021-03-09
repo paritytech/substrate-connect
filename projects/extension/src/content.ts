@@ -6,6 +6,7 @@ const port = chrome.runtime.connect({ name: PORT_CONTENT });
 
 // send any messages: extension -> page
 port.onMessage.addListener((data): void => {
+  console.log('data from extension -> page', data);
     window.postMessage({ ...data, origin: PORT_CONTENT }, '*');
   });
 
@@ -15,6 +16,7 @@ window.addEventListener('message', ({ data, source }: Message): void => {
     if (source !== window || data.origin !== 'page') {
         return;
     }
+    console.log('data from page -> extension', data);
     port.postMessage(data);
 });
 

@@ -9,6 +9,7 @@ window.addEventListener('message', ({ data, source }: Message): void => {
   if (source !== window || data.origin !== 'content') {
     return;
   }
+  console.log('data', data,' source', source)
 });
 
 injectExtension();

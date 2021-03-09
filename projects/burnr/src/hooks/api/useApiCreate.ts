@@ -37,9 +37,9 @@ export default function useApiCreate (extensionExists: boolean): ApiPromise {
       try {
         const chainSpec =  JSON.stringify(westend);
         //TODO: Here we must check if extension exists before choosing
-        console.log('----- Check if extension is installed ------ ', extensionExists);
         const provider = new SmoldotProvider(chainSpec);
         await provider.connect();
+        await provider.send('system_health', []);
         // TODO:  API should be included inside the substrate connect (Both SmoldotProvider and extension should return an API most probably)
         const api = await ApiPromise.create({ provider });
         mountedRef.current && setApi(api);
@@ -62,8 +62,10 @@ export default function useApiCreate (extensionExists: boolean): ApiPromise {
         console.error
       });
 
-      localEndpoint === 'Westend-WsProvider' && choseSmoldot()
-  }, [extensionExists, mountedRef, provider.endpoint, localEndpoint]);
+      localEndpoint === 'Westend-WsProvider' && choseSmoldot();
+  }, [mountedRef, provider.endpoint, localEndpoint]);
+  
+  console.log('----- Check if extension is installed ------ ', extensionExists, mountedRef, provider.endpoint, localEndpoint);
 
   return api;
 }

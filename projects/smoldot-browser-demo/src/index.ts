@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 // hack to make poladot-js work without bringing in webpack and babel
 import "regenerator-runtime/runtime"
 
@@ -23,9 +25,9 @@ window.onload = () => {
     const chainSpec =  await response.text();
     let provider;
     if (extensionExists) {
-      provider = new SmoldotProvider(chainSpec);
-    } else {
       provider = new ExtensionProvider();
+    } else {
+      provider = new SmoldotProvider(chainSpec);
     }
     // const provider = new SmoldotProvider(chainSpec);
     await provider.connect();
