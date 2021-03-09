@@ -80,7 +80,6 @@ const useStyles = makeStyles<Theme>(theme => ({
 
 const ClientMenu: React.FunctionComponent<Network | Parachain> = ({isKnown, name, chainspecPath, ...props}) => {
   const classes = useStyles();
-  const isParachain = 'relaychain' in props;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -141,7 +140,7 @@ const ClientMenu: React.FunctionComponent<Network | Parachain> = ({isKnown, name
           <InputText readOnly defaultValue={name}/>
         </InputWrap>
 
-        { isParachain &&
+        { 'relaychain' in props &&
         <>
           <Typography variant='overline'>Relay Chain</Typography>
           <InputWrap>
