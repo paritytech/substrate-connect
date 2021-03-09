@@ -2,35 +2,17 @@ import * as React from 'react';
 import * as material from '@material-ui/core';
 import GlobalFonts from '../fonts/fonts';
 import { light, Tab } from '../components';
-// import { NetworkEnum } from '../types/enums';
 import { useTabs } from '../hooks';
-// interface NodeProps {
-//     nodeEnum: NetworkEnum;
-// }
-
-/*** Keep this in comments for a little while (in case needed) */ 
-// const NodeRow: React.FC<NodeProps> = ({ nodeEnum }): ReactElement => {
-//     return (
-//         <NodeArea network={nodeEnum}>
-//             {!isEmpty(nodeEnum) && (
-//                 <>
-//                     <Typography variant='body1'>uApp title</Typography>
-//                     <TabInfo key={nodeEnum} network={nodeEnum} />
-//                 </>
-//             )}
-//         </NodeArea>
-//     )
-// }
 
 const { createMuiTheme, ThemeProvider, Input, Button, Box } = material;
 
-const NetworksFound: React.FC = (): React.ReactElement => (
+const SearchBar: React.FC = (): React.ReactElement => (
     <Box
-        pt={1.7} pr={2.4} pb={0.8} pl={2.4}
+        paddingY={1} paddingX={3}
         style={{ background: '#FCFCFC'}}
         borderTop={'1px solid #EEEEEE'}
         borderBottom={'1px solid #EEEEEE'}
-        >
+    >
         <Input fullWidth placeholder="search by network, uApp or url" />
     </Box>
 );
@@ -49,15 +31,8 @@ const Popup: React.FunctionComponent = () => {
             <Box width={'304px'}>
                 <GlobalFonts />
                 <Tab current tab={tabs[0]}/>
-                <NetworksFound />
-                <Tab tab={tabs[1]}/>
-                {/* Keep these in comments for a little while (in case needed)
-                <NodeRow nodeEnum={NetworkEnum.kusama} />
-                <NodeRow nodeEnum={NetworkEnum.polkadot} />
-                <NodeRow nodeEnum={NetworkEnum.westend} />
-                <NodeRow nodeEnum={NetworkEnum.kulupu} />
-                */}
-                
+                <SearchBar />
+                <Tab tab={tabs[1]}/>                
                 <Box mt={1}>
                     <Button fullWidth>All Nodes</Button>
                     <Button fullWidth>Url to uApps list</Button>

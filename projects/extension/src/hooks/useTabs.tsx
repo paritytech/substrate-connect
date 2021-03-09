@@ -7,21 +7,21 @@ const sampleNetworkCtx: TabInterface[] = [{
 	url: 'my-awesome-uapp1.com/index.html',
 	uApps: [{
 		networks: [
-			{name: 'westend', status: 'connected'},
-			{name: 'kusama', status: 'connected'},
-			{name: 'polkadot', status: 'connected'},
-			{name: 'kulupu', status: 'connected'},
+			{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''},
+			{name: 'kusama', status: 'connected', isKnown: true, chainspecPath:''},
+			{name: 'polkadot', status: 'connected', isKnown: true, chainspecPath:''},
+			{name: 'kulupu', status: 'connected', isKnown: true, chainspecPath:''},
 		],
 		name: 'First uApp First uApp First uApp First uApp',
 		enabled: true,
 	},
 	{
-		networks: [{name: 'kusama', status: 'disconnected'}],
+		networks: [{name: 'kusama', status: 'connected', isKnown: true, chainspecPath:''}],
 		name: 'Second uApp',
 		enabled: false
 	},
 	{
-		networks: [{name: 'polkadot', status: 'connected'}],
+		networks: [{name: 'polkadot', status: 'connected', isKnown: true, chainspecPath:''}],
 		name: 'Third uApp',
 		enabled: true
 	}]   
@@ -30,12 +30,12 @@ const sampleNetworkCtx: TabInterface[] = [{
 	tabId: 1,
 	url: 'my-awesome-uapp2.com/index.html',
 	uApps: [{
-		networks: [{name: 'westend', status: 'disconnected'}],
+		networks: [{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''}],
 		name: 'uApp2',
 		enabled: true
 	},
 	{
-		networks: [{name: 'westend', status: 'connected'}],
+		networks: [{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''}],
 		name: 'uApp3',
 		enabled: false
 	}
@@ -45,7 +45,7 @@ const sampleNetworkCtx: TabInterface[] = [{
 	tabId: 2,
 	url: 'my-awesome-uapp3.com/index.html',
 	uApps: [{
-		networks: [{name: 'westend', status: 'connected'}],
+		networks: [{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''}],
 		name: 'uApp4',
 		enabled: true
 	}]

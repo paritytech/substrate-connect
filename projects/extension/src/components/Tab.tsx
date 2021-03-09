@@ -24,12 +24,12 @@ const Tab: FunctionComponent<TabProps> = ({ tab, current=false, size = 'small' }
     },[tab])
 
     return (
-        <Box mt={1.6} mr={2.4} mb={0.55} ml={2.4}>
-            {!current && (
-                <Grid container>
-                    {tab?.url}
-                </Grid>
-            )}
+        <Box paddingY={1} paddingX={3}>
+            {!current && 
+            <Grid container>
+                {tab?.url}
+            </Grid>
+            }
             <Grid
                 container
                 justify='space-between'
