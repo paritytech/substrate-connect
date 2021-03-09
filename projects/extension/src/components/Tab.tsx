@@ -4,7 +4,7 @@ import {
     Typography,
     Box } from '@material-ui/core';
 import { Switch, IconWeb3 } from '.';
-import { TabInterface, uApp, Networks } from '../types';
+import { TabInterface, uApp, Network } from '../types';
 
 interface TabProps {
     size?: 'small' | 'medium';
@@ -53,7 +53,7 @@ const Tab: FunctionComponent<TabProps> = ({ tab, current=false, size = 'small' }
             { // This mapping is fine as soon as we will be receiving information concerning all TAB and not only specific uApp
                 apps && apps.map((a:uApp) => {
                     const nets: string[] = [];
-                    a.networks.forEach((n:Networks) => nets.push(n.name));
+                    a.networks.forEach((n:Network) => nets.push(n.name));
                     return (
                         <Grid
                             container
