@@ -167,12 +167,13 @@ const ClientMenu: React.FunctionComponent<Network | Parachain> = ({isKnown, name
 const ClientItem: React.FunctionComponent<Network | Parachain> = ({...props}) => {
   const classes = useStyles();
   const isParachain = 'relaychain' in props;
+  const icon = props.icon || props.name
 
   return (
     <Grid container className={`${classes.root} ${!props.isKnown && 'unknown'} ${isParachain && 'parachain'}`} >
       <Typography variant='h2' component='div'>
         <Box component='span' className={classes.networkIconRoot}>
-          <IconWeb3>{props.logo || props.name}</IconWeb3>
+          <IconWeb3>{icon.toLowerCase()}</IconWeb3>
         </Box>
         {props.name}
       </Typography>

@@ -4,43 +4,43 @@ import { Network } from '../types';
 
 const sampleNetworks: Network[] = [
   {
-    name: 'polkadot',
+    name: 'Polkadot',
     status: 'connected',
     isKnown: true,
     chainspecPath: '<polkadot.json>'
 	},
   {
-    name: 'kusama',
+    name: 'Kusama',
     status: 'connected',
     isKnown: true,
     chainspecPath: '<kusama.json>'
   },
   {
-    name: 'rococo',
+    name: 'Rococo',
     status: 'connected',
     isKnown: true,
     chainspecPath: '<rococo.json>',
     parachains: [
       {
-        name: 'tick',
-        relaychain: 'rococo',
-        logo: 'rococo',
+        name: 'Tick',
+        relaychain: 'Rococo',
+        icon: 'rococo',
         status: 'connected',
         isKnown: true,
         chainspecPath: '<tick.json>',
       },
       {
-        name: 'trick',
-        relaychain: 'rococo',
-        logo: 'rococo',
+        name: 'Trick',
+        relaychain: 'Rococo',
+        icon: 'rococo',
         status: 'connected',
         isKnown: true,
         chainspecPath: '<trick.json>',
       },
       {
-        name: 'track',
-        relaychain: 'rococo',
-        logo: 'rococo',
+        name: 'Track',
+        relaychain: 'Rococo',
+        icon: 'rococo',
         status: 'connected',
         isKnown: true,
         chainspecPath: '<track.json>',

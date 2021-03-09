@@ -15,7 +15,7 @@ export type uApp = {
 
 interface ChainSpec {
   name: string;
-  logo?: string;
+  icon?: string;
   status: NetworkStatus;
   isKnown: boolean;
   chainspecPath: string;
