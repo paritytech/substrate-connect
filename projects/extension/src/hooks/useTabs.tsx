@@ -2,54 +2,40 @@
 import { useState } from 'react';
 import { NetworkCtx, TabInterface } from '../types';
 
-const sampleNetworkCtx: TabInterface[] = [{
-	tabId: 0,
-	url: 'my-awesome-uapp1.com/index.html',
-	uApps: [{
-		networks: [
-			{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''},
-			{name: 'kusama', status: 'connected', isKnown: true, chainspecPath:''},
-			{name: 'polkadot', status: 'connected', isKnown: true, chainspecPath:''},
-			{name: 'kulupu', status: 'connected', isKnown: true, chainspecPath:''},
-		],
-		name: 'First uApp First uApp First uApp First uApp',
-		enabled: true,
+const sampleNetworkCtx: TabInterface[] = [
+	{
+		tabId: 0,
+		url: 'my-awesome-uapp1.com/index.html',
+		uApps: [{
+			networks: [
+				{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''},
+				{name: 'kusama', status: 'connected', isKnown: true, chainspecPath:''},
+				{name: 'polkadot', status: 'connected', isKnown: true, chainspecPath:''},
+				{name: 'kulupu', status: 'connected', isKnown: true, chainspecPath:''},
+			],
+			name: 'Current tab uApp',
+			enabled: true,
+		}]
 	},
 	{
-		networks: [{name: 'kusama', status: 'connected', isKnown: true, chainspecPath:''}],
-		name: 'Second uApp',
-		enabled: false
+		tabId: 1,
+		url: 'my-awesome-uapp2.com/index.html',
+		uApps: [{
+			networks: [{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''}],
+			name: 'uApp in inactive tab',
+			enabled: true
+		}]
 	},
 	{
-		networks: [{name: 'polkadot', status: 'connected', isKnown: true, chainspecPath:''}],
-		name: 'Third uApp',
-		enabled: true
-	}]   
-	},
-	{
-	tabId: 1,
-	url: 'my-awesome-uapp2.com/index.html',
-	uApps: [{
-		networks: [{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''}],
-		name: 'uApp2',
-		enabled: true
-	},
-	{
-		networks: [{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''}],
-		name: 'uApp3',
-		enabled: false
+		tabId: 2,
+		url: 'my-awesome-uapp3.com/index.html',
+		uApps: [{
+			networks: [{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''}],
+			name: 'One more uApp',
+			enabled: true
+		}]
 	}
-	]    
-	},
-	{
-	tabId: 2,
-	url: 'my-awesome-uapp3.com/index.html',
-	uApps: [{
-		networks: [{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''}],
-		name: 'uApp4',
-		enabled: true
-	}]
-}]
+]
 
 export default function useTabs (): TabInterface[] {
   const [tabs] = useState<NetworkCtx>(sampleNetworkCtx);
