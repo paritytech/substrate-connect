@@ -3,10 +3,13 @@ import "regenerator-runtime/runtime"
 
 import { ApiPromise } from '@polkadot/api';
 import { SmoldotProvider }  from '@substrate/smoldot-provider';
+import { ExtensionProvider }  from '@substrate/extension-provider';
 import UI, { emojis } from './view';
 
 
 window.onload = () => {
+  const extensionExists = !!document.getElementById('substrateExtension');
+  console.log('--> extensionExists', extensionExists);
   const loadTime = performance.now();
   const ui = new UI({ containerId: 'messages' }, { loadTime });
   ui.showSyncing();
@@ -18,7 +21,13 @@ window.onload = () => {
     }
 
     const chainSpec =  await response.text();
-    const provider = new SmoldotProvider(chainSpec);
+    let provider;
+    if (extensionExists) {
+      provider = new SmoldotProvider(chainSpec);
+    } else {
+      provider = new ExtensionProvider();
+    }
+    // const provider = new SmoldotProvider(chainSpec);
     await provider.connect();
     try {
       const api = await ApiPromise.create({ provider })

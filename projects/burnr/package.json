@@ -44,7 +44,7 @@
     "unique-names-generator": "^4.3.1"
   },
   "devDependencies": {
-    "@substrate/smoldot-provider": "file:../../packages/smoldot-provider",
+    "@substrate/smoldot-provider": "^0.0.1",
     "@material-ui/types": "^5.1.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
