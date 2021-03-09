@@ -11,8 +11,8 @@
   "license": "GPL-3.0-only",
   "private": true,
   "workspaces": [
-    "packages/module",
     "packages/smoldot-provider",
+    "packages/extension-provider",
     "projects/*"
   ],
   "scripts": {

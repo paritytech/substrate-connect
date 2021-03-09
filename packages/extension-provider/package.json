@@ -5,12 +5,15 @@
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
   "main": "index.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/paritytech/substrate-connect.git"
   },
   "scripts": {
-    "test": "echo 'not yet'"
+    "test": "echo 'not yet'",
+    "clean": "rm -rf dist/",
+    "build": "tsc --build"
   }, 
   "devDependencies": {
     "@types/jest": "^26.0.20",
