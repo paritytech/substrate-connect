@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@substrate/smoldot-provider": "^0.0.1",
-    "@substrate/extension-provider": "^0.0.1",
+    "@substrate/extension-provider": "^0.0.2",
     "@pinata/sdk": "^1.1.11",
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
