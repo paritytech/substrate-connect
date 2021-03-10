@@ -6,9 +6,22 @@ export interface AppMessage {
   payload: string; // smoldot name / json / message_id / subscription_id
 }
 
-export type InitNameSpec = {
+export interface InitNameSpec {
+  id: string,
   chainName: string,
   chainSpec: string
+}
+
+export interface Message extends MessageEvent {
+  data: {
+    error?: string;
+    id: string;
+    origin: string;
+    response?: string;
+    subscription?: string;
+    chainName?: string;
+    chainSpec?: string;
+  }
 }
 
 // Messages that we send to the app

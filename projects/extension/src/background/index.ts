@@ -8,12 +8,18 @@ import { InitNameSpec } from './types';
 const manager = new ConnectionManager();
 
 chrome.runtime.onConnect.addListener((port) => {
-  //This is the listener only for specs coming from Page
+  console.assert(port.name == "substrate");
   port.onMessage.addListener((data: InitNameSpec) => {
-    const { chainName, chainSpec } = data;
+    console.log('FROM CONTENT', data);
+    const { chainName, chainSpec, id } = data;
     chainName &&
     chainSpec &&
     manager.addSmoldot(chainName, chainSpec)
+    .then(() => {
+      console.log('SEND TO CONTENT');
+
+      port.postMessage({ id, message: 'mpls' });
+    })
     .catch((e) => { console.error(e); });
   });
 });

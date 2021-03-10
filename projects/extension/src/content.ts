@@ -1,22 +1,25 @@
 import type { Message } from './types';
 
-const PORT_CONTENT = 'extension_content';
+const PORT_CONTENT = 'substrate';
 //This line opens up a long-lived connection FROM the page TO your background page.
 const port = chrome.runtime.connect({ name: PORT_CONTENT });
 
-// all messages: website -> extension (content)
-window.addEventListener('message', ({ data, source }: Message): void => {
-    // only allow messages from our window, by the inject
-    if (data.origin !== 'page') {
-      return;
-    }
-    console.log('all messages: website -> extension (content)', data, source);
-    port.postMessage(data);
+// Listen from window: website -> extension (content)
+window.addEventListener('message', ({ data }: Message): void => {
+  console.log('WEBSITE -> EXTENSION (content)', data);
+  // only allow messages from our window, by the inject
+  if (data.origin !== 'substrate') {
+    return;
+  }
+  // send to background
+  port.postMessage({ ...data, origin: PORT_CONTENT});
+  //send back to window
+  window.postMessage({message:'ahm'}, '*');
 });
 
 // send any messages: extension -> page
 port.onMessage.addListener((data): void => {
-  console.log('send any messages: extension -> page', data);
+  console.log('FROM BACKGROUND -> EXTENSION', data);
   window.postMessage({ ...data, origin: PORT_CONTENT }, '*');
 });
 

@@ -6,6 +6,7 @@ import "regenerator-runtime/runtime"
 import { ApiPromise } from '@polkadot/api';
 import { SmoldotProvider }  from '@substrate/smoldot-provider';
 import { ExtensionProvider }  from '@substrate/extension-provider';
+import { Detect }  from '../node_modules/@substrate/connect';
 import UI, { emojis } from './view';
 
 window.onload = () => {
@@ -21,24 +22,26 @@ window.onload = () => {
       ui.error(new Error('Error downloading chain spec'));
     }
     const chainSpec =  await response.text();
-    window.postMessage(
-      JSON.parse(
-        JSON.stringify(
-          { chainName: 'westend', chainSpec: chainSpec, origin: 'page' }
-        )
-      ), '*'
-    );
-
     let provider;
-    if (extensionExists) {
-      provider = new ExtensionProvider();
-    } else {
-      provider = new SmoldotProvider(chainSpec);
-    }
-    // const provider = new SmoldotProvider(chainSpec);
-    await provider.connect();
+    // if (extensionExists) {
+    //   window.postMessage(
+    //     JSON.parse(
+    //       JSON.stringify(
+    //         { chainName: 'westend', chainSpec: chainSpec, origin: 'page' }
+    //       )
+    //     ), '*'
+    //   );
+    //   provider = new ExtensionProvider();
+    // } else {
+    //   provider = new SmoldotProvider(chainSpec);
+    // }
+    // await provider.connect();
     try {
-      const api = await ApiPromise.create({ provider })
+
+      // This will be the DETECT implementation 
+      const detect = new Detect(chainSpec);
+      const api = await detect.connect();
+      // const api = await ApiPromise.create({ provider })
       const header = await api.rpc.chain.getHeader()
       const chainName = await api.rpc.system.chain()
 

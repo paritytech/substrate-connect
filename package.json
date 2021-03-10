@@ -13,7 +13,7 @@
   "workspaces": [
     "packages/smoldot-provider",
     "packages/extension-provider",
-    "packages/substrate-connect",
+    "packages/connect",
     "projects/*"
   ],
   "scripts": {

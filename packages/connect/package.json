@@ -1,5 +1,5 @@
 {
-  "name": "@substrate/substrate-connect",
+  "name": "@substrate/connect",
   "version": "0.0.1",
   "description": "Substrate-connect to smoldot, returning a polkadotJS api",
   "author": "Parity Team <admin@parity.io>",

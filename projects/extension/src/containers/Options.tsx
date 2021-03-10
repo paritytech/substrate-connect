@@ -3,7 +3,7 @@ import * as material from '@material-ui/core';
 import { light, ClientSearch, Logo, ClientItem } from '../components/';
 import GlobalFonts from '../fonts/fonts';
 
-const { createMuiTheme, ThemeProvider, Typography, Box } = material;
+const { createMuiTheme, ThemeProvider, Typography, Box, Button } = material;
 const ClientTypeTitle: React.FunctionComponent = ({children}) => (
 	<Box mt={5} mb={2}>
 		<Typography variant='overline'>
