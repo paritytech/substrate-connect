@@ -40,7 +40,7 @@ const Popup: React.FunctionComponent = () => {
           {tabsRest.map(tab => <Tab tab={tab}/>)}
         </Box>
         <Divider />
-        <MenuButton fullWidth>All Nodes</MenuButton>
+        <MenuButton fullWidth>My Networks</MenuButton>
         <MenuButton fullWidth endIcon={<Save />}>Url to uApps list</MenuButton>
         <Divider />
         <MenuButton className='danger' fullWidth>Stop all connections</MenuButton>

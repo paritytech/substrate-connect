@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { Grid, Typography, Box } from '@material-ui/core';
 import { blue, grey } from '@material-ui/core/colors';
-import { Switch, IconWeb3 } from '.';
+import { Switch, IconWeb3 } from '../components';
 import { TabInterface } from '../types';
 
 interface TabProps {
