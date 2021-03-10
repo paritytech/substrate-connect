@@ -1,9 +1,9 @@
 import * as React from 'react';
 import * as material from '@material-ui/core';
 import GlobalFonts from '../fonts/fonts';
-import { light, Tab } from '../components';
+import { light, Tab, MenuButton } from '../components';
 import { useTabs } from '../hooks';
-import { Save } from '@material-ui/icons';
+import { CallMade as Save } from '@material-ui/icons';
 
 const { createMuiTheme, ThemeProvider, Input, Button, Box, Divider } = material;
 
@@ -32,7 +32,7 @@ const Popup: React.FunctionComponent = () => {
 
 	return (
     <ThemeProvider theme={appliedTheme}>
-      <Box width={'340px'} mb={1}>
+      <Box width={'340px'}>
         <GlobalFonts />
         <Tab current tab={tabCurrent}/>
         <SearchBar />
@@ -40,10 +40,10 @@ const Popup: React.FunctionComponent = () => {
           {tabsRest.map(tab => <Tab tab={tab}/>)}
         </Box>
         <Divider />
-        <Button fullWidth>All Nodes</Button>
-        <Button fullWidth endIcon={<Save />}>Url to uApps list</Button>
+        <MenuButton fullWidth>All Nodes</MenuButton>
+        <MenuButton fullWidth endIcon={<Save />}>Url to uApps list</MenuButton>
         <Divider />
-        <Button fullWidth>Stop all connections</Button>
+        <MenuButton className='danger' fullWidth>Stop all connections</MenuButton>
       </Box>
     </ThemeProvider>
 	);

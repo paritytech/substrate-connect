@@ -35,7 +35,7 @@ const palette: PaletteOptions = {
 	},
 	error: {
 		light: red[100],
-		main: red[400],
+		main: '#FF3014',
 		dark: red[500],
 		contrastText: 'black',
 	},

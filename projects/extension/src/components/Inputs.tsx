@@ -1,4 +1,4 @@
-import { InputBase, ButtonBase, Box } from '@material-ui/core';
+import { InputBase, ButtonBase, Box, Button } from '@material-ui/core';
 import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
 
@@ -83,3 +83,43 @@ export const InputButton = withStyles((theme: Theme) =>
     },
   })
 )(ButtonBase);
+
+/**
+ * `MenuButton` is used in menus with multiple text buttons
+ *
+ * API:
+ *
+ * - [Button API](https://material-ui.com/api/button-base/)
+ * 
+ */
+export const MenuButton = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
+      marginTop: theme.spacing(0.25),
+      marginBottom: theme.spacing(0.25),
+      borderRadius: 0,
+      transition: `backgrund-color 0s !important`,
+      ...theme.typography.body1,
+      '&.danger': {
+        color: theme.palette.error.main,
+        '&:hover': {
+          color: theme.palette.common.white,
+          backgroundColor: theme.palette.error.main,
+        }
+      },
+      '& .MuiButton-label': {
+        justifyContent: 'space-between',
+      },
+      '& svg': {
+        color: theme.palette.text.secondary,
+      },
+      '&:hover': {
+        backgroundColor: theme.palette.primary.main,
+        '& svg': {
+          color: theme.palette.common.white,
+        },
+      },
+    },
+  })
+)(Button);
