@@ -2,12 +2,10 @@ import React, { FunctionComponent } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import { Switch } from './';
 import { useTabs } from '../hooks';
-import { NetworkEnum } from '../types/enums';
 import { TabInterface } from '../types';
 
 interface Props {
     size?: 'small' | 'medium';
-    network: NetworkEnum;
 }
 
 // TDODO: data structure. Will we ever need map here at all?

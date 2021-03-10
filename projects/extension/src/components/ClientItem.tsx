@@ -2,8 +2,7 @@ import * as React from 'react';
 import { makeStyles, Theme, Popover, Typography, Box, ButtonBase, Button, Grid, Tooltip, Divider } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import { ExpandMore, SystemUpdateAlt, InsertDriveFile, Publish, ArrowDropDown } from '@material-ui/icons';
-import { IconWeb3 } from '../components';
-import { InputButton, InputText, InputWrap, InputSelect } from './Inputs';
+import { IconWeb3, InputButton, InputText, InputWrap, InputSelect } from '../components';
 import { Network, Parachain } from '../types';
 
 const useStyles = makeStyles<Theme>(theme => ({
