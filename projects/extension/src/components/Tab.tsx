@@ -38,12 +38,13 @@ const Tab: FunctionComponent<TabProps> = ({ tab, current=false }) => (
           spacing={1}
         >
           {tab?.uApp.networks.map(network =>
-            <Grid item key={network}>
-              <IconWeb3 
+            <Grid item key={network.name}>
+              <IconWeb3
                 size='14px'
                 color={tab?.uApp.enabled ? grey[800] : grey[400]}
-              />
-              {network.name}
+              >
+                {network.name}
+              </IconWeb3>
             </Grid>
           )}
           <Grid item>
