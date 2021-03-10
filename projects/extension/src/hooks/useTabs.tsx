@@ -8,7 +8,7 @@ const sampleNetworkCtx: TabInterface[] = [
 		url: 'my-awesome-uapp1.com/index.html',
 		uApps: [{
 			networks: [
-				{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''},
+				{name: 'rococo', status: 'connected', isKnown: true, chainspecPath:''},
 				{name: 'kusama', status: 'connected', isKnown: true, chainspecPath:''},
 				{name: 'polkadot', status: 'connected', isKnown: true, chainspecPath:''},
 				{name: 'kulupu', status: 'connected', isKnown: true, chainspecPath:''},
@@ -30,9 +30,12 @@ const sampleNetworkCtx: TabInterface[] = [
 		tabId: 2,
 		url: 'my-awesome-uapp3.com/index.html',
 		uApps: [{
-			networks: [{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''}],
-			name: 'One more uApp',
-			enabled: true
+			networks: [
+				{name: 'kusama', status: 'connected', isKnown: true, chainspecPath:''},
+				{name: 'kulupu', status: 'connected', isKnown: true, chainspecPath:''},
+			],
+			name: 'Disabled uApp',
+			enabled: false
 		}]
 	}
 ]

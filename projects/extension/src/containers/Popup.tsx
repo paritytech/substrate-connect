@@ -3,12 +3,14 @@ import * as material from '@material-ui/core';
 import GlobalFonts from '../fonts/fonts';
 import { light, Tab } from '../components';
 import { useTabs } from '../hooks';
+import { Save } from '@material-ui/icons';
 
-const { createMuiTheme, ThemeProvider, Input, Button, Box } = material;
+const { createMuiTheme, ThemeProvider, Input, Button, Box, Divider } = material;
 
 const SearchBar: React.FC = (): React.ReactElement => (
     <Box
-        paddingY={1} paddingX={3}
+        paddingY={1}
+        paddingX={3}
         style={{ background: '#FCFCFC'}}
         borderTop={'1px solid #EEEEEE'}
         borderBottom={'1px solid #EEEEEE'}
@@ -25,19 +27,23 @@ const Popup: React.FunctionComponent = () => {
     (tabs) => {
         console.log('tabs', tabs, tabs[0].url)
     });
+    const tabCurrent = tabs[0];
+    const tabsRest = tabs.slice(1);
 
 	return (
         <ThemeProvider theme={appliedTheme}>
-            <Box width={'304px'}>
+            <Box width={'340px'} mb={1}>
                 <GlobalFonts />
-                <Tab current tab={tabs[0]}/>
+                <Tab current tab={tabCurrent}/>
                 <SearchBar />
-                <Tab tab={tabs[1]}/>                
-                <Box mt={1}>
-                    <Button fullWidth>All Nodes</Button>
-                    <Button fullWidth>Url to uApps list</Button>
-                    <Button fullWidth>Stop all connections</Button>
+                <Box marginY={1}>
+                    {tabsRest.map(tab => <Tab tab={tab}/>)}
                 </Box>
+                <Divider />
+                <Button fullWidth>All Nodes</Button>
+                <Button fullWidth endIcon={<Save />}>Url to uApps list</Button>
+                <Divider />
+                <Button fullWidth>Stop all connections</Button>
             </Box>
         </ThemeProvider>
 	);

@@ -1,13 +1,10 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import {
-    Grid,
-    Typography,
-    Box } from '@material-ui/core';
+import React, { FunctionComponent } from 'react';
+import { Grid, Typography, Box } from '@material-ui/core';
+import { blue, grey } from '@material-ui/core/colors';
 import { Switch, IconWeb3 } from '.';
-import { TabInterface, uApp, Network } from '../types';
+import { TabInterface } from '../types';
 
 interface TabProps {
-    size?: 'small' | 'medium';
     current?: boolean;
     tab?: TabInterface;
 }
@@ -15,77 +12,53 @@ interface TabProps {
 // TDODO: data structure. Will we ever need map here at all?
 // each uApp will be associated with one url
 // if the same uApp, or uApp with the same title will be opened in >1 tab, it's ok to duplicate it on the UI too
-const Tab: FunctionComponent<TabProps> = ({ tab, current=false, size = 'small' }) => {
-    const [apps, setApps] = useState<uApp[] | null>(null);
-
-    useEffect(():void => {
-        // need to collect all uApps name and add in a title to show on Title
-        tab && setApps(tab.uApps);
-    },[tab])
-
-    return (
-        <Box paddingY={1} paddingX={3}>
-            {!current && 
-            <Grid container>
+const Tab: FunctionComponent<TabProps> = ({ tab, current=false }) => (
+    <Box 
+        pt={current ? 2 : 1}
+        pb={current ? 2 : 1}
+        pr={current ? 1.5 : 3}
+        pl={3}
+    >
+        <Grid
+            container
+            justify='space-between'
+            alignItems='center'
+            wrap='nowrap'
+        >
+            <Grid item>
+                <Typography noWrap variant={current ? 'h3' : 'h4'}>
+                    {tab?.uApps[0].name}
+                </Typography>
+            </Grid>
+            <Grid item>
+                <Grid
+                    container
+                    alignItems='center'
+                    wrap='nowrap'
+                    spacing={1}
+                >
+                    {tab?.uApps[0].networks.map(network =>
+                    <Grid item>
+                        <IconWeb3 
+                            key={network.name}
+                            size='14px'
+                            color={tab?.uApps[0].enabled ? grey[800] : grey[400]}
+                            children={network.name}
+                        />
+                    </Grid>
+                    )}
+                    <Grid item>
+                        <Switch size={current ? 'medium' : 'small'} isActive={tab?.uApps[0].enabled} />
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+        {!current &&
+            <Typography variant='body2' style={{color: blue[200]}}>
                 {tab?.url}
-            </Grid>
-            }
-            <Grid
-                container
-                justify='space-between'
-                alignItems='center'
-                wrap='nowrap'
-                spacing={0}
-                style={{ marginBottom: '15px'}}>
-                <Grid item xs={current ? 10 : 11} zeroMinWidth>
-                    <Typography
-                        noWrap
-                        variant={current ? 'h3' : 'body1'}
-                        color={'textPrimary'}
-                    >
-                    uApps in TabuApps in Tab uApps in Tab #{tab?.tabId}
-                    </Typography>
-                </Grid>
-                <Grid item xs={current ? 2 : 1} container justify='flex-end'>
-                    <Switch size={current ? 'medium' : 'small'} isActive={true} />
-                </Grid>
-            </Grid>
-            { // This mapping is fine as soon as we will be receiving information concerning all TAB and not only specific uApp
-                apps && apps.map((a:uApp) => {
-                    const nets: string[] = [];
-                    a.networks.forEach((n:Network) => nets.push(n.name));
-                    return (
-                        <Grid
-                            container
-                            justify='space-between'
-                            alignItems='center'
-                            wrap='nowrap'
-                            spacing={0}
-                            key={a.name}
-                            style={{ padding: '5.5px 0'}}>
-                            <Grid item zeroMinWidth xs={8}>
-                                <Typography
-                                    noWrap
-                                    variant='body2'
-                                    color='textPrimary'>
-                                        {a.name}
-                                </Typography>
-                            </Grid>
-                            <Grid item container justify='flex-end' xs={3}>
-                                {nets.map(v => {
-                                    // Based on status of network this should alter
-                                    return (<IconWeb3 key={v}>{v}</IconWeb3>)
-                                })}
-                            </Grid>
-                            <Grid item container justify='flex-end' xs={1}>
-                                <Switch size={size} isActive={true}/>
-                            </Grid>
-                        </Grid>
-                    )
-                })
-            }
-        </Box>
-    );
-}
+            </Typography>
+        }
+    </Box>
+);
 
 export default Tab;

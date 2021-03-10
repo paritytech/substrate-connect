@@ -1,8 +1,5 @@
 import React, { FunctionComponent } from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
-
-// TODO: more icon-like props
-
 interface Props {
   size?: string;
   color?: string;
@@ -11,8 +8,10 @@ interface Props {
 
 const useStyles = makeStyles<Theme, Props>({
   iconRoot: {
+    display: 'inline-block',
     fontFamily: 'Web3-Regular !important',
     letterSpacing: '0 !important',
+    textAlign: 'center',
     color: ({ color }) => color || 'inherit',
     fontSize: ({ size }) => size  || 'inherit',
   },
