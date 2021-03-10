@@ -1,11 +1,11 @@
 import * as React from 'react';
 import * as material from '@material-ui/core';
 import GlobalFonts from '../fonts/fonts';
-import { light, Tab, MenuButton } from '../components';
+import { light, Tab, MenuButton, MenuInputText } from '../components';
 import { useTabs } from '../hooks';
 import { CallMade as Save } from '@material-ui/icons';
 
-const { createMuiTheme, ThemeProvider, Input, Button, Box, Divider } = material;
+const { createMuiTheme, ThemeProvider, Input, Box, Divider } = material;
 
 const SearchBar: React.FC = (): React.ReactElement => (
   <Box
@@ -15,7 +15,7 @@ const SearchBar: React.FC = (): React.ReactElement => (
     borderTop={'1px solid #EEEEEE'}
     borderBottom={'1px solid #EEEEEE'}
   >
-    <Input fullWidth placeholder="search by network, uApp or url" />
+    <MenuInputText fullWidth placeholder="search by network, uApp or url" />
   </Box>
 );
 
@@ -32,7 +32,7 @@ const Popup: React.FunctionComponent = () => {
 
 	return (
     <ThemeProvider theme={appliedTheme}>
-      <Box width={'340px'}>
+      <Box width={'340px'} mb={0.1}>
         <GlobalFonts />
         <Tab current tab={tabCurrent}/>
         <SearchBar />

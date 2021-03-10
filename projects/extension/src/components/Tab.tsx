@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { Grid, Typography, Box } from '@material-ui/core';
-import { blue, grey } from '@material-ui/core/colors';
+import { blueGrey, grey } from '@material-ui/core/colors';
 import { Switch, IconWeb3 } from '../components';
 import { TabInterface } from '../types';
 
@@ -54,7 +54,7 @@ const Tab: FunctionComponent<TabProps> = ({ tab, current=false }) => (
       </Grid>
     </Grid>
     {!current &&
-      <Typography variant='body2' style={{color: blue[200]}}>
+      <Typography variant='body2' style={{color: '#78B1D0'}}>
         {tab?.url}
       </Typography>
     }

@@ -1,4 +1,4 @@
-import { InputBase, ButtonBase, Box, Button } from '@material-ui/core';
+import { InputBase, ButtonBase, Box, Button, Input } from '@material-ui/core';
 import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
 
@@ -123,3 +123,13 @@ export const MenuButton = withStyles((theme: Theme) =>
     },
   })
 )(Button);
+
+export const MenuInputText = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      '&:before': {
+        borderBottomColor: theme.palette.divider
+      }
+    },
+  })
+)(Input);

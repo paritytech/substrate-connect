@@ -69,7 +69,7 @@ const light: ThemeOptions = {
 			letterSpacing: 0.25,
 		},
 		h3: {
-			fontWeight: 600,
+			fontWeight: 500,
 			fontSize: 18,
 			lineHeight: '120%',
 		},
@@ -77,6 +77,7 @@ const light: ThemeOptions = {
 			fontWeight: 500,
 			fontSize: 15,
 			lineHeight: '120%',
+			color: grey[800],
 		},
 		body1: {
 			fontWeight: 400,
