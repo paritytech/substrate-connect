@@ -5,7 +5,7 @@ export type NetworkStatus =  'connected' | 'ready' | 'disconnecting' | 'disconne
 export interface TabInterface {
     tabId: number;
     url: string;
-    uApps: uApp[];
+    uApp: uApp;
 }
 export type uApp = {
     networks: Network[];

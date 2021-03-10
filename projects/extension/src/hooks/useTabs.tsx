@@ -6,7 +6,7 @@ const sampleNetworkCtx: TabInterface[] = [
 	{
 		tabId: 0,
 		url: 'my-awesome-uapp1.com/index.html',
-		uApps: [{
+		uApp: {
 			networks: [
 				{name: 'rococo', status: 'connected', isKnown: true, chainspecPath:''},
 				{name: 'kusama', status: 'connected', isKnown: true, chainspecPath:''},
@@ -15,28 +15,28 @@ const sampleNetworkCtx: TabInterface[] = [
 			],
 			name: 'Current tab uApp',
 			enabled: true,
-		}]
+		}
 	},
 	{
 		tabId: 1,
 		url: 'my-awesome-uapp2.com/index.html',
-		uApps: [{
+		uApp: {
 			networks: [{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''}],
 			name: 'uApp in inactive tab',
 			enabled: true
-		}]
+		}
 	},
 	{
 		tabId: 2,
 		url: 'my-awesome-uapp3.com/index.html',
-		uApps: [{
+		uApp: {
 			networks: [
 				{name: 'kusama', status: 'connected', isKnown: true, chainspecPath:''},
 				{name: 'kulupu', status: 'connected', isKnown: true, chainspecPath:''},
 			],
 			name: 'Disabled uApp',
 			enabled: false
-		}]
+		}
 	}
 ]
 

@@ -27,7 +27,7 @@ const Tab: FunctionComponent<TabProps> = ({ tab, current=false }) => (
     >
       <Grid item>
         <Typography noWrap variant={current ? 'h3' : 'h4'}>
-          {tab?.uApps[0].name}
+          {tab?.uApp.name}
         </Typography>
       </Grid>
       <Grid item>
@@ -37,18 +37,18 @@ const Tab: FunctionComponent<TabProps> = ({ tab, current=false }) => (
           wrap='nowrap'
           spacing={1}
         >
-          {tab?.uApps[0].networks.map(network =>
+          {tab?.uApp.networks.map(network =>
           <Grid item>
             <IconWeb3 
               key={network.name}
               size='14px'
-              color={tab?.uApps[0].enabled ? grey[800] : grey[400]}
+              color={tab?.uApp.enabled ? grey[800] : grey[400]}
               children={network.name}
             />
           </Grid>
           )}
           <Grid item>
-            <Switch size={current ? 'medium' : 'small'} isActive={tab?.uApps[0].enabled} />
+            <Switch size={current ? 'medium' : 'small'} isActive={tab?.uApp.enabled} />
           </Grid>
         </Grid>
       </Grid>
