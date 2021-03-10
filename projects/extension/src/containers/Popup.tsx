@@ -5,7 +5,7 @@ import { light, Tab, MenuButton, MenuInputText } from '../components';
 import { useTabs } from '../hooks';
 import { CallMade as Save } from '@material-ui/icons';
 
-const { createMuiTheme, ThemeProvider, Input, Box, Divider } = material;
+const { createMuiTheme, ThemeProvider, Box, Divider } = material;
 
 const SearchBar: React.FC = (): React.ReactElement => (
   <Box
@@ -37,7 +37,7 @@ const Popup: React.FunctionComponent = () => {
         <Tab current tab={tabCurrent}/>
         <SearchBar />
         <Box marginY={1}>
-          {tabsRest.map(tab => <Tab tab={tab}/>)}
+          {tabsRest.map(tab => <Tab key={tab.uApp.name} tab={tab}/>)}
         </Box>
         <Divider />
         <MenuButton fullWidth>My Networks</MenuButton>

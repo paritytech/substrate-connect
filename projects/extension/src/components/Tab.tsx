@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { Grid, Typography, Box } from '@material-ui/core';
-import { blueGrey, grey } from '@material-ui/core/colors';
+import { grey } from '@material-ui/core/colors';
 import { Switch, IconWeb3 } from '../components';
 import { TabInterface } from '../types';
 
@@ -38,14 +38,13 @@ const Tab: FunctionComponent<TabProps> = ({ tab, current=false }) => (
           spacing={1}
         >
           {tab?.uApp.networks.map(network =>
-          <Grid item>
-            <IconWeb3 
-              key={network.name}
-              size='14px'
-              color={tab?.uApp.enabled ? grey[800] : grey[400]}
-              children={network.name}
-            />
-          </Grid>
+            <Grid item key={network}>
+              <IconWeb3 
+                size='14px'
+                color={tab?.uApp.enabled ? grey[800] : grey[400]}
+              />
+              {network.name}
+            </Grid>
           )}
           <Grid item>
             <Switch size={current ? 'medium' : 'small'} isActive={tab?.uApp.enabled} />
