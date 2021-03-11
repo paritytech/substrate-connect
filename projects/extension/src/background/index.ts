@@ -8,7 +8,9 @@ import { InitNameSpec } from './types';
 const manager = new ConnectionManager();
 
 chrome.runtime.onConnect.addListener((port) => {
-  console.assert(port.name == "substrate");
+  console.assert(port.name == "extension-provider");
+  manager.addApp(port);
+  console.log('port', port)
   port.onMessage.addListener((data: InitNameSpec) => {
     console.log('FROM CONTENT', data);
     const { chainName, chainSpec, id } = data;
@@ -16,9 +18,9 @@ chrome.runtime.onConnect.addListener((port) => {
     chainSpec &&
     manager.addSmoldot(chainName, chainSpec)
     .then(() => {
-      console.log('SEND TO CONTENT');
+      console.log('OK - DO NOT SEND TO CONTENT');
 
-      port.postMessage({ id, message: 'mpls' });
+      // port.postMessage({ id, message: 'mpls' });
     })
     .catch((e) => { console.error(e); });
   });

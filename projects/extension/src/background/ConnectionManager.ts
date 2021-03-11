@@ -8,19 +8,17 @@ export class ConnectionManager implements ConnectionManagerInterface {
   readonly #smoldots: SmoldotMediator[] = [];
   readonly #apps:  AppMediator[] = [];
 
-  constructor() {
-    chrome.runtime.onConnect.addListener(port => {
-      const { name } = port;
-      this.#apps.push(new AppMediator(name, port, this as ConnectionManagerInterface));
-    });
-  }
-
   get registedApps(): string[] {
     return this.#apps.map(a => a.name);
   }
 
   get registeredClients(): string[] {
     return this.#smoldots.map(s => s.name);
+  }
+
+  addApp(port: chrome.runtime.Port): void {
+    const { name } = port;
+    this.#apps.push(new AppMediator(name, port, this as ConnectionManagerInterface))
   }
 
   hasClientFor(name: string): boolean {

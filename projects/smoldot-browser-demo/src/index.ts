@@ -3,10 +3,10 @@
 // hack to make poladot-js work without bringing in webpack and babel
 import "regenerator-runtime/runtime"
 
-import { ApiPromise } from '@polkadot/api';
-import { SmoldotProvider }  from '@substrate/smoldot-provider';
-import { ExtensionProvider }  from '@substrate/extension-provider';
-import { Detect }  from '../node_modules/@substrate/connect';
+// import { ApiPromise } from '@polkadot/api';
+// import { SmoldotProvider }  from '@substrate/smoldot-provider';
+// import { ExtensionProvider }  from '@substrate/extension-provider';
+import { Detect }  from '../../../packages/connect/src';
 import UI, { emojis } from './view';
 
 window.onload = () => {
@@ -17,29 +17,16 @@ window.onload = () => {
   ui.showSyncing();
 
   (async () => {
-    const response =  await fetch('./assets/westend.json')
-    if (!response.ok) {
-      ui.error(new Error('Error downloading chain spec'));
-    }
-    const chainSpec =  await response.text();
-    let provider;
-    // if (extensionExists) {
-    //   window.postMessage(
-    //     JSON.parse(
-    //       JSON.stringify(
-    //         { chainName: 'westend', chainSpec: chainSpec, origin: 'page' }
-    //       )
-    //     ), '*'
-    //   );
-    //   provider = new ExtensionProvider();
-    // } else {
-    //   provider = new SmoldotProvider(chainSpec);
-    // }
-    // await provider.connect();
     try {
-
+      const response =  await fetch('./assets/westend.json')
+      if (!response.ok) {
+        ui.error(new Error('Error downloading chain spec'));
+      }
+      const chainSpec =  await response.text();
+      let provider;
+      // Mandatory ChainName, Optional: ChainSpec
       // This will be the DETECT implementation 
-      const detect = new Detect(chainSpec);
+      const detect = new Detect('westend', chainSpec);
       const api = await detect.connect();
       // const api = await ApiPromise.create({ provider })
       const header = await api.rpc.chain.getHeader()

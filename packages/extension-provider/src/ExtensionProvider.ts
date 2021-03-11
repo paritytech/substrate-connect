@@ -48,7 +48,7 @@ const ANGLICISMS: { [index: string]: string } = {
 };
 
 const CONNECTION_STATE_PINGER_INTERVAL = 2000;
-
+const EXTENSION_ORIGIN = 'extension-provider';
 export class ExtensionProvider implements ProviderInterface {
   readonly #coder: RpcCoder = new RpcCoder();
   readonly #eventemitter: EventEmitter = new EventEmitter();
@@ -57,7 +57,10 @@ export class ExtensionProvider implements ProviderInterface {
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
   #isConnected = false;
 
-   public constructor() {}
+   public constructor(name: string, spec?: string) {
+    window.postMessage(JSON.parse(JSON.stringify({ chainName: name, chainSpec: spec, origin: EXTENSION_ORIGIN })), '*');
+    window.addEventListener('message', ({data}) => console.log('i listend from CONTTENT', data));
+   }
 
   /**
    * @description Lets polkadot-js know we support subscriptions

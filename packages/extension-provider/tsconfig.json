@@ -6,7 +6,7 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "declarationMap": true,
-    "outDir": "./dist/",
+    "outDir": "./dist",
     "target": "ES2018",
     "moduleResolution": "node",
     "resolveJsonModule": true,

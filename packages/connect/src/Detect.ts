@@ -6,7 +6,7 @@ export class Detect {
     private chainSpec: string;
     private isExtension: boolean;
 
-    public constructor (spec: string) {
+    public constructor (name: string, spec: string) {
         this.chainSpec = spec;
         this.isExtension = !!document.getElementById('substrateExtension');
     }
@@ -15,19 +15,7 @@ export class Detect {
         let provider;
         console.log('this.isExtension', this.isExtension);
         if (this.isExtension) {
-
-          const d = new Date();
-          const time = d.getMinutes() + ' ' + ' ' + d.getSeconds() + ' ' + d.getMilliseconds();
-          console.log('from detect: ', time);
-            window.postMessage(
-                JSON.parse(
-                  JSON.stringify(
-                    { chainName: 'westend', chainSpec: this.chainSpec, origin: 'page' }
-                  )
-                ), '*'
-              );
-            window.addEventListener('message', ({data}) => console.log('i listend from CONTTENT', data));
-            new ExtensionProvider();
+            new ExtensionProvider('westend', this.chainSpec);
         } else {
             provider = new SmoldotProvider(this.chainSpec);
             await provider.connect();
