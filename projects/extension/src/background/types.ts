@@ -3,15 +3,16 @@ export type AppMessageType = 'associate' | 'rpc';
 
 export interface AppMessage {
   type: AppMessageType;
-  payload: string; // smoldot name / json / message_id / subscription_id
+  payload: string; // name of the network or an rpc string (json stringified RPC message)
 }
 
-export interface InitNameSpec {
+export interface InitAppNameSpec {
   id: string,
   chainName: string,
-  chainSpec: string
+  origin: string,
+  uAppName: string,
+  chainSpec?: string
 }
-
 export interface Message extends MessageEvent {
   data: {
     error?: string;
@@ -24,7 +25,7 @@ export interface Message extends MessageEvent {
   }
 }
 
-// Messages that we send to the app
+// Messages that we send to the app down through the port
 export type ExtensionMessageType = 'error' | 'rpc';
 
 export interface ExtensionMessage {

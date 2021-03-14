@@ -23,11 +23,12 @@ window.onload = () => {
         ui.error(new Error('Error downloading chain spec'));
       }
       const chainSpec =  await response.text();
-      let provider;
+      // let provider;
       // Mandatory ChainName, Optional: ChainSpec
       // This will be the DETECT implementation 
-      const detect = new Detect('westend', chainSpec);
+      const detect = new Detect('westend', 'browser-demo', chainSpec);
       const api = await detect.connect();
+
       // const api = await ApiPromise.create({ provider })
       const header = await api.rpc.chain.getHeader()
       const chainName = await api.rpc.system.chain()

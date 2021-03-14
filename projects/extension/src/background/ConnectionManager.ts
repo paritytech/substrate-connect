@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import * as smoldot from 'smoldot';
 import { AppMediator } from './AppMediator';
@@ -16,9 +18,19 @@ export class ConnectionManager implements ConnectionManagerInterface {
     return this.#smoldots.map(s => s.name);
   }
 
-  addApp(port: chrome.runtime.Port): void {
-    const { name } = port;
-    this.#apps.push(new AppMediator(name, port, this as ConnectionManagerInterface))
+
+  // There are 2 bugs I know about in the background that I have fixed in my branch
+  // a) The AppMediator doesnt add itself to the appropriate SmoldotMediator when it receives the associate message
+  // b) The AppMediator doesnt register a subscription when it gets a subscription message
+  addApp(port: chrome.runtime.Port, name: string, lala: any): void {
+    const app = this.#apps.find(s => s.name === name);
+    console.log('In ConnectionManager - arrived:', app);
+    if (app) {
+      console.log('app already exists')
+      port.postMessage(lala)
+    } else {
+      this.#apps.push(new AppMediator(name, port, this as ConnectionManagerInterface))
+    }
   }
 
   hasClientFor(name: string): boolean {
@@ -48,7 +60,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
 
   async addSmoldot(name: string,  chainSpec: string, testSmoldot?: smoldot.Smoldot): Promise<void> {
     const client = testSmoldot || smoldot;
-    if (this.#smoldots.find(s => s.name == name)) {
+    if (this.#smoldots.find(s => s.name === name)) {
       throw new Error(`Extension already has a smoldot client named ${name}`);
     }
 
@@ -75,8 +87,10 @@ export class ConnectionManager implements ConnectionManagerInterface {
       const sm = new SmoldotMediator(name, sc);
 
       this.#smoldots.push(sm);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return sc;
     } catch (err) {
-      console.log('err', err);
+      console.log('Function addSmoldot error:', err);
     }
   }
 }

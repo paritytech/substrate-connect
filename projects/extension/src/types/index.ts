@@ -23,8 +23,16 @@ export interface Message extends MessageEvent {
     origin: string;
     response?: string;
     subscription?: string;
-    chainName?: string;
-    chainSpec?: string;
+  }
+}
+
+export interface AppMsg extends MessageEvent {
+  data: {
+    id: string;
+    appName: string;
+    message?: string;
+    origin: string;
+    response?: string;
   }
 }
   

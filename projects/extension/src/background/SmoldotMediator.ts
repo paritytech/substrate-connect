@@ -3,12 +3,12 @@ import { SmoldotClient } from 'smoldot';
 
 export class SmoldotMediator {
   readonly name: string;
-  readonly #smoldot: SmoldotClient;
+  readonly #smoldotClient: SmoldotClient;
   #id: number;
 
-  constructor(name: string, smoldot: SmoldotClient) {
+  constructor(name: string, smoldotClient: SmoldotClient) {
     this.name = name;
-    this.#smoldot = smoldot;
+    this.#smoldotClient = smoldotClient;
     this.#id = 0;
   }
 
@@ -16,7 +16,7 @@ export class SmoldotMediator {
     const nextID = ++this.#id;
     /* eslint-disable @typescript-eslint/no-unsafe-member-access */
     message.id = nextID;
-    this.#smoldot.send_json_rpc(JSON.stringify(message));
+    this.#smoldotClient.send_json_rpc(JSON.stringify(message));
     return nextID;
   }
 }

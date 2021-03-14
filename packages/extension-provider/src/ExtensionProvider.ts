@@ -2,6 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import * as smoldot from 'smoldot';
 import {RpcCoder} from '@polkadot/rpc-provider/coder';
 import {
   JsonRpcResponse,
@@ -13,7 +14,9 @@ import {
 import { assert, isUndefined, logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 
-const l = logger('smoldot-provider');
+const EXTENSION_ORIGIN = 'extension-provider';
+
+const l = logger(EXTENSION_ORIGIN);
 
 interface RpcStateAwaiting {
   callback: ProviderInterfaceCallback;
@@ -40,15 +43,12 @@ interface HealthResponse {
   shouldHavePeers: boolean;
 }
 
-
 const ANGLICISMS: { [index: string]: string } = {
   chain_finalisedHead: 'chain_finalizedHead',
   chain_subscribeFinalisedHeads: 'chain_subscribeFinalizedHeads',
   chain_unsubscribeFinalisedHeads: 'chain_unsubscribeFinalizedHeads'
 };
 
-const CONNECTION_STATE_PINGER_INTERVAL = 2000;
-const EXTENSION_ORIGIN = 'extension-provider';
 export class ExtensionProvider implements ProviderInterface {
   readonly #coder: RpcCoder = new RpcCoder();
   readonly #eventemitter: EventEmitter = new EventEmitter();
@@ -57,9 +57,14 @@ export class ExtensionProvider implements ProviderInterface {
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
   #isConnected = false;
 
-   public constructor(name: string, spec?: string) {
-    window.postMessage(JSON.parse(JSON.stringify({ chainName: name, chainSpec: spec, origin: EXTENSION_ORIGIN })), '*');
-    window.addEventListener('message', ({data}) => console.log('i listend from CONTTENT', data));
+  #uAppName: string;
+  #chainName: string;
+  #chainSpec: string | undefined;
+
+   public constructor(appName: string, name: string, spec?: string) {
+     this.#uAppName = appName;
+     this.#chainName = name;
+     this.#chainSpec = spec;
    }
 
   /**
@@ -203,8 +208,21 @@ export class ExtensionProvider implements ProviderInterface {
   /**
    * @description "Connect" the WASM client - starts the smoldot WASM client
    */
-  public async connect(): Promise<void> {
-    console.log('this wont be implemented');
+  public async connect(): Promise<any> {
+    console.log('Inside connect()');
+    window.postMessage(
+      JSON.parse(
+        JSON.stringify({
+          uAppName: this.#uAppName,
+          chainName: this.#chainName,
+          chainSpec: this.#chainSpec,
+          origin: EXTENSION_ORIGIN
+        })
+      ), '*');
+    window.addEventListener('message', ({data}) => {
+      console.log('inside ExtensionProvider: listend from CONTTENT', data)
+      // if it came from bg (and type is rpc) then I need to pass the handleRpcReponse 
+    });
   }
 
   /**
@@ -272,6 +290,9 @@ export class ExtensionProvider implements ProviderInterface {
           params,
           subscription
         };
+
+        // this.#client.send_json_rpc(json);
+        // Post it to backgroudn for json_rpc (type: rpc, payload) -> And background should send it to respective client
     });
   }
 

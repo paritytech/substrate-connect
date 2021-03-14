@@ -110,6 +110,7 @@ export class AppMediator {
   }
 
   #handleRpcRequest = (message: string): void => {
+    console.log('message: ', message, ' handleRpcRequest: state ', this.#state, ' - smoldotName ', this.#smoldotName);
     if (this.#state !== 'ready' || this.#smoldotName === undefined) {
       const message = this.#state === 'connected'
         ? `The app is not associated with a blockchain client`
@@ -127,6 +128,7 @@ export class AppMediator {
   }
 
   #handleAssociateRequest = (name: string): void => {
+    console.log('handleAssociateRequest: state ', this.#state, ' - smoldotName ', this.#smoldotName);
     if (this.#state !== 'connected' && this.#smoldotName) {
       this.#sendError(`Cannot reassociate, app is already associated with ${this.#smoldotName}`);
       return;
@@ -143,14 +145,17 @@ export class AppMediator {
   }
 
   #handlePortMessage = (message: AppMessage): void => {
-    if (message.type == 'associate') {
-      this.#handleAssociateRequest(message.payload);
-      return;
-    }
-
-    if (message.type === 'rpc') {
-      this.#handleRpcRequest(message.payload);
-      return;
+    console.log('messssssss', message.type)
+    switch (message.type) {
+      case 'associate':
+        this.#handleAssociateRequest(message.payload);
+        break;
+      case 'rpc':
+        this.#handleRpcRequest(message.payload);
+        break;
+      default:
+        break;
+      return 
     }
   }
 
