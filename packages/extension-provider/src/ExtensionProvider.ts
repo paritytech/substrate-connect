@@ -251,7 +251,8 @@ export class ExtensionProvider implements ProviderInterface {
           id: Math.random(),
           message: JSON.stringify({
             type: 'rpc',
-            message: '{"id":13, "jsonrpc":"2.0", "method": "rpc_methods", "params": []}'
+            payload: json,
+            subscription: !!subscription
           }),
           origin: EXTENSION_ORIGIN
         }, '*');
