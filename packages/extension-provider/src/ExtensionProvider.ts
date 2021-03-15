@@ -155,7 +155,7 @@ export class ExtensionProvider implements ProviderInterface {
   /**
    * @description "Connect" the WASM client - starts the smoldot WASM client
    */
-  public connect(): any {
+  public connect(): Promise<void> {
     const initData = {
       id: 1,
       message: JSON.stringify({
@@ -172,6 +172,10 @@ export class ExtensionProvider implements ProviderInterface {
     window.addEventListener('message', ({data}) => {
       this.#handleRpcReponse(data?.message);
     });
+    this.#isConnected = true;
+    this.emit('connected');
+
+    return Promise.resolve();
   }
 
   /**
