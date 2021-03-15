@@ -56,6 +56,15 @@ export class AppMediator {
     return this.#state;
   }
 
+  // State helpers that return clones of the internal state - useful for testing
+  cloneRequests(): MessageIDMapping[] { 
+    return JSON.parse(JSON.stringify(this.requests)) as MessageIDMapping[];
+  }
+
+  cloneSubscriptions(): SubscriptionMapping[] { 
+    return JSON.parse(JSON.stringify(this.subscriptions)) as SubscriptionMapping[];
+  }
+
   #sendError = (message: string): void => {
     const error: ExtensionMessage = { type: 'error', payload: message };
     this.#port.postMessage(error);
@@ -64,11 +73,11 @@ export class AppMediator {
   processSmoldotMessage(message: JsonRpcResponse): boolean {
     // subscription message
     if (message.method) {
-      if(!(message as JsonRpcResponseSubscription).params.subscription) {
+      if(!(message as JsonRpcResponseSubscription).params?.subscription) {
         throw new Error('Got a subscription message without a subscription id');
       }
 
-      const sub = this.subscriptions.find(s => s.subID == message.params.subscription);
+      const sub = this.subscriptions.find(s => s.subID == message.params?.subscription);
       if (!sub) {
         // not our subscription
         return false;
@@ -110,7 +119,7 @@ export class AppMediator {
     return true;
   }
 
-  #handleRpcRequest = (message: string): void => {
+  #handleRpcRequest = (message: string, subscription?: boolean): void => {
     if (this.#state !== 'ready' || this.#smoldotName === undefined) {
       const message = this.#state === 'connected'
         ? `The app is not associated with a blockchain client`
@@ -123,6 +132,16 @@ export class AppMediator {
 
     const parsed =  JSON.parse(message) as JsonRpcRequest;
     const appID = parsed.id;
+
+    if (subscription) {
+      // regisgter a new sub that is waiting for a sub ID
+      this.subscriptions.push({ 
+        appIDForRequest: appID, 
+        subID: undefined, 
+        method: parsed.method 
+      });
+    }
+
     const smoldotID = this.#manager.sendRpcMessageTo(this.#smoldotName, parsed);
     this.requests.push({ appID, smoldotID });
   }
@@ -137,6 +156,8 @@ export class AppMediator {
       return;
     }
 
+    this.#manager.registerAppWithSmoldot(this, name);
+
     this.#smoldotName = name;
     this.#state = 'ready';
     return;
@@ -146,8 +167,12 @@ export class AppMediator {
     if (message.type !== 'rpc') {
       this.#sendError('Wrong type of message received. "rpc" was expected');
       return;
-    }  
-    this.#handleRpcRequest(message.payload);
+    }
+
+    if (message.type === 'rpc') {
+      this.#handleRpcRequest(message.payload, message.subscription);
+      return;
+    }
   }
 
   disconnect(): void {

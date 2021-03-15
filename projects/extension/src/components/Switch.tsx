@@ -22,7 +22,7 @@ const Switch: FunctionComponent<Props> = ({
     const StyledSwitch = withStyles((theme: Theme) =>
         createStyles({
             root: {
-                width: size === 'small' ? 16 : 34,
+                width: size === 'small' ? 16 : 28,
                 height: size === 'small' ? 8 : 14,
                 padding: 0,
                 display: "flex",
@@ -32,7 +32,7 @@ const Switch: FunctionComponent<Props> = ({
                 padding: 1,
                 color: props.deactiveColor || theme.palette.common.white,
                 '&.Mui-checked': {
-                    transform: size === 'small' ? 'translateX(7px)' : 'translateX(20px)',
+                    transform: size === 'small' ? 'translateX(8px)' : 'translateX(14px)',
                     color: props.activeColor || theme.palette.common.white,
                     '& + $track': {
                         opacity: 1,

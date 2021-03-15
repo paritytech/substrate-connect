@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Divider } from '@material-ui/core';
 import { SystemUpdateAlt } from '@material-ui/icons';
-import { InputButton, InputText, InputWrap } from './Inputs';
+import { InputButton, InputText, InputWrap } from '../components';
 
 const ClientSearch: React.FunctionComponent = () => {
   return (

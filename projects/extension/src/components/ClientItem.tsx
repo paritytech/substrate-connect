@@ -1,17 +1,16 @@
 import * as React from 'react';
 import { makeStyles, Theme, Popover, Typography, Box, ButtonBase, Button, Grid, Tooltip, Divider } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import { ExpandMore, SystemUpdateAlt, InsertDriveFile, Publish } from '@material-ui/icons';
-import { IconWeb3 } from '../components';
-import { InputButton, InputText, InputWrap } from './Inputs';
+import { ExpandMore, SystemUpdateAlt, InsertDriveFile, Publish, ArrowDropDown } from '@material-ui/icons';
+import { IconWeb3, InputButton, InputText, InputWrap, InputSelect } from '../components';
+import { Network, Parachain } from '../types';
 
-interface Props {
-  isKnown?: boolean
-}
-
-const useStyles = makeStyles<Theme, Props>(theme => ({
+const useStyles = makeStyles<Theme>(theme => ({
   root: {
-    background: ({ isKnown }) => !isKnown ? grey[100] : 'transparent',
+    position: 'relative',
+    flexWrap: 'nowrap',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     width: `calc(100% + ${theme.spacing(8)}px)`,
     marginLeft: theme.spacing(-4),
     paddingTop: theme.spacing(2),
@@ -21,9 +20,28 @@ const useStyles = makeStyles<Theme, Props>(theme => ({
     marginBottom: theme.spacing(1),
     borderRadius: theme.spacing(0.5),
     border: `1px solid transparent`,
+    '&.parachain': {
+      paddingLeft: theme.spacing(8),
+      '&::before': {
+        content: '""',
+        display: 'block',
+        position: 'absolute',
+        zIndex: -1,
+        bottom: '50%',
+        left: theme.spacing(6),
+        width: theme.spacing(1),
+        height: theme.spacing(11),
+        border: `1px solid ${grey[500]}`,
+        borderWidth: '0px 0px 1px 1px',
+        borderBottomLeftRadius: theme.spacing(1),
+      },
+    },
+    '&.unknown': {
+      background: grey[100],
+    },
     '&:hover': {
       border: `1px solid ${theme.palette.grey[200]}`,
-    }
+    },
   },
   networkIconRoot: {
     display: 'inline-flex',
@@ -59,8 +77,8 @@ const useStyles = makeStyles<Theme, Props>(theme => ({
   },
 }));
 
-const ClientMenu: React.FunctionComponent<Props> = ({isKnown}) => {
-  const classes = useStyles({isKnown});
+const ClientMenu: React.FunctionComponent<Network | Parachain> = ({isKnown, name, chainspecPath, ...props}) => {
+  const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -100,25 +118,41 @@ const ClientMenu: React.FunctionComponent<Props> = ({isKnown}) => {
         <Typography variant='overline'>Chainspec</Typography>
         <InputWrap>
 
-          <InputText readOnly defaultValue='chainspec.json'/>
+          <InputText readOnly defaultValue={chainspecPath}/>
           <Divider orientation='vertical' flexItem/>
           <InputButton>
             <InsertDriveFile fontSize='small'/>
           </InputButton>
           <Divider orientation='vertical' flexItem/>
+
           { isKnown
-            ? <InputButton>
-              <Publish fontSize='small'/>
-            </InputButton>
-            : <InputButton>
-              <SystemUpdateAlt fontSize='small' />
-            </InputButton>
+          ? <InputButton>
+            <Publish fontSize='small'/>
+          </InputButton>
+          : <InputButton>
+            <SystemUpdateAlt fontSize='small' />
+          </InputButton>
           }
 
         </InputWrap>
         <InputWrap>
-          <InputText readOnly={!isKnown} defaultValue='<networkName>'/>
+          <InputText readOnly defaultValue={name}/>
         </InputWrap>
+
+        { 'relaychain' in props &&
+        <>
+          <Typography variant='overline'>Relay Chain</Typography>
+          <InputWrap>
+            <InputSelect defaultValue={props.relaychain}/>
+            <Divider orientation='vertical' flexItem/>
+            <InputButton>
+              <ArrowDropDown fontSize='small'/>
+            </InputButton>
+            <Divider orientation='vertical' flexItem/>
+          </InputWrap>
+        </>
+        }
+
         <Divider/>
         <Button onClick={handleClose} fullWidth>Cancel</Button>
 
@@ -128,18 +162,21 @@ const ClientMenu: React.FunctionComponent<Props> = ({isKnown}) => {
 }
 
 
-const ClientItem: React.FunctionComponent<Props> = ({isKnown = true}) => {
-  const classes = useStyles({isKnown});
+
+const ClientItem: React.FunctionComponent<Network | Parachain> = ({...props}) => {
+  const classes = useStyles();
+  const isParachain = 'relaychain' in props;
+  const icon = props.icon || props.name
 
   return (
-    <Grid container wrap='nowrap' justify='space-between' alignItems='center' className={classes.root} >
+    <Grid container className={`${classes.root} ${!props.isKnown ? 'unknown' : ''} ${isParachain ? 'parachain' : ''}`} >
       <Typography variant='h2' component='div'>
         <Box component='span' className={classes.networkIconRoot}>
-            <IconWeb3>polkadot</IconWeb3>
+          <IconWeb3>{icon.toLowerCase()}</IconWeb3>
         </Box>
-        Polkadot
+        {props.name}
       </Typography>
-      <ClientMenu isKnown={isKnown}/>
+      <ClientMenu {...props}/>
     </Grid>
   );
 };
