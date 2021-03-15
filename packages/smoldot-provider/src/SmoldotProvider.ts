@@ -351,7 +351,6 @@ export class SmoldotProvider implements ProviderInterface {
   ): Promise<any> {
     return new Promise((resolve, reject): void => {
         assert(this.#client, 'Client is not initialised');
-        console.log('method received: ', method);
         const json = this.#coder.encodeJson(method, params);
         const id = this.#coder.getId();
 

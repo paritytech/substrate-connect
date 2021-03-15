@@ -55,14 +55,13 @@ export class ExtensionProvider implements ProviderInterface {
   readonly #handlers: Record<string, RpcStateAwaiting> = {};
   readonly #subscriptions: Record<string, StateSubscription> = {};
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
+  #client: smoldot.SmoldotClient | undefined = undefined;
   #isConnected = false;
 
-  #uAppName: string;
   #chainName: string;
   #chainSpec: string | undefined;
 
-   public constructor(appName: string, name: string, spec?: string) {
-     this.#uAppName = appName;
+   public constructor(name: string, spec?: string) {
      this.#chainName = name;
      this.#chainSpec = spec;
    }
@@ -85,7 +84,6 @@ export class ExtensionProvider implements ProviderInterface {
 
   #handleRpcReponse = (res: string) => {
     l.debug(() => ['received', res]);
-
     const response = JSON.parse(res) as JsonRpcResponse;
 
     return isUndefined(response.method)
@@ -135,13 +133,10 @@ export class ExtensionProvider implements ProviderInterface {
     const method = ANGLICISMS[response.method as string] || response.method || 'invalid';
     const subId = `${method}::${response.params.subscription}`;
     const handler = this.#subscriptions[subId];
-
     if (!handler) {
       // store the response, we could have out-of-order subid coming in
       this.#waitingForId[subId] = response;
-
       l.debug(() => `Unable to find handler for subscription=${subId} responseId=${response.id}`);
-
       return;
     }
 
@@ -208,20 +203,22 @@ export class ExtensionProvider implements ProviderInterface {
   /**
    * @description "Connect" the WASM client - starts the smoldot WASM client
    */
-  public async connect(): Promise<any> {
-    console.log('Inside connect()');
-    window.postMessage(
-      JSON.parse(
-        JSON.stringify({
-          uAppName: this.#uAppName,
-          chainName: this.#chainName,
-          chainSpec: this.#chainSpec,
-          origin: EXTENSION_ORIGIN
-        })
-      ), '*');
+  public connect(): any {
+    const initData = {
+      id: 1,
+      message: JSON.stringify({
+        type: 'associate',
+        message: JSON.parse(JSON.stringify({
+            chainName: this.#chainName,
+            chainSpec: this.#chainSpec
+          })
+        )
+      }),
+      origin: EXTENSION_ORIGIN
+    }
+    window.postMessage(initData, '*');
     window.addEventListener('message', ({data}) => {
-      console.log('inside ExtensionProvider: listend from CONTTENT', data)
-      // if it came from bg (and type is rpc) then I need to pass the handleRpcReponse 
+      this.#handleRpcReponse(data?.message);
     });
   }
 
@@ -293,6 +290,16 @@ export class ExtensionProvider implements ProviderInterface {
 
         // this.#client.send_json_rpc(json);
         // Post it to backgroudn for json_rpc (type: rpc, payload) -> And background should send it to respective client
+        /******* TEST START */
+        window.postMessage({
+          id: Math.random(),
+          message: JSON.stringify({
+            type: 'rpc',
+            message: '{"id":13, "jsonrpc":"2.0", "method": "rpc_methods", "params": []}'
+          }),
+          origin: EXTENSION_ORIGIN
+        }, '*');
+        /******* TEST END */
     });
   }
 

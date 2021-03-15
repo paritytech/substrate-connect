@@ -24,17 +24,18 @@ export class AppMediator {
   readonly subscriptions: SubscriptionMapping[];
   readonly requests: MessageIDMapping[];
 
-  constructor(name: string, port: chrome.runtime.Port, manager: ConnectionManagerInterface) {
-    this.#name = name;
+  constructor(name: string, port: chrome.runtime.Port, chainName: string, manager: ConnectionManagerInterface) {
     this.subscriptions = [];
     this.requests = [];
+    // Assign all necessery variables to privates
+    this.#name = name;
     this.#port = port;
-    // REM: `sender` is guaranteed to be defined because we know this port came
-    // from a handler for chrome.runtime.onConnect `tab` is guaranteed to be
-    // defined because our content script will only run in a tab.
     this.#tabId = port.sender?.tab?.id;
     this.#url = port.sender?.url;
     this.#manager = manager;
+    // Call handleAssociate in order to "assign" uApp to smoldot client if exists
+    this.#assignAppToSmoldotClient(chainName);
+    // Open listeners for the incoming rpc messages
     this.#port.onMessage.addListener(this.#handlePortMessage);
     this.#port.onDisconnect.addListener(() => { this.#handleDisconnect(false) });
   }
@@ -110,7 +111,6 @@ export class AppMediator {
   }
 
   #handleRpcRequest = (message: string): void => {
-    console.log('message: ', message, ' handleRpcRequest: state ', this.#state, ' - smoldotName ', this.#smoldotName);
     if (this.#state !== 'ready' || this.#smoldotName === undefined) {
       const message = this.#state === 'connected'
         ? `The app is not associated with a blockchain client`
@@ -127,13 +127,11 @@ export class AppMediator {
     this.requests.push({ appID, smoldotID });
   }
 
-  #handleAssociateRequest = (name: string): void => {
-    console.log('handleAssociateRequest: state ', this.#state, ' - smoldotName ', this.#smoldotName);
+  #assignAppToSmoldotClient = (name: string): void => {
     if (this.#state !== 'connected' && this.#smoldotName) {
       this.#sendError(`Cannot reassociate, app is already associated with ${this.#smoldotName}`);
       return;
     }
-
     if (!this.#manager.hasClientFor(name)) {
       this.#sendError(`Extension does not have client for ${name}`);
       return;
@@ -145,18 +143,11 @@ export class AppMediator {
   }
 
   #handlePortMessage = (message: AppMessage): void => {
-    console.log('messssssss', message.type)
-    switch (message.type) {
-      case 'associate':
-        this.#handleAssociateRequest(message.payload);
-        break;
-      case 'rpc':
-        this.#handleRpcRequest(message.payload);
-        break;
-      default:
-        break;
-      return 
-    }
+    if (message.type !== 'rpc') {
+      this.#sendError('Wrong type of message received. "rpc" was expected');
+      return;
+    }  
+    this.#handleRpcRequest(message.payload);
   }
 
   disconnect(): void {

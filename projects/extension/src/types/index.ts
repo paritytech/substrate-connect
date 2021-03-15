@@ -23,18 +23,11 @@ export interface Message extends MessageEvent {
     origin: string;
     response?: string;
     subscription?: string;
-  }
-}
-
-export interface AppMsg extends MessageEvent {
-  data: {
-    id: string;
-    appName: string;
+    type?: string;
+    appName?: string;
+    chainName?: string;
     message?: string;
-    origin: string;
-    response?: string;
   }
-}
-  
+}  
 
 export type NetworkCtx = TabInterface[];

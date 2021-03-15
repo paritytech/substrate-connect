@@ -2,16 +2,12 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 // hack to make poladot-js work without bringing in webpack and babel
 import "regenerator-runtime/runtime"
-
-// import { ApiPromise } from '@polkadot/api';
-// import { SmoldotProvider }  from '@substrate/smoldot-provider';
-// import { ExtensionProvider }  from '@substrate/extension-provider';
 import { Detect }  from '../../../packages/connect/src';
 import UI, { emojis } from './view';
 
 window.onload = () => {
-  const extensionExists = !!document.getElementById('substrateExtension');
-  console.log('--> extensionExists', extensionExists);
+  // const extensionExists = !!document.getElementById('substrateExtension');
+  // console.log('--> extensionExists', extensionExists);
   const loadTime = performance.now();
   const ui = new UI({ containerId: 'messages' }, { loadTime });
   ui.showSyncing();
@@ -26,7 +22,7 @@ window.onload = () => {
       // let provider;
       // Mandatory ChainName, Optional: ChainSpec
       // This will be the DETECT implementation 
-      const detect = new Detect('westend', 'browser-demo', chainSpec);
+      const detect = new Detect('westend', chainSpec);
       const api = await detect.connect();
 
       // const api = await ApiPromise.create({ provider })
