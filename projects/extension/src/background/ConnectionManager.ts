@@ -15,7 +15,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
     });
   }
 
-  get registedApps(): string[] {
+  get registeredApps(): string[] {
     return this.#apps.map(a => a.name);
   }
 
@@ -48,6 +48,15 @@ export class ConnectionManager implements ConnectionManagerInterface {
     return sm.sendRpcMessage(message);
   }
 
+  registerAppWithSmoldot(app: AppMediator, smoldotName: string): void {
+    const sm = this.#smoldots.find(s => s.name === smoldotName);
+    if (!sm) {
+      throw new Error('Tried to add app to smoldot that does not exist.');
+    }
+
+    sm.addApp(app);
+  }
+
   async addSmoldot(name: string,  chainSpec: string, testSmoldot?: smoldot.Smoldot): Promise<void> {
     const client = testSmoldot || smoldot;
     if (this.#smoldots.find(s => s.name == name)) {
@@ -63,7 +72,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
         max_log_level: 3,
         json_rpc_callback: (message: string) => {
           const parsed = JSON.parse(message) as JsonRpcResponse;
-          for (const app of this.#apps) {
+          for (const app of sm.apps) {
             if (app.processSmoldotMessage(parsed)) {
               break;
             }

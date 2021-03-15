@@ -156,6 +156,8 @@ export class AppMediator {
       return;
     }
 
+    this.#manager.registerAppWithSmoldot(this, name);
+
     this.#smoldotName = name;
     this.#state = 'ready';
     return;
