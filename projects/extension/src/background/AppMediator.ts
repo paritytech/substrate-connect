@@ -118,7 +118,7 @@ export class AppMediator {
     return true;
   }
 
-  #handleRpcRequest = (message: string): void => {
+  #handleRpcRequest = (message: string, subscription?: boolean): void => {
     if (this.#state !== 'ready' || this.#smoldotName === undefined) {
       const message = this.#state === 'connected'
         ? `The app is not associated with a blockchain client`
@@ -131,6 +131,16 @@ export class AppMediator {
 
     const parsed =  JSON.parse(message) as JsonRpcRequest;
     const appID = parsed.id;
+
+    if (subscription) {
+      // regisgter a new sub that is waiting for a sub ID
+      this.subscriptions.push({ 
+        appIDForRequest: appID, 
+        subID: undefined, 
+        method: parsed.method 
+      });
+    }
+
     const smoldotID = this.#manager.sendRpcMessageTo(this.#smoldotName, parsed);
     this.requests.push({ appID, smoldotID });
   }
@@ -158,7 +168,7 @@ export class AppMediator {
     }
 
     if (message.type === 'rpc') {
-      this.#handleRpcRequest(message.payload);
+      this.#handleRpcRequest(message.payload, message.subscription);
       return;
     }
   }

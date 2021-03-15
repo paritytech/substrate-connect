@@ -4,6 +4,7 @@ export type AppMessageType = 'associate' | 'rpc';
 export interface AppMessage {
   type: AppMessageType;
   payload: string; // smoldot name / json / message_id / subscription_id
+  subscription?: boolean;
 }
 
 // Messages that we send to the app
@@ -24,6 +25,7 @@ export interface MessageIDMapping {
 export interface SubscriptionMapping {
   readonly appIDForRequest: number;
   subID: number | string  | undefined;
+  method: string;
 }
 
 export interface ConnectionManagerInterface {
@@ -32,8 +34,8 @@ export interface ConnectionManagerInterface {
 }
 
 export interface JsonRpcObject {
-  id: number;
-  jsonrpc: '2.0';
+  id?: number;
+  jsonrpc: string;
 }
 
 export interface JsonRpcRequest extends JsonRpcObject {

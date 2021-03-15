@@ -1,6 +1,6 @@
 import { AppMediator } from './AppMediator';
 import { MockPort, MockConnectionManager } from './mocks';
-import { JsonRpcResponse } from './types';
+import { JsonRpcResponse, JsonRpcResponseSubscription } from './types';
 
 describe('AppMediator setup', () => {
 
@@ -85,15 +85,77 @@ describe('AppMediator regular message processing', () => {
     const network = 'westend';
     port.triggerMessage({ type: 'associate', payload: network });
 
-    // send RPC
+    // send RPC request
     port.triggerMessage({ 
       type: 'rpc', 
       payload: '{ "id": 1, "jsonrpc": "2.0", "method": "system_health", "params": [] }' 
     });
+    // RPC response
     const message: JsonRpcResponse = { id: 42, jsonrpc: '2.0', result: {} };
+    // should have a request mapping
+    expect(am.cloneRequests().length).toBe(1);
 
     expect(am.processSmoldotMessage(message)).toBe(true);
+    // should have removed request mapping
+    expect(am.cloneRequests().length).toBe(0);
     expect(port.postMessage.mock.calls[0][0].payload)
       .toEqual('{"id":1,"jsonrpc":"2.0","result":{}}');
   });
+});
+
+describe('Appmediator subscription message processing', () => {
+  
+  it.only('tracks and forwards subscriptions', () => {
+    const port = new MockPort('test');
+    const manager = new MockConnectionManager(true);
+    const am = new AppMediator('test', port, manager);
+    // asociate
+    const network = 'westend';
+    port.triggerMessage({ type: 'associate', payload: network });
+
+    // send RPC sub request
+    port.triggerMessage({ 
+      type: 'rpc', 
+      payload: '{ "id": 1, "jsonrpc": "2.0", "method": "system_health", "params": [] }' ,
+      subscription: true
+    });
+    // should have a request mapping and a subscription mapping
+    expect(am.cloneRequests().length).toBe(1);
+    expect(am.cloneSubscriptions().length).toBe(1);
+    // has sub with no subID
+    expect(am.cloneSubscriptions()[0]).toEqual({ appIDForRequest: 1, subID: undefined, method: 'system_health' });
+
+    // RPC response with sub id
+    const message: JsonRpcResponse = { id: 42, jsonrpc: '2.0', result: 2 };
+    am.processSmoldotMessage(message);
+
+    // updates sub with sub id
+    expect(am.cloneSubscriptions()[0]).toEqual({ appIDForRequest: 1, subID: 2, method: 'system_health' });
+
+    // should send sub response back to app
+    expect(port.postMessage.mock.calls[0][0].payload)
+      .toEqual('{"id":1,"jsonrpc":"2.0","result":2}');
+
+    // RPC subcription message
+    const subMessage = { 
+      jsonrpc: '2.0', 
+      method: 'system_health',
+      params: { subscription: 2, result: 2 }
+    };
+    expect(am.processSmoldotMessage(subMessage)).toBe(true);
+
+    // should send subcription message back to app
+    expect(port.postMessage.mock.calls[1][0].payload)
+      .toEqual('{"jsonrpc":"2.0","method":"system_health","params":{"subscription":2,"result":2}}');
+
+    // RPC subcription message not for us
+    const subMessage2 = { 
+      jsonrpc: '2.0', 
+      method: 'system_health',
+      params: { subscription: 666, result: 2 }
+    };
+    // shouldnt process it
+    expect(am.processSmoldotMessage(subMessage2)).toBe(false);
+  });
+
 });
