@@ -27,7 +27,7 @@
     "deploy:gh-pages:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run deploy:gh-pages",
     "deploy:ipfs:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run deploy:ipfs",
     "postinstall": "husky install",
-    "connect-tester": "yarn workspace @substrate/extension-provider run build && rm -rf packages/connect/dist && yarn workspace @substrate/connect run build && rm -rf projects/smoldot-browser-demo/node_modules/@substrate/connect/ && cp -r packages/connect projects/smoldot-browser-demo/node_modules/@substrate"
+    "connect-tester": "yarn workspace @substrate/extension-provider run build && rm -rf packages/connect/dist && yarn workspace @substrate/connect run build"
   },
   "devDependencies": {
     "copyfiles": "^2.3.0",
