@@ -18,6 +18,7 @@ window.addEventListener('message', ({ data }: Message): void => {
   if (data.origin === EXTENSION_ORIGIN) {
     // TODO: MUST FIX THE CALLS FROM APP INIT AND REST RPC DATA
     const parsedData = data?.message;
+    console.log('parsedData', data, typeof parsedData, parsedData)
     if (parsedData.type === 'associate') {
     // Associate the app to specific smoldot client
       appData = {
@@ -25,10 +26,7 @@ window.addEventListener('message', ({ data }: Message): void => {
         payload: parsedData?.payload?.chainName || ''
       }
     } else {
-      appData = {
-        type: 'rpc',
-        payload: parsedData || ''
-      }
+      appData = JSON.parse(parsedData);
     }
     port.postMessage({ ...appData, origin: EXTENSION_ORIGIN});
   }

@@ -167,6 +167,7 @@ export class ExtensionProvider implements ProviderInterface {
       },
       origin: EXTENSION_ORIGIN
     }
+    console.log('initData', initData)
     window.postMessage(initData, '*');
     window.addEventListener('message', ({data}) => {
       this.#handleRpcReponse(data?.message);
@@ -248,7 +249,11 @@ export class ExtensionProvider implements ProviderInterface {
         /******* TEST START */
         window.postMessage({
           id: Math.random(),
-          message: json,
+          message: JSON.stringify({
+            type: 'rpc',
+            payload: json,
+            subscription: !!subscription
+          }),
           origin: EXTENSION_ORIGIN
         }, '*');
         /******* TEST END */
