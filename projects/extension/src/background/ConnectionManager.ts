@@ -25,9 +25,9 @@ export class ConnectionManager implements ConnectionManagerInterface {
   //     manager.addApp(port, appName, data);
   addApp(port: chrome.runtime.Port, name: string, chainName: string): void {
     const app = this.#apps.find(s => s.name === name);
-    const manager = this.#smoldots.find(s => s.name === chainName);
+    const sm = this.#smoldots.find(s => s.name === chainName);
 
-    if (!manager) {
+    if (!sm) {
       port.postMessage({ type: 'error', payload: 'Chain requested does not exist for this app.' })
     }
     if (app) {
