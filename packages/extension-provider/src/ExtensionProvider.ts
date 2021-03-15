@@ -152,54 +152,6 @@ export class ExtensionProvider implements ProviderInterface {
     }
   }
 
-  #simulateLifecycle = (health: HealthResponse) => {
-    // development chains should not have peers so we only emit connected
-    // once and never disconnect
-    if (health.shouldHavePeers == false) {
-      
-      if (!this.#isConnected) {
-        this.#isConnected = true;
-        this.emit('connected');
-        l.debug(`emitted CONNECTED`);
-        return;
-      }
-
-      return;
-    }
-
-    const peerCount = health.peers;
-
-    l.debug(`Simulating lifecylce events from system_health`);
-    l.debug(`isConnected: ${this.#isConnected}, new peerCount: ${peerCount}`);
-
-    if (this.#isConnected && peerCount > 0) {
-      // still connected
-      return;
-    }
-
-    if (this.#isConnected && peerCount === 0) {
-      this.#isConnected = false;
-      this.emit('disconnected');
-      l.debug(`emitted DISCONNECTED`);
-      return;
-    }
-
-    if (!this.#isConnected && peerCount > 0) {
-      this.#isConnected = true;
-      this.emit('connected');
-      l.debug(`emitted CONNECTED`);
-      return;
-    }
-
-    // still not connected
-  }
-
-  #checkClientPeercount = () => {
-    this.send('system_health', [])
-      .then(this.#simulateLifecycle)
-      .catch(error => this.emit('error', 'pf'));
-  }
-
   /**
    * @description "Connect" the WASM client - starts the smoldot WASM client
    */
