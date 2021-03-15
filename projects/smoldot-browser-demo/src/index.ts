@@ -24,10 +24,13 @@ window.onload = () => {
       // This will be the DETECT implementation 
       const detect = new Detect('westend', chainSpec);
       const api = await detect.connect();
+      console.log('Im here');
 
       // const api = await ApiPromise.create({ provider })
       const header = await api.rpc.chain.getHeader()
+      console.log('header', header);
       const chainName = await api.rpc.system.chain()
+      console.log('chainName', chainName);
 
       // Show chain constants - from chain spec
       ui.log(`${emojis.seedling} Light client ready`, true);

@@ -17,17 +17,17 @@ window.addEventListener('message', ({ data }: Message): void => {
   let appData: AppMessage;
   if (data.origin === EXTENSION_ORIGIN) {
     // TODO: MUST FIX THE CALLS FROM APP INIT AND REST RPC DATA
-    const parsedData = JSON.parse(data?.message);
+    const parsedData = data?.message;
     if (parsedData.type === 'associate') {
     // Associate the app to specific smoldot client
       appData = {
         type: parsedData?.type,
-        payload: parsedData?.message?.chainName || ''
+        payload: parsedData?.payload?.chainName || ''
       }
     } else {
       appData = {
         type: 'rpc',
-        payload: parsedData?.message || ''
+        payload: parsedData || ''
       }
     }
     port.postMessage({ ...appData, origin: EXTENSION_ORIGIN});

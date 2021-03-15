@@ -158,14 +158,13 @@ export class ExtensionProvider implements ProviderInterface {
   public connect(): Promise<void> {
     const initData = {
       id: 1,
-      message: JSON.stringify({
+      message: {
         type: 'associate',
-        message: JSON.parse(JSON.stringify({
+        payload: JSON.parse(JSON.stringify({
             chainName: this.#chainName,
             chainSpec: this.#chainSpec
-          })
-        )
-      }),
+          }))
+      },
       origin: EXTENSION_ORIGIN
     }
     window.postMessage(initData, '*');
@@ -249,10 +248,7 @@ export class ExtensionProvider implements ProviderInterface {
         /******* TEST START */
         window.postMessage({
           id: Math.random(),
-          message: JSON.stringify({
-            type: 'rpc',
-            message: '{"id":13, "jsonrpc":"2.0", "method": "rpc_methods", "params": []}'
-          }),
+          message: json,
           origin: EXTENSION_ORIGIN
         }, '*');
         /******* TEST END */
