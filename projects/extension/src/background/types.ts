@@ -1,9 +1,11 @@
+import { AppMediator } from './AppMediator';
 // Messages that come from the app
 export type AppMessageType = 'associate' | 'rpc';
 
 export interface AppMessage {
   type: AppMessageType;
   payload: string; // smoldot name / json / message_id / subscription_id
+  subscription?: boolean;
 }
 
 // Messages that we send to the app
@@ -17,23 +19,25 @@ export interface ExtensionMessage {
 export type AppState = 'connected' | 'ready' | 'disconnecting' | 'disconnected';
 
 export interface MessageIDMapping {
-  readonly appID: number;
+  readonly appID: number | undefined;
   readonly smoldotID: number;
 }
 
 export interface SubscriptionMapping {
-  readonly appIDForRequest: number;
+  readonly appIDForRequest: number | undefined;
   subID: number | string  | undefined;
+  method: string;
 }
 
 export interface ConnectionManagerInterface {
   hasClientFor: (name: string) => boolean;
   sendRpcMessageTo: (name: string, message: JsonRpcRequest) => number;
+  registerAppWithSmoldot(app: AppMediator, name: string);
 }
 
 export interface JsonRpcObject {
-  id: number;
-  jsonrpc: '2.0';
+  id?: number;
+  jsonrpc: string;
 }
 
 export interface JsonRpcRequest extends JsonRpcObject {
@@ -54,7 +58,7 @@ export interface JsonRpcResponseSingle {
 
 export interface JsonRpcResponseSubscription {
   method?: string;
-  params: {
+  params?: {
     error?: JsonRpcResponseBaseError;
     result: unknown;
     subscription: number | string;

@@ -1,3 +1,4 @@
+import { AppMediator } from './AppMediator';
 import { AppMessage, ConnectionManagerInterface } from './types';
 
 export class MockPort implements chrome.runtime.Port {
@@ -42,6 +43,10 @@ export class MockConnectionManager implements ConnectionManagerInterface {
 
   constructor(willFindClient: boolean) {
     this.#willFindClient = willFindClient;
+  }
+
+  registerAppWithSmoldot(app: AppMediator, name: string) {
+    return;
   }
 
   hasClientFor = (name: string) => {
