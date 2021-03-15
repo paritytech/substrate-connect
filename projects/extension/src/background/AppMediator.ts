@@ -55,6 +55,15 @@ export class AppMediator {
     return this.#state;
   }
 
+  // State helpers that return clones of the internal state - useful for testing
+  cloneRequests(): MessageIDMapping[] { 
+    return JSON.parse(JSON.stringify(this.requests)) as MessageIDMapping[];
+  }
+
+  cloneSubscriptions(): SubscriptionMapping[] { 
+    return JSON.parse(JSON.stringify(this.subscriptions)) as SubscriptionMapping[];
+  }
+
   #sendError = (message: string): void => {
     const error: ExtensionMessage = { type: 'error', payload: message };
     this.#port.postMessage(error);
@@ -63,11 +72,11 @@ export class AppMediator {
   processSmoldotMessage(message: JsonRpcResponse): boolean {
     // subscription message
     if (message.method) {
-      if(!(message as JsonRpcResponseSubscription).params.subscription) {
+      if(!(message as JsonRpcResponseSubscription).params?.subscription) {
         throw new Error('Got a subscription message without a subscription id');
       }
 
-      const sub = this.subscriptions.find(s => s.subID == message.params.subscription);
+      const sub = this.subscriptions.find(s => s.subID == message.params?.subscription);
       if (!sub) {
         // not our subscription
         return false;

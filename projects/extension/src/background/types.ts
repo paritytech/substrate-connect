@@ -54,7 +54,7 @@ export interface JsonRpcResponseSingle {
 
 export interface JsonRpcResponseSubscription {
   method?: string;
-  params: {
+  params?: {
     error?: JsonRpcResponseBaseError;
     result: unknown;
     subscription: number | string;

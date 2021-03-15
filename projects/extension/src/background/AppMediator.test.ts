@@ -1,5 +1,6 @@
 import { AppMediator } from './AppMediator';
 import { MockPort, MockConnectionManager } from './mocks';
+import { JsonRpcResponse } from './types';
 
 describe('AppMediator setup', () => {
 
@@ -59,8 +60,40 @@ describe('AppMediator - protocol with content script', () => {
     // TODO - test receiving RPC message when state is 'disconnecting' | 'disconnected'
   });
 
-  // We exercise all the message handling through the client manager to avoid
-  // coupling all our tests to the implementation details
-
 });
 
+describe('AppMediator regular message processing', () => {
+
+  it('does nothing when it has sent no requests', () => {
+    const port = new MockPort('test');
+    const manager = new MockConnectionManager(false);
+    const am = new AppMediator('test', port, manager);
+    // asociate
+    const network = 'westend';
+    port.triggerMessage({ type: 'associate', payload: network });
+
+    const message: JsonRpcResponse = { id: 1, jsonrpc: '2.0', result: {} };
+
+    expect(am.processSmoldotMessage(message)).toBe(false);
+  });
+
+  it('remaps the id to the apps id', () => {
+    const port = new MockPort('test');
+    const manager = new MockConnectionManager(true);
+    const am = new AppMediator('test', port, manager);
+    // asociate
+    const network = 'westend';
+    port.triggerMessage({ type: 'associate', payload: network });
+
+    // send RPC
+    port.triggerMessage({ 
+      type: 'rpc', 
+      payload: '{ "id": 1, "jsonrpc": "2.0", "method": "system_health", "params": [] }' 
+    });
+    const message: JsonRpcResponse = { id: 42, jsonrpc: '2.0', result: {} };
+
+    expect(am.processSmoldotMessage(message)).toBe(true);
+    expect(port.postMessage.mock.calls[0][0].payload)
+      .toEqual('{"id":1,"jsonrpc":"2.0","result":{}}');
+  });
+});
