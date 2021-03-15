@@ -105,7 +105,7 @@ describe('AppMediator regular message processing', () => {
 
 describe('Appmediator subscription message processing', () => {
   
-  it.only('tracks and forwards subscriptions', () => {
+  it('tracks and forwards subscriptions', () => {
     const port = new MockPort('test');
     const manager = new MockConnectionManager(true);
     const am = new AppMediator('test', port, manager);
