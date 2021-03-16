@@ -78,7 +78,7 @@ export class AppMediator {
     if (this.#state === 'disconnected') {
       // Shouldn't happen - we remove the AppMediator from the smoldot's apps
       // when we disconnect (below).
-      console.warn(`Asked a disconnected UApp (${this.name}) to process a message from ${this.#smoldotName}`);
+      console.warn(`Asked a disconnected UApp (${this.name}) to process a message from ${this.#smoldotName as string}`);
       return false;
     }
 
@@ -210,7 +210,7 @@ export class AppMediator {
     this.#handleDisconnect(true);
   }
 
-  #sendUnsubscribe = (sub: SubscriptionMapping, subIndex: number) => {
+  #sendUnsubscribe = (sub: SubscriptionMapping): void => {
     // use one higher than we've seen before from the UApp.  The UApp is now
     // disconnnecting so this won't ever be reused as we no longer
     // accept incoming RPC send requests
