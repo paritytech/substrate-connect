@@ -7,7 +7,7 @@ describe('AppMediator setup', () => {
   it('initialises correctly', () => {
     const port = new MockPort('test');
     const manager = new MockConnectionManager(true);
-    const am = new AppMediator('test', port, 'westend', manager);
+    const am = new AppMediator('test', port,manager);
     expect(am.name).toBe('test');
     expect(am.url).toBe(port.sender.url);
     expect(am.tabId).toBe(port.sender.tab.id);
@@ -20,7 +20,7 @@ describe('AppMediator - protocol with content script', () => {
   it('becomes ready after associating with a client and can send messages', () => {
     const port = new MockPort('test');
     const manager = new MockConnectionManager(true);
-    const am = new AppMediator('test', port, 'westend', manager);
+    const am = new AppMediator('test', port,manager);
 
     port.triggerMessage({ type: 'associate', payload: 'westend' });
     expect(am.state).toBe('ready');
@@ -32,11 +32,11 @@ describe('AppMediator - protocol with content script', () => {
   it('emits error when manager does not have client for the network', () => {
     const port = new MockPort('test');
     const manager = new MockConnectionManager(false);
-    new AppMediator('test', port, 'westend', manager);
+    new AppMediator('test', port,manager);
     const network = 'westend';
 
     port.triggerMessage({ type: 'associate', payload: network });
-    expect(port.postMessage).toBeCalledTimes(2);
+    expect(port.postMessage).toBeCalledTimes(1);
     expect(port.postMessage).toBeCalledWith({ 
       type: 'error', 
       payload: `Extension does not have client for ${network}`
@@ -46,11 +46,11 @@ describe('AppMediator - protocol with content script', () => {
   it('emits error when recieves RPC message before associated', () => {
     const port = new MockPort('test');
     const manager = new MockConnectionManager(false);
-    const am = new AppMediator('test', port, 'westend', manager);
+    const am = new AppMediator('test', port,manager);
     const network = 'westend';
 
     port.triggerMessage({ type: 'rpc', payload: '' });
-    expect(port.postMessage).toBeCalledTimes(2);
+    expect(port.postMessage).toBeCalledTimes(1);
     expect(port.postMessage).toBeCalledWith({ 
       type: 'error', 
       payload: `The app is not associated with a blockchain client`
@@ -67,7 +67,7 @@ describe('AppMediator regular message processing', () => {
   it('does nothing when it has sent no requests', () => {
     const port = new MockPort('test');
     const manager = new MockConnectionManager(false);
-    const am = new AppMediator('test', port, 'westend', manager);
+    const am = new AppMediator('test', port,manager);
     // asociate
     const network = 'westend';
     port.triggerMessage({ type: 'associate', payload: network });
@@ -80,7 +80,7 @@ describe('AppMediator regular message processing', () => {
   it('remaps the id to the apps id', () => {
     const port = new MockPort('test');
     const manager = new MockConnectionManager(true);
-    const am = new AppMediator('test', port, 'westend', manager);
+    const am = new AppMediator('test', port,manager);
     // asociate
     const network = 'westend';
     port.triggerMessage({ type: 'associate', payload: network });
@@ -108,7 +108,7 @@ describe('Appmediator subscription message processing', () => {
   it('tracks and forwards subscriptions', () => {
     const port = new MockPort('test');
     const manager = new MockConnectionManager(true);
-    const am = new AppMediator('test', port, 'westend', manager);
+    const am = new AppMediator('test', port,manager);
     // asociate
     const network = 'westend';
     port.triggerMessage({ type: 'associate', payload: network });
