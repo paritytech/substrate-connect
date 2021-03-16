@@ -19,7 +19,7 @@ export class MockPort implements chrome.runtime.Port {
   }
 
   triggerDisconnect() {
-    this.#messageListeners.forEach((l: any) => {
+    this.#disconnectListeners.forEach((l: any) => {
       l();
     });
   }
@@ -40,6 +40,8 @@ export class MockPort implements chrome.runtime.Port {
 
 export class MockConnectionManager implements ConnectionManagerInterface {
   readonly #willFindClient: boolean;
+  lastId = 0;
+
 
   constructor(willFindClient: boolean) {
     this.#willFindClient = willFindClient;
@@ -54,7 +56,7 @@ export class MockConnectionManager implements ConnectionManagerInterface {
   };
 
   sendRpcMessageTo = (name: string, message: any) => {
-    return 42;
+    return ++this.lastId;
   };
 }
 

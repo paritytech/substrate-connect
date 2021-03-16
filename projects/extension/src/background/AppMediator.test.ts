@@ -96,7 +96,7 @@ describe('AppMediator regular message processing', () => {
     expect(am.cloneRequests().length).toBe(1);
 
     // Fake an RPC response to the request
-    const message: JsonRpcResponse = { id: 42, jsonrpc: '2.0', result: {} };
+    const message: JsonRpcResponse = { id: manager.lastId, jsonrpc: '2.0', result: {} };
     expect(am.processSmoldotMessage(message)).toBe(true);
     // should have removed request mapping
     expect(am.cloneRequests().length).toBe(0);
@@ -106,36 +106,41 @@ describe('AppMediator regular message processing', () => {
   });
 });
 
-function setupAppMediatorWithSubscription(am: AppMediator, port: MockPort, subID: number) {
+function setupAppMediatorWithSubscription(am: AppMediator, port: MockPort, appIDForRequest: number, subID: number) {
   const prevRequestCount = am.cloneRequests().length;
   const prevSubCount = am.cloneSubscriptions().length;
 
   // Fake a message with an RPC request to add a subscription
   port.triggerMessage({ 
     type: 'rpc', 
-    payload: '{ "id": 1, "jsonrpc": "2.0", "method": "system_health", "params": [] }' ,
+    payload: `{"id":${appIDForRequest},"jsonrpc":"2.0","method":"system_health","params":[]}`,
     subscription: true
   });
 
-  // should have a request mapping and a subscription mapping with no mapped subID yet
-  expect(am.cloneRequests().length).toBe(prevRequestCount + 1);
+  // Should have a request mapping and a subscription mapping with no mapped subID yet
+  const pendingRequests = am.cloneRequests();
+  expect(pendingRequests.length).toBe(prevRequestCount + 1);
   expect(am.cloneSubscriptions().length).toBe(prevSubCount + 1);
-  expect(am.cloneSubscriptions()[0])
-    .toEqual({ appIDForRequest: 1, subID: undefined, method: 'system_health' });
+  expect(am.cloneSubscriptions()[prevSubCount])
+    .toEqual({ appIDForRequest, subID: undefined, method: 'system_health' });
 
   // Fake receiving an RPC response to the subscription request
-  const message: JsonRpcResponse = { id: 42, jsonrpc: '2.0', result: subID };
+  const message: JsonRpcResponse = { 
+    id: pendingRequests[pendingRequests.length - 1].smoldotID, 
+    jsonrpc: '2.0', 
+    result: subID 
+  };
   am.processSmoldotMessage(message);
 
   // Should have removed the request mapping and updated the subscription
   expect(am.cloneRequests().length).toBe(prevRequestCount);
-  expect(am.cloneSubscriptions()[0])
-    .toEqual({ appIDForRequest: 1, subID: 2, method: 'system_health' });
+  expect(am.cloneSubscriptions()[prevSubCount])
+    .toEqual({ appIDForRequest, subID, method: 'system_health' });
 
   // should send the acknowledgement of the subscription request back to the UApp
   const msgCalls = port.postMessage.mock.calls;
   const lastMsg = msgCalls[msgCalls.length - 1][0];
-  expect(lastMsg.payload).toEqual(`{"id":1,"jsonrpc":"2.0","result":${subID}}`);
+  expect(lastMsg.payload).toEqual(`{"id":${appIDForRequest},"jsonrpc":"2.0","result":${subID}}`);
 }
 
 describe('Appmediator subscription message processing', () => {
@@ -147,8 +152,9 @@ describe('Appmediator subscription message processing', () => {
 
     associateWithNetwork(am, port, 'westend');
 
+    const appIDForRequest = 1
     const subscriptionId = 2;
-    setupAppMediatorWithSubscription(am, port, subscriptionId);
+    setupAppMediatorWithSubscription(am, port, appIDForRequest, subscriptionId);
 
     // Fake receiving an RPC message for the subscription
     const subMessage = { 
@@ -171,6 +177,36 @@ describe('Appmediator subscription message processing', () => {
     };
     // shouldnt process it
     expect(am.processSmoldotMessage(subMessage2)).toBe(false);
+  });
+
+  it('unsubscribes from all subs on disconnect', () => {
+    const port = new MockPort('test');
+    const manager = new MockConnectionManager(true);
+    const am = new AppMediator('test', port, manager);
+
+    associateWithNetwork(am, port, 'westend');
+
+    setupAppMediatorWithSubscription(am, port, 1, 1);
+    setupAppMediatorWithSubscription(am, port, 2, 2);
+
+    port.triggerDisconnect();
+    expect(am.state).toBe('disconnecting');
+    let pendingRequests = am.cloneRequests();
+    expect(pendingRequests.length).toBe(2);
+
+    // First unsub repsonse
+    const unsub1 = { jsonrpc:'2.0', id: pendingRequests[0].smoldotID, result: true };
+    expect(am.processSmoldotMessage(unsub1)).toBe(true);
+    expect(am.state).toBe('disconnecting');
+    pendingRequests = am.cloneRequests();
+    expect(pendingRequests.length).toBe(1);
+
+    // Second unsub repsonse
+    const unsub2 = { jsonrpc:'2.0', id: pendingRequests[0].smoldotID, result: true };
+    expect(am.processSmoldotMessage(unsub2)).toBe(true);
+    expect(am.state).toBe('disconnected');
+    pendingRequests = am.cloneRequests();
+    expect(pendingRequests.length).toBe(0);
   });
 
 });
