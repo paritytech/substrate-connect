@@ -2,7 +2,7 @@ import { ApiPromise } from '@polkadot/api';
 import { SmoldotProvider }  from '@substrate/smoldot-provider';
 import { ExtensionProvider }  from '@substrate/extension-provider';
 
-export class Detect {
+export class Detector {
     #chainName: string;
     #chainSpec: string | undefined;
     #isExtension: boolean;
@@ -25,6 +25,5 @@ export class Detect {
             await provider.connect();
         }
         return await ApiPromise.create({ provider });
-        
     }
 }

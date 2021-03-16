@@ -1,6 +1,6 @@
 import { AppMediator } from './AppMediator';
 import { MockPort, MockConnectionManager } from './mocks';
-import { JsonRpcResponse, JsonRpcResponseSubscription } from './types';
+import { JsonRpcResponse } from './types';
 
 describe('AppMediator setup', () => {
 
@@ -98,8 +98,8 @@ describe('AppMediator regular message processing', () => {
     expect(am.processSmoldotMessage(message)).toBe(true);
     // should have removed request mapping
     expect(am.cloneRequests().length).toBe(0);
-    // expect(port.postMessage.mock.calls[0][0].payload)
-    //   .toEqual('{"id":1,"jsonrpc":"2.0","result":{}}');
+    expect(port.postMessage.mock.calls[0][0].payload)
+      .toEqual('{"id":1,"jsonrpc":"2.0","result":{}}');
   });
 });
 
@@ -133,8 +133,8 @@ describe('Appmediator subscription message processing', () => {
     expect(am.cloneSubscriptions()[0]).toEqual({ appIDForRequest: 1, subID: 2, method: 'system_health' });
 
     // should send sub response back to app
-    // expect(port.postMessage.mock.calls[0][0].payload)
-    //   .toEqual('{"id":1,"jsonrpc":"2.0","result":2}');
+    expect(port.postMessage.mock.calls[0][0].payload)
+      .toEqual('{"id":1,"jsonrpc":"2.0","result":2}');
 
     // RPC subcription message
     const subMessage = { 
@@ -145,8 +145,8 @@ describe('Appmediator subscription message processing', () => {
     expect(am.processSmoldotMessage(subMessage)).toBe(true);
 
     // should send subcription message back to app
-    // expect(port.postMessage.mock.calls[1][0].payload)
-    //   .toEqual('{"jsonrpc":"2.0","method":"system_health","params":{"subscription":2,"result":2}}');
+    expect(port.postMessage.mock.calls[1][0].payload)
+      .toEqual('{"jsonrpc":"2.0","method":"system_health","params":{"subscription":2,"result":2}}');
 
     // RPC subcription message not for us
     const subMessage2 = { 
