@@ -16,13 +16,11 @@ export class Detect {
     public connect = async (): Promise<ApiPromise> => {
         let provider;
         if (this.#isExtension && this.#chainName) {
-            console.log(' I am EXTENSION');
             provider = new ExtensionProvider(this.#chainName);
             await provider.connect();
         } else if (this.#isExtension && !this.#chainName) {
             throw new Error('You must provide at least a chainName')
         } else if (!this.#isExtension && this.#chainSpec) {
-            console.log(' I am SMOLDOT');
             provider = new SmoldotProvider(this.#chainSpec);
             await provider.connect();
         }

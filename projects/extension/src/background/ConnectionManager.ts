@@ -18,23 +18,15 @@ export class ConnectionManager implements ConnectionManagerInterface {
     return this.#smoldots.map(s => s.name);
   }
 
-
-  // There are 2 bugs I know about in the background that I have fixed in my branch
-  // a) The AppMediator doesnt add itself to the appropriate SmoldotMediator when it receives the associate message
-  // b) The AppMediator doesnt register a subscription when it gets a subscription message
-  //     manager.addApp(port, appName, data);
-  addApp(port: chrome.runtime.Port, name: string, chainName: string): void {
+  addApp(port: chrome.runtime.Port): void {
+    const name = port.sender?.tab?.id?.toString() || '';
     const app = this.#apps.find(s => s.name === name);
-    const sm = this.#smoldots.find(s => s.name === chainName);
 
-    if (!sm) {
-      port.postMessage({ type: 'error', payload: 'Chain requested does not exist for this app.' })
-    }
     if (app) {
       port.postMessage({ type: 'info', payload: 'App already exists.' })
     } else {
-      const newApp = new AppMediator(name, port, chainName, this as ConnectionManagerInterface)
-      this.#apps.push(newApp)
+      const newApp = new AppMediator(name, port, this as ConnectionManagerInterface)
+      this.#apps.push(newApp);
     }
   }
 
@@ -67,7 +59,6 @@ export class ConnectionManager implements ConnectionManagerInterface {
     if (!sm) {
       throw new Error('Tried to add app to smoldot that does not exist.');
     }
-
     sm.addApp(app);
   }
 

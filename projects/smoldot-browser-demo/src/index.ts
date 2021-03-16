@@ -6,8 +6,6 @@ import { Detect }  from '../../../packages/connect/src';
 import UI, { emojis } from './view';
 
 window.onload = () => {
-  // const extensionExists = !!document.getElementById('substrateExtension');
-  // console.log('--> extensionExists', extensionExists);
   const loadTime = performance.now();
   const ui = new UI({ containerId: 'messages' }, { loadTime });
   ui.showSyncing();
@@ -19,9 +17,6 @@ window.onload = () => {
         ui.error(new Error('Error downloading chain spec'));
       }
       const chainSpec =  await response.text();
-      // let provider;
-      // Mandatory ChainName, Optional: ChainSpec
-      // This will be the DETECT implementation 
       const detect = new Detect('westend', chainSpec);
       const api = await detect.connect();
 

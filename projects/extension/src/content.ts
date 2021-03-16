@@ -17,10 +17,8 @@ export interface AppMessage {
 // Receive from ExtensionProvider the App "subscribtion"
 window.addEventListener('message', ({ data }: Message): void => {
   let appData: AppMessage;
-  console.log('!!data', data)
   if (data.origin === EXTENSION_ORIGIN) {
     const conv = data?.message as unknown as AppMessage;
-    // TODO: MUST FIX THE CALLS FROM APP INIT AND REST RPC DATA
     if (conv?.type === 'associate') {
       const chainName: string = JSON.parse(conv?.payload).chainName;
     // Associate the app to specific smoldot client
@@ -31,7 +29,6 @@ window.addEventListener('message', ({ data }: Message): void => {
     } else {
       appData = JSON.parse(data?.message || '');
     }
-    console.log(appData);
     port.postMessage({ ...appData, origin: EXTENSION_ORIGIN});
   }
 });

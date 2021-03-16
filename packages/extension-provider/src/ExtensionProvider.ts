@@ -158,16 +158,15 @@ export class ExtensionProvider implements ProviderInterface {
   public connect(): Promise<void> {
     const initData = {
       id: 1,
-      message: {
+      message: JSON.stringify({
         type: 'associate',
         payload: JSON.parse(JSON.stringify({
             chainName: this.#chainName,
             chainSpec: this.#chainSpec
           }))
-      },
+      }),
       origin: EXTENSION_ORIGIN
     }
-    console.log('initData', initData)
     window.postMessage(initData, '*');
     window.addEventListener('message', ({data}) => {
       this.#handleRpcReponse(data?.message);
@@ -246,7 +245,6 @@ export class ExtensionProvider implements ProviderInterface {
 
         // this.#client.send_json_rpc(json);
         // Post it to backgroudn for json_rpc (type: rpc, payload) -> And background should send it to respective client
-        /******* TEST START */
         window.postMessage({
           id: Math.random(),
           message: JSON.stringify({
@@ -256,7 +254,6 @@ export class ExtensionProvider implements ProviderInterface {
           }),
           origin: EXTENSION_ORIGIN
         }, '*');
-        /******* TEST END */
     });
   }
 
