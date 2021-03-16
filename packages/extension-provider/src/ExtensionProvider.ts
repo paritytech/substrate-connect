@@ -59,11 +59,9 @@ export class ExtensionProvider implements ProviderInterface {
   #isConnected = false;
 
   #chainName: string;
-  #chainSpec: string | undefined;
 
    public constructor(name: string, spec?: string) {
      this.#chainName = name;
-     this.#chainSpec = spec;
    }
 
   /**
@@ -160,10 +158,7 @@ export class ExtensionProvider implements ProviderInterface {
       id: 1,
       message: JSON.stringify({
         type: 'associate',
-        payload: JSON.parse(JSON.stringify({
-            chainName: this.#chainName,
-            chainSpec: this.#chainSpec
-          }))
+        payload: this.#chainName
       }),
       origin: EXTENSION_ORIGIN
     }
