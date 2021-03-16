@@ -18,7 +18,7 @@ export default function useBalance (address: string): State {
     '0',
     new BN(ZERO) as Balance,
     true,
-    'Units'
+    '-'
   ]);
   const  mountedRef = useIsMountedRef();
   useEffect((): () => void => {

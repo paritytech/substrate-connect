@@ -1,10 +1,9 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 // hack to make poladot-js work without bringing in webpack and babel
 import "regenerator-runtime/runtime"
-
-import { ApiPromise } from '@polkadot/api';
-import { SmoldotProvider }  from '@substrate/smoldot-provider';
+import { Detect }  from '../../../packages/connect/src';
 import UI, { emojis } from './view';
-
 
 window.onload = () => {
   const loadTime = performance.now();
@@ -12,16 +11,16 @@ window.onload = () => {
   ui.showSyncing();
 
   (async () => {
-    const response =  await fetch('./assets/westend.json')
-    if (!response.ok) {
-      ui.error(new Error('Error downloading chain spec'));
-    }
-
-    const chainSpec =  await response.text();
-    const provider = new SmoldotProvider(chainSpec);
-    await provider.connect();
     try {
-      const api = await ApiPromise.create({ provider })
+      const response =  await fetch('./assets/westend.json')
+      if (!response.ok) {
+        ui.error(new Error('Error downloading chain spec'));
+      }
+      const chainSpec =  await response.text();
+      const detect = new Detect('westend', chainSpec);
+      const api = await detect.connect();
+
+      // const api = await ApiPromise.create({ provider })
       const header = await api.rpc.chain.getHeader()
       const chainName = await api.rpc.system.chain()
 

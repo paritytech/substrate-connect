@@ -25,6 +25,9 @@
     "lint": "echo \"Warning: Linter is there but errors need fixing.\""
   },
   "devDependencies": {
+    "@substrate/smoldot-provider": "^0.0.1",
+    "@substrate/extension-provider": "^0.0.2",
+    "@substrate/connect": "file:../../packages/connect",
     "@pinata/sdk": "^1.1.11",
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
@@ -37,7 +40,6 @@
     "typescript": "^4.1.5"
   },
   "dependencies": {
-    "@substrate/smoldot-provider": "0.0.1",
     "regenerator-runtime": "^0.13.7"
   },
   "eslintConfig": {

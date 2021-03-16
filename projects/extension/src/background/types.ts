@@ -8,7 +8,26 @@ export interface AppMessage {
   subscription?: boolean;
 }
 
-// Messages that we send to the app
+export interface InitAppNameSpec {
+  id: string,
+  chainName: string,
+  origin: string,
+  uAppName: string,
+  chainSpec?: string
+}
+export interface Message extends MessageEvent {
+  data: {
+    error?: string;
+    id: string;
+    origin: string;
+    response?: string;
+    subscription?: string;
+    chainName?: string;
+    chainSpec?: string;
+  }
+}
+
+// Messages that we send to the app down through the port
 export type ExtensionMessageType = 'error' | 'rpc';
 
 export interface ExtensionMessage {

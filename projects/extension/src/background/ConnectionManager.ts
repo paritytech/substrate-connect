@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import * as smoldot from 'smoldot';
 import { AppMediator } from './AppMediator';
@@ -8,19 +10,24 @@ export class ConnectionManager implements ConnectionManagerInterface {
   readonly #smoldots: SmoldotMediator[] = [];
   readonly #apps:  AppMediator[] = [];
 
-  constructor() {
-    chrome.runtime.onConnect.addListener(port => {
-      const { name } = port;
-      this.#apps.push(new AppMediator(name, port, this as ConnectionManagerInterface));
-    });
-  }
-
   get registeredApps(): string[] {
     return this.#apps.map(a => a.name);
   }
 
   get registeredClients(): string[] {
     return this.#smoldots.map(s => s.name);
+  }
+
+  addApp(port: chrome.runtime.Port): void {
+    const name = port.sender?.tab?.id?.toString() || '';
+    const app = this.#apps.find(s => s.name === name);
+
+    if (app) {
+      port.postMessage({ type: 'info', payload: 'App already exists.' })
+    } else {
+      const newApp = new AppMediator(name, port, this as ConnectionManagerInterface)
+      this.#apps.push(newApp);
+    }
   }
 
   hasClientFor(name: string): boolean {
@@ -44,7 +51,6 @@ export class ConnectionManager implements ConnectionManagerInterface {
     if (!sm) {
       throw new Error(`No smoldot client named ${name}`);
     }
-
     return sm.sendRpcMessage(message);
   }
 
@@ -53,13 +59,12 @@ export class ConnectionManager implements ConnectionManagerInterface {
     if (!sm) {
       throw new Error('Tried to add app to smoldot that does not exist.');
     }
-
     sm.addApp(app);
   }
 
   async addSmoldot(name: string,  chainSpec: string, testSmoldot?: smoldot.Smoldot): Promise<void> {
     const client = testSmoldot || smoldot;
-    if (this.#smoldots.find(s => s.name == name)) {
+    if (this.#smoldots.find(s => s.name === name)) {
       throw new Error(`Extension already has a smoldot client named ${name}`);
     }
 
@@ -86,8 +91,10 @@ export class ConnectionManager implements ConnectionManagerInterface {
       const sm = new SmoldotMediator(name, sc);
 
       this.#smoldots.push(sm);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return sc;
     } catch (err) {
-      console.log('err', err);
+      console.log('Function addSmoldot error:', err);
     }
   }
 }

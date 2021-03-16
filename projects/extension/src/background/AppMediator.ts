@@ -25,16 +25,15 @@ export class AppMediator {
   readonly requests: MessageIDMapping[];
 
   constructor(name: string, port: chrome.runtime.Port, manager: ConnectionManagerInterface) {
-    this.#name = name;
     this.subscriptions = [];
     this.requests = [];
+    // Assign all necessery variables to privates
+    this.#name = name;
     this.#port = port;
-    // REM: `sender` is guaranteed to be defined because we know this port came
-    // from a handler for chrome.runtime.onConnect `tab` is guaranteed to be
-    // defined because our content script will only run in a tab.
     this.#tabId = port.sender?.tab?.id;
     this.#url = port.sender?.url;
     this.#manager = manager;
+    // Open listeners for the incoming rpc messages
     this.#port.onMessage.addListener(this.#handlePortMessage);
     this.#port.onDisconnect.addListener(() => { this.#handleDisconnect(false) });
   }
@@ -131,9 +130,8 @@ export class AppMediator {
 
     const parsed =  JSON.parse(message) as JsonRpcRequest;
     const appID = parsed.id;
-
     if (subscription) {
-      // regisgter a new sub that is waiting for a sub ID
+      // register a new sub that is waiting for a sub ID
       this.subscriptions.push({ 
         appIDForRequest: appID, 
         subID: undefined, 
@@ -150,14 +148,11 @@ export class AppMediator {
       this.#sendError(`Cannot reassociate, app is already associated with ${this.#smoldotName}`);
       return;
     }
-
     if (!this.#manager.hasClientFor(name)) {
       this.#sendError(`Extension does not have client for ${name}`);
       return;
     }
-
     this.#manager.registerAppWithSmoldot(this, name);
-
     this.#smoldotName = name;
     this.#state = 'ready';
     return;

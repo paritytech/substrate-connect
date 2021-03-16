@@ -27,14 +27,17 @@ export interface Parachain extends ChainSpec {
   relaychain: string;
 }
 export interface Message extends MessageEvent {
-    data: {
-      error?: string;
-      id: string;
-      origin: string;
-      response?: string;
-      subscription?: string;
-    }
+  data: {
+    error?: string;
+    id: string;
+    origin: string;
+    response?: string;
+    subscription?: string;
+    type?: string;
+    appName?: string;
+    chainName?: string;
+    message?: string;
   }
-  
+}  
 
 export type NetworkCtx = TabInterface[];
