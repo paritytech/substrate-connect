@@ -23,6 +23,11 @@ export class SmoldotMediator {
     this.#apps.push(app);
   }
 
+  removeApp(app: AppMediator): void {
+    const idx = this.#apps.findIndex(a => a.name === app.name);
+    this.#apps.splice(idx, 1);
+  }
+
   sendRpcMessage(message: JsonRpcRequest): number {
     const nextID = ++this.#id;
     /* eslint-disable @typescript-eslint/no-unsafe-member-access */

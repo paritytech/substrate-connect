@@ -52,6 +52,7 @@ export interface ConnectionManagerInterface {
   hasClientFor: (name: string) => boolean;
   sendRpcMessageTo: (name: string, message: JsonRpcRequest) => number;
   registerAppWithSmoldot: (app: AppMediator, name: string) => void;
+  unregisterApp: (app: AppMediator, name: string) => void;
 }
 
 export interface JsonRpcObject {

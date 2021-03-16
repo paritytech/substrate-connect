@@ -62,6 +62,18 @@ export class ConnectionManager implements ConnectionManagerInterface {
     sm.addApp(app);
   }
 
+  unregisterApp(app: AppMediator, smoldotName: string): void {
+    const sm = this.#smoldots.find(s => s.name === smoldotName);
+    if (!sm) {
+      throw new Error('Tried to remove an app from smoldot that does not exist.');
+    }
+
+    sm.removeApp(app);
+    const idx = this.#apps.findIndex(a => a.name === app.name);
+    this.#apps.splice(idx, 1);
+  }
+
+
   async addSmoldot(name: string,  chainSpec: string, testSmoldot?: smoldot.Smoldot): Promise<void> {
     const client = testSmoldot || smoldot;
     if (this.#smoldots.find(s => s.name === name)) {

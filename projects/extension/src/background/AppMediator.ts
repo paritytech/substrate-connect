@@ -92,8 +92,7 @@ export class AppMediator {
         if (this.requests.length === 0) {
           // All our unsubscription messages have been replied to
           this.#state = 'disconnected';
-          // TODO: remove this AppMediator from ConnectionManager and SmoldotMediator
-          // TODO: send notifications
+          this.#manager.unregisterApp(this, this.#smoldotName as string);
         }
 
         return true;
