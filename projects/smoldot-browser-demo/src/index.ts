@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 // hack to make poladot-js work without bringing in webpack and babel
 import "regenerator-runtime/runtime"
-import { Detect }  from '../../../packages/connect/src';
+import { Detector }  from '@substrate/connect';
 import UI, { emojis } from './view';
 
 window.onload = () => {
@@ -17,7 +17,7 @@ window.onload = () => {
         ui.error(new Error('Error downloading chain spec'));
       }
       const chainSpec =  await response.text();
-      const detect = new Detect('westend', chainSpec);
+      const detect = new Detector('westend', chainSpec);
       const api = await detect.connect();
 
       // const api = await ApiPromise.create({ provider })

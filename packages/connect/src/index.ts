@@ -1,2 +1,2 @@
-import { Detect } from './Detect';
-export { Detect };
+import { Detector } from './Detector';
+export { Detector };
