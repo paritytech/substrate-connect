@@ -12,7 +12,12 @@ window.onload = () => {
 
   (async () => {
     try {
-      const response =  await fetch('./assets/westend.json')
+      const headers = new Headers();
+      headers.append('pragma', 'no-cache');
+      headers.append('cache-control', 'no-cache');
+      const options = { method: 'GET', headers };
+      const request = new Request('./assets/westend.json');
+      const response =  await fetch(request, options);
       if (!response.ok) {
         ui.error(new Error('Error downloading chain spec'));
       }
