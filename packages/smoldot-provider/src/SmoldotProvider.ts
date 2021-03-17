@@ -18,10 +18,13 @@ import { HealthCheckError } from './errors';
 
 const l = logger('smoldot-provider');
 
+// Note types are copied from polkadotjs for consistency - `any` types are used
+// there
+
 interface RpcStateAwaiting {
   callback: ProviderInterfaceCallback;
   method: string;
-  params: any[];
+  params: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
   subscription?: SubscriptionHandler;
 }
 
@@ -34,7 +37,7 @@ interface SubscriptionHandler {
 
 interface StateSubscription extends SubscriptionHandler {
     method: string;
-    params: any[];
+    params: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 interface HealthResponse {
@@ -115,8 +118,11 @@ export class SmoldotProvider implements ProviderInterface {
    *                              chains. E.g. `database('polkadot')`
    * @param {any}      sm         Optional (only used for testing) defaults to the actual smoldot module
    */
-   public constructor(chainSpec: string, db?: Database, sm?: any) {
+  // needs to be `any` for the tests
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+  public constructor(chainSpec: string, db?: Database, sm?: any) {
     this.#chainSpec = chainSpec;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.#smoldot = sm || smoldot;
     this.#db = db || database();
     this.#connectionStatePingerId = null;
@@ -138,7 +144,7 @@ export class SmoldotProvider implements ProviderInterface {
     throw new Error('clone() is not supported.');
   }
 
-  #handleRpcReponse = (res: string) => {
+  #handleRpcReponse = (res: string): void => {
     l.debug(() => ['received', res]);
 
     const response = JSON.parse(res) as JsonRpcResponse;
@@ -212,7 +218,7 @@ export class SmoldotProvider implements ProviderInterface {
     }
   }
 
-  #simulateLifecycle = (health: HealthResponse) => {
+  #simulateLifecycle = (health: HealthResponse): void => {
     // development chains should not have peers so we only emit connected
     // once and never disconnect
     if (health.shouldHavePeers == false) {
@@ -230,7 +236,7 @@ export class SmoldotProvider implements ProviderInterface {
     const peerCount = health.peers;
 
     l.debug(`Simulating lifecylce events from system_health`);
-    l.debug(`isConnected: ${this.#isConnected}, new peerCount: ${peerCount}`);
+    l.debug(`isConnected: ${this.#isConnected.toString()}, new peerCount: ${peerCount}`);
 
     if (this.#isConnected && peerCount > 0) {
       // still connected
@@ -254,7 +260,7 @@ export class SmoldotProvider implements ProviderInterface {
     // still not connected
   }
 
-  #checkClientPeercount = () => {
+  #checkClientPeercount = (): void => {
     this.send('system_health', [])
       .then(this.#simulateLifecycle)
       .catch(error => this.emit('error', new HealthCheckError(error)));
@@ -354,6 +360,7 @@ export class SmoldotProvider implements ProviderInterface {
         const json = this.#coder.encodeJson(method, params);
         const id = this.#coder.getId();
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const callback = (error?: Error | null, result?: any): void => {
           error
             ? reject(error)
@@ -405,8 +412,10 @@ export class SmoldotProvider implements ProviderInterface {
     params: any[],
     callback: ProviderInterfaceCallback
   ): Promise<number | string> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const id = await this.send(method, params, { callback, type });
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return id;
   }
 
