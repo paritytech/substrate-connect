@@ -8,7 +8,7 @@ import { Balance } from '@polkadot/types/interfaces';
 import useApi from './api/useApi';
 import useIsMountedRef from './api/useIsMountedRef';
 
-type State = [string, Balance, boolean, string];
+type State = [string, Balance, boolean];
 
 const ZERO = new BN(0);
 
@@ -17,8 +17,7 @@ export default function useBalance (address: string): State {
   const [state, setState] = useState<State>([
     '0',
     new BN(ZERO) as Balance,
-    true,
-    '-'
+    true
   ]);
   const  mountedRef = useIsMountedRef();
   useEffect((): () => void => {
@@ -27,10 +26,9 @@ export default function useBalance (address: string): State {
       .account(address, ({ data }): void => {
         // console.log('address', address, 'data', formatBalance(data.free, { decimals: api.registry.chainDecimals[0], forceUnit: '-', withSi: false }));
         mountedRef.current && setState([
-          formatBalance(data.free, { decimals: api.registry.chainDecimals[0], forceUnit: '-', withSi: false }),
+          formatBalance(data.free, { decimals: api.registry.chainDecimals[0], withSi: false }),
           data.free,
-          data.free.isZero(),
-          data.free.registry.chainTokens[0]
+          data.free.isZero()
         ]);
       })
       .then((u): void => {

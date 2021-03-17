@@ -22,7 +22,7 @@ import westend from '../../assets/westend.json';
 
 console.log('ALL_PROVIDERS', ALL_PROVIDERS)
 
-export default function useApiCreate (extensionExists: boolean): ApiPromise {
+export default function useApiCreate (): ApiPromise {
   const [api, setApi] = useState<ApiPromise>({} as ApiPromise);
   const [localEndpoint] = useLocalStorage('endpoint');
 
@@ -64,8 +64,6 @@ export default function useApiCreate (extensionExists: boolean): ApiPromise {
 
       localEndpoint === 'Westend-WsProvider' && choseSmoldot();
   }, [mountedRef, provider.endpoint, localEndpoint]);
-  
-  console.log('----- Check if extension is installed ------ ', extensionExists, mountedRef, provider.endpoint, localEndpoint);
 
   return api;
 }
