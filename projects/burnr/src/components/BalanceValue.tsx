@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const BalanceValue: React.FunctionComponent<Props> = ({ value, isVisible, unit = '', size, style }: Props) => {
-	const fBalance = formatBalance(value, { withSi: false });
+	const fBalance = formatBalance(value, { withSi: true });
 	const isColored = parseInt(fBalance) >= 0;
 	const classes = useStyles({ colored: isColored, visible: isVisible });
 

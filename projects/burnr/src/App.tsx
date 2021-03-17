@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const App: React.FunctionComponent<Props> = ({ className = '' }: Props) => {
-	const api = useApiCreate(!!document.getElementById('substrateExtension'));
+	const api = useApiCreate();
 	const classes = useStyles();
 	const [endpoint, setEndpoint] = useLocalStorage('endpoint');
 	if (!endpoint) setEndpoint('Polkadot-WsProvider');
