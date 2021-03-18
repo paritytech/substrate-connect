@@ -102,27 +102,26 @@ test('emits events when it connects / disconnects / reconnects', async () => {
   });
 });
 
-// test('emits connect and never emits disconnect for development chain', async done => {
-//   const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
-//   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+test('emits connect and never emits disconnect for development chain', async () => {
+  const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
-//   // we don't want the test to be slow
-//   provider.healthPingerInterval = 1;
-//   await provider.connect();
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
 
-//   return new Promise<void>((resolve, reject) => {
-//     provider.on('connected', () => {
-//       setTimeout(() => {
-//         resolve();
-//       }, 20);
+  return new Promise<void>((resolve, reject) => {
+    provider.on('connected', () => {
+      setTimeout(() => {
+        resolve();
+      }, 20);
 
-//       provider.on('disconnected', () => {
-//         done.fail('should never disconnect');
-//         reject();
-//       });
-//     });
-//   });
-// });
+      provider.on('disconnected', () => {
+        reject('should never disconnect');
+      });
+    });
+  });
+}, 10000);
 
 
 test('send formats JSON RPC request correctly', async () => {
@@ -190,85 +189,82 @@ test('send can also add subscriptions and returns an id', async () => {
   await provider.disconnect();
 });
 
-// test('subscribe', async done => {
-//   const responses = [
-//     '{"jsonrpc":"2.0","result":"SUBSCRIPTIONID","id":1}',
-//     '{"jsonrpc":"2.0","method":"state_test","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
-//   ];
-//   const ms = mockSmoldot(respondWith(responses));
-//   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+test('subscribe', async () => {
+  const responses = [
+    '{"jsonrpc":"2.0","result":"SUBSCRIPTIONID","id":1}',
+    '{"jsonrpc":"2.0","method":"state_test","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
+  ];
+  const ms = mockSmoldot(respondWith(responses));
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
-//   await provider.connect();
+  await provider.connect();
 
-//   expect.assertions(2);
-//   return new Promise<void>((resolve, reject) => {
-//     return provider.subscribe('state_test', 'test_subscribe', [],  (error: Error | null, result: any) => {
-//       if (error !== null) {
-//         done.fail(error.message);
-//         reject();
-//       }
+  expect.assertions(2);
+  return new Promise<void>((resolve, reject) => {
+    return provider.subscribe('state_test', 'test_subscribe', [],  (error: Error | null, result: any) => {
+      if (error !== null) {
+        reject(error.message);
+      }
 
-//       expect(result).toEqual({ dummy: "state" });
-//       provider.disconnect().then(() => resolve());
-//     }).then(reply => {
-//       expect(reply).toBe("SUBSCRIPTIONID");
-//     });
-//   });
-// });
+      expect(result).toEqual({ dummy: "state" });
+      provider.disconnect().then(() => resolve());
+    }).then(reply => {
+      expect(reply).toBe("SUBSCRIPTIONID");
+    });
+  });
+});
 
-// test('subscribe copes with out of order responses', async done => {
-//   const responses = [
-//     '{"jsonrpc":"2.0","method":"state_test","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}',
-//     '{"jsonrpc":"2.0","result":"SUBSCRIPTIONID","id":1}'
-//   ];
-//   const ms = mockSmoldot(respondWith(responses));
-//   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+test('subscribe copes with out of order responses', async () => {
+  const responses = [
+    '{"jsonrpc":"2.0","method":"state_test","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}',
+    '{"jsonrpc":"2.0","result":"SUBSCRIPTIONID","id":1}'
+  ];
+  const ms = mockSmoldot(respondWith(responses));
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
-//   await provider.connect();
+  await provider.connect();
 
-//   expect.assertions(2);
-//   return new Promise<void>((resolve, reject) => {
-//     return provider.subscribe('state_test', 'test_subscribe', [],  (error: Error | null, result: any) => {
-//       if (error !== null) {
-//         done.fail(error.message);
-//         reject();
-//       }
+  expect.assertions(2);
+  return new Promise<void>((resolve, reject) => {
+    return provider.subscribe('state_test', 'test_subscribe', [],  (error: Error | null, result: any) => {
+      if (error !== null) {
+        reject(error.message);
+      }
 
-//       expect(result).toEqual({ dummy: "state" });
-//       provider.disconnect().then(() => {
-//         resolve();
-//       });
-//     }).then(reply => {
-//       expect(reply).toBe("SUBSCRIPTIONID");
-//     });
-//   });
-// });
+      expect(result).toEqual({ dummy: "state" });
+      provider.disconnect().then(() => {
+        resolve();
+      });
+    }).then(reply => {
+      expect(reply).toBe("SUBSCRIPTIONID");
+    });
+  });
+});
 
-// test('converts british english method spelling to US', async done => {
-//   const responses = [
-//     '{"jsonrpc":"2.0","result":"SUBSCRIPTIONID","id":1}',
-//     '{"jsonrpc":"2.0","method":"chain_finalisedHead","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
-//   ];
-//   const ms = mockSmoldot(respondWith(responses));
-//   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
+test('converts british english method spelling to US', async () => {
+  const responses = [
+    '{"jsonrpc":"2.0","result":"SUBSCRIPTIONID","id":1}',
+    '{"jsonrpc":"2.0","method":"chain_finalisedHead","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
+  ];
+  const ms = mockSmoldot(respondWith(responses));
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, testDb(), ms);
 
-//   await provider.connect();
+  await provider.connect();
 
-//   expect.assertions(2);
-//   return new Promise<void>((resolve, reject) => {
-//     return provider.subscribe('chain_finalizedHead', 'chain_subscribeFinalizedHeads', [],  (error: Error | null, result: any) => {
-//       if (error !== null) {
-//         done.fail(error.message);
-//         reject();
-//       }
+  expect.assertions(2);
+  return new Promise<void>((resolve, reject) => {
+    return provider.subscribe('chain_finalizedHead', 'chain_subscribeFinalizedHeads', [],  (error: Error | null, result: any) => {
+      if (error !== null) {
+        reject(error.message);
+      }
 
-//       expect(result).toEqual({ dummy: "state" });
-//       return provider.disconnect().then(() => resolve());
-//     }).then(reply => {
-//       expect(reply).toBe("SUBSCRIPTIONID");
-//     });
-//   });
-// });
+      expect(result).toEqual({ dummy: "state" });
+      return provider.disconnect().then(() => resolve());
+    }).then(reply => {
+      expect(reply).toBe("SUBSCRIPTIONID");
+    });
+  });
+});
 
 test('unsubscribe fails when sub not found', async () => {
   const responses = [
