@@ -19,7 +19,7 @@ export class MockPort implements chrome.runtime.Port {
   }
 
   triggerDisconnect() {
-    this.#messageListeners.forEach((l: any) => {
+    this.#disconnectListeners.forEach((l: any) => {
       l();
     });
   }
@@ -40,21 +40,27 @@ export class MockPort implements chrome.runtime.Port {
 
 export class MockConnectionManager implements ConnectionManagerInterface {
   readonly #willFindClient: boolean;
+  lastId = 0;
+
 
   constructor(willFindClient: boolean) {
     this.#willFindClient = willFindClient;
   }
 
-  registerAppWithSmoldot(app: AppMediator, name: string) {
+  registerApp(app: AppMediator, name: string): void {
     return;
   }
 
-  hasClientFor = (name: string) => {
+  unregisterApp(app: AppMediator, name: string): void {
+    return;
+  }
+
+  hasClientFor = (name: string): boolean => {
     return this.#willFindClient;
   };
 
-  sendRpcMessageTo = (name: string, message: any) => {
-    return 42;
+  sendRpcMessageTo = (name: string, message: any): number => {
+    return ++this.lastId;
   };
 }
 

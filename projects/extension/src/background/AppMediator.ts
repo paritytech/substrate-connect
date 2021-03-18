@@ -23,6 +23,8 @@ export class AppMediator {
   #state: AppState = 'connected';
   readonly subscriptions: SubscriptionMapping[];
   readonly requests: MessageIDMapping[];
+  highestUAppRequestId = 0;
+  #notifyOnDisconnected = false;
 
   constructor(name: string, port: chrome.runtime.Port, manager: ConnectionManagerInterface) {
     this.subscriptions = [];
@@ -40,6 +42,10 @@ export class AppMediator {
 
   get name(): string {
     return this.#name;
+  }
+
+  get smoldotName(): string | undefined {
+    return this.#smoldotName;
   }
 
   get tabId(): number | undefined {
@@ -69,6 +75,30 @@ export class AppMediator {
   }
 
   processSmoldotMessage(message: JsonRpcResponse): boolean {
+    if (this.#state === 'disconnected') {
+      // Shouldn't happen - we remove the AppMediator from the smoldot's apps
+      // when we disconnect (below).
+      console.error(`Asked a disconnected UApp (${this.name}) to process a message from ${this.#smoldotName as string}`);
+      return false;
+    }
+
+    if (this.#state === 'disconnecting') {
+      // Handle responses to our unsubscription messages
+      const request = this.requests.find(r => r.smoldotID === message.id);
+      if (request !== undefined) {
+        // We don't forward the RPC message to the UApp - it's not there any more
+        const idx = this.requests.indexOf(request);
+        this.requests.splice(idx, 1);
+        if (this.requests.length === 0) {
+          // All our unsubscription messages have been replied to
+          this.#state = 'disconnected';
+          this.#manager.unregisterApp(this, this.#smoldotName as string);
+        }
+
+        return true;
+      }
+    }
+
     // subscription message
     if (message.method) {
       if(!(message as JsonRpcResponseSubscription).params?.subscription) {
@@ -96,7 +126,7 @@ export class AppMediator {
     const idx = this.requests.indexOf(request);
     this.requests.splice(idx, 1);
 
-    // is this a response telling us the subID for a subcscription?
+    // is this a response telling us the subID for a subscription?
     const sub = this.subscriptions.find(s => s.appIDForRequest == request.appID);
     if (sub) {
       if (sub.subID) {
@@ -129,7 +159,9 @@ export class AppMediator {
     }
 
     const parsed =  JSON.parse(message) as JsonRpcRequest;
-    const appID = parsed.id;
+    const appID = parsed.id as number;
+    this.highestUAppRequestId = appID;
+
     if (subscription) {
       // register a new sub that is waiting for a sub ID
       this.subscriptions.push({ 
@@ -138,6 +170,9 @@ export class AppMediator {
         method: parsed.method 
       });
     }
+
+    // TODO: what about unsubscriptions requested by the UApp - we need to remove
+    // the subscription from our subscriptions state
 
     const smoldotID = this.#manager.sendRpcMessageTo(this.#smoldotName, parsed);
     this.requests.push({ appID, smoldotID });
@@ -152,7 +187,7 @@ export class AppMediator {
       this.#sendError(`Extension does not have client for ${name}`);
       return;
     }
-    this.#manager.registerAppWithSmoldot(this, name);
+    this.#manager.registerApp(this, name);
     this.#smoldotName = name;
     this.#state = 'ready';
     return;
@@ -174,10 +209,33 @@ export class AppMediator {
     this.#handleDisconnect(true);
   }
 
+  #sendUnsubscribe = (sub: SubscriptionMapping): void => {
+    // use one higher than we've seen before from the UApp.  The UApp is now
+    // disconnnecting so this won't ever be reused as we no longer
+    // accept incoming RPC send requests
+    const appID = ++this.highestUAppRequestId;
+    const unsubRequest = {
+      id: appID,
+      jsonrpc: '2.0',
+      method: sub.method,
+      params: [ sub.subID ]
+    }
+
+    // send the unsubscribe message
+    const smoldotID = this.#manager.sendRpcMessageTo(this.#smoldotName as string,  unsubRequest);
+    // track the request so we know when its completed
+    this.requests.push({ appID, smoldotID });
+  };
+
   #handleDisconnect = (notify: boolean): void => {
-    console.log(`Disconnecting and notify is set to ${notify.toString()}`);
+    if (this.#state === 'disconnecting' || this.#state === 'disconnected') {
+      throw new Error('Cannot disconnect - already disconnecting / disconnected');
+    }
+
     this.#state = 'disconnecting';
-    // TODO: clean up subs
-    // TODO: send disconnected message if it was requested 
+    this.#notifyOnDisconnected = notify;
+    this.subscriptions.forEach(this.#sendUnsubscribe);
+    // remove all the subscriptions
+    this.subscriptions.splice(0, this.subscriptions.length);
   }
 }
