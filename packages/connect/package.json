@@ -19,10 +19,14 @@
   },
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
+    "prebuild": "yarn clean",
     "test-trace": "node --experimental-vm-modules --trace-warnings node_modules/.bin/jest dist",
     "test": "node --experimental-vm-modules node_modules/.bin/jest dist",
     "clean": "rm -rf dist",
+    "pretest": "yarn build",
     "build": "tsc --build",
+    "prepack": "yarn test",
+    "postinstall": "yarn test",
     "lint": "echo \"No lint yet for @substrate/connect: actual command -> yarn eslint . --ext .js,.ts\""
   },
   "dependencies": {
