@@ -25,7 +25,7 @@ export class FsDatabase implements Database {
   load(): string {
     try {
       statSync(this.#path);
-    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+    } catch (error: unknown) {
       // Typescript does not allow type annotations on catch blocks :(
       if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
         return '';
