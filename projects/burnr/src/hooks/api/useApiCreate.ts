@@ -35,7 +35,7 @@ export default function useApiCreate (): ApiPromise {
   useEffect((): void => {
     const choseSmoldot = async () => {
       try {
-        const chainSpec =  JSON.stringify(westend);
+        const chainSpec = JSON.stringify(westend);
         //TODO: Here we must check if extension exists before choosing
         const provider = new SmoldotProvider(chainSpec);
         await provider.connect();

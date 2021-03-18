@@ -10,11 +10,12 @@ import {
   ProviderInterfaceEmitCb,
   ProviderInterfaceEmitted,
 } from '@polkadot/rpc-provider/types';
-import { assert, isUndefined, logger } from '@polkadot/util';
+import { assert, logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 import * as smoldot from 'smoldot';
 import database, { Database } from './Database';
 import { HealthCheckError } from './errors';
+import { isUndefined } from '../utils';
 
 const l = logger('smoldot-provider');
 

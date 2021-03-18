@@ -11,8 +11,9 @@ import {
   ProviderInterfaceEmitCb,
   ProviderInterfaceEmitted,
 } from '@polkadot/rpc-provider/types';
-import { assert, isUndefined, logger } from '@polkadot/util';
+import { logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
+import { isUndefined } from '../utils';
 
 const EXTENSION_ORIGIN = 'extension-provider';
 

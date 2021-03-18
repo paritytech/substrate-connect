@@ -11,10 +11,9 @@
   "license": "GPL-3.0-only",
   "private": true,
   "workspaces": [
-    "packages/extension-provider",
-    "packages/smoldot-provider",
     "packages/connect",
-    "projects/*"
+    "projects/extension",
+    "projects/smoldot-browser-extension"
   ],
   "scripts": {
     "clean": " yarn workspaces run clean && rimraf node_modules",
