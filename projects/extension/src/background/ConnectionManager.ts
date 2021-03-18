@@ -54,7 +54,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
     return sm.sendRpcMessage(message);
   }
 
-  registerAppWithSmoldot(app: AppMediator, smoldotName: string): void {
+  registerApp(app: AppMediator, smoldotName: string): void {
     const sm = this.#smoldots.find(s => s.name === smoldotName);
     if (!sm) {
       throw new Error('Tried to add app to smoldot that does not exist.');

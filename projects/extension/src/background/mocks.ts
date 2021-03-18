@@ -47,7 +47,7 @@ export class MockConnectionManager implements ConnectionManagerInterface {
     this.#willFindClient = willFindClient;
   }
 
-  registerAppWithSmoldot(app: AppMediator, name: string): void {
+  registerApp(app: AppMediator, name: string): void {
     return;
   }
 

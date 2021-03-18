@@ -187,7 +187,7 @@ export class AppMediator {
       this.#sendError(`Extension does not have client for ${name}`);
       return;
     }
-    this.#manager.registerAppWithSmoldot(this, name);
+    this.#manager.registerApp(this, name);
     this.#smoldotName = name;
     this.#state = 'ready';
     return;
