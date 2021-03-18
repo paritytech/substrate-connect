@@ -78,7 +78,7 @@ export class AppMediator {
     if (this.#state === 'disconnected') {
       // Shouldn't happen - we remove the AppMediator from the smoldot's apps
       // when we disconnect (below).
-      console.warn(`Asked a disconnected UApp (${this.name}) to process a message from ${this.#smoldotName as string}`);
+      console.error(`Asked a disconnected UApp (${this.name}) to process a message from ${this.#smoldotName as string}`);
       return false;
     }
 
