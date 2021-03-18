@@ -1,6 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
-import { SmoldotProvider }  from '@substrate/smoldot-provider';
-import { ExtensionProvider }  from '@substrate/extension-provider';
+import { SmoldotProvider }  from './SmoldotProvider';
+import { ExtensionProvider } from './ExtensionProvider';
 
 export class Detector {
     #chainName: string;

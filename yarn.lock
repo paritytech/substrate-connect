@@ -2120,8 +2120,12 @@
 "@substrate/connect@file:packages/connect":
   version "0.0.1"
   dependencies:
+    "@polkadot/rpc-provider" "^3.7.3"
+    browserify-fs "^1.0.0"
+    eventemitter3 "^4.0.7"
     file-entry-cache "^6.0.1"
     mkdirp "^1.0.4"
+    smoldot latest
 
 "@substrate/smoldot-test-utils@file:packages/smoldot-test-utils":
   version "0.1.0"
