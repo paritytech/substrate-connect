@@ -11,9 +11,7 @@
   "license": "GPL-3.0-only",
   "private": true,
   "workspaces": [
-    "packages/extension-provider",
-    "packages/smoldot-provider",
-    "packages/connect",
+    "packages/*",
     "projects/*"
   ],
   "scripts": {
@@ -26,8 +24,7 @@
     "dev:smoldot-extension": "yarn workspace @substrate/smoldot-extension run dev",
     "deploy:gh-pages:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run deploy:gh-pages",
     "deploy:ipfs:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run deploy:ipfs",
-    "postinstall": "husky install",
-    "connect-tester": "yarn workspace @substrate/extension-provider run build && yarn workspace @substrate/connect run build && yarn run dev:smoldot-browser-demo"
+    "postinstall": "husky install"
   },
   "devDependencies": {
     "copyfiles": "^2.3.0",

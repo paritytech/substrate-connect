@@ -23,10 +23,7 @@
     "test-trace": "node --experimental-vm-modules --trace-warnings node_modules/.bin/jest dist",
     "test": "node --experimental-vm-modules node_modules/.bin/jest dist",
     "clean": "rm -rf dist",
-    "pretest": "yarn build",
     "build": "tsc --build",
-    "prepack": "yarn test",
-    "postinstall": "yarn test",
     "lint": "echo \"No lint yet for @substrate/connect: actual command -> yarn eslint . --ext .js,.ts\""
   },
   "dependencies": {
@@ -39,6 +36,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
+    "@polkadot/extension-inject": "^0.36.1",
     "@typescript-eslint/parser": "^4.17.0",
     "@polkadot/api": "^3.7.3",
     "@types/mkdirp": "^1.0.1",
@@ -66,7 +64,7 @@
       "@typescript-eslint"
     ],
     "parserOptions": {
-      "project": "./src/tsconfig.json",
+      "project": "./tsconfig.json",
       "createDefaultProgram": true
     },
     "extends": [
