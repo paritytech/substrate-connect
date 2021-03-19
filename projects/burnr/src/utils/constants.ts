@@ -3,9 +3,6 @@ import { ProviderInterface } from '@polkadot/rpc-provider/types';
 
 import { LazyProvider } from './types'; 
 
-// @TODO bundle multiple clients in substrate-connect
-// import { SmoldotProvider }  from '@substrate/smoldot-provider';
-
 /**
  * Temporary hard-coded work around to test Wasm Light client 
  * until @substrate/connect is properly implemented

@@ -43,8 +43,7 @@ const HistoryTableRow: React.FunctionComponent<Props> = ({columns, row, showStat
                         && typeof value === 'number'
                         && <BalanceValue
                             isVisible={balanceVisibility}
-                            value={new BN(value) as Balance}
-                            unit={balanceArr[3]} />}
+                            value={new BN(value) as Balance} />}
                     {showStatus && column.id === 'status' && <PopoverExtrinsic status={row.status} />}
                 </TableCell>
                 )

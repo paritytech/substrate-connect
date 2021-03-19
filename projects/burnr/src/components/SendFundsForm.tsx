@@ -75,7 +75,6 @@ const SendFundsForm: FunctionComponent = () => {
 	const balanceArr = useBalance(account.userAddress);
 	const api = useApi();
 	const maxAmount = parseFloat(balanceArr[0]);
-	const unit = balanceArr[3];
 	// TODO: This must be prettier and reusable (exists already on App)
 	const [endpoint, setEndpoint] = useLocalStorage('endpoint');
 	if (!endpoint) setEndpoint('Polkadot-WsProvider');
@@ -167,7 +166,6 @@ const SendFundsForm: FunctionComponent = () => {
 			<Grid item>
 				<InputFunds 
 					total={maxAmount}
-					currency={unit}
 					setAmount={setAmount}
 				/>
 			</Grid>

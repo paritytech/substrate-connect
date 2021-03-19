@@ -25,8 +25,6 @@
     "lint": "echo \"Warning: Linter is there but errors need fixing.\""
   },
   "devDependencies": {
-    "@substrate/smoldot-provider": "^0.0.1",
-    "@substrate/extension-provider": "^0.0.2",
     "@substrate/connect": "file:../../packages/connect",
     "@pinata/sdk": "^1.1.11",
     "@types/jest": "^26.0.20",

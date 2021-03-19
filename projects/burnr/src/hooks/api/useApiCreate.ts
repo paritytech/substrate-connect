@@ -37,11 +37,13 @@ export default function useApiCreate (): ApiPromise {
       try {
         const chainSpec = JSON.stringify(westend);
         //TODO: Here we must check if extension exists before choosing
-        const provider = new SmoldotProvider(chainSpec);
-        await provider.connect();
-        await provider.send('system_health', []);
+        const detect = new Detector('westend', chainSpec);
+        const api = await detect.connect();
+        // const provider = new SmoldotProvider(chainSpec);
+        // await provider.connect();
+        // await provider.send('system_health', []);
         // TODO:  API should be included inside the substrate connect (Both SmoldotProvider and extension should return an API most probably)
-        const api = await ApiPromise.create({ provider });
+        // const api = await ApiPromise.create({ provider });
         mountedRef.current && setApi(api);
       } catch (err) {
         console.log('A wild error appeared:', err);
