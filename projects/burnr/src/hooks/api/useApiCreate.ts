@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { SmoldotProvider }  from '@substrate/smoldot-provider';
+import { Detector }  from '../../../../../packages/connect/src'; // Temp fix for issues to pass
 
 import { ALL_PROVIDERS } from '../../utils/constants';
 import { LazyProvider } from '../../utils/types'; 

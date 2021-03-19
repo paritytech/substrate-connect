@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
@@ -13,20 +14,24 @@ import westend from './westend.json';
 
 const l = logger('examples');
 let api: ApiPromise;
+let provider: SmoldotProvider;
 
 describe('API integration tests', () => {
-    const getApi = async () => {
-    const chainSpec = JSON.stringify(westend);
-    const database = new FsDatabase('test');
-    const provider = new SmoldotProvider(chainSpec, database);
-    await provider.connect();
-    return await ApiPromise.create({ provider });
-    l.log('API is ready');
-    expect(api).toBeTruthy();
-  };
+  beforeAll(async () => {
+      const chainSpec = JSON.stringify(westend);
+      const database = new FsDatabase('test');
+      provider = new SmoldotProvider(chainSpec, database);
+      await provider.connect();
+      api = await ApiPromise.create({ provider });
+      l.log('API is ready');
+      expect(api).toBeTruthy();
+  });
+
+  afterAll(() => {
+    provider.disconnect();
+  })
 
   it('API constants', async () => {
-    const api = await getApi();
     const genesisHash = api.genesisHash.toHex();
     l.log('genesis hash: ', genesisHash);
     expect(genesisHash).not.toBe('');
@@ -41,21 +46,18 @@ describe('API integration tests', () => {
   // This errors and error handling isnt yet implemented for storage queries
   // in smoldot: https://github.com/paritytech/smoldot/issues/388
   it.skip('State queries', async () => {
-    const api = await getApi();
     const testAddress = '5FHyraDcRvSYCoSrhe8LiBLdKmuL9ptZ5tEtAtqfKfeHxA4y';
     const { nonce, data: balance } = await api.query.system.account(testAddress);
     l.log(`balance of ${balance.free} and a nonce of ${nonce}`);
   }, 10000);
 
   it('RPC queries', async () => {
-    const api = await getApi();
     const chain = await api.rpc.system.chain();
     const lastHeader = await api.rpc.chain.getHeader();
     l.log(`${chain}: last block #${lastHeader.number} has hash ${lastHeader.hash}`);
   }, 10000);
 
   it('RPC query subscriptions', async () => {
-    const api = await getApi();
     const chain = await api.rpc.system.chain();
     return new Promise<void>((resolve) => {
       let unsubscribe: any = undefined;
