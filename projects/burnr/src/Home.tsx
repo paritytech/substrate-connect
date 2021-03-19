@@ -21,7 +21,7 @@ function Home ():  React.ReactElement {
 	const [balanceVisibility, setBalanceVisibility] = useState<boolean>(localBalance !== 'false');
 	const { account } = useContext(AccountContext);
 	const classes = useStyles();
-	 // TODO: Need to identify if this will be eventually used or not
+	// TODO: Need to identify if this will be eventually used or not
 	// Im not sure if the useUserInfo will/should be used
 	// const userInfo = useUserInfo(account.userAddress);
 	const balanceArr = useBalance(account.userAddress);
