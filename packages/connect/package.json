@@ -21,6 +21,7 @@
   "scripts": {
     "prebuild": "yarn clean",
     "test-trace": "node --experimental-vm-modules --trace-warnings node_modules/.bin/jest dist",
+    "pretest": "yarn build",
     "test": "node --experimental-vm-modules node_modules/.bin/jest dist",
     "clean": "rm -rf dist",
     "build": "tsc --build",
