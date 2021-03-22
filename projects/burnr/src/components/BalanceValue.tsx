@@ -3,9 +3,12 @@ import React from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { Box, Typography } from '@material-ui/core';
 import { SizeScale } from '../utils/types';
+import { transformCurrency } from '../utils/utils';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { Balance } from '@polkadot/types/interfaces';
 import { formatBalance } from '@polkadot/util';
+import useApi from '../hooks/api/useApi';
+
 interface Props extends SizeScale {
 	value: Balance;
 	isVisible: boolean;
@@ -18,7 +21,6 @@ interface StyleProps {
 }
 
 // @TODO get token codes from api
-
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
 		display: 'inline-flex',
@@ -45,7 +47,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const BalanceValue: React.FunctionComponent<Props> = ({ value, isVisible, unit = '', size, style }: Props) => {
-	const fBalance = formatBalance(value, { withSi: true });
+	const api = useApi();
+	const fBalance = formatBalance(value, { withSi: false });
+	const fUnit = transformCurrency(formatBalance.calcSi(value.toString(), api.registry.chainDecimals[0]).value, unit);
 	const isColored = parseInt(fBalance) >= 0;
 	const classes = useStyles({ colored: isColored, visible: isVisible });
 
@@ -54,7 +58,7 @@ const BalanceValue: React.FunctionComponent<Props> = ({ value, isVisible, unit =
 	return  (
 		<Box component='span' className={classes.root} style={style}>
 			<Typography variant={TypographyVariant} className={classes.blur} >
-				{`${fBalance} ${unit}`}
+				{`${fBalance} ${fUnit}`}
 			</Typography>
 		</Box>
 	);

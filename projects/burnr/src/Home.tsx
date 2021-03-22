@@ -4,7 +4,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { AccountContext, BalanceVisibleContext } from './utils/contexts';
 import { NavTabs, AccountCard, BalanceValue, Bg, AccountMenu } from './components';
-import { useUserInfo, useBalance, useLocalStorage } from './hooks';
+import { useBalance, useLocalStorage } from './hooks';
 
 const useStyles = makeStyles((theme: Theme) => ({
 		paperAccount: {

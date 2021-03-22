@@ -56,3 +56,29 @@ export const downloadFile = (fileName: string, data: string, type: string): void
 }
 
 export const getKeyring = (): Keyring => keyring;
+
+export const transformCurrency = (currencyLevel: string, currency: string): string =>
+    (currencyLevel !== '-') ? currencyLevel.concat(currency) : currency;
+
+export const toDecimals = (raw: number, power: number, networkDecimals: number): number =>
+    raw / Math.pow(10, networkDecimals - power);
+
+export const unitPowers = [
+    { power: -24, value: 'y' },
+    { power: -21, value: 'z' },
+    { power: -18, value: 'a' },
+    { power: -15, value: 'f' },
+    { power: -12, value: 'p' },
+    { power: -9, value: 'n' },
+    { power: -6, value: 'µ' },
+    { power: -3, value: 'm' },
+    { power: 0, value: '-' },
+    { power: 3, value: 'k' },
+    { power: 6, value: 'M' },
+    { power: 9, value: 'B' },
+    { power: 12, value: 'T' },
+    { power: 15, value: 'P' },
+    { power: 18, value: 'E' },
+    { power: 21, value: 'Z' },
+    { power: 24, value: 'Y' }
+]

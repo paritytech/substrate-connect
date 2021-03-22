@@ -25,7 +25,6 @@ const HistoryTableRow: React.FunctionComponent<Props> = ({columns, row, showStat
     const { account } = useContext(AccountContext);
 	const balanceArr = useBalance(account.userAddress);
 	const { balanceVisibility } = useContext(BalanceVisibleContext);
-
 	return (
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         <TableRow hover key={`transaction`}>

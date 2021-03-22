@@ -1,31 +1,51 @@
 import React, { ChangeEvent, MouseEvent, SetStateAction, Dispatch } from 'react';
-import { Button, Grid, TextField, Box, InputAdornment } from '@material-ui/core';
+import { Button, Grid, TextField, Box, InputAdornment, MenuItem, Select } from '@material-ui/core';
+import { formatBalance } from '@polkadot/util';
+import useApi from '../hooks/api/useApi';
+import { unitPowers, transformCurrency, toDecimals } from '../utils/utils';
+import BN from 'bn.js';
 
 interface Props {
-  total: number;
+  total: BN;
   currency: string;
   hidePercentages?: boolean;
-  setAmount: Dispatch<SetStateAction<number>>;
+  setAmount: Dispatch<SetStateAction<string>>;
 }
 
 // @TODO bn.js
 
 const InputFunds: React.FunctionComponent<Props> = ({ total, setAmount, currency, hidePercentages = false }: Props) => {
-	const [value, setValue] = React.useState<number | ''>('');
+	const api = useApi();
+	// const [value, setValue] = React.useState<string>('');
+	const [showValue, setShowValue] = React.useState<string>('');
+	const [currValue, setCurrValue] = React.useState<number>(0);
 	const handleChangeButton = (e: MouseEvent) => {
-		const val = parseFloat((e.currentTarget as HTMLButtonElement).value) * total;
-		setValue(val);
+		const val = ((new BN((e.currentTarget as HTMLButtonElement).value)).mul(total)).toString();
+		console.log('(e.currentTarget as HTMLButtonElement).value)', total, val);
 		setAmount(val);
 		document.getElementById('SendFundsAmountField')?.focus();
 	};
+
+	const nBN = (val: number | string): BN => new BN(val)
 	const handleChange = (e: ChangeEvent) => {
-		const value = parseFloat((e.currentTarget as HTMLTextAreaElement).value);
-		if (!isNaN(value)) {
-			setValue(value);
+		const value = ((e.currentTarget as HTMLButtonElement).value).replace(/\D/g,'');
+		// setCurrencyLevel(value ?
+		// 	formatBalance.calcSi(
+		// 		value.toString(),
+		// 		api.registry.chainDecimals[0]
+		// 	)?.value : ''
+		// );
+		if (value !== '') {
+			// console.log('value', ((nBN(value)).mul(nBN(10).pow(-3)).mul((nBN(10)).pow(nBN(12))).toString();
+			// const calcValue = currValue >= 0 ?
+			// 	((nBN(value)).mul(nBN(10).pow(nBN(currValue)))).mul((nBN(10)).pow(nBN(12))) :
+			// 	((nBN(value)).mul(nBN(1).div(nBN(10).pow(nBN(currValue))))).mul((nBN(10)).pow(nBN(12)));
+			// console.log('calcValue', calcValue.toNumber(), calcValue.toString())
+			setShowValue(value);
 			setAmount(value);
-		} else{ 
-			setValue('');
-			setAmount(0);
+		} else{
+			setShowValue('');
+			setAmount('0');
 		} 
 	};
 
@@ -36,22 +56,35 @@ const InputFunds: React.FunctionComponent<Props> = ({ total, setAmount, currency
 		setFocus(!focus);
 	};
 
+	const selectDropDownValues = (): JSX.Element[] =>
+		// eslint-disable-next-line react/jsx-key
+		unitPowers.map(u => <MenuItem value={u.power}>{transformCurrency(u.value, currency)}</MenuItem>)
+
 	return (
 		<>
 			<Box marginBottom={1}>
 				<TextField
 					id='SendFundsAmountField'
-					type="number"
-					value={value}
+					value={showValue}
 					label="Amount"
 					fullWidth
 					variant="outlined"
 					onChange={handleChange}
 					onFocus={handleFocus}
 					onBlur={handleFocus}
-					InputProps={{
-						endAdornment: <InputAdornment position="start">{currency}</InputAdornment>,
-					}}
+					{/*
+						InputProps={{
+							endAdornment: <InputAdornment position="start">
+								<Select
+									value={currValue}
+									onChange={(e) => setCurrValue(e.target.value as number)}
+									displayEmpty
+									>
+									{selectDropDownValues()}
+								</Select>
+							</InputAdornment>,
+						}}
+					*/}
 				/>
 			</Box>
 

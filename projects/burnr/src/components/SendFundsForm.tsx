@@ -1,5 +1,6 @@
 import React, { MouseEvent, useContext, useState, useEffect, FunctionComponent } from 'react';
 import { AccountContext } from '../utils/contexts';
+import BN from 'bn.js';
 import { Keyring } from '@polkadot/api';
 import { InputAddress, InputFunds } from '../components';
 import { 
@@ -74,7 +75,7 @@ const SendFundsForm: FunctionComponent = () => {
 	const { account, setCurrentAccount } = useContext(AccountContext);
 	const balanceArr = useBalance(account.userAddress);
 	const api = useApi();
-	const maxAmount = parseFloat(balanceArr[0]);
+	const maxAmountFull = balanceArr[1];
 	const unit = balanceArr[3];
 	// TODO: This must be prettier and reusable (exists already on App)
 	const [endpoint, setEndpoint] = useLocalStorage('endpoint');
@@ -82,7 +83,7 @@ const SendFundsForm: FunctionComponent = () => {
 	const [ ,setLocalStorageAccount] = useLocalStorage(endpoint.split('-')[0]?.toLowerCase());
 	// TODO END: This must be prettier and reusable (exists already on App)
 	const [address, setAddress] = useState<string>('');
-	const [amount, setAmount] = useState<number>(0);  
+	const [amount, setAmount] = useState<string>('0');  
 	const [loading, setLoading] = useState<boolean>(false);
 	const [message, setMessage] = useState<string>('');
 	const [countdownNo, setCountdownNo] = useState<number>(0);
@@ -117,7 +118,7 @@ const SendFundsForm: FunctionComponent = () => {
 			setRowStatus(3);
 			const keyring = new Keyring({ type: 'sr25519' });
 			const sender = keyring.addFromUri(account.userSeed);
-			await api.tx.balances.transfer(address, amount * 1000000000000).signAndSend(sender, (result) => {
+			await api.tx.balances.transfer(address, new BN(amount)).signAndSend(sender, (result) => {
 				// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 				setMessage(`Current transaction status ${result.status}`);
 				if (result.status.isInBlock) {
@@ -131,7 +132,7 @@ const SendFundsForm: FunctionComponent = () => {
 					account.userHistory.unshift({
 						withWhom: address,
 						extrinsic: 'Transfer',
-						value: amount * 1000000000000, 
+						value: amount, 
 						status: 1
 					})
 					setCurrentAccount(account);
@@ -146,7 +147,7 @@ const SendFundsForm: FunctionComponent = () => {
 			account.userHistory.unshift({
 				withWhom: address,
 				extrinsic: 'Transfer',
-				value: amount * 1000000000000, 
+				value: amount,
 				status: 2
 			})
 			setCurrentAccount(account);
@@ -165,8 +166,9 @@ const SendFundsForm: FunctionComponent = () => {
 				<InputAddress setAddress={setAddress} />
 			</Grid>
 			<Grid item>
-				<InputFunds 
-					total={maxAmount}
+				<InputFunds
+					hidePercentages
+					total={maxAmountFull}
 					currency={unit}
 					setAmount={setAmount}
 				/>
@@ -177,7 +179,7 @@ const SendFundsForm: FunctionComponent = () => {
 					variant='contained'
 					size='large'
 					color='secondary'
-					disabled={loading || !amount || amount > maxAmount}
+					disabled={loading || !amount}
 					onClick={handleSubmit}
 					className={classes.button}
 				>Send</Button>
