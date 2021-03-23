@@ -17,7 +17,7 @@ let api: ApiPromise;
 let provider: SmoldotProvider;
 
 describe('API integration tests', () => {
-  beforeAll(async () => {
+  beforeEach(async done => {
       const chainSpec = JSON.stringify(westend);
       const database = new FsDatabase('test');
       provider = new SmoldotProvider(chainSpec, database);
@@ -25,13 +25,15 @@ describe('API integration tests', () => {
       api = await ApiPromise.create({ provider });
       l.log('API is ready');
       expect(api).toBeTruthy();
-  });
+      done();
+  }, 15000);
 
-  afterAll(() => {
+  afterEach(done => {
     provider.disconnect();
-  })
+    done();
+  }, 15000)
 
-  it('API constants', async () => {
+  test('API constants', () => {
     const genesisHash = api.genesisHash.toHex();
     l.log('genesis hash: ', genesisHash);
     expect(genesisHash).not.toBe('');
@@ -41,23 +43,23 @@ describe('API integration tests', () => {
     const existentialDeposit = api.consts.balances.existentialDeposit.toHuman();
     l.log('existentialDeposit' , existentialDeposit);
     expect(genesisHash).not.toBe('');
-  });
+  }, 10000);
 
   // This errors and error handling isnt yet implemented for storage queries
   // in smoldot: https://github.com/paritytech/smoldot/issues/388
-  it.skip('State queries', async () => {
+  test.skip('State queries', async () => {
     const testAddress = '5FHyraDcRvSYCoSrhe8LiBLdKmuL9ptZ5tEtAtqfKfeHxA4y';
     const { nonce, data: balance } = await api.query.system.account(testAddress);
     l.log(`balance of ${balance.free} and a nonce of ${nonce}`);
   }, 10000);
 
-  it('RPC queries', async () => {
+  test('RPC queries', async () => {
     const chain = await api.rpc.system.chain();
     const lastHeader = await api.rpc.chain.getHeader();
     l.log(`${chain}: last block #${lastHeader.number} has hash ${lastHeader.hash}`);
   }, 10000);
 
-  it('RPC query subscriptions', async () => {
+  test('RPC query subscriptions', async () => {
     const chain = await api.rpc.system.chain();
     return new Promise<void>((resolve) => {
       let unsubscribe: any = undefined;

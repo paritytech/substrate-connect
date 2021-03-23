@@ -239,8 +239,6 @@ export class ExtensionProvider implements ProviderInterface {
           subscription
         };
 
-        // this.#client.send_json_rpc(json);
-        // Post it to backgroudn for json_rpc (type: rpc, payload) -> And background should send it to respective client
         window.postMessage({
           id: Math.random(),
           message: JSON.stringify({

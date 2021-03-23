@@ -255,7 +255,7 @@ export class SmoldotProvider implements ProviderInterface {
     // still not connected
   }
 
-  #checkClientPeercount = () => {
+  #checkClientPeercount = (): void => {
     this.send('system_health', [])
       .then(this.#simulateLifecycle)
       .catch(error => this.emit('error', new HealthCheckError(error)));
@@ -264,10 +264,10 @@ export class SmoldotProvider implements ProviderInterface {
   /**
    * @description "Connect" the WASM client - starts the smoldot WASM client
    */
-  public async connect(): Promise<void> {
+  public connect = async (): Promise<void> => {
     assert(!this.#client && !this.#isConnected, 'Client is already connected');
-
-    return this.#smoldot.start({
+    try {
+      this.#client = await this.#smoldot.start({
         database_content: this.#db.load(),
         chain_spec: this.#chainSpec,
         max_log_level: 3, /* no debug/trace messages */
@@ -281,15 +281,11 @@ export class SmoldotProvider implements ProviderInterface {
           }
         }
       })
-      .then((client: smoldot.SmoldotClient) => {
-        this.#client = client;
-        this.#connectionStatePingerId = setInterval(
-          this.#checkClientPeercount, this.healthPingerInterval);
-      })
-      .catch((error: Error) => {
-        this.emit('error', error);
-        return Promise.reject(error);
-      });
+      this.#connectionStatePingerId = setInterval(
+      this.#checkClientPeercount, this.healthPingerInterval);
+    } catch(error: unknown) {
+      this.emit('error', error);
+    }
   }
 
   /**
@@ -297,18 +293,21 @@ export class SmoldotProvider implements ProviderInterface {
    */
   // eslint-disable-next-line @typescript-eslint/require-await
   public async disconnect(): Promise<void> {
-    if (this.#client) {
-      this.#client = undefined;
+    try {
+      if (this.#client) {
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        this.#client.terminate;
+      }
+
+      if (this.#connectionStatePingerId !== null) {
+        clearInterval(this.#connectionStatePingerId);
+      }
+
+      this.#isConnected = false;
+      this.emit('disconnected');
+    } catch(error: unknown) {
+      this.emit('error', error);
     }
-
-    if (this.#connectionStatePingerId !== null) {
-      clearInterval(this.#connectionStatePingerId);
-    }
-
-    this.#isConnected = false;
-    this.emit('disconnected');
-
-    return Promise.resolve();
   }
 
   /**
