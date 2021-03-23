@@ -13,7 +13,7 @@
   "workspaces": [
     "packages/connect",
     "projects/extension",
-    "projects/smoldot-browser-extension",
+    "projects/smoldot-browser-demo",
     "projects/burnr"
   ],
   "scripts": {
