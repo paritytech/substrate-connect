@@ -4,4 +4,4 @@ yarn-error.log
 dist
 
 # testing
-/coverage
+coverage
