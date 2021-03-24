@@ -8,4 +8,6 @@ node_modules
 yarn-error.log*
 .nyc_output/
 .chains/
-coverage/
+
+# testing
+/coverage
