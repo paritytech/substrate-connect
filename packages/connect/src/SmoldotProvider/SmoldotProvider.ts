@@ -294,20 +294,20 @@ export class SmoldotProvider implements ProviderInterface {
   // eslint-disable-next-line @typescript-eslint/require-await
   public async disconnect(): Promise<void> {
     try {
-      if (this.#client) {
-        // eslint-disable-next-line @typescript-eslint/unbound-method
-        this.#client.terminate;
+        if (this.#client) {
+          // eslint-disable-next-line @typescript-eslint/unbound-method
+          this.#client.terminate;
+        }
+      } catch(error: unknown) {
+        this.emit('error', error);
+      } finally {
+        if (this.#connectionStatePingerId !== null) {
+          clearInterval(this.#connectionStatePingerId);
+        }
+  
+        this.#isConnected = false;
+        this.emit('disconnected');
       }
-
-      if (this.#connectionStatePingerId !== null) {
-        clearInterval(this.#connectionStatePingerId);
-      }
-
-      this.#isConnected = false;
-      this.emit('disconnected');
-    } catch(error: unknown) {
-      this.emit('error', error);
-    }
   }
 
   /**
