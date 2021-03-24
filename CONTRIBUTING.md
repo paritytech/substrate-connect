@@ -37,7 +37,7 @@ A good pull request and commit messages can often become the basis for developer
 
 ### Tips for Pull Request Descriptions and Commit Messages
 
-* **Consider adding more visible documentation** if the notes you are making are particularly important.  This can be a code comment with a link to the PR or docs in the `docs` folder
+* **Consider adding more visible documentation** if the notes you are making are particularly important.  This can be a code comment with a link to the PR, inlide code comments or docs in the `docs` folder depending on how large and how important the docs are.
 * **Follow the git commit message conventions** outlined [here](https://chris.beams.io/posts/git-commit/). They play well with the `git` CLI tools, and the Github UI. Your code editor should enforce these for you but you may need a plugin.
 * **Describe the problem being solved** - give the reviewer enough context to adequately review the pull request without having to ask for more details or for future readers to understand the context in which the PR was made.
 * **Describe the approach** and any trade offs you made highlighting any known limitations.
