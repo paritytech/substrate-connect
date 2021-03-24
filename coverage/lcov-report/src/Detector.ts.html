@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for SmoldotProvider/BrowserDatabase.ts</title>
+    <title>Code coverage report for src/Detector.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">SmoldotProvider</a> BrowserDatabase.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">src</a> Detector.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">43.75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>7/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>0/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">43.75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>7/16</span>
             </div>
         
             
@@ -86,69 +86,63 @@
 <a name='L27'></a><a href='#L27'>27</a>
 <a name='L28'></a><a href='#L28'>28</a>
 <a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Database } from './Database';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { ApiPromise } from '@polkadot/api';
+import { SmoldotProvider }  from './SmoldotProvider';
+import { ExtensionProvider } from './ExtensionProvider';
 &nbsp;
-/**
- * @name BrowserDatabase
- *
- * @description The `BrowserDatabase` saves chain state to localStorage
- * with the key specified by `name` prefixed with "smoldot::chainstate::"
- */
-export class BrowserDatabase implements Database {
-<span class="cstat-no" title="statement not covered" >  #name: string;</span>
+export class Detector {
+    #chainName: string;
+    #chainSpec: string | undefined;
+    #isExtension: boolean;
 &nbsp;
-<span class="fstat-no" title="function not covered" >  constructor(n</span>ame: string) {
-<span class="cstat-no" title="statement not covered" >    this.#name = `smoldot::chainstate::${name}`;</span>
-  }
+    public constructor (chainName: string, chainSpec?: string) {
+        this.#chainName = chainName;
+        this.#chainSpec = chainSpec;
+        this.#isExtension = !!document.getElementById('substrateExtension');
+    }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  load(</span>): string {
-<span class="cstat-no" title="statement not covered" >    return window.localStorage.getItem(this.#name) || '';</span>
-  }
-&nbsp;
-<span class="fstat-no" title="function not covered" >  save(</span>state: string) {
-<span class="cstat-no" title="statement not covered" >    window.localStorage.setItem(this.#name, state);</span>
-  }
-&nbsp;
-<span class="fstat-no" title="function not covered" >  delete(</span>) {
-<span class="cstat-no" title="statement not covered" >    window.localStorage.removeItem(this.#name);</span>
-  }
-}
-&nbsp;
-export function <span class="fstat-no" title="function not covered" >create(</span>name: string): Database {
-<span class="cstat-no" title="statement not covered" >  return new BrowserDatabase(name) as Database;</span>
+    public connect = <span class="fstat-no" title="function not covered" >async </span>(): Promise&lt;ApiPromise&gt; =&gt; {
+        let provider;
+<span class="cstat-no" title="statement not covered" >        if (this.#isExtension &amp;&amp; this.#chainName) {</span>
+<span class="cstat-no" title="statement not covered" >            provider = new ExtensionProvider(this.#chainName);</span>
+<span class="cstat-no" title="statement not covered" >            await provider.connect();</span>
+        } else <span class="cstat-no" title="statement not covered" >if (this.#isExtension &amp;&amp; !this.#chainName) {</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error('You must provide at least a chainName')</span>
+        } else <span class="cstat-no" title="statement not covered" >if (!this.#isExtension &amp;&amp; this.#chainSpec) {</span>
+<span class="cstat-no" title="statement not covered" >            provider = new SmoldotProvider(this.#chainSpec);</span>
+<span class="cstat-no" title="statement not covered" >            await provider.connect();</span>
+        }
+<span class="cstat-no" title="statement not covered" >        return await ApiPromise.create({ provider });</span>
+    }
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -157,7 +151,7 @@ export function <span class="fstat-no" title="function not covered" >create(</sp
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Mar 24 2021 09:39:49 GMT+0200 (Eastern European Standard Time)
+                at Wed Mar 24 2021 09:22:55 GMT+0200 (Eastern European Standard Time)
             </div>
         </div>
         <script src="../prettify.js"></script>
