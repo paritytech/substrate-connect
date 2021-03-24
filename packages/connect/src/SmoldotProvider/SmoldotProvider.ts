@@ -296,7 +296,7 @@ export class SmoldotProvider implements ProviderInterface {
     try {
         if (this.#client) {
           // eslint-disable-next-line @typescript-eslint/unbound-method
-          this.#client.terminate;
+          this.#client.terminate();
         }
       } catch(error: unknown) {
         this.emit('error', error);
