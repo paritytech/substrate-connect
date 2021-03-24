@@ -1,11 +1,12 @@
 import { ApiPromise } from '@polkadot/api';
-import { SmoldotProvider }  from '@substrate/smoldot-provider';
-import { ExtensionProvider }  from '@substrate/extension-provider';
+import { SmoldotProvider }  from './SmoldotProvider';
+import { ExtensionProvider } from './ExtensionProvider';
 
 export class Detector {
     #chainName: string;
     #chainSpec: string | undefined;
     #isExtension: boolean;
+    #provider: SmoldotProvider | ExtensionProvider | undefined;
 
     public constructor (chainName: string, chainSpec?: string) {
         this.#chainName = chainName;
@@ -24,6 +25,13 @@ export class Detector {
             provider = new SmoldotProvider(this.#chainSpec);
             await provider.connect();
         }
+        this.#provider = provider;
         return await ApiPromise.create({ provider });
     }
+
+    public disconnect = async (): Promise<void> => {
+        if (this.#provider instanceof SmoldotProvider) {
+            await this.#provider.disconnect();
+        }
+    };
 }

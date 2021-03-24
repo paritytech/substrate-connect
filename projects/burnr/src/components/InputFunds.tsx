@@ -3,7 +3,7 @@ import { Button, Grid, TextField, Box, InputAdornment } from '@material-ui/core'
 
 interface Props {
   total: number;
-  currency: string;
+  currency?: string;
   hidePercentages?: boolean;
   setAmount: Dispatch<SetStateAction<number>>;
 }

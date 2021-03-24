@@ -8,3 +8,6 @@
 yarn-error.log*
 .nyc_output/
 .cache/
+
+# testing
+/coverage
