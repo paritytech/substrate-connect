@@ -18,11 +18,11 @@ function Home ():  React.ReactElement {
 	const [balanceVisibility, setBalanceVisibility] = useState<boolean>(localBalance !== 'false');
 	const { account } = useContext(AccountContext);
 	const classes = useStyles();
+	// TODO: Need to identify if this will be eventually used or not
 	// Im not sure if the useUserInfo will/should be used
 	// const userInfo = useUserInfo(account.userAddress);
 	const balanceArr = useBalance(account.userAddress);
 	const balance = balanceArr[1];
-	const unit = balanceArr[3];
 	useEffect((): void => {
 		setLocalBalance(balanceVisibility ? 'true' : 'false')
 	}, [balanceVisibility, setLocalBalance])
@@ -63,7 +63,6 @@ function Home ():  React.ReactElement {
 									<BalanceValue
 										isVisible={balanceVisibility}
 										value={balance}
-										unit={unit}
 										size='large'
 										style={{ width: '100%', justifyContent: 'flex-end' }}
 									/>

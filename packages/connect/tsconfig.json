@@ -12,6 +12,6 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "module": "esnext"
+    "module": "ES2020"
   }
 }

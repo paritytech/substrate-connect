@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
 
 import BN from 'bn.js';
-import { AccountContext, BalanceVisibleContext } from '../utils/contexts';
+import { BalanceVisibleContext } from '../utils/contexts';
 import { Balance } from '@polkadot/types/interfaces';
-import { useBalance } from '../hooks';
 import { TableRow, TableCell } from '@material-ui/core';
 import { Column } from '../utils/types';
 
@@ -22,8 +21,6 @@ interface Props {
 }
 
 const HistoryTableRow: React.FunctionComponent<Props> = ({columns, row, showStatus = true }) => {
-    const { account } = useContext(AccountContext);
-	const balanceArr = useBalance(account.userAddress);
 	const { balanceVisibility } = useContext(BalanceVisibleContext);
 	return (
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -42,8 +39,7 @@ const HistoryTableRow: React.FunctionComponent<Props> = ({columns, row, showStat
                         && (typeof value === 'number' || typeof value === 'string')
                         && <BalanceValue
                             isVisible={balanceVisibility}
-                            value={new BN(value) as Balance}
-                            unit={balanceArr[3]} />}
+                            value={new BN(value) as Balance} />}
                     {showStatus && column.id === 'status' && <PopoverExtrinsic status={row.status} />}
                 </TableCell>
                 )

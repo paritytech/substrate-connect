@@ -1,4 +1,0 @@
-tsconfig.json
-src/
-src/examples/
-dist/**/*.test.js
