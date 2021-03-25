@@ -15,7 +15,7 @@ import { Detector }  from '@substrate/connect';
 import substrateChainSpec from './substrateChainSpec.json';
 
 const chainSpec =  JSON.stringify(substrateChainSpec);
-const detect = new Detector('westend', chainSpec());
+const detect = new Detector('westend', chainSpec);
 
 const api = await detect.connect();
 ```
