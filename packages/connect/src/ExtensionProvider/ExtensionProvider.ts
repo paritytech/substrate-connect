@@ -22,7 +22,6 @@ const l = logger(EXTENSION_ORIGIN);
 interface RpcStateAwaiting {
   callback: ProviderInterfaceCallback;
   method: string;
-  params: any[];
   subscription?: SubscriptionHandler;
 }
 
@@ -35,13 +34,6 @@ interface SubscriptionHandler {
 
 interface StateSubscription extends SubscriptionHandler {
     method: string;
-    params: any[];
-}
-
-interface HealthResponse {
-  isSyncing: boolean;
-  peers: number;
-  shouldHavePeers: boolean;
 }
 
 const ANGLICISMS: { [index: string]: string } = {
@@ -61,7 +53,7 @@ export class ExtensionProvider implements ProviderInterface {
 
   #chainName: string;
 
-   public constructor(name: string, spec?: string) {
+   public constructor(name: string) {
      this.#chainName = name;
    }
 
@@ -81,7 +73,7 @@ export class ExtensionProvider implements ProviderInterface {
     throw new Error('clone() is not supported.');
   }
 
-  #handleRpcReponse = (res: string) => {
+  #handleRpcReponse = (res: string): void => {
     l.debug(() => ['received', res]);
     const response = JSON.parse(res) as JsonRpcResponse;
 
@@ -100,7 +92,7 @@ export class ExtensionProvider implements ProviderInterface {
     }
 
     try {
-      const { method, params, subscription } = handler;
+      const { method, subscription } = handler;
       const result = this.#coder.decodeResponse(response) as string;
 
       // first send the result - in case of subs, we may have an update
@@ -113,7 +105,6 @@ export class ExtensionProvider implements ProviderInterface {
         this.#subscriptions[subId] = {
           ...subscription,
           method,
-          params
         };
 
         // if we have a result waiting for this subscription already
@@ -165,6 +156,7 @@ export class ExtensionProvider implements ProviderInterface {
     }
     window.postMessage(initData, '*');
     window.addEventListener('message', ({data}) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       this.#handleRpcReponse(data?.message);
     });
     this.#isConnected = true;
@@ -224,7 +216,7 @@ export class ExtensionProvider implements ProviderInterface {
         const json = this.#coder.encodeJson(method, params);
         const id = this.#coder.getId();
 
-        const callback = (error?: Error | null, result?: any): void => {
+        const callback = (error?: Error | null, result?: unknown): void => {
           error
             ? reject(error)
             : resolve(result);
@@ -235,7 +227,6 @@ export class ExtensionProvider implements ProviderInterface {
         this.#handlers[id] = {
           callback,
           method,
-          params,
           subscription
         };
 
@@ -283,9 +274,8 @@ export class ExtensionProvider implements ProviderInterface {
     params: any[],
     callback: ProviderInterfaceCallback
   ): Promise<number | string> {
-    const id = await this.send(method, params, { callback, type });
-
-    return id;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return await this.send(method, params, { callback, type });
   }
 
   /**
