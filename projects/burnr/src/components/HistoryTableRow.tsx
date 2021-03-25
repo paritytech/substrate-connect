@@ -22,7 +22,6 @@ interface Props {
 
 const HistoryTableRow: React.FunctionComponent<Props> = ({columns, row, showStatus = true }) => {
 	const { balanceVisibility } = useContext(BalanceVisibleContext);
-
 	return (
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         <TableRow hover key={`transaction`}>
@@ -37,7 +36,7 @@ const HistoryTableRow: React.FunctionComponent<Props> = ({columns, row, showStat
                     }
                     {column.id === 'extrinsic' && value}
                     {column.id === 'value' // This may look overwhelming but is just for "dump" data until page is fixed
-                        && typeof value === 'number'
+                        && (typeof value === 'number' || typeof value === 'string')
                         && <BalanceValue
                             isVisible={balanceVisibility}
                             value={new BN(value) as Balance} />}

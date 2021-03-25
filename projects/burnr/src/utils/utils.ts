@@ -56,3 +56,6 @@ export const downloadFile = (fileName: string, data: string, type: string): void
 }
 
 export const getKeyring = (): Keyring => keyring;
+
+export const transformCurrency = (currencyLevel: string, currency: string): string =>
+    (currencyLevel !== '-') ? currencyLevel.concat(currency) : currency;
