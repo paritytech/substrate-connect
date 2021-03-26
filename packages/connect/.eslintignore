@@ -6,5 +6,5 @@ coverage
 # don't lint .cache
 .chains
 # don't lint examples and tests
-src/examples
-src/*.test.ts
+src/examples/**/*.ts
+src/**/*.test.ts

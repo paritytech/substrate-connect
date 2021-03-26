@@ -17,11 +17,11 @@ export class BrowserDatabase implements Database {
     return window.localStorage.getItem(this.#name) || '';
   }
 
-  save(state: string) {
+  save(state: string): void {
     window.localStorage.setItem(this.#name, state);
   }
 
-  delete() {
+  delete(): void {
     window.localStorage.removeItem(this.#name);
   }
 }

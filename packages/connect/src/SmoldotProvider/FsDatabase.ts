@@ -25,9 +25,9 @@ export class FsDatabase implements Database {
   load(): string {
     try {
       statSync(this.#path);
-    } catch (error: any) { 
+    } catch (error: unknown) { 
       // Typescript does not allow type annotations on catch blocks :(
-      if (error.code === 'ENOENT') {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
         return '';
       }
 
@@ -37,11 +37,11 @@ export class FsDatabase implements Database {
     return readFileSync(this.#path, { encoding: 'utf-8' });
   }
 
-  save(state: string) {
+  save(state: string): void {
     writeFileSync(this.#path, state);
   }
 
-  delete() {
+  delete(): void {
       unlinkSync(this.#path);
   }
 }
