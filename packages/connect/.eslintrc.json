@@ -1,0 +1,9 @@
+{
+  "overrides": [
+    {
+      "rules": {
+        "@typescript-eslint/restrict-template-expressions": "off"
+      }
+    }
+  ]
+}

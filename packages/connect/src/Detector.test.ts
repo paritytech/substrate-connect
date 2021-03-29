@@ -8,14 +8,14 @@ describe('Initialize Detector without extension', () => {
         try {
             const chainSpec = JSON.stringify(westend);
             const chainName = 'westend';
-            detect = new Detector(chainName, chainSpec);
-            const api = await detect.connect();
+            detect = new Detector('test-uapp');
+            const api = await detect.connect(chainName, chainSpec);
             expect(api).toBeTruthy();
             done();
         } catch (err: unknown) {
             done(err);
         } finally {
-            await detect.disconnect();
+            await detect.disconnect('westend');
         }
     }, 30000);
 });

@@ -51,10 +51,12 @@ export class ExtensionProvider implements ProviderInterface {
   #client: smoldot.SmoldotClient | undefined = undefined;
   #isConnected = false;
 
+  #appName: string;
   #chainName: string;
 
-   public constructor(name: string) {
-     this.#chainName = name;
+   public constructor(appName: string, chainName: string) {
+     this.#appName = appName;
+     this.#chainName = chainName;
    }
 
   /**
@@ -148,6 +150,7 @@ export class ExtensionProvider implements ProviderInterface {
   public connect(): Promise<void> {
     const initData = {
       id: 1,
+      appName: this.#appName,
       message: JSON.stringify({
         type: 'associate',
         payload: this.#chainName
@@ -231,7 +234,8 @@ export class ExtensionProvider implements ProviderInterface {
         };
 
         window.postMessage({
-          id: Math.random(),
+          id: Math.random(), // TODO: WTF?!
+          chainName: this.#chainName,
           message: JSON.stringify({
             type: 'rpc',
             payload: json,

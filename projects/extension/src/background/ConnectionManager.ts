@@ -19,13 +19,12 @@ export class ConnectionManager implements ConnectionManagerInterface {
   }
 
   addApp(port: chrome.runtime.Port): void {
-    const name = port.sender?.tab?.id?.toString() || '';
-    const app = this.#apps.find(s => s.name === name);
+    const app = this.#apps.find(s => s.name === port.name);
 
     if (app) {
-      port.postMessage({ type: 'info', payload: 'App already exists.' })
+      port.postMessage({ type: 'info', payload: `App ${port.name} already exists.` })
     } else {
-      const newApp = new AppMediator(name, port, this as ConnectionManagerInterface)
+      const newApp = new AppMediator(port.name, port, this as ConnectionManagerInterface)
       this.#apps.push(newApp);
     }
   }

@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { Message } from './types';
-const PORT_CONTENT = 'substrate';
 const SMOLDOT_CONTENT = 'smoldot';
 const EXTENSION_ORIGIN = 'extension-provider';
-//This line opens up a long-lived connection FROM the page TO your background page.
 
-const port = chrome.runtime.connect({ name: PORT_CONTENT });
+const ports: Record<string, chrome.runtime.Port> = {};
 
 export type AppMessageType = 'associate' | 'rpc';
 export interface AppMessage {
@@ -17,26 +15,32 @@ export interface AppMessage {
 // Receive from ExtensionProvider the App "subscription"
 window.addEventListener('message', ({ data }: Message): void => {
   let appData: AppMessage;
+  let port: chrome.runtime.Port;
+
   if (data.origin === EXTENSION_ORIGIN) {
     const conv = data?.message as unknown as AppMessage;
     if (conv?.type === 'associate') {
+      port = chrome.runtime.connect({ name: `${data.appName}::${data.chainName}` });
+      // send any messages: extension -> page
+      port.onMessage.addListener((data): void => {
+        window.postMessage({ message: data?.payload, origin: SMOLDOT_CONTENT }, '*');
+      });
+
       const chainName: string = JSON.parse(conv?.payload).chainName;
-    // Associate the app to specific smoldot client
+      ports.chainName = port;
       appData = {
         type: conv?.type,
         payload: chainName
       }
     } else {
+      port = ports[data.chainName as string];
       appData = JSON.parse(data?.message || '');
     }
+
     port.postMessage({ ...appData, origin: EXTENSION_ORIGIN});
   }
 });
 
-// send any messages: extension -> page
-port.onMessage.addListener((data): void => {
-  window.postMessage({ message: data?.payload, origin: SMOLDOT_CONTENT }, '*');
-});
 
 // inject page.ts to the tab
 const script = document.createElement('script');
