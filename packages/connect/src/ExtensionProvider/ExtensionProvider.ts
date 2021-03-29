@@ -33,7 +33,7 @@ interface SubscriptionHandler {
 }
 
 interface StateSubscription extends SubscriptionHandler {
-    method: string;
+  method: string;
 }
 
 const ANGLICISMS: { [index: string]: string } = {
@@ -54,10 +54,10 @@ export class ExtensionProvider implements ProviderInterface {
   #appName: string;
   #chainName: string;
 
-   public constructor(appName: string, chainName: string) {
-     this.#appName = appName;
-     this.#chainName = chainName;
-   }
+  public constructor(appName: string, chainName: string) {
+    this.#appName = appName;
+    this.#chainName = chainName;
+  }
 
   /**
    * @description Lets polkadot-js know we support subscriptions
@@ -84,7 +84,7 @@ export class ExtensionProvider implements ProviderInterface {
       : this.#onMessageSubscribe(response);
   }
 
- #onMessageResult = (response: JsonRpcResponse): void => {
+  #onMessageResult = (response: JsonRpcResponse): void => {
     const handler = this.#handlers[response.id];
 
     if (!handler) {
@@ -216,33 +216,33 @@ export class ExtensionProvider implements ProviderInterface {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     return new Promise((resolve, reject): void => {
-        const json = this.#coder.encodeJson(method, params);
-        const id = this.#coder.getId();
+      const json = this.#coder.encodeJson(method, params);
+      const id = this.#coder.getId();
 
-        const callback = (error?: Error | null, result?: unknown): void => {
-          error
-            ? reject(error)
-            : resolve(result);
-        };
+      const callback = (error?: Error | null, result?: unknown): void => {
+        error
+          ? reject(error)
+          : resolve(result);
+      };
 
-        l.debug(() => ['calling', method, json]);
+      l.debug(() => ['calling', method, json]);
 
-        this.#handlers[id] = {
-          callback,
-          method,
-          subscription
-        };
+      this.#handlers[id] = {
+        callback,
+        method,
+        subscription
+      };
 
-        window.postMessage({
-          id: Math.random(), // TODO: WTF?!
-          chainName: this.#chainName,
-          message: JSON.stringify({
-            type: 'rpc',
-            payload: json,
-            subscription: !!subscription
-          }),
-          origin: EXTENSION_ORIGIN
-        }, '*');
+      window.postMessage({
+        id: Math.random(), // TODO: WTF?!
+        chainName: this.#chainName,
+        message: JSON.stringify({
+          type: 'rpc',
+          payload: json,
+          subscription: !!subscription
+        }),
+        origin: EXTENSION_ORIGIN
+      }, '*');
     });
   }
 

@@ -30,15 +30,15 @@ export interface Database {
   /**
    * @description Load existing chain state
    */
-    load: () => string;
+  load: () => string;
   /**
    * @description Save the provided chain state
    */
-    save: (state: string) => void;
+  save: (state: string) => void;
   /**
    * @description Delete any saved chain state
    */
-    delete: () => void;
+  delete: () => void;
 }
 
 // REM: what if the database format changes?  Should we include a version?

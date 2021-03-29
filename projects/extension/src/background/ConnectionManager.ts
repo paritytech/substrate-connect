@@ -80,9 +80,9 @@ export class ConnectionManager implements ConnectionManagerInterface {
     }
 
     try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const sc = await client.start({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      const sc = await client.start({
         database_content: this.#loadDatabase(name),
         chain_spec: chainSpec,
         max_log_level: 3,
