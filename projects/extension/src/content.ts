@@ -14,31 +14,35 @@ export interface AppMessage {
 
 // Receive from ExtensionProvider the App "subscription"
 window.addEventListener('message', ({ data }: Message): void => {
+  if (!data.origin || data.origin !== EXTENSION_ORIGIN) {
+    // message didnt come from the extension provider
+    return;
+  }
+
   let appData: AppMessage;
   let port: chrome.runtime.Port;
 
-  if (data.origin === EXTENSION_ORIGIN) {
-    const conv = data?.message as unknown as AppMessage;
-    if (conv?.type === 'associate') {
-      port = chrome.runtime.connect({ name: `${data.appName}::${data.chainName}` });
-      // send any messages: extension -> page
-      port.onMessage.addListener((data): void => {
-        window.postMessage({ message: data?.payload, origin: SMOLDOT_CONTENT }, '*');
-      });
+  const conv = data?.message as unknown as AppMessage;
+  if (conv?.type === 'associate') {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    port = chrome.runtime.connect({ name: `${data.appName}::${data.chainName}` });
+    // send any messages: extension -> page
+    port.onMessage.addListener((data): void => {
+      window.postMessage({ message: data?.payload, origin: SMOLDOT_CONTENT }, '*');
+    });
 
-      const chainName: string = JSON.parse(conv?.payload).chainName;
-      ports.chainName = port;
-      appData = {
-        type: conv?.type,
-        payload: chainName
-      }
-    } else {
-      port = ports[data.chainName as string];
-      appData = JSON.parse(data?.message || '');
+    const chainName: string = JSON.parse(conv?.payload).chainName;
+    ports.chainName = port;
+    appData = {
+      type: conv?.type,
+      payload: chainName
     }
-
-    port.postMessage({ ...appData, origin: EXTENSION_ORIGIN});
+  } else {
+    port = ports[data.chainName as string];
+    appData = JSON.parse(data?.message || '');
   }
+
+  port.postMessage({ ...appData, origin: EXTENSION_ORIGIN});
 });
 
 

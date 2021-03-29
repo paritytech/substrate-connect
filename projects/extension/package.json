@@ -66,6 +66,9 @@
   },
   "eslintConfig": {
     "root": true,
+    "rules": {
+      "@typescript-eslint/restrict-template-expressions": "off"
+    },
     "parser": "@typescript-eslint/parser",
     "settings": {
       "react": {
