@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlMinimizerPlugin = require('html-minimizer-webpack-plugin');
 
@@ -17,6 +18,11 @@ module.exports = {
         filename: 'index.js',
         path: path.resolve(__dirname, 'dist'),
         clean: true
+    },
+    node: {
+        global: true,
+        __filename: 'mock',
+        __dirname: 'mock'
     },
     module: {
         rules: [
@@ -56,11 +62,22 @@ module.exports = {
             "react/jsx-runtime": "react/jsx-runtime.js"
         }
     },
-    plugins: [new HtmlWebpackPlugin({
-        template: "public/index.html",
-        hash: true,
-        filename: 'index.html'
-    })],
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: "public/index.html",
+            hash: true,
+            filename: 'index.html'
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+              NODE_ENV: JSON.stringify('production')
+            }
+        }),
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+            process: 'process/browser.js'
+        })
+    ],
     optimization: {
         minimize: true,
         minimizer: [
