@@ -17,5 +17,6 @@
     "strict": true,
     "jsx": "react"
   },
-  "include": ["src", "."]
+  "include": ["src", "."],
+  "exclude": ["./webpack.*", "jes.config.js"]
 }

@@ -1,44 +1,72 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlMinimizerPlugin = require('html-minimizer-webpack-plugin');
 
 module.exports = {
-    mode: 'development',
-    entry: {
-        app: path.join(__dirname, 'src', 'index.tsx')
-    },
+    mode: 'production',
     devtool: 'inline-source-map',
+    entry: {
+        app: path.join(__dirname, 'src/index.tsx')
+    },
     devServer: {
-        contentBase: './dist',
-    hot: true,
+        contentBase: path.join(__dirname, 'dist'),
+        port: 1234,
+        hot: true,
+    },
+    output: {
+        filename: 'index.js',
+        path: path.resolve(__dirname, 'dist'),
+        clean: true
     },
     module: {
         rules: [
-        {
-            test: /\.tsx?$/,
-            use: 'ts-loader',
-            exclude: /node_modules/,
-        },
+            {
+                test: /\.ts(x)?$/,
+                loader: "ts-loader",
+                exclude: /node_modules/
+            },
+            {
+                test: /\.svg$/,
+                use: [
+                  {
+                    loader: 'svg-url-loader',
+                    options: {
+                      limit: 10000,
+                    },
+                  },
+                ],
+            },
+            {
+                test: /\.m?js/,
+                resolve: {
+                    fullySpecified: false
+                }
+            }
         ],
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
+        extensions: [".js", ".jsx", ".tsx", ".ts"],
         fallback: {
             "crypto": require.resolve("crypto-browserify"),
             "stream": require.resolve("stream-browserify")
         },
         alias: {
+            "react-dom": "@hot-loader/react-dom",
             "react/jsx-dev-runtime": "react/jsx-dev-runtime.js",
             "react/jsx-runtime": "react/jsx-runtime.js"
         }
     },
-    output: {
-        filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist'),
-        clean: true
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: path.join(__dirname, 'public', 'index.html')
-        })
-    ]
+    plugins: [new HtmlWebpackPlugin({
+        template: "public/index.html",
+        hash: true,
+        filename: 'index.html'
+    })],
+    optimization: {
+        minimize: true,
+        minimizer: [
+          `...`,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          new HtmlMinimizerPlugin(),
+        ],
+      },
 };
