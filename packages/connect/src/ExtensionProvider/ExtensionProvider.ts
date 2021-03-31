@@ -59,6 +59,14 @@ export class ExtensionProvider implements ProviderInterface {
     this.#chainName = chainName;
   }
 
+  public get name(): string {
+    return this.#appName;
+  }
+
+  public get chainName(): string {
+    return this.#chainName;
+  }
+
   /**
    * @description Lets polkadot-js know we support subscriptions
    * @summary `true`
@@ -148,8 +156,7 @@ export class ExtensionProvider implements ProviderInterface {
    * @description "Connect" the WASM client - starts the smoldot WASM client
    */
   public connect(): Promise<void> {
-    const initData = {
-      id: 1,
+    const initMsg = {
       appName: this.#appName,
       message: JSON.stringify({
         type: 'associate',
@@ -157,7 +164,7 @@ export class ExtensionProvider implements ProviderInterface {
       }),
       origin: EXTENSION_ORIGIN
     }
-    window.postMessage(initData, '*');
+    window.postMessage(initMsg, '*');
     window.addEventListener('message', ({data}) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       this.#handleRpcReponse(data?.message);
