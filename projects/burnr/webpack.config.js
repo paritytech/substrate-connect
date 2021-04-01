@@ -1,20 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlMinimizerPlugin = require('html-minimizer-webpack-plugin');
 
 module.exports = {
-    mode: 'production',
-    devtool: 'inline-source-map',
     entry: {
         app: path.join(__dirname, 'src/index.tsx')
-    },
-    devServer: {
-        contentBase: path.join(__dirname, 'dist'),
-        port: 1234,
-        hot: true,
     },
     output: {
         filename: 'index.js',
@@ -64,23 +55,28 @@ module.exports = {
             "react/jsx-runtime": "react/jsx-runtime.js"
         }
     },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: "public/index.html",
-            hash: true,
-            filename: 'index.html'
-        }),
-        new webpack.DefinePlugin({
-            'process.env': {
-              NODE_ENV: JSON.stringify('production')
-            }
-        }),
-        new webpack.ProvidePlugin({
-            Buffer: ['buffer', 'Buffer'],
-            process: 'process/browser.js'
-        })
-    ],
     optimization: {
+        splitChunks: {
+          chunks: 'async',
+          minSize: 20000,
+          minRemainingSize: 0,
+          minChunks: 1,
+          maxAsyncRequests: 30,
+          maxInitialRequests: 30,
+          enforceSizeThreshold: 50000,
+          cacheGroups: {
+            defaultVendors: {
+              test: /[\\/]node_modules[\\/]/,
+              priority: -10,
+              reuseExistingChunk: true,
+            },
+            default: {
+              minChunks: 2,
+              priority: -20,
+              reuseExistingChunk: true,
+            },
+          },
+        },
         minimize: true,
         minimizer: [
           `...`,

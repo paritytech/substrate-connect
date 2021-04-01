@@ -32,7 +32,7 @@
     "eventemitter3": "^4.0.7",
     "file-entry-cache": "^6.0.1",
     "mkdirp": "^1.0.4",
-    "smoldot": "^0.1.14"
+    "smoldot": "latest"
   },
   "devDependencies": {
     "@polkadot/api": "^3.7.3",
@@ -52,7 +52,7 @@
     "typescript": "^4.2.3"
   },
   "peerDependencies": {
-    "@polkadot/wasm-crypto": "^3.2.2"
+    "@polkadot/wasm-crypto": "^3.2.4"
   },
   "eslintConfig": {
     "root": true,
