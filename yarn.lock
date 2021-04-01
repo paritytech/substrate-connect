@@ -2039,7 +2039,7 @@
     eventemitter3 "^4.0.7"
     file-entry-cache "^6.0.1"
     mkdirp "^1.0.4"
-    smoldot latest
+    smoldot "^0.1.16"
 
 "@substrate/connect@latest":
   version "0.0.3"
@@ -11875,6 +11875,16 @@ smoldot@^0.1.11:
   version "0.1.11"
   resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.1.11.tgz#890cfbadb790148f2df9b63be676c9035066f2bb"
   integrity sha512-983NvZXYa49fJ+GFy/bsUV7w/h0idRsS73mFuuHATCFH1rR4xCPkg+IL1IFtQpb4oTcG09rL28ItpAkwoijnNA==
+  dependencies:
+    buffer "^6.0.1"
+    performance-now "^2.1.0"
+    randombytes "^2.1.0"
+    websocket "^1.0.32"
+
+smoldot@^0.1.16:
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.1.16.tgz#47730c90f41040e23ffefd47410c39f6a22abb2b"
+  integrity sha512-0tY6a7IsDJS5jSla6yOc5F0gE21NuFpQfOtRr1d6DYNtuQdoyvoVikvkPYcIdhNuXXH23IdySE386Z/+kiUO8w==
   dependencies:
     buffer "^6.0.1"
     performance-now "^2.1.0"
