@@ -24,7 +24,7 @@
     "test": "node --experimental-vm-modules node_modules/.bin/jest --env=node --colors --coverage dist",
     "clean": "rm -rf dist",
     "build": "tsc --build",
-    "lint": "echo \"No lint yet for @substrate/connect: actual command -> yarn eslint . --ext .js,.ts\""
+    "lint": "yarn eslint . --ext .js,.ts"
   },
   "dependencies": {
     "@polkadot/rpc-provider": "^3.7.3",
