@@ -13,5 +13,6 @@
     "skipLibCheck": true,
     "strict": true,
     "module": "ES2020"
-  }
+  },
+  "exclude": ["jest.config*"]
 }

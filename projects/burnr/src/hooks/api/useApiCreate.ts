@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: Apache-2
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 import { useEffect, useState } from 'react';
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { Detector }  from '../../../../../packages/connect/src'; // Temp fix for issues to pass
+import { Detector }  from '@substrate/connect';
 import { ALL_PROVIDERS } from '../../utils/constants';
 import { LazyProvider } from '../../utils/types'; 
 import { useIsMountedRef, useLocalStorage } from '..';

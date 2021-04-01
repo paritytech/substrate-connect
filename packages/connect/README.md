@@ -12,9 +12,10 @@ sync with given chainspecs.
 
 ```js
 import { Detector }  from '@substrate/connect';
+import substrateChainSpec from './substrateChainSpec.json';
 
-const chainSpec =  await response.text();
-const detect = new Detector('westend', chainSpec());
+const chainSpec =  JSON.stringify(substrateChainSpec);
+const detect = new Detector('westend', chainSpec);
 
 const api = await detect.connect();
 ```

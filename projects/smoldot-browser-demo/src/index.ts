@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 // hack to make poladot-js work without bringing in webpack and babel
 import "regenerator-runtime/runtime"
-import { Detector }  from '../../../packages/connect/src'; // Temp fix for issues to pass
+import { Detector }  from '@substrate/connect';
 import UI, { emojis } from './view';
 
 window.onload = () => {

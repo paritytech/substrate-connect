@@ -2031,16 +2031,6 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
   integrity sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
 
-"@substrate/connect@file:packages/connect":
-  version "0.0.1"
-  dependencies:
-    "@polkadot/rpc-provider" "^3.7.3"
-    browserify-fs "^1.0.0"
-    eventemitter3 "^4.0.7"
-    file-entry-cache "^6.0.1"
-    mkdirp "^1.0.4"
-    smoldot "^0.1.14"
-
 "@substrate/smoldot-test-utils@file:packages/smoldot-test-utils":
   version "0.1.0"
   dependencies:
@@ -11818,7 +11808,7 @@ smoldot@^0.1.11:
     randombytes "^2.1.0"
     websocket "^1.0.32"
 
-smoldot@^0.1.14:
+smoldot@latest:
   version "0.1.14"
   resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.1.14.tgz#b6f6500e5f641d5d42a9aabdc1df1d32f008b477"
   integrity sha512-M3PnAfwbpn91ImnPYcmAUqkhub/blFKseUZY1ThgLdpJDIt1w3+A9CNaX4ApqRcuHSvOVKYFsivYMl4BEStCJg==

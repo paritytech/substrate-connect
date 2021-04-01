@@ -1,5 +1,3 @@
-import * as pkg from '../../package.json';
-
 // TODO: Temporary use this import and comment out the code below this until resolve the race condition that exists (between database and ()() below)
 import * as db from './BrowserDatabase';
 
@@ -20,6 +18,7 @@ import * as db from './BrowserDatabase';
 //   create = db.create;
 // })();
 
+const pkg = { name: '@substrate/connect' }
 
 /**
  * @name Database
