@@ -8,7 +8,7 @@
     "Sveta Goldstein <sveta@parity.io>"
   ],
   "license": "GPL-3.0-only",
-  "main": "./index.js",
+  "main": "index.html",
   "scripts": {
     "build": "parcel build ./index.html",
     "clean": "rimraf dist && rm -rf node_modules",
