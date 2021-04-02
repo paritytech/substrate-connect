@@ -1,7 +1,7 @@
 {
   "name": "@substrate/smoldot-browser-demo",
   "version": "1.0.0",
-  "main": "./dist/index.js",
+  "main": "./dist/index.html",
   "author": "Parity Team <admin@parity.io>",
   "contributors": [
     "Raoul Millais <raoul@parity.io>"
