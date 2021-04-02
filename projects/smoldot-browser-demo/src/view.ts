@@ -21,20 +21,20 @@ export const emojis = {
 };
 
 export default class UI {
-  #options: Options;
-  #model: Model;
-  #container: HTMLElement;
-  #syncState: HTMLElement | undefined;
-  #syncMessage: HTMLElement | undefined;
+  private options: Options;
+  private model: Model;
+  private container: HTMLElement;
+  private syncState: HTMLElement | undefined;
+  private syncMessage: HTMLElement | undefined;
 
   constructor(options: Options, model: Model) {
-    this.#options = options;
-    this.#model = model;
-    const container = document.getElementById(this.#options.containerId);
+    this.options = options;
+    this.model = model;
+    const container = document.getElementById(this.options.containerId);
     if (container === null) {
       throw Error('Could not find the container. Did you change the Html?');
     }
-    this.#container = container;
+    this.container = container;
   }
 
   private timeElapsed = (from: number, till: number) => {
@@ -49,7 +49,7 @@ export default class UI {
 
     const time = performance.now();
     timestampDiv.appendChild(document.createTextNode(
-      `${new Date().toLocaleTimeString()} (${this.timeElapsed(this.#model.loadTime, time)}s)`
+      `${new Date().toLocaleTimeString()} (${this.timeElapsed(this.model.loadTime, time)}s)`
     ));
 
     return timestampDiv
@@ -72,7 +72,7 @@ export default class UI {
   }
 
   private displayMessage = (message: Node) => {
-    this.#container.appendChild(message);
+    this.container.appendChild(message);
   }
 
   error = (error: Error): void => {
@@ -84,22 +84,22 @@ export default class UI {
     this.displayMessage(this.messageHtml(message, withTime));
   }
 
-  #insertAtTopOfContainer = (el: HTMLElement): void => {
-    if (this.#container.firstChild == null) {
-      this.#container.appendChild(el);
+  private insertAtTopOfContainer = (el: HTMLElement): void => {
+    if (this.container.firstChild == null) {
+      this.container.appendChild(el);
     } else {
-      this.#container.insertBefore(el, this.#container.firstChild)
+      this.container.insertBefore(el, this.container.firstChild)
     }
   }
 
-  #ensureClassOn = (el: HTMLElement, className: string): void => {
+  private ensureClassOn = (el: HTMLElement, className: string): void => {
     if (!el.classList.contains(className)) {
       el.classList.add(className);
     }
   }
 
   showSyncing = (): void => {
-    if (!this.#syncMessage) {
+    if (!this.syncMessage) {
       // message container
       const syncState = document.createElement('div');
       syncState.classList.add('message');
@@ -111,22 +111,22 @@ export default class UI {
       syncMessage.innerHTML = `${emojis.chain} Chain is syncing...`;
       syncState.appendChild(syncMessage);
 
-      this.#syncMessage = syncMessage;
-      this.#syncState = syncState;
-      this.#insertAtTopOfContainer(this.#syncState);
+      this.syncMessage = syncMessage;
+      this.syncState = syncState;
+      this.insertAtTopOfContainer(this.syncState);
     } else {
       // Cover case that we change from synced state back to syncing.
-      this.#syncMessage.innerHTML = `${emojis.chain} Chain is syncing...`;
-      this.#ensureClassOn(this.#syncMessage, 'pulse');
+      this.syncMessage.innerHTML = `${emojis.chain} Chain is syncing...`;
+      this.ensureClassOn(this.syncMessage, 'pulse');
     }
   }
 
   showSynced = (): void => {
-    if (!this.#syncState || !this.#syncMessage) {
+    if (!this.syncState || !this.syncMessage) {
       throw new Error('There is no sync state UI to update. You should have called `showSyncing()` first.');
     }
 
-    this.#syncMessage.classList.remove('pulse');
-    this.#syncMessage.innerHTML = `${emojis.tick} Chain synced!`;
+    this.syncMessage.classList.remove('pulse');
+    this.syncMessage.innerHTML = `${emojis.tick} Chain synced!`;
   }
 }
