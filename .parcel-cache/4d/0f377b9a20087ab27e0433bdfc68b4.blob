@@ -1,0 +1,57 @@
+var helpers = require("../../../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _polkadotApi = require('@polkadot/api');
+  var _substrateConnect = require('@substrate/connect');
+  var _utilsConstants = require('../../utils/constants');
+  var _ = require('..');
+  var _assetsWestendJson = require('../../assets/westend.json');
+  var _assetsWestendJsonDefault = _parcelHelpers.interopDefault(_assetsWestendJson);
+  var _s = $RefreshSig$();
+  console.log('ALL_PROVIDERS', _utilsConstants.ALL_PROVIDERS);
+  function useApiCreate() {
+    _s();
+    const [api, setApi] = _react.useState({
+    });
+    const [localEndpoint] = _.useLocalStorage('endpoint');
+    const [provider] = _react.useState(_utilsConstants.ALL_PROVIDERS[localEndpoint] || _utilsConstants.ALL_PROVIDERS['Polkadot-WsProvider']);
+    const mountedRef = _.useIsMountedRef();
+    _react.useEffect(() => {
+      const choseSmoldot = async () => {
+        try {
+          const chainSpec = JSON.stringify(_assetsWestendJsonDefault.default);
+          const detect = new _substrateConnect.Detector('westend', chainSpec);
+          const api = await detect.connect();
+          mountedRef.current && setApi(api);
+        } catch (err) {
+          console.log('A wild error appeared:', err);
+        }
+      };
+      localEndpoint !== 'Westend-WsProvider' && _polkadotApi.ApiPromise.create({
+        provider: new _polkadotApi.WsProvider(provider.endpoint),
+        types: {}
+      }).then(api => {
+        console.log(`Burnr is now connected to ${provider.endpoint === 'string' && provider.endpoint}`);
+        console.log("API api", api);
+        mountedRef.current && setApi(api);
+      }).catch(() => {
+        console.error;
+      });
+      localEndpoint === 'Westend-WsProvider' && choseSmoldot();
+    }, [mountedRef, provider.endpoint, localEndpoint]);
+    return api;
+  }
+  exports.default = useApiCreate;
+  _s(useApiCreate, "b6NWJvrINiAVELyZTmQwpW8zQcM=", false, function () {
+    return [_.useLocalStorage, _.useIsMountedRef];
+  });
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

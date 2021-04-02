@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _createGenerateClassNameDefault.default;
+});
+var _createGenerateClassName = require('./createGenerateClassName');
+var _createGenerateClassNameDefault = _parcelHelpers.interopDefault(_createGenerateClassName);

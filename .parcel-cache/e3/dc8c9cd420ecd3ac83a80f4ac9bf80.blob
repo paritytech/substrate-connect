@@ -1,0 +1,14 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _react = require('react');
+var useEnhancedEffect = typeof window !== 'undefined' ? _react.useLayoutEffect : _react.useEffect;
+function useEventCallback(fn) {
+  var ref = _react.useRef(fn);
+  useEnhancedEffect(function () {
+    ref.current = fn;
+  });
+  return _react.useCallback(function () {
+    return (0, ref.current).apply(void 0, arguments);
+  }, []);
+}
+exports.default = useEventCallback;

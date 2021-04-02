@@ -1,0 +1,12 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _react = require('react');
+/**
+* @ignore - internal component.
+* @type {React.Context<{} | {expanded: boolean, disabled: boolean, toggle: () => void}>}
+*/
+var AccordionContext = _react.createContext({});
+if ("development" !== 'production') {
+  AccordionContext.displayName = 'AccordionContext';
+}
+exports.default = AccordionContext;

@@ -1,0 +1,22 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _react = require('react');
+var _setRef = require('./setRef');
+var _setRefDefault = _parcelHelpers.interopDefault(_setRef);
+function useForkRef(refA, refB) {
+  /**
+  * This will create a new function if the ref props change and are defined.
+  * This means react will call the old forkRef with `null` and the new forkRef
+  * with the ref. Cleanup naturally emerges from this behavior
+  */
+  return _react.useMemo(function () {
+    if (refA == null && refB == null) {
+      return null;
+    }
+    return function (refValue) {
+      _setRefDefault.default(refA, refValue);
+      _setRefDefault.default(refB, refValue);
+    };
+  }, [refA, refB]);
+}
+exports.default = useForkRef;

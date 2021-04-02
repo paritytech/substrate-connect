@@ -1,0 +1,21 @@
+var helpers = require("../../../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _utilsContexts = require('../../utils/contexts');
+  var _s = $RefreshSig$();
+  function useApi() {
+    _s();
+    return _react.useContext(_utilsContexts.ApiContext);
+  }
+  exports.default = useApi;
+  _s(useApi, "gDsCjeeItUuvgOWf1v4qoK9RF6k=");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

@@ -1,0 +1,9 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _materialUiStyles = require('@material-ui/styles');
+var _defaultTheme = require('./defaultTheme');
+var _defaultThemeDefault = _parcelHelpers.interopDefault(_defaultTheme);
+var withTheme = _materialUiStyles.withThemeCreator({
+  defaultTheme: _defaultThemeDefault.default
+});
+exports.default = withTheme;

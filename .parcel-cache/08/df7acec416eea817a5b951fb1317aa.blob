@@ -1,0 +1,94 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmSlicedToArray = require("@babel/runtime/helpers/esm/slicedToArray");
+var _babelRuntimeHelpersEsmSlicedToArrayDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmSlicedToArray);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _FormGroup = require('../FormGroup');
+var _FormGroupDefault = _parcelHelpers.interopDefault(_FormGroup);
+var _utilsUseForkRef = require('../utils/useForkRef');
+var _utilsUseForkRefDefault = _parcelHelpers.interopDefault(_utilsUseForkRef);
+var _utilsUseControlled = require('../utils/useControlled');
+var _utilsUseControlledDefault = _parcelHelpers.interopDefault(_utilsUseControlled);
+var _RadioGroupContext = require('./RadioGroupContext');
+var _RadioGroupContextDefault = _parcelHelpers.interopDefault(_RadioGroupContext);
+var _utilsUnstable_useId = require('../utils/unstable_useId');
+var _utilsUnstable_useIdDefault = _parcelHelpers.interopDefault(_utilsUnstable_useId);
+var RadioGroup = /*#__PURE__*/_react.forwardRef(function RadioGroup(props, ref) {
+  var actions = props.actions, children = props.children, nameProp = props.name, valueProp = props.value, onChange = props.onChange, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["actions", "children", "name", "value", "onChange"]);
+  var rootRef = _react.useRef(null);
+  var _useControlled = _utilsUseControlledDefault.default({
+    controlled: valueProp,
+    default: props.defaultValue,
+    name: 'RadioGroup'
+  }), _useControlled2 = _babelRuntimeHelpersEsmSlicedToArrayDefault.default(_useControlled, 2), value = _useControlled2[0], setValue = _useControlled2[1];
+  _react.useImperativeHandle(actions, function () {
+    return {
+      focus: function focus() {
+        var input = rootRef.current.querySelector('input:not(:disabled):checked');
+        if (!input) {
+          input = rootRef.current.querySelector('input:not(:disabled)');
+        }
+        if (input) {
+          input.focus();
+        }
+      }
+    };
+  }, []);
+  var handleRef = _utilsUseForkRefDefault.default(ref, rootRef);
+  var handleChange = function handleChange(event) {
+    setValue(event.target.value);
+    if (onChange) {
+      onChange(event, event.target.value);
+    }
+  };
+  var name = _utilsUnstable_useIdDefault.default(nameProp);
+  return (
+    /*#__PURE__*/_react.createElement(_RadioGroupContextDefault.default.Provider, {
+      value: {
+        name: name,
+        onChange: handleChange,
+        value: value
+      }
+    }, /*#__PURE__*/_react.createElement(_FormGroupDefault.default, _babelRuntimeHelpersEsmExtendsDefault.default({
+      role: "radiogroup",
+      ref: handleRef
+    }, other), children))
+  );
+});
+"development" !== "production" ? RadioGroup.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * The content of the component.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * The default `input` element value. Use when the component is not controlled.
+  */
+  defaultValue: _propTypesDefault.default.oneOfType([_propTypesDefault.default.arrayOf(_propTypesDefault.default.string), _propTypesDefault.default.number, _propTypesDefault.default.string]),
+  /**
+  * The name used to reference the value of the control.
+  * If you don't provide this prop, it falls back to a randomly generated name.
+  */
+  name: _propTypesDefault.default.string,
+  /**
+  * Callback fired when a radio button is selected.
+  *
+  * @param {object} event The event source of the callback.
+  * You can pull out the new value by accessing `event.target.value` (string).
+  */
+  onChange: _propTypesDefault.default.func,
+  /**
+  * Value of the selected radio button. The DOM API casts this to a string.
+  */
+  value: _propTypesDefault.default.any
+} : void 0;
+exports.default = RadioGroup;

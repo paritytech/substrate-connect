@@ -1,0 +1,115 @@
+var helpers = require("../../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _materialUiCore = require('@material-ui/core');
+  var _jsxFileName = "/Users/stormsheep/Documents/repos/parity/substrate-connect/projects/burnr/src/components/NavFooter.tsx";
+  const AppFooter = () => /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Box, {
+    paddingBottom: 2,
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 6,
+      columnNumber: 2
+    }
+  }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Typography, {
+    variant: "body2",
+    component: "div",
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 7,
+      columnNumber: 3
+    }
+  }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+    container: true,
+    spacing: 1,
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 8,
+      columnNumber: 4
+    }
+  }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+    item: true,
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 9,
+      columnNumber: 5
+    }
+  }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Link, {
+    href: "#",
+    color: "textPrimary",
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 10,
+      columnNumber: 6
+    }
+  }, "© ", new Date().getFullYear(), " Parity Technologies")), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+    item: true,
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 14,
+      columnNumber: 5
+    }
+  }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Link, {
+    href: "#",
+    color: "textPrimary",
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 15,
+      columnNumber: 6
+    }
+  }, "Terms & conditions")), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+    item: true,
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 19,
+      columnNumber: 5
+    }
+  }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Link, {
+    href: "#",
+    color: "textPrimary",
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 20,
+      columnNumber: 6
+    }
+  }, "Privacy policy")), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+    item: true,
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 24,
+      columnNumber: 5
+    }
+  }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Link, {
+    href: "#",
+    color: "textPrimary",
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 25,
+      columnNumber: 6
+    }
+  }, "Report an issue")))));
+  _c = AppFooter;
+  exports.default = AppFooter;
+  var _c;
+  $RefreshReg$(_c, "AppFooter");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

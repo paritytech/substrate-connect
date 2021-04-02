@@ -1,0 +1,9 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _react = require('react');
+function isMuiElement(element, muiNames) {
+  return (
+    /*#__PURE__*/_react.isValidElement(element) && muiNames.indexOf(element.type.muiName) !== -1
+  );
+}
+exports.default = isMuiElement;

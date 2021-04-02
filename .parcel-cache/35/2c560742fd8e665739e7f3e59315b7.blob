@@ -1,0 +1,99 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _babelRuntimeHelpersEsmDefineProperty = require("@babel/runtime/helpers/esm/defineProperty");
+var _babelRuntimeHelpersEsmDefinePropertyDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmDefineProperty);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _Paper = require('../Paper');
+var _PaperDefault = _parcelHelpers.interopDefault(_Paper);
+var _stylesColorManipulator = require('../styles/colorManipulator');
+var styles = function styles(theme) {
+  var emphasis = theme.palette.type === 'light' ? 0.8 : 0.98;
+  var backgroundColor = _stylesColorManipulator.emphasize(theme.palette.background.default, emphasis);
+  return {
+    /*Styles applied to the root element.*/
+    root: _babelRuntimeHelpersEsmExtendsDefault.default({}, theme.typography.body2, _babelRuntimeHelpersEsmDefinePropertyDefault.default({
+      color: theme.palette.getContrastText(backgroundColor),
+      backgroundColor: backgroundColor,
+      display: 'flex',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      padding: '6px 16px',
+      borderRadius: theme.shape.borderRadius,
+      flexGrow: 1
+    }, theme.breakpoints.up('sm'), {
+      flexGrow: 'initial',
+      minWidth: 288
+    })),
+    /*Styles applied to the message wrapper element.*/
+    message: {
+      padding: '8px 0'
+    },
+    /*Styles applied to the action wrapper element if `action` is provided.*/
+    action: {
+      display: 'flex',
+      alignItems: 'center',
+      marginLeft: 'auto',
+      paddingLeft: 16,
+      marginRight: -8
+    }
+  };
+};
+var SnackbarContent = /*#__PURE__*/_react.forwardRef(function SnackbarContent(props, ref) {
+  var action = props.action, classes = props.classes, className = props.className, message = props.message, _props$role = props.role, role = _props$role === void 0 ? 'alert' : _props$role, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["action", "classes", "className", "message", "role"]);
+  return (
+    /*#__PURE__*/_react.createElement(_PaperDefault.default, _babelRuntimeHelpersEsmExtendsDefault.default({
+      role: role,
+      square: true,
+      elevation: 6,
+      className: _clsxDefault.default(classes.root, className),
+      ref: ref
+    }, other), /*#__PURE__*/_react.createElement("div", {
+      className: classes.message
+    }, message), action ? /*#__PURE__*/_react.createElement("div", {
+      className: classes.action
+    }, action) : null)
+  );
+});
+"development" !== "production" ? SnackbarContent.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * The action to display. It renders after the message, at the end of the snackbar.
+  */
+  action: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * The message to display.
+  */
+  message: _propTypesDefault.default.node,
+  /**
+  * The ARIA role attribute of the element.
+  */
+  role: _propTypesDefault.default.string
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiSnackbarContent'
+})(SnackbarContent);

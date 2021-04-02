@@ -1,0 +1,145 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _ButtonBase = require('../ButtonBase');
+var _ButtonBaseDefault = _parcelHelpers.interopDefault(_ButtonBase);
+var _utilsUnsupportedProp = require('../utils/unsupportedProp');
+var _utilsUnsupportedPropDefault = _parcelHelpers.interopDefault(_utilsUnsupportedProp);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: {
+      transition: theme.transitions.create(['color', 'padding-top'], {
+        duration: theme.transitions.duration.short
+      }),
+      padding: '6px 12px 8px',
+      minWidth: 80,
+      maxWidth: 168,
+      color: theme.palette.text.secondary,
+      flex: '1',
+      '&$iconOnly': {
+        paddingTop: 16
+      },
+      '&$selected': {
+        paddingTop: 6,
+        color: theme.palette.primary.main
+      }
+    },
+    /*Pseudo-class applied to the root element if selected.*/
+    selected: {},
+    /*Pseudo-class applied to the root element if `showLabel={false}` and not selected.*/
+    iconOnly: {},
+    /*Styles applied to the span element that wraps the icon and label.*/
+    wrapper: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
+      flexDirection: 'column'
+    },
+    /*Styles applied to the label's span element.*/
+    label: {
+      fontFamily: theme.typography.fontFamily,
+      fontSize: theme.typography.pxToRem(12),
+      opacity: 1,
+      transition: 'font-size 0.2s, opacity 0.2s',
+      transitionDelay: '0.1s',
+      '&$iconOnly': {
+        opacity: 0,
+        transitionDelay: '0s'
+      },
+      '&$selected': {
+        fontSize: theme.typography.pxToRem(14)
+      }
+    }
+  };
+};
+var BottomNavigationAction = /*#__PURE__*/_react.forwardRef(function BottomNavigationAction(props, ref) {
+  var classes = props.classes, className = props.className, icon = props.icon, label = props.label, onChange = props.onChange, onClick = props.onClick, selected = props.selected, showLabel = props.showLabel, value = props.value, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["classes", "className", "icon", "label", "onChange", "onClick", "selected", "showLabel", "value"]);
+  var handleChange = function handleChange(event) {
+    if (onChange) {
+      onChange(event, value);
+    }
+    if (onClick) {
+      onClick(event);
+    }
+  };
+  return (
+    /*#__PURE__*/_react.createElement(_ButtonBaseDefault.default, _babelRuntimeHelpersEsmExtendsDefault.default({
+      ref: ref,
+      className: _clsxDefault.default(classes.root, className, selected ? classes.selected : !showLabel && classes.iconOnly),
+      focusRipple: true,
+      onClick: handleChange
+    }, other), /*#__PURE__*/_react.createElement("span", {
+      className: classes.wrapper
+    }, icon, /*#__PURE__*/_react.createElement("span", {
+      className: _clsxDefault.default(classes.label, selected ? classes.selected : !showLabel && classes.iconOnly)
+    }, label)))
+  );
+});
+"development" !== "production" ? BottomNavigationAction.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * This prop isn't supported.
+  * Use the `component` prop if you need to change the children structure.
+  */
+  children: _utilsUnsupportedPropDefault.default,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * The icon element.
+  */
+  icon: _propTypesDefault.default.node,
+  /**
+  * The label element.
+  */
+  label: _propTypesDefault.default.node,
+  /**
+  * @ignore
+  */
+  onChange: _propTypesDefault.default.func,
+  /**
+  * @ignore
+  */
+  onClick: _propTypesDefault.default.func,
+  /**
+  * @ignore
+  */
+  selected: _propTypesDefault.default.bool,
+  /**
+  * If `true`, the `BottomNavigationAction` will show its label.
+  * By default, only the selected `BottomNavigationAction`
+  * inside `BottomNavigation` will show its label.
+  */
+  showLabel: _propTypesDefault.default.bool,
+  /**
+  * You can provide your own value. Otherwise, we fallback to the child position index.
+  */
+  value: _propTypesDefault.default.any
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiBottomNavigationAction'
+})(BottomNavigationAction);

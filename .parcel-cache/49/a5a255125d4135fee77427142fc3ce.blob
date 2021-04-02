@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _CircularProgressDefault.default;
+});
+var _CircularProgress = require('./CircularProgress');
+var _CircularProgressDefault = _parcelHelpers.interopDefault(_CircularProgress);

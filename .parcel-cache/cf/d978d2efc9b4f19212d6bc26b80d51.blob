@@ -1,0 +1,89 @@
+var helpers = require("../../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _materialUiCore = require('@material-ui/core');
+  var _components = require('../components');
+  var _jsxFileName = "/Users/stormsheep/Documents/repos/parity/substrate-connect/projects/burnr/src/components/Head.tsx", _s = $RefreshSig$();
+  const useStyles = _materialUiCore.makeStyles(theme => ({
+    root: {
+      [theme.breakpoints.down('sm')]: {
+        paddingTop: theme.spacing(7)
+      }
+    }
+  }));
+  const Head = () => {
+    _s();
+    const classes = useStyles();
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        container: true,
+        alignItems: "center",
+        className: classes.root,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 18,
+          columnNumber: 3
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        item: true,
+        xs: 6,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 19,
+          columnNumber: 4
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Box, {
+        paddingX: 2,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 20,
+          columnNumber: 5
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Typography, {
+        variant: "h1",
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 21,
+          columnNumber: 6
+        }
+      }, "Burnr"))), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        item: true,
+        xs: 6,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 24,
+          columnNumber: 4
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_components.NodeSelector, {
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 25,
+          columnNumber: 5
+        }
+      })))
+    );
+  };
+  _s(Head, "8g5FPXexvSEOsxdmU7HicukHGqY=", false, function () {
+    return [useStyles];
+  });
+  _c = Head;
+  exports.default = Head;
+  var _c;
+  $RefreshReg$(_c, "Head");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

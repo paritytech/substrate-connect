@@ -1,0 +1,27 @@
+var helpers = require("../../../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _s = $RefreshSig$();
+  function useIsMountedRef() {
+    _s();
+    const isMounted = _react.useRef(false);
+    _react.useEffect(() => {
+      isMounted.current = true;
+      return () => {
+        isMounted.current = false;
+      };
+    }, []);
+    return isMounted;
+  }
+  exports.default = useIsMountedRef;
+  _s(useIsMountedRef, "SkOohDVuXBk0DO6XXkvUZnCZ6So=");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

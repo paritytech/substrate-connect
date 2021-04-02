@@ -1,0 +1,10 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _useAutocompleteDefault.default;
+});
+_parcelHelpers.export(exports, "createFilterOptions", function () {
+  return _useAutocomplete.createFilterOptions;
+});
+var _useAutocomplete = require('./useAutocomplete');
+var _useAutocompleteDefault = _parcelHelpers.interopDefault(_useAutocomplete);

@@ -1,0 +1,39 @@
+"use strict";
+
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Beachball = void 0;
+
+var _jsxRuntime = require("react/jsx-runtime");
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _uiShared = require("@polkadot/ui-shared");
+
+// Copyright 2017-2021 @polkadot/react-identicon authors & contributors
+// SPDX-License-Identifier: Apache-2.0
+function Identicon({
+  address,
+  className = '',
+  size,
+  style
+}) {
+  const updateElem = (0, _react.useCallback)(node => {
+    node && node.appendChild((0, _uiShared.beachballIcon)(address, {
+      isAlternative: false,
+      size
+    }));
+  }, [address, size]);
+  return /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
+    className: className,
+    ref: updateElem,
+    style: style
+  });
+}
+
+const Beachball = /*#__PURE__*/_react.default.memo(Identicon);
+
+exports.Beachball = Beachball;

@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _MenuItemDefault.default;
+});
+var _MenuItem = require('./MenuItem');
+var _MenuItemDefault = _parcelHelpers.interopDefault(_MenuItem);

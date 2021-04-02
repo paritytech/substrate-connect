@@ -1,0 +1,1 @@
+module.exports = require('./bundle-url').getBundleURL() + "logo_substrate_onDark.HASH_REF_fc4847c7ac8b21b1c9b6ae9d84280ab0.svg"

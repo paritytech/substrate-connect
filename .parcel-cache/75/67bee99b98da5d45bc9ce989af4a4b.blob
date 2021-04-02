@@ -1,0 +1,46 @@
+"use strict";
+
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Ethereum = void 0;
+
+var _jsxRuntime = require("react/jsx-runtime");
+
+var _ethereumBlockiesBase = _interopRequireDefault(require("ethereum-blockies-base64"));
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+// Copyright 2017-2021 @polkadot/react-identicon authors & contributors
+// SPDX-License-Identifier: Apache-2.0
+function Identicon({
+  address,
+  className = '',
+  style
+}) {
+  const imgSrc = (0, _react.useMemo)(() => (0, _ethereumBlockiesBase.default)(address), [address]);
+  return /*#__PURE__*/(0, _jsxRuntime.jsx)("img", {
+    className: className,
+    src: imgSrc,
+    style: style
+  });
+}
+
+const Ethereum = /*#__PURE__*/_react.default.memo((0, _styledComponents.default)(Identicon).withConfig({
+  displayName: "Ethereum",
+  componentId: "osop9v-0"
+})(({
+  size
+}) => `
+  display: block;
+  height: ${size}px;
+  width: ${size}px;
+`));
+
+exports.Ethereum = Ethereum;

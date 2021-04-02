@@ -1,0 +1,176 @@
+var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _reactRouterDom = require('react-router-dom');
+  var _materialUiCoreStyles = require('@material-ui/core/styles');
+  var _materialUiCore = require('@material-ui/core');
+  var _utilsContexts = require('./utils/contexts');
+  var _hooks = require('./hooks');
+  var _utilsUtils = require('./utils/utils');
+  var _Home = require('./Home');
+  var _HomeDefault = _parcelHelpers.interopDefault(_Home);
+  var _components = require('./components');
+  var _jsxFileName = "/Users/stormsheep/Documents/repos/parity/substrate-connect/projects/burnr/src/App.tsx", _s = $RefreshSig$();
+  const useStyles = _materialUiCoreStyles.makeStyles(theme => ({
+    root: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      minHeight: '100vh'
+    },
+    main: {
+      width: '100%',
+      maxWidth: `${theme.spacing(3) + 650}px`,
+      padding: theme.spacing(2),
+      flex: 1
+    },
+    loadingPaper: {
+      height: '90vh',
+      textAlign: 'center'
+    },
+    loader: {
+      height: '50px',
+      width: '50px',
+      marginTop: '10vh'
+    }
+  }));
+  const App = ({className = ''}) => {
+    _s();
+    const api = _hooks.useApiCreate();
+    const classes = useStyles();
+    const [endpoint, setEndpoint] = _hooks.useLocalStorage('endpoint');
+    if (!endpoint) setEndpoint('Polkadot-WsProvider');
+    const [localStorageAccount, setLocalStorageAccount] = _hooks.useLocalStorage(endpoint.split('-')[0]?.toLowerCase?.());
+    const [account, setCurrentAccount] = _react.useState({
+    });
+    const [loader, setLoader] = _react.useState(true);
+    _react.useEffect(() => {
+      if (api && api.isReady) {
+        if (!localStorageAccount) {
+          const userTmp = _utilsUtils.createLocalStorageAccount();
+          setLocalStorageAccount(JSON.stringify(userTmp));
+          setCurrentAccount(userTmp);
+        } else {
+          setCurrentAccount(JSON.parse(localStorageAccount));
+        }
+        setLoader(false);
+      }
+    }, [localStorageAccount, setLocalStorageAccount, api]);
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.BrowserRouter, {
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 66,
+          columnNumber: 3
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        className: `${classes.root} ${className}`,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 67,
+          columnNumber: 4
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_components.ThemeToggleProvider, {
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 68,
+          columnNumber: 5
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_utilsContexts.AccountContext.Provider, {
+        value: {
+          account,
+          setCurrentAccount
+        },
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 69,
+          columnNumber: 6
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("main", {
+        className: classes.main,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 70,
+          columnNumber: 7
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_utilsContexts.ApiContext.Provider, {
+        value: api,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 71,
+          columnNumber: 8
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_components.Head, {
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 72,
+          columnNumber: 9
+        }
+      }), loader ? /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Paper, {
+        className: classes.loadingPaper,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 74,
+          columnNumber: 10
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.CircularProgress, {
+        className: classes.loader,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 75,
+          columnNumber: 10
+        }
+      })) : api && api.isReady && !_utilsUtils.isEmpty(account) && /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Switch, {
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 78,
+          columnNumber: 10
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Route, {
+        exact: true,
+        path: "/",
+        component: _HomeDefault.default,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 79,
+          columnNumber: 11
+        }
+      })))), /*#__PURE__*/_reactDefault.default.createElement(_components.NavFooter, {
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 84,
+          columnNumber: 7
+        }
+      })))))
+    );
+  };
+  _s(App, "XRjz8/QTKyjZcIBrHw3pmv8okdI=", false, function () {
+    return [_hooks.useApiCreate, useStyles, _hooks.useLocalStorage, _hooks.useLocalStorage];
+  });
+  _c = App;
+  exports.default = App;
+  var _c;
+  $RefreshReg$(_c, "App");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

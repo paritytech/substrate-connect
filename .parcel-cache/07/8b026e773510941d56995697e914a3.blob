@@ -1,0 +1,349 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _babelRuntimeHelpersEsmDefineProperty = require("@babel/runtime/helpers/esm/defineProperty");
+var _babelRuntimeHelpersEsmDefinePropertyDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmDefineProperty);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _utilsCapitalize = require('../utils/capitalize');
+var _utilsCapitalizeDefault = _parcelHelpers.interopDefault(_utilsCapitalize);
+var _Modal = require('../Modal');
+var _ModalDefault = _parcelHelpers.interopDefault(_Modal);
+var _Backdrop = require('../Backdrop');
+var _BackdropDefault = _parcelHelpers.interopDefault(_Backdrop);
+var _Fade = require('../Fade');
+var _FadeDefault = _parcelHelpers.interopDefault(_Fade);
+var _stylesTransitions = require('../styles/transitions');
+var _Paper = require('../Paper');
+var _PaperDefault = _parcelHelpers.interopDefault(_Paper);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: {
+      '@media print': {
+        // Use !important to override the Modal inline-style.
+        position: 'absolute !important'
+      }
+    },
+    /*Styles applied to the container element if `scroll="paper"`.*/
+    scrollPaper: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    /*Styles applied to the container element if `scroll="body"`.*/
+    scrollBody: {
+      overflowY: 'auto',
+      overflowX: 'hidden',
+      textAlign: 'center',
+      '&:after': {
+        content: '""',
+        display: 'inline-block',
+        verticalAlign: 'middle',
+        height: '100%',
+        width: '0'
+      }
+    },
+    /*Styles applied to the container element.*/
+    container: {
+      height: '100%',
+      '@media print': {
+        height: 'auto'
+      },
+      // We disable the focus ring for mouse, touch and keyboard users.
+      outline: 0
+    },
+    /*Styles applied to the `Paper` component.*/
+    paper: {
+      margin: 32,
+      position: 'relative',
+      overflowY: 'auto',
+      // Fix IE 11 issue, to remove at some point.
+      '@media print': {
+        overflowY: 'visible',
+        boxShadow: 'none'
+      }
+    },
+    /*Styles applied to the `Paper` component if `scroll="paper"`.*/
+    paperScrollPaper: {
+      display: 'flex',
+      flexDirection: 'column',
+      maxHeight: 'calc(100% - 64px)'
+    },
+    /*Styles applied to the `Paper` component if `scroll="body"`.*/
+    paperScrollBody: {
+      display: 'inline-block',
+      verticalAlign: 'middle',
+      textAlign: 'left'
+    },
+    /*Styles applied to the `Paper` component if `maxWidth=false`.*/
+    paperWidthFalse: {
+      maxWidth: 'calc(100% - 64px)'
+    },
+    /*Styles applied to the `Paper` component if `maxWidth="xs"`.*/
+    paperWidthXs: {
+      maxWidth: Math.max(theme.breakpoints.values.xs, 444),
+      '&$paperScrollBody': _babelRuntimeHelpersEsmDefinePropertyDefault.default({}, theme.breakpoints.down(Math.max(theme.breakpoints.values.xs, 444) + 32 * 2), {
+        maxWidth: 'calc(100% - 64px)'
+      })
+    },
+    /*Styles applied to the `Paper` component if `maxWidth="sm"`.*/
+    paperWidthSm: {
+      maxWidth: theme.breakpoints.values.sm,
+      '&$paperScrollBody': _babelRuntimeHelpersEsmDefinePropertyDefault.default({}, theme.breakpoints.down(theme.breakpoints.values.sm + 32 * 2), {
+        maxWidth: 'calc(100% - 64px)'
+      })
+    },
+    /*Styles applied to the `Paper` component if `maxWidth="md"`.*/
+    paperWidthMd: {
+      maxWidth: theme.breakpoints.values.md,
+      '&$paperScrollBody': _babelRuntimeHelpersEsmDefinePropertyDefault.default({}, theme.breakpoints.down(theme.breakpoints.values.md + 32 * 2), {
+        maxWidth: 'calc(100% - 64px)'
+      })
+    },
+    /*Styles applied to the `Paper` component if `maxWidth="lg"`.*/
+    paperWidthLg: {
+      maxWidth: theme.breakpoints.values.lg,
+      '&$paperScrollBody': _babelRuntimeHelpersEsmDefinePropertyDefault.default({}, theme.breakpoints.down(theme.breakpoints.values.lg + 32 * 2), {
+        maxWidth: 'calc(100% - 64px)'
+      })
+    },
+    /*Styles applied to the `Paper` component if `maxWidth="xl"`.*/
+    paperWidthXl: {
+      maxWidth: theme.breakpoints.values.xl,
+      '&$paperScrollBody': _babelRuntimeHelpersEsmDefinePropertyDefault.default({}, theme.breakpoints.down(theme.breakpoints.values.xl + 32 * 2), {
+        maxWidth: 'calc(100% - 64px)'
+      })
+    },
+    /*Styles applied to the `Paper` component if `fullWidth={true}`.*/
+    paperFullWidth: {
+      width: 'calc(100% - 64px)'
+    },
+    /*Styles applied to the `Paper` component if `fullScreen={true}`.*/
+    paperFullScreen: {
+      margin: 0,
+      width: '100%',
+      maxWidth: '100%',
+      height: '100%',
+      maxHeight: 'none',
+      borderRadius: 0,
+      '&$paperScrollBody': {
+        margin: 0,
+        maxWidth: '100%'
+      }
+    }
+  };
+};
+var defaultTransitionDuration = {
+  enter: _stylesTransitions.duration.enteringScreen,
+  exit: _stylesTransitions.duration.leavingScreen
+};
+/**
+* Dialogs are overlaid modal paper based components with a backdrop.
+*/
+var Dialog = /*#__PURE__*/_react.forwardRef(function Dialog(props, ref) {
+  var BackdropProps = props.BackdropProps, children = props.children, classes = props.classes, className = props.className, _props$disableBackdro = props.disableBackdropClick, disableBackdropClick = _props$disableBackdro === void 0 ? false : _props$disableBackdro, _props$disableEscapeK = props.disableEscapeKeyDown, disableEscapeKeyDown = _props$disableEscapeK === void 0 ? false : _props$disableEscapeK, _props$fullScreen = props.fullScreen, fullScreen = _props$fullScreen === void 0 ? false : _props$fullScreen, _props$fullWidth = props.fullWidth, fullWidth = _props$fullWidth === void 0 ? false : _props$fullWidth, _props$maxWidth = props.maxWidth, maxWidth = _props$maxWidth === void 0 ? 'sm' : _props$maxWidth, onBackdropClick = props.onBackdropClick, onClose = props.onClose, onEnter = props.onEnter, onEntered = props.onEntered, onEntering = props.onEntering, onEscapeKeyDown = props.onEscapeKeyDown, onExit = props.onExit, onExited = props.onExited, onExiting = props.onExiting, open = props.open, _props$PaperComponent = props.PaperComponent, PaperComponent = _props$PaperComponent === void 0 ? _PaperDefault.default : _props$PaperComponent, _props$PaperProps = props.PaperProps, PaperProps = _props$PaperProps === void 0 ? {} : _props$PaperProps, _props$scroll = props.scroll, scroll = _props$scroll === void 0 ? 'paper' : _props$scroll, _props$TransitionComp = props.TransitionComponent, TransitionComponent = _props$TransitionComp === void 0 ? _FadeDefault.default : _props$TransitionComp, _props$transitionDura = props.transitionDuration, transitionDuration = _props$transitionDura === void 0 ? defaultTransitionDuration : _props$transitionDura, TransitionProps = props.TransitionProps, ariaDescribedby = props['aria-describedby'], ariaLabelledby = props['aria-labelledby'], other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["BackdropProps", "children", "classes", "className", "disableBackdropClick", "disableEscapeKeyDown", "fullScreen", "fullWidth", "maxWidth", "onBackdropClick", "onClose", "onEnter", "onEntered", "onEntering", "onEscapeKeyDown", "onExit", "onExited", "onExiting", "open", "PaperComponent", "PaperProps", "scroll", "TransitionComponent", "transitionDuration", "TransitionProps", "aria-describedby", "aria-labelledby"]);
+  var mouseDownTarget = _react.useRef();
+  var handleMouseDown = function handleMouseDown(event) {
+    mouseDownTarget.current = event.target;
+  };
+  var handleBackdropClick = function handleBackdropClick(event) {
+    // Ignore the events not coming from the "backdrop"
+    // We don't want to close the dialog when clicking the dialog content.
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+    // Make sure the event starts and ends on the same DOM element.
+    if (event.target !== mouseDownTarget.current) {
+      return;
+    }
+    mouseDownTarget.current = null;
+    if (onBackdropClick) {
+      onBackdropClick(event);
+    }
+    if (!disableBackdropClick && onClose) {
+      onClose(event, 'backdropClick');
+    }
+  };
+  return (
+    /*#__PURE__*/_react.createElement(_ModalDefault.default, _babelRuntimeHelpersEsmExtendsDefault.default({
+      className: _clsxDefault.default(classes.root, className),
+      BackdropComponent: _BackdropDefault.default,
+      BackdropProps: _babelRuntimeHelpersEsmExtendsDefault.default({
+        transitionDuration: transitionDuration
+      }, BackdropProps),
+      closeAfterTransition: true,
+      disableBackdropClick: disableBackdropClick,
+      disableEscapeKeyDown: disableEscapeKeyDown,
+      onEscapeKeyDown: onEscapeKeyDown,
+      onClose: onClose,
+      open: open,
+      ref: ref
+    }, other), /*#__PURE__*/_react.createElement(TransitionComponent, _babelRuntimeHelpersEsmExtendsDefault.default({
+      appear: true,
+      in: open,
+      timeout: transitionDuration,
+      onEnter: onEnter,
+      onEntering: onEntering,
+      onEntered: onEntered,
+      onExit: onExit,
+      onExiting: onExiting,
+      onExited: onExited,
+      role: "none presentation"
+    }, TransitionProps), /*#__PURE__*/_react.createElement("div", {
+      className: _clsxDefault.default(classes.container, classes[("scroll").concat(_utilsCapitalizeDefault.default(scroll))]),
+      onMouseUp: handleBackdropClick,
+      onMouseDown: handleMouseDown
+    }, /*#__PURE__*/_react.createElement(PaperComponent, _babelRuntimeHelpersEsmExtendsDefault.default({
+      elevation: 24,
+      role: "dialog",
+      "aria-describedby": ariaDescribedby,
+      "aria-labelledby": ariaLabelledby
+    }, PaperProps, {
+      className: _clsxDefault.default(classes.paper, classes[("paperScroll").concat(_utilsCapitalizeDefault.default(scroll))], classes[("paperWidth").concat(_utilsCapitalizeDefault.default(String(maxWidth)))], PaperProps.className, fullScreen && classes.paperFullScreen, fullWidth && classes.paperFullWidth)
+    }), children))))
+  );
+});
+"development" !== "production" ? Dialog.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * The id(s) of the element(s) that describe the dialog.
+  */
+  'aria-describedby': _propTypesDefault.default.string,
+  /**
+  * The id(s) of the element(s) that label the dialog.
+  */
+  'aria-labelledby': _propTypesDefault.default.string,
+  /**
+  * @ignore
+  */
+  BackdropProps: _propTypesDefault.default.object,
+  /**
+  * Dialog children, usually the included sub-components.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * If `true`, clicking the backdrop will not fire the `onClose` callback.
+  */
+  disableBackdropClick: _propTypesDefault.default.bool,
+  /**
+  * If `true`, hitting escape will not fire the `onClose` callback.
+  */
+  disableEscapeKeyDown: _propTypesDefault.default.bool,
+  /**
+  * If `true`, the dialog will be full-screen
+  */
+  fullScreen: _propTypesDefault.default.bool,
+  /**
+  * If `true`, the dialog stretches to `maxWidth`.
+  *
+  * Notice that the dialog width grow is limited by the default margin.
+  */
+  fullWidth: _propTypesDefault.default.bool,
+  /**
+  * Determine the max-width of the dialog.
+  * The dialog width grows with the size of the screen.
+  * Set to `false` to disable `maxWidth`.
+  */
+  maxWidth: _propTypesDefault.default.oneOf(['lg', 'md', 'sm', 'xl', 'xs', false]),
+  /**
+  * Callback fired when the backdrop is clicked.
+  */
+  onBackdropClick: _propTypesDefault.default.func,
+  /**
+  * Callback fired when the component requests to be closed.
+  *
+  * @param {object} event The event source of the callback.
+  * @param {string} reason Can be: `"escapeKeyDown"`, `"backdropClick"`.
+  */
+  onClose: _propTypesDefault.default.func,
+  /**
+  * Callback fired before the dialog enters.
+  */
+  onEnter: _propTypesDefault.default.func,
+  /**
+  * Callback fired when the dialog has entered.
+  */
+  onEntered: _propTypesDefault.default.func,
+  /**
+  * Callback fired when the dialog is entering.
+  */
+  onEntering: _propTypesDefault.default.func,
+  /**
+  * Callback fired when the escape key is pressed,
+  * `disableKeyboard` is false and the modal is in focus.
+  */
+  onEscapeKeyDown: _propTypesDefault.default.func,
+  /**
+  * Callback fired before the dialog exits.
+  */
+  onExit: _propTypesDefault.default.func,
+  /**
+  * Callback fired when the dialog has exited.
+  */
+  onExited: _propTypesDefault.default.func,
+  /**
+  * Callback fired when the dialog is exiting.
+  */
+  onExiting: _propTypesDefault.default.func,
+  /**
+  * If `true`, the Dialog is open.
+  */
+  open: _propTypesDefault.default.bool.isRequired,
+  /**
+  * The component used to render the body of the dialog.
+  */
+  PaperComponent: _propTypesDefault.default.elementType,
+  /**
+  * Props applied to the [`Paper`](/api/paper/) element.
+  */
+  PaperProps: _propTypesDefault.default.object,
+  /**
+  * Determine the container for scrolling the dialog.
+  */
+  scroll: _propTypesDefault.default.oneOf(['body', 'paper']),
+  /**
+  * The component used for the transition.
+  * [Follow this guide](/components/transitions/#transitioncomponent-prop) to learn more about the requirements for this component.
+  */
+  TransitionComponent: _propTypesDefault.default.elementType,
+  /**
+  * The duration for the transition, in milliseconds.
+  * You may specify a single timeout for all transitions, or individually with an object.
+  */
+  transitionDuration: _propTypesDefault.default.oneOfType([_propTypesDefault.default.number, _propTypesDefault.default.shape({
+    appear: _propTypesDefault.default.number,
+    enter: _propTypesDefault.default.number,
+    exit: _propTypesDefault.default.number
+  })]),
+  /**
+  * Props applied to the [`Transition`](http://reactcommunity.org/react-transition-group/transition#Transition-props) element.
+  */
+  TransitionProps: _propTypesDefault.default.object
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiDialog'
+})(Dialog);

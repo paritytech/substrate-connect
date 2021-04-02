@@ -1,0 +1,117 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _internalSvgIconsCheckCircle = require('../internal/svg-icons/CheckCircle');
+var _internalSvgIconsCheckCircleDefault = _parcelHelpers.interopDefault(_internalSvgIconsCheckCircle);
+var _internalSvgIconsWarning = require('../internal/svg-icons/Warning');
+var _internalSvgIconsWarningDefault = _parcelHelpers.interopDefault(_internalSvgIconsWarning);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _SvgIcon = require('../SvgIcon');
+var _SvgIconDefault = _parcelHelpers.interopDefault(_SvgIcon);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: {
+      display: 'block',
+      color: theme.palette.text.disabled,
+      '&$completed': {
+        color: theme.palette.primary.main
+      },
+      '&$active': {
+        color: theme.palette.primary.main
+      },
+      '&$error': {
+        color: theme.palette.error.main
+      }
+    },
+    /*Styles applied to the SVG text element.*/
+    text: {
+      fill: theme.palette.primary.contrastText,
+      fontSize: theme.typography.caption.fontSize,
+      fontFamily: theme.typography.fontFamily
+    },
+    /*Pseudo-class applied to the root element if `active={true}`.*/
+    active: {},
+    /*Pseudo-class applied to the root element if `completed={true}`.*/
+    completed: {},
+    /*Pseudo-class applied to the root element if `error={true}`.*/
+    error: {}
+  };
+};
+var _ref = /*#__PURE__*/_react.createElement("circle", {
+  cx: "12",
+  cy: "12",
+  r: "12"
+});
+var StepIcon = /*#__PURE__*/_react.forwardRef(function StepIcon(props, ref) {
+  var _props$completed = props.completed, completed = _props$completed === void 0 ? false : _props$completed, icon = props.icon, _props$active = props.active, active = _props$active === void 0 ? false : _props$active, _props$error = props.error, error = _props$error === void 0 ? false : _props$error, classes = props.classes;
+  if (typeof icon === 'number' || typeof icon === 'string') {
+    var className = _clsxDefault.default(classes.root, active && classes.active, error && classes.error, completed && classes.completed);
+    if (error) {
+      return (
+        /*#__PURE__*/_react.createElement(_internalSvgIconsWarningDefault.default, {
+          className: className,
+          ref: ref
+        })
+      );
+    }
+    if (completed) {
+      return (
+        /*#__PURE__*/_react.createElement(_internalSvgIconsCheckCircleDefault.default, {
+          className: className,
+          ref: ref
+        })
+      );
+    }
+    return (
+      /*#__PURE__*/_react.createElement(_SvgIconDefault.default, {
+        className: className,
+        ref: ref
+      }, _ref, /*#__PURE__*/_react.createElement("text", {
+        className: classes.text,
+        x: "12",
+        y: "16",
+        textAnchor: "middle"
+      }, icon))
+    );
+  }
+  return icon;
+});
+"development" !== "production" ? StepIcon.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * Whether this step is active.
+  */
+  active: _propTypesDefault.default.bool,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * Mark the step as completed. Is passed to child components.
+  */
+  completed: _propTypesDefault.default.bool,
+  /**
+  * Mark the step as failed.
+  */
+  error: _propTypesDefault.default.bool,
+  /**
+  * The label displayed in the step icon.
+  */
+  icon: _propTypesDefault.default.node
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiStepIcon'
+})(StepIcon);

@@ -62,7 +62,7 @@
     "eslint": "^7.18.0",
     "eslint-plugin-react": "^7.22.0",
     "jest": "^26.6.3",
-    "parcel-bundler": "^1.12.5",
+    "parcel": "^2.0.0-beta.2",
     "react-dom": "^17.0.1",
     "react-router": "^5.2.0",
     "react-test-renderer": "^17.0.1",

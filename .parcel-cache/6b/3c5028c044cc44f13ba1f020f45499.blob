@@ -1,0 +1,21 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "hasValue", function () {
+  return hasValue;
+});
+_parcelHelpers.export(exports, "isFilled", function () {
+  return isFilled;
+});
+_parcelHelpers.export(exports, "isAdornedStart", function () {
+  return isAdornedStart;
+});
+function hasValue(value) {
+  return value != null && !(Array.isArray(value) && value.length === 0);
+}
+function isFilled(obj) {
+  var SSR = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  return obj && (hasValue(obj.value) && obj.value !== '' || SSR && hasValue(obj.defaultValue) && obj.defaultValue !== '');
+}
+function isAdornedStart(obj) {
+  return obj.startAdornment;
+}

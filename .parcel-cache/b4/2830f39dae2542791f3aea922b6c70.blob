@@ -1,0 +1,6 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _createMuiTheme = require('./createMuiTheme');
+var _createMuiThemeDefault = _parcelHelpers.interopDefault(_createMuiTheme);
+var defaultTheme = _createMuiThemeDefault.default();
+exports.default = defaultTheme;

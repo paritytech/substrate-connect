@@ -1,0 +1,256 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "setTranslateValue", function () {
+  return setTranslateValue;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _reactDom = require('react-dom');
+var _utilsDebounce = require('../utils/debounce');
+var _utilsDebounceDefault = _parcelHelpers.interopDefault(_utilsDebounce);
+var _reactTransitionGroup = require('react-transition-group');
+var _materialUiUtils = require('@material-ui/utils');
+var _utilsUseForkRef = require('../utils/useForkRef');
+var _utilsUseForkRefDefault = _parcelHelpers.interopDefault(_utilsUseForkRef);
+var _stylesUseTheme = require('../styles/useTheme');
+var _stylesUseThemeDefault = _parcelHelpers.interopDefault(_stylesUseTheme);
+var _stylesTransitions = require('../styles/transitions');
+var _transitionsUtils = require('../transitions/utils');
+// Translate the node so he can't be seen on the screen.
+// Later, we gonna translate back the node to his original location
+// with `none`.`
+function getTranslateValue(direction, node) {
+  var rect = node.getBoundingClientRect();
+  var transform;
+  if (node.fakeTransform) {
+    transform = node.fakeTransform;
+  } else {
+    var computedStyle = window.getComputedStyle(node);
+    transform = computedStyle.getPropertyValue('-webkit-transform') || computedStyle.getPropertyValue('transform');
+  }
+  var offsetX = 0;
+  var offsetY = 0;
+  if (transform && transform !== 'none' && typeof transform === 'string') {
+    var transformValues = transform.split('(')[1].split(')')[0].split(',');
+    offsetX = parseInt(transformValues[4], 10);
+    offsetY = parseInt(transformValues[5], 10);
+  }
+  if (direction === 'left') {
+    return ("translateX(").concat(window.innerWidth, "px) translateX(").concat(offsetX - rect.left, "px)");
+  }
+  if (direction === 'right') {
+    return ("translateX(-").concat(rect.left + rect.width - offsetX, "px)");
+  }
+  if (direction === 'up') {
+    return ("translateY(").concat(window.innerHeight, "px) translateY(").concat(offsetY - rect.top, "px)");
+  }
+  // direction === 'down'
+  return ("translateY(-").concat(rect.top + rect.height - offsetY, "px)");
+}
+function setTranslateValue(direction, node) {
+  var transform = getTranslateValue(direction, node);
+  if (transform) {
+    node.style.webkitTransform = transform;
+    node.style.transform = transform;
+  }
+}
+var defaultTimeout = {
+  enter: _stylesTransitions.duration.enteringScreen,
+  exit: _stylesTransitions.duration.leavingScreen
+};
+/**
+* The Slide transition is used by the [Drawer](/components/drawers/) component.
+* It uses [react-transition-group](https://github.com/reactjs/react-transition-group) internally.
+*/
+var Slide = /*#__PURE__*/_react.forwardRef(function Slide(props, ref) {
+  var children = props.children, _props$direction = props.direction, direction = _props$direction === void 0 ? 'down' : _props$direction, inProp = props.in, onEnter = props.onEnter, onEntered = props.onEntered, onEntering = props.onEntering, onExit = props.onExit, onExited = props.onExited, onExiting = props.onExiting, style = props.style, _props$timeout = props.timeout, timeout = _props$timeout === void 0 ? defaultTimeout : _props$timeout, _props$TransitionComp = props.TransitionComponent, TransitionComponent = _props$TransitionComp === void 0 ? _reactTransitionGroup.Transition : _props$TransitionComp, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["children", "direction", "in", "onEnter", "onEntered", "onEntering", "onExit", "onExited", "onExiting", "style", "timeout", "TransitionComponent"]);
+  var theme = _stylesUseThemeDefault.default();
+  var childrenRef = _react.useRef(null);
+  /**
+  * used in cloneElement(children, { ref: handleRef })
+  */
+  var handleOwnRef = _react.useCallback(function (instance) {
+    // #StrictMode ready
+    childrenRef.current = _reactDom.findDOMNode(instance);
+  }, []);
+  var handleRefIntermediary = _utilsUseForkRefDefault.default(children.ref, handleOwnRef);
+  var handleRef = _utilsUseForkRefDefault.default(handleRefIntermediary, ref);
+  var normalizedTransitionCallback = function normalizedTransitionCallback(callback) {
+    return function (isAppearing) {
+      if (callback) {
+        // onEnterXxx and onExitXxx callbacks have a different arguments.length value.
+        if (isAppearing === undefined) {
+          callback(childrenRef.current);
+        } else {
+          callback(childrenRef.current, isAppearing);
+        }
+      }
+    };
+  };
+  var handleEnter = normalizedTransitionCallback(function (node, isAppearing) {
+    setTranslateValue(direction, node);
+    _transitionsUtils.reflow(node);
+    if (onEnter) {
+      onEnter(node, isAppearing);
+    }
+  });
+  var handleEntering = normalizedTransitionCallback(function (node, isAppearing) {
+    var transitionProps = _transitionsUtils.getTransitionProps({
+      timeout: timeout,
+      style: style
+    }, {
+      mode: 'enter'
+    });
+    node.style.webkitTransition = theme.transitions.create('-webkit-transform', _babelRuntimeHelpersEsmExtendsDefault.default({}, transitionProps, {
+      easing: theme.transitions.easing.easeOut
+    }));
+    node.style.transition = theme.transitions.create('transform', _babelRuntimeHelpersEsmExtendsDefault.default({}, transitionProps, {
+      easing: theme.transitions.easing.easeOut
+    }));
+    node.style.webkitTransform = 'none';
+    node.style.transform = 'none';
+    if (onEntering) {
+      onEntering(node, isAppearing);
+    }
+  });
+  var handleEntered = normalizedTransitionCallback(onEntered);
+  var handleExiting = normalizedTransitionCallback(onExiting);
+  var handleExit = normalizedTransitionCallback(function (node) {
+    var transitionProps = _transitionsUtils.getTransitionProps({
+      timeout: timeout,
+      style: style
+    }, {
+      mode: 'exit'
+    });
+    node.style.webkitTransition = theme.transitions.create('-webkit-transform', _babelRuntimeHelpersEsmExtendsDefault.default({}, transitionProps, {
+      easing: theme.transitions.easing.sharp
+    }));
+    node.style.transition = theme.transitions.create('transform', _babelRuntimeHelpersEsmExtendsDefault.default({}, transitionProps, {
+      easing: theme.transitions.easing.sharp
+    }));
+    setTranslateValue(direction, node);
+    if (onExit) {
+      onExit(node);
+    }
+  });
+  var handleExited = normalizedTransitionCallback(function (node) {
+    // No need for transitions when the component is hidden
+    node.style.webkitTransition = '';
+    node.style.transition = '';
+    if (onExited) {
+      onExited(node);
+    }
+  });
+  var updatePosition = _react.useCallback(function () {
+    if (childrenRef.current) {
+      setTranslateValue(direction, childrenRef.current);
+    }
+  }, [direction]);
+  _react.useEffect(function () {
+    // Skip configuration where the position is screen size invariant.
+    if (inProp || direction === 'down' || direction === 'right') {
+      return undefined;
+    }
+    var handleResize = _utilsDebounceDefault.default(function () {
+      if (childrenRef.current) {
+        setTranslateValue(direction, childrenRef.current);
+      }
+    });
+    window.addEventListener('resize', handleResize);
+    return function () {
+      handleResize.clear();
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [direction, inProp]);
+  _react.useEffect(function () {
+    if (!inProp) {
+      // We need to update the position of the drawer when the direction change and
+      // when it's hidden.
+      updatePosition();
+    }
+  }, [inProp, updatePosition]);
+  return (
+    /*#__PURE__*/_react.createElement(TransitionComponent, _babelRuntimeHelpersEsmExtendsDefault.default({
+      nodeRef: childrenRef,
+      onEnter: handleEnter,
+      onEntered: handleEntered,
+      onEntering: handleEntering,
+      onExit: handleExit,
+      onExited: handleExited,
+      onExiting: handleExiting,
+      appear: true,
+      in: inProp,
+      timeout: timeout
+    }, other), function (state, childProps) {
+      return (
+        /*#__PURE__*/_react.cloneElement(children, _babelRuntimeHelpersEsmExtendsDefault.default({
+          ref: handleRef,
+          style: _babelRuntimeHelpersEsmExtendsDefault.default({
+            visibility: state === 'exited' && !inProp ? 'hidden' : undefined
+          }, style, children.props.style)
+        }, childProps))
+      );
+    })
+  );
+});
+"development" !== "production" ? Slide.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * A single child content element.
+  */
+  children: _materialUiUtils.elementAcceptingRef,
+  /**
+  * Direction the child node will enter from.
+  */
+  direction: _propTypesDefault.default.oneOf(['down', 'left', 'right', 'up']),
+  /**
+  * If `true`, show the component; triggers the enter or exit animation.
+  */
+  in: _propTypesDefault.default.bool,
+  /**
+  * @ignore
+  */
+  onEnter: _propTypesDefault.default.func,
+  /**
+  * @ignore
+  */
+  onEntered: _propTypesDefault.default.func,
+  /**
+  * @ignore
+  */
+  onEntering: _propTypesDefault.default.func,
+  /**
+  * @ignore
+  */
+  onExit: _propTypesDefault.default.func,
+  /**
+  * @ignore
+  */
+  onExited: _propTypesDefault.default.func,
+  /**
+  * @ignore
+  */
+  onExiting: _propTypesDefault.default.func,
+  /**
+  * @ignore
+  */
+  style: _propTypesDefault.default.object,
+  /**
+  * The duration for the transition, in milliseconds.
+  * You may specify a single timeout for all transitions, or individually with an object.
+  */
+  timeout: _propTypesDefault.default.oneOfType([_propTypesDefault.default.number, _propTypesDefault.default.shape({
+    appear: _propTypesDefault.default.number,
+    enter: _propTypesDefault.default.number,
+    exit: _propTypesDefault.default.number
+  })])
+} : void 0;
+exports.default = Slide;

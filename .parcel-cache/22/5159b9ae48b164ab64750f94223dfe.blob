@@ -1,0 +1,14 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _arrayWithHolesJs = require("./arrayWithHoles.js");
+var _arrayWithHolesJsDefault = _parcelHelpers.interopDefault(_arrayWithHolesJs);
+var _iterableToArrayLimitJs = require("./iterableToArrayLimit.js");
+var _iterableToArrayLimitJsDefault = _parcelHelpers.interopDefault(_iterableToArrayLimitJs);
+var _unsupportedIterableToArrayJs = require("./unsupportedIterableToArray.js");
+var _unsupportedIterableToArrayJsDefault = _parcelHelpers.interopDefault(_unsupportedIterableToArrayJs);
+var _nonIterableRestJs = require("./nonIterableRest.js");
+var _nonIterableRestJsDefault = _parcelHelpers.interopDefault(_nonIterableRestJs);
+function _slicedToArray(arr, i) {
+  return _arrayWithHolesJsDefault.default(arr) || _iterableToArrayLimitJsDefault.default(arr, i) || _unsupportedIterableToArrayJsDefault.default(arr, i) || _nonIterableRestJsDefault.default();
+}
+exports.default = _slicedToArray;

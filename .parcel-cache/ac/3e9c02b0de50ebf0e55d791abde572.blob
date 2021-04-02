@@ -1,0 +1,95 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _internalSvgIconsKeyboardArrowLeft = require('../internal/svg-icons/KeyboardArrowLeft');
+var _internalSvgIconsKeyboardArrowLeftDefault = _parcelHelpers.interopDefault(_internalSvgIconsKeyboardArrowLeft);
+var _internalSvgIconsKeyboardArrowRight = require('../internal/svg-icons/KeyboardArrowRight');
+var _internalSvgIconsKeyboardArrowRightDefault = _parcelHelpers.interopDefault(_internalSvgIconsKeyboardArrowRight);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _ButtonBase = require('../ButtonBase');
+var _ButtonBaseDefault = _parcelHelpers.interopDefault(_ButtonBase);
+var styles = {
+  /*Styles applied to the root element.*/
+  root: {
+    width: 40,
+    flexShrink: 0,
+    opacity: 0.8,
+    '&$disabled': {
+      opacity: 0
+    }
+  },
+  /*Styles applied to the root element if `orientation="vertical"`.*/
+  vertical: {
+    width: '100%',
+    height: 40,
+    '& svg': {
+      transform: 'rotate(90deg)'
+    }
+  },
+  /*Pseudo-class applied to the root element if `disabled={true}`.*/
+  disabled: {}
+};
+var _ref = /*#__PURE__*/_react.createElement(_internalSvgIconsKeyboardArrowLeftDefault.default, {
+  fontSize: "small"
+});
+var _ref2 = /*#__PURE__*/_react.createElement(_internalSvgIconsKeyboardArrowRightDefault.default, {
+  fontSize: "small"
+});
+var TabScrollButton = /*#__PURE__*/_react.forwardRef(function TabScrollButton(props, ref) {
+  var classes = props.classes, classNameProp = props.className, direction = props.direction, orientation = props.orientation, disabled = props.disabled, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["classes", "className", "direction", "orientation", "disabled"]);
+  return (
+    /*#__PURE__*/_react.createElement(_ButtonBaseDefault.default, _babelRuntimeHelpersEsmExtendsDefault.default({
+      component: "div",
+      className: _clsxDefault.default(classes.root, classNameProp, disabled && classes.disabled, orientation === 'vertical' && classes.vertical),
+      ref: ref,
+      role: null,
+      tabIndex: null
+    }, other), direction === 'left' ? _ref : _ref2)
+  );
+});
+"development" !== "production" ? TabScrollButton.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * The content of the component.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * Which direction should the button indicate?
+  */
+  direction: _propTypesDefault.default.oneOf(['left', 'right']).isRequired,
+  /**
+  * If `true`, the element will be disabled.
+  */
+  disabled: _propTypesDefault.default.bool,
+  /**
+  * The tabs orientation (layout flow direction).
+  */
+  orientation: _propTypesDefault.default.oneOf(['horizontal', 'vertical']).isRequired
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiTabScrollButton'
+})(TabScrollButton);

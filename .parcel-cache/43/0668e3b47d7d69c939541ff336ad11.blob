@@ -1,0 +1,119 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _babelRuntimeHelpersEsmDefineProperty = require("@babel/runtime/helpers/esm/defineProperty");
+var _babelRuntimeHelpersEsmDefinePropertyDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmDefineProperty);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _ListItem = require('../ListItem');
+var _ListItemDefault = _parcelHelpers.interopDefault(_ListItem);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: _babelRuntimeHelpersEsmExtendsDefault.default({}, theme.typography.body1, _babelRuntimeHelpersEsmDefinePropertyDefault.default({
+      minHeight: 48,
+      paddingTop: 6,
+      paddingBottom: 6,
+      boxSizing: 'border-box',
+      width: 'auto',
+      overflow: 'hidden',
+      whiteSpace: 'nowrap'
+    }, theme.breakpoints.up('sm'), {
+      minHeight: 'auto'
+    })),
+    // TODO v5: remove
+    /*Styles applied to the root element if `disableGutters={false}`.*/
+    gutters: {},
+    /*Styles applied to the root element if `selected={true}`.*/
+    selected: {},
+    /*Styles applied to the root element if dense.*/
+    dense: _babelRuntimeHelpersEsmExtendsDefault.default({}, theme.typography.body2, {
+      minHeight: 'auto'
+    })
+  };
+};
+var MenuItem = /*#__PURE__*/_react.forwardRef(function MenuItem(props, ref) {
+  var classes = props.classes, className = props.className, _props$component = props.component, component = _props$component === void 0 ? 'li' : _props$component, _props$disableGutters = props.disableGutters, disableGutters = _props$disableGutters === void 0 ? false : _props$disableGutters, ListItemClasses = props.ListItemClasses, _props$role = props.role, role = _props$role === void 0 ? 'menuitem' : _props$role, selected = props.selected, tabIndexProp = props.tabIndex, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["classes", "className", "component", "disableGutters", "ListItemClasses", "role", "selected", "tabIndex"]);
+  var tabIndex;
+  if (!props.disabled) {
+    tabIndex = tabIndexProp !== undefined ? tabIndexProp : -1;
+  }
+  return (
+    /*#__PURE__*/_react.createElement(_ListItemDefault.default, _babelRuntimeHelpersEsmExtendsDefault.default({
+      button: true,
+      role: role,
+      tabIndex: tabIndex,
+      component: component,
+      selected: selected,
+      disableGutters: disableGutters,
+      classes: _babelRuntimeHelpersEsmExtendsDefault.default({
+        dense: classes.dense
+      }, ListItemClasses),
+      className: _clsxDefault.default(classes.root, className, selected && classes.selected, !disableGutters && classes.gutters),
+      ref: ref
+    }, other))
+  );
+});
+"development" !== "production" ? MenuItem.propTypes = {
+  /**
+  * Menu item contents.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object.isRequired,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * The component used for the root node.
+  * Either a string to use a HTML element or a component.
+  */
+  component: _propTypesDefault.default./*@typescript-to-proptypes-ignore*/
+  elementType,
+  /**
+  * If `true`, compact vertical padding designed for keyboard and mouse input will be used.
+  */
+  dense: _propTypesDefault.default.bool,
+  /**
+  * @ignore
+  */
+  disabled: _propTypesDefault.default.bool,
+  /**
+  * If `true`, the left and right padding is removed.
+  */
+  disableGutters: _propTypesDefault.default.bool,
+  /**
+  * `classes` prop applied to the [`ListItem`](/api/list-item/) element.
+  */
+  ListItemClasses: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  role: _propTypesDefault.default.string,
+  /**
+  * @ignore
+  */
+  selected: _propTypesDefault.default.bool,
+  /**
+  * @ignore
+  */
+  tabIndex: _propTypesDefault.default.number
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiMenuItem'
+})(MenuItem);

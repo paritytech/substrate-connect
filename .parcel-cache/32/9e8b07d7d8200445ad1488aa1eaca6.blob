@@ -1,0 +1,222 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _materialUiStyles = require('@material-ui/styles');
+var _SelectInput = require('./SelectInput');
+var _SelectInputDefault = _parcelHelpers.interopDefault(_SelectInput);
+var _FormControlFormControlState = require('../FormControl/formControlState');
+var _FormControlFormControlStateDefault = _parcelHelpers.interopDefault(_FormControlFormControlState);
+var _FormControlUseFormControl = require('../FormControl/useFormControl');
+var _FormControlUseFormControlDefault = _parcelHelpers.interopDefault(_FormControlUseFormControl);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _internalSvgIconsArrowDropDown = require('../internal/svg-icons/ArrowDropDown');
+var _internalSvgIconsArrowDropDownDefault = _parcelHelpers.interopDefault(_internalSvgIconsArrowDropDown);
+var _Input = require('../Input');
+var _InputDefault = _parcelHelpers.interopDefault(_Input);
+var _NativeSelectNativeSelect = require('../NativeSelect/NativeSelect');
+var _NativeSelectNativeSelectInput = require('../NativeSelect/NativeSelectInput');
+var _NativeSelectNativeSelectInputDefault = _parcelHelpers.interopDefault(_NativeSelectNativeSelectInput);
+var _FilledInput = require('../FilledInput');
+var _FilledInputDefault = _parcelHelpers.interopDefault(_FilledInput);
+var _OutlinedInput = require('../OutlinedInput');
+var _OutlinedInputDefault = _parcelHelpers.interopDefault(_OutlinedInput);
+var styles = _NativeSelectNativeSelect.styles;
+var _ref = /*#__PURE__*/_react.createElement(_InputDefault.default, null);
+var _ref2 = /*#__PURE__*/_react.createElement(_FilledInputDefault.default, null);
+var Select = /*#__PURE__*/_react.forwardRef(function Select(props, ref) {
+  var _props$autoWidth = props.autoWidth, autoWidth = _props$autoWidth === void 0 ? false : _props$autoWidth, children = props.children, classes = props.classes, _props$displayEmpty = props.displayEmpty, displayEmpty = _props$displayEmpty === void 0 ? false : _props$displayEmpty, _props$IconComponent = props.IconComponent, IconComponent = _props$IconComponent === void 0 ? _internalSvgIconsArrowDropDownDefault.default : _props$IconComponent, id = props.id, input = props.input, inputProps = props.inputProps, label = props.label, labelId = props.labelId, _props$labelWidth = props.labelWidth, labelWidth = _props$labelWidth === void 0 ? 0 : _props$labelWidth, MenuProps = props.MenuProps, _props$multiple = props.multiple, multiple = _props$multiple === void 0 ? false : _props$multiple, _props$native = props.native, native = _props$native === void 0 ? false : _props$native, onClose = props.onClose, onOpen = props.onOpen, open = props.open, renderValue = props.renderValue, SelectDisplayProps = props.SelectDisplayProps, _props$variant = props.variant, variantProps = _props$variant === void 0 ? 'standard' : _props$variant, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["autoWidth", "children", "classes", "displayEmpty", "IconComponent", "id", "input", "inputProps", "label", "labelId", "labelWidth", "MenuProps", "multiple", "native", "onClose", "onOpen", "open", "renderValue", "SelectDisplayProps", "variant"]);
+  var inputComponent = native ? _NativeSelectNativeSelectInputDefault.default : _SelectInputDefault.default;
+  var muiFormControl = _FormControlUseFormControlDefault.default();
+  var fcs = _FormControlFormControlStateDefault.default({
+    props: props,
+    muiFormControl: muiFormControl,
+    states: ['variant']
+  });
+  var variant = fcs.variant || variantProps;
+  var InputComponent = input || ({
+    standard: _ref,
+    outlined: /*#__PURE__*/_react.createElement(_OutlinedInputDefault.default, {
+      label: label,
+      labelWidth: labelWidth
+    }),
+    filled: _ref2
+  })[variant];
+  return (
+    /*#__PURE__*/_react.cloneElement(InputComponent, _babelRuntimeHelpersEsmExtendsDefault.default({
+      // Most of the logic is implemented in `SelectInput`.
+      // The `Select` component is a simple API wrapper to expose something better to play with.
+      inputComponent: inputComponent,
+      inputProps: _babelRuntimeHelpersEsmExtendsDefault.default({
+        children: children,
+        IconComponent: IconComponent,
+        variant: variant,
+        type: undefined,
+        // We render a select. We can ignore the type provided by the `Input`.
+        multiple: multiple
+      }, native ? {
+        id: id
+      } : {
+        autoWidth: autoWidth,
+        displayEmpty: displayEmpty,
+        labelId: labelId,
+        MenuProps: MenuProps,
+        onClose: onClose,
+        onOpen: onOpen,
+        open: open,
+        renderValue: renderValue,
+        SelectDisplayProps: _babelRuntimeHelpersEsmExtendsDefault.default({
+          id: id
+        }, SelectDisplayProps)
+      }, inputProps, {
+        classes: inputProps ? _materialUiStyles.mergeClasses({
+          baseClasses: classes,
+          newClasses: inputProps.classes,
+          Component: Select
+        }) : classes
+      }, input ? input.props.inputProps : {}),
+      ref: ref
+    }, other))
+  );
+});
+"development" !== "production" ? Select.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * If `true`, the width of the popover will automatically be set according to the items inside the
+  * menu, otherwise it will be at least the width of the select input.
+  */
+  autoWidth: _propTypesDefault.default.bool,
+  /**
+  * The option elements to populate the select with.
+  * Can be some `MenuItem` when `native` is false and `option` when `native` is true.
+  *
+  * ⚠️The `MenuItem` elements **must** be direct descendants when `native` is false.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * The default element value. Use when the component is not controlled.
+  */
+  defaultValue: _propTypesDefault.default.any,
+  /**
+  * If `true`, a value is displayed even if no items are selected.
+  *
+  * In order to display a meaningful value, a function should be passed to the `renderValue` prop which returns the value to be displayed when no items are selected.
+  * You can only use it when the `native` prop is `false` (default).
+  */
+  displayEmpty: _propTypesDefault.default.bool,
+  /**
+  * The icon that displays the arrow.
+  */
+  IconComponent: _propTypesDefault.default.elementType,
+  /**
+  * The `id` of the wrapper element or the `select` element when `native`.
+  */
+  id: _propTypesDefault.default.string,
+  /**
+  * An `Input` element; does not have to be a material-ui specific `Input`.
+  */
+  input: _propTypesDefault.default.element,
+  /**
+  * [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes) applied to the `input` element.
+  * When `native` is `true`, the attributes are applied on the `select` element.
+  */
+  inputProps: _propTypesDefault.default.object,
+  /**
+  * See [OutlinedInput#label](/api/outlined-input/#props)
+  */
+  label: _propTypesDefault.default.node,
+  /**
+  * The ID of an element that acts as an additional label. The Select will
+  * be labelled by the additional label and the selected value.
+  */
+  labelId: _propTypesDefault.default.string,
+  /**
+  * See [OutlinedInput#label](/api/outlined-input/#props)
+  */
+  labelWidth: _propTypesDefault.default.number,
+  /**
+  * Props applied to the [`Menu`](/api/menu/) element.
+  */
+  MenuProps: _propTypesDefault.default.object,
+  /**
+  * If `true`, `value` must be an array and the menu will support multiple selections.
+  */
+  multiple: _propTypesDefault.default.bool,
+  /**
+  * If `true`, the component will be using a native `select` element.
+  */
+  native: _propTypesDefault.default.bool,
+  /**
+  * Callback function fired when a menu item is selected.
+  *
+  * @param {object} event The event source of the callback.
+  * You can pull out the new value by accessing `event.target.value` (any).
+  * @param {object} [child] The react element that was selected when `native` is `false` (default).
+  */
+  onChange: _propTypesDefault.default.func,
+  /**
+  * Callback fired when the component requests to be closed.
+  * Use in controlled mode (see open).
+  *
+  * @param {object} event The event source of the callback.
+  */
+  onClose: _propTypesDefault.default.func,
+  /**
+  * Callback fired when the component requests to be opened.
+  * Use in controlled mode (see open).
+  *
+  * @param {object} event The event source of the callback.
+  */
+  onOpen: _propTypesDefault.default.func,
+  /**
+  * Control `select` open state.
+  * You can only use it when the `native` prop is `false` (default).
+  */
+  open: _propTypesDefault.default.bool,
+  /**
+  * Render the selected value.
+  * You can only use it when the `native` prop is `false` (default).
+  *
+  * @param {any} value The `value` provided to the component.
+  * @returns {ReactNode}
+  */
+  renderValue: _propTypesDefault.default.func,
+  /**
+  * Props applied to the clickable div element.
+  */
+  SelectDisplayProps: _propTypesDefault.default.object,
+  /**
+  * The input value. Providing an empty string will select no options.
+  * This prop is required when the `native` prop is `false` (default).
+  * Set to an empty string `''` if you don't want any of the available options to be selected.
+  *
+  * If the value is an object it must have reference equality with the option in order to be selected.
+  * If the value is not an object, the string representation must match with the string representation of the option in order to be selected.
+  */
+  value: _propTypesDefault.default.any,
+  /**
+  * The variant to use.
+  */
+  variant: _propTypesDefault.default.oneOf(['filled', 'outlined', 'standard'])
+} : void 0;
+Select.muiName = 'Select';
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiSelect'
+})(Select);

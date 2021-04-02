@@ -1,0 +1,86 @@
+var helpers = require("../../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _bnJs = require('bn.js');
+  var _bnJsDefault = _parcelHelpers.interopDefault(_bnJs);
+  var _utilsContexts = require('../utils/contexts');
+  var _materialUiCore = require('@material-ui/core');
+  var _ = require('.');
+  var _jsxFileName = "/Users/stormsheep/Documents/repos/parity/substrate-connect/projects/burnr/src/components/HistoryTableRow.tsx", _s = $RefreshSig$();
+  const HistoryTableRow = ({columns, row, showStatus = true}) => {
+    _s();
+    const {balanceVisibility} = _react.useContext(_utilsContexts.BalanceVisibleContext);
+    return (
+      /*#__PURE__*/
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      _reactDefault.default.createElement(_materialUiCore.TableRow, {
+        hover: true,
+        key: `transaction`,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 27,
+          columnNumber: 9
+        }
+      }, columns.map(column => {
+        const value = row[column.id];
+        return (
+          /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.TableCell, {
+            key: `transaction-${column.id}`,
+            align: column.align,
+            __self: undefined,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 31,
+              columnNumber: 17
+            }
+          }, column.id === 'withWhom' && /*#__PURE__*/_reactDefault.default.createElement(_.AccountCard, {
+            account: {
+              address: value.toString(),
+              name: ''
+            },
+            __self: undefined,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 33,
+              columnNumber: 25
+            }
+          }), column.id === 'extrinsic' && value, column.id === 'value' && (// This may look overwhelming but is just for "dump" data until page is fixed
+          typeof value === 'number' || typeof value === 'string') && /*#__PURE__*/_reactDefault.default.createElement(_.BalanceValue, {
+            isVisible: balanceVisibility,
+            value: new _bnJsDefault.default(value),
+            __self: undefined,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 40,
+              columnNumber: 28
+            }
+          }), showStatus && column.id === 'status' && /*#__PURE__*/_reactDefault.default.createElement(_.PopoverExtrinsic, {
+            status: row.status,
+            __self: undefined,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 43,
+              columnNumber: 62
+            }
+          }))
+        );
+      }))
+    );
+  };
+  _s(HistoryTableRow, "0I19P0El/K+MileqZYqv/yaglz4=");
+  _c = HistoryTableRow;
+  exports.default = HistoryTableRow;
+  var _c;
+  $RefreshReg$(_c, "HistoryTableRow");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

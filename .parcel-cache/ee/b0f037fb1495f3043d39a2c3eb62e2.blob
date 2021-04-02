@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _getStylesCreatorDefault.default;
+});
+var _getStylesCreator = require('./getStylesCreator');
+var _getStylesCreatorDefault = _parcelHelpers.interopDefault(_getStylesCreator);

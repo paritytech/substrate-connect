@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _RootRefDefault.default;
+});
+var _RootRef = require('./RootRef');
+var _RootRefDefault = _parcelHelpers.interopDefault(_RootRef);

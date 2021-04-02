@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _TabScrollButtonDefault.default;
+});
+var _TabScrollButton = require('./TabScrollButton');
+var _TabScrollButtonDefault = _parcelHelpers.interopDefault(_TabScrollButton);

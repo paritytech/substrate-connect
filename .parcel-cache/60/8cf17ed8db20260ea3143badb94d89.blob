@@ -1,0 +1,88 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "isUnitless", function () {
+  return isUnitless;
+});
+_parcelHelpers.export(exports, "getUnit", function () {
+  return getUnit;
+});
+_parcelHelpers.export(exports, "toUnitless", function () {
+  return toUnitless;
+});
+_parcelHelpers.export(exports, "convertLength", function () {
+  return convertLength;
+});
+_parcelHelpers.export(exports, "alignProperty", function () {
+  return alignProperty;
+});
+_parcelHelpers.export(exports, "fontGrid", function () {
+  return fontGrid;
+});
+_parcelHelpers.export(exports, "responsiveProperty", function () {
+  return responsiveProperty;
+});
+var _babelRuntimeHelpersEsmDefineProperty = require("@babel/runtime/helpers/esm/defineProperty");
+var _babelRuntimeHelpersEsmDefinePropertyDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmDefineProperty);
+function isUnitless(value) {
+  return String(parseFloat(value)).length === String(value).length;
+}
+function getUnit(input) {
+  return String(input).match(/[\d.\-+]*\s*(.*)/)[1] || '';
+}
+function toUnitless(length) {
+  return parseFloat(length);
+}
+function convertLength(baseFontSize) {
+  return function (length, toUnit) {
+    var fromUnit = getUnit(length);
+    // Optimize for cases where `from` and `to` units are accidentally the same.
+    if (fromUnit === toUnit) {
+      return length;
+    }
+    // Convert input length to pixels.
+    var pxLength = toUnitless(length);
+    if (fromUnit !== 'px') {
+      if (fromUnit === 'em') {
+        pxLength = toUnitless(length) * toUnitless(baseFontSize);
+      } else if (fromUnit === 'rem') {
+        pxLength = toUnitless(length) * toUnitless(baseFontSize);
+        return length;
+      }
+    }
+    // Convert length in pixels to the output unit
+    var outputLength = pxLength;
+    if (toUnit !== 'px') {
+      if (toUnit === 'em') {
+        outputLength = pxLength / toUnitless(baseFontSize);
+      } else if (toUnit === 'rem') {
+        outputLength = pxLength / toUnitless(baseFontSize);
+      } else {
+        return length;
+      }
+    }
+    return parseFloat(outputLength.toFixed(5)) + toUnit;
+  };
+}
+function alignProperty(_ref) {
+  var size = _ref.size, grid = _ref.grid;
+  var sizeBelow = size - size % grid;
+  var sizeAbove = sizeBelow + grid;
+  return size - sizeBelow < sizeAbove - size ? sizeBelow : sizeAbove;
+}
+function fontGrid(_ref2) {
+  var lineHeight = _ref2.lineHeight, pixels = _ref2.pixels, htmlFontSize = _ref2.htmlFontSize;
+  return pixels / (lineHeight * htmlFontSize);
+}
+function responsiveProperty(_ref3) {
+  var cssProperty = _ref3.cssProperty, min = _ref3.min, max = _ref3.max, _ref3$unit = _ref3.unit, unit = _ref3$unit === void 0 ? 'rem' : _ref3$unit, _ref3$breakpoints = _ref3.breakpoints, breakpoints = _ref3$breakpoints === void 0 ? [600, 960, 1280] : _ref3$breakpoints, _ref3$transform = _ref3.transform, transform = _ref3$transform === void 0 ? null : _ref3$transform;
+  var output = _babelRuntimeHelpersEsmDefinePropertyDefault.default({}, cssProperty, ("").concat(min).concat(unit));
+  var factor = (max - min) / breakpoints[breakpoints.length - 1];
+  breakpoints.forEach(function (breakpoint) {
+    var value = min + factor * breakpoint;
+    if (transform !== null) {
+      value = transform(value);
+    }
+    output[("@media (min-width:").concat(breakpoint, "px)")] = _babelRuntimeHelpersEsmDefinePropertyDefault.default({}, cssProperty, ("").concat(Math.round(value * 10000) / 10000).concat(unit));
+  });
+  return output;
+}

@@ -1,0 +1,277 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _materialUiUtils = require('@material-ui/utils');
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _stylesColorManipulator = require('../styles/colorManipulator');
+var _utilsCapitalize = require('../utils/capitalize');
+var _utilsCapitalizeDefault = _parcelHelpers.interopDefault(_utilsCapitalize);
+var _internalSwitchBase = require('../internal/SwitchBase');
+var _internalSwitchBaseDefault = _parcelHelpers.interopDefault(_internalSwitchBase);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: {
+      display: 'inline-flex',
+      width: 34 + 12 * 2,
+      height: 14 + 12 * 2,
+      overflow: 'hidden',
+      padding: 12,
+      boxSizing: 'border-box',
+      position: 'relative',
+      flexShrink: 0,
+      zIndex: 0,
+      // Reset the stacking context.
+      verticalAlign: 'middle',
+      // For correct alignment with the text.
+      '@media print': {
+        colorAdjust: 'exact'
+      }
+    },
+    /*Styles applied to the root element if `edge="start"`.*/
+    edgeStart: {
+      marginLeft: -8
+    },
+    /*Styles applied to the root element if `edge="end"`.*/
+    edgeEnd: {
+      marginRight: -8
+    },
+    /*Styles applied to the internal `SwitchBase` component's `root` class.*/
+    switchBase: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      zIndex: 1,
+      // Render above the focus ripple.
+      color: theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[400],
+      transition: theme.transitions.create(['left', 'transform'], {
+        duration: theme.transitions.duration.shortest
+      }),
+      '&$checked': {
+        transform: 'translateX(20px)'
+      },
+      '&$disabled': {
+        color: theme.palette.type === 'light' ? theme.palette.grey[400] : theme.palette.grey[800]
+      },
+      '&$checked + $track': {
+        opacity: 0.5
+      },
+      '&$disabled + $track': {
+        opacity: theme.palette.type === 'light' ? 0.12 : 0.1
+      }
+    },
+    /*Styles applied to the internal SwitchBase component's root element if `color="primary"`.*/
+    colorPrimary: {
+      '&$checked': {
+        color: theme.palette.primary.main,
+        '&:hover': {
+          backgroundColor: _stylesColorManipulator.fade(theme.palette.primary.main, theme.palette.action.hoverOpacity),
+          '@media (hover: none)': {
+            backgroundColor: 'transparent'
+          }
+        }
+      },
+      '&$disabled': {
+        color: theme.palette.type === 'light' ? theme.palette.grey[400] : theme.palette.grey[800]
+      },
+      '&$checked + $track': {
+        backgroundColor: theme.palette.primary.main
+      },
+      '&$disabled + $track': {
+        backgroundColor: theme.palette.type === 'light' ? theme.palette.common.black : theme.palette.common.white
+      }
+    },
+    /*Styles applied to the internal SwitchBase component's root element if `color="secondary"`.*/
+    colorSecondary: {
+      '&$checked': {
+        color: theme.palette.secondary.main,
+        '&:hover': {
+          backgroundColor: _stylesColorManipulator.fade(theme.palette.secondary.main, theme.palette.action.hoverOpacity),
+          '@media (hover: none)': {
+            backgroundColor: 'transparent'
+          }
+        }
+      },
+      '&$disabled': {
+        color: theme.palette.type === 'light' ? theme.palette.grey[400] : theme.palette.grey[800]
+      },
+      '&$checked + $track': {
+        backgroundColor: theme.palette.secondary.main
+      },
+      '&$disabled + $track': {
+        backgroundColor: theme.palette.type === 'light' ? theme.palette.common.black : theme.palette.common.white
+      }
+    },
+    /*Styles applied to the root element if `size="small"`.*/
+    sizeSmall: {
+      width: 40,
+      height: 24,
+      padding: 7,
+      '& $thumb': {
+        width: 16,
+        height: 16
+      },
+      '& $switchBase': {
+        padding: 4,
+        '&$checked': {
+          transform: 'translateX(16px)'
+        }
+      }
+    },
+    /*Pseudo-class applied to the internal `SwitchBase` component's `checked` class.*/
+    checked: {},
+    /*Pseudo-class applied to the internal SwitchBase component's disabled class.*/
+    disabled: {},
+    /*Styles applied to the internal SwitchBase component's input element.*/
+    input: {
+      left: '-100%',
+      width: '300%'
+    },
+    /*Styles used to create the thumb passed to the internal `SwitchBase` component `icon` prop.*/
+    thumb: {
+      boxShadow: theme.shadows[1],
+      backgroundColor: 'currentColor',
+      width: 20,
+      height: 20,
+      borderRadius: '50%'
+    },
+    /*Styles applied to the track element.*/
+    track: {
+      height: '100%',
+      width: '100%',
+      borderRadius: 14 / 2,
+      zIndex: -1,
+      transition: theme.transitions.create(['opacity', 'background-color'], {
+        duration: theme.transitions.duration.shortest
+      }),
+      backgroundColor: theme.palette.type === 'light' ? theme.palette.common.black : theme.palette.common.white,
+      opacity: theme.palette.type === 'light' ? 0.38 : 0.3
+    }
+  };
+};
+var Switch = /*#__PURE__*/_react.forwardRef(function Switch(props, ref) {
+  var classes = props.classes, className = props.className, _props$color = props.color, color = _props$color === void 0 ? 'secondary' : _props$color, _props$edge = props.edge, edge = _props$edge === void 0 ? false : _props$edge, _props$size = props.size, size = _props$size === void 0 ? 'medium' : _props$size, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["classes", "className", "color", "edge", "size"]);
+  var icon = /*#__PURE__*/_react.createElement("span", {
+    className: classes.thumb
+  });
+  return (
+    /*#__PURE__*/_react.createElement("span", {
+      className: _clsxDefault.default(classes.root, className, ({
+        'start': classes.edgeStart,
+        'end': classes.edgeEnd
+      })[edge], size === "small" && classes[("size").concat(_utilsCapitalizeDefault.default(size))])
+    }, /*#__PURE__*/_react.createElement(_internalSwitchBaseDefault.default, _babelRuntimeHelpersEsmExtendsDefault.default({
+      type: "checkbox",
+      icon: icon,
+      checkedIcon: icon,
+      classes: {
+        root: _clsxDefault.default(classes.switchBase, classes[("color").concat(_utilsCapitalizeDefault.default(color))]),
+        input: classes.input,
+        checked: classes.checked,
+        disabled: classes.disabled
+      },
+      ref: ref
+    }, other)), /*#__PURE__*/_react.createElement("span", {
+      className: classes.track
+    }))
+  );
+});
+"development" !== "production" ? Switch.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * If `true`, the component is checked.
+  */
+  checked: _propTypesDefault.default.bool,
+  /**
+  * The icon to display when the component is checked.
+  */
+  checkedIcon: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * The color of the component. It supports those theme colors that make sense for this component.
+  */
+  color: _propTypesDefault.default.oneOf(['default', 'primary', 'secondary']),
+  /**
+  * @ignore
+  */
+  defaultChecked: _propTypesDefault.default.bool,
+  /**
+  * If `true`, the switch will be disabled.
+  */
+  disabled: _propTypesDefault.default.bool,
+  /**
+  * If `true`, the ripple effect will be disabled.
+  */
+  disableRipple: _propTypesDefault.default.bool,
+  /**
+  * If given, uses a negative margin to counteract the padding on one
+  * side (this is often helpful for aligning the left or right
+  * side of the icon with content above or below, without ruining the border
+  * size and shape).
+  */
+  edge: _propTypesDefault.default.oneOf(['end', 'start', false]),
+  /**
+  * The icon to display when the component is unchecked.
+  */
+  icon: _propTypesDefault.default.node,
+  /**
+  * The id of the `input` element.
+  */
+  id: _propTypesDefault.default.string,
+  /**
+  * [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes) applied to the `input` element.
+  */
+  inputProps: _propTypesDefault.default.object,
+  /**
+  * Pass a ref to the `input` element.
+  */
+  inputRef: _materialUiUtils.refType,
+  /**
+  * Callback fired when the state is changed.
+  *
+  * @param {object} event The event source of the callback.
+  * You can pull out the new value by accessing `event.target.value` (string).
+  * You can pull out the new checked state by accessing `event.target.checked` (boolean).
+  */
+  onChange: _propTypesDefault.default.func,
+  /**
+  * If `true`, the `input` element will be required.
+  */
+  required: _propTypesDefault.default.bool,
+  /**
+  * The size of the switch.
+  * `small` is equivalent to the dense switch styling.
+  */
+  size: _propTypesDefault.default.oneOf(['medium', 'small']),
+  /**
+  * The value of the component. The DOM API casts this to a string.
+  * The browser uses "on" as the default value.
+  */
+  value: _propTypesDefault.default.any
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiSwitch'
+})(Switch);

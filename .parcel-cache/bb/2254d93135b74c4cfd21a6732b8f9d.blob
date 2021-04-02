@@ -1,0 +1,137 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _utilsCapitalize = require('../utils/capitalize');
+var _utilsCapitalizeDefault = _parcelHelpers.interopDefault(_utilsCapitalize);
+var _Paper = require('../Paper');
+var _PaperDefault = _parcelHelpers.interopDefault(_Paper);
+var styles = function styles(theme) {
+  var backgroundColorDefault = theme.palette.type === 'light' ? theme.palette.grey[100] : theme.palette.grey[900];
+  return {
+    /*Styles applied to the root element.*/
+    root: {
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      boxSizing: 'border-box',
+      // Prevent padding issue with the Modal and fixed positioned AppBar.
+      zIndex: theme.zIndex.appBar,
+      flexShrink: 0
+    },
+    /*Styles applied to the root element if `position="fixed"`.*/
+    positionFixed: {
+      position: 'fixed',
+      top: 0,
+      left: 'auto',
+      right: 0,
+      '@media print': {
+        // Prevent the app bar to be visible on each printed page.
+        position: 'absolute'
+      }
+    },
+    /*Styles applied to the root element if `position="absolute"`.*/
+    positionAbsolute: {
+      position: 'absolute',
+      top: 0,
+      left: 'auto',
+      right: 0
+    },
+    /*Styles applied to the root element if `position="sticky"`.*/
+    positionSticky: {
+      // ⚠️ sticky is not supported by IE 11.
+      position: 'sticky',
+      top: 0,
+      left: 'auto',
+      right: 0
+    },
+    /*Styles applied to the root element if `position="static"`.*/
+    positionStatic: {
+      position: 'static'
+    },
+    /*Styles applied to the root element if `position="relative"`.*/
+    positionRelative: {
+      position: 'relative'
+    },
+    /*Styles applied to the root element if `color="default"`.*/
+    colorDefault: {
+      backgroundColor: backgroundColorDefault,
+      color: theme.palette.getContrastText(backgroundColorDefault)
+    },
+    /*Styles applied to the root element if `color="primary"`.*/
+    colorPrimary: {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.primary.contrastText
+    },
+    /*Styles applied to the root element if `color="secondary"`.*/
+    colorSecondary: {
+      backgroundColor: theme.palette.secondary.main,
+      color: theme.palette.secondary.contrastText
+    },
+    /*Styles applied to the root element if `color="inherit"`.*/
+    colorInherit: {
+      color: 'inherit'
+    },
+    /*Styles applied to the root element if `color="transparent"`.*/
+    colorTransparent: {
+      backgroundColor: 'transparent',
+      color: 'inherit'
+    }
+  };
+};
+var AppBar = /*#__PURE__*/_react.forwardRef(function AppBar(props, ref) {
+  var classes = props.classes, className = props.className, _props$color = props.color, color = _props$color === void 0 ? 'primary' : _props$color, _props$position = props.position, position = _props$position === void 0 ? 'fixed' : _props$position, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["classes", "className", "color", "position"]);
+  return (
+    /*#__PURE__*/_react.createElement(_PaperDefault.default, _babelRuntimeHelpersEsmExtendsDefault.default({
+      square: true,
+      component: "header",
+      elevation: 4,
+      className: _clsxDefault.default(classes.root, classes[("position").concat(_utilsCapitalizeDefault.default(position))], classes[("color").concat(_utilsCapitalizeDefault.default(color))], className, position === 'fixed' && 'mui-fixed'),
+      ref: ref
+    }, other))
+  );
+});
+"development" !== "production" ? AppBar.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * The content of the component.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * The color of the component. It supports those theme colors that make sense for this component.
+  */
+  color: _propTypesDefault.default.oneOf(['default', 'inherit', 'primary', 'secondary', 'transparent']),
+  /**
+  * The positioning type. The behavior of the different options is described
+  * [in the MDN web docs](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Positioning).
+  * Note: `sticky` is not universally supported and will fall back to `static` when unavailable.
+  */
+  position: _propTypesDefault.default.oneOf(['absolute', 'fixed', 'relative', 'static', 'sticky'])
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiAppBar'
+})(AppBar);

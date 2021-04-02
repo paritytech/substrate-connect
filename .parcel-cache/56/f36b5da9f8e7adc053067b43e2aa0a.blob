@@ -1,0 +1,102 @@
+var helpers = require("../../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _materialUiCore = require('@material-ui/core');
+  var _materialUiLabSkeleton = require('@material-ui/lab/Skeleton');
+  var _materialUiLabSkeletonDefault = _parcelHelpers.interopDefault(_materialUiLabSkeleton);
+  var _polkadotReactIdenticon = require('@polkadot/react-identicon');
+  var _polkadotReactIdenticonDefault = _parcelHelpers.interopDefault(_polkadotReactIdenticon);
+  var _jsxFileName = "/Users/stormsheep/Documents/repos/parity/substrate-connect/projects/burnr/src/components/InputAddress.tsx", _s = $RefreshSig$();
+  const InputAddress = ({setAddress}) => {
+    _s();
+    const [value, setValue] = _react.useState('');
+    _react.useEffect(() => {
+      setAddress(value);
+    }, [value, setAddress]);
+    const handleChangeButton = e => {
+      const val = e.currentTarget.value;
+      setValue(val);
+    };
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Box, {
+        marginY: 1,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 26,
+          columnNumber: 4
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.FormControl, {
+        required: true,
+        fullWidth: true,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 27,
+          columnNumber: 5
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.TextField, {
+        label: "Recepient Address",
+        onChange: handleChangeButton,
+        onFocus: handleChangeButton,
+        onBlur: handleChangeButton,
+        value: value,
+        variant: "outlined",
+        InputProps: {
+          spellCheck: 'false',
+          startAdornment: /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Box, {
+            marginRight: 1,
+            __self: undefined,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 38,
+              columnNumber: 5
+            }
+          }, !value || value === '' ? /*#__PURE__*/_reactDefault.default.createElement(_materialUiLabSkeletonDefault.default, {
+            variant: "circle",
+            width: 32,
+            height: 32,
+            __self: undefined,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 40,
+              columnNumber: 9
+            }
+          }) : /*#__PURE__*/_reactDefault.default.createElement(_polkadotReactIdenticonDefault.default, {
+            size: 32,
+            theme: "polkadot",
+            value: value,
+            __self: undefined,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 41,
+              columnNumber: 9
+            }
+          }))
+        },
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 28,
+          columnNumber: 6
+        }
+      }))))
+    );
+  };
+  _s(InputAddress, "aFIykL0K1j3we4veeaDstLdSuC8=");
+  _c = InputAddress;
+  exports.default = _c2 = /*#__PURE__*/_reactDefault.default.memo(InputAddress);
+  var _c, _c2;
+  $RefreshReg$(_c, "InputAddress");
+  $RefreshReg$(_c2, "%default%");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

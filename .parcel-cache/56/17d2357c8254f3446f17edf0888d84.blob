@@ -1,0 +1,161 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmDefineProperty = require("@babel/runtime/helpers/esm/defineProperty");
+var _babelRuntimeHelpersEsmDefinePropertyDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmDefineProperty);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _stylesUseTheme = require('../styles/useTheme');
+var _stylesUseThemeDefault = _parcelHelpers.interopDefault(_stylesUseTheme);
+var _utilsCapitalize = require('../utils/capitalize');
+var _utilsCapitalizeDefault = _parcelHelpers.interopDefault(_utilsCapitalize);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      top: -5,
+      left: 0,
+      margin: 0,
+      padding: '0 8px',
+      pointerEvents: 'none',
+      borderRadius: 'inherit',
+      borderStyle: 'solid',
+      borderWidth: 1,
+      overflow: 'hidden'
+    },
+    /*Styles applied to the legend element when `labelWidth` is provided.*/
+    legend: {
+      textAlign: 'left',
+      padding: 0,
+      lineHeight: '11px',
+      // sync with `height` in `legend` styles
+      transition: theme.transitions.create('width', {
+        duration: 150,
+        easing: theme.transitions.easing.easeOut
+      })
+    },
+    /*Styles applied to the legend element.*/
+    legendLabelled: {
+      display: 'block',
+      width: 'auto',
+      textAlign: 'left',
+      padding: 0,
+      height: 11,
+      // sync with `lineHeight` in `legend` styles
+      fontSize: '0.75em',
+      visibility: 'hidden',
+      maxWidth: 0.01,
+      transition: theme.transitions.create('max-width', {
+        duration: 50,
+        easing: theme.transitions.easing.easeOut
+      }),
+      '& > span': {
+        paddingLeft: 5,
+        paddingRight: 5,
+        display: 'inline-block'
+      }
+    },
+    /*Styles applied to the legend element is notched.*/
+    legendNotched: {
+      maxWidth: 1000,
+      transition: theme.transitions.create('max-width', {
+        duration: 100,
+        easing: theme.transitions.easing.easeOut,
+        delay: 50
+      })
+    }
+  };
+};
+/**
+* @ignore - internal component.
+*/
+var NotchedOutline = /*#__PURE__*/_react.forwardRef(function NotchedOutline(props, ref) {
+  var children = props.children, classes = props.classes, className = props.className, label = props.label, labelWidthProp = props.labelWidth, notched = props.notched, style = props.style, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["children", "classes", "className", "label", "labelWidth", "notched", "style"]);
+  var theme = _stylesUseThemeDefault.default();
+  var align = theme.direction === 'rtl' ? 'right' : 'left';
+  if (label !== undefined) {
+    return (
+      /*#__PURE__*/_react.createElement("fieldset", _babelRuntimeHelpersEsmExtendsDefault.default({
+        "aria-hidden": true,
+        className: _clsxDefault.default(classes.root, className),
+        ref: ref,
+        style: style
+      }, other), /*#__PURE__*/_react.createElement("legend", {
+        className: _clsxDefault.default(classes.legendLabelled, notched && classes.legendNotched)
+      }, label ? /*#__PURE__*/_react.createElement("span", null, label) : /*#__PURE__*/_react.createElement("span", {
+        dangerouslySetInnerHTML: {
+          __html: '&#8203;'
+        }
+      })))
+    );
+  }
+  var labelWidth = labelWidthProp > 0 ? labelWidthProp * 0.75 + 8 : 0.01;
+  return (
+    /*#__PURE__*/_react.createElement("fieldset", _babelRuntimeHelpersEsmExtendsDefault.default({
+      "aria-hidden": true,
+      style: _babelRuntimeHelpersEsmExtendsDefault.default(_babelRuntimeHelpersEsmDefinePropertyDefault.default({}, ("padding").concat(_utilsCapitalizeDefault.default(align)), 8), style),
+      className: _clsxDefault.default(classes.root, className),
+      ref: ref
+    }, other), /*#__PURE__*/_react.createElement("legend", {
+      className: classes.legend,
+      style: {
+        // IE 11: fieldset with legend does not render
+        // a border radius. This maintains consistency
+        // by always having a legend rendered
+        width: notched ? labelWidth : 0.01
+      }
+    }, /*#__PURE__*/_react.createElement("span", {
+      dangerouslySetInnerHTML: {
+        __html: '&#8203;'
+      }
+    })))
+  );
+});
+"development" !== "production" ? NotchedOutline.propTypes = {
+  /**
+  * The content of the component.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * The label.
+  */
+  label: _propTypesDefault.default.node,
+  /**
+  * The width of the label.
+  */
+  labelWidth: _propTypesDefault.default.number.isRequired,
+  /**
+  * If `true`, the outline is notched to accommodate the label.
+  */
+  notched: _propTypesDefault.default.bool.isRequired,
+  /**
+  * @ignore
+  */
+  style: _propTypesDefault.default.object
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'PrivateNotchedOutline'
+})(NotchedOutline);

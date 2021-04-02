@@ -1,0 +1,94 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "html", function () {
+  return html;
+});
+_parcelHelpers.export(exports, "body", function () {
+  return body;
+});
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _materialUiUtils = require('@material-ui/utils');
+var html = {
+  WebkitFontSmoothing: 'antialiased',
+  // Antialiasing.
+  MozOsxFontSmoothing: 'grayscale',
+  // Antialiasing.
+  // Change from `box-sizing: content-box` so that `width`
+  // is not affected by `padding` or `border`.
+  boxSizing: 'border-box'
+};
+var body = function body(theme) {
+  return _babelRuntimeHelpersEsmExtendsDefault.default({
+    color: theme.palette.text.primary
+  }, theme.typography.body2, {
+    backgroundColor: theme.palette.background.default,
+    '@media print': {
+      // Save printer ink.
+      backgroundColor: theme.palette.common.white
+    }
+  });
+};
+var styles = function styles(theme) {
+  return {
+    '@global': {
+      html: html,
+      '*, *::before, *::after': {
+        boxSizing: 'inherit'
+      },
+      'strong, b': {
+        fontWeight: theme.typography.fontWeightBold
+      },
+      body: _babelRuntimeHelpersEsmExtendsDefault.default({
+        margin: 0
+      }, body(theme), {
+        // Add support for document.body.requestFullScreen().
+        // Other elements, if background transparent, are not supported.
+        '&::backdrop': {
+          backgroundColor: theme.palette.background.default
+        }
+      })
+    }
+  };
+};
+/**
+* Kickstart an elegant, consistent, and simple baseline to build upon.
+*/
+function CssBaseline(props) {
+  /*eslint-disable no-unused-vars*/
+  var _props$children = props.children, children = _props$children === void 0 ? null : _props$children, classes = props.classes;
+  /*eslint-enable no-unused-vars*/
+  return (
+    /*#__PURE__*/_react.createElement(_react.Fragment, null, children)
+  );
+}
+"development" !== "production" ? CssBaseline.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * You can wrap a node.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object
+} : void 0;
+if ("development" !== 'production') {
+  // eslint-disable-next-line
+  CssBaseline['propTypes' + ''] = _materialUiUtils.exactProp(CssBaseline.propTypes);
+}
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiCssBaseline'
+})(CssBaseline);

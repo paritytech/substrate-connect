@@ -1,0 +1,137 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _FormControlFormControlState = require('../FormControl/formControlState');
+var _FormControlFormControlStateDefault = _parcelHelpers.interopDefault(_FormControlFormControlState);
+var _FormControlUseFormControl = require('../FormControl/useFormControl');
+var _FormControlUseFormControlDefault = _parcelHelpers.interopDefault(_FormControlUseFormControl);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: _babelRuntimeHelpersEsmExtendsDefault.default({
+      color: theme.palette.text.secondary
+    }, theme.typography.caption, {
+      textAlign: 'left',
+      marginTop: 3,
+      margin: 0,
+      '&$disabled': {
+        color: theme.palette.text.disabled
+      },
+      '&$error': {
+        color: theme.palette.error.main
+      }
+    }),
+    /*Pseudo-class applied to the root element if `error={true}`.*/
+    error: {},
+    /*Pseudo-class applied to the root element if `disabled={true}`.*/
+    disabled: {},
+    /*Styles applied to the root element if `margin="dense"`.*/
+    marginDense: {
+      marginTop: 4
+    },
+    /*Styles applied to the root element if `variant="filled"` or `variant="outlined"`.*/
+    contained: {
+      marginLeft: 14,
+      marginRight: 14
+    },
+    /*Pseudo-class applied to the root element if `focused={true}`.*/
+    focused: {},
+    /*Pseudo-class applied to the root element if `filled={true}`.*/
+    filled: {},
+    /*Pseudo-class applied to the root element if `required={true}`.*/
+    required: {}
+  };
+};
+var FormHelperText = /*#__PURE__*/_react.forwardRef(function FormHelperText(props, ref) {
+  var children = props.children, classes = props.classes, className = props.className, _props$component = props.component, Component = _props$component === void 0 ? 'p' : _props$component, disabled = props.disabled, error = props.error, filled = props.filled, focused = props.focused, margin = props.margin, required = props.required, variant = props.variant, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["children", "classes", "className", "component", "disabled", "error", "filled", "focused", "margin", "required", "variant"]);
+  var muiFormControl = _FormControlUseFormControlDefault.default();
+  var fcs = _FormControlFormControlStateDefault.default({
+    props: props,
+    muiFormControl: muiFormControl,
+    states: ['variant', 'margin', 'disabled', 'error', 'filled', 'focused', 'required']
+  });
+  return (
+    /*#__PURE__*/_react.createElement(Component, _babelRuntimeHelpersEsmExtendsDefault.default({
+      className: _clsxDefault.default(classes.root, (fcs.variant === 'filled' || fcs.variant === 'outlined') && classes.contained, className, fcs.disabled && classes.disabled, fcs.error && classes.error, fcs.filled && classes.filled, fcs.focused && classes.focused, fcs.required && classes.required, fcs.margin === 'dense' && classes.marginDense),
+      ref: ref
+    }, other), children === ' ' ? /*#__PURE__*/
+    // eslint-disable-next-line react/no-danger
+    _react.createElement("span", {
+      dangerouslySetInnerHTML: {
+        __html: '&#8203;'
+      }
+    }) : children)
+  );
+});
+"development" !== "production" ? FormHelperText.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * The content of the component.
+  *
+  * If `' '` is provided, the component reserves one line height for displaying a future message.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * The component used for the root node.
+  * Either a string to use a HTML element or a component.
+  */
+  component: _propTypesDefault.default./*@typescript-to-proptypes-ignore*/
+  elementType,
+  /**
+  * If `true`, the helper text should be displayed in a disabled state.
+  */
+  disabled: _propTypesDefault.default.bool,
+  /**
+  * If `true`, helper text should be displayed in an error state.
+  */
+  error: _propTypesDefault.default.bool,
+  /**
+  * If `true`, the helper text should use filled classes key.
+  */
+  filled: _propTypesDefault.default.bool,
+  /**
+  * If `true`, the helper text should use focused classes key.
+  */
+  focused: _propTypesDefault.default.bool,
+  /**
+  * If `dense`, will adjust vertical spacing. This is normally obtained via context from
+  * FormControl.
+  */
+  margin: _propTypesDefault.default.oneOf(['dense']),
+  /**
+  * If `true`, the helper text should use required classes key.
+  */
+  required: _propTypesDefault.default.bool,
+  /**
+  * The variant to use.
+  */
+  variant: _propTypesDefault.default.oneOf(['filled', 'outlined', 'standard'])
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiFormHelperText'
+})(FormHelperText);

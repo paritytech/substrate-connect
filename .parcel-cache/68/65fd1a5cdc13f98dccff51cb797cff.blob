@@ -1,0 +1,182 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _materialUiUtils = require('@material-ui/utils');
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _stylesColorManipulator = require('../styles/colorManipulator');
+var _ButtonBase = require('../ButtonBase');
+var _ButtonBaseDefault = _parcelHelpers.interopDefault(_ButtonBase);
+var _utilsCapitalize = require('../utils/capitalize');
+var _utilsCapitalizeDefault = _parcelHelpers.interopDefault(_utilsCapitalize);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: {
+      textAlign: 'center',
+      flex: '0 0 auto',
+      fontSize: theme.typography.pxToRem(24),
+      padding: 12,
+      borderRadius: '50%',
+      overflow: 'visible',
+      // Explicitly set the default value to solve a bug on IE 11.
+      color: theme.palette.action.active,
+      transition: theme.transitions.create('background-color', {
+        duration: theme.transitions.duration.shortest
+      }),
+      '&:hover': {
+        backgroundColor: _stylesColorManipulator.fade(theme.palette.action.active, theme.palette.action.hoverOpacity),
+        // Reset on touch devices, it doesn't add specificity
+        '@media (hover: none)': {
+          backgroundColor: 'transparent'
+        }
+      },
+      '&$disabled': {
+        backgroundColor: 'transparent',
+        color: theme.palette.action.disabled
+      }
+    },
+    /*Styles applied to the root element if `edge="start"`.*/
+    edgeStart: {
+      marginLeft: -12,
+      '$sizeSmall&': {
+        marginLeft: -3
+      }
+    },
+    /*Styles applied to the root element if `edge="end"`.*/
+    edgeEnd: {
+      marginRight: -12,
+      '$sizeSmall&': {
+        marginRight: -3
+      }
+    },
+    /*Styles applied to the root element if `color="inherit"`.*/
+    colorInherit: {
+      color: 'inherit'
+    },
+    /*Styles applied to the root element if `color="primary"`.*/
+    colorPrimary: {
+      color: theme.palette.primary.main,
+      '&:hover': {
+        backgroundColor: _stylesColorManipulator.fade(theme.palette.primary.main, theme.palette.action.hoverOpacity),
+        // Reset on touch devices, it doesn't add specificity
+        '@media (hover: none)': {
+          backgroundColor: 'transparent'
+        }
+      }
+    },
+    /*Styles applied to the root element if `color="secondary"`.*/
+    colorSecondary: {
+      color: theme.palette.secondary.main,
+      '&:hover': {
+        backgroundColor: _stylesColorManipulator.fade(theme.palette.secondary.main, theme.palette.action.hoverOpacity),
+        // Reset on touch devices, it doesn't add specificity
+        '@media (hover: none)': {
+          backgroundColor: 'transparent'
+        }
+      }
+    },
+    /*Pseudo-class applied to the root element if `disabled={true}`.*/
+    disabled: {},
+    /*Styles applied to the root element if `size="small"`.*/
+    sizeSmall: {
+      padding: 3,
+      fontSize: theme.typography.pxToRem(18)
+    },
+    /*Styles applied to the children container element.*/
+    label: {
+      width: '100%',
+      display: 'flex',
+      alignItems: 'inherit',
+      justifyContent: 'inherit'
+    }
+  };
+};
+/**
+* Refer to the [Icons](/components/icons/) section of the documentation
+* regarding the available icon options.
+*/
+var IconButton = /*#__PURE__*/_react.forwardRef(function IconButton(props, ref) {
+  var _props$edge = props.edge, edge = _props$edge === void 0 ? false : _props$edge, children = props.children, classes = props.classes, className = props.className, _props$color = props.color, color = _props$color === void 0 ? 'default' : _props$color, _props$disabled = props.disabled, disabled = _props$disabled === void 0 ? false : _props$disabled, _props$disableFocusRi = props.disableFocusRipple, disableFocusRipple = _props$disableFocusRi === void 0 ? false : _props$disableFocusRi, _props$size = props.size, size = _props$size === void 0 ? 'medium' : _props$size, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["edge", "children", "classes", "className", "color", "disabled", "disableFocusRipple", "size"]);
+  return (
+    /*#__PURE__*/_react.createElement(_ButtonBaseDefault.default, _babelRuntimeHelpersEsmExtendsDefault.default({
+      className: _clsxDefault.default(classes.root, className, color !== 'default' && classes[("color").concat(_utilsCapitalizeDefault.default(color))], disabled && classes.disabled, size === "small" && classes[("size").concat(_utilsCapitalizeDefault.default(size))], ({
+        'start': classes.edgeStart,
+        'end': classes.edgeEnd
+      })[edge]),
+      centerRipple: true,
+      focusRipple: !disableFocusRipple,
+      disabled: disabled,
+      ref: ref
+    }, other), /*#__PURE__*/_react.createElement("span", {
+      className: classes.label
+    }, children))
+  );
+});
+"development" !== "production" ? IconButton.propTypes = {
+  /**
+  * The icon element.
+  */
+  children: _materialUiUtils.chainPropTypes(_propTypesDefault.default.node, function (props) {
+    var found = _react.Children.toArray(props.children).some(function (child) {
+      return (
+        /*#__PURE__*/_react.isValidElement(child) && child.props.onClick
+      );
+    });
+    if (found) {
+      return new Error(['Material-UI: You are providing an onClick event listener ' + 'to a child of a button element.', 'Firefox will never trigger the event.', 'You should move the onClick listener to the parent button element.', 'https://github.com/mui-org/material-ui/issues/13957'].join('\n'));
+    }
+    return null;
+  }),
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object.isRequired,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * The color of the component. It supports those theme colors that make sense for this component.
+  */
+  color: _propTypesDefault.default.oneOf(['default', 'inherit', 'primary', 'secondary']),
+  /**
+  * If `true`, the button will be disabled.
+  */
+  disabled: _propTypesDefault.default.bool,
+  /**
+  * If `true`, the  keyboard focus ripple will be disabled.
+  */
+  disableFocusRipple: _propTypesDefault.default.bool,
+  /**
+  * If `true`, the ripple effect will be disabled.
+  */
+  disableRipple: _propTypesDefault.default.bool,
+  /**
+  * If given, uses a negative margin to counteract the padding on one
+  * side (this is often helpful for aligning the left or right
+  * side of the icon with content above or below, without ruining the border
+  * size and shape).
+  */
+  edge: _propTypesDefault.default.oneOf(['start', 'end', false]),
+  /**
+  * The size of the button.
+  * `small` is equivalent to the dense button styling.
+  */
+  size: _propTypesDefault.default.oneOf(['small', 'medium'])
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiIconButton'
+})(IconButton);

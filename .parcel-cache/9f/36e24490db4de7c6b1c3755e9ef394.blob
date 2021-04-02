@@ -1,0 +1,176 @@
+"use strict";
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.settings = exports.Settings = void 0;
+var _classPrivateFieldLooseBase2 = _interopRequireDefault(require("@babel/runtime/helpers/classPrivateFieldLooseBase"));
+var _classPrivateFieldLooseKey2 = _interopRequireDefault(require("@babel/runtime/helpers/classPrivateFieldLooseKey"));
+var _eventemitter = _interopRequireDefault(require("eventemitter3"));
+var _store = _interopRequireDefault(require("store"));
+var _util = require("@polkadot/util");
+var _defaults = require("./defaults");
+// Copyright 2017-2021 @polkadot/ui-settings authors & contributors
+// SPDX-License-Identifier: Apache-2.0
+function withDefault(options, option, fallback) {
+  const _option = option || fallback;
+  return options.some(({value}) => value === _option) ? _option : fallback;
+}
+var _emitter = (0, _classPrivateFieldLooseKey2.default)("emitter");
+var _apiUrl = (0, _classPrivateFieldLooseKey2.default)("apiUrl");
+var _camera = (0, _classPrivateFieldLooseKey2.default)("camera");
+var _i18nLang = (0, _classPrivateFieldLooseKey2.default)("i18nLang");
+var _icon = (0, _classPrivateFieldLooseKey2.default)("icon");
+var _ledgerConn = (0, _classPrivateFieldLooseKey2.default)("ledgerConn");
+var _locking = (0, _classPrivateFieldLooseKey2.default)("locking");
+var _prefix = (0, _classPrivateFieldLooseKey2.default)("prefix");
+var _uiMode = (0, _classPrivateFieldLooseKey2.default)("uiMode");
+var _uiTheme = (0, _classPrivateFieldLooseKey2.default)("uiTheme");
+class Settings {
+  constructor() {
+    Object.defineProperty(this, _emitter, {
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, _apiUrl, {
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, _camera, {
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, _i18nLang, {
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, _icon, {
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, _ledgerConn, {
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, _locking, {
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, _prefix, {
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, _uiMode, {
+      writable: true,
+      value: void 0
+    });
+    Object.defineProperty(this, _uiTheme, {
+      writable: true,
+      value: void 0
+    });
+    const settings = _store.default.get('settings') || ({});
+    (0, _classPrivateFieldLooseBase2.default)(this, _emitter)[_emitter] = new _eventemitter.default();
+    (0, _classPrivateFieldLooseBase2.default)(this, _apiUrl)[_apiUrl] = typeof settings.apiUrl === 'string' && settings.apiUrl || undefined || _defaults.ENDPOINT_DEFAULT.value;
+    (0, _classPrivateFieldLooseBase2.default)(this, _camera)[_camera] = withDefault(_defaults.CAMERA, settings.camera, _defaults.CAMERA_DEFAULT);
+    (0, _classPrivateFieldLooseBase2.default)(this, _ledgerConn)[_ledgerConn] = withDefault(_defaults.LEDGER_CONN, settings.ledgerConn, _defaults.LEDGER_CONN_DEFAULT);
+    (0, _classPrivateFieldLooseBase2.default)(this, _i18nLang)[_i18nLang] = settings.i18nLang || _defaults.LANGUAGE_DEFAULT;
+    (0, _classPrivateFieldLooseBase2.default)(this, _icon)[_icon] = settings.icon || _defaults.ICON_DEFAULT;
+    (0, _classPrivateFieldLooseBase2.default)(this, _locking)[_locking] = settings.locking || _defaults.LOCKING_DEFAULT;
+    (0, _classPrivateFieldLooseBase2.default)(this, _prefix)[_prefix] = (0, _util.isUndefined)(settings.prefix) ? _defaults.PREFIX_DEFAULT : settings.prefix;
+    (0, _classPrivateFieldLooseBase2.default)(this, _uiMode)[_uiMode] = settings.uiMode || _defaults.UIMODE_DEFAULT;
+    (0, _classPrivateFieldLooseBase2.default)(this, _uiTheme)[_uiTheme] = settings.uiTheme || _defaults.UITHEME_DEFAULT;
+  }
+  get camera() {
+    return (0, _classPrivateFieldLooseBase2.default)(this, _camera)[_camera];
+  }
+  get apiUrl() {
+    return (0, _classPrivateFieldLooseBase2.default)(this, _apiUrl)[_apiUrl];
+  }
+  get i18nLang() {
+    return (0, _classPrivateFieldLooseBase2.default)(this, _i18nLang)[_i18nLang];
+  }
+  get icon() {
+    return (0, _classPrivateFieldLooseBase2.default)(this, _icon)[_icon];
+  }
+  get ledgerConn() {
+    return (0, _classPrivateFieldLooseBase2.default)(this, _ledgerConn)[_ledgerConn];
+  }
+  get locking() {
+    return (0, _classPrivateFieldLooseBase2.default)(this, _locking)[_locking];
+  }
+  get prefix() {
+    return (0, _classPrivateFieldLooseBase2.default)(this, _prefix)[_prefix];
+  }
+  get uiMode() {
+    return (0, _classPrivateFieldLooseBase2.default)(this, _uiMode)[_uiMode];
+  }
+  get uiTheme() {
+    return (0, _classPrivateFieldLooseBase2.default)(this, _uiTheme)[_uiTheme];
+  }
+  get availableCamera() {
+    return _defaults.CAMERA;
+  }
+  get availableCryptos() {
+    return _defaults.CRYPTOS;
+  }
+  get availableCryptosEth() {
+    return _defaults.CRYPTOS_ETH;
+  }
+  get availableCryptosLedger() {
+    return _defaults.CRYPTOS_LEDGER;
+  }
+  get availableIcons() {
+    return _defaults.ICONS;
+  }
+  get availableLedgerConn() {
+    return _defaults.LEDGER_CONN;
+  }
+  get availableLocking() {
+    return _defaults.LOCKING;
+  }
+  get availableNodes() {
+    return _defaults.ENDPOINTS;
+  }
+  get availablePrefixes() {
+    return _defaults.PREFIXES;
+  }
+  get availableUIModes() {
+    return _defaults.UIMODES;
+  }
+  get availableUIThemes() {
+    return _defaults.UITHEMES;
+  }
+  get() {
+    return {
+      apiUrl: (0, _classPrivateFieldLooseBase2.default)(this, _apiUrl)[_apiUrl],
+      camera: (0, _classPrivateFieldLooseBase2.default)(this, _camera)[_camera],
+      i18nLang: (0, _classPrivateFieldLooseBase2.default)(this, _i18nLang)[_i18nLang],
+      icon: (0, _classPrivateFieldLooseBase2.default)(this, _icon)[_icon],
+      ledgerConn: (0, _classPrivateFieldLooseBase2.default)(this, _ledgerConn)[_ledgerConn],
+      locking: (0, _classPrivateFieldLooseBase2.default)(this, _locking)[_locking],
+      prefix: (0, _classPrivateFieldLooseBase2.default)(this, _prefix)[_prefix],
+      uiMode: (0, _classPrivateFieldLooseBase2.default)(this, _uiMode)[_uiMode],
+      uiTheme: (0, _classPrivateFieldLooseBase2.default)(this, _uiTheme)[_uiTheme]
+    };
+  }
+  set(settings) {
+    (0, _classPrivateFieldLooseBase2.default)(this, _apiUrl)[_apiUrl] = settings.apiUrl || (0, _classPrivateFieldLooseBase2.default)(this, _apiUrl)[_apiUrl];
+    (0, _classPrivateFieldLooseBase2.default)(this, _camera)[_camera] = settings.camera || (0, _classPrivateFieldLooseBase2.default)(this, _camera)[_camera];
+    (0, _classPrivateFieldLooseBase2.default)(this, _ledgerConn)[_ledgerConn] = settings.ledgerConn || (0, _classPrivateFieldLooseBase2.default)(this, _ledgerConn)[_ledgerConn];
+    (0, _classPrivateFieldLooseBase2.default)(this, _i18nLang)[_i18nLang] = settings.i18nLang || (0, _classPrivateFieldLooseBase2.default)(this, _i18nLang)[_i18nLang];
+    (0, _classPrivateFieldLooseBase2.default)(this, _icon)[_icon] = settings.icon || (0, _classPrivateFieldLooseBase2.default)(this, _icon)[_icon];
+    (0, _classPrivateFieldLooseBase2.default)(this, _locking)[_locking] = settings.locking || (0, _classPrivateFieldLooseBase2.default)(this, _locking)[_locking];
+    (0, _classPrivateFieldLooseBase2.default)(this, _prefix)[_prefix] = (0, _util.isUndefined)(settings.prefix) ? (0, _classPrivateFieldLooseBase2.default)(this, _prefix)[_prefix] : settings.prefix;
+    (0, _classPrivateFieldLooseBase2.default)(this, _uiMode)[_uiMode] = settings.uiMode || (0, _classPrivateFieldLooseBase2.default)(this, _uiMode)[_uiMode];
+    (0, _classPrivateFieldLooseBase2.default)(this, _uiTheme)[_uiTheme] = settings.uiTheme || (0, _classPrivateFieldLooseBase2.default)(this, _uiTheme)[_uiTheme];
+    const newValues = this.get();
+    _store.default.set('settings', newValues);
+    (0, _classPrivateFieldLooseBase2.default)(this, _emitter)[_emitter].emit('change', newValues);
+  }
+  on(type, cb) {
+    (0, _classPrivateFieldLooseBase2.default)(this, _emitter)[_emitter].on(type, cb);
+  }
+}
+exports.Settings = Settings;
+const settings = new Settings();
+exports.settings = settings;

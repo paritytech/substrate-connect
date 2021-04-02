@@ -1,0 +1,97 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _TableContext = require('./TableContext');
+var _TableContextDefault = _parcelHelpers.interopDefault(_TableContext);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: {
+      display: 'table',
+      width: '100%',
+      borderCollapse: 'collapse',
+      borderSpacing: 0,
+      '& caption': _babelRuntimeHelpersEsmExtendsDefault.default({}, theme.typography.body2, {
+        padding: theme.spacing(2),
+        color: theme.palette.text.secondary,
+        textAlign: 'left',
+        captionSide: 'bottom'
+      })
+    },
+    /*Styles applied to the root element if `stickyHeader={true}`.*/
+    stickyHeader: {
+      borderCollapse: 'separate'
+    }
+  };
+};
+var defaultComponent = 'table';
+var Table = /*#__PURE__*/_react.forwardRef(function Table(props, ref) {
+  var classes = props.classes, className = props.className, _props$component = props.component, Component = _props$component === void 0 ? defaultComponent : _props$component, _props$padding = props.padding, padding = _props$padding === void 0 ? 'default' : _props$padding, _props$size = props.size, size = _props$size === void 0 ? 'medium' : _props$size, _props$stickyHeader = props.stickyHeader, stickyHeader = _props$stickyHeader === void 0 ? false : _props$stickyHeader, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["classes", "className", "component", "padding", "size", "stickyHeader"]);
+  var table = _react.useMemo(function () {
+    return {
+      padding: padding,
+      size: size,
+      stickyHeader: stickyHeader
+    };
+  }, [padding, size, stickyHeader]);
+  return (
+    /*#__PURE__*/_react.createElement(_TableContextDefault.default.Provider, {
+      value: table
+    }, /*#__PURE__*/_react.createElement(Component, _babelRuntimeHelpersEsmExtendsDefault.default({
+      role: Component === defaultComponent ? null : 'table',
+      ref: ref,
+      className: _clsxDefault.default(classes.root, className, stickyHeader && classes.stickyHeader)
+    }, other)))
+  );
+});
+"development" !== "production" ? Table.propTypes = {
+  /**
+  * The content of the table, normally `TableHead` and `TableBody`.
+  */
+  children: _propTypesDefault.default.node.isRequired,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object.isRequired,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * The component used for the root node.
+  * Either a string to use a HTML element or a component.
+  */
+  component: _propTypesDefault.default./*@typescript-to-proptypes-ignore*/
+  elementType,
+  /**
+  * Allows TableCells to inherit padding of the Table.
+  */
+  padding: _propTypesDefault.default.oneOf(['default', 'checkbox', 'none']),
+  /**
+  * Allows TableCells to inherit size of the Table.
+  */
+  size: _propTypesDefault.default.oneOf(['small', 'medium']),
+  /**
+  * Set the header sticky.
+  *
+  * ⚠️ It doesn't work with IE 11.
+  */
+  stickyHeader: _propTypesDefault.default.bool
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiTable'
+})(Table);

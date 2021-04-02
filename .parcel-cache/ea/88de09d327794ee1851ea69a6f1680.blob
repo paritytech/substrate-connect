@@ -1,0 +1,187 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _FormControlFormControlState = require('../FormControl/formControlState');
+var _FormControlFormControlStateDefault = _parcelHelpers.interopDefault(_FormControlFormControlState);
+var _FormControlUseFormControl = require('../FormControl/useFormControl');
+var _FormControlUseFormControlDefault = _parcelHelpers.interopDefault(_FormControlUseFormControl);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _FormLabel = require('../FormLabel');
+var _FormLabelDefault = _parcelHelpers.interopDefault(_FormLabel);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: {
+      display: 'block',
+      transformOrigin: 'top left'
+    },
+    /*Pseudo-class applied to the root element if `focused={true}`.*/
+    focused: {},
+    /*Pseudo-class applied to the root element if `disabled={true}`.*/
+    disabled: {},
+    /*Pseudo-class applied to the root element if `error={true}`.*/
+    error: {},
+    /*Pseudo-class applied to the root element if `required={true}`.*/
+    required: {},
+    /*Pseudo-class applied to the asterisk element.*/
+    asterisk: {},
+    /*Styles applied to the root element if the component is a descendant of `FormControl`.*/
+    formControl: {
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      // slight alteration to spec spacing to match visual spec result
+      transform: 'translate(0, 24px) scale(1)'
+    },
+    /*Styles applied to the root element if `margin="dense"`.*/
+    marginDense: {
+      // Compensation for the `Input.inputDense` style.
+      transform: 'translate(0, 21px) scale(1)'
+    },
+    /*Styles applied to the `input` element if `shrink={true}`.*/
+    shrink: {
+      transform: 'translate(0, 1.5px) scale(0.75)',
+      transformOrigin: 'top left'
+    },
+    /*Styles applied to the `input` element if `disableAnimation={false}`.*/
+    animated: {
+      transition: theme.transitions.create(['color', 'transform'], {
+        duration: theme.transitions.duration.shorter,
+        easing: theme.transitions.easing.easeOut
+      })
+    },
+    /*Styles applied to the root element if `variant="filled"`.*/
+    filled: {
+      // Chrome's autofill feature gives the input field a yellow background.
+      // Since the input field is behind the label in the HTML tree,
+      // the input field is drawn last and hides the label with an opaque background color.
+      // zIndex: 1 will raise the label above opaque background-colors of input.
+      zIndex: 1,
+      pointerEvents: 'none',
+      transform: 'translate(12px, 20px) scale(1)',
+      '&$marginDense': {
+        transform: 'translate(12px, 17px) scale(1)'
+      },
+      '&$shrink': {
+        transform: 'translate(12px, 10px) scale(0.75)',
+        '&$marginDense': {
+          transform: 'translate(12px, 7px) scale(0.75)'
+        }
+      }
+    },
+    /*Styles applied to the root element if `variant="outlined"`.*/
+    outlined: {
+      // see comment above on filled.zIndex
+      zIndex: 1,
+      pointerEvents: 'none',
+      transform: 'translate(14px, 20px) scale(1)',
+      '&$marginDense': {
+        transform: 'translate(14px, 12px) scale(1)'
+      },
+      '&$shrink': {
+        transform: 'translate(14px, -6px) scale(0.75)'
+      }
+    }
+  };
+};
+var InputLabel = /*#__PURE__*/_react.forwardRef(function InputLabel(props, ref) {
+  var classes = props.classes, className = props.className, _props$disableAnimati = props.disableAnimation, disableAnimation = _props$disableAnimati === void 0 ? false : _props$disableAnimati, margin = props.margin, shrinkProp = props.shrink, variant = props.variant, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["classes", "className", "disableAnimation", "margin", "shrink", "variant"]);
+  var muiFormControl = _FormControlUseFormControlDefault.default();
+  var shrink = shrinkProp;
+  if (typeof shrink === 'undefined' && muiFormControl) {
+    shrink = muiFormControl.filled || muiFormControl.focused || muiFormControl.adornedStart;
+  }
+  var fcs = _FormControlFormControlStateDefault.default({
+    props: props,
+    muiFormControl: muiFormControl,
+    states: ['margin', 'variant']
+  });
+  return (
+    /*#__PURE__*/_react.createElement(_FormLabelDefault.default, _babelRuntimeHelpersEsmExtendsDefault.default({
+      "data-shrink": shrink,
+      className: _clsxDefault.default(classes.root, className, muiFormControl && classes.formControl, !disableAnimation && classes.animated, shrink && classes.shrink, fcs.margin === 'dense' && classes.marginDense, ({
+        'filled': classes.filled,
+        'outlined': classes.outlined
+      })[fcs.variant]),
+      classes: {
+        focused: classes.focused,
+        disabled: classes.disabled,
+        error: classes.error,
+        required: classes.required,
+        asterisk: classes.asterisk
+      },
+      ref: ref
+    }, other))
+  );
+});
+"development" !== "production" ? InputLabel.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * The contents of the `InputLabel`.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * The color of the component. It supports those theme colors that make sense for this component.
+  */
+  color: _propTypesDefault.default.oneOf(['primary', 'secondary']),
+  /**
+  * If `true`, the transition animation is disabled.
+  */
+  disableAnimation: _propTypesDefault.default.bool,
+  /**
+  * If `true`, apply disabled class.
+  */
+  disabled: _propTypesDefault.default.bool,
+  /**
+  * If `true`, the label will be displayed in an error state.
+  */
+  error: _propTypesDefault.default.bool,
+  /**
+  * If `true`, the input of this label is focused.
+  */
+  focused: _propTypesDefault.default.bool,
+  /**
+  * If `dense`, will adjust vertical spacing. This is normally obtained via context from
+  * FormControl.
+  */
+  margin: _propTypesDefault.default.oneOf(['dense']),
+  /**
+  * if `true`, the label will indicate that the input is required.
+  */
+  required: _propTypesDefault.default.bool,
+  /**
+  * If `true`, the label is shrunk.
+  */
+  shrink: _propTypesDefault.default.bool,
+  /**
+  * The variant to use.
+  */
+  variant: _propTypesDefault.default.oneOf(['filled', 'outlined', 'standard'])
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiInputLabel'
+})(InputLabel);

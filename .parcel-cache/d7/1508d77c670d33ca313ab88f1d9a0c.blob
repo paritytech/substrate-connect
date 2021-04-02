@@ -1,0 +1,62 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return ServerStyleSheets;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmClassCallCheck = require("@babel/runtime/helpers/esm/classCallCheck");
+var _babelRuntimeHelpersEsmClassCallCheckDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmClassCallCheck);
+var _babelRuntimeHelpersEsmCreateClass = require("@babel/runtime/helpers/esm/createClass");
+var _babelRuntimeHelpersEsmCreateClassDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmCreateClass);
+var _react = require('react');
+var _reactDefault = _parcelHelpers.interopDefault(_react);
+var _jss = require('jss');
+var _StylesProvider = require('../StylesProvider');
+var _StylesProviderDefault = _parcelHelpers.interopDefault(_StylesProvider);
+var _createGenerateClassName = require('../createGenerateClassName');
+var _createGenerateClassNameDefault = _parcelHelpers.interopDefault(_createGenerateClassName);
+var ServerStyleSheets = /*#__PURE__*/(function () {
+  function ServerStyleSheets() {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    _babelRuntimeHelpersEsmClassCallCheckDefault.default(this, ServerStyleSheets);
+    this.options = options;
+  }
+  _babelRuntimeHelpersEsmCreateClassDefault.default(ServerStyleSheets, [{
+    key: "collect",
+    value: function collect(children) {
+      // This is needed in order to deduplicate the injection of CSS in the page.
+      var sheetsManager = new Map();
+      // This is needed in order to inject the critical CSS.
+      this.sheetsRegistry = new _jss.SheetsRegistry();
+      // A new class name generator
+      var generateClassName = _createGenerateClassNameDefault.default();
+      return (
+        /*#__PURE__*/_reactDefault.default.createElement(_StylesProviderDefault.default, _babelRuntimeHelpersEsmExtendsDefault.default({
+          sheetsManager: sheetsManager,
+          serverGenerateClassName: generateClassName,
+          sheetsRegistry: this.sheetsRegistry
+        }, this.options), children)
+      );
+    }
+  }, {
+    key: "toString",
+    value: function toString() {
+      return this.sheetsRegistry ? this.sheetsRegistry.toString() : '';
+    }
+  }, {
+    key: "getStyleElement",
+    value: function getStyleElement(props) {
+      return (
+        /*#__PURE__*/_reactDefault.default.createElement('style', _babelRuntimeHelpersEsmExtendsDefault.default({
+          id: 'jss-server-side',
+          key: 'jss-server-side',
+          dangerouslySetInnerHTML: {
+            __html: this.toString()
+          }
+        }, props))
+      );
+    }
+  }]);
+  return ServerStyleSheets;
+})();

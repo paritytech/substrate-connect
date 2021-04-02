@@ -1,0 +1,64 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _stylesColorManipulator = require('../styles/colorManipulator');
+var _internalSvgIconsMoreHoriz = require('../internal/svg-icons/MoreHoriz');
+var _internalSvgIconsMoreHorizDefault = _parcelHelpers.interopDefault(_internalSvgIconsMoreHoriz);
+var _ButtonBase = require('../ButtonBase');
+var _ButtonBaseDefault = _parcelHelpers.interopDefault(_ButtonBase);
+var styles = function styles(theme) {
+  return {
+    root: {
+      display: 'flex',
+      marginLeft: theme.spacing(0.5),
+      marginRight: theme.spacing(0.5),
+      backgroundColor: theme.palette.grey[100],
+      color: theme.palette.grey[700],
+      borderRadius: 2,
+      cursor: 'pointer',
+      '&:hover, &:focus': {
+        backgroundColor: theme.palette.grey[200]
+      },
+      '&:active': {
+        boxShadow: theme.shadows[0],
+        backgroundColor: _stylesColorManipulator.emphasize(theme.palette.grey[200], 0.12)
+      }
+    },
+    icon: {
+      width: 24,
+      height: 16
+    }
+  };
+};
+/**
+* @ignore - internal component.
+*/
+function BreadcrumbCollapsed(props) {
+  var classes = props.classes, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["classes"]);
+  return (
+    /*#__PURE__*/_react.createElement(_ButtonBaseDefault.default, _babelRuntimeHelpersEsmExtendsDefault.default({
+      component: "li",
+      className: classes.root,
+      focusRipple: true
+    }, other), /*#__PURE__*/_react.createElement(_internalSvgIconsMoreHorizDefault.default, {
+      className: classes.icon
+    }))
+  );
+}
+"development" !== "production" ? BreadcrumbCollapsed.propTypes = {
+  /**
+  * @ignore
+  */
+  classes: _propTypesDefault.default.object.isRequired
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'PrivateBreadcrumbCollapsed'
+})(BreadcrumbCollapsed);

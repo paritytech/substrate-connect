@@ -1,0 +1,102 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "common", function () {
+  return _commonDefault.default;
+});
+_parcelHelpers.export(exports, "red", function () {
+  return _redDefault.default;
+});
+_parcelHelpers.export(exports, "pink", function () {
+  return _pinkDefault.default;
+});
+_parcelHelpers.export(exports, "purple", function () {
+  return _purpleDefault.default;
+});
+_parcelHelpers.export(exports, "deepPurple", function () {
+  return _deepPurpleDefault.default;
+});
+_parcelHelpers.export(exports, "indigo", function () {
+  return _indigoDefault.default;
+});
+_parcelHelpers.export(exports, "blue", function () {
+  return _blueDefault.default;
+});
+_parcelHelpers.export(exports, "lightBlue", function () {
+  return _lightBlueDefault.default;
+});
+_parcelHelpers.export(exports, "cyan", function () {
+  return _cyanDefault.default;
+});
+_parcelHelpers.export(exports, "teal", function () {
+  return _tealDefault.default;
+});
+_parcelHelpers.export(exports, "green", function () {
+  return _greenDefault.default;
+});
+_parcelHelpers.export(exports, "lightGreen", function () {
+  return _lightGreenDefault.default;
+});
+_parcelHelpers.export(exports, "lime", function () {
+  return _limeDefault.default;
+});
+_parcelHelpers.export(exports, "yellow", function () {
+  return _yellowDefault.default;
+});
+_parcelHelpers.export(exports, "amber", function () {
+  return _amberDefault.default;
+});
+_parcelHelpers.export(exports, "orange", function () {
+  return _orangeDefault.default;
+});
+_parcelHelpers.export(exports, "deepOrange", function () {
+  return _deepOrangeDefault.default;
+});
+_parcelHelpers.export(exports, "brown", function () {
+  return _brownDefault.default;
+});
+_parcelHelpers.export(exports, "grey", function () {
+  return _greyDefault.default;
+});
+_parcelHelpers.export(exports, "blueGrey", function () {
+  return _blueGreyDefault.default;
+});
+var _common = require('./common');
+var _commonDefault = _parcelHelpers.interopDefault(_common);
+var _red = require('./red');
+var _redDefault = _parcelHelpers.interopDefault(_red);
+var _pink = require('./pink');
+var _pinkDefault = _parcelHelpers.interopDefault(_pink);
+var _purple = require('./purple');
+var _purpleDefault = _parcelHelpers.interopDefault(_purple);
+var _deepPurple = require('./deepPurple');
+var _deepPurpleDefault = _parcelHelpers.interopDefault(_deepPurple);
+var _indigo = require('./indigo');
+var _indigoDefault = _parcelHelpers.interopDefault(_indigo);
+var _blue = require('./blue');
+var _blueDefault = _parcelHelpers.interopDefault(_blue);
+var _lightBlue = require('./lightBlue');
+var _lightBlueDefault = _parcelHelpers.interopDefault(_lightBlue);
+var _cyan = require('./cyan');
+var _cyanDefault = _parcelHelpers.interopDefault(_cyan);
+var _teal = require('./teal');
+var _tealDefault = _parcelHelpers.interopDefault(_teal);
+var _green = require('./green');
+var _greenDefault = _parcelHelpers.interopDefault(_green);
+var _lightGreen = require('./lightGreen');
+var _lightGreenDefault = _parcelHelpers.interopDefault(_lightGreen);
+var _lime = require('./lime');
+var _limeDefault = _parcelHelpers.interopDefault(_lime);
+var _yellow = require('./yellow');
+var _yellowDefault = _parcelHelpers.interopDefault(_yellow);
+var _amber = require('./amber');
+var _amberDefault = _parcelHelpers.interopDefault(_amber);
+var _orange = require('./orange');
+var _orangeDefault = _parcelHelpers.interopDefault(_orange);
+var _deepOrange = require('./deepOrange');
+var _deepOrangeDefault = _parcelHelpers.interopDefault(_deepOrange);
+var _brown = require('./brown');
+var _brownDefault = _parcelHelpers.interopDefault(_brown);
+var _grey = require('./grey');
+var _greyDefault = _parcelHelpers.interopDefault(_grey);
+var _blueGrey = require('./blueGrey');
+var _blueGreyDefault = _parcelHelpers.interopDefault(_blueGrey);

@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _StepIconDefault.default;
+});
+var _StepIcon = require('./StepIcon');
+var _StepIconDefault = _parcelHelpers.interopDefault(_StepIcon);

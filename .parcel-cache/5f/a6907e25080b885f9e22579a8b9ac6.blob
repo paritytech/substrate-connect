@@ -1,0 +1,14 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _materialUiUtils = require('@material-ui/utils');
+var _createMuiTheme = require('./createMuiTheme');
+var _createMuiThemeDefault = _parcelHelpers.interopDefault(_createMuiTheme);
+function createMuiStrictModeTheme(options) {
+  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    args[_key - 1] = arguments[_key];
+  }
+  return _createMuiThemeDefault.default.apply(void 0, [_materialUiUtils.deepmerge({
+    unstable_strictMode: true
+  }, options)].concat(args));
+}
+exports.default = createMuiStrictModeTheme;

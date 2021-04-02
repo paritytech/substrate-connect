@@ -1,0 +1,49 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _colors = require('./colors');
+var _colorsDefault = _parcelHelpers.interopDefault(_colors);
+var _typography = require('./typography');
+var _typographyDefault = _parcelHelpers.interopDefault(_typography);
+var _shadows = require('./shadows');
+var _shadowsDefault = _parcelHelpers.interopDefault(_shadows);
+const dark = {
+  typography: _typographyDefault.default.typography,
+  shadows: _shadowsDefault.default.shadows,
+  palette: {
+    type: 'dark',
+    common: {
+      black: _colorsDefault.default.black,
+      white: _colorsDefault.default.white
+    },
+    background: {
+      paper: '#21262A',
+      default: _colorsDefault.default.dark.dark
+    },
+    primary: {
+      light: _colorsDefault.default.substrate.dark,
+      main: _colorsDefault.default.cyan.main,
+      dark: _colorsDefault.default.cyan.dark,
+      contrastText: _colorsDefault.default.black
+    },
+    secondary: {
+      light: _colorsDefault.default.pink.light,
+      main: '#FFFFFF',
+      dark: '#FF3014',
+      contrastText: _colorsDefault.default.white
+    },
+    error: {
+      light: 'rgba(247, 4, 7, 1)',
+      main: 'rgba(235, 4, 7, 1)',
+      dark: 'rgba(197, 5, 8, 1)',
+      contrastText: _colorsDefault.default.paper
+    },
+    text: {
+      primary: _colorsDefault.default.white,
+      secondary: _colorsDefault.default.light.main,
+      disabled: _colorsDefault.default.dark.light,
+      hint: _colorsDefault.default.yellow.main
+    },
+    divider: 'rgba(0, 0, 0, 0)'
+  }
+};
+exports.default = dark;

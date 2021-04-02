@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _ChipDefault.default;
+});
+var _Chip = require('./Chip');
+var _ChipDefault = _parcelHelpers.interopDefault(_Chip);

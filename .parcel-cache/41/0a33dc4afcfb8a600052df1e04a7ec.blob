@@ -1,0 +1,69 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _ListListContext = require('../List/ListContext');
+var _ListListContextDefault = _parcelHelpers.interopDefault(_ListListContext);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: {
+      minWidth: 56,
+      color: theme.palette.action.active,
+      flexShrink: 0,
+      display: 'inline-flex'
+    },
+    /*Styles applied to the root element when the parent `ListItem` uses `alignItems="flex-start"`.*/
+    alignItemsFlexStart: {
+      marginTop: 8
+    }
+  };
+};
+/**
+* A simple wrapper to apply `List` styles to an `Icon` or `SvgIcon`.
+*/
+var ListItemIcon = /*#__PURE__*/_react.forwardRef(function ListItemIcon(props, ref) {
+  var classes = props.classes, className = props.className, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["classes", "className"]);
+  var context = _react.useContext(_ListListContextDefault.default);
+  return (
+    /*#__PURE__*/_react.createElement("div", _babelRuntimeHelpersEsmExtendsDefault.default({
+      className: _clsxDefault.default(classes.root, className, context.alignItems === 'flex-start' && classes.alignItemsFlexStart),
+      ref: ref
+    }, other))
+  );
+});
+"development" !== "production" ? ListItemIcon.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * The content of the component, normally `Icon`, `SvgIcon`,
+  * or a `@material-ui/icons` SVG icon element.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiListItemIcon'
+})(ListItemIcon);

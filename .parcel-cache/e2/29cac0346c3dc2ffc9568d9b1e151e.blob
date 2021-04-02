@@ -1,0 +1,5 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+// We use the same empty object to ref count the styles that don't need a theme object.
+var noopTheme = {};
+exports.default = noopTheme;

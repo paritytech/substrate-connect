@@ -1,0 +1,54 @@
+var helpers = require("../../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _materialUiCore = require('@material-ui/core');
+  var _jsxFileName = "/Users/stormsheep/Documents/repos/parity/substrate-connect/projects/burnr/src/components/Bg.tsx", _s = $RefreshSig$();
+  const useStyles = _materialUiCore.makeStyles(theme => _materialUiCore.createStyles({
+    root: {
+      position: 'fixed',
+      width: 600,
+      height: 600,
+      top: 45,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      margin: 'auto',
+      background: theme.palette.secondary.dark,
+      borderRadius: '50%',
+      zIndex: -1,
+      filter: 'blur(80px)'
+    }
+  }));
+  const Bg = () => {
+    _s();
+    const classes = useStyles();
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement("div", {
+        className: classes.root,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 27,
+          columnNumber: 9
+        }
+      })
+    );
+  };
+  _s(Bg, "8g5FPXexvSEOsxdmU7HicukHGqY=", false, function () {
+    return [useStyles];
+  });
+  _c = Bg;
+  exports.default = Bg;
+  var _c;
+  $RefreshReg$(_c, "Bg");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

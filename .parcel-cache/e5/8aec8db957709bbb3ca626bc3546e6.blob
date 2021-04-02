@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _BreadcrumbsDefault.default;
+});
+var _Breadcrumbs = require('./Breadcrumbs');
+var _BreadcrumbsDefault = _parcelHelpers.interopDefault(_Breadcrumbs);

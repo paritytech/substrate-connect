@@ -1,0 +1,27 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _react = require('react');
+var _reactDefault = _parcelHelpers.interopDefault(_react);
+var _SvgIcon = require('../SvgIcon');
+var _SvgIconDefault = _parcelHelpers.interopDefault(_SvgIcon);
+function createSvgIcon(path, displayName) {
+  var Component = function Component(props, ref) {
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement(_SvgIconDefault.default, _babelRuntimeHelpersEsmExtendsDefault.default({
+        ref: ref
+      }, props), path)
+    );
+  };
+  if ("development" !== 'production') {
+    // Need to set `displayName` on the inner component for React.memo.
+    // React prior to 16.14 ignores `displayName` on the wrapper.
+    Component.displayName = ("").concat(displayName, "Icon");
+  }
+  Component.muiName = _SvgIconDefault.default.muiName;
+  return (
+    /*#__PURE__*/_reactDefault.default.memo(/*#__PURE__*/_reactDefault.default.forwardRef(Component))
+  );
+}
+exports.default = createSvgIcon;

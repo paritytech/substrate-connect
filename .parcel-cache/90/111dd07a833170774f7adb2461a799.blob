@@ -1,0 +1,83 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _materialUiUtils = require('@material-ui/utils');
+var _utilsCapitalize = require('../utils/capitalize');
+var _utilsCapitalizeDefault = _parcelHelpers.interopDefault(_utilsCapitalize);
+/**
+* @ignore - internal component.
+*/
+var NativeSelectInput = /*#__PURE__*/_react.forwardRef(function NativeSelectInput(props, ref) {
+  var classes = props.classes, className = props.className, disabled = props.disabled, IconComponent = props.IconComponent, inputRef = props.inputRef, _props$variant = props.variant, variant = _props$variant === void 0 ? 'standard' : _props$variant, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["classes", "className", "disabled", "IconComponent", "inputRef", "variant"]);
+  return (
+    /*#__PURE__*/_react.createElement(_react.Fragment, null, /*#__PURE__*/_react.createElement("select", _babelRuntimeHelpersEsmExtendsDefault.default({
+      className: _clsxDefault.default(classes.root, // TODO v5: merge root and select
+      classes.select, classes[variant], className, disabled && classes.disabled),
+      disabled: disabled,
+      ref: inputRef || ref
+    }, other)), props.multiple ? null : /*#__PURE__*/_react.createElement(IconComponent, {
+      className: _clsxDefault.default(classes.icon, classes[("icon").concat(_utilsCapitalizeDefault.default(variant))], disabled && classes.disabled)
+    }))
+  );
+});
+"development" !== "production" ? NativeSelectInput.propTypes = {
+  /**
+  * The option elements to populate the select with.
+  * Can be some `<option>` elements.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object.isRequired,
+  /**
+  * The CSS class name of the select element.
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * If `true`, the select will be disabled.
+  */
+  disabled: _propTypesDefault.default.bool,
+  /**
+  * The icon that displays the arrow.
+  */
+  IconComponent: _propTypesDefault.default.elementType.isRequired,
+  /**
+  * Use that prop to pass a ref to the native select element.
+  * @deprecated
+  */
+  inputRef: _materialUiUtils.refType,
+  /**
+  * @ignore
+  */
+  multiple: _propTypesDefault.default.bool,
+  /**
+  * Name attribute of the `select` or hidden `input` element.
+  */
+  name: _propTypesDefault.default.string,
+  /**
+  * Callback function fired when a menu item is selected.
+  *
+  * @param {object} event The event source of the callback.
+  * You can pull out the new value by accessing `event.target.value` (string).
+  */
+  onChange: _propTypesDefault.default.func,
+  /**
+  * The input value.
+  */
+  value: _propTypesDefault.default.any,
+  /**
+  * The variant to use.
+  */
+  variant: _propTypesDefault.default.oneOf(['standard', 'outlined', 'filled'])
+} : void 0;
+exports.default = NativeSelectInput;

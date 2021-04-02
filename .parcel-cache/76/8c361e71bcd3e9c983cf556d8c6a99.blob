@@ -1,0 +1,10 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _materialUiUtils = require("@material-ui/utils");
+function capitalize(string) {
+  if (typeof string !== 'string') {
+    throw new Error("development" !== "production" ? "Material-UI: capitalize(string) expects a string argument." : _materialUiUtils.formatMuiErrorMessage(7));
+  }
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+exports.default = capitalize;

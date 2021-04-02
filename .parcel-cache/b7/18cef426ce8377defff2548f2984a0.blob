@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _TypographyDefault.default;
+});
+var _Typography = require('./Typography');
+var _TypographyDefault = _parcelHelpers.interopDefault(_Typography);

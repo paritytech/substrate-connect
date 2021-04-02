@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _ClickAwayListenerDefault.default;
+});
+var _ClickAwayListener = require('./ClickAwayListener');
+var _ClickAwayListenerDefault = _parcelHelpers.interopDefault(_ClickAwayListener);

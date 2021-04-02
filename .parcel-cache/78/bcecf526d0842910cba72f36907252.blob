@@ -1,0 +1,13 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+function unsupportedProp(props, propName, componentName, location, propFullName) {
+  if ("development" === 'production') {
+    return null;
+  }
+  var propFullNameSafe = propFullName || propName;
+  if (typeof props[propName] !== 'undefined') {
+    return new Error(("The prop `").concat(propFullNameSafe, "` is not supported. Please remove it."));
+  }
+  return null;
+}
+exports.default = unsupportedProp;

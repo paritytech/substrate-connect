@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _AvatarDefault.default;
+});
+var _Avatar = require('./Avatar');
+var _AvatarDefault = _parcelHelpers.interopDefault(_Avatar);

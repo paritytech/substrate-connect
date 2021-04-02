@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _CollapseDefault.default;
+});
+var _Collapse = require('./Collapse');
+var _CollapseDefault = _parcelHelpers.interopDefault(_Collapse);

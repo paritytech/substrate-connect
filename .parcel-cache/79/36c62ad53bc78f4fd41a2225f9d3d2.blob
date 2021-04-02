@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _CssBaselineDefault.default;
+});
+var _CssBaseline = require('./CssBaseline');
+var _CssBaselineDefault = _parcelHelpers.interopDefault(_CssBaseline);

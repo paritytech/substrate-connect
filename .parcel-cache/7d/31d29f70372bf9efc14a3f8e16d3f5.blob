@@ -1,0 +1,34 @@
+var helpers = require("../../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _apiUseApi = require('./api/useApi');
+  var _apiUseApiDefault = _parcelHelpers.interopDefault(_apiUseApi);
+  var _apiUseIsMountedRef = require('./api/useIsMountedRef');
+  var _apiUseIsMountedRefDefault = _parcelHelpers.interopDefault(_apiUseIsMountedRef);
+  var _s = $RefreshSig$();
+  function useChainInfo() {
+    _s();
+    const api = _apiUseApiDefault.default();
+    const [newHead, setNewHead] = _react.useState();
+    const mountedRef = _apiUseIsMountedRefDefault.default();
+    _react.useEffect(() => {
+      api.rpc.chain.subscribeNewHeads(lastHeader => {
+        mountedRef.current && setNewHead(lastHeader);
+      }).catch(err => console.log('There was an error', err));
+    }, [api.rpc.chain, mountedRef]);
+    return newHead;
+  }
+  exports.default = useChainInfo;
+  _s(useChainInfo, "roVOFTGW3vCKxNhqbMF39nvtyYE=", false, function () {
+    return [_apiUseApiDefault.default, _apiUseIsMountedRefDefault.default];
+  });
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

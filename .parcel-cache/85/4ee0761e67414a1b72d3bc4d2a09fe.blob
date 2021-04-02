@@ -1,0 +1,61 @@
+var helpers = require("../../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _materialUiCore = require('@material-ui/core');
+  var _urlAssetsImagesLogo_substrateSvg = require('url:../assets/images/logo_substrate.svg');
+  var _urlAssetsImagesLogo_substrateSvgDefault = _parcelHelpers.interopDefault(_urlAssetsImagesLogo_substrateSvg);
+  var _urlAssetsImagesLogo_substrate_onDarkSvg = require('url:../assets/images/logo_substrate_onDark.svg');
+  var _urlAssetsImagesLogo_substrate_onDarkSvgDefault = _parcelHelpers.interopDefault(_urlAssetsImagesLogo_substrate_onDarkSvg);
+  var _jsxFileName = "/Users/stormsheep/Documents/repos/parity/substrate-connect/projects/burnr/src/components/LogoSubstrate.tsx", _s = $RefreshSig$();
+  const useStyles = _materialUiCore.makeStyles({
+    root: {
+      display: 'block',
+      width: '120px',
+      '& img': {
+        maxWidth: '100%'
+      }
+    }
+  });
+  const LogoSubstrate = ({theme}) => {
+    _s();
+    const classes = useStyles();
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Link, {
+        href: "http://substrate.io/",
+        target: "_blank",
+        className: classes.root,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 24,
+          columnNumber: 3
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("img", {
+        src: theme ? _urlAssetsImagesLogo_substrateSvgDefault.default : _urlAssetsImagesLogo_substrate_onDarkSvgDefault.default,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 25,
+          columnNumber: 4
+        }
+      }))
+    );
+  };
+  _s(LogoSubstrate, "8g5FPXexvSEOsxdmU7HicukHGqY=", false, function () {
+    return [useStyles];
+  });
+  _c = LogoSubstrate;
+  exports.default = LogoSubstrate;
+  var _c;
+  $RefreshReg$(_c, "LogoSubstrate");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

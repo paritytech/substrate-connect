@@ -1,0 +1,90 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _ButtonBase = require('../ButtonBase');
+var _ButtonBaseDefault = _parcelHelpers.interopDefault(_ButtonBase);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: {
+      display: 'block',
+      textAlign: 'inherit',
+      width: '100%',
+      '&:hover $focusHighlight': {
+        opacity: theme.palette.action.hoverOpacity
+      },
+      '&$focusVisible $focusHighlight': {
+        opacity: 0.12
+      }
+    },
+    /*Pseudo-class applied to the ButtonBase root element if the action area is keyboard focused.*/
+    focusVisible: {},
+    /*Styles applied to the overlay that covers the action area when it is keyboard focused.*/
+    focusHighlight: {
+      overflow: 'hidden',
+      pointerEvents: 'none',
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      borderRadius: 'inherit',
+      opacity: 0,
+      backgroundColor: 'currentcolor',
+      transition: theme.transitions.create('opacity', {
+        duration: theme.transitions.duration.short
+      })
+    }
+  };
+};
+var CardActionArea = /*#__PURE__*/_react.forwardRef(function CardActionArea(props, ref) {
+  var children = props.children, classes = props.classes, className = props.className, focusVisibleClassName = props.focusVisibleClassName, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["children", "classes", "className", "focusVisibleClassName"]);
+  return (
+    /*#__PURE__*/_react.createElement(_ButtonBaseDefault.default, _babelRuntimeHelpersEsmExtendsDefault.default({
+      className: _clsxDefault.default(classes.root, className),
+      focusVisibleClassName: _clsxDefault.default(focusVisibleClassName, classes.focusVisible),
+      ref: ref
+    }, other), children, /*#__PURE__*/_react.createElement("span", {
+      className: classes.focusHighlight
+    }))
+  );
+});
+"development" !== "production" ? CardActionArea.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * The content of the component.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * @ignore
+  */
+  focusVisibleClassName: _propTypesDefault.default.string
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiCardActionArea'
+})(CardActionArea);

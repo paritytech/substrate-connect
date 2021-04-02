@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _PaperDefault.default;
+});
+var _Paper = require('./Paper');
+var _PaperDefault = _parcelHelpers.interopDefault(_Paper);

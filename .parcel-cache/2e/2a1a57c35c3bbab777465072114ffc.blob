@@ -1,0 +1,93 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: {
+      flex: '1 1 auto'
+    },
+    /*Styles applied to the root element if `orientation="horizontal"`.*/
+    horizontal: {},
+    /*Styles applied to the root element if `orientation="vertical"`.*/
+    vertical: {
+      marginLeft: 12,
+      // half icon
+      padding: '0 0 8px'
+    },
+    /*Styles applied to the root element if `alternativeLabel={true}`.*/
+    alternativeLabel: {
+      position: 'absolute',
+      top: 8 + 4,
+      left: 'calc(-50% + 20px)',
+      right: 'calc(50% + 20px)'
+    },
+    /*Pseudo-class applied to the root element if `active={true}`.*/
+    active: {},
+    /*Pseudo-class applied to the root element if `completed={true}`.*/
+    completed: {},
+    /*Pseudo-class applied to the root element if `disabled={true}`.*/
+    disabled: {},
+    /*Styles applied to the line element.*/
+    line: {
+      display: 'block',
+      borderColor: theme.palette.type === 'light' ? theme.palette.grey[400] : theme.palette.grey[600]
+    },
+    /*Styles applied to the root element if `orientation="horizontal"`.*/
+    lineHorizontal: {
+      borderTopStyle: 'solid',
+      borderTopWidth: 1
+    },
+    /*Styles applied to the root element if `orientation="vertical"`.*/
+    lineVertical: {
+      borderLeftStyle: 'solid',
+      borderLeftWidth: 1,
+      minHeight: 24
+    }
+  };
+};
+var StepConnector = /*#__PURE__*/_react.forwardRef(function StepConnector(props, ref) {
+  var active = props.active, _props$alternativeLab = props.alternativeLabel, alternativeLabel = _props$alternativeLab === void 0 ? false : _props$alternativeLab, classes = props.classes, className = props.className, completed = props.completed, disabled = props.disabled, index = props.index, _props$orientation = props.orientation, orientation = _props$orientation === void 0 ? 'horizontal' : _props$orientation, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["active", "alternativeLabel", "classes", "className", "completed", "disabled", "index", "orientation"]);
+  return (
+    /*#__PURE__*/_react.createElement("div", _babelRuntimeHelpersEsmExtendsDefault.default({
+      className: _clsxDefault.default(classes.root, classes[orientation], className, alternativeLabel && classes.alternativeLabel, active && classes.active, completed && classes.completed, disabled && classes.disabled),
+      ref: ref
+    }, other), /*#__PURE__*/_react.createElement("span", {
+      className: _clsxDefault.default(classes.line, ({
+        'horizontal': classes.lineHorizontal,
+        'vertical': classes.lineVertical
+      })[orientation])
+    }))
+  );
+});
+"development" !== "production" ? StepConnector.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiStepConnector'
+})(StepConnector);

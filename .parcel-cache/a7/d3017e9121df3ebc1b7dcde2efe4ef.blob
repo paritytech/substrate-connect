@@ -1,0 +1,133 @@
+var helpers = require("../../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _materialUiCore = require('@material-ui/core');
+  var _materialUiCoreStyles = require('@material-ui/core/styles');
+  var _materialUiCorePopover = require('@material-ui/core/Popover');
+  var _materialUiCorePopoverDefault = _parcelHelpers.interopDefault(_materialUiCorePopover);
+  var _materialUiIconsCached = require('@material-ui/icons/Cached');
+  var _materialUiIconsCachedDefault = _parcelHelpers.interopDefault(_materialUiIconsCached);
+  var _materialUiIconsCheck = require('@material-ui/icons/Check');
+  var _materialUiIconsCheckDefault = _parcelHelpers.interopDefault(_materialUiIconsCheck);
+  var _materialUiIconsError = require('@material-ui/icons/Error');
+  var _materialUiIconsErrorDefault = _parcelHelpers.interopDefault(_materialUiIconsError);
+  var _jsxFileName = "/Users/stormsheep/Documents/repos/parity/substrate-connect/projects/burnr/src/components/PopoverExtrinsic.tsx", _s = $RefreshSig$();
+  const useStyles = _materialUiCoreStyles.makeStyles(theme => ({
+    popover: {
+      pointerEvents: 'none'
+    },
+    paper: {
+      padding: theme.spacing(1),
+      marginTop: theme.spacing(-0.5),
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white
+    }
+  }));
+  // @TODO blockexplorer links
+  const PopoverExtrinsic = ({status}) => {
+    _s();
+    const classes = useStyles();
+    const [anchorEl, setAnchorEl] = _reactDefault.default.useState(null);
+    const handlePopoverOpen = event => {
+      setAnchorEl(event.currentTarget);
+    };
+    const handlePopoverClose = () => {
+      setAnchorEl(null);
+    };
+    const open = Boolean(anchorEl);
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.IconButton, {
+        onMouseEnter: handlePopoverOpen,
+        onMouseLeave: handlePopoverClose,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 43,
+          columnNumber: 4
+        }
+      }, status === 0 && /*#__PURE__*/_reactDefault.default.createElement(_materialUiIconsCachedDefault.default, {
+        color: "disabled",
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 47,
+          columnNumber: 22
+        }
+      }), status === 1 && /*#__PURE__*/_reactDefault.default.createElement(_materialUiIconsCheckDefault.default, {
+        color: "action",
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 48,
+          columnNumber: 22
+        }
+      }), status === 2 && /*#__PURE__*/_reactDefault.default.createElement(_materialUiIconsErrorDefault.default, {
+        color: "error",
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 49,
+          columnNumber: 22
+        }
+      }), status === 3 && /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.CircularProgress, {
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 50,
+          columnNumber: 22
+        }
+      })), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCorePopoverDefault.default, {
+        elevation: 2,
+        transitionDuration: 0,
+        id: "mouse-over-popover",
+        className: classes.popover,
+        classes: {
+          paper: classes.paper
+        },
+        open: open,
+        anchorEl: anchorEl,
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'center'
+        },
+        transformOrigin: {
+          vertical: 'bottom',
+          horizontal: 'center'
+        },
+        onClose: handlePopoverClose,
+        disableRestoreFocus: true,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 53,
+          columnNumber: 4
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Typography, {
+        variant: "body2",
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 74,
+          columnNumber: 5
+        }
+      }, "The content of the Popover, link to BlockExplorers")))
+    );
+  };
+  _s(PopoverExtrinsic, "vXA32r6EXukv831dcFOknrOnVCE=", false, function () {
+    return [useStyles];
+  });
+  _c = PopoverExtrinsic;
+  exports.default = PopoverExtrinsic;
+  var _c;
+  $RefreshReg$(_c, "PopoverExtrinsic");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

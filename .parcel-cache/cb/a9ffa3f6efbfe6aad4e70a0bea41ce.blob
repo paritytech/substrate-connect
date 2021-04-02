@@ -1,0 +1,16 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _materialUiStyles = require('@material-ui/styles');
+var _react = require('react');
+var _reactDefault = _parcelHelpers.interopDefault(_react);
+var _defaultTheme = require('./defaultTheme');
+var _defaultThemeDefault = _parcelHelpers.interopDefault(_defaultTheme);
+function useTheme() {
+  var theme = _materialUiStyles.useTheme() || _defaultThemeDefault.default;
+  if ("development" !== 'production') {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    _reactDefault.default.useDebugValue(theme);
+  }
+  return theme;
+}
+exports.default = useTheme;

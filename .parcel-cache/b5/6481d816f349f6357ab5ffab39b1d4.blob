@@ -1,0 +1,8 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _react = require('react');
+var _utilsCreateSvgIcon = require('../../utils/createSvgIcon');
+var _utilsCreateSvgIconDefault = _parcelHelpers.interopDefault(_utilsCreateSvgIcon);
+exports.default = _utilsCreateSvgIconDefault.default(/*#__PURE__*/_react.createElement("path", {
+  d: "M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+}), 'RadioButtonChecked');

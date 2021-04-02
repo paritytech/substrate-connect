@@ -1,0 +1,6 @@
+"use strict";
+if ("development" === "production") {
+  module.exports = require("./cjs/react-router.min.js");
+} else {
+  module.exports = require("./cjs/react-router.js");
+}

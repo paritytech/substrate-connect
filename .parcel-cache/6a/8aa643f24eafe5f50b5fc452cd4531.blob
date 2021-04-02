@@ -1,0 +1,13 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _babelRuntimeHelpersTypeof = require("@babel/runtime/helpers/typeof");
+var _babelRuntimeHelpersTypeofDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersTypeof);
+var _assertThisInitializedJs = require("./assertThisInitialized.js");
+var _assertThisInitializedJsDefault = _parcelHelpers.interopDefault(_assertThisInitializedJs);
+function _possibleConstructorReturn(self, call) {
+  if (call && (_babelRuntimeHelpersTypeofDefault.default(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+  return _assertThisInitializedJsDefault.default(self);
+}
+exports.default = _possibleConstructorReturn;

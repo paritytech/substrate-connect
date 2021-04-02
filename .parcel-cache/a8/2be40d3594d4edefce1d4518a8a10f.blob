@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _react = require('react');
+var _materialUiCoreUtils = require('@material-ui/core/utils');
+exports.default = _materialUiCoreUtils.createSvgIcon(/*#__PURE__*/_react.createElement("path", {
+  d: "M7 10l5 5 5-5z"
+}), 'ArrowDropDown');

@@ -1,0 +1,12 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _FormControlDefault.default;
+});
+_parcelHelpers.export(exports, "useFormControl", function () {
+  return _useFormControlDefault.default;
+});
+var _FormControl = require('./FormControl');
+var _FormControlDefault = _parcelHelpers.interopDefault(_FormControl);
+var _useFormControl = require('./useFormControl');
+var _useFormControlDefault = _parcelHelpers.interopDefault(_useFormControl);

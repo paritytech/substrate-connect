@@ -1,0 +1,76 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _internalSvgIconsRadioButtonUnchecked = require('../internal/svg-icons/RadioButtonUnchecked');
+var _internalSvgIconsRadioButtonUncheckedDefault = _parcelHelpers.interopDefault(_internalSvgIconsRadioButtonUnchecked);
+var _internalSvgIconsRadioButtonChecked = require('../internal/svg-icons/RadioButtonChecked');
+var _internalSvgIconsRadioButtonCheckedDefault = _parcelHelpers.interopDefault(_internalSvgIconsRadioButtonChecked);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var styles = function styles(theme) {
+  return {
+    root: {
+      position: 'relative',
+      display: 'flex',
+      '&$checked $layer': {
+        transform: 'scale(1)',
+        transition: theme.transitions.create('transform', {
+          easing: theme.transitions.easing.easeOut,
+          duration: theme.transitions.duration.shortest
+        })
+      }
+    },
+    layer: {
+      left: 0,
+      position: 'absolute',
+      transform: 'scale(0)',
+      transition: theme.transitions.create('transform', {
+        easing: theme.transitions.easing.easeIn,
+        duration: theme.transitions.duration.shortest
+      })
+    },
+    checked: {}
+  };
+};
+/**
+* @ignore - internal component.
+*/
+function RadioButtonIcon(props) {
+  var checked = props.checked, classes = props.classes, fontSize = props.fontSize;
+  return (
+    /*#__PURE__*/_react.createElement("div", {
+      className: _clsxDefault.default(classes.root, checked && classes.checked)
+    }, /*#__PURE__*/_react.createElement(_internalSvgIconsRadioButtonUncheckedDefault.default, {
+      fontSize: fontSize
+    }), /*#__PURE__*/_react.createElement(_internalSvgIconsRadioButtonCheckedDefault.default, {
+      fontSize: fontSize,
+      className: classes.layer
+    }))
+  );
+}
+"development" !== "production" ? RadioButtonIcon.propTypes = {
+  /**
+  * If `true`, the component is checked.
+  */
+  checked: _propTypesDefault.default.bool,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object.isRequired,
+  /**
+  * The size of the radio.
+  * `small` is equivalent to the dense radio styling.
+  */
+  fontSize: _propTypesDefault.default.oneOf(['small', 'default'])
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'PrivateRadioButtonIcon'
+})(RadioButtonIcon);

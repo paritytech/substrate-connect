@@ -1,0 +1,9 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _withWidthDefault.default;
+});
+var _withWidth = require('./withWidth');
+var _withWidthDefault = _parcelHelpers.interopDefault(_withWidth);
+_parcelHelpers.exportAll(_withWidth, exports);
+var _withWidthDefault = _parcelHelpers.interopDefault(_withWidth);

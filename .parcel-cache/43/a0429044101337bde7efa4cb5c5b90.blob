@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _useMediaQueryDefault.default;
+});
+var _useMediaQuery = require('./useMediaQuery');
+var _useMediaQueryDefault = _parcelHelpers.interopDefault(_useMediaQuery);

@@ -1,0 +1,337 @@
+var helpers = require("../../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _utilsContexts = require('../utils/contexts');
+  var _bnJs = require('bn.js');
+  var _bnJsDefault = _parcelHelpers.interopDefault(_bnJs);
+  var _polkadotApi = require('@polkadot/api');
+  var _components = require('../components');
+  var _materialUiCore = require('@material-ui/core');
+  var _hooks = require('../hooks');
+  var _ = require('.');
+  var _materialUiCoreColors = require('@material-ui/core/colors');
+  var _jsxFileName = "/Users/stormsheep/Documents/repos/parity/substrate-connect/projects/burnr/src/components/SendFundsForm.tsx", _s = $RefreshSig$();
+  const useStyles = _materialUiCore.makeStyles(theme => {
+    return _materialUiCore.createStyles({
+      container: {
+        marginTop: theme.spacing(3)
+      },
+      formSubmitContainer: {
+        display: 'flex',
+        marginTop: theme.spacing(3),
+        alignContent: 'center'
+      },
+      button: {
+        color: theme.palette.getContrastText(theme.palette.secondary.main),
+        '&:hover': {
+          color: theme.palette.getContrastText(theme.palette.secondary.dark)
+        }
+      },
+      wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative'
+      },
+      buttonProgress: {
+        display: 'flex',
+        color: _materialUiCoreColors.green[500],
+        position: 'relative',
+        marginTop: '5px',
+        marginLeft: '15px'
+      },
+      textProgress: {
+        position: 'relative',
+        left: '10px',
+        textAlign: 'left'
+      },
+      buttonSuccess: {
+        backgroundColor: _materialUiCoreColors.green[500],
+        '&:hover': {
+          backgroundColor: _materialUiCoreColors.green[700]
+        }
+      },
+      linear: {
+        width: '100%'
+      }
+    });
+  });
+  const columns = [{
+    id: 'withWhom',
+    label: '',
+    width: 160
+  }, {
+    id: 'extrinsic',
+    label: 'Extrinsic'
+  }, {
+    id: 'value',
+    label: 'Value',
+    minWidth: 170,
+    align: 'right'
+  }, {
+    id: 'status',
+    label: 'Status',
+    width: 40,
+    align: 'right'
+  }];
+  const SendFundsForm = () => {
+    _s();
+    const classes = useStyles();
+    const {account, setCurrentAccount} = _react.useContext(_utilsContexts.AccountContext);
+    const balanceArr = _hooks.useBalance(account.userAddress);
+    const api = _hooks.useApi();
+    const maxAmountFull = balanceArr[1];
+    const unit = balanceArr[3];
+    // TODO: This must be prettier and reusable (exists already on App)
+    const [endpoint, setEndpoint] = _hooks.useLocalStorage('endpoint');
+    if (!endpoint) setEndpoint('Polkadot-WsProvider');
+    const [, setLocalStorageAccount] = _hooks.useLocalStorage(endpoint.split('-')[0]?.toLowerCase?.());
+    // TODO END: This must be prettier and reusable (exists already on App)
+    const [address, setAddress] = _react.useState('');
+    const [amount, setAmount] = _react.useState('0');
+    const [loading, setLoading] = _react.useState(false);
+    const [message, setMessage] = _react.useState('');
+    const [countdownNo, setCountdownNo] = _react.useState(0);
+    const [rowStatus, setRowStatus] = _react.useState(0);
+    _react.useEffect(() => {
+      let countdown;
+      if (!loading) {
+        if (message != '') {
+          countdown = setInterval(() => {
+            setCountdownNo(oldCountdownNo => {
+              if (oldCountdownNo === 0) {
+                setMessage('');
+                return 0;
+              } else {
+                return oldCountdownNo - 1;
+              }
+            });
+          }, 100);
+        }
+      }
+      return () => {
+        clearInterval(countdown);
+      };
+    }, [loading, message, setMessage]);
+    const handleSubmit = async e => {
+      try {
+        e.preventDefault();
+        setLoading(true);
+        setCountdownNo(100);
+        setRowStatus(3);
+        const keyring = new _polkadotApi.Keyring({
+          type: 'sr25519'
+        });
+        const sender = keyring.addFromUri(account.userSeed);
+        await api.tx.balances.transfer(address, new _bnJsDefault.default(amount)).signAndSend(sender, result => {
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          setMessage(`Current transaction status ${result.status}`);
+          if (result.status.isInBlock) {
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            setMessage(`Transaction Block hash: ${result.status.asInBlock}`);
+          } else if (result.status.isFinalized) {
+            setLoading(false);
+            setRowStatus(1);
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            setMessage(`Block hash:: ${result.status.asFinalized}.`);
+            account.userHistory.unshift({
+              withWhom: address,
+              extrinsic: 'Transfer',
+              value: amount,
+              status: 1
+            });
+            setCurrentAccount(account);
+            setLocalStorageAccount(JSON.stringify(account));
+          }
+        });
+      } catch (err) {
+        console.log('There is an error: ', err);
+        setLoading(false);
+        setRowStatus(2);
+        setMessage(`😞 Error: ${err}`);
+        account.userHistory.unshift({
+          withWhom: address,
+          extrinsic: 'Transfer',
+          value: amount,
+          status: 2
+        });
+        setCurrentAccount(account);
+        setLocalStorageAccount(JSON.stringify(account));
+      }
+    };
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        component: "form",
+        container: true,
+        direction: "column",
+        className: classes.container,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 159,
+          columnNumber: 3
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        item: true,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 165,
+          columnNumber: 4
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_components.InputAddress, {
+        setAddress: setAddress,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 166,
+          columnNumber: 5
+        }
+      })), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        item: true,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 168,
+          columnNumber: 4
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_components.InputFunds, {
+        hidePercentages: true,
+        total: maxAmountFull,
+        currency: unit,
+        setAmount: setAmount,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 169,
+          columnNumber: 5
+        }
+      })), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        item: true,
+        xs: 12,
+        className: classes.formSubmitContainer,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 176,
+          columnNumber: 4
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Button, {
+        type: "submit",
+        variant: "contained",
+        size: "large",
+        color: "secondary",
+        disabled: loading || !amount,
+        onClick: handleSubmit,
+        className: classes.button,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 177,
+          columnNumber: 5
+        }
+      }, "Send")), countdownNo !== 0 && /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        item: true,
+        xs: 12,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 188,
+          columnNumber: 5
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.TableContainer, {
+        className: classes.container,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 189,
+          columnNumber: 6
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Table, {
+        size: "small",
+        stickyHeader: true,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 190,
+          columnNumber: 7
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_.HistoryTableRow, {
+        row: {
+          withWhom: address,
+          extrinsic: 'Transfer',
+          value: amount,
+          status: rowStatus
+        },
+        columns: columns,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 191,
+          columnNumber: 8
+        }
+      })))), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        item: true,
+        xs: 12,
+        className: classes.formSubmitContainer,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 203,
+          columnNumber: 4
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Typography, {
+        variant: "subtitle2",
+        className: classes.textProgress,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 204,
+          columnNumber: 5
+        }
+      }, message)), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        item: true,
+        xs: 12,
+        className: classes.formSubmitContainer,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 206,
+          columnNumber: 4
+        }
+      }, !loading && countdownNo !== 0 && /*#__PURE__*/_reactDefault.default.createElement("div", {
+        className: classes.linear,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 207,
+          columnNumber: 39
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.LinearProgress, {
+        variant: "determinate",
+        value: countdownNo,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 207,
+          columnNumber: 71
+        }
+      }))))
+    );
+  };
+  _s(SendFundsForm, "nkmgYdAh928C5mHrEaKUudLate8=", false, function () {
+    return [useStyles, _hooks.useBalance, _hooks.useApi, _hooks.useLocalStorage, _hooks.useLocalStorage];
+  });
+  _c = SendFundsForm;
+  exports.default = SendFundsForm;
+  var _c;
+  $RefreshReg$(_c, "SendFundsForm");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

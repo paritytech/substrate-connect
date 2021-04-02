@@ -1,0 +1,68 @@
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Polkadot = void 0;
+
+var _jsxRuntime = require("react/jsx-runtime");
+
+var _react = _interopRequireDefault(require("react"));
+
+var _uiShared = require("@polkadot/ui-shared");
+
+// Copyright 2018-2021 @polkadot/react-identicon authors & contributors
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2018 Paritytech via paritytech/oo7/polkadot-identicon
+// This has been converted from the original version that can be found at
+//
+// https://github.com/paritytech/oo7/blob/251ba2b7c45503b68eab4320c270b5afa9bccb60/packages/polkadot-identicon/src/index.jsx
+//
+// Here we have done the following to convert the component -
+//   - Converted the code to TypeScript
+//   - Removed the oo7 dependencies (since not initialised properly, it makes calls to wrong endpoints)
+//   - Remove encoding functionality, these are catered for in the base
+//   - Remove copy functionality (this is catered from in the base components)
+//   - Split calculations into relevant functions
+//   - Move constants to file-level
+//   - Overall it is now just a static component, expecting an address as an input value
+function renderCircle({
+  cx,
+  cy,
+  fill,
+  r
+}, key) {
+  return /*#__PURE__*/(0, _jsxRuntime.jsx)("circle", {
+    cx: cx,
+    cy: cy,
+    fill: fill,
+    r: r
+  }, key);
+}
+
+function Identicon({
+  address,
+  className = '',
+  isAlternative = false,
+  size,
+  style
+}) {
+  return /*#__PURE__*/(0, _jsxRuntime.jsx)("svg", {
+    className: className,
+    height: size,
+    id: address,
+    name: address,
+    style: style,
+    viewBox: "0 0 64 64",
+    width: size,
+    children: (0, _uiShared.polkadotIcon)(address, {
+      isAlternative
+    }).map(renderCircle)
+  });
+}
+
+const Polkadot = /*#__PURE__*/_react.default.memo(Identicon);
+
+exports.Polkadot = Polkadot;

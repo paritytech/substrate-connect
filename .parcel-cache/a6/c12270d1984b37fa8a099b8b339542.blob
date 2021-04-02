@@ -1,0 +1,1 @@
+module.exports = JSON.parse("{\"name\":\"@polkadot/types\",\"version\":\"3.7.3\"}");

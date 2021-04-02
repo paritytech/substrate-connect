@@ -1,0 +1,182 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _utilsDebounce = require('../utils/debounce');
+var _utilsDebounceDefault = _parcelHelpers.interopDefault(_utilsDebounce);
+var _utilsUseForkRef = require('../utils/useForkRef');
+var _utilsUseForkRefDefault = _parcelHelpers.interopDefault(_utilsUseForkRef);
+function getStyleValue(computedStyle, property) {
+  return parseInt(computedStyle[property], 10) || 0;
+}
+var useEnhancedEffect = typeof window !== 'undefined' ? _react.useLayoutEffect : _react.useEffect;
+var styles = {
+  /*Styles applied to the shadow textarea element.*/
+  shadow: {
+    // Visibility needed to hide the extra text area on iPads
+    visibility: 'hidden',
+    // Remove from the content flow
+    position: 'absolute',
+    // Ignore the scrollbar width
+    overflow: 'hidden',
+    height: 0,
+    top: 0,
+    left: 0,
+    // Create a new layer, increase the isolation of the computed values
+    transform: 'translateZ(0)'
+  }
+};
+var TextareaAutosize = /*#__PURE__*/_react.forwardRef(function TextareaAutosize(props, ref) {
+  var onChange = props.onChange, rows = props.rows, rowsMax = props.rowsMax, _props$rowsMin = props.rowsMin, rowsMinProp = _props$rowsMin === void 0 ? 1 : _props$rowsMin, style = props.style, value = props.value, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["onChange", "rows", "rowsMax", "rowsMin", "style", "value"]);
+  var rowsMin = rows || rowsMinProp;
+  var _React$useRef = _react.useRef(value != null), isControlled = _React$useRef.current;
+  var inputRef = _react.useRef(null);
+  var handleRef = _utilsUseForkRefDefault.default(ref, inputRef);
+  var shadowRef = _react.useRef(null);
+  var renders = _react.useRef(0);
+  var _React$useState = _react.useState({}), state = _React$useState[0], setState = _React$useState[1];
+  var syncHeight = _react.useCallback(function () {
+    var input = inputRef.current;
+    var computedStyle = window.getComputedStyle(input);
+    var inputShallow = shadowRef.current;
+    inputShallow.style.width = computedStyle.width;
+    inputShallow.value = input.value || props.placeholder || 'x';
+    if (inputShallow.value.slice(-1) === '\n') {
+      // Certain fonts which overflow the line height will cause the textarea
+      // to report a different scrollHeight depending on whether the last line
+      // is empty. Make it non-empty to avoid this issue.
+      inputShallow.value += ' ';
+    }
+    var boxSizing = computedStyle['box-sizing'];
+    var padding = getStyleValue(computedStyle, 'padding-bottom') + getStyleValue(computedStyle, 'padding-top');
+    var border = getStyleValue(computedStyle, 'border-bottom-width') + getStyleValue(computedStyle, 'border-top-width');
+    // The height of the inner content
+    var innerHeight = inputShallow.scrollHeight - padding;
+    // Measure height of a textarea with a single row
+    inputShallow.value = 'x';
+    var singleRowHeight = inputShallow.scrollHeight - padding;
+    // The height of the outer content
+    var outerHeight = innerHeight;
+    if (rowsMin) {
+      outerHeight = Math.max(Number(rowsMin) * singleRowHeight, outerHeight);
+    }
+    if (rowsMax) {
+      outerHeight = Math.min(Number(rowsMax) * singleRowHeight, outerHeight);
+    }
+    outerHeight = Math.max(outerHeight, singleRowHeight);
+    // Take the box sizing into account for applying this value as a style.
+    var outerHeightStyle = outerHeight + (boxSizing === 'border-box' ? padding + border : 0);
+    var overflow = Math.abs(outerHeight - innerHeight) <= 1;
+    setState(function (prevState) {
+      // Need a large enough difference to update the height.
+      // This prevents infinite rendering loop.
+      if (renders.current < 20 && (outerHeightStyle > 0 && Math.abs((prevState.outerHeightStyle || 0) - outerHeightStyle) > 1 || prevState.overflow !== overflow)) {
+        renders.current += 1;
+        return {
+          overflow: overflow,
+          outerHeightStyle: outerHeightStyle
+        };
+      }
+      if ("development" !== 'production') {
+        if (renders.current === 20) {
+          console.error(['Material-UI: Too many re-renders. The layout is unstable.', 'TextareaAutosize limits the number of renders to prevent an infinite loop.'].join('\n'));
+        }
+      }
+      return prevState;
+    });
+  }, [rowsMax, rowsMin, props.placeholder]);
+  _react.useEffect(function () {
+    var handleResize = _utilsDebounceDefault.default(function () {
+      renders.current = 0;
+      syncHeight();
+    });
+    window.addEventListener('resize', handleResize);
+    return function () {
+      handleResize.clear();
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [syncHeight]);
+  useEnhancedEffect(function () {
+    syncHeight();
+  });
+  _react.useEffect(function () {
+    renders.current = 0;
+  }, [value]);
+  var handleChange = function handleChange(event) {
+    renders.current = 0;
+    if (!isControlled) {
+      syncHeight();
+    }
+    if (onChange) {
+      onChange(event);
+    }
+  };
+  return (
+    /*#__PURE__*/_react.createElement(_react.Fragment, null, /*#__PURE__*/_react.createElement("textarea", _babelRuntimeHelpersEsmExtendsDefault.default({
+      value: value,
+      onChange: handleChange,
+      ref: handleRef,
+      /*Apply the rows prop to get a "correct" first SSR paint*/
+      rows: rowsMin,
+      style: _babelRuntimeHelpersEsmExtendsDefault.default({
+        height: state.outerHeightStyle,
+        // Need a large enough difference to allow scrolling.
+        // This prevents infinite rendering loop.
+        overflow: state.overflow ? 'hidden' : null
+      }, style)
+    }, other)), /*#__PURE__*/_react.createElement("textarea", {
+      "aria-hidden": true,
+      className: props.className,
+      readOnly: true,
+      ref: shadowRef,
+      tabIndex: -1,
+      style: _babelRuntimeHelpersEsmExtendsDefault.default({}, styles.shadow, style)
+    }))
+  );
+});
+"development" !== "production" ? TextareaAutosize.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * @ignore
+  */
+  onChange: _propTypesDefault.default.func,
+  /**
+  * @ignore
+  */
+  placeholder: _propTypesDefault.default.string,
+  /**
+  * Use `rowsMin` instead. The prop will be removed in v5.
+  *
+  * @deprecated
+  */
+  rows: _propTypesDefault.default.oneOfType([_propTypesDefault.default.number, _propTypesDefault.default.string]),
+  /**
+  * Maximum number of rows to display.
+  */
+  rowsMax: _propTypesDefault.default.oneOfType([_propTypesDefault.default.number, _propTypesDefault.default.string]),
+  /**
+  * Minimum number of rows to display.
+  */
+  rowsMin: _propTypesDefault.default.oneOfType([_propTypesDefault.default.number, _propTypesDefault.default.string]),
+  /**
+  * @ignore
+  */
+  style: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  value: _propTypesDefault.default.oneOfType([_propTypesDefault.default.arrayOf(_propTypesDefault.default.string), _propTypesDefault.default.number, _propTypesDefault.default.string])
+} : void 0;
+exports.default = TextareaAutosize;

@@ -1,0 +1,54 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _utilsDebounce = require('../utils/debounce');
+var _utilsDebounceDefault = _parcelHelpers.interopDefault(_utilsDebounce);
+var styles = {
+  width: 99,
+  height: 99,
+  position: 'absolute',
+  top: -9999,
+  overflow: 'scroll'
+};
+function ScrollbarSize(props) {
+  var onChange = props.onChange, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["onChange"]);
+  var scrollbarHeight = _react.useRef();
+  var nodeRef = _react.useRef(null);
+  var setMeasurements = function setMeasurements() {
+    scrollbarHeight.current = nodeRef.current.offsetHeight - nodeRef.current.clientHeight;
+  };
+  _react.useEffect(function () {
+    var handleResize = _utilsDebounceDefault.default(function () {
+      var prevHeight = scrollbarHeight.current;
+      setMeasurements();
+      if (prevHeight !== scrollbarHeight.current) {
+        onChange(scrollbarHeight.current);
+      }
+    });
+    window.addEventListener('resize', handleResize);
+    return function () {
+      handleResize.clear();
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [onChange]);
+  _react.useEffect(function () {
+    setMeasurements();
+    onChange(scrollbarHeight.current);
+  }, [onChange]);
+  return (
+    /*#__PURE__*/_react.createElement("div", _babelRuntimeHelpersEsmExtendsDefault.default({
+      style: styles,
+      ref: nodeRef
+    }, other))
+  );
+}
+exports.default = ScrollbarSize;
+"development" !== "production" ? ScrollbarSize.propTypes = {
+  onChange: _propTypesDefault.default.func.isRequired
+} : void 0;

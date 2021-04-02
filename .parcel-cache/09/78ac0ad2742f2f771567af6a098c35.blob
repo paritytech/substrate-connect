@@ -1,0 +1,81 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _babelRuntimeHelpersEsmDefineProperty = require("@babel/runtime/helpers/esm/defineProperty");
+var _babelRuntimeHelpersEsmDefinePropertyDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmDefineProperty);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _materialUiUtils = require('@material-ui/utils');
+var _createBreakpoints = require('./createBreakpoints');
+var _createBreakpointsDefault = _parcelHelpers.interopDefault(_createBreakpoints);
+var _createMixins = require('./createMixins');
+var _createMixinsDefault = _parcelHelpers.interopDefault(_createMixins);
+var _createPalette = require('./createPalette');
+var _createPaletteDefault = _parcelHelpers.interopDefault(_createPalette);
+var _createTypography = require('./createTypography');
+var _createTypographyDefault = _parcelHelpers.interopDefault(_createTypography);
+var _shadows = require('./shadows');
+var _shadowsDefault = _parcelHelpers.interopDefault(_shadows);
+var _shape = require('./shape');
+var _shapeDefault = _parcelHelpers.interopDefault(_shape);
+var _createSpacing = require('./createSpacing');
+var _createSpacingDefault = _parcelHelpers.interopDefault(_createSpacing);
+var _transitions = require('./transitions');
+var _transitionsDefault = _parcelHelpers.interopDefault(_transitions);
+var _zIndex = require('./zIndex');
+var _zIndexDefault = _parcelHelpers.interopDefault(_zIndex);
+function createMuiTheme() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var _options$breakpoints = options.breakpoints, breakpointsInput = _options$breakpoints === void 0 ? {} : _options$breakpoints, _options$mixins = options.mixins, mixinsInput = _options$mixins === void 0 ? {} : _options$mixins, _options$palette = options.palette, paletteInput = _options$palette === void 0 ? {} : _options$palette, spacingInput = options.spacing, _options$typography = options.typography, typographyInput = _options$typography === void 0 ? {} : _options$typography, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(options, ["breakpoints", "mixins", "palette", "spacing", "typography"]);
+  var palette = _createPaletteDefault.default(paletteInput);
+  var breakpoints = _createBreakpointsDefault.default(breakpointsInput);
+  var spacing = _createSpacingDefault.default(spacingInput);
+  var muiTheme = _materialUiUtils.deepmerge({
+    breakpoints: breakpoints,
+    direction: 'ltr',
+    mixins: _createMixinsDefault.default(breakpoints, spacing, mixinsInput),
+    overrides: {},
+    // Inject custom styles
+    palette: palette,
+    props: {},
+    // Provide default props
+    shadows: _shadowsDefault.default,
+    typography: _createTypographyDefault.default(palette, typographyInput),
+    spacing: spacing,
+    shape: _shapeDefault.default,
+    transitions: _transitionsDefault.default,
+    zIndex: _zIndexDefault.default
+  }, other);
+  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    args[_key - 1] = arguments[_key];
+  }
+  muiTheme = args.reduce(function (acc, argument) {
+    return _materialUiUtils.deepmerge(acc, argument);
+  }, muiTheme);
+  if ("development" !== 'production') {
+    var pseudoClasses = ['checked', 'disabled', 'error', 'focused', 'focusVisible', 'required', 'expanded', 'selected'];
+    var traverse = function traverse(node, parentKey) {
+      var depth = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+      var key;
+      // eslint-disable-next-line guard-for-in, no-restricted-syntax
+      for (key in node) {
+        var child = node[key];
+        if (depth === 1) {
+          if (key.indexOf('Mui') === 0 && child) {
+            traverse(child, key, depth + 1);
+          }
+        } else if (pseudoClasses.indexOf(key) !== -1 && Object.keys(child).length > 0) {
+          if ("development" !== 'production') {
+            console.error([("Material-UI: The `").concat(parentKey, "` component increases ") + ("the CSS specificity of the `").concat(key, "` internal state."), 'You can not override it like this: ', JSON.stringify(node, null, 2), '', 'Instead, you need to use the $ruleName syntax:', JSON.stringify({
+              root: _babelRuntimeHelpersEsmDefinePropertyDefault.default({}, ("&$").concat(key), child)
+            }, null, 2), '', 'https://material-ui.com/r/pseudo-classes-guide'].join('\n'));
+          }
+          // Remove the style to prevent global conflicts.
+          node[key] = {};
+        }
+      }
+    };
+    traverse(muiTheme.overrides);
+  }
+  return muiTheme;
+}
+exports.default = createMuiTheme;

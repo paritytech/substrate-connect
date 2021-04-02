@@ -1,0 +1,112 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "isWidthUp", function () {
+  return isWidthUp;
+});
+_parcelHelpers.export(exports, "isWidthDown", function () {
+  return isWidthDown;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _materialUiUtils = require('@material-ui/utils');
+var _materialUiStyles = require('@material-ui/styles');
+var _hoistNonReactStatics = require('hoist-non-react-statics');
+var _hoistNonReactStaticsDefault = _parcelHelpers.interopDefault(_hoistNonReactStatics);
+var _stylesUseTheme = require('../styles/useTheme');
+var _stylesUseThemeDefault = _parcelHelpers.interopDefault(_stylesUseTheme);
+var _stylesCreateBreakpoints = require('../styles/createBreakpoints');
+var _useMediaQuery = require('../useMediaQuery');
+var _useMediaQueryDefault = _parcelHelpers.interopDefault(_useMediaQuery);
+var isWidthUp = function isWidthUp(breakpoint, width) {
+  var inclusive = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+  if (inclusive) {
+    return _stylesCreateBreakpoints.keys.indexOf(breakpoint) <= _stylesCreateBreakpoints.keys.indexOf(width);
+  }
+  return _stylesCreateBreakpoints.keys.indexOf(breakpoint) < _stylesCreateBreakpoints.keys.indexOf(width);
+};
+var isWidthDown = function isWidthDown(breakpoint, width) {
+  var inclusive = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+  if (inclusive) {
+    return _stylesCreateBreakpoints.keys.indexOf(width) <= _stylesCreateBreakpoints.keys.indexOf(breakpoint);
+  }
+  return _stylesCreateBreakpoints.keys.indexOf(width) < _stylesCreateBreakpoints.keys.indexOf(breakpoint);
+};
+var useEnhancedEffect = typeof window === 'undefined' ? _react.useEffect : _react.useLayoutEffect;
+var withWidth = function withWidth() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  return function (Component) {
+    var _options$withTheme = options.withTheme, withThemeOption = _options$withTheme === void 0 ? false : _options$withTheme, _options$noSSR = options.noSSR, noSSR = _options$noSSR === void 0 ? false : _options$noSSR, initialWidthOption = options.initialWidth;
+    function WithWidth(props) {
+      var contextTheme = _stylesUseThemeDefault.default();
+      var theme = props.theme || contextTheme;
+      var _getThemeProps = _materialUiStyles.getThemeProps({
+        theme: theme,
+        name: 'MuiWithWidth',
+        props: _babelRuntimeHelpersEsmExtendsDefault.default({}, props)
+      }), initialWidth = _getThemeProps.initialWidth, width = _getThemeProps.width, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(_getThemeProps, ["initialWidth", "width"]);
+      var _React$useState = _react.useState(false), mountedState = _React$useState[0], setMountedState = _React$useState[1];
+      useEnhancedEffect(function () {
+        setMountedState(true);
+      }, []);
+      /**
+      * innerWidth |xs      sm      md      lg      xl
+      *            |-------|-------|-------|-------|------>
+      * width      |  xs   |  sm   |  md   |  lg   |  xl
+      */
+      var keys = theme.breakpoints.keys.slice().reverse();
+      var widthComputed = keys.reduce(function (output, key) {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        var matches = _useMediaQueryDefault.default(theme.breakpoints.up(key));
+        return !output && matches ? key : output;
+      }, null);
+      var more = _babelRuntimeHelpersEsmExtendsDefault.default({
+        width: width || (mountedState || noSSR ? widthComputed : undefined) || initialWidth || initialWidthOption
+      }, withThemeOption ? {
+        theme: theme
+      } : {}, other);
+      // When rendering the component on the server,
+      // we have no idea about the client browser screen width.
+      // In order to prevent blinks and help the reconciliation of the React tree
+      // we are not rendering the child component.
+      // 
+      // An alternative is to use the `initialWidth` property.
+      if (more.width === undefined) {
+        return null;
+      }
+      return (
+        /*#__PURE__*/_react.createElement(Component, more)
+      );
+    }
+    "development" !== "production" ? WithWidth.propTypes = {
+      /**
+      * As `window.innerWidth` is unavailable on the server,
+      * we default to rendering an empty component during the first mount.
+      * You might want to use an heuristic to approximate
+      * the screen width of the client browser screen width.
+      *
+      * For instance, you could be using the user-agent or the client-hints.
+      * https://caniuse.com/#search=client%20hint
+      */
+      initialWidth: _propTypesDefault.default.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
+      /**
+      * @ignore
+      */
+      theme: _propTypesDefault.default.object,
+      /**
+      * Bypass the width calculation logic.
+      */
+      width: _propTypesDefault.default.oneOf(['xs', 'sm', 'md', 'lg', 'xl'])
+    } : void 0;
+    if ("development" !== 'production') {
+      WithWidth.displayName = ("WithWidth(").concat(_materialUiUtils.getDisplayName(Component), ")");
+    }
+    _hoistNonReactStaticsDefault.default(WithWidth, Component);
+    return WithWidth;
+  };
+};
+exports.default = withWidth;

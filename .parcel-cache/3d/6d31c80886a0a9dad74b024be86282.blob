@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _StepLabelDefault.default;
+});
+var _StepLabel = require('./StepLabel');
+var _StepLabelDefault = _parcelHelpers.interopDefault(_StepLabel);

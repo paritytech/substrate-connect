@@ -1,0 +1,155 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _materialUiUtils = require('@material-ui/utils');
+var _FormControl = require('../FormControl');
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var _Typography = require('../Typography');
+var _TypographyDefault = _parcelHelpers.interopDefault(_Typography);
+var _utilsCapitalize = require('../utils/capitalize');
+var _utilsCapitalizeDefault = _parcelHelpers.interopDefault(_utilsCapitalize);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      cursor: 'pointer',
+      // For correct alignment with the text.
+      verticalAlign: 'middle',
+      WebkitTapHighlightColor: 'transparent',
+      marginLeft: -11,
+      marginRight: 16,
+      // used for row presentation of radio/checkbox
+      '&$disabled': {
+        cursor: 'default'
+      }
+    },
+    /*Styles applied to the root element if `labelPlacement="start"`.*/
+    labelPlacementStart: {
+      flexDirection: 'row-reverse',
+      marginLeft: 16,
+      // used for row presentation of radio/checkbox
+      marginRight: -11
+    },
+    /*Styles applied to the root element if `labelPlacement="top"`.*/
+    labelPlacementTop: {
+      flexDirection: 'column-reverse',
+      marginLeft: 16
+    },
+    /*Styles applied to the root element if `labelPlacement="bottom"`.*/
+    labelPlacementBottom: {
+      flexDirection: 'column',
+      marginLeft: 16
+    },
+    /*Pseudo-class applied to the root element if `disabled={true}`.*/
+    disabled: {},
+    /*Styles applied to the label's Typography component.*/
+    label: {
+      '&$disabled': {
+        color: theme.palette.text.disabled
+      }
+    }
+  };
+};
+/**
+* Drop in replacement of the `Radio`, `Switch` and `Checkbox` component.
+* Use this component if you want to display an extra label.
+*/
+var FormControlLabel = /*#__PURE__*/_react.forwardRef(function FormControlLabel(props, ref) {
+  var checked = props.checked, classes = props.classes, className = props.className, control = props.control, disabledProp = props.disabled, inputRef = props.inputRef, label = props.label, _props$labelPlacement = props.labelPlacement, labelPlacement = _props$labelPlacement === void 0 ? 'end' : _props$labelPlacement, name = props.name, onChange = props.onChange, value = props.value, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["checked", "classes", "className", "control", "disabled", "inputRef", "label", "labelPlacement", "name", "onChange", "value"]);
+  var muiFormControl = _FormControl.useFormControl();
+  var disabled = disabledProp;
+  if (typeof disabled === 'undefined' && typeof control.props.disabled !== 'undefined') {
+    disabled = control.props.disabled;
+  }
+  if (typeof disabled === 'undefined' && muiFormControl) {
+    disabled = muiFormControl.disabled;
+  }
+  var controlProps = {
+    disabled: disabled
+  };
+  ['checked', 'name', 'onChange', 'value', 'inputRef'].forEach(function (key) {
+    if (typeof control.props[key] === 'undefined' && typeof props[key] !== 'undefined') {
+      controlProps[key] = props[key];
+    }
+  });
+  return (
+    /*#__PURE__*/_react.createElement("label", _babelRuntimeHelpersEsmExtendsDefault.default({
+      className: _clsxDefault.default(classes.root, className, labelPlacement !== 'end' && classes[("labelPlacement").concat(_utilsCapitalizeDefault.default(labelPlacement))], disabled && classes.disabled),
+      ref: ref
+    }, other), /*#__PURE__*/_react.cloneElement(control, controlProps), /*#__PURE__*/_react.createElement(_TypographyDefault.default, {
+      component: "span",
+      className: _clsxDefault.default(classes.label, disabled && classes.disabled)
+    }, label))
+  );
+});
+"development" !== "production" ? FormControlLabel.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * If `true`, the component appears selected.
+  */
+  checked: _propTypesDefault.default.bool,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * A control element. For instance, it can be be a `Radio`, a `Switch` or a `Checkbox`.
+  */
+  control: _propTypesDefault.default.element.isRequired,
+  /**
+  * If `true`, the control will be disabled.
+  */
+  disabled: _propTypesDefault.default.bool,
+  /**
+  * Pass a ref to the `input` element.
+  */
+  inputRef: _materialUiUtils.refType,
+  /**
+  * The text to be used in an enclosing label element.
+  */
+  label: _propTypesDefault.default.node,
+  /**
+  * The position of the label.
+  */
+  labelPlacement: _propTypesDefault.default.oneOf(['bottom', 'end', 'start', 'top']),
+  /**
+  * @ignore
+  */
+  name: _propTypesDefault.default.string,
+  /**
+  * Callback fired when the state is changed.
+  *
+  * @param {object} event The event source of the callback.
+  * You can pull out the new checked state by accessing `event.target.checked` (boolean).
+  */
+  onChange: _propTypesDefault.default.func,
+  /**
+  * The value of the component.
+  */
+  value: _propTypesDefault.default.any
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiFormControlLabel'
+})(FormControlLabel);

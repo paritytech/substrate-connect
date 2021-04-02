@@ -1,0 +1,79 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var styles = {
+  /*Styles applied to the root element.*/
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: 8,
+    justifyContent: 'flex-end'
+  },
+  /*Styles applied to the root element if `disableSpacing={false}`.*/
+  spacing: {
+    '& > :not(:first-child)': {
+      marginLeft: 8
+    }
+  }
+};
+var warnedOnce = false;
+/**
+* ⚠️ The ExpansionPanelActions component was renamed to AccordionActions to use a more common naming convention.
+*
+* You should use `import { AccordionActions } from '@material-ui/core'`
+* or `import AccordionActions from '@material-ui/core/AccordionActions'`.
+*/
+var ExpansionPanelActions = /*#__PURE__*/_react.forwardRef(function ExpansionPanelActions(props, ref) {
+  if ("development" !== 'production') {
+    if (!warnedOnce) {
+      warnedOnce = true;
+      console.error(['Material-UI: the ExpansionPanelActions component was renamed to AccordionActions to use a more common naming convention.', '', "You should use `import { AccordionActions } from '@material-ui/core'`", "or `import AccordionActions from '@material-ui/core/AccordionActions'`"].join('\n'));
+    }
+  }
+  var classes = props.classes, className = props.className, _props$disableSpacing = props.disableSpacing, disableSpacing = _props$disableSpacing === void 0 ? false : _props$disableSpacing, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["classes", "className", "disableSpacing"]);
+  return (
+    /*#__PURE__*/_react.createElement("div", _babelRuntimeHelpersEsmExtendsDefault.default({
+      className: _clsxDefault.default(classes.root, className, !disableSpacing && classes.spacing),
+      ref: ref
+    }, other))
+  );
+});
+"development" !== "production" ? ExpansionPanelActions.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * The content of the component.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * If `true`, the actions do not have additional margin.
+  */
+  disableSpacing: _propTypesDefault.default.bool
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiExpansionPanelActions'
+})(ExpansionPanelActions);

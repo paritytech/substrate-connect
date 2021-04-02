@@ -1,0 +1,101 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _reactIs = require('react-is');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var styles = {
+  /*Styles applied to the root element.*/
+  root: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    overflowY: 'auto',
+    listStyle: 'none',
+    padding: 0,
+    WebkitOverflowScrolling: 'touch'
+  }
+};
+var GridList = /*#__PURE__*/_react.forwardRef(function GridList(props, ref) {
+  var _props$cellHeight = props.cellHeight, cellHeight = _props$cellHeight === void 0 ? 180 : _props$cellHeight, children = props.children, classes = props.classes, className = props.className, _props$cols = props.cols, cols = _props$cols === void 0 ? 2 : _props$cols, _props$component = props.component, Component = _props$component === void 0 ? 'ul' : _props$component, _props$spacing = props.spacing, spacing = _props$spacing === void 0 ? 4 : _props$spacing, style = props.style, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["cellHeight", "children", "classes", "className", "cols", "component", "spacing", "style"]);
+  return (
+    /*#__PURE__*/_react.createElement(Component, _babelRuntimeHelpersEsmExtendsDefault.default({
+      className: _clsxDefault.default(classes.root, className),
+      ref: ref,
+      style: _babelRuntimeHelpersEsmExtendsDefault.default({
+        margin: -spacing / 2
+      }, style)
+    }, other), _react.Children.map(children, function (child) {
+      if (!/*#__PURE__*/_react.isValidElement(child)) {
+        return null;
+      }
+      if ("development" !== 'production') {
+        if (_reactIs.isFragment(child)) {
+          console.error(["Material-UI: The GridList component doesn't accept a Fragment as a child.", 'Consider providing an array instead.'].join('\n'));
+        }
+      }
+      var childCols = child.props.cols || 1;
+      var childRows = child.props.rows || 1;
+      return (
+        /*#__PURE__*/_react.cloneElement(child, {
+          style: _babelRuntimeHelpersEsmExtendsDefault.default({
+            width: ("").concat(100 / cols * childCols, "%"),
+            height: cellHeight === 'auto' ? 'auto' : cellHeight * childRows + spacing,
+            padding: spacing / 2
+          }, child.props.style)
+        })
+      );
+    }))
+  );
+});
+"development" !== "production" ? GridList.propTypes = {
+  /**
+  * Number of px for one cell height.
+  * You can set `'auto'` if you want to let the children determine the height.
+  */
+  cellHeight: _propTypesDefault.default.oneOfType([_propTypesDefault.default.number, _propTypesDefault.default.oneOf(['auto'])]),
+  /**
+  * Grid Tiles that will be in Grid List.
+  */
+  children: _propTypesDefault.default.node.isRequired,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object.isRequired,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * Number of columns.
+  */
+  cols: _propTypesDefault.default.number,
+  /**
+  * The component used for the root node.
+  * Either a string to use a HTML element or a component.
+  */
+  component: _propTypesDefault.default./*@typescript-to-proptypes-ignore*/
+  elementType,
+  /**
+  * Number of px for the spacing between tiles.
+  */
+  spacing: _propTypesDefault.default.number,
+  /**
+  * @ignore
+  */
+  style: _propTypesDefault.default.object
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiGridList'
+})(GridList);

@@ -1,0 +1,109 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _reactDefault = _parcelHelpers.interopDefault(_react);
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _hoistNonReactStatics = require('hoist-non-react-statics');
+var _hoistNonReactStaticsDefault = _parcelHelpers.interopDefault(_hoistNonReactStatics);
+var _materialUiUtils = require('@material-ui/utils');
+var _makeStyles = require('../makeStyles');
+var _makeStylesDefault = _parcelHelpers.interopDefault(_makeStyles);
+var _getThemeProps = require('../getThemeProps');
+var _getThemePropsDefault = _parcelHelpers.interopDefault(_getThemeProps);
+var _useTheme = require('../useTheme');
+var _useThemeDefault = _parcelHelpers.interopDefault(_useTheme);
+// Link a style sheet with a component.
+// It does not modify the component passed to it;
+// instead, it returns a new component, with a `classes` property.
+var withStyles = function withStyles(stylesOrCreator) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  return function (Component) {
+    var defaultTheme = options.defaultTheme, _options$withTheme = options.withTheme, withTheme = _options$withTheme === void 0 ? false : _options$withTheme, name = options.name, stylesOptions = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(options, ["defaultTheme", "withTheme", "name"]);
+    if ("development" !== 'production') {
+      if (Component === undefined) {
+        throw new Error(['You are calling withStyles(styles)(Component) with an undefined component.', 'You may have forgotten to import it.'].join('\n'));
+      }
+    }
+    var classNamePrefix = name;
+    if ("development" !== 'production') {
+      if (!name) {
+        // Provide a better DX outside production.
+        var displayName = _materialUiUtils.getDisplayName(Component);
+        if (displayName !== undefined) {
+          classNamePrefix = displayName;
+        }
+      }
+    }
+    var useStyles = _makeStylesDefault.default(stylesOrCreator, _babelRuntimeHelpersEsmExtendsDefault.default({
+      defaultTheme: defaultTheme,
+      Component: Component,
+      name: name || Component.displayName,
+      classNamePrefix: classNamePrefix
+    }, stylesOptions));
+    var WithStyles = /*#__PURE__*/_reactDefault.default.forwardRef(function WithStyles(props, ref) {
+      var classesProp = props.classes, innerRef = props.innerRef, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["classes", "innerRef"]);
+      // The wrapper receives only user supplied props, which could be a subset of
+      // the actual props Component might receive due to merging with defaultProps.
+      // So copying it here would give us the same result in the wrapper as well.
+      var classes = useStyles(_babelRuntimeHelpersEsmExtendsDefault.default({}, Component.defaultProps, props));
+      var theme;
+      var more = other;
+      if (typeof name === 'string' || withTheme) {
+        // name and withTheme are invariant in the outer scope
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        theme = _useThemeDefault.default() || defaultTheme;
+        if (name) {
+          more = _getThemePropsDefault.default({
+            theme: theme,
+            name: name,
+            props: other
+          });
+        }
+        // Provide the theme to the wrapped component.
+        // So we don't have to use the `withTheme()` Higher-order Component.
+        if (withTheme && !more.theme) {
+          more.theme = theme;
+        }
+      }
+      return (
+        /*#__PURE__*/_reactDefault.default.createElement(Component, _babelRuntimeHelpersEsmExtendsDefault.default({
+          ref: innerRef || ref,
+          classes: classes
+        }, more))
+      );
+    });
+    "development" !== "production" ? WithStyles.propTypes = {
+      /**
+      * Override or extend the styles applied to the component.
+      */
+      classes: _propTypesDefault.default.object,
+      /**
+      * Use that prop to pass a ref to the decorated component.
+      * @deprecated
+      */
+      innerRef: _materialUiUtils.chainPropTypes(_propTypesDefault.default.oneOfType([_propTypesDefault.default.func, _propTypesDefault.default.object]), function (props) {
+        if (props.innerRef == null) {
+          return null;
+        }
+        return null;
+      })
+    } : void 0;
+    if ("development" !== 'production') {
+      WithStyles.displayName = ("WithStyles(").concat(_materialUiUtils.getDisplayName(Component), ")");
+    }
+    _hoistNonReactStaticsDefault.default(WithStyles, Component);
+    if ("development" !== 'production') {
+      // Exposed for test purposes.
+      WithStyles.Naked = Component;
+      WithStyles.options = options;
+      WithStyles.useStyles = useStyles;
+    }
+    return WithStyles;
+  };
+};
+exports.default = withStyles;

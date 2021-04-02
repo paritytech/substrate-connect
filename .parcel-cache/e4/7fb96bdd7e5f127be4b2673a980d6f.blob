@@ -1,0 +1,16 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styleFunction", function () {
+  return styleFunction;
+});
+var _materialUiSystem = require('@material-ui/system');
+var _stylesStyled = require('../styles/styled');
+var _stylesStyledDefault = _parcelHelpers.interopDefault(_stylesStyled);
+var styleFunction = _materialUiSystem.css(_materialUiSystem.compose(_materialUiSystem.borders, _materialUiSystem.display, _materialUiSystem.flexbox, _materialUiSystem.grid, _materialUiSystem.positions, _materialUiSystem.palette, _materialUiSystem.shadows, _materialUiSystem.sizing, _materialUiSystem.spacing, _materialUiSystem.typography));
+/**
+* @ignore - do not document.
+*/
+var Box = _stylesStyledDefault.default('div')(styleFunction, {
+  name: 'MuiBox'
+});
+exports.default = Box;

@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _TableFooterDefault.default;
+});
+var _TableFooter = require('./TableFooter');
+var _TableFooterDefault = _parcelHelpers.interopDefault(_TableFooter);

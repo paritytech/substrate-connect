@@ -1,0 +1,45 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _babelRuntimeHelpersEsmDefineProperty = require("@babel/runtime/helpers/esm/defineProperty");
+var _babelRuntimeHelpersEsmDefinePropertyDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmDefineProperty);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+function createMixins(breakpoints, spacing, mixins) {
+  var _toolbar;
+  return _babelRuntimeHelpersEsmExtendsDefault.default({
+    gutters: function gutters() {
+      var styles = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      // To deprecate in v4.1
+      // warning(
+      // false,
+      // [
+      // 'Material-UI: Theme.mixins.gutters() is deprecated.',
+      // 'You can use the source of the mixin directly:',
+      // `
+      // paddingLeft: theme.spacing(2),
+      // paddingRight: theme.spacing(2),
+      // [theme.breakpoints.up('sm')]: {
+      // paddingLeft: theme.spacing(3),
+      // paddingRight: theme.spacing(3),
+      // },
+      // `,
+      // ].join('\n'),
+      // );
+      return _babelRuntimeHelpersEsmExtendsDefault.default({
+        paddingLeft: spacing(2),
+        paddingRight: spacing(2)
+      }, styles, _babelRuntimeHelpersEsmDefinePropertyDefault.default({}, breakpoints.up('sm'), _babelRuntimeHelpersEsmExtendsDefault.default({
+        paddingLeft: spacing(3),
+        paddingRight: spacing(3)
+      }, styles[breakpoints.up('sm')])));
+    },
+    toolbar: (_toolbar = {
+      minHeight: 56
+    }, _babelRuntimeHelpersEsmDefinePropertyDefault.default(_toolbar, ("").concat(breakpoints.up('xs'), " and (orientation: landscape)"), {
+      minHeight: 48
+    }), _babelRuntimeHelpersEsmDefinePropertyDefault.default(_toolbar, breakpoints.up('sm'), {
+      minHeight: 64
+    }), _toolbar)
+  }, mixins);
+}
+exports.default = createMixins;

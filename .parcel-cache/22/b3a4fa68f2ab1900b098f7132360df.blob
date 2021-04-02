@@ -1,0 +1,167 @@
+var helpers = require("../../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _materialUiCoreColors = require('@material-ui/core/colors');
+  var _materialUiCore = require('@material-ui/core');
+  var _utilsContexts = require('../utils/contexts');
+  var _utilsUtils = require('../utils/utils');
+  var _utilsConstants = require('../utils/constants');
+  var _hooks = require('../hooks');
+  var _materialUiIconsExpandMore = require('@material-ui/icons/ExpandMore');
+  var _materialUiIconsExpandMoreDefault = _parcelHelpers.interopDefault(_materialUiIconsExpandMore);
+  var _jsxFileName = "/Users/stormsheep/Documents/repos/parity/substrate-connect/projects/burnr/src/components/AccountMenu.tsx", _s = $RefreshSig$();
+  const useStyles = _materialUiCore.makeStyles(theme => _materialUiCore.createStyles({
+    menu: {
+      '& .MuiListItem-dense:focus': {
+        outline: 'transparent !important'
+      },
+      '& hr': {
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
+        backgroundColor: theme.palette.grey[200]
+      }
+    }
+  }));
+  const {polkastats, polkascan} = _utilsConstants.POLKA_ACCOUNT_ENDPOINTS;
+  const AccountMenu = () => {
+    _s();
+    const classes = useStyles();
+    const [endpoint] = _hooks.useLocalStorage('endpoint');
+    const minEndpoint = endpoint?.split?.('-')?.[0]?.toLowerCase?.();
+    const [polkastatsUri] = _react.useState(`https://${minEndpoint}.${polkastats}`);
+    const [polkascanUri] = _react.useState(`https://${polkascan}/${minEndpoint}`);
+    const {account} = _react.useContext(_utilsContexts.AccountContext);
+    const {userAddress, userJson, userSeed} = account;
+    const [anchorEl, setAnchorEl] = _reactDefault.default.useState(null);
+    const handleClick = event => {
+      setAnchorEl(event.currentTarget);
+    };
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.IconButton, {
+        onClick: handleClick,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 49,
+          columnNumber: 4
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiIconsExpandMoreDefault.default, {
+        style: {
+          color: _materialUiCoreColors.grey[500]
+        },
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 50,
+          columnNumber: 5
+        }
+      })), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Menu, {
+        transformOrigin: {
+          vertical: -40,
+          horizontal: 'left'
+        },
+        anchorEl: anchorEl,
+        keepMounted: true,
+        open: Boolean(anchorEl),
+        onClose: () => setAnchorEl(null),
+        className: classes.menu,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 53,
+          columnNumber: 4
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.ListItem, {
+        dense: true,
+        autoFocus: false,
+        selected: false,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 61,
+          columnNumber: 5
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Typography, {
+        variant: "overline",
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 62,
+          columnNumber: 6
+        }
+      }, "Block explorers")), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.MenuItem, {
+        onClick: () => _utilsUtils.openInNewTab(polkascanUri),
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 67,
+          columnNumber: 5
+        }
+      }, "Polkascan"), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.MenuItem, {
+        onClick: () => _utilsUtils.openInNewTab(polkastatsUri),
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 70,
+          columnNumber: 5
+        }
+      }, "Polkastats"), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Divider, {
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 74,
+          columnNumber: 5
+        }
+      }), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.ListItem, {
+        dense: true,
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 76,
+          columnNumber: 5
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Typography, {
+        variant: "overline",
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 77,
+          columnNumber: 6
+        }
+      }, "Export")), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.MenuItem, {
+        onClick: () => _utilsUtils.downloadFile(userAddress, JSON.stringify(userJson), 'json'),
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 82,
+          columnNumber: 5
+        }
+      }, "JSON file"), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.MenuItem, {
+        onClick: () => _utilsUtils.downloadFile(userAddress, userSeed, 'txt'),
+        __self: undefined,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 85,
+          columnNumber: 5
+        }
+      }, "Seed Phrase")))
+    );
+  };
+  _s(AccountMenu, "7+2Jayg1mZgwuq5FyQgsQozGXa0=", false, function () {
+    return [useStyles, _hooks.useLocalStorage];
+  });
+  _c = AccountMenu;
+  exports.default = AccountMenu;
+  var _c;
+  $RefreshReg$(_c, "AccountMenu");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

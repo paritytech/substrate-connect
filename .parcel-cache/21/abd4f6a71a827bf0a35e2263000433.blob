@@ -1,0 +1,15 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _materialUiStyles = require('@material-ui/styles');
+function createStyles(styles) {
+  // warning(
+  // warnOnce,
+  // [
+  // 'Material-UI: createStyles from @material-ui/core/styles is deprecated.',
+  // 'Please use @material-ui/styles/createStyles',
+  // ].join('\n'),
+  // );
+  // warnOnce = true;
+  return _materialUiStyles.createStyles(styles);
+}
+exports.default = createStyles;

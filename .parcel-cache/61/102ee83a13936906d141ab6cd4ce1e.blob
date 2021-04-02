@@ -1,0 +1,9 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _ownerDocument = require('./ownerDocument');
+var _ownerDocumentDefault = _parcelHelpers.interopDefault(_ownerDocument);
+function ownerWindow(node) {
+  var doc = _ownerDocumentDefault.default(node);
+  return doc.defaultView || window;
+}
+exports.default = ownerWindow;

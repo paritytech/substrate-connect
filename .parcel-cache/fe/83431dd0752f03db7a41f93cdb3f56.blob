@@ -1,0 +1,249 @@
+var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _materialUiCore = require('@material-ui/core');
+  var _materialUiIconsVisibility = require('@material-ui/icons/Visibility');
+  var _materialUiIconsVisibilityDefault = _parcelHelpers.interopDefault(_materialUiIconsVisibility);
+  var _materialUiIconsVisibilityOff = require('@material-ui/icons/VisibilityOff');
+  var _materialUiIconsVisibilityOffDefault = _parcelHelpers.interopDefault(_materialUiIconsVisibilityOff);
+  var _utilsContexts = require('./utils/contexts');
+  var _components = require('./components');
+  var _hooks = require('./hooks');
+  var _jsxFileName = "/Users/stormsheep/Documents/repos/parity/substrate-connect/projects/burnr/src/Home.tsx", _s = $RefreshSig$();
+  const useStyles = _materialUiCore.makeStyles(theme => ({
+    paperAccount: {
+      borderTopLeftRadius: theme.spacing(0.5)
+    }
+  }));
+  function Home() {
+    _s();
+    const [localBalance, setLocalBalance] = _hooks.useLocalStorage('balanceVisibility');
+    const [balanceVisibility, setBalanceVisibility] = _react.useState(localBalance !== 'false');
+    const {account} = _react.useContext(_utilsContexts.AccountContext);
+    const classes = useStyles();
+    // TODO: Need to identify if this will be eventually used or not
+    // Im not sure if the useUserInfo will/should be used
+    // const userInfo = useUserInfo(account.userAddress);
+    const balanceArr = _hooks.useBalance(account.userAddress);
+    const balance = balanceArr[1];
+    _react.useEffect(() => {
+      setLocalBalance(balanceVisibility ? 'true' : 'false');
+    }, [balanceVisibility, setLocalBalance]);
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement(_utilsContexts.BalanceVisibleContext.Provider, {
+        value: {
+          balanceVisibility,
+          setBalanceVisibility
+        },
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 31,
+          columnNumber: 3
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_components.Bg, {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 32,
+          columnNumber: 4
+        }
+      }), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Divider, {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 33,
+          columnNumber: 4
+        }
+      }), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Paper, {
+        square: true,
+        className: classes.paperAccount,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 34,
+          columnNumber: 4
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Box, {
+        paddingY: 1,
+        paddingX: 2,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 35,
+          columnNumber: 5
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        container: true,
+        alignItems: "center",
+        spacing: 1,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 36,
+          columnNumber: 6
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        item: true,
+        xs: 6,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 37,
+          columnNumber: 7
+        }
+      }, account?.userAddress && /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        container: true,
+        wrap: "nowrap",
+        alignItems: "center",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 40,
+          columnNumber: 9
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        item: true,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 41,
+          columnNumber: 10
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_components.AccountCard, {
+        account: {
+          address: account?.userAddress,
+          name: account?.userName
+        },
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 42,
+          columnNumber: 11
+        }
+      })), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        item: true,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 49,
+          columnNumber: 10
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_components.AccountMenu, {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 50,
+          columnNumber: 11
+        }
+      })))), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        item: true,
+        xs: 6,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 55,
+          columnNumber: 7
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        container: true,
+        spacing: 1,
+        wrap: "nowrap",
+        alignItems: "center",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 56,
+          columnNumber: 8
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        item: true,
+        xs: 12,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 62,
+          columnNumber: 9
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_components.BalanceValue, {
+        isVisible: balanceVisibility,
+        value: balance,
+        size: "large",
+        style: {
+          width: '100%',
+          justifyContent: 'flex-end'
+        },
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 63,
+          columnNumber: 10
+        }
+      })), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Grid, {
+        item: true,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 70,
+          columnNumber: 9
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.IconButton, {
+        style: {
+          borderRadius: 4
+        },
+        onClick: () => setBalanceVisibility(!balanceVisibility),
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 71,
+          columnNumber: 10
+        }
+      }, balanceVisibility ? /*#__PURE__*/_reactDefault.default.createElement(_materialUiIconsVisibilityDefault.default, {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 73,
+          columnNumber: 13
+        }
+      }) : /*#__PURE__*/_reactDefault.default.createElement(_materialUiIconsVisibilityOffDefault.default, {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 74,
+          columnNumber: 13
+        }
+      })))))))), /*#__PURE__*/_reactDefault.default.createElement(_materialUiCore.Divider, {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 83,
+          columnNumber: 4
+        }
+      }), /*#__PURE__*/_reactDefault.default.createElement(_components.NavTabs, {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 84,
+          columnNumber: 4
+        }
+      }))
+    );
+  }
+  _s(Home, "pH/CnS+NUxPLMWGozWwgihAqGVQ=", false, function () {
+    return [_hooks.useLocalStorage, useStyles, _hooks.useBalance];
+  });
+  _c = Home;
+  exports.default = Home;
+  var _c;
+  $RefreshReg$(_c, "Home");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

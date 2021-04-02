@@ -1,0 +1,73 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "styles", function () {
+  return styles;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutProperties = require("@babel/runtime/helpers/esm/objectWithoutProperties");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutProperties);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _clsx = require('clsx');
+var _clsxDefault = _parcelHelpers.interopDefault(_clsx);
+var _stylesWithStyles = require('../styles/withStyles');
+var _stylesWithStylesDefault = _parcelHelpers.interopDefault(_stylesWithStyles);
+var styles = function styles(theme) {
+  return {
+    /*Styles applied to the root element.*/
+    root: {
+      flex: '1 1 auto',
+      WebkitOverflowScrolling: 'touch',
+      // Add iOS momentum scrolling.
+      overflowY: 'auto',
+      padding: '8px 24px',
+      '&:first-child': {
+        // dialog without title
+        paddingTop: 20
+      }
+    },
+    /*Styles applied to the root element if `dividers={true}`.*/
+    dividers: {
+      padding: '16px 24px',
+      borderTop: ("1px solid ").concat(theme.palette.divider),
+      borderBottom: ("1px solid ").concat(theme.palette.divider)
+    }
+  };
+};
+var DialogContent = /*#__PURE__*/_react.forwardRef(function DialogContent(props, ref) {
+  var classes = props.classes, className = props.className, _props$dividers = props.dividers, dividers = _props$dividers === void 0 ? false : _props$dividers, other = _babelRuntimeHelpersEsmObjectWithoutPropertiesDefault.default(props, ["classes", "className", "dividers"]);
+  return (
+    /*#__PURE__*/_react.createElement("div", _babelRuntimeHelpersEsmExtendsDefault.default({
+      className: _clsxDefault.default(classes.root, className, dividers && classes.dividers),
+      ref: ref
+    }, other))
+  );
+});
+"development" !== "production" ? DialogContent.propTypes = {
+  // ----------------------------- Warning --------------------------------
+  // | These PropTypes are generated from the TypeScript type definitions |
+  // |     To update them edit the d.ts file and run "yarn proptypes"     |
+  // ----------------------------------------------------------------------
+  /**
+  * The content of the component.
+  */
+  children: _propTypesDefault.default.node,
+  /**
+  * Override or extend the styles applied to the component.
+  * See [CSS API](#css) below for more details.
+  */
+  classes: _propTypesDefault.default.object,
+  /**
+  * @ignore
+  */
+  className: _propTypesDefault.default.string,
+  /**
+  * Display the top and bottom dividers.
+  */
+  dividers: _propTypesDefault.default.bool
+} : void 0;
+exports.default = _stylesWithStylesDefault.default(styles, {
+  name: 'MuiDialogContent'
+})(DialogContent);

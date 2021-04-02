@@ -1,0 +1,14 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _arrayWithHolesJs = require("./arrayWithHoles.js");
+var _arrayWithHolesJsDefault = _parcelHelpers.interopDefault(_arrayWithHolesJs);
+var _iterableToArrayJs = require("./iterableToArray.js");
+var _iterableToArrayJsDefault = _parcelHelpers.interopDefault(_iterableToArrayJs);
+var _unsupportedIterableToArrayJs = require("./unsupportedIterableToArray.js");
+var _unsupportedIterableToArrayJsDefault = _parcelHelpers.interopDefault(_unsupportedIterableToArrayJs);
+var _nonIterableRestJs = require("./nonIterableRest.js");
+var _nonIterableRestJsDefault = _parcelHelpers.interopDefault(_nonIterableRestJs);
+function _toArray(arr) {
+  return _arrayWithHolesJsDefault.default(arr) || _iterableToArrayJsDefault.default(arr) || _unsupportedIterableToArrayJsDefault.default(arr) || _nonIterableRestJsDefault.default();
+}
+exports.default = _toArray;

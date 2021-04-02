@@ -1,0 +1,48 @@
+var helpers = require("../../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _bnJs = require('bn.js');
+  var _bnJsDefault = _parcelHelpers.interopDefault(_bnJs);
+  var _react = require('react');
+  var _polkadotUtil = require('@polkadot/util');
+  var _apiUseApi = require('./api/useApi');
+  var _apiUseApiDefault = _parcelHelpers.interopDefault(_apiUseApi);
+  var _apiUseIsMountedRef = require('./api/useIsMountedRef');
+  var _apiUseIsMountedRefDefault = _parcelHelpers.interopDefault(_apiUseIsMountedRef);
+  var _s = $RefreshSig$();
+  const ZERO = new _bnJsDefault.default(0);
+  function useBalance(address) {
+    _s();
+    const api = _apiUseApiDefault.default();
+    const [state, setState] = _react.useState(['0', new _bnJsDefault.default(ZERO), true, '-']);
+    const mountedRef = _apiUseIsMountedRefDefault.default();
+    _react.useEffect(() => {
+      let unsubscribe = null;
+      api.query.system.account(address, ({data}) => {
+        mountedRef.current && setState([_polkadotUtil.formatBalance(data.free, {
+          decimals: api.registry.chainDecimals[0],
+          forceUnit: '-',
+          withSi: false
+        }), data.free, data.free.isZero(), data.free.registry.chainTokens[0]]);
+      }).then(u => {
+        unsubscribe = u;
+      }).catch(console.error);
+      return () => {
+        unsubscribe && unsubscribe();
+      };
+    }, [address, api, mountedRef]);
+    return state;
+  }
+  exports.default = useBalance;
+  _s(useBalance, "aAp6DgXZjCsaV652tE5wE/Zp9As=", false, function () {
+    return [_apiUseApiDefault.default, _apiUseIsMountedRefDefault.default];
+  });
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}

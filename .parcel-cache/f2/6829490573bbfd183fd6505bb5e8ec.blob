@@ -1,0 +1,26 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "net", function () {
+  return net;
+});
+_parcelHelpers.export(exports, "Worker", function () {
+  return Worker;
+});
+_parcelHelpers.export(exports, "workerOnMessage", function () {
+  return workerOnMessage;
+});
+_parcelHelpers.export(exports, "postMessage", function () {
+  return postMessage;
+});
+_parcelHelpers.export(exports, "setOnMessage", function () {
+  return setOnMessage;
+});
+const net = null;
+const Worker = typeof window != 'undefined' ? window.Worker : null;
+const workerOnMessage = (worker, callback) => {
+  worker.onmessage = event => callback(event.data);
+};
+const postMessage = msg => self.postMessage(msg);
+const setOnMessage = callback => {
+  self.onmessage = event => callback(event.data);
+};

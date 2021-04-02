@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _getThemePropsDefault.default;
+});
+var _getThemeProps = require('./getThemeProps');
+var _getThemePropsDefault = _parcelHelpers.interopDefault(_getThemeProps);

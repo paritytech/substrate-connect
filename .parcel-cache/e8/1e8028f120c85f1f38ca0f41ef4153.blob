@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _TableSortLabelDefault.default;
+});
+var _TableSortLabel = require('./TableSortLabel');
+var _TableSortLabelDefault = _parcelHelpers.interopDefault(_TableSortLabel);

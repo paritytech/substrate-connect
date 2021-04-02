@@ -1,0 +1,14 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _materialUiStyles = require('@material-ui/styles');
+var _defaultTheme = require('./defaultTheme');
+var _defaultThemeDefault = _parcelHelpers.interopDefault(_defaultTheme);
+function makeStyles(stylesOrCreator) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  return _materialUiStyles.makeStyles(stylesOrCreator, _babelRuntimeHelpersEsmExtendsDefault.default({
+    defaultTheme: _defaultThemeDefault.default
+  }, options));
+}
+exports.default = makeStyles;

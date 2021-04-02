@@ -1,0 +1,6 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "Detector", function () {
+  return _Detector.Detector;
+});
+var _Detector = require('./Detector');

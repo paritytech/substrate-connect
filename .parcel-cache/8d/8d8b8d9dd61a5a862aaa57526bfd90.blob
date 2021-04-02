@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _ListDefault.default;
+});
+var _List = require('./List');
+var _ListDefault = _parcelHelpers.interopDefault(_List);

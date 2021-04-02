@@ -1,0 +1,7 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "default", function () {
+  return _FabDefault.default;
+});
+var _Fab = require('./Fab');
+var _FabDefault = _parcelHelpers.interopDefault(_Fab);

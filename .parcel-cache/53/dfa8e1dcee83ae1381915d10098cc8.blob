@@ -1,0 +1,68 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _react = require('react');
+var _reactDefault = _parcelHelpers.interopDefault(_react);
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _materialUiUtils = require('@material-ui/utils');
+var _useThemeThemeContext = require('../useTheme/ThemeContext');
+var _useThemeThemeContextDefault = _parcelHelpers.interopDefault(_useThemeThemeContext);
+var _useTheme = require('../useTheme');
+var _useThemeDefault = _parcelHelpers.interopDefault(_useTheme);
+var _nested = require('./nested');
+var _nestedDefault = _parcelHelpers.interopDefault(_nested);
+// To support composition of theme.
+function mergeOuterLocalTheme(outerTheme, localTheme) {
+  if (typeof localTheme === 'function') {
+    var mergedTheme = localTheme(outerTheme);
+    if ("development" !== 'production') {
+      if (!mergedTheme) {
+        console.error(['Material-UI: You should return an object from your theme function, i.e.', '<ThemeProvider theme={() => ({})} />'].join('\n'));
+      }
+    }
+    return mergedTheme;
+  }
+  return _babelRuntimeHelpersEsmExtendsDefault.default({}, outerTheme, localTheme);
+}
+/**
+* This component takes a `theme` prop.
+* It makes the `theme` available down the React tree thanks to React context.
+* This component should preferably be used at **the root of your component tree**.
+*/
+function ThemeProvider(props) {
+  var children = props.children, localTheme = props.theme;
+  var outerTheme = _useThemeDefault.default();
+  if ("development" !== 'production') {
+    if (outerTheme === null && typeof localTheme === 'function') {
+      console.error(['Material-UI: You are providing a theme function prop to the ThemeProvider component:', '<ThemeProvider theme={outerTheme => outerTheme} />', '', 'However, no outer theme is present.', 'Make sure a theme is already injected higher in the React tree ' + 'or provide a theme object.'].join('\n'));
+    }
+  }
+  var theme = _reactDefault.default.useMemo(function () {
+    var output = outerTheme === null ? localTheme : mergeOuterLocalTheme(outerTheme, localTheme);
+    if (output != null) {
+      output[_nestedDefault.default] = outerTheme !== null;
+    }
+    return output;
+  }, [localTheme, outerTheme]);
+  return (
+    /*#__PURE__*/_reactDefault.default.createElement(_useThemeThemeContextDefault.default.Provider, {
+      value: theme
+    }, children)
+  );
+}
+"development" !== "production" ? ThemeProvider.propTypes = {
+  /**
+  * Your component tree.
+  */
+  children: _propTypesDefault.default.node.isRequired,
+  /**
+  * A theme object. You can provide a function to extend the outer theme.
+  */
+  theme: _propTypesDefault.default.oneOfType([_propTypesDefault.default.object, _propTypesDefault.default.func]).isRequired
+} : void 0;
+if ("development" !== 'production') {
+  "development" !== "production" ? ThemeProvider.propTypes = _materialUiUtils.exactProp(ThemeProvider.propTypes) : void 0;
+}
+exports.default = ThemeProvider;

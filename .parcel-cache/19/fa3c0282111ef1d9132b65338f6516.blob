@@ -1,0 +1,243 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "ExtensionProvider", function () {
+  return ExtensionProvider;
+});
+var _polkadotRpcProviderCoder = require('@polkadot/rpc-provider/coder');
+var _polkadotUtil = require('@polkadot/util');
+var _eventemitter2 = require('eventemitter3');
+var _eventemitter2Default = _parcelHelpers.interopDefault(_eventemitter2);
+var _utils = require('../utils');
+// Copyright 2018-2021 @paritytech/substrate-connect authors & contributors
+// This software may be modified and distributed under the terms
+// of the Apache-2.0 license. See the LICENSE file for details.
+var __classPrivateFieldSet = undefined && undefined.__classPrivateFieldSet || (function (receiver, privateMap, value) {
+  if (!privateMap.has(receiver)) {
+    throw new TypeError("attempted to set private field on non-instance");
+  }
+  privateMap.set(receiver, value);
+  return value;
+});
+var __classPrivateFieldGet = undefined && undefined.__classPrivateFieldGet || (function (receiver, privateMap) {
+  if (!privateMap.has(receiver)) {
+    throw new TypeError("attempted to get private field on non-instance");
+  }
+  return privateMap.get(receiver);
+});
+var _coder, _eventemitter, _handlers, _subscriptions, _waitingForId, _client, _isConnected, _chainName, _handleRpcReponse, _onMessageResult, _onMessageSubscribe;
+const EXTENSION_ORIGIN = 'extension-provider';
+const l = _polkadotUtil.logger(EXTENSION_ORIGIN);
+const ANGLICISMS = {
+  chain_finalisedHead: 'chain_finalizedHead',
+  chain_subscribeFinalisedHeads: 'chain_subscribeFinalizedHeads',
+  chain_unsubscribeFinalisedHeads: 'chain_unsubscribeFinalizedHeads'
+};
+class ExtensionProvider {
+  constructor(name) {
+    _coder.set(this, new _polkadotRpcProviderCoder.RpcCoder());
+    _eventemitter.set(this, new _eventemitter2Default.default());
+    _handlers.set(this, {});
+    _subscriptions.set(this, {});
+    _waitingForId.set(this, {});
+    _client.set(this, undefined);
+    _isConnected.set(this, false);
+    _chainName.set(this, void 0);
+    _handleRpcReponse.set(this, res => {
+      l.debug(() => ['received', res]);
+      const response = JSON.parse(res);
+      return _utils.isUndefined(response.method) ? __classPrivateFieldGet(this, _onMessageResult).call(this, response) : __classPrivateFieldGet(this, _onMessageSubscribe).call(this, response);
+    });
+    _onMessageResult.set(this, response => {
+      const handler = __classPrivateFieldGet(this, _handlers)[response.id];
+      if (!handler) {
+        l.debug(() => `Unable to find handler for id=${response.id}`);
+        return;
+      }
+      try {
+        const {method, subscription} = handler;
+        const result = __classPrivateFieldGet(this, _coder).decodeResponse(response);
+        // first send the result - in case of subs, we may have an update
+        // immediately if we have some queued results already
+        handler.callback(null, result);
+        if (subscription) {
+          const subId = `${subscription.type}::${result}`;
+          __classPrivateFieldGet(this, _subscriptions)[subId] = {
+            ...subscription,
+            method
+          };
+          // if we have a result waiting for this subscription already
+          if (__classPrivateFieldGet(this, _waitingForId)[subId]) {
+            __classPrivateFieldGet(this, _onMessageSubscribe).call(this, __classPrivateFieldGet(this, _waitingForId)[subId]);
+          }
+        }
+      } catch (error) {
+        handler.callback(error, undefined);
+      }
+      delete __classPrivateFieldGet(this, _handlers)[response.id];
+    });
+    _onMessageSubscribe.set(this, response => {
+      const method = ANGLICISMS[response.method] || response.method || 'invalid';
+      const subId = `${method}::${response.params.subscription}`;
+      const handler = __classPrivateFieldGet(this, _subscriptions)[subId];
+      if (!handler) {
+        // store the response, we could have out-of-order subid coming in
+        __classPrivateFieldGet(this, _waitingForId)[subId] = response;
+        l.debug(() => `Unable to find handler for subscription=${subId} responseId=${response.id}`);
+        return;
+      }
+      // housekeeping
+      delete __classPrivateFieldGet(this, _waitingForId)[subId];
+      try {
+        const result = __classPrivateFieldGet(this, _coder).decodeResponse(response);
+        handler.callback(null, result);
+      } catch (error) {
+        handler.callback(error, undefined);
+      }
+    });
+    __classPrivateFieldSet(this, _chainName, name);
+  }
+  /**
+  * @description Lets polkadot-js know we support subscriptions
+  * @summary `true`
+  */
+  get hasSubscriptions() {
+    return true;
+  }
+  /**
+  * @description Returns a clone of the object
+  * @summary throws an error as this is not supported.
+  */
+  clone() {
+    throw new Error('clone() is not supported.');
+  }
+  /**
+  * @description "Connect" the WASM client - starts the smoldot WASM client
+  */
+  connect() {
+    const initData = {
+      id: 1,
+      message: JSON.stringify({
+        type: 'associate',
+        payload: __classPrivateFieldGet(this, _chainName)
+      }),
+      origin: EXTENSION_ORIGIN
+    };
+    window.postMessage(initData, '*');
+    window.addEventListener('message', ({data}) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      __classPrivateFieldGet(this, _handleRpcReponse).call(this, data === null || data === void 0 ? void 0 : data.message);
+    });
+    __classPrivateFieldSet(this, _isConnected, true);
+    this.emit('connected');
+    return Promise.resolve();
+  }
+  /**
+  * @description Manually "disconnect" - drops the reference to the WASM client
+  */
+  /*eslint-disable-next-line @typescript-eslint/require-await*/
+  async disconnect() {
+    console.log('this wont be implemented');
+  }
+  /**
+  * @summary Whether the node is connected or not.
+  * @return {boolean} true if connected
+  */
+  get isConnected() {
+    return __classPrivateFieldGet(this, _isConnected);
+  }
+  /**
+  * @summary Listen to provider events - in practice the smoldot provider only
+  * emits a `connected` event after successfully starting the smoldot client
+  * and `disconnected` after `disconnect` is called.
+  * @param type - Event
+  * @param sub - Callback
+  */
+  on(type, sub) {
+    __classPrivateFieldGet(this, _eventemitter).on(type, sub);
+    return () => {
+      __classPrivateFieldGet(this, _eventemitter).removeListener(type, sub);
+    };
+  }
+  /**
+  * @summary Send an RPC request  the wasm client
+  * @param method The RPC methods to execute
+  * @param params Encoded paramaters as applicable for the method
+  * @param subscription Subscription details (internally used by `subscribe`)
+  */
+  async send(method, // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  params, subscription) // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  {
+    return new Promise((resolve, reject) => {
+      const json = __classPrivateFieldGet(this, _coder).encodeJson(method, params);
+      const id = __classPrivateFieldGet(this, _coder).getId();
+      const callback = (error, result) => {
+        error ? reject(error) : resolve(result);
+      };
+      l.debug(() => ['calling', method, json]);
+      __classPrivateFieldGet(this, _handlers)[id] = {
+        callback,
+        method,
+        subscription
+      };
+      window.postMessage({
+        id: Math.random(),
+        message: JSON.stringify({
+          type: 'rpc',
+          payload: json,
+          subscription: !!subscription
+        }),
+        origin: EXTENSION_ORIGIN
+      }, '*');
+    });
+  }
+  /**
+  * @name subscribe
+  * @summary Allows subscribing to a specific event.
+  * @param  {string}                     type     Subscription type
+  * @param  {string}                     method   Subscription method
+  * @param  {any[]}                      params   Parameters
+  * @param  {ProviderInterfaceCallback}  callback Callback
+  * @return {Promise<number|string>}     Promise resolving to the id of the subscription you can use with [[unsubscribe]].
+  *
+  * @example
+  * <BR>
+  *
+  * ```javascript
+  * const provider = new ExtensionProvider(client);
+  * const rpc = new Rpc(provider);
+  *
+  * rpc.state.subscribeStorage([[storage.balances.freeBalance, <Address>]], (_, values) => {
+  *   console.log(values)
+  * }).then((subscriptionId) => {
+  *   console.log('balance changes subscription id: ', subscriptionId)
+  * })
+  * ```
+  */
+  async subscribe(// the "method" property of the JSON response to this subscription
+  type, // the "method" property of the JSON request to register the subscription
+  method, // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  params, callback) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return await this.send(method, params, {
+      callback,
+      type
+    });
+  }
+  /**
+  * @summary Allows unsubscribing to subscriptions made with [[subscribe]].
+  */
+  async unsubscribe(type, method, id) {
+    const subscription = `${type}::${id}`;
+    if (_utils.isUndefined(__classPrivateFieldGet(this, _subscriptions)[subscription])) {
+      l.debug(() => `Unable to find active subscription=${subscription}`);
+      return false;
+    }
+    delete __classPrivateFieldGet(this, _subscriptions)[subscription];
+    return await this.send(method, [id]);
+  }
+  /*eslint-disable-next-line @typescript-eslint/no-explicit-any*/
+  emit(type, ...args) {
+    __classPrivateFieldGet(this, _eventemitter).emit(type, ...args);
+  }
+}
+(_coder = new WeakMap(), _eventemitter = new WeakMap(), _handlers = new WeakMap(), _subscriptions = new WeakMap(), _waitingForId = new WeakMap(), _client = new WeakMap(), _isConnected = new WeakMap(), _chainName = new WeakMap(), _handleRpcReponse = new WeakMap(), _onMessageResult = new WeakMap(), _onMessageSubscribe = new WeakMap());

@@ -1,0 +1,4 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var hasSymbol = typeof Symbol === 'function' && Symbol.for;
+exports.default = hasSymbol ? Symbol.for('mui.nested') : '__THEME_NESTED__';

@@ -1,0 +1,32 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _react = require('react');
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _withWidth = require('../withWidth');
+var _withWidthDefault = _parcelHelpers.interopDefault(_withWidth);
+/**
+* Dialog will responsively be full screen *at or below* the given breakpoint
+* (defaults to 'sm' for mobile devices).
+* Notice that this Higher-order Component is incompatible with server-side rendering.
+*/
+var withMobileDialog = function withMobileDialog() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  return function (Component) {
+    var _options$breakpoint = options.breakpoint, breakpoint = _options$breakpoint === void 0 ? 'sm' : _options$breakpoint;
+    function WithMobileDialog(props) {
+      return (
+        /*#__PURE__*/_react.createElement(Component, _babelRuntimeHelpersEsmExtendsDefault.default({
+          fullScreen: _withWidth.isWidthDown(breakpoint, props.width)
+        }, props))
+      );
+    }
+    "development" !== "production" ? WithMobileDialog.propTypes = {
+      width: _propTypesDefault.default.oneOf(['xs', 'sm', 'md', 'lg', 'xl']).isRequired
+    } : void 0;
+    return _withWidthDefault.default()(WithMobileDialog);
+  };
+};
+exports.default = withMobileDialog;

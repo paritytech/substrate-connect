@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Burnr Wallet 🔥</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.HASH_REF_267ca637c951dd31f77d7c2512548aa3.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.HASH_REF_bb696973ab09c82b26335161aae551ee.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.HASH_REF_cb3c0bcb2c173d9799905dc2234d2dc4.png">
+</head>
+
+<body>
+  <div id="app"></div>
+  <script src="/index.HASH_REF_089efe766c408857087303800d209ceb.js"></script>
+</body>
+
+</html>

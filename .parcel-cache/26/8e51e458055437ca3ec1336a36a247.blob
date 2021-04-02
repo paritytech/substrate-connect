@@ -1,0 +1,55 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "Detector", function () {
+  return Detector;
+});
+var _polkadotApi = require('@polkadot/api');
+var _SmoldotProvider = require('./SmoldotProvider');
+var _ExtensionProvider = require('./ExtensionProvider');
+var __classPrivateFieldSet = undefined && undefined.__classPrivateFieldSet || (function (receiver, privateMap, value) {
+  if (!privateMap.has(receiver)) {
+    throw new TypeError("attempted to set private field on non-instance");
+  }
+  privateMap.set(receiver, value);
+  return value;
+});
+var __classPrivateFieldGet = undefined && undefined.__classPrivateFieldGet || (function (receiver, privateMap) {
+  if (!privateMap.has(receiver)) {
+    throw new TypeError("attempted to get private field on non-instance");
+  }
+  return privateMap.get(receiver);
+});
+var _chainName, _chainSpec, _isExtension, _provider;
+class Detector {
+  constructor(chainName, chainSpec) {
+    _chainName.set(this, void 0);
+    _chainSpec.set(this, void 0);
+    _isExtension.set(this, void 0);
+    _provider.set(this, void 0);
+    this.connect = async () => {
+      let provider;
+      if (__classPrivateFieldGet(this, _isExtension) && __classPrivateFieldGet(this, _chainName)) {
+        provider = new _ExtensionProvider.ExtensionProvider(__classPrivateFieldGet(this, _chainName));
+        await provider.connect();
+      } else if (__classPrivateFieldGet(this, _isExtension) && !__classPrivateFieldGet(this, _chainName)) {
+        throw new Error('You must provide at least a chainName');
+      } else if (!__classPrivateFieldGet(this, _isExtension) && __classPrivateFieldGet(this, _chainSpec)) {
+        provider = new _SmoldotProvider.SmoldotProvider(__classPrivateFieldGet(this, _chainSpec));
+        await provider.connect();
+      }
+      __classPrivateFieldSet(this, _provider, provider);
+      return await _polkadotApi.ApiPromise.create({
+        provider
+      });
+    };
+    this.disconnect = async () => {
+      if (__classPrivateFieldGet(this, _provider) instanceof _SmoldotProvider.SmoldotProvider) {
+        await __classPrivateFieldGet(this, _provider).disconnect();
+      }
+    };
+    __classPrivateFieldSet(this, _chainName, chainName);
+    __classPrivateFieldSet(this, _chainSpec, chainSpec);
+    __classPrivateFieldSet(this, _isExtension, !!document.getElementById('substrateExtension'));
+  }
+}
+(_chainName = new WeakMap(), _chainSpec = new WeakMap(), _isExtension = new WeakMap(), _provider = new WeakMap());
