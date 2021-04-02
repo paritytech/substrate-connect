@@ -14,7 +14,7 @@ export interface AppMessage {
   payload: string; // name of the network or an rpc string (json stringified RPC message)
 }
 
-// Receive from ExtensionProvider the App "subscribtion"
+// Receive from ExtensionProvider the App "subscription"
 window.addEventListener('message', ({ data }: Message): void => {
   let appData: AppMessage;
   if (data.origin === EXTENSION_ORIGIN) {
