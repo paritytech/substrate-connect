@@ -1,6 +1,0 @@
-var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-_parcelHelpers.defineInteropFlag(exports);
-function _iterableToArray(iter) {
-  if (typeof Symbol !== "undefined" && (Symbol.iterator in Object(iter))) return Array.from(iter);
-}
-exports.default = _iterableToArray;

@@ -1,6 +1,0 @@
-var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-_parcelHelpers.defineInteropFlag(exports);
-_parcelHelpers.export(exports, "ExtensionProvider", function () {
-  return _ExtensionProvider.ExtensionProvider;
-});
-var _ExtensionProvider = require('./ExtensionProvider');

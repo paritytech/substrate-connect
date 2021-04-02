@@ -1,1 +1,0 @@
-module.exports = JSON.parse("{\"name\":\"@polkadot/api\",\"version\":\"3.7.3\"}");

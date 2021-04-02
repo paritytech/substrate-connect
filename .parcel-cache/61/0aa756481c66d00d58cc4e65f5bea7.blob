@@ -1,7 +1,0 @@
-var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-_parcelHelpers.defineInteropFlag(exports);
-_parcelHelpers.export(exports, "default", function () {
-  return _LinkDefault.default;
-});
-var _Link = require('./Link');
-var _LinkDefault = _parcelHelpers.interopDefault(_Link);

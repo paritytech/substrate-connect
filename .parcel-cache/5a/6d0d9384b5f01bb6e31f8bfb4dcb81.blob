@@ -1,1 +1,0 @@
-module.exports = require('./get-worker-url')("worker.HASH_REF_f5e7e69c85f4734928dbd909c1398830.js");
