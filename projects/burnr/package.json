@@ -8,9 +8,10 @@
     "Sveta Goldstein <sveta@parity.io>"
   ],
   "license": "GPL-3.0-only",
-  "main": "index.html",
+  "main": "./index.html",
   "scripts": {
-    "build": "parcel build ./index.html",
+    "build": "parcel build ./dist/index.html",
+    "testbuild": "tsc --noEmit",
     "clean": "rimraf dist && rm -rf node_modules",
     "dev": "tsc --noEmit & parcel ./index.html",
     "test": "echo \"Warning: Jest has been setup but no tests exist.\"",
@@ -46,6 +47,7 @@
   },
   "devDependencies": {
     "@material-ui/types": "^5.1.0",
+    "@parcel/transformer-typescript-tsc": "^2.0.0-alpha.3",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@types/jest": "^26.0.20",
