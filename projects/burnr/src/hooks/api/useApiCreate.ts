@@ -9,7 +9,7 @@ import { Detector }  from '@substrate/connect';
 import { ALL_PROVIDERS } from '../../utils/constants';
 import { LazyProvider } from '../../utils/types'; 
 import { useIsMountedRef, useLocalStorage } from '..';
-import westend from '../../assets/westend.json';
+import westend from '../../../public/assets/westend.json';
 
 console.log('ALL_PROVIDERS', ALL_PROVIDERS)
 
