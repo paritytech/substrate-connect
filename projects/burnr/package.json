@@ -11,7 +11,6 @@
   "main": "./index.html",
   "scripts": {
     "build": "parcel build ./dist/index.html",
-    "testbuild": "tsc --noEmit",
     "clean": "rimraf dist && rm -rf node_modules",
     "dev": "tsc --noEmit & parcel ./index.html",
     "test": "echo \"Warning: Jest has been setup but no tests exist.\"",
