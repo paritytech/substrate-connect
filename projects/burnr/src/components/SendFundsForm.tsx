@@ -208,7 +208,7 @@ const SendFundsForm: FunctionComponent = () => {
           {!isValidAddressPolkadotAddress(address) && 'You need to add a valid address.'}
         </Typography>
         <Typography variant='body1' className={classes.errorMessage}>
-          {!parseInt(amount) && 'You need to input some amount.'}
+          {!parseInt(amount) && 'You should add some amount.'}
         </Typography>
       </Grid>
 			{ countdownNo !== 0 && (
