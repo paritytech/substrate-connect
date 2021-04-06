@@ -11,7 +11,7 @@ import { LazyProvider } from '../../utils/types';
 import { useIsMountedRef, useLocalStorage } from '..';
 import westend from '../../assets/westend.json';
 
-console.log('ALL_PROVIDERS', ALL_PROVIDERS)
+console.log('ALL_PROVIDERS: ', ALL_PROVIDERS)
 
 export default function useApiCreate (): ApiPromise {
   const [api, setApi] = useState<ApiPromise>({} as ApiPromise);
