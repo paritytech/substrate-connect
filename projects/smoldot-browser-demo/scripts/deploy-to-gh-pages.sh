@@ -9,7 +9,7 @@ IFS=$'\n\t'
 REMOTE="${REMOTE:-origin}"
 # Should be relative to root of git repo
 BUILD_DIR="${BUILD_DIR:-projects/smoldot-browser-demo/dist}"
-GH_PAGES_BRANCH="${GH_PAGES_BRANCH:-gh-pages}"
+GH_PAGES_BRANCH="${GH_PAGES_BRANCH:-nik-deploy-ghpages-ipfs}"
 
 RESET='\033[0m'
 RED='\033[00;31m'
