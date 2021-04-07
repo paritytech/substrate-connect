@@ -22,6 +22,13 @@ const origins = {
 
 const l = logger(origins.EXTENSION_PROVIDER);
 
+interface ExtensionMessage {
+  data: {
+    origin: string;
+    message: string;
+  }
+}
+
 interface RpcStateAwaiting {
   callback: ProviderInterfaceCallback;
   method: string;
@@ -169,7 +176,7 @@ export class ExtensionProvider implements ProviderInterface {
       origin: origins.EXTENSION_PROVIDER
     }
     window.postMessage(initMsg, '*');
-    window.addEventListener('message', ({data}) => {
+    window.addEventListener('message', ({data}: ExtensionMessage) => {
       if (data.origin && data.origin === origins.CONTENT_SCRIPT) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         this.#handleRpcReponse(data.message);

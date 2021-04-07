@@ -26,7 +26,7 @@ export interface Network extends ChainSpec {
 export interface Parachain extends ChainSpec {
   relaychain: string;
 }
-export interface Message extends MessageEvent {
+export interface Message {
   data: {
     appName: string;
     chainName: string;
