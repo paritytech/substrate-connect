@@ -1,22 +1,58 @@
 #!/usr/bin/env bash
 # deploy all projects and landing page to gh-pages and ipfs
-rm -rf ./docs
-mkdir ./docs
+set -euo pipefail
 
-yarn run build
+die() {
+  local msg="$*"
+  [[ -z "${msg}" ]] || {
+    echo "${RED}${msg}${RESET}" 1>&2
+  }
+  exit 1
+}
+readonly -f die
 
-mkdir ./docs/burnr
-cp -r ./projects/burnr/dist/* ./docs/burnr
-sed 's/href="/href="https:\/\/paritytech.github.io\/substrate-connect\/burnr/g' ./docs/burnr/index.html > ./docs/burnr/tmp
-sed 's/src="/src="https:\/\/paritytech.github.io\/substrate-connect\/burnr/g' ./docs/burnr/tmp > ./docs/burnr/tmp2
-mv ./docs/burnr/tmp2 ./docs/burnr/index.html
-rm -rf ./docs/burnr/tmp*
+initDirs() {
+  rm -rf ./docs
+  mkdir ./docs
+  mkdir ./docs/burnr
+  mkdir ./docs/smoldot-browser-demo
+}
 
-mkdir ./docs/smoldot-browser-demo
-cp -r ./projects/smoldot-browser-demo/dist/* ./docs/smoldot-browser-demo
-sed 's/href="/href="https:\/\/paritytech.github.io\/substrate-connect\/smoldot-browser-demo/g' ./docs/smoldot-browser-demo/index.html > ./docs/smoldot-browser-demo/tmp
-sed 's/src="/src="https:\/\/paritytech.github.io\/substrate-connect\/smoldot-browser-demo/g' ./docs/smoldot-browser-demo/tmp > ./docs/smoldot-browser-demo/tmp2
-mv ./docs/smoldot-browser-demo/tmp2 ./docs/smoldot-browser-demo/index.html
-rm -rf ./docs/smoldot-browser-demo/tmp*
+burnr() {
+  cp -r ./projects/burnr/dist/* ./docs/burnr
+  sed 's/href="/href="https:\/\/paritytech.github.io\/substrate-connect\/burnr/g' ./docs/burnr/index.html > ./docs/burnr/tmp
+  sed 's/src="/src="https:\/\/paritytech.github.io\/substrate-connect\/burnr/g' ./docs/burnr/tmp > ./docs/burnr/tmp2
+  mv ./docs/burnr/tmp2 ./docs/burnr/index.html
+}
 
-cp ./README.md ./docs/.
+smoldotBrowserDemo() {
+  cp -r ./projects/smoldot-browser-demo/dist/* ./docs/smoldot-browser-demo
+  sed 's/href="/href="https:\/\/paritytech.github.io\/substrate-connect\/smoldot-browser-demo/g' ./docs/smoldot-browser-demo/index.html > ./docs/smoldot-browser-demo/tmp
+  sed 's/src="/src="https:\/\/paritytech.github.io\/substrate-connect\/smoldot-browser-demo/g' ./docs/smoldot-browser-demo/tmp > ./docs/smoldot-browser-demo/tmp2
+  mv ./docs/smoldot-browser-demo/tmp2 ./docs/smoldot-browser-demo/index.html
+}
+
+landingPage() {
+  cp ./README.md ./docs/.
+}
+
+cleanup() {
+  rm -rf ./docs/burnr/tmp*
+  rm -rf ./docs/smoldot-browser-demo/tmp*
+}
+
+main() {
+  echo "Init demo gh-pages process..."
+  initDirs
+  echo "Create burnr wallet demo."
+  burnr
+  echo "Create Smoldot browser demo."
+  smoldotBrowserDemo
+  echo "Create landing page"
+  landingPage
+  echo "Cleanup directories"
+  cleanup
+
+  echo "Deployed to gh-pages"
+  exit 0
+}
