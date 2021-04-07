@@ -39,4 +39,3 @@ jobs:
         remove-old: true
     - run: |
         echo "Uploaded hash: ${{ steps.ipfs-upload.outputs.hash }}"
-    
