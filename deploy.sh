@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# deploy all projects and landing page to gh-pages and ipfs
+# deploy burnr wallet and smoldot browser demo to gh-pages
 set -euo pipefail
 
 die() {
@@ -40,7 +40,7 @@ cleanup() {
   rm -rf ./docs/smoldot-browser-demo/tmp*
 }
 
-main() {
+deployGhPages() {
   echo "Init demo gh-pages process..."
   initDirs
   echo "Create burnr wallet demo."
@@ -52,7 +52,8 @@ main() {
   echo "Cleanup directories"
   cleanup
   echo "Deployed to gh-pages"
-  exit 0
 }
 
-main
+deployGhPages
+
+# deploy burnr wallet and smoldot browser demo to ipfs
