@@ -105,7 +105,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return sc;
     } catch (err) {
-      console.log('Function addSmoldot error:', err);
+      console.error('Error starting smoldot', err);
     }
   }
 }

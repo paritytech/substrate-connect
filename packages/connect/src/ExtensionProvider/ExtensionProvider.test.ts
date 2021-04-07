@@ -14,7 +14,7 @@ describe('ExtensionProvider', () => {
   });
 
   it('connect sends init message and emits connected', async () => {
-    const ep = new ExtensionProvider('test', 'kusama');
+    const ep = new ExtensionProvider('test', 'test-chain');
     const emitted = jest.fn();
     ep.on('connected', emitted);
     await ep.connect();
@@ -22,7 +22,11 @@ describe('ExtensionProvider', () => {
 
     const expectedMessage = {
       appName: 'test',
-      message: '{"type":"associate","payload":"kusama"}',
+      chainName: 'test-chain',
+      message: {
+        type: 'associate',
+        payload: 'test-chain'
+      },
       origin: 'extension-provider'
     };
     expect(window.postMessage).toHaveBeenCalledTimes(1);

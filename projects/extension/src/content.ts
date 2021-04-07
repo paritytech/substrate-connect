@@ -1,48 +1,60 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { Message } from './types';
-const SMOLDOT_CONTENT = 'smoldot';
-const EXTENSION_ORIGIN = 'extension-provider';
 
 const ports: Record<string, chrome.runtime.Port> = {};
 
-export type AppMessageType = 'associate' | 'rpc';
-export interface AppMessage {
-  type: AppMessageType;
-  payload: string; // name of the network or an rpc string (json stringified RPC message)
+const origins = {
+  CONTENT_SCRIPT: 'content-script',
+  EXTENSION_PROVIDER: 'extension-provider'
+};
+
+function debug(message: string, ctx: unknown) {
+  if (process.env.NODE_ENV === 'development') {
+    console.debug(message, ctx);
+  }
 }
 
 // Receive from ExtensionProvider the App "subscription"
 window.addEventListener('message', ({ data }: Message): void => {
-  if (!data.origin || data.origin !== EXTENSION_ORIGIN) {
-    // message didnt come from the extension provider
+  if (!data.origin || data.origin !== origins.EXTENSION_PROVIDER) {
+    return;
+  }
+  debug(`RECEIEVED MESSAGE FROM ${origins.EXTENSION_PROVIDER}`, data);
+
+  let port: chrome.runtime.Port;
+
+  if (data.message.type === 'associate') {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    port = chrome.runtime.connect({ name: `${data.appName}::${data.chainName}` });
+    debug(`CONNECTED ${data.chainName} PORT`, port);
+    // forward any messages: extension -> page
+    const chainName = data.chainName;
+    port.onMessage.addListener((data): void => {
+      debug(`RECEIEVED MESSGE FROM ${chainName} PORT`, data);
+      window.postMessage({ 
+        message: data.payload, 
+        origin: origins.CONTENT_SCRIPT 
+      }, '*');
+    });
+
+    ports[data.chainName] = port;
+    debug(`SENDING ASSOCIATE MESSAGE TO ${data.chainName} PORT`, data.message);
+    // TODO(rem): do we actually need to send the origin to the background
+    // can we not just forward the message?
+    port.postMessage({ ...data.message, origin: origins.EXTENSION_PROVIDER});
     return;
   }
 
-  let appData: AppMessage;
-  let port: chrome.runtime.Port;
-
-  const conv = data?.message as unknown as AppMessage;
-  if (conv?.type === 'associate') {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    port = chrome.runtime.connect({ name: `${data.appName}::${data.chainName}` });
-    // send any messages: extension -> page
-    port.onMessage.addListener((data): void => {
-      window.postMessage({ message: data?.payload, origin: SMOLDOT_CONTENT }, '*');
-    });
-
-    const chainName: string = JSON.parse(conv?.payload).chainName;
-    ports.chainName = port;
-    appData = {
-      type: conv?.type,
-      payload: chainName
-    }
-  } else {
-    port = ports[data.chainName as string];
-    appData = JSON.parse(data?.message || '');
+  port = ports[data.chainName];
+  if (!port) {
+    // this is probably someone trying to abuse the extension.
+    console.warn(`App requested to send message to ${data.chainName} - no port found`);
+    return;
   }
 
-  port.postMessage({ ...appData, origin: EXTENSION_ORIGIN});
+  debug(`SENDING MESSAGE TO ${data.chainName} PORT`, data.message);
+  port.postMessage({ ...data.message, origin: origins.EXTENSION_PROVIDER});
 });
 
 

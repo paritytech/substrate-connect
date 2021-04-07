@@ -15,9 +15,12 @@ import { logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 import { isUndefined } from '../utils';
 
-const EXTENSION_ORIGIN = 'extension-provider';
+const origins = {
+  CONTENT_SCRIPT: 'content-script',
+  EXTENSION_PROVIDER: 'extension-provider'
+};
 
-const l = logger(EXTENSION_ORIGIN);
+const l = logger(origins.EXTENSION_PROVIDER);
 
 interface RpcStateAwaiting {
   callback: ProviderInterfaceCallback;
@@ -158,16 +161,19 @@ export class ExtensionProvider implements ProviderInterface {
   public connect(): Promise<void> {
     const initMsg = {
       appName: this.#appName,
-      message: JSON.stringify({
+      chainName: this.#chainName,
+      message: {
         type: 'associate',
         payload: this.#chainName
-      }),
-      origin: EXTENSION_ORIGIN
+      },
+      origin: origins.EXTENSION_PROVIDER
     }
     window.postMessage(initMsg, '*');
     window.addEventListener('message', ({data}) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      this.#handleRpcReponse(data?.message);
+      if (data.origin && data.origin === origins.CONTENT_SCRIPT) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        this.#handleRpcReponse(data.message);
+      }
     });
     this.#isConnected = true;
     this.emit('connected');
@@ -180,7 +186,7 @@ export class ExtensionProvider implements ProviderInterface {
    */
   // eslint-disable-next-line @typescript-eslint/require-await
   public async disconnect(): Promise<void> {
-    console.log('this wont be implemented');
+    console.log('this not yet implemented');
   }
 
   /**
@@ -241,14 +247,14 @@ export class ExtensionProvider implements ProviderInterface {
       };
 
       window.postMessage({
-        id: Math.random(), // TODO: WTF?!
+        appName: this.#appName,
         chainName: this.#chainName,
-        message: JSON.stringify({
+        message: {
           type: 'rpc',
           payload: json,
           subscription: !!subscription
-        }),
-        origin: EXTENSION_ORIGIN
+        },
+        origin: origins.EXTENSION_PROVIDER
       }, '*');
     });
   }

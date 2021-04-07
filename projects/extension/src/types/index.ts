@@ -28,15 +28,14 @@ export interface Parachain extends ChainSpec {
 }
 export interface Message extends MessageEvent {
   data: {
-    error?: string;
-    id: string;
+    appName: string;
+    chainName: string;
     origin: string;
-    response?: string;
-    subscription?: string;
-    type?: string;
-    appName?: string;
-    chainName?: string;
-    message?: string;
+    message: {
+      type: string,
+      payload: string,
+      subscription?: boolean
+    }
   }
 }  
 
