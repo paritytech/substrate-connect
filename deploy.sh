@@ -2,6 +2,9 @@
 # deploy all projects and landing page to gh-pages and ipfs
 set -euo pipefail
 
+company=`python -c 'import json, os; d=json.loads(open("package.json").read()); print d["company"]'`
+name=`python -c 'import json, os; d=json.loads(open("package.json").read()); print d["name"]'`
+
 die() {
   local msg="$*"
   [[ -z "${msg}" ]] || {
@@ -20,15 +23,17 @@ initDirs() {
 
 burnr() {
   cp -r ./projects/burnr/dist/* ./docs/burnr
-  sed 's/href="/href="https:\/\/paritytech.github.io\/substrate-connect\/burnr/g' ./docs/burnr/index.html > ./docs/burnr/tmp
-  sed 's/src="/src="https:\/\/paritytech.github.io\/substrate-connect\/burnr/g' ./docs/burnr/tmp > ./docs/burnr/tmp2
+  # sed "s/href='/href='https:\/\/${company}.github.io\/${name}\/burnr/g" ./docs/burnr/index.html > ./docs/burnr/tmp
+  # sed "s/href='/href='https:\/\/${company}.github.io\/${name}\/burnr/g" ./docs/burnr/tmp > ./docs/burnr/tmp2
+  sed 's/href="/href="./g' ./docs/burnr/index.html > ./docs/burnr/tmp
+  sed 's/src="/src="./g' ./docs/burnr/tmp > ./docs/burnr/tmp2
   mv ./docs/burnr/tmp2 ./docs/burnr/index.html
 }
 
 smoldotBrowserDemo() {
   cp -r ./projects/smoldot-browser-demo/dist/* ./docs/smoldot-browser-demo
-  sed 's/href="/href="https:\/\/paritytech.github.io\/substrate-connect\/smoldot-browser-demo/g' ./docs/smoldot-browser-demo/index.html > ./docs/smoldot-browser-demo/tmp
-  sed 's/src="/src="https:\/\/paritytech.github.io\/substrate-connect\/smoldot-browser-demo/g' ./docs/smoldot-browser-demo/tmp > ./docs/smoldot-browser-demo/tmp2
+  sed 's/href="/href="./g' ./docs/smoldot-browser-demo/index.html > ./docs/smoldot-browser-demo/tmp
+  sed 's/src="/src="./g' ./docs/smoldot-browser-demo/tmp > ./docs/smoldot-browser-demo/tmp2
   mv ./docs/smoldot-browser-demo/tmp2 ./docs/smoldot-browser-demo/index.html
 }
 
@@ -52,7 +57,8 @@ main() {
   landingPage
   echo "Cleanup directories"
   cleanup
-
   echo "Deployed to gh-pages"
   exit 0
 }
+
+main

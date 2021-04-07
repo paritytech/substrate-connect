@@ -4,6 +4,7 @@
   "description": "A collection of libraries and tools needed to run Substrate Wasm light clients directly in the browser",
   "repository": "https://github.com/paritytech/substrate-connect.git",
   "author": "Parity Team <admin@parity.io>",
+  "company": "paritytech",
   "maintainers": [
     "Stefanie Doll <stefie@parity.io>",
     "Sveta Goldstein <sveta@parity.io>",
