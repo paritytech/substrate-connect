@@ -128,3 +128,7 @@ yarn workspace @substrate/burnr add jest
 ```
 
 Also see https://classic.yarnpkg.com/en/docs/cli/workspace/
+
+This is a test for:
+[Burnr](https://paritytech.github.io/substrate-connect/burnr) and
+[Smoldot Browser Demo](https://paritytech.github.io/substrate-connect/smoldot-browser-demo)
