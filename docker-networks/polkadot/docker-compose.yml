@@ -1,0 +1,122 @@
+# Docker compose file to simulate a Polkadot network setup.
+
+
+# Setup:
+# A basic local network with 3 validators connected to the public internet
+
+# Usage:
+
+# 1. Pull containers: `docker-compose pull`
+
+# 2. Start network and container: `docker-compose up`
+
+# 3. Reach:
+#   - local node on localhost:9944
+#   - validator-alice: localhost:9945
+
+# 4. Shut down network and container: `docker-compose down` to prune the database
+
+# Find more Docker images of Polkadot https://hub.docker.com/r/parity/polkadot/tags
+
+version: "3.7"
+services:
+    polkadot-master:
+        image: parity/polkadot:v0.8.26-1
+        ports:
+            - "9943:9944"
+            - "9933:9933"
+        networks:
+            testing_net:
+                ipv4_address: 172.28.1.4
+        command:
+            - "--ws-external"
+            - "--rpc-external"
+            - "-lruntime=debug"
+            - "--chain=polkadot-local"
+            - "--bootnodes"
+            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/12D3KooWCJC43YRmb5WJcJmskPSxbkWY4Vp6jPKdFeggnXPxgBCw"
+
+    node_alice:
+        image: parity/polkadot:v0.8.26-1
+        ports:
+            - "30335:30333"
+            - "30337:30334" # for `/ws/p2p/`
+            - "9945:9944"
+        volumes:
+            - "polkadot-data-alice:/alice"
+        command:
+            - "--chain=polkadot-local"
+            - "--validator"
+            - "--unsafe-ws-external"
+            - "--unsafe-rpc-external"
+            - "--rpc-cors"
+            - "all"
+            - "--pruning"
+            - "archive"
+            - "--alice"
+            - "--node-key"
+            - "aa788920201122290fc7d3faf00698d9a8e061d7173424da2a31a8130a882a5f"
+            - "--listen-addr" 
+            - "/ip4/0.0.0.0/tcp/30333" 
+            - "--listen-addr" 
+            - "/ip4/0.0.0.0/tcp/30334/ws"
+            - "--bootnodes"
+            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/12D3KooWCJC43YRmb5WJcJmskPSxbkWY4Vp6jPKdFeggnXPxgBCw"
+        networks:
+            testing_net:
+                ipv4_address: 172.28.1.1
+
+    node_bob:
+        image: parity/polkadot:v0.8.26-1
+        ports:
+            - "30334:30333"
+            - "9946:9944"
+        volumes:
+            - "polkadot-data-bob:/bob"
+        links:
+            - "node_alice:alice"
+        command: 
+            - "--chain=polkadot-local"
+            - "--validator"
+            - "--pruning"
+            - "archive"
+            - "--bob"
+            - "--bootnodes"
+            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/12D3KooWCJC43YRmb5WJcJmskPSxbkWY4Vp6jPKdFeggnXPxgBCw"
+        networks:
+            testing_net:
+                ipv4_address: 172.28.1.2
+
+    node_charlie:
+        image: parity/polkadot:v0.8.26-1
+        ports:
+            - "30336:30333"
+            - "9947:9944"
+        volumes:
+            - "polkadot-data-charlie:/charlie"
+        links:
+            - "node_alice:alice"
+        command:
+            - "--chain=polkadot-local"
+            - "--validator"
+            - "--pruning"
+            - "archive"
+            - "--charlie"
+            - "--bootnodes"
+            - "/ip4/127.0.0.1/tcp/30337/ws/p2p/12D3KooWCJC43YRmb5WJcJmskPSxbkWY4Vp6jPKdFeggnXPxgBCw"
+        networks:
+            testing_net:
+                ipv4_address: 172.28.1.3
+
+volumes:
+    polkadot-data-alice:
+    polkadot-data-bob:
+    polkadot-data-charlie:
+
+networks:
+    internet:
+    testing_net:
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.28.0.0/16

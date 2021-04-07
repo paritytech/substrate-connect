@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "references": [ 
+    { "path": "../" }
+  ],
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "declaration": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "declarationMap": true,
+    "outDir": "../dist/",
+    "target": "ES2018",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "module": "ES2020"
+  }
+}

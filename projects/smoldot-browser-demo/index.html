@@ -1,0 +1,48 @@
+<html>
+<body>
+  <div id="root"></div>
+  <style>
+    body {
+      margin: 0;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 14px;
+    }
+    #messages {
+      background-color: black;
+      margin: 0 auto;
+      color: #18ffb2;
+      padding: 0.5rem
+    }
+    .message {
+      padding: 0.5rem;
+    }
+    .message time {
+      display: inline-block;
+      opacity: 0.5;
+      width: 10rem;
+    }
+    .error {
+      color: red;
+    }
+    @keyframes pulse_animation {
+      0% { 
+          opacity: 0.1;
+      }
+      50% { 
+          opacity: 1.0;
+      }
+      100% { 
+          opacity: 0.1;
+      }
+    }
+    .pulse {
+        animation-name: pulse_animation;
+        animation-duration: 5000ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
+  </style>
+  <section id="messages"></section>
+  <script src="./src/index.ts"></script>
+</body>
+</html>

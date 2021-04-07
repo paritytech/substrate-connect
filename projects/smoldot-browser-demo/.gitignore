@@ -1,0 +1,13 @@
+/dist
+
+# dependencies
+/node_modules
+.parcel-cache/
+# misc
+.DS_Store
+yarn-error.log*
+.nyc_output/
+.cache/
+
+# testing
+/coverage

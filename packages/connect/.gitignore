@@ -1,0 +1,13 @@
+dist
+
+# dependencies
+node_modules
+
+# misc
+.DS_Store
+yarn-error.log*
+.nyc_output/
+.chains/
+
+# testing
+/coverage

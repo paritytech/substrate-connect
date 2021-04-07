@@ -1,0 +1,51 @@
+{
+  "name": "@substrate/smoldot-test-utils",
+  "version": "0.1.0",
+  "description": "Testing utilities for smoldot",
+  "main": "dist/index.js",
+  "type": "module",
+  "repository": "https://github.com/paritytech/substrate-connect.git",
+  "author": "Parity Team <admin@parity.io>",
+  "license": "GPL-3.0-only",
+  "scripts": {
+    "prebuild": "yarn clean",
+    "clean": "rm -rf dist/",
+    "build": "tsc",
+    "test": "echo \"No tests for smoldot-test-utils\"",
+    "lint": "echo \"No lint yet for smoldot-test-utils: actual command -> yarn eslint . --ext .js,.ts\"",
+    "postinstall": "yarn build"
+  },
+  "dependencies": {
+    "smoldot": "^0.1.11"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
+    "@typescript-eslint/parser": "^4.15.1",
+    "eslint": "^7.20.0",
+    "typescript": "^4.1.5"
+  },
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json",
+      "createDefaultProgram": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    ],
+    "env": {
+      "node": true
+    }
+  }
+}
