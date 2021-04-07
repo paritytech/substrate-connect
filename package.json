@@ -6,7 +6,9 @@
   "author": "Parity Team <admin@parity.io>",
   "maintainers": [
     "Stefanie Doll <stefie@parity.io>",
-    "Sveta Goldstein <sveta@parity.io>"
+    "Sveta Goldstein <sveta@parity.io>",
+    "Raoul Millais <raoul@parity.io>",
+    "Nikolaos Kontakis <nikolaos@parity.io"
   ],
   "license": "GPL-3.0-only",
   "private": true,
@@ -17,7 +19,7 @@
     "projects/burnr"
   ],
   "scripts": {
-    "clean": " yarn workspaces run clean && rimraf node_modules",
+    "clean": " yarn workspaces run clean && rimraf node_modules && rimraf .parcel-cache",
     "lint": "yarn workspaces run lint",
     "build": "yarn workspaces run build",
     "test": "yarn workspaces run test",
