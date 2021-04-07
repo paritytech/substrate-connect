@@ -19,8 +19,6 @@ initDirs() {
 
 burnr() {
   cp -r ./projects/burnr/dist/* ./docs/burnr
-  # sed "s/href='/href='https:\/\/${company}.github.io\/${name}\/burnr/g" ./docs/burnr/index.html > ./docs/burnr/tmp
-  # sed "s/href='/href='https:\/\/${company}.github.io\/${name}\/burnr/g" ./docs/burnr/tmp > ./docs/burnr/tmp2
   sed 's/href="/href="./g' ./docs/burnr/index.html > ./docs/burnr/tmp
   sed 's/src="/src="./g' ./docs/burnr/tmp > ./docs/burnr/tmp2
   mv ./docs/burnr/tmp2 ./docs/burnr/index.html
