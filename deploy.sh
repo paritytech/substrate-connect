@@ -2,9 +2,6 @@
 # deploy all projects and landing page to gh-pages and ipfs
 set -euo pipefail
 
-company=`python -c 'import json, os; d=json.loads(open("package.json").read()); print d["company"]'`
-name=`python -c 'import json, os; d=json.loads(open("package.json").read()); print d["name"]'`
-
 die() {
   local msg="$*"
   [[ -z "${msg}" ]] || {
