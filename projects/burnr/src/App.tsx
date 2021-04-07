@@ -9,7 +9,7 @@ import { createLocalStorageAccount, isEmpty } from './utils/utils';
 
 import Home from './Home';
 
-import { NavFooter, ThemeToggleProvider, Head } from './components';
+import { NavFooter, ThemeToggleProvider, Head, ErrorBoundary } from './components';
 
 interface Props {
   className?: string;
@@ -67,21 +67,23 @@ const App: React.FunctionComponent<Props> = ({ className = '' }: Props) => {
 			<div className={`${classes.root} ${className}`}>
 				<ThemeToggleProvider>
 					<AccountContext.Provider value={{ account, setCurrentAccount }}>
-						<main className={classes.main}>
-							<ApiContext.Provider value={api}>
-								<Head />
-								{loader ?
-								(<Paper className={classes.loadingPaper}>
-									<CircularProgress className={classes.loader} />
-								</Paper>) :
-								api && api.isReady && !isEmpty(account) && (
-									<Switch>
-										<Route exact path='/' component={Home} />
-									</Switch>
-								)}
-							</ApiContext.Provider>
-						</main>
-						<NavFooter />
+            <ErrorBoundary>
+              <main className={classes.main}>
+                <ApiContext.Provider value={api}>
+                  <Head />
+                  {loader ?
+                  (<Paper className={classes.loadingPaper}>
+                    <CircularProgress className={classes.loader} />
+                  </Paper>) :
+                  api && api.isReady && !isEmpty(account) && (
+                    <Switch>
+                      <Route exact path='/' component={Home} />
+                    </Switch>
+                  )}
+                </ApiContext.Provider>
+              </main>
+              <NavFooter />
+            </ErrorBoundary>
 					</AccountContext.Provider>
 				</ThemeToggleProvider>
 			</div>
