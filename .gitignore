@@ -5,3 +5,6 @@ dist
 .parcel-cache/
 # testing
 coverage
+docs/*
+# exception to the rule
+!docs/.gitkeep 
