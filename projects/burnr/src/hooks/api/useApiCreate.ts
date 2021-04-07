@@ -43,7 +43,7 @@ export default function useApiCreate (): ApiPromise {
         mountedRef.current && setApi(api);
       })
       .catch((err): void => {
-        console.log(err)
+        console.error(err);
       });
 
       localEndpoint === 'Westend-WsProvider' && choseSmoldot();
