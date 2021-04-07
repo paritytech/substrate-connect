@@ -5,4 +5,3 @@ dist
 .parcel-cache/
 # testing
 coverage
-docs

@@ -12,7 +12,7 @@ die() {
 readonly -f die
 
 initDirs() {
-  rm -rf ./docs
+  rm -rf ./docs/*
   mkdir ./docs
   mkdir ./docs/burnr
   mkdir ./docs/smoldot-browser-demo
