@@ -1,8 +1,5 @@
 import React, { MouseEvent, useContext, useState, useEffect, FunctionComponent } from 'react';
-import { AccountContext } from '../utils/contexts';
 import BN from 'bn.js';
-import { Keyring } from '@polkadot/api';
-import { InputAddress, InputFunds } from '../components';
 import { 
 	makeStyles,
 	createStyles,
@@ -13,11 +10,16 @@ import {
 	LinearProgress,
 	Table,
 	TableContainer } from '@material-ui/core';
+import { decodeAddress, encodeAddress } from '@polkadot/keyring';
+import { hexToU8a, isHex } from '@polkadot/util';
+import { Keyring } from '@polkadot/api';
+import { AccountContext } from '../utils/contexts';
+import { InputAddress, InputFunds } from '../components';
 import { useBalance, useApi, useLocalStorage } from '../hooks'
 import { HistoryTableRow } from '.';
 import { Column } from '../utils/types';
 
-import { green } from '@material-ui/core/colors';
+import { red, green } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme: Theme) => {
 	return createStyles({
@@ -29,6 +31,9 @@ const useStyles = makeStyles((theme: Theme) => {
 			marginTop: theme.spacing(3),
 			alignContent: 'center',
 		},
+    errorMessage: {
+      color: red[500],
+    },
 		button: {
 			color: theme.palette.getContrastText(theme.palette.secondary.main),
 			'&:hover': {
@@ -94,7 +99,7 @@ const SendFundsForm: FunctionComponent = () => {
 		if(!loading) {
 			if (message != '') {
 				countdown = setInterval((): void => {
-					setCountdownNo((oldCountdownNo) => {
+					setCountdownNo((oldCountdownNo: number) => {
 						if (oldCountdownNo === 0) {
 							setMessage('');
 							return 0;
@@ -155,6 +160,20 @@ const SendFundsForm: FunctionComponent = () => {
 		}
 	}
 
+  const isValidAddressPolkadotAddress = (add = '') => {
+    try {
+      encodeAddress(
+        isHex(add)
+          ? hexToU8a(add.toString())
+          : decodeAddress(add)
+      );
+  
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
 	return (
 		<Grid
 			component='form'
@@ -179,11 +198,19 @@ const SendFundsForm: FunctionComponent = () => {
 					variant='contained'
 					size='large'
 					color='secondary'
-					disabled={loading || !amount}
+					disabled={loading || !parseInt(amount) || !isValidAddressPolkadotAddress(address) || account.userAddress !== address}
 					onClick={handleSubmit}
 					className={classes.button}
 				>Send</Button>
 			</Grid>
+      <Grid item xs={12}>
+        <Typography variant='body1' className={classes.errorMessage}>
+          {!isValidAddressPolkadotAddress(address) && 'You need to add a valid address.'}
+        </Typography>
+        <Typography variant='body1' className={classes.errorMessage}>
+          {!parseInt(amount) && 'You should add some amount.'}
+        </Typography>
+      </Grid>
 			{ countdownNo !== 0 && (
 				<Grid item xs={12}>
 					<TableContainer className={classes.container}>

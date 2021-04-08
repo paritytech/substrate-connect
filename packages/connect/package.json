@@ -1,6 +1,6 @@
 {
   "name": "@substrate/connect",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Substrate-connect to Smoldot clients. Using either substrate extension with predefined clients or an internal smoldot client based on chainSpecs provided.",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
@@ -56,6 +56,9 @@
   },
   "eslintConfig": {
     "root": true,
+    "rules": {
+      "@typescript-eslint/restrict-template-expressions": "off"
+    },
     "parser": "@typescript-eslint/parser",
     "settings": {
       "react": {

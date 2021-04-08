@@ -19,13 +19,12 @@ export class ConnectionManager implements ConnectionManagerInterface {
   }
 
   addApp(port: chrome.runtime.Port): void {
-    const name = port.sender?.tab?.id?.toString() || '';
-    const app = this.#apps.find(s => s.name === name);
+    const app = this.#apps.find(s => s.name === port.name);
 
     if (app) {
-      port.postMessage({ type: 'info', payload: 'App already exists.' })
+      port.postMessage({ type: 'info', payload: `App ${port.name} already exists.` })
     } else {
-      const newApp = new AppMediator(name, port, this as ConnectionManagerInterface)
+      const newApp = new AppMediator(port.name, port, this as ConnectionManagerInterface)
       this.#apps.push(newApp);
     }
   }
@@ -81,9 +80,9 @@ export class ConnectionManager implements ConnectionManagerInterface {
     }
 
     try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const sc = await client.start({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      const sc = await client.start({
         database_content: this.#loadDatabase(name),
         chain_spec: chainSpec,
         max_log_level: 3,
@@ -106,7 +105,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return sc;
     } catch (err) {
-      console.log('Function addSmoldot error:', err);
+      console.error('Error starting smoldot', err);
     }
   }
 }
