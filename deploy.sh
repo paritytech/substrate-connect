@@ -22,7 +22,7 @@ landingPage() {
 }
 
 deployGhPages() {
-  echo "Init demo gh-pages process..."
+  echo "Init demo for github pages process..."
   initDirs
   echo "Place burnr wallet demo's files."
   cp -r ./projects/burnr/dist/* ./docs/burnr
@@ -33,4 +33,4 @@ deployGhPages() {
  }
 
 deployGhPages
-echo "Deployed to gh-pages"
+echo "Deployed to github pages"
