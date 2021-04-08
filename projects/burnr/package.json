@@ -5,7 +5,8 @@
   "author": "Parity Team <admin@parity.io>",
   "contributors": [
     "Stefanie Doll <stefie@parity.io>",
-    "Sveta Goldstein <sveta@parity.io>"
+    "Sveta Goldstein <sveta@parity.io>",
+    "Nikolaos Kontakis <nikolaos@parity.io>"
   ],
   "license": "GPL-3.0-only",
   "main": "./dist/index.html",

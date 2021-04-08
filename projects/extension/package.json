@@ -5,6 +5,10 @@
   "main": "index.js",
   "author": "Parity Technologies",
   "license": "GPL-3.0-only",
+  "contributors": [
+    "Sveta Goldstein <sveta@parity.io>",
+    "Nikolaos Kontakis <nikolaos@parity.io>"
+  ],
   "scripts": {
     "clean": "rm -rf dist",
     "test": "jest",

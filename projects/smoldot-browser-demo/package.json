@@ -4,7 +4,8 @@
   "main": "./dist/index.html",
   "author": "Parity Team <admin@parity.io>",
   "contributors": [
-    "Raoul Millais <raoul@parity.io>"
+    "Raoul Millais <raoul@parity.io>",
+    "Nikolaos Kontakis <nikolaos@parity.io>"
   ],
   "license": "GPL-3.0-only",
   "browserslist": [
