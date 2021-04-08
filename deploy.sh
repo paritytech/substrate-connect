@@ -17,12 +17,6 @@ initDirs() {
   mkdir -p ./docs/smoldot-browser-demo
 }
 
-burnr() {
-}
-
-smoldotBrowserDemo() {
-}
-
 landingPage() {
   cp ./README.md ./docs/.
 }
