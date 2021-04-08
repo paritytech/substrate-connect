@@ -265,9 +265,6 @@ export class SmoldotProvider implements ProviderInterface {
         max_log_level: 3, /* no debug/trace messages */
         json_rpc_callback: (response: string) => {
             this.#handleRpcReponse(response);
-        },
-        database_save_callback: (database_content: string) => { 
-          l.debug('saving database', database_content);
         }
       })
       this.#connectionStatePingerId = setInterval(
