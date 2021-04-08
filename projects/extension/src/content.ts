@@ -1,42 +1,60 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { Message } from './types';
-const PORT_CONTENT = 'substrate';
-const SMOLDOT_CONTENT = 'smoldot';
-const EXTENSION_ORIGIN = 'extension-provider';
-//This line opens up a long-lived connection FROM the page TO your background page.
 
-const port = chrome.runtime.connect({ name: PORT_CONTENT });
+const ports: Record<string, chrome.runtime.Port> = {};
 
-export type AppMessageType = 'associate' | 'rpc';
-export interface AppMessage {
-  type: AppMessageType;
-  payload: string; // name of the network or an rpc string (json stringified RPC message)
+const CONTENT_SCRIPT_ORIGIN = 'content-script';
+const EXTENSION_PROVIDER_ORIGIN ='extension-provider';
+
+function debug(message: string, ctx: unknown) {
+  if (process.env.NODE_ENV === 'development') {
+    console.debug(message, ctx);
+  }
 }
 
 // Receive from ExtensionProvider the App "subscription"
 window.addEventListener('message', ({ data }: Message): void => {
-  let appData: AppMessage;
-  if (data.origin === EXTENSION_ORIGIN) {
-    const conv = data?.message as unknown as AppMessage;
-    if (conv?.type === 'associate') {
-      const chainName: string = JSON.parse(conv?.payload).chainName;
-    // Associate the app to specific smoldot client
-      appData = {
-        type: conv?.type,
-        payload: chainName
-      }
-    } else {
-      appData = JSON.parse(data?.message || '');
-    }
-    port.postMessage({ ...appData, origin: EXTENSION_ORIGIN});
+  if (!data.origin || data.origin !== EXTENSION_PROVIDER_ORIGIN) {
+    return;
   }
+  debug(`RECEIEVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data);
+
+  let port: chrome.runtime.Port;
+
+  if (data.message.type === 'associate') {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    port = chrome.runtime.connect({ name: `${data.appName}::${data.chainName}` });
+    debug(`CONNECTED ${data.chainName} PORT`, port);
+    // forward any messages: extension -> page
+    const chainName = data.chainName;
+    port.onMessage.addListener((data): void => {
+      debug(`RECIEVED MESSGE FROM ${chainName} PORT`, data);
+      window.postMessage({ 
+        message: data.payload, 
+        origin: CONTENT_SCRIPT_ORIGIN 
+      }, '*');
+    });
+
+    ports[data.chainName] = port;
+    debug(`SENDING ASSOCIATE MESSAGE TO ${data.chainName} PORT`, data.message);
+    // TODO(rem): do we actually need to send the origin to the background
+    // can we not just forward the message?
+    port.postMessage({ ...data.message, origin: EXTENSION_PROVIDER_ORIGIN});
+    return;
+  }
+
+  port = ports[data.chainName];
+  if (!port) {
+    // this is probably someone trying to abuse the extension.
+    console.warn(`App requested to send message to ${data.chainName} - no port found`);
+    return;
+  }
+
+  debug(`SENDING MESSAGE TO ${data.chainName} PORT`, data.message);
+  port.postMessage({ ...data.message, origin: EXTENSION_PROVIDER_ORIGIN});
 });
 
-// send any messages: extension -> page
-port.onMessage.addListener((data): void => {
-  window.postMessage({ message: data?.payload, origin: SMOLDOT_CONTENT }, '*');
-});
 
 // inject page.ts to the tab
 const script = document.createElement('script');

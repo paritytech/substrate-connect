@@ -15,9 +15,17 @@ import { logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 import { isUndefined } from '../utils';
 
-const EXTENSION_ORIGIN = 'extension-provider';
+const CONTENT_SCRIPT_ORIGIN = 'content-script';
+const EXTENSION_PROVIDER_ORIGIN = 'extension-provider';
 
-const l = logger(EXTENSION_ORIGIN);
+const l = logger(EXTENSION_PROVIDER_ORIGIN);
+
+interface ExtensionMessage {
+  data: {
+    origin: string;
+    message: string;
+  }
+}
 
 interface RpcStateAwaiting {
   callback: ProviderInterfaceCallback;
@@ -33,7 +41,7 @@ interface SubscriptionHandler {
 }
 
 interface StateSubscription extends SubscriptionHandler {
-    method: string;
+  method: string;
 }
 
 const ANGLICISMS: { [index: string]: string } = {
@@ -51,11 +59,21 @@ export class ExtensionProvider implements ProviderInterface {
   #client: smoldot.SmoldotClient | undefined = undefined;
   #isConnected = false;
 
+  #appName: string;
   #chainName: string;
 
-   public constructor(name: string) {
-     this.#chainName = name;
-   }
+  public constructor(appName: string, chainName: string) {
+    this.#appName = appName;
+    this.#chainName = chainName;
+  }
+
+  public get name(): string {
+    return this.#appName;
+  }
+
+  public get chainName(): string {
+    return this.#chainName;
+  }
 
   /**
    * @description Lets polkadot-js know we support subscriptions
@@ -82,7 +100,7 @@ export class ExtensionProvider implements ProviderInterface {
       : this.#onMessageSubscribe(response);
   }
 
- #onMessageResult = (response: JsonRpcResponse): void => {
+  #onMessageResult = (response: JsonRpcResponse): void => {
     const handler = this.#handlers[response.id];
 
     if (!handler) {
@@ -146,18 +164,21 @@ export class ExtensionProvider implements ProviderInterface {
    * @description "Connect" the WASM client - starts the smoldot WASM client
    */
   public connect(): Promise<void> {
-    const initData = {
-      id: 1,
-      message: JSON.stringify({
+    const initMsg = {
+      appName: this.#appName,
+      chainName: this.#chainName,
+      message: {
         type: 'associate',
         payload: this.#chainName
-      }),
-      origin: EXTENSION_ORIGIN
+      },
+      origin: EXTENSION_PROVIDER_ORIGIN
     }
-    window.postMessage(initData, '*');
-    window.addEventListener('message', ({data}) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      this.#handleRpcReponse(data?.message);
+    window.postMessage(initMsg, '*');
+    window.addEventListener('message', ({data}: ExtensionMessage) => {
+      if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        this.#handleRpcReponse(data.message);
+      }
     });
     this.#isConnected = true;
     this.emit('connected');
@@ -170,7 +191,7 @@ export class ExtensionProvider implements ProviderInterface {
    */
   // eslint-disable-next-line @typescript-eslint/require-await
   public async disconnect(): Promise<void> {
-    console.log('this wont be implemented');
+    console.log('this not yet implemented');
   }
 
   /**
@@ -213,32 +234,33 @@ export class ExtensionProvider implements ProviderInterface {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     return new Promise((resolve, reject): void => {
-        const json = this.#coder.encodeJson(method, params);
-        const id = this.#coder.getId();
+      const json = this.#coder.encodeJson(method, params);
+      const id = this.#coder.getId();
 
-        const callback = (error?: Error | null, result?: unknown): void => {
-          error
-            ? reject(error)
-            : resolve(result);
-        };
+      const callback = (error?: Error | null, result?: unknown): void => {
+        error
+          ? reject(error)
+          : resolve(result);
+      };
 
-        l.debug(() => ['calling', method, json]);
+      l.debug(() => ['calling', method, json]);
 
-        this.#handlers[id] = {
-          callback,
-          method,
-          subscription
-        };
+      this.#handlers[id] = {
+        callback,
+        method,
+        subscription
+      };
 
-        window.postMessage({
-          id: Math.random(),
-          message: JSON.stringify({
-            type: 'rpc',
-            payload: json,
-            subscription: !!subscription
-          }),
-          origin: EXTENSION_ORIGIN
-        }, '*');
+      window.postMessage({
+        appName: this.#appName,
+        chainName: this.#chainName,
+        message: {
+          type: 'rpc',
+          payload: json,
+          subscription: !!subscription
+        },
+        origin: EXTENSION_PROVIDER_ORIGIN
+      }, '*');
     });
   }
 

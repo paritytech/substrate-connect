@@ -42,7 +42,7 @@ export class FsDatabase implements Database {
   }
 
   delete(): void {
-      unlinkSync(this.#path);
+    unlinkSync(this.#path);
   }
 }
 
