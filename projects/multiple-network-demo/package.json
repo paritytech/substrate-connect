@@ -1,11 +1,10 @@
 {
-  "name": "@substrate/smoldot-browser-demo",
+  "name": "@substrate/multiple-network-demo",
   "version": "1.0.0",
   "main": "./dist/index.html",
   "author": "Parity Team <admin@parity.io>",
   "contributors": [
-    "Raoul Millais <raoul@parity.io>",
-    "Nikolaos Kontakis <nikolaos@parity.io>"
+    "Raoul Millais <raoul@parity.io>"
   ],
   "license": "GPL-3.0-only",
   "browserslist": [
@@ -17,20 +16,16 @@
     "typecheck:watch": "tsc --noEmit --watch",
     "copy-assets": "cp -R ./src/assets ./dist",
     "build": "yarn clean && yarn copy-assets && yarn typecheck && parcel build index.html --detailed-report",
-    "dev": "yarn clean && yarn copy-assets && concurrently \"yarn typecheck:watch\" \"parcel index.html\"",
-    "deploy:gh-pages": "./scripts/deploy-to-gh-pages.sh",
-    "deploy:ipfs": "yarn build && ./scripts/deploy-to-ipfs.js",
-    "deploy": "yarn deploy:gh-pages && yarn deploy:ipfs",
+    "dev": "yarn clean && yarn copy-assets && concurrently \"yarn typecheck:watch\" \"parcel --no-cache index.html\"",
     "test": "echo \"Warning: Jest has been setup but no tests exist.\"",
     "test:watch": "jest --watch",
-    "lint": "echo \"Warning: Linter is there but errors need fixing.\""
+    "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "devDependencies": {
-    "@pinata/sdk": "^1.1.11",
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
-    "concurrently": "^5.3.0",
+    "concurrently": "^6.0.1",
     "eslint": "^7.20.0",
     "jest": "^26.6.3",
     "parcel": "^2.0.0-beta.2",

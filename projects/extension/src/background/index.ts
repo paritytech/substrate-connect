@@ -31,6 +31,5 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.runtime.onConnect.addListener((port) => {
-  console.assert(port.name == "substrate");
   manager.addApp(port);
 });

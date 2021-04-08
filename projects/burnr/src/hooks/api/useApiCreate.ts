@@ -24,8 +24,8 @@ export default function useApiCreate (): ApiPromise {
     const choseSmoldot = async () => {
       try {
         const chainSpec = JSON.stringify(westend);
-        const detect = new Detector('westend', chainSpec);
-        const api = await detect.connect();
+        const detect = new Detector('burnr wallet');
+        const api = await detect.connect('westend', chainSpec);
         mountedRef.current && setApi(api);
       } catch (err) {
         console.log('A wild error appeared:', err);
