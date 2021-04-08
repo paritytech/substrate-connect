@@ -15,12 +15,10 @@ import { logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 import { isUndefined } from '../utils';
 
-const origins = {
-  CONTENT_SCRIPT: 'content-script',
-  EXTENSION_PROVIDER: 'extension-provider'
-};
+const CONTENT_SCRIPT_ORIGIN = 'content-script';
+const EXTENSION_PROVIDER_ORIGIN = 'extension-provider';
 
-const l = logger(origins.EXTENSION_PROVIDER);
+const l = logger(EXTENSION_PROVIDER_ORIGIN);
 
 interface ExtensionMessage {
   data: {
@@ -173,11 +171,11 @@ export class ExtensionProvider implements ProviderInterface {
         type: 'associate',
         payload: this.#chainName
       },
-      origin: origins.EXTENSION_PROVIDER
+      origin: EXTENSION_PROVIDER_ORIGIN
     }
     window.postMessage(initMsg, '*');
     window.addEventListener('message', ({data}: ExtensionMessage) => {
-      if (data.origin && data.origin === origins.CONTENT_SCRIPT) {
+      if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         this.#handleRpcReponse(data.message);
       }
@@ -261,7 +259,7 @@ export class ExtensionProvider implements ProviderInterface {
           payload: json,
           subscription: !!subscription
         },
-        origin: origins.EXTENSION_PROVIDER
+        origin: EXTENSION_PROVIDER_ORIGIN
       }, '*');
     });
   }

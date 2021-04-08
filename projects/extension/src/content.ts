@@ -4,10 +4,8 @@ import type { Message } from './types';
 
 const ports: Record<string, chrome.runtime.Port> = {};
 
-const origins = {
-  CONTENT_SCRIPT: 'content-script',
-  EXTENSION_PROVIDER: 'extension-provider'
-};
+const CONTENT_SCRIPT_ORIGIN = 'content-script';
+const EXTENSION_PROVIDER_ORIGIN ='extension-provider';
 
 function debug(message: string, ctx: unknown) {
   if (process.env.NODE_ENV === 'development') {
@@ -17,10 +15,10 @@ function debug(message: string, ctx: unknown) {
 
 // Receive from ExtensionProvider the App "subscription"
 window.addEventListener('message', ({ data }: Message): void => {
-  if (!data.origin || data.origin !== origins.EXTENSION_PROVIDER) {
+  if (!data.origin || data.origin !== EXTENSION_PROVIDER_ORIGIN) {
     return;
   }
-  debug(`RECEIEVED MESSAGE FROM ${origins.EXTENSION_PROVIDER}`, data);
+  debug(`RECEIEVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data);
 
   let port: chrome.runtime.Port;
 
@@ -34,7 +32,7 @@ window.addEventListener('message', ({ data }: Message): void => {
       debug(`RECEIEVED MESSGE FROM ${chainName} PORT`, data);
       window.postMessage({ 
         message: data.payload, 
-        origin: origins.CONTENT_SCRIPT 
+        origin: CONTENT_SCRIPT_ORIGIN 
       }, '*');
     });
 
@@ -42,7 +40,7 @@ window.addEventListener('message', ({ data }: Message): void => {
     debug(`SENDING ASSOCIATE MESSAGE TO ${data.chainName} PORT`, data.message);
     // TODO(rem): do we actually need to send the origin to the background
     // can we not just forward the message?
-    port.postMessage({ ...data.message, origin: origins.EXTENSION_PROVIDER});
+    port.postMessage({ ...data.message, origin: EXTENSION_PROVIDER_ORIGIN});
     return;
   }
 
@@ -54,7 +52,7 @@ window.addEventListener('message', ({ data }: Message): void => {
   }
 
   debug(`SENDING MESSAGE TO ${data.chainName} PORT`, data.message);
-  port.postMessage({ ...data.message, origin: origins.EXTENSION_PROVIDER});
+  port.postMessage({ ...data.message, origin: EXTENSION_PROVIDER_ORIGIN});
 });
 
 
