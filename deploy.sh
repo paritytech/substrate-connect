@@ -25,9 +25,9 @@ deployGhPages() {
   echo "Init demo for github pages process..."
   initDirs
   echo "Place burnr wallet demo's files."
-  cp -r ./projects/burnr/dist/* ./docs/burnr
+  cp -r ./projects/burnr/dist/* ./docs/burnr/.
   echo "Place Smoldot browser demo's files."
-  cp -r ./projects/smoldot-browser-demo/dist/* ./docs/smoldot-browser-demo
+  cp -r ./projects/smoldot-browser-demo/dist/* ./docs/smoldot-browser-demo/.
   echo "Place landing page's files."
   landingPage
  }

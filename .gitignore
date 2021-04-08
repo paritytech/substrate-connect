@@ -5,8 +5,5 @@ dist
 .parcel-cache/
 # testing
 coverage
-docs/.gitkeep
-!docs/burnr/.gitkeep
-docs/burnr/*
-!docs/smoldot-browser-demo/.gitkeep
-docs/smoldot-browser-demo/*
+docs/*
+!docs/.gitkeep
