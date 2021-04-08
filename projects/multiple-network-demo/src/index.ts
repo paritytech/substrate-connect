@@ -1,14 +1,9 @@
-/* eslint-disable */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 // hack to make poladot-js work without bringing in webpack and babel
 import "regenerator-runtime/runtime"
 import { Detector }  from '@substrate/connect';
 
 window.onload = () => {
-  (async () => {
+  void (async () => {
     try {
       const detect = new Detector('Multiple Network Demo');
 

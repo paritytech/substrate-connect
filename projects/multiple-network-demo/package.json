@@ -19,7 +19,7 @@
     "dev": "yarn clean && yarn copy-assets && concurrently \"yarn typecheck:watch\" \"parcel --no-cache index.html\"",
     "test": "echo \"Warning: Jest has been setup but no tests exist.\"",
     "test:watch": "jest --watch",
-    "lint": "echo \"Warning: Linter is there but errors need fixing.\""
+    "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
