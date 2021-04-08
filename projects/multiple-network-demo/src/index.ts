@@ -7,7 +7,6 @@ window.onload = () => {
     try {
       const detect = new Detector('Multiple Network Demo');
 
-
       const westend = await detect.connect('westend');
       const westendUI = document.getElementById('westend') as HTMLElement;
       const westendHead = await westend.rpc.chain.getHeader();

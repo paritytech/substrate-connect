@@ -29,7 +29,7 @@ window.addEventListener('message', ({ data }: Message): void => {
     // forward any messages: extension -> page
     const chainName = data.chainName;
     port.onMessage.addListener((data): void => {
-      debug(`RECEIEVED MESSGE FROM ${chainName} PORT`, data);
+      debug(`RECIEVED MESSGE FROM ${chainName} PORT`, data);
       window.postMessage({ 
         message: data.payload, 
         origin: CONTENT_SCRIPT_ORIGIN 
