@@ -1,30 +1,48 @@
 {
-  "name": "@substrate/landing-page",
-  "version": "1.0.0",
-  "description": "Landing page for gh-pages and ipfs",
-  "author": "Parity Team <admin@parity.io>",
-  "license": "GPL-3.0-only",
-  "contributors": [
-    "Nikolaos Kontakis <nikolaos@parity.io>"
-  ],
+  "name": "landing-page",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "@rocketseat/gatsby-theme-docs": "^2.3.1",
-    "gatsby": "^3.0.4",
-    "gatsby-plugin-canonical-urls": "^3.0.0",
-    "gatsby-plugin-google-analytics": "^3.0.0",
-    "gatsby-plugin-manifest": "^3.0.0",
-    "gatsby-plugin-offline": "^4.0.0",
-    "gatsby-plugin-remove-trailing-slashes": "^3.0.0",
-    "gatsby-plugin-sitemap": "^3.0.0",
-    "prop-types": "^15.7.2",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "@material-ui/core": "^4.11.3",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "typescript": "^4.1.2",
+    "web-vitals": "^1.0.1"
   },
-  "devDependencies": {},
   "scripts": {
-    "build": "gatsby build",
-    "dev": "gatsby develop",
-    "serve": "gatsby serve",
-    "clean": "gatsby clean"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@material-ui/types": "^5.1.0",
+    "babel-loader": "8.1.0"
   }
 }
