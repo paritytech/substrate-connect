@@ -18,8 +18,8 @@ window.onload = () => {
         ui.error(new Error('Error downloading chain spec'));
       }
       const chainSpec =  await response.text();
-      const detect = new Detector('westend', chainSpec);
-      const api = await detect.connect();
+      const detect = new Detector('Smoldot Browser Demo');
+      const api = await detect.connect('westend', chainSpec);
 
       // const api = await ApiPromise.create({ provider })
       const header = await api.rpc.chain.getHeader()

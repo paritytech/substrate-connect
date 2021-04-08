@@ -9,9 +9,9 @@ import { Detector }  from '@substrate/connect';
 import { ALL_PROVIDERS } from '../../utils/constants';
 import { LazyProvider } from '../../utils/types'; 
 import { useIsMountedRef, useLocalStorage } from '..';
-import westend from '../../assets/westend.json';
+import westend from '../../../public/assets/westend.json';
 
-console.log('ALL_PROVIDERS', ALL_PROVIDERS)
+console.log('ALL_PROVIDERS: ', ALL_PROVIDERS)
 
 export default function useApiCreate (): ApiPromise {
   const [api, setApi] = useState<ApiPromise>({} as ApiPromise);
@@ -24,8 +24,8 @@ export default function useApiCreate (): ApiPromise {
     const choseSmoldot = async () => {
       try {
         const chainSpec = JSON.stringify(westend);
-        const detect = new Detector('westend', chainSpec);
-        const api = await detect.connect();
+        const detect = new Detector('burnr wallet');
+        const api = await detect.connect('westend', chainSpec);
         mountedRef.current && setApi(api);
       } catch (err) {
         console.log('A wild error appeared:', err);
@@ -42,8 +42,8 @@ export default function useApiCreate (): ApiPromise {
         console.log("API api", api);
         mountedRef.current && setApi(api);
       })
-      .catch((): void => {
-        console.error
+      .catch((err): void => {
+        console.error(err);
       });
 
       localEndpoint === 'Westend-WsProvider' && choseSmoldot();

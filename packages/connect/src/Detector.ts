@@ -1,37 +1,40 @@
 import { ApiPromise } from '@polkadot/api';
+import { ProviderInterface } from '@polkadot/rpc-provider/types';
 import { SmoldotProvider }  from './SmoldotProvider';
 import { ExtensionProvider } from './ExtensionProvider';
 
 export class Detector {
-    #chainName: string;
-    #chainSpec: string | undefined;
-    #isExtension: boolean;
-    #provider: SmoldotProvider | ExtensionProvider | undefined;
+  #name: string;
+  #isExtension: boolean;
+  #providers: Record<string, ProviderInterface> = {};
 
-    public constructor (chainName: string, chainSpec?: string) {
-        this.#chainName = chainName;
-        this.#chainSpec = chainSpec;
-        this.#isExtension = !!document.getElementById('substrateExtension');
+  get name(): string {
+    return this.#name;
+  }
+
+  public constructor (name: string) {
+    this.#isExtension = !!document.getElementById('substrateExtension');
+    this.#name = name;
+  }
+
+  public connect = async (chainName: string, chainSpec?: string): Promise<ApiPromise> => {
+    let provider;
+
+    if (this.#isExtension && chainName) {
+      provider = new ExtensionProvider(this.#name, chainName);
+      await provider.connect();
+    } else if (this.#isExtension && !chainName) {
+      throw new Error('You must provide at least a chainName')
+    } else if (!this.#isExtension && chainSpec) {
+      provider = new SmoldotProvider(chainSpec);
+      await provider.connect();
     }
+    this.#providers[chainName] = provider as ProviderInterface;
+    return await ApiPromise.create({ provider });
+  }
 
-    public connect = async (): Promise<ApiPromise> => {
-        let provider;
-        if (this.#isExtension && this.#chainName) {
-            provider = new ExtensionProvider(this.#chainName);
-            await provider.connect();
-        } else if (this.#isExtension && !this.#chainName) {
-            throw new Error('You must provide at least a chainName')
-        } else if (!this.#isExtension && this.#chainSpec) {
-            provider = new SmoldotProvider(this.#chainSpec);
-            await provider.connect();
-        }
-        this.#provider = provider;
-        return await ApiPromise.create({ provider });
-    }
-
-    public disconnect = async (): Promise<void> => {
-        if (this.#provider instanceof SmoldotProvider) {
-            await this.#provider.disconnect();
-        }
-    };
+  public disconnect = async (chainName: string): Promise<void> => {
+    await this.#providers[chainName].disconnect();
+    delete this.#providers[chainName];
+  };
 }

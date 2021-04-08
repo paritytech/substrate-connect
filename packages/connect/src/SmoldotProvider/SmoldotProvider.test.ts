@@ -167,9 +167,9 @@ test('throws when got error JSON response', async () => {
 
   await provider.connect();
 
-   await expect(() => provider.send('hello', [ 'world' ]))
-    .rejects
-    .toThrow('666: boom!');
+  await expect(() => provider.send('hello', [ 'world' ]))
+  .rejects
+  .toThrow('666: boom!');
 
   await provider.disconnect();
 });

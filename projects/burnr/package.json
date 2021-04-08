@@ -8,11 +8,12 @@
     "Sveta Goldstein <sveta@parity.io>"
   ],
   "license": "GPL-3.0-only",
-  "main": "index.html",
+  "main": "./dist/index.html",
   "scripts": {
-    "build": "parcel build ./index.html",
-    "clean": "rimraf dist && rm -rf node_modules",
-    "dev": "tsc --noEmit & parcel ./index.html",
+    "prebuild": "yarn clean && mkdir dist && cp -r ./public/* ./dist/.",
+    "build": "parcel build ./dist/index.html",
+    "clean": "rimraf dist",
+    "dev": "yarn run clean && tsc --noEmit & parcel ./public/index.html",
     "test": "echo \"Warning: Jest has been setup but no tests exist.\"",
     "test:watch": "jest --watch",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
@@ -34,7 +35,7 @@
     "@polkadot/ui-settings": "^0.68.1",
     "@polkadot/util": "^5.5.2",
     "@polkadot/util-crypto": "^5.5.2",
-    "@substrate/connect": "^0.0.3",
+    "@substrate/connect": "^0.2.0",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -46,6 +47,7 @@
   },
   "devDependencies": {
     "@material-ui/types": "^5.1.0",
+    "@parcel/transformer-typescript-tsc": "^2.0.0-alpha.3",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@types/jest": "^26.0.20",

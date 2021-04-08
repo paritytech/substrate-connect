@@ -20,3 +20,4 @@ export { default as SendFundsForm } from './SendFundsForm';
 export { default as ReceiveFundsForm } from './ReceiveFundsForm';
 export { default as ThemeButton } from './ThemeButton';
 export { default as ThemeToggleProvider } from './ThemeToggleProvider';
+export { default as ErrorBoundary } from './ErrorBoundary';
