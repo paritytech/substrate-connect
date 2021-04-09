@@ -12724,17 +12724,7 @@ smoldot@^0.1.21:
   version "0.1.21"
   resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.1.21.tgz#21aab439b605167eb22b67fd7ccea765ee720c96"
   integrity sha512-b0NiwK6HiTh510yGMXne63qVdWaPY+H4glmJc/UazL85d+dLUqjn2RLKLMWWT9u14WNVTqcnwI/9atpPsscVSg==
-  dependencies:
-    buffer "^6.0.1"
-    performance-now "^2.1.0"
-    randombytes "^2.1.0"
-    websocket "^1.0.32"
-
-smoldot@latest:
-  version "0.1.14"
-  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.1.14.tgz#b6f6500e5f641d5d42a9aabdc1df1d32f008b477"
-  integrity sha512-M3PnAfwbpn91ImnPYcmAUqkhub/blFKseUZY1ThgLdpJDIt1w3+A9CNaX4ApqRcuHSvOVKYFsivYMl4BEStCJg==
-  dependencies:
+dependencies:
     buffer "^6.0.1"
     performance-now "^2.1.0"
     randombytes "^2.1.0"

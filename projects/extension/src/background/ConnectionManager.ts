@@ -93,9 +93,6 @@ export class ConnectionManager implements ConnectionManagerInterface {
               break;
             }
           }
-        },
-        database_save_callback: (database_content: string) => { 
-          this.#saveDatabase(name, database_content);
         }
       });
 

@@ -13,7 +13,6 @@ import {
 import { assert, logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 import * as smoldot from 'smoldot';
-import database, { Database } from './Database';
 import { HealthCheckError } from './errors';
 import { isUndefined } from '../utils';
 
@@ -76,14 +75,14 @@ const CONNECTION_STATE_PINGER_INTERVAL = 2000;
  * ```javascript
  * import readFileSync from 'fs';
  * import Api from '@polkadot/api/promise';
- * import { SmoldotProvider, database } from '../';
+ * import { SmoldotProvider } from '../';
  *
  * const chainSpec = readFileSync('./path/to/polkadot.json');
  * const pp = new SmoldotProvider(chainSpec);
  * const polkadotApi = new Api(pp);
  *
  * const chainSpec = readFileSync('./path/to/kusama.json');
- * const kp = new SmoldotProvider(chainSpec, databse('kusama'));
+ * const kp = new SmoldotProvider(chainSpec);
  * const kusamaApi = new Api(pp);
  * ```
  */
@@ -97,7 +96,6 @@ export class SmoldotProvider implements ProviderInterface {
   #connectionStatePingerId: ReturnType<typeof setInterval> | null;
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
-  #db: Database;
   // reference to the smoldot module so we can defer loading the wasm client
   // until connect is called
   #smoldot: smoldot.Smoldot;
@@ -109,17 +107,13 @@ export class SmoldotProvider implements ProviderInterface {
 
    /**
    * @param {string}   chainSpec  The chainSpec for the WASM client
-   * @param {Database} db         `Database` for saving chain state. Default is detected based on envionnment and 
-   *                              given a generic name.  You must use a unique names if you are connecting to multiple 
-   *                              chains. E.g. `database('polkadot')`
    * @param {any}      sm         Optional (only used for testing) defaults to the actual smoldot module
    */
   //eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
-  public constructor(chainSpec: string, db?: Database, sm?: any) {
+  public constructor(chainSpec: string, sm?: any) {
     this.#chainSpec = chainSpec;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.#smoldot = sm || smoldot;
-    this.#db = db || database();
     this.#connectionStatePingerId = null;
   }
 
@@ -267,17 +261,10 @@ export class SmoldotProvider implements ProviderInterface {
     assert(!this.#client && !this.#isConnected, 'Client is already connected');
     try {
       this.#client = await this.#smoldot.start({
-        database_content: this.#db.load(),
         chain_spec: this.#chainSpec,
         max_log_level: 3, /* no debug/trace messages */
         json_rpc_callback: (response: string) => {
             this.#handleRpcReponse(response);
-        },
-        database_save_callback: (database_content: string) => { 
-          l.debug('saving database', database_content);
-          if (this.#db) {
-            this.#db.save(database_content);
-          }
         }
       })
       this.#connectionStatePingerId = setInterval(
