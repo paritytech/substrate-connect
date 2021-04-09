@@ -28,7 +28,7 @@ jobs:
     - run: yarn lint
     - run: yarn build
     # - run: yarn test
-    # - run: yarn deploy
+    - run: yarn deploy
     # - uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.3
     #   id: ipfs-upload
     #   with:
