@@ -3,6 +3,5 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { SmoldotProvider } from './SmoldotProvider';
-import database from './Database';
 
-export { SmoldotProvider, database };
+export { SmoldotProvider };

@@ -39,8 +39,8 @@
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.2",
     "eslint": "^7.20.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "file-loader": "^6.2.0",
     "html-minimizer-webpack-plugin": "^2.1.0",
     "jest-styled-components": "^7.0.3",
@@ -62,12 +62,17 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hot-loader": "^4.13.0",
+    "smoldot": "^0.1.21",
     "styled-components": "^5.2.1"
   },
   "eslintConfig": {
     "root": true,
     "rules": {
-      "@typescript-eslint/restrict-template-expressions": "off"
+      "@typescript-eslint/restrict-template-expressions": 0,
+      "react/prop-types": 0,
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+      "@typescript-eslint/no-var-requires": 0
     },
     "parser": "@typescript-eslint/parser",
     "settings": {
@@ -84,12 +89,6 @@
         "./tsconfig.json"
       ],
       "createDefaultProgram": true
-    },
-    "rules": {
-      "react/prop-types": 0,
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
-      "@typescript-eslint/no-var-requires": 0
     },
     "extends": [
       "eslint:recommended",
