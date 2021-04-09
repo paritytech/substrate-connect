@@ -23,6 +23,13 @@ window.onload = () => {
         kusamaUI.innerText = lastHeader?.number.toString();
       });
 
+      const polkadot = await detect.connect('polkadot');
+      const polkadotUI = document.getElementById('polkadot') as HTMLElement;
+      const polkadotHead = await polkadot.rpc.chain.getHeader();
+      polkadotUI.innerText = polkadotHead?.number.toString();
+      await polkadot.rpc.chain.subscribeNewHeads((lastHeader) => {
+        polkadotUI.innerText = lastHeader?.number.toString();
+      });
     } catch (error) {
         console.error(error);
     }
