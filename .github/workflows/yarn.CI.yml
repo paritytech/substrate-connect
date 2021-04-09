@@ -33,7 +33,7 @@ jobs:
       #   - master
     - uses: actions/checkout@v2
       with: 
-        repository: 'gh-pages'
+        ref: 'gh-pages'
     - uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.3
       id: ipfs-upload
       with:
