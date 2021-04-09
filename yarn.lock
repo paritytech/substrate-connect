@@ -2830,18 +2830,6 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
   integrity sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
 
-"@substrate/connect@latest":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@substrate/connect/-/connect-0.0.4.tgz#d683c7fbbf91916091076457e4bc54248ddebf9f"
-  integrity sha512-BagoNPBohS2BLLo++QcAptuF7v3iZdRfaF2nXVOcsRQPhxTKPF+fBtV3VAsrKLMYIxjClW5+M3oiLWhpqm+jAw==
-  dependencies:
-    "@polkadot/rpc-provider" "^3.7.3"
-    browserify-fs "^1.0.0"
-    eventemitter3 "^4.0.7"
-    file-entry-cache "^6.0.1"
-    mkdirp "^1.0.4"
-    smoldot latest
-
 "@substrate/smoldot-test-utils@file:packages/smoldot-test-utils":
   version "0.1.0"
   dependencies:
