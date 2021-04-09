@@ -28,14 +28,14 @@ jobs:
     - run: yarn lint
     - run: yarn build
     # - run: yarn test
-    - run: yarn deploy
-    - uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.3
-      id: ipfs-upload
-      with:
-        pin-name: 'substrate-connect'
-        path: './docs'
-        pinata-api-key: ${{ secrets.PINATA_KEY }}
-        pinata-secret-api-key: ${{ secrets.PINATA_SECRET }}
-        remove-old: true
-    - run: |
-        echo "Uploaded hash: ${{ steps.ipfs-upload.outputs.hash }}"
+    # - run: yarn deploy
+    # - uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.3
+    #   id: ipfs-upload
+    #   with:
+    #     pin-name: 'substrate-connect'
+    #     path: './docs'
+    #     pinata-api-key: ${{ secrets.PINATA_KEY }}
+    #     pinata-secret-api-key: ${{ secrets.PINATA_SECRET }}
+    #     remove-old: true
+    # - run: |
+    #     echo "Uploaded hash: ${{ steps.ipfs-upload.outputs.hash }}"
