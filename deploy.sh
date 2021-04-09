@@ -21,6 +21,7 @@ initDirs() {
   rm -rf ./$directory/*
   mkdir -p ./$directory/burnr
   mkdir -p ./$directory/smoldot-browser-demo
+  mkdir -p ./$directory/multiple-network-demo
 }
 
 landingPage() {
@@ -30,12 +31,12 @@ landingPage() {
 deployGhPages() {
   echo "Init demo for github pages process..."
   initDirs
-  ls -ltr ./projects/burnr/dist/*
   echo "Place burnr wallet demo's files."
   cp -r ./projects/burnr/dist/* ./$directory/burnr/.
   echo "Place Smoldot browser demo's files."
-  ls -ltr ./projects/smoldot-browser-demo/dist/*
   cp -r ./projects/smoldot-browser-demo/dist/* ./$directory/smoldot-browser-demo/.
+  echo "Place Multiple network demo's files."
+  cp -r ./projects/multiple-network-demo/dist/* ./$directory/multiple-network-demo/.
   echo "Place landing page's files."
   landingPage
  }
