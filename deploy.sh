@@ -51,8 +51,6 @@ deployGhPages #build_command
 
 echo -e "\033[0;32mDeploying $branch branch...\033[0m"
 cd $directory &&
-  git config --global user.email "wirednkod@gmail.com" &&
-  git config --global user.name "Nikos Kontakis" &&
   git add --all &&
   git commit -m "Deploy updates" &&
   git push origin $branch
