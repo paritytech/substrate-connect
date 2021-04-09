@@ -33,7 +33,7 @@ jobs:
       id: ipfs-upload
       with:
         pin-name: 'substrate-connect'
-        path: './docs'
+        path: './_site'
         pinata-api-key: ${{ secrets.PINATA_KEY }}
         pinata-secret-api-key: ${{ secrets.PINATA_SECRET }}
         remove-old: true
