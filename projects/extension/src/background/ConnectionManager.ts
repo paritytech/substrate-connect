@@ -72,18 +72,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     return this.#smoldots.find(s => s.name === name) !== undefined;
   }
 
-  #saveDatabase = (name: string, content: string): void => {
-    // not really bytws but im just using this to make the linter happy!
-    console.log(`Saving ${content.length} bytes of JSON for ${name} client`);
-    // TODO: save database in extension local storage
-  }
-
-  #loadDatabase = (name: string): string => {
-    console.log(`Loading ${name} client database`);
-    // TODO: load database from extension local storage
-    return '';
-  }
-
   sendRpcMessageTo(name: string, message: JsonRpcRequest): number {
     const sm = this.#smoldots.find(s => s.name === name);
     if (!sm) {
@@ -123,7 +111,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const sc = await client.start({
-        database_content: this.#loadDatabase(name),
         chain_spec: chainSpec,
         max_log_level: 3,
         json_rpc_callback: (message: string) => {
