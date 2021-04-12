@@ -128,3 +128,9 @@ yarn workspace @substrate/burnr add jest
 ```
 
 Also see https://classic.yarnpkg.com/en/docs/cli/workspace/
+
+### GH Pages Links
+This is a test for GH-Pages:
+[Burnr](https://paritytech.github.io/substrate-connect/burnr) and
+[Smoldot Browser Demo](https://paritytech.github.io/substrate-connect/smoldot-browser-demo) and
+[Multiple Network Demo](https://paritytech.github.io/substrate-connect/multiple-network-demo)

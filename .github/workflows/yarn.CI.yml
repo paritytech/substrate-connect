@@ -19,7 +19,7 @@ jobs:
         node-version: [14.x, 15.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v1
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -28,4 +28,21 @@ jobs:
     - run: yarn lint
     - run: yarn build
     # - run: yarn test
-    
+    - run: yarn deploy
+      # only:
+      #   - master
+    - uses: actions/checkout@v2
+      with: 
+        ref: 'gh-pages'
+    - uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.3
+      id: ipfs-upload
+      with:
+        pin-name: 'substrate-connect'
+        path: '.'
+        pinata-api-key: ${{ secrets.PINATA_KEY }}
+        pinata-secret-api-key: ${{ secrets.PINATA_SECRET }}
+        remove-old: true
+      # only:
+      #   - master
+    - run: |
+        echo "Uploaded hash: ${{ steps.ipfs-upload.outputs.hash }}"
