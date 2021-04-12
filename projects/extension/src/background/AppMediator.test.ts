@@ -5,10 +5,11 @@ import { JsonRpcResponse } from './types';
 describe('AppMediator setup', () => {
 
   it('initialises correctly', () => {
-    const port = new MockPort('test');
+    const port = new MockPort('test-app::westend');
     const manager = new MockConnectionManager(true);
-    const am = new AppMediator('test', port,manager);
-    expect(am.name).toBe('test');
+    const am = new AppMediator(port, manager);
+    expect(am.name).toBe('test-app::westend');
+    expect(am.appName).toBe('test-app');
     expect(am.url).toBe(port.sender.url);
     expect(am.tabId).toBe(port.sender.tab.id);
   });
@@ -26,9 +27,9 @@ function associateWithNetwork(am: AppMediator, port: MockPort, network: string) 
 describe('AppMediator - protocol with content script', () => {
 
   it('becomes ready after associating with a client and can send messages', () => {
-    const port = new MockPort('test');
+    const port = new MockPort('test-app::westend');
     const manager = new MockConnectionManager(true);
-    const am = new AppMediator('test', port,manager);
+    const am = new AppMediator(port, manager);
 
     associateWithNetwork(am, port, 'westend');
 
@@ -37,9 +38,9 @@ describe('AppMediator - protocol with content script', () => {
   });
 
   it('emits error when manager does not have client for the network', () => {
-    const port = new MockPort('test');
+    const port = new MockPort('test-app::westend');
     const manager = new MockConnectionManager(false);
-    new AppMediator('test', port,manager);
+    new AppMediator(port, manager);
     const network = 'westend';
 
     port.triggerMessage({ type: 'associate', payload: network });
@@ -51,9 +52,9 @@ describe('AppMediator - protocol with content script', () => {
   });
 
   it('emits error when recieves RPC message before associated', () => {
-    const port = new MockPort('test');
+    const port = new MockPort('test-app::westend');
     const manager = new MockConnectionManager(false);
-    const am = new AppMediator('test', port, manager);
+    const am = new AppMediator(port, manager);
 
     port.triggerMessage({ type: 'rpc', payload: '' });
     expect(port.postMessage).toBeCalledTimes(1);
@@ -69,9 +70,9 @@ describe('AppMediator - protocol with content script', () => {
 describe('AppMediator regular message processing', () => {
 
   it('does nothing when it has sent no requests', () => {
-    const port = new MockPort('test');
+    const port = new MockPort('test-app::polkadot');
     const manager = new MockConnectionManager(true);
-    const am = new AppMediator('test', port, manager);
+    const am = new AppMediator(port, manager);
 
     associateWithNetwork(am, port, 'polkadot');
 
@@ -81,9 +82,9 @@ describe('AppMediator regular message processing', () => {
   });
 
   it('remaps the id to the apps id', () => {
-    const port = new MockPort('test');
+    const port = new MockPort('test-app::kusama');
     const manager = new MockConnectionManager(true);
-    const am = new AppMediator('test', port, manager);
+    const am = new AppMediator(port, manager);
 
     associateWithNetwork(am, port, 'kusama');
 
@@ -146,9 +147,9 @@ function setupAppMediatorWithSubscription(am: AppMediator, port: MockPort, appID
 describe('Appmediator subscription message processing', () => {
   
   it('tracks and forwards subscriptions', () => {
-    const port = new MockPort('test');
+    const port = new MockPort('test-app::westend');
     const manager = new MockConnectionManager(true);
-    const am = new AppMediator('test', port, manager);
+    const am = new AppMediator(port, manager);
 
     associateWithNetwork(am, port, 'westend');
 
@@ -180,9 +181,9 @@ describe('Appmediator subscription message processing', () => {
   });
 
   it('unsubscribes from all subs on disconnect', () => {
-    const port = new MockPort('test');
+    const port = new MockPort('test-app::westend');
     const manager = new MockConnectionManager(true);
-    const am = new AppMediator('test', port, manager);
+    const am = new AppMediator(port, manager);
 
     associateWithNetwork(am, port, 'westend');
 

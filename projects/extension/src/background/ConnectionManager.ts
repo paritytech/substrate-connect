@@ -42,10 +42,10 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   getState(): State {
     const state: State = { apps: [] };
     return this.#apps.reduce((result, app) => {
-      let a = result.apps.find(a => a.name);
+      let a = result.apps.find(a => a.name === app.appName);
       if (a === undefined) {
         a = {
-          name: app.name,
+          name: app.appName,
           tabId: app.tabId as number,
           networks: []
         };
@@ -56,13 +56,17 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     }, state);
   }
 
+  emitStateChanged(): void {
+    this.emit('stateChanged');
+  }
+
   addApp(port: chrome.runtime.Port): void {
     const app = this.#apps.find(s => s.name === port.name);
 
     if (app) {
-      port.postMessage({ type: 'info', payload: `App ${port.name} already exists.` })
+      port.postMessage({ type: 'info', payload: `App ${port.name} already exists.` });
     } else {
-      const newApp = new AppMediator(port.name, port, this as ConnectionManagerInterface)
+      const newApp = new AppMediator(port, this as ConnectionManagerInterface)
       this.#apps.push(newApp);
       this.emit('stateChanged');
     }

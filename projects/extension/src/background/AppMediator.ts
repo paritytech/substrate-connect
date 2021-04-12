@@ -14,6 +14,7 @@ import {
 
 export class AppMediator {
   readonly #name: string;
+  readonly #appName: string;
   readonly #port: chrome.runtime.Port;
   // REM: what to do about the fact these might be undefined?
   readonly #tabId: number | undefined;
@@ -26,11 +27,11 @@ export class AppMediator {
   highestUAppRequestId = 0;
   #notifyOnDisconnected = false;
 
-  constructor(name: string, port: chrome.runtime.Port, manager: ConnectionManagerInterface) {
+  constructor(port: chrome.runtime.Port, manager: ConnectionManagerInterface) {
     this.subscriptions = [];
     this.requests = [];
-    // Assign all necessery variables to privates
-    this.#name = name;
+    this.#appName = port.name.substr(0, port.name.indexOf('::'));
+    this.#name = port.name;
     this.#port = port;
     this.#tabId = port.sender?.tab?.id;
     this.#url = port.sender?.url;
@@ -42,6 +43,10 @@ export class AppMediator {
 
   get name(): string {
     return this.#name;
+  }
+
+  get appName(): string {
+    return this.#appName;
   }
 
   get smoldotName(): string | undefined {
