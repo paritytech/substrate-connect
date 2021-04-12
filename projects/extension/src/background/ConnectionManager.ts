@@ -5,8 +5,29 @@ import * as smoldot from 'smoldot';
 import { AppMediator } from './AppMediator';
 import { SmoldotMediator } from './SmoldotMediator';
 import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface } from './types';
+import EventEmitter from 'eventemitter3';
+import StrictEventEmitter from 'strict-event-emitter-types';
 
-export class ConnectionManager implements ConnectionManagerInterface {
+interface Events {
+  stateChanged: void;
+}
+
+interface NetworkState {
+  name: string;
+}
+
+interface AppState {
+  name: string;
+  tabId: number;
+  networks: NetworkState[];
+}
+interface State {
+  apps: AppState[];
+}
+
+type StateEmitter = StrictEventEmitter<EventEmitter, Events>;
+
+export class ConnectionManager extends (EventEmitter as { new(): StateEmitter }) implements ConnectionManagerInterface {
   readonly #smoldots: SmoldotMediator[] = [];
   readonly #apps:  AppMediator[] = [];
 
@@ -18,6 +39,23 @@ export class ConnectionManager implements ConnectionManagerInterface {
     return this.#smoldots.map(s => s.name);
   }
 
+  getState(): State {
+    const state: State = { apps: [] };
+    return this.#apps.reduce((result, app) => {
+      let a = result.apps.find(a => a.name);
+      if (a === undefined) {
+        a = {
+          name: app.name,
+          tabId: app.tabId as number,
+          networks: []
+        };
+        result.apps.push(a);
+      }
+      a.networks.push({ name: app.smoldotName as string });
+      return result;
+    }, state);
+  }
+
   addApp(port: chrome.runtime.Port): void {
     const app = this.#apps.find(s => s.name === port.name);
 
@@ -26,6 +64,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
     } else {
       const newApp = new AppMediator(port.name, port, this as ConnectionManagerInterface)
       this.#apps.push(newApp);
+      this.emit('stateChanged');
     }
   }
 
@@ -70,6 +109,7 @@ export class ConnectionManager implements ConnectionManagerInterface {
     sm.removeApp(app);
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
+    this.emit('stateChanged');
   }
 
 

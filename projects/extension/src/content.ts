@@ -1,17 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { Message } from './types';
+import { debug } from './utils/debug';
 
 const ports: Record<string, chrome.runtime.Port> = {};
 
 const CONTENT_SCRIPT_ORIGIN = 'content-script';
 const EXTENSION_PROVIDER_ORIGIN ='extension-provider';
-
-function debug(message: string, ctx: unknown) {
-  if (process.env.NODE_ENV === 'development') {
-    console.debug(message, ctx);
-  }
-}
 
 // Receive from ExtensionProvider the App "subscription"
 window.addEventListener('message', ({ data }: Message): void => {
