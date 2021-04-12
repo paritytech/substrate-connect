@@ -28,7 +28,17 @@ const App = () => {
           </Grid>
           <Grid item xs={3}>
             <div className={classes.paper}><Logo /></div>
-            <div className={classes.paper}>xs=3</div>
+            <div className={classes.paper}>
+              <ul>
+                <li>Substrate-based chain</li>
+                <li>Light Clients</li>
+                <li>Supported Networks</li>
+                <li>Getting Starter</li>
+                <li>Projects</li>
+                <li>Playground</li>
+                <li>Github Repository</li>
+              </ul>
+            </div>
           </Grid>
         </Grid>
       </Container>

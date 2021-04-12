@@ -17,7 +17,8 @@
     "projects/extension",
     "projects/smoldot-browser-demo",
     "projects/multiple-network-demo",
-    "projects/burnr"
+    "projects/burnr",
+    "projects/landing-page"
   ],
   "scripts": {
     "clean": " yarn workspaces run clean && rimraf node_modules && rimraf .parcel-cache",
