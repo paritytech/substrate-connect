@@ -9,7 +9,6 @@ import expect from 'expect';
 import { ApiPromise } from '@polkadot/api';
 import {SmoldotProvider} from '../';
 import {logger} from '@polkadot/util';
-import { FsDatabase } from '../FsDatabase';
 import westend from './westend.json';
 
 const l = logger('examples');
@@ -19,8 +18,7 @@ let provider: SmoldotProvider;
 describe('API integration tests', () => {
   beforeEach(async done => {
       const chainSpec = JSON.stringify(westend);
-      const database = new FsDatabase('test');
-      provider = new SmoldotProvider(chainSpec, database);
+      provider = new SmoldotProvider(chainSpec);
       await provider.connect();
       api = await ApiPromise.create({ provider });
       l.log('API is ready');

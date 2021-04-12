@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { ConnectionManager } from './ConnectionManager';
-import westend from '../assets/westend-wss.json';     // secure ws - test chainspec
-import kusama from '../assets/kusama-ws.json';        // Non secure ws - kusama test chainspec
-// import westend from '../assets/westend-ws.json';     // Non secure ws - westend test chainspec
-// import polkadot from '../assets/polkadot-ws.json';   // Non secure ws - polkadot test chainspec
-// import kutulu from '../assets/kutulu-ws.json';       // Non secure ws - kutulu test chainspec
+import westend from '../assets/westend.json';
+import kusama from '../assets/kusama.json';
+import polkadot from '../assets/polkadot.json';
 const manager = new ConnectionManager();
 
 export type AppMessageType = 'associate' | 'rpc';
@@ -20,14 +18,12 @@ export interface RequestRpcSend {
 }
 
 chrome.runtime.onInstalled.addListener(() => {
-  // Create connection for known chains:
-  const westendStr = JSON.stringify(westend);
-  const kusamaStr = JSON.stringify(kusama);
-  manager.addSmoldot('westend', westendStr).catch((e) => { console.error('Westend error: ', e); });
-  manager.addSmoldot('kusama', kusamaStr).catch((e) => { console.error('Kusama error: ', e); });
-  // Pending for json files
-  // manager.addSmoldot('polkadot', polkadotStr).catch((e) => { console.error(e); });
-  // manager.addSmoldot('kutulu', kutuluStr).catch((e) => { console.error(e); });
+  const westendChainSpec = JSON.stringify(westend);
+  const kusamaChainSpec = JSON.stringify(kusama);
+  const polkadotChainSpec = JSON.stringify(polkadot);
+  manager.addSmoldot('westend', westendChainSpec).catch((e) => { console.error('Error creating westend smoldot: ', e); });
+  manager.addSmoldot('kusama', kusamaChainSpec).catch((e) => { console.error('Error Creating kusama smoldot', e); });
+  manager.addSmoldot('polkadot', polkadotChainSpec).catch((e) => { console.error('Error Creating polkadot smoldot', e); });
 });
 
 chrome.runtime.onConnect.addListener((port) => {

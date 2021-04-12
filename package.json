@@ -16,6 +16,7 @@
     "packages/connect",
     "projects/extension",
     "projects/smoldot-browser-demo",
+    "projects/multiple-network-demo",
     "projects/burnr"
   ],
   "scripts": {
