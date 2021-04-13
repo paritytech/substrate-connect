@@ -20,7 +20,7 @@ const Logo: React.FunctionComponent = () => {
 	const classes = useStyles();
 
 	return (
-		<Typography variant='h5' className={classes.root}>
+		<Typography variant='h3' className={classes.root}>
 			substrate
 			<span className='green'>_</span><br />
 			<span className='lighter'>connect</span>
