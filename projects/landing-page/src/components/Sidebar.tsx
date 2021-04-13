@@ -4,8 +4,7 @@ import { theme } from '.';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: '345px',
-    background: 'yellow',
+    width: '345px !important',
     paddingLeft: theme.spacing(10),
   },
 }));
@@ -15,7 +14,7 @@ const Sidebar: React.FunctionComponent = ({children}) => {
   return (
     <>
       <div className={classes.root}>
-          {children}
+        {children}
       </div>
     </>
   )

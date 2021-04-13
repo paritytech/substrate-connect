@@ -1,13 +1,16 @@
 import React from 'react';
 import { Container, CssBaseline, Paper, Grid, ThemeProvider, createMuiTheme } from '@material-ui/core';
-import { theme, Loader, Logo, Sidebar } from './components';
+import { theme, Loader, Logo, Sidebar, UIContainer } from './components';
 
 const App: React.FunctionComponent = () => {
   return (
     <ThemeProvider theme={createMuiTheme(theme)}>
+      <CssBaseline />
       <Loader />
-      <div className='flex'>
-        <div>hello</div>
+      <UIContainer>
+        <div>
+          content
+        </div>
         <Sidebar>
           <Logo />
           <ul>
@@ -20,18 +23,7 @@ const App: React.FunctionComponent = () => {
             <li>Github Repository</li>
           </ul>
         </Sidebar>
-      </div>
-      
-      <div>
-        <CssBaseline />
-        <Container fixed>
-          <Grid container spacing={3}>
-            <Grid item xs={9}>
-              <Paper>xs=9</Paper>
-            </Grid>
-          </Grid>
-        </Container>
-      </div>
+      </UIContainer>
     </ThemeProvider>
   );
 }
