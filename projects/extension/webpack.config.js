@@ -1,20 +1,20 @@
-const path = require("path");
+import path from "path";
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
-const CopyPlugin  = require("copy-webpack-plugin");
-const webpack = require('webpack');
-const pkgJson = require('./package.json');
+import HtmlMinimizerPlugin from "html-minimizer-webpack-plugin";
+import CopyPlugin from "copy-webpack-plugin";
+import webpack from 'webpack';
+
 const config = {
   devtool: "inline-source-map",
   entry: {
-    popup: path.join(__dirname, "src/popup.tsx"),
-    options: path.join(__dirname, "src/options.tsx"),
-    content: path.join(__dirname, "src/content.ts"),
-    page: path.join(__dirname, "src/page.ts"),
-    background: path.join(__dirname, "src/background/index.ts"),
+    popup: path.resolve("src/popup.tsx"),
+    options: path.resolve("src/options.tsx"),
+    content: path.resolve("src/content.ts"),
+    page: path.resolve("src/page.ts"),
+    background: path.resolve("src/background/index.ts")
   },
   output: {
-    path: path.join(__dirname, "dist"),
+    path: path.resolve("dist"),
     filename: "[name].js"
   },
   module: {
@@ -83,8 +83,8 @@ const config = {
       patterns: [{ from: "public", to: "." }],
     }),
     new webpack.EnvironmentPlugin({
-      PKG_NAME: pkgJson.name,
-      PKG_VERSION: pkgJson.version
+      PKG_NAME: '@substrate/extension',
+      PKG_VERSION: '0.0.1'
     })
   ],
   optimization: {
@@ -97,4 +97,4 @@ const config = {
   },
 };
 
-module.exports = config;
+export default config;
