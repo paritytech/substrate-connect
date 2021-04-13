@@ -1,11 +1,11 @@
+import {
+  AppMessage,
+  ExtensionMessage
+} from '../types';
 import { 
   JsonRpcRequest,
   JsonRpcResponse,
   JsonRpcResponseSubscription,
-} from './types';
-import { 
-  AppMessage, 
-  ExtensionMessage, 
   AppState, 
   MessageIDMapping, 
   SubscriptionMapping,

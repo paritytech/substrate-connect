@@ -1,4 +1,4 @@
-import { ExtensionMessage } from './types';
+import { ExtensionMessage } from '../types';
 import { AppMediator } from './AppMediator';
 import { MockPort, MockConnectionManager } from './mocks';
 import { JsonRpcResponse } from './types';

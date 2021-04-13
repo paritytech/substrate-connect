@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { AppMediator } from './AppMediator';
-import { AppMessage, ConnectionManagerInterface } from './types';
+import { ConnectionManagerInterface } from './types';
+import { AppMessage } from '../types';
 
 export class MockPort implements chrome.runtime.Port {
   sender: any;

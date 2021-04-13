@@ -26,17 +26,31 @@ export interface Network extends ChainSpec {
 export interface Parachain extends ChainSpec {
   relaychain: string;
 }
+
+// Messages that we send to the app down through the port
+export type ExtensionMessageType = 'error' | 'rpc';
+
+export interface ExtensionMessage {
+  type: ExtensionMessageType;
+  payload: string;
+}
+
+// Messages that come from the app
+export type AppMessageType = 'associate' | 'rpc';
+
+export interface AppMessage {
+  type: AppMessageType;
+  payload: string; // smoldot name / json / message_id / subscription_id
+  subscription?: boolean;
+}
+
 export interface Message {
   data: {
     appName: string;
     chainName: string;
     origin: string;
-    message: {
-      type: string,
-      payload: string,
-      subscription?: boolean
-    }
+    message: AppMessage
   }
-}  
+}
 
 export type NetworkCtx = TabInterface[];
