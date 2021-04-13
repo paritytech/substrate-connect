@@ -23,7 +23,7 @@ export default function useBalance (address: string): State {
   const  mountedRef = useIsMountedRef();
   useEffect((): () => void => {
     let unsubscribe: null | (() => void) = null;
-    api.query.system
+    address && api.query.system
       .account(address, ({ data }): void => {
         mountedRef.current && setState([
           formatBalance(data.free, { decimals: api.registry.chainDecimals[0], forceUnit: '-', withSi: false }),

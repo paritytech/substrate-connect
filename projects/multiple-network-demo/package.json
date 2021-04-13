@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
     "copy-assets": "cp -R ./src/assets ./dist",
-    "build": "yarn clean && yarn copy-assets && yarn typecheck && parcel build index.html --detailed-report",
+    "build": "yarn clean && yarn copy-assets && yarn typecheck && parcel build index.html --public-url ./ --detailed-report",
     "dev": "yarn clean && yarn copy-assets && concurrently \"yarn typecheck:watch\" \"parcel --no-cache index.html\"",
     "test": "echo \"Warning: Jest has been setup but no tests exist.\"",
     "test:watch": "jest --watch",
