@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { AppMediator } from './AppMediator';
 import { AppMessage, ConnectionManagerInterface } from './types';
 

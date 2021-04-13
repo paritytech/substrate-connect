@@ -1,3 +1,4 @@
+import { ExtensionMessage } from './types';
 import { AppMediator } from './AppMediator';
 import { MockPort, MockConnectionManager } from './mocks';
 import { JsonRpcResponse } from './types';
@@ -102,7 +103,7 @@ describe('AppMediator regular message processing', () => {
     // should have removed request mapping
     expect(am.cloneRequests().length).toBe(0);
     // should have posted the message back to the UApp with the mapped ID
-    expect(port.postMessage.mock.calls[0][0].payload)
+    expect((port.postMessage.mock.calls[0][0] as ExtensionMessage).payload)
       .toEqual('{"id":1,"jsonrpc":"2.0","result":{}}');
   });
 });
@@ -140,7 +141,7 @@ function setupAppMediatorWithSubscription(am: AppMediator, port: MockPort, appID
 
   // should send the acknowledgement of the subscription request back to the UApp
   const msgCalls = port.postMessage.mock.calls;
-  const lastMsg = msgCalls[msgCalls.length - 1][0];
+  const lastMsg = msgCalls[msgCalls.length - 1][0] as ExtensionMessage;
   expect(lastMsg.payload).toEqual(`{"id":${appIDForRequest},"jsonrpc":"2.0","result":${subID}}`);
 }
 
@@ -165,8 +166,8 @@ describe('Appmediator subscription message processing', () => {
     };
     expect(am.processSmoldotMessage(subMessage)).toBe(true);
 
-    // should send subcription message back to the UApp unchanged
-    expect(port.postMessage.mock.calls[1][0].payload)
+    // should send subcription message back to the UApp unchanged 
+    expect((port.postMessage.mock.calls[1][0] as ExtensionMessage).payload)
       .toEqual(JSON.stringify(subMessage));
 
     // Fake receiving an RPC message with a subscription ID that is not one of

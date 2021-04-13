@@ -105,16 +105,15 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   }
 
 
-  async addSmoldot(name: string,  chainSpec: string, testSmoldot?: smoldot.Smoldot): Promise<void> {
-    const client = testSmoldot || smoldot;
+  async addSmoldot(name: string,  chainSpec: string): Promise<void> {
     if (this.#smoldots.find(s => s.name === name)) {
       throw new Error(`Extension already has a smoldot client named ${name}`);
     }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      const sc = await client.start({
+      // TODO(rem): fix the typescript definition in smoldot
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+      const sc = await (smoldot as any).start({
         chain_spec: chainSpec,
         max_log_level: 3,
         json_rpc_callback: (message: string) => {
@@ -131,7 +130,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
 
       this.#smoldots.push(sm);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return sc;
     } catch (err) {
       console.error('Error starting smoldot', err);
     }

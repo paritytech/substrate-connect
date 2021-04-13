@@ -1,15 +1,16 @@
 {
-    "presets": [
-        [
-            "@babel/preset-env",
-            {
-                "modules": false
-            }
-        ],
-        "@babel/preset-react"
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "modules": false
+      }
     ],
-    "plugins": [
-        "react-hot-loader/babel",
-        "@babel/plugin-proposal-private-methods"
-    ]
+    "@babel/preset-react"
+  ],
+  "plugins": [
+    "babel-plugin-styled-components",
+    "react-hot-loader/babel",
+    "@babel/plugin-proposal-private-methods"
+  ]
 }
