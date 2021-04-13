@@ -1,33 +1,52 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Grid, Paper, Divider, IconButton, Box, makeStyles, Theme } from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import { Grid, Paper, Divider, IconButton, Box, makeStyles, CircularProgress } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import { AccountContext, BalanceVisibleContext } from './utils/contexts';
+import { BalanceVisibleContext } from './utils/contexts';
+import { LocalStorageAccountCtx } from './utils/types';
 import { NavTabs, AccountCard, BalanceValue, Bg, AccountMenu } from './components';
 import { useBalance, useLocalStorage } from './hooks';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(theme => ({
 		paperAccount: {
 			borderTopLeftRadius: theme.spacing(0.5),
 		},
+    loadingPaper: {
+      height: '90vh',
+      textAlign: 'center',
+    },
+    loader: {
+      height: '50px',
+      width: '50px',
+      marginTop: '10vh',
+    },
 	})
 );
 
-function Home ():  React.ReactElement {
+interface Props {
+	account?: LocalStorageAccountCtx;
+  loader?: boolean;
+}
+
+const Home: React.FunctionComponent<Props> =  ({ account, loader }: Props) => {
 	const [localBalance, setLocalBalance] = useLocalStorage('balanceVisibility');
 	const [balanceVisibility, setBalanceVisibility] = useState<boolean>(localBalance !== 'false');
-	const { account } = useContext(AccountContext);
+	// const { account } = props || useContext(AccountContext);
 	const classes = useStyles();
 	// TODO: Need to identify if this will be eventually used or not
 	// Im not sure if the useUserInfo will/should be used
 	// const userInfo = useUserInfo(account.userAddress);
-	const balanceArr = useBalance(account.userAddress);
+	const balanceArr = useBalance(account?.userAddress || '');
 	const balance = balanceArr[1];
 	useEffect((): void => {
 		setLocalBalance(balanceVisibility ? 'true' : 'false')
 	}, [balanceVisibility, setLocalBalance])
 
-	return (
+	return loader ? (
+    <Paper className={classes.loadingPaper}>
+      <CircularProgress className={classes.loader} />
+    </Paper>)
+    : (
 		<BalanceVisibleContext.Provider value={{ balanceVisibility, setBalanceVisibility }}>
 			<Bg />
 			<Divider/>
