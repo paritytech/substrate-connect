@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import type { ExtensionProviderMessage } from './types';
-import { debug } from './utils/debug';
+import type { ExtensionProviderMessage } from '../types';
+import { debug } from '../utils/debug';
 
 const ports: Record<string, chrome.runtime.Port> = {};
 
