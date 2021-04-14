@@ -82,6 +82,14 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     this.#port.postMessage(error);
   }
 
+  #checkForDisconnected = (): void => {
+      if (this.requests.length === 0) {
+        // All our unsubscription messages have been replied to
+        this.#state = 'disconnected';
+        this.#manager.unregisterApp(this, this.#smoldotName as string);
+      }
+  }
+
   processSmoldotMessage(message: JsonRpcResponse): boolean {
     if (this.#state === 'disconnected') {
       // Shouldn't happen - we remove the AppMediator from the smoldot's apps
@@ -97,12 +105,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
         // We don't forward the RPC message to the UApp - it's not there any more
         const idx = this.requests.indexOf(request);
         this.requests.splice(idx, 1);
-        if (this.requests.length === 0) {
-          // All our unsubscription messages have been replied to
-          this.#state = 'disconnected';
-          this.#manager.unregisterApp(this, this.#smoldotName as string);
-        }
-
+        this.#checkForDisconnected();
         return true;
       }
     }
@@ -246,5 +249,6 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     this.subscriptions.forEach(this.#sendUnsubscribe);
     // remove all the subscriptions
     this.subscriptions.splice(0, this.subscriptions.length);
+    this.#checkForDisconnected();
   }
 }

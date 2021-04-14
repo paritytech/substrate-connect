@@ -8,7 +8,7 @@ const  connectApp = (manager: ConnectionManager, tabId: number, name: string, ne
   const port = new MockPort(`${name}::${network}`);
   port.setTabId(tabId);
   manager.addApp(port);
-  port.triggerMessage({ type: 'associate', payload: 'westend' });
+  port.triggerMessage({ type: 'associate', payload: network });
   return port;
 }
 
@@ -67,6 +67,21 @@ test('adding and removing apps changes state', async () => {
       }
     ]
   });
+
+  // disconnect second app
+  handler.mockClear();
+  port3.triggerDisconnect();
+  expect(handler).toHaveBeenCalled();
+  expect(manager.getState()).toEqual({
+    apps: [
+      { 
+        name: 'test-app',
+        tabId: 42,
+        networks: [ { name: 'westend' }, { name: 'kusama' } ]
+      }
+    ]
+  });
+
 
   manager.shutdown();
 });
