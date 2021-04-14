@@ -3,8 +3,6 @@
 import type { ExtensionProviderMessage } from '../types';
 import { debug } from '../utils/debug';
 
-const ports: Record<string, chrome.runtime.Port> = {};
-
 const CONTENT_SCRIPT_ORIGIN = 'content-script';
 const EXTENSION_PROVIDER_ORIGIN ='extension-provider';
 
@@ -21,6 +19,12 @@ const EXTENSION_PROVIDER_ORIGIN ='extension-provider';
  * to establish the connection with the background itself.
  */
 export class ExtensionMessageRouter {
+  #ports: Record<string, chrome.runtime.Port> = {};
+
+  get connections(): string[] {
+    return Object.keys(this.#ports);
+  }
+
   listen(): void {
     // Receive from ExtensionProvider the App "subscription"
     window.addEventListener('message', this.#handleMessage);
@@ -35,10 +39,10 @@ export class ExtensionMessageRouter {
     let port: chrome.runtime.Port;
 
     if (data.message === 'disconnect') {
-      port = ports[data.chainName];
+      port = this.#ports[data.chainName];
       port.disconnect();
       debug(`DISCONNECTED ${data.chainName} PORT`, port);
-      delete ports[data.chainName];
+      delete this.#ports[data.chainName];
       return;
     }
 
@@ -56,7 +60,7 @@ export class ExtensionMessageRouter {
         }, '*');
       });
 
-      ports[data.chainName] = port;
+      this.#ports[data.chainName] = port;
       debug(`SENDING ASSOCIATE MESSAGE TO ${data.chainName} PORT`, data.message);
       // TODO(rem): do we actually need to send the origin to the background
       // can we not just forward the message?
@@ -64,7 +68,7 @@ export class ExtensionMessageRouter {
       return;
     }
 
-    port = ports[data.chainName];
+    port = this.#ports[data.chainName];
     if (!port) {
       // this is probably someone trying to abuse the extension.
       console.warn(`App requested to send message to ${data.chainName} - no port found`);

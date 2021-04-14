@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { ExtensionMessage } from '../types';
 import { AppMediator } from './AppMediator';
 import { MockPort, MockConnectionManager } from '../mocks';
