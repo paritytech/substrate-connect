@@ -66,9 +66,7 @@ export class ExtensionMessageRouter {
 
       this.#ports[data.chainName] = port;
       debug(`SENDING ASSOCIATE MESSAGE TO ${data.chainName} PORT`, data.message);
-      // TODO(rem): do we actually need to send the origin to the background
-      // can we not just forward the message?
-      port.postMessage({ ...data.message, origin: EXTENSION_PROVIDER_ORIGIN});
+      port.postMessage(data.message);
       return;
     }
 
@@ -79,8 +77,8 @@ export class ExtensionMessageRouter {
       return;
     }
 
-    debug(`SENDING MESSAGE TO ${data.chainName} PORT`, data.message);
-    port.postMessage({ ...data.message, origin: EXTENSION_PROVIDER_ORIGIN});
+    debug(`SENDING RPC MESSAGE TO ${data.chainName} PORT`, data.message);
+    port.postMessage(data.message);
   }
 
 }

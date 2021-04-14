@@ -81,3 +81,40 @@ test('disconnect disconnects established connection', done => {
     }, 10);
 });
 
+test('forwards rpc message from extension provider', done => {
+  const port = new MockPort('test-app::westend');
+  chrome.runtime.connect.mockImplementation(_ => port);
+  // connect
+  window.postMessage({ 
+    appName: 'test-app', 
+    chainName: 'westend', 
+    message: {
+      type: 'associate',
+      payload: 'westend'
+    },
+    origin: 'extension-provider'
+  }, '*');
+
+  // rpc
+  const rpcMessage = { 
+    appName: 'test-app', 
+    chainName: 'westend', 
+    message: {
+      type: 'rpc',
+      payload: '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}' 
+    },
+    origin: 'extension-provider'
+  };
+
+  window.postMessage(rpcMessage, '*');
+
+  // window.postMessage is async we have to yield to the event loop for it
+  // to reach the router
+  setTimeout(() => {
+    expect(chrome.runtime.connect).toHaveBeenCalledTimes(1);
+    expect(port.disconnect).not.toHaveBeenCalled();
+    expect(port.postMessage).toHaveBeenCalledWith(rpcMessage.message);
+    done();
+  }, 10);
+});
+
