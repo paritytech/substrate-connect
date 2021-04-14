@@ -129,7 +129,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
 
   shutdown(): void {
     for (const sm of this.#smoldots) {
-      sm.smoldotClient.terminate();
+      sm.shutdown();
     }
   }
 }
