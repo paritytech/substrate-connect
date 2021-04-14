@@ -20,7 +20,7 @@
     "projects/burnr"
   ],
   "scripts": {
-    "clean": " yarn workspaces run clean && rimraf node_modules && rimraf .parcel-cache",
+    "clean": " yarn workspaces run clean && rm -rf .parcel-cache && rm -rf node_modules",
     "lint": "yarn workspaces run lint",
     "build": "yarn workspaces run build",
     "test": "yarn workspaces run test",
@@ -35,8 +35,7 @@
   },
   "devDependencies": {
     "copyfiles": "^2.3.0",
-    "husky": "^5.0.8",
-    "rimraf": "^3.0.2"
+    "husky": "^5.0.8"
   },
   "dependencies": {
     "@wasm-tool/wasm-pack-plugin": "^1.3.1"
