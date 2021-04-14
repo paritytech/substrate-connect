@@ -191,7 +191,14 @@ export class ExtensionProvider implements ProviderInterface {
    */
   // eslint-disable-next-line @typescript-eslint/require-await
   public async disconnect(): Promise<void> {
-    console.log('this not yet implemented');
+    window.postMessage({
+      appName: this.#appName,
+      chainName: this.#chainName,
+      message: 'disconnect',
+      origin: EXTENSION_PROVIDER_ORIGIN
+    }, '*');
+    this.#isConnected = false;
+    this.emit('disconnected');
   }
 
   /**

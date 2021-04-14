@@ -32,3 +32,23 @@ test('connect sends init message and emits connected', async () => {
   expect(ep.isConnected).toBe(true);
   expect(emitted).toHaveBeenCalledTimes(1);
 });
+
+test('disconnect sends disconnect message and emits disconnected', async () => {
+  const ep = new ExtensionProvider('test', 'test-chain');
+  const emitted = jest.fn();
+  await ep.connect();
+
+  ep.on('disconnected', emitted);
+  await ep.disconnect();
+
+  const expectedMessage = {
+    appName: 'test',
+    chainName: 'test-chain',
+    message: 'disconnect',
+    origin: 'extension-provider'
+  };
+  expect(window.postMessage).toHaveBeenCalledTimes(2);
+  expect(window.postMessage).toHaveBeenNthCalledWith(2, expectedMessage, '*');
+  expect(ep.isConnected).toBe(false);
+  expect(emitted).toHaveBeenCalledTimes(1);
+});
