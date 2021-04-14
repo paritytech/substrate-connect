@@ -34,43 +34,28 @@ export class ExtensionMessageRouter {
 
   }
 
-  #handleMessage = ({ data }: ExtensionProviderMessage): void => {
-    if (!data.origin || data.origin !== EXTENSION_PROVIDER_ORIGIN) {
-      return;
-    }
-    debug(`RECEIEVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data);
+  #establishNewConnection = (message: ExtensionProviderMessage): void => {
+     const data = message.data;
+    const port = chrome.runtime.connect({ name: `${data.appName}::${data.chainName}` });
+    debug(`CONNECTED ${data.chainName} PORT`, port);
+    // forward any messages: extension -> page
+    const chainName = data.chainName;
+    port.onMessage.addListener((data): void => {
+      debug(`RECIEVED MESSGE FROM ${chainName} PORT`, data);
+      window.postMessage({ 
+        message: data.payload, 
+        origin: CONTENT_SCRIPT_ORIGIN 
+      }, '*');
+    });
 
-    let port: chrome.runtime.Port;
+    this.#ports[data.chainName] = port;
+    debug(`SENDING ASSOCIATE MESSAGE TO ${data.chainName} PORT`, data.message);
+    port.postMessage(data.message);
+  }
 
-    if (data.message === 'disconnect') {
-      port = this.#ports[data.chainName];
-      port.disconnect();
-      debug(`DISCONNECTED ${data.chainName} PORT`, port);
-      delete this.#ports[data.chainName];
-      return;
-    }
-
-    if (data.message.type === 'associate') {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      port = chrome.runtime.connect({ name: `${data.appName}::${data.chainName}` });
-      debug(`CONNECTED ${data.chainName} PORT`, port);
-      // forward any messages: extension -> page
-      const chainName = data.chainName;
-      port.onMessage.addListener((data): void => {
-        debug(`RECIEVED MESSGE FROM ${chainName} PORT`, data);
-        window.postMessage({ 
-          message: data.payload, 
-          origin: CONTENT_SCRIPT_ORIGIN 
-        }, '*');
-      });
-
-      this.#ports[data.chainName] = port;
-      debug(`SENDING ASSOCIATE MESSAGE TO ${data.chainName} PORT`, data.message);
-      port.postMessage(data.message);
-      return;
-    }
-
-    port = this.#ports[data.chainName];
+  #forwardRpcMessage = (message: ExtensionProviderMessage): void => {
+    const data = message.data;
+    const port = this.#ports[data.chainName];
     if (!port) {
       // this is probably someone trying to abuse the extension.
       console.warn(`App requested to send message to ${data.chainName} - no port found`);
@@ -81,5 +66,52 @@ export class ExtensionMessageRouter {
     port.postMessage(data.message);
   }
 
+  #disconnectPort = (message: ExtensionProviderMessage): void => {
+    const data = message.data;
+    const port = this.#ports[data.chainName];
+
+    if (!port) {
+      // this is probably someone trying to abuse the extension.
+      console.warn(`App requested to disconnect ${data.chainName} - no port found`);
+      return;
+    }
+
+    port.disconnect();
+    debug(`DISCONNECTED ${data.chainName} PORT`, port);
+    delete this.#ports[data.chainName];
+    return;
+  }
+
+  #handleMessage = (message: ExtensionProviderMessage): void => {
+    const data = message.data;
+    if (!data.origin || data.origin !== EXTENSION_PROVIDER_ORIGIN) {
+      return;
+    }
+
+    debug(`RECEIEVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data);
+
+    if (data.message === 'disconnect') {
+      return this.#disconnectPort(message);
+    }
+
+    if (!data.message.type) {
+      // probably someone abusing the extension - typescript won't allow this
+      // to be reached in our codebase
+      console.warn('Malformed message received', data);
+      return;
+    }
+
+    if (data.message.type === 'associate') {
+      return this.#establishNewConnection(message);
+    }
+
+    if (data.message.type === 'rpc') {
+      return this.#forwardRpcMessage(message);
+    }
+
+    // probably someone abusing the extension - typescript won't allow this
+    // to be reached in our codebase
+    console.warn('Unrecognised message type', data);
+  }
 }
 
