@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import type { ExtensionProviderMessage } from '../types';
-import { debug } from '../utils/debug';
 import { ExtensionMessageRouter } from './ExtensionMessageRouter';
 
 const router = new ExtensionMessageRouter();
