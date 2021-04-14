@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { jest } from '@jest/globals';
 import { ConnectionManager } from './ConnectionManager';
 import westend from '../assets/westend.json';

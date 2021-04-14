@@ -26,8 +26,12 @@ export class ExtensionMessageRouter {
   }
 
   listen(): void {
-    // Receive from ExtensionProvider the App "subscription"
     window.addEventListener('message', this.#handleMessage);
+  }
+
+  stop(): void {
+    window.removeEventListener('message', this.#handleMessage);
+
   }
 
   #handleMessage = ({ data }: ExtensionProviderMessage): void => {

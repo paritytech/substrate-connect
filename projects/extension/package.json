@@ -9,7 +9,7 @@
   "scripts": {
     "clean": "rm -rf dist",
     "pretest": "yarn clean && tsc",
-    "test": "node --experimental-vm-modules $(yarn bin)/jest --env=node --colors --coverage dist/",
+    "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --coverage dist/",
     "build": "yarn run clean && webpack --config webpack.prod.js",
     "dev": "yarn run clean && webpack --node-env development --config webpack.dev.js",
     "start": "web-ext run --source-dir ./dist -t chromium",
