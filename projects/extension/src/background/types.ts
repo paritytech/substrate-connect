@@ -1,4 +1,6 @@
 import { AppMediator } from './AppMediator';
+import EventEmitter from 'eventemitter3';
+import StrictEventEmitter from 'strict-event-emitter-types';
 
 export interface InitAppNameSpec {
   id: string,
@@ -21,6 +23,12 @@ export interface SubscriptionMapping {
   subID: number | string  | undefined;
   method: string;
 }
+
+export interface StateEvents {
+  stateChanged: void;
+}
+
+export type StateEmitter = StrictEventEmitter<EventEmitter, StateEvents>;
 
 export interface ConnectionManagerInterface {
   hasClientFor: (name: string) => boolean;

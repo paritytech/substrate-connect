@@ -14,6 +14,10 @@ export class MockPort implements chrome.runtime.Port {
     this.sender = { url: 'http://test.com/', tab: { id: 1234 } };
   }
 
+  setTabId(id: number): void {
+    this.sender.tab.id = id;
+  }
+
   triggerMessage(message: AppMessage) {
     this.#messageListeners.forEach((l: any) => {
       l(message);

@@ -6,11 +6,7 @@ import { AppMediator } from './AppMediator';
 import { SmoldotMediator } from './SmoldotMediator';
 import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
-import StrictEventEmitter from 'strict-event-emitter-types';
-
-interface Events {
-  stateChanged: void;
-}
+import { StateEmitter } from './types';
 
 interface NetworkState {
   name: string;
@@ -25,11 +21,10 @@ interface State {
   apps: AppState[];
 }
 
-type StateEmitter = StrictEventEmitter<EventEmitter, Events>;
-
 export class ConnectionManager extends (EventEmitter as { new(): StateEmitter }) implements ConnectionManagerInterface {
   readonly #smoldots: SmoldotMediator[] = [];
   readonly #apps:  AppMediator[] = [];
+  smoldotLogLevel = 3;
 
   get registeredApps(): string[] {
     return this.#apps.map(a => a.name);
@@ -56,10 +51,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     }, state);
   }
 
-  emitStateChanged(): void {
-    this.emit('stateChanged');
-  }
-
   addApp(port: chrome.runtime.Port): void {
     const app = this.#apps.find(s => s.name === port.name);
 
@@ -68,6 +59,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     } else {
       const newApp = new AppMediator(port, this as ConnectionManagerInterface)
       this.#apps.push(newApp);
+      newApp.on('stateChanged', () => this.emit('stateChanged'));
       this.emit('stateChanged');
     }
   }
@@ -115,7 +107,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
       const sc = await (smoldot as any).start({
         chain_spec: chainSpec,
-        max_log_level: 3,
+        max_log_level: this.smoldotLogLevel,
         json_rpc_callback: (message: string) => {
           const parsed = JSON.parse(message) as JsonRpcResponse;
           for (const app of sm.apps) {
@@ -132,6 +124,12 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     } catch (err) {
       console.error('Error starting smoldot', err);
+    }
+  }
+
+  shutdown(): void {
+    for (const sm of this.#smoldots) {
+      sm.smoldotClient.terminate();
     }
   }
 }

@@ -1,18 +1,20 @@
+import EventEmitter from 'eventemitter3';
 import {
   AppMessage,
   ExtensionMessage
 } from '../types';
 import { 
+  AppState, 
+  ConnectionManagerInterface,
   JsonRpcRequest,
   JsonRpcResponse,
   JsonRpcResponseSubscription,
-  AppState, 
   MessageIDMapping, 
-  SubscriptionMapping,
-  ConnectionManagerInterface
+  StateEmitter,
+  SubscriptionMapping
 } from './types';
 
-export class AppMediator {
+export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   readonly #name: string;
   readonly #appName: string;
   readonly #port: chrome.runtime.Port;
@@ -28,6 +30,7 @@ export class AppMediator {
   #notifyOnDisconnected = false;
 
   constructor(port: chrome.runtime.Port, manager: ConnectionManagerInterface) {
+    super();
     this.subscriptions = [];
     this.requests = [];
     this.#appName = port.name.substr(0, port.name.indexOf('::'));
@@ -195,6 +198,7 @@ export class AppMediator {
     this.#manager.registerApp(this, name);
     this.#smoldotName = name;
     this.#state = 'ready';
+    this.emit('stateChanged');
     return;
   }
 
