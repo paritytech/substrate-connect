@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import type { Message } from './types';
+import type { ExtensionProviderMessage } from './types';
 import { debug } from './utils/debug';
 
 const ports: Record<string, chrome.runtime.Port> = {};
@@ -9,13 +9,21 @@ const CONTENT_SCRIPT_ORIGIN = 'content-script';
 const EXTENSION_PROVIDER_ORIGIN ='extension-provider';
 
 // Receive from ExtensionProvider the App "subscription"
-window.addEventListener('message', ({ data }: Message): void => {
+window.addEventListener('message', ({ data }: ExtensionProviderMessage): void => {
   if (!data.origin || data.origin !== EXTENSION_PROVIDER_ORIGIN) {
     return;
   }
   debug(`RECEIEVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data);
 
   let port: chrome.runtime.Port;
+
+  if (data.message === 'disconnect') {
+    port = ports[data.chainName];
+    port.disconnect();
+    debug(`DISCONNECTED ${data.chainName} PORT`, port);
+    delete ports[data.chainName];
+    return;
+  }
 
   if (data.message.type === 'associate') {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
