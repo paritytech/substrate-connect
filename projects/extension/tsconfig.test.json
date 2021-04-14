@@ -1,0 +1,14 @@
+{
+    "compileOnSave": true,
+     "compilerOptions": {
+        "target": "ES2018",
+        "sourceMap": true,
+        "declaration": true,
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "noEmitOnError": true,
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "types": ["jest"]
+    }
+}

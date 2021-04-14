@@ -1,5 +1,7 @@
+import { jest } from '@jest/globals';
 import { AppMediator } from './AppMediator';
-import { AppMessage, ConnectionManagerInterface } from './types';
+import { ConnectionManagerInterface } from './types';
+import { AppMessage } from '../types';
 
 export class MockPort implements chrome.runtime.Port {
   sender: any;
@@ -10,6 +12,10 @@ export class MockPort implements chrome.runtime.Port {
   constructor(name: string) {
     this.name = name;
     this.sender = { url: 'http://test.com/', tab: { id: 1234 } };
+  }
+
+  setTabId(id: number): void {
+    this.sender.tab.id = id;
   }
 
   triggerMessage(message: AppMessage) {

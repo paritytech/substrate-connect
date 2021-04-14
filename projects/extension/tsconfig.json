@@ -20,5 +20,5 @@
         "esModuleInterop": true
     },
     "include": ["src", "."],
-    "exclude": ["./webpack.*", "jes.config.js"]
+    "exclude": ["./webpack.*", "*jest.config*"]
 }

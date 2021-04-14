@@ -1,19 +1,22 @@
+import EventEmitter from 'eventemitter3';
+import {
+  AppMessage,
+  ExtensionMessage
+} from '../types';
 import { 
+  AppState, 
+  ConnectionManagerInterface,
   JsonRpcRequest,
   JsonRpcResponse,
   JsonRpcResponseSubscription,
-} from './types';
-import { 
-  AppMessage, 
-  ExtensionMessage, 
-  AppState, 
   MessageIDMapping, 
-  SubscriptionMapping,
-  ConnectionManagerInterface
+  StateEmitter,
+  SubscriptionMapping
 } from './types';
 
-export class AppMediator {
+export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   readonly #name: string;
+  readonly #appName: string;
   readonly #port: chrome.runtime.Port;
   // REM: what to do about the fact these might be undefined?
   readonly #tabId: number | undefined;
@@ -26,11 +29,12 @@ export class AppMediator {
   highestUAppRequestId = 0;
   #notifyOnDisconnected = false;
 
-  constructor(name: string, port: chrome.runtime.Port, manager: ConnectionManagerInterface) {
+  constructor(port: chrome.runtime.Port, manager: ConnectionManagerInterface) {
+    super();
     this.subscriptions = [];
     this.requests = [];
-    // Assign all necessery variables to privates
-    this.#name = name;
+    this.#appName = port.name.substr(0, port.name.indexOf('::'));
+    this.#name = port.name;
     this.#port = port;
     this.#tabId = port.sender?.tab?.id;
     this.#url = port.sender?.url;
@@ -42,6 +46,10 @@ export class AppMediator {
 
   get name(): string {
     return this.#name;
+  }
+
+  get appName(): string {
+    return this.#appName;
   }
 
   get smoldotName(): string | undefined {
@@ -74,6 +82,14 @@ export class AppMediator {
     this.#port.postMessage(error);
   }
 
+  #checkForDisconnected = (): void => {
+      if (this.requests.length === 0) {
+        // All our unsubscription messages have been replied to
+        this.#state = 'disconnected';
+        this.#manager.unregisterApp(this, this.#smoldotName as string);
+      }
+  }
+
   processSmoldotMessage(message: JsonRpcResponse): boolean {
     if (this.#state === 'disconnected') {
       // Shouldn't happen - we remove the AppMediator from the smoldot's apps
@@ -89,12 +105,7 @@ export class AppMediator {
         // We don't forward the RPC message to the UApp - it's not there any more
         const idx = this.requests.indexOf(request);
         this.requests.splice(idx, 1);
-        if (this.requests.length === 0) {
-          // All our unsubscription messages have been replied to
-          this.#state = 'disconnected';
-          this.#manager.unregisterApp(this, this.#smoldotName as string);
-        }
-
+        this.#checkForDisconnected();
         return true;
       }
     }
@@ -190,6 +201,7 @@ export class AppMediator {
     this.#manager.registerApp(this, name);
     this.#smoldotName = name;
     this.#state = 'ready';
+    this.emit('stateChanged');
     return;
   }
 
@@ -237,5 +249,6 @@ export class AppMediator {
     this.subscriptions.forEach(this.#sendUnsubscribe);
     // remove all the subscriptions
     this.subscriptions.splice(0, this.subscriptions.length);
+    this.#checkForDisconnected();
   }
 }

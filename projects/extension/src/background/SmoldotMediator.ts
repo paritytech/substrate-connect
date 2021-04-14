@@ -35,4 +35,8 @@ export class SmoldotMediator {
     this.#smoldotClient.send_json_rpc(JSON.stringify(message));
     return nextID;
   }
+
+  shutdown(): void {
+    this.#smoldotClient.terminate();
+  }
 }
