@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { ConnectionManager } from './ConnectionManager';
 import westend from '../assets/westend.json';
 import kusama from '../assets/kusama.json';
-import { MockPort } from './mocks';
+import { MockPort } from '../mocks';
 
 const  connectApp = (manager: ConnectionManager, tabId: number, name: string, network: string): MockPort => {
   const port = new MockPort(`${name}::${network}`);
