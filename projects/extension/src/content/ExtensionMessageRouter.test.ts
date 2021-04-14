@@ -49,5 +49,35 @@ test('incorrect origin does nothing to connections', done => {
       expect(router.connections.length).toBe(0);
       done();
     }, 10);
-
 });
+
+test('disconnect disconnects established connection', done => {
+  const port = new MockPort('test-app::westend');
+  chrome.runtime.connect.mockImplementation(_ => port);
+  window.postMessage({ 
+      appName: 'test-app', 
+      chainName: 'westend', 
+      message: {
+        type: 'associate',
+        payload: 'westend'
+      },
+      origin: 'extension-provider'
+    }, '*');
+  window.postMessage({ 
+      appName: 'test-app', 
+      chainName: 'westend', 
+      message: 'disconnect',
+      origin: 'extension-provider'
+    }, '*');
+
+
+    // window.postMessage is async we have to yield to the event loop for it
+    // to reach the router
+    setTimeout(() => {
+      expect(chrome.runtime.connect).toHaveBeenCalledTimes(1);
+      expect(port.disconnect).toHaveBeenCalledTimes(1);
+      expect(router.connections.length).toBe(0);
+      done();
+    }, 10);
+});
+

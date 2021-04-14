@@ -31,7 +31,8 @@ export class MockPort implements chrome.runtime.Port {
   }
 
   postMessage = jest.fn();
-  disconnect = () => {};
+  disconnect = jest.fn();
+
   onMessage = {
     addListener: (listener: never) => {
       this.#messageListeners.push(listener);
