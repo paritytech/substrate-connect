@@ -5,11 +5,11 @@ const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     width: '100%',
-    maxWidth: '1200px',
+    maxWidth: theme.breakpoints.values.lg,
     margin: 'auto',
     paddingTop: theme.spacing(5),
-    paddingLeft: theme.spacing(2.5),
-    paddingRight: theme.spacing(2.5),
+    paddingLeft: theme.spacing(5),
+    paddingRight: theme.spacing(5),
     '& > *': {
       width: '100%',
     },
