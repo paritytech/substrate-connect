@@ -167,6 +167,7 @@ export class ExtensionProvider implements ProviderInterface {
     const initMsg = {
       appName: this.#appName,
       chainName: this.#chainName,
+      action: 'forward',
       message: {
         type: 'associate',
         payload: this.#chainName
@@ -191,7 +192,14 @@ export class ExtensionProvider implements ProviderInterface {
    */
   // eslint-disable-next-line @typescript-eslint/require-await
   public async disconnect(): Promise<void> {
-    console.log('this not yet implemented');
+    window.postMessage({
+      appName: this.#appName,
+      chainName: this.#chainName,
+      action: 'disconnect',
+      origin: EXTENSION_PROVIDER_ORIGIN
+    }, '*');
+    this.#isConnected = false;
+    this.emit('disconnected');
   }
 
   /**
@@ -254,6 +262,7 @@ export class ExtensionProvider implements ProviderInterface {
       window.postMessage({
         appName: this.#appName,
         chainName: this.#chainName,
+        action: 'forward',
         message: {
           type: 'rpc',
           payload: json,

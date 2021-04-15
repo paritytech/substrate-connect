@@ -1,8 +1,8 @@
 export default {
-  preset: "ts-jest",
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['./jest-setup.js'],
   transform: {
-     "\\.[jt]sx?$": "babel-jest"
+     '\.[jt]sx?$': 'babel-jest'
   },
   globals: {
     'ts-jest': {
@@ -10,5 +10,5 @@ export default {
     }
   },
   verbose: true,
-  testURL: "http://localhost/"
+  testURL: 'http://localhost/'
 };
