@@ -37,13 +37,13 @@ const Tab: FunctionComponent<TabProps> = ({ tab, current=false }) => (
           wrap='nowrap'
           spacing={1}
         >
-          {tab?.uApp.networks.map(network =>
-            <Grid item key={network.name}>
+          {tab?.uApp.networks.map(n =>
+            <Grid item key={n}>
               <IconWeb3
                 size='14px'
                 color={tab?.uApp.enabled ? grey[800] : grey[400]}
               >
-                {network.name}
+                {n}
               </IconWeb3>
             </Grid>
           )}

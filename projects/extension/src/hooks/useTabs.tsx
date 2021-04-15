@@ -1,53 +1,31 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 // SPDX-License-Identifier: Apache-2
-import { useState } from 'react';
-import { NetworkCtx, TabInterface } from '../types';
+import { useState, useEffect } from 'react';
+import { NetworkCtx } from '../types';
 
-const sampleNetworkCtx: TabInterface[] = [
-	{
-		tabId: 0,
-		url: 'my-awesome-uapp1.com/index.html',
-		uApp: {
-			networks: [
-				{name: 'rococo', status: 'connected', isKnown: true, chainspecPath:''},
-				{name: 'kusama', status: 'connected', isKnown: true, chainspecPath:''},
-				{name: 'polkadot', status: 'connected', isKnown: true, chainspecPath:''},
-				{name: 'kulupu', status: 'connected', isKnown: true, chainspecPath:''},
-			],
-			name: 'Current tab uApp',
-			enabled: true,
-		}
-	},
-	{
-		tabId: 1,
-		url: 'my-awesome-uapp2.com/index.html',
-		uApp: {
-			networks: [{name: 'westend', status: 'connected', isKnown: true, chainspecPath:''}],
-			name: 'uApp in inactive tab',
-			enabled: true
-		}
-	},
-	{
-		tabId: 2,
-		url: 'my-awesome-uapp3.com/index.html',
-		uApp: {
-			networks: [
-				{name: 'kusama', status: 'connected', isKnown: true, chainspecPath:''},
-				{name: 'kulupu', status: 'connected', isKnown: true, chainspecPath:''},
-			],
-			name: 'Disabled uApp',
-			enabled: false
-		}
-	}
-]
-
-export default function useTabs (): TabInterface[] {
-  const [tabs] = useState<NetworkCtx>(sampleNetworkCtx);
-
-//   useEffect((): void => {
-//     network.forEach(n => {
-//         n && n.networkName === net && setNetworkTabs(n.tabs);
-//     })
-//   }, [network]);
+const useTabs = (): NetworkCtx => {
+  /* this is kinda of how  the access is to chrome tabs */
+  const [tabs, setTabs] = useState<NetworkCtx>([] as NetworkCtx);
+  
+  useEffect((): void => {
+    chrome.tabs.query({"currentWindow": true }, chromeTabs => {
+      console.log('Chromes tabs are', chromeTabs);
+      setTabs(chromeTabs.map(t => {
+        return ({
+          isActive: t.active,
+          tabId: t.id || 0,
+          url: t.url || '',
+          uApp: {
+            networks: [],
+            name: '',
+            enabled: true
+          }
+        })
+      }))
+    });
+  }, []);
 
   return tabs;
 }
+
+export default useTabs;

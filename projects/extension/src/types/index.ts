@@ -3,12 +3,14 @@ export type NetworkTypes = 'kusama' | 'polkadot' | 'westend' | 'kulupu'
 export type NetworkStatus =  'connected' | 'ready' | 'disconnecting' | 'disconnected';
 
 export interface TabInterface {
-    tabId: number;
-    url: string;
+    tabId: number | undefined;
+    url: string | undefined;
     uApp: uApp;
+    isActive?: boolean;
 }
 export type uApp = {
-    networks: Network[];
+    networks: string[]; // TODO: for now pass strings in order to make the v0 prototype
+    // networks: Network[]; // This should be activated for parachains and v1
     name: string;
     enabled: boolean;
 }

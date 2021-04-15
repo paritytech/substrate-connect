@@ -34,6 +34,10 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     return this.#smoldots.map(s => s.name);
   }
 
+  get apps(): AppMediator[] {
+    return this.#apps;
+  }
+
   getState(): State {
     const state: State = { apps: [] };
     return this.#apps.reduce((result, app) => {
@@ -53,7 +57,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
 
   addApp(port: chrome.runtime.Port): void {
     const app = this.#apps.find(s => s.name === port.name);
-
     if (app) {
       port.postMessage({ type: 'info', payload: `App ${port.name} already exists.` });
     } else {

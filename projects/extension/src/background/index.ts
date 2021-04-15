@@ -5,6 +5,7 @@ import westend from '../assets/westend.json';
 import kusama from '../assets/kusama.json';
 import polkadot from '../assets/polkadot.json';
 import { debug } from '../utils/debug';
+import { AppType } from './types';
 
 const manager = new ConnectionManager();
 
@@ -13,6 +14,7 @@ manager.on('stateChanged', () => {
 });
 
 export type AppMessageType = 'associate' | 'rpc';
+
 export interface AppMessage {
   type: AppMessageType;
   payload: string; // name of the network or an rpc string (json stringified RPC message)
@@ -39,5 +41,23 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.runtime.onConnect.addListener((port) => {
-  manager.addApp(port);
+  console.log('port onConnect:', port)
+  if (port.name === 'substrateExtension') {
+    const apps: AppType[] = [];
+    // Map the apps that exist in the ConnectionManager to the
+    // format that the extension expects
+    manager?.apps?.forEach(s => {
+      apps.push({
+        appName: s.appName,
+        name: s.name,
+        smoldotName: s.smoldotName,
+        state: s.state,
+        tabId: s.tabId,
+        url: s.url
+      });
+    })
+    port.postMessage({ type: 'info', payload: apps });
+  } else {
+    manager.addApp(port);
+  }
 });

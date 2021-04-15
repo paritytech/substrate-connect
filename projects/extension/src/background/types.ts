@@ -10,6 +10,15 @@ export interface InitAppNameSpec {
   chainSpec?: string
 }
 
+export type AppType = {
+  appName: string;
+  name: string;
+  smoldotName: string;
+  state: AppState;
+  tabId: number | undefined;
+  url: string | undefined;
+}
+
 // TODO: this is duplicated with `NetworkStatus` in ../types
 export type AppState = 'connected' | 'ready' | 'disconnecting' | 'disconnected';
 
