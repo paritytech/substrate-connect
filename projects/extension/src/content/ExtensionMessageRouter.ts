@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import type { ExtensionProviderMessage } from '../types';
+import type { ExtensionProviderMessage, AppMessage } from '../types';
 import { debug } from '../utils/debug';
 
 const CONTENT_SCRIPT_ORIGIN = 'content-script';
@@ -71,7 +71,7 @@ export class ExtensionMessageRouter {
     const port = this.#ports[data.chainName];
 
     if (!port) {
-      // this is probably someone trying to abuse the extension.
+      // probably someone trying to abuse the extension.
       console.warn(`App requested to disconnect ${data.chainName} - no port found`);
       return;
     }
@@ -90,28 +90,30 @@ export class ExtensionMessageRouter {
 
     debug(`RECEIEVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data);
 
-    if (data.message === 'disconnect') {
+    if (data.action === 'disconnect') {
       return this.#disconnectPort(message);
+    } else if (data.action === 'forward') {
+      const innerMessage = data.message as AppMessage;
+      if (!innerMessage.type) {
+        // probably someone abusing the extension
+        console.warn('Malformed message received', data);
+        return;
+      }
+
+      if (innerMessage.type === 'associate') {
+        return this.#establishNewConnection(message);
+      }
+
+      if (innerMessage.type === 'rpc') {
+        return this.#forwardRpcMessage(message);
+      }
+
+      // probably someone abusing the extension
+      return console.warn('Unrecognised action', data);
     }
 
-    if (!data.message.type) {
-      // probably someone abusing the extension - typescript won't allow this
-      // to be reached in our codebase
-      console.warn('Malformed message received', data);
-      return;
-    }
-
-    if (data.message.type === 'associate') {
-      return this.#establishNewConnection(message);
-    }
-
-    if (data.message.type === 'rpc') {
-      return this.#forwardRpcMessage(message);
-    }
-
-    // probably someone abusing the extension - typescript won't allow this
-    // to be reached in our codebase
-    console.warn('Unrecognised message type', data);
+    // probably someone abusing the extension
+    return console.warn('Unrecognised message type', data);
   }
 }
 

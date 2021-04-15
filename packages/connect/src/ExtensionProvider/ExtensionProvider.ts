@@ -167,6 +167,7 @@ export class ExtensionProvider implements ProviderInterface {
     const initMsg = {
       appName: this.#appName,
       chainName: this.#chainName,
+      action: 'forward',
       message: {
         type: 'associate',
         payload: this.#chainName
@@ -194,7 +195,7 @@ export class ExtensionProvider implements ProviderInterface {
     window.postMessage({
       appName: this.#appName,
       chainName: this.#chainName,
-      message: 'disconnect',
+      action: 'disconnect',
       origin: EXTENSION_PROVIDER_ORIGIN
     }, '*');
     this.#isConnected = false;
@@ -261,6 +262,7 @@ export class ExtensionProvider implements ProviderInterface {
       window.postMessage({
         appName: this.#appName,
         chainName: this.#chainName,
+        action: 'forward',
         message: {
           type: 'rpc',
           payload: json,

@@ -27,6 +27,7 @@ test('associate establishes a port', async () => {
   window.postMessage({
     appName: 'test-app',
     chainName: 'westend',
+    action: 'forward'.
     message: { type: 'associate', payload: 'westend' },
     origin: 'extension-provider'
   }, '*');
@@ -53,6 +54,7 @@ test('disconnect disconnects established connection', async () => {
   window.postMessage({
     appName: 'test-app',
     chainName: 'westend',
+    action: 'forward',
     message: { type: 'associate', payload: 'westend' },
     origin: 'extension-provider'
   }, '*');
@@ -61,7 +63,7 @@ test('disconnect disconnects established connection', async () => {
   window.postMessage({
     appName: 'test-app',
     chainName: 'westend',
-    message: 'disconnect',
+    action: 'disconnect',
     origin: 'extension-provider'
   }, '*');
   await waitForMessageToBePosted();
@@ -79,6 +81,7 @@ test('forwards rpc message from app -> extension', async () => {
   window.postMessage({
     appName: 'test-app',
     chainName: 'westend',
+    action: 'forward',
     message: { type: 'associate', payload: 'westend' },
     origin: 'extension-provider'
   }, '*');
@@ -88,6 +91,7 @@ test('forwards rpc message from app -> extension', async () => {
   const rpcMessage = {
     appName: 'test-app',
     chainName: 'westend',
+    action: 'forward',
     message: {
       type: 'rpc',
       payload: '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}'
@@ -109,6 +113,7 @@ test('forwards rpc message from extension -> app', async () => {
   window.postMessage({
     appName: 'test-app',
     chainName: 'westend',
+    action: 'forward',
     message: { type: 'associate', payload: 'westend' },
     origin: 'extension-provider'
   }, '*');

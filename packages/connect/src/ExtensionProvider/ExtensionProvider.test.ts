@@ -21,6 +21,7 @@ test('connect sends init message and emits connected', async () => {
   const expectedMessage = {
     appName: 'test',
     chainName: 'test-chain',
+    action: 'forward',
     message: {
       type: 'associate',
       payload: 'test-chain'
@@ -44,7 +45,7 @@ test('disconnect sends disconnect message and emits disconnected', async () => {
   const expectedMessage = {
     appName: 'test',
     chainName: 'test-chain',
-    message: 'disconnect',
+    action: 'disconnect',
     origin: 'extension-provider'
   };
   expect(window.postMessage).toHaveBeenCalledTimes(2);

@@ -59,7 +59,8 @@ export interface ExtensionProviderMessage {
     appName: string;
     chainName: string;
     origin: string;
-    message: AppMessage | 'disconnect';
+    action: 'forward' | 'disconnect';
+    message?: AppMessage;
   }
 }
 
