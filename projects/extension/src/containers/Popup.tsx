@@ -9,6 +9,8 @@ import { CallMade as Save } from '@material-ui/icons';
 
 import { TabInterface } from '../types';
 
+import { openInNewTab } from '../utils/utils';
+
 import { AppType } from '../background/types';
 
 const { createMuiTheme, ThemeProvider, Box, Divider } = material;
@@ -74,8 +76,6 @@ const Popup: React.FunctionComponent = () => {
     });
   }, [apps]);
 
-  console.log(apps)
-
 	return (
     <ThemeProvider theme={appliedTheme}>
       <Box width={'340px'} mb={0.1}>
@@ -86,7 +86,7 @@ const Popup: React.FunctionComponent = () => {
           {rTabs.map(r => r)}
         </Box>
         <Divider />
-        <MenuButton fullWidth>My Networks</MenuButton>
+        <MenuButton fullWidth onClick={() => openInNewTab('chrome-extension://npfgeeonalpabakkpdobjngodgljemkb/options.html')}>My Networks</MenuButton>
         <MenuButton fullWidth endIcon={<Save />}>Url to uApps list</MenuButton>
         <Divider />
         <MenuButton className='danger' fullWidth>Stop all connections</MenuButton>
