@@ -18,6 +18,9 @@ const useStyles = makeStyles(theme => ({
       width: '100vw',
       zIndex: '-1',
       background: theme.palette.background.default,
+      [theme.breakpoints.down('lg')]: {
+        left: theme.spacing(-5),
+      },
     },
     '& h1, & h2, & h3, & h4, & h5, & p': {
       maxWidth: '624px'
@@ -38,6 +41,7 @@ const useStyles = makeStyles(theme => ({
       marginTop: theme.spacing(),
     },
     '& button': {
+      textAlign: 'left',
       color: substrateGreen[600],
     },
   }
