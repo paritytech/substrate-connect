@@ -27,7 +27,7 @@ test('associate establishes a port', async () => {
   window.postMessage({
     appName: 'test-app',
     chainName: 'westend',
-    action: 'forward'.
+    action: 'forward',
     message: { type: 'associate', payload: 'westend' },
     origin: 'extension-provider'
   }, '*');
