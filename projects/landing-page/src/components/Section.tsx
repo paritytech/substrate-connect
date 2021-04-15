@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
       width: '100vw',
       zIndex: '-1',
       background: theme.palette.background.default,
-      [theme.breakpoints.down('lg')]: {
+      [theme.breakpoints.down('md')]: {
         left: theme.spacing(-5),
       },
     },
