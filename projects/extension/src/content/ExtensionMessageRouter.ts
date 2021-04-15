@@ -42,9 +42,9 @@ export class ExtensionMessageRouter {
     const chainName = data.chainName;
     port.onMessage.addListener((data): void => {
       debug(`RECIEVED MESSGE FROM ${chainName} PORT`, data);
-      window.postMessage({ 
-        message: data.payload, 
-        origin: CONTENT_SCRIPT_ORIGIN 
+      window.postMessage({
+        message: data.payload,
+        origin: CONTENT_SCRIPT_ORIGIN
       }, '*');
     });
 
@@ -90,13 +90,19 @@ export class ExtensionMessageRouter {
 
     debug(`RECEIEVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data);
 
+    if (!data.action) {
+      return console.warn('Malformed message - missing action', message);
+    }
+
     if (data.action === 'disconnect') {
       return this.#disconnectPort(message);
-    } else if (data.action === 'forward') {
+    }
+
+    if (data.action === 'forward') {
       const innerMessage = data.message as AppMessage;
       if (!innerMessage.type) {
         // probably someone abusing the extension
-        console.warn('Malformed message received', data);
+        console.warn('Malformed message - missing message.type', data);
         return;
       }
 
@@ -109,11 +115,11 @@ export class ExtensionMessageRouter {
       }
 
       // probably someone abusing the extension
-      return console.warn('Unrecognised action', data);
+      return console.warn('Malformed message - unrecognised message.type', data);
     }
 
     // probably someone abusing the extension
-    return console.warn('Unrecognised message type', data);
+    return console.warn('Malformed message - unrecognised action', data);
   }
 }
 
