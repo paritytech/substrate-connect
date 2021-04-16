@@ -67,7 +67,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hot-loader": "^4.13.0",
-    "smoldot": "^0.1.22",
+    "smoldot": "^0.1.23",
     "strict-event-emitter-types": "^2.0.0",
     "styled-components": "^5.2.1"
   },
