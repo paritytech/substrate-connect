@@ -51,7 +51,7 @@ yarn clean
 ```
 
 ## Run local version of Burnr wallet
-Running the following command will build all necessary dependencies and run the Substrate Burnr Wallet in development mode with hot reloading enabled. It will be served on http://localhost:8000/
+Running the following command will build all necessary dependencies and run the Substrate Burnr Wallet in development mode with hot reloading enabled. It will be served on http://localhost:1234/
 
 ```bash
 yarn dev:burnr

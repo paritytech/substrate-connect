@@ -1,8 +1,3 @@
-// Copyright 2018-2021 @paritytech/substrate-connect authors & contributors
-// This software may be modified and distributed under the terms
-// of the Apache-2.0 license. See the LICENSE file for details.
-
-import * as smoldot from 'smoldot';
 import {RpcCoder} from '@polkadot/rpc-provider/coder';
 import {
   JsonRpcResponse,
@@ -14,18 +9,17 @@ import {
 import { logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 import { isUndefined } from '../utils';
+import {
+  ExtensionMessage,
+  ExtensionMessageData,
+  ProviderMessageData
+} from './types';
 
 const CONTENT_SCRIPT_ORIGIN = 'content-script';
 const EXTENSION_PROVIDER_ORIGIN = 'extension-provider';
 
 const l = logger(EXTENSION_PROVIDER_ORIGIN);
 
-interface ExtensionMessage {
-  data: {
-    origin: string;
-    message: string;
-  }
-}
 
 interface RpcStateAwaiting {
   callback: ProviderInterfaceCallback;
@@ -56,7 +50,6 @@ export class ExtensionProvider implements ProviderInterface {
   readonly #handlers: Record<string, RpcStateAwaiting> = {};
   readonly #subscriptions: Record<string, StateSubscription> = {};
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
-  #client: smoldot.SmoldotClient | undefined = undefined;
   #isConnected = false;
 
   #appName: string;
@@ -91,13 +84,24 @@ export class ExtensionProvider implements ProviderInterface {
     throw new Error('clone() is not supported.');
   }
 
-  #handleRpcReponse = (res: string): void => {
-    l.debug(() => ['received', res]);
-    const response = JSON.parse(res) as JsonRpcResponse;
+  #handleMessage = (data: ExtensionMessageData): void => {
+    const type = data.message.type;
+    if (type === 'error') {
+      return this.emit('error', new Error(data.message.payload));
+    }
 
-    return isUndefined(response.method)
-      ? this.#onMessageResult(response)
-      : this.#onMessageSubscribe(response);
+    if (type === 'rpc') {
+      const rpcString = data.message.payload;
+      l.debug(() => ['received', rpcString]);
+      const response = JSON.parse(rpcString) as JsonRpcResponse;
+
+      return isUndefined(response.method)
+        ? this.#onMessageResult(response)
+        : this.#onMessageSubscribe(response);
+    }
+
+    const errorMessage =`Unrecognised message type from extension ${type}`;
+    return this.emit('error', new Error(errorMessage));
   }
 
   #onMessageResult = (response: JsonRpcResponse): void => {
@@ -164,9 +168,10 @@ export class ExtensionProvider implements ProviderInterface {
    * @description "Connect" the WASM client - starts the smoldot WASM client
    */
   public connect(): Promise<void> {
-    const initMsg = {
+    const initMsg: ProviderMessageData = {
       appName: this.#appName,
       chainName: this.#chainName,
+      action: 'forward',
       message: {
         type: 'associate',
         payload: this.#chainName
@@ -177,7 +182,7 @@ export class ExtensionProvider implements ProviderInterface {
     window.addEventListener('message', ({data}: ExtensionMessage) => {
       if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        this.#handleRpcReponse(data.message);
+        this.#handleMessage(data);
       }
     });
     this.#isConnected = true;
@@ -191,7 +196,16 @@ export class ExtensionProvider implements ProviderInterface {
    */
   // eslint-disable-next-line @typescript-eslint/require-await
   public async disconnect(): Promise<void> {
-    console.log('this not yet implemented');
+    const disconnectMsg: ProviderMessageData = {
+      appName: this.#appName,
+      chainName: this.#chainName,
+      action: 'disconnect',
+      origin: EXTENSION_PROVIDER_ORIGIN
+    };
+
+    window.postMessage(disconnectMsg, '*');
+    this.#isConnected = false;
+    this.emit('disconnected');
   }
 
   /**
@@ -251,16 +265,18 @@ export class ExtensionProvider implements ProviderInterface {
         subscription
       };
 
-      window.postMessage({
+      const rpcMsg: ProviderMessageData = {
         appName: this.#appName,
         chainName: this.#chainName,
+        action: 'forward',
         message: {
           type: 'rpc',
           payload: json,
           subscription: !!subscription
         },
         origin: EXTENSION_PROVIDER_ORIGIN
-      }, '*');
+      }
+      window.postMessage(rpcMsg, '*');
     });
   }
 

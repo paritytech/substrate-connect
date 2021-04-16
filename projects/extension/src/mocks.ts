@@ -1,5 +1,7 @@
-import { AppMediator } from './AppMediator';
-import { AppMessage, ConnectionManagerInterface } from './types';
+import { jest } from '@jest/globals';
+import { AppMediator } from './background/AppMediator';
+import { ConnectionManagerInterface } from './background/types';
+import { AppMessage, ExtensionMessage } from './types';
 
 export class MockPort implements chrome.runtime.Port {
   sender: any;
@@ -12,20 +14,25 @@ export class MockPort implements chrome.runtime.Port {
     this.sender = { url: 'http://test.com/', tab: { id: 1234 } };
   }
 
-  triggerMessage(message: AppMessage) {
+  setTabId(id: number): void {
+    this.sender.tab.id = id;
+  }
+
+  triggerMessage(message: AppMessage | ExtensionMessage): void {
     this.#messageListeners.forEach((l: any) => {
       l(message);
     });
   }
 
-  triggerDisconnect() {
+  triggerDisconnect(): void {
     this.#disconnectListeners.forEach((l: any) => {
       l();
     });
   }
 
   postMessage = jest.fn();
-  disconnect = () => {};
+  disconnect = jest.fn();
+
   onMessage = {
     addListener: (listener: never) => {
       this.#messageListeners.push(listener);
