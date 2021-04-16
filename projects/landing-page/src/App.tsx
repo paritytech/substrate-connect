@@ -1,6 +1,6 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider, createMuiTheme, Typography, Box, Grid } from '@material-ui/core';
-import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeading, SectionText, SectionRef, FooterLink } from './components';
+import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeading, SectionText, SectionRef, FooterLink, SidebarLink } from './components';
 import { CardNetwork, CardProject } from './components/Cards';
 
 const App: React.FunctionComponent = () => {
@@ -16,7 +16,7 @@ const App: React.FunctionComponent = () => {
             </Typography>
           </Section>
           <Section>
-            <SectionHeading prefix='1'>Substrate-based chains</SectionHeading>
+            <SectionHeading id='substrate-based-chains' prefix='1'>Substrate-based chains</SectionHeading>
             <SectionText>
               Substrate. Substrate node. Substrate is a modular framework that enables you to create purpose-built blockchains by composing custom or pre-built components.
             </SectionText>
@@ -29,7 +29,7 @@ const App: React.FunctionComponent = () => {
           </Section>
           
           <Section>
-            <SectionHeading prefix='2'>Wasm Light Clients</SectionHeading>
+            <SectionHeading id='wasm-light-clients' prefix='2'>Wasm Light Clients</SectionHeading>
             <SectionText>
               Definition. Smoldot. Warp sync. Light clients are crucial elements in blockchain ecosystems. They help users access and interact with a blockchain in a secure and decentralized manner without having to sync the full blockchain.
             </SectionText>
@@ -39,7 +39,7 @@ const App: React.FunctionComponent = () => {
           </Section>
 
           <Section>
-            <SectionHeading prefix='3'>Supported Networks</SectionHeading>
+            <SectionHeading id='supported-networks' prefix='3'>Supported Networks</SectionHeading>
             <Grid container>
               <CardNetwork
                 title='Westend'
@@ -76,16 +76,16 @@ const App: React.FunctionComponent = () => {
           </Section>
 
           <Section>
-            <SectionHeading prefix='4'>Getting Started</SectionHeading>
+            <SectionHeading id='getting-started' prefix='4'>Getting Started</SectionHeading>
             {/* TODO: CodeSnippet */}
           </Section>
           <Section>
-            <SectionHeading prefix='5'>Projects</SectionHeading>
+            <SectionHeading id='projects' prefix='5'>Projects</SectionHeading>
             {/* TODO: ImagePath */}
             <CardProject
               title='Browser Demo'
               subtitle='Minimal implementation'
-              // iamgePath='path'
+              imagePath='images/BrowserDemo.png'
               linkProps={{href:'https://paritytech.github.io/substrate-connect/smoldot-browser-demo/'}}
             />
             <CardProject
@@ -111,7 +111,7 @@ const App: React.FunctionComponent = () => {
           </Section>
           <ThemeProvider theme={createMuiTheme(dark)}>
             <Section pt={5} pb={5}>
-              <SectionHeading prefix='6'>Playground</SectionHeading>
+              <SectionHeading id='playground' prefix='6'>Playground</SectionHeading>
               <SectionText>Save logged API as global variable. Call methods</SectionText>
               <Box pt={25}>
                 <FooterLink>© 2021 Parity Technologies</FooterLink>
@@ -126,15 +126,12 @@ const App: React.FunctionComponent = () => {
         </div>
         <Sidebar>
           <Logo />
-          <ul>
-            <li>Substrate-based chain</li>
-            <li>Light Clients</li>
-            <li>Supported Networks</li>
-            <li>Getting Starter</li>
-            <li>Projects</li>
-            <li>Playground</li>
-            <li>Github Repository</li>
-          </ul>
+          <SidebarLink href='#substrate-based-chains'>Substrate-based chain</SidebarLink>
+          <SidebarLink href='#wasm-light-clients'>Wasm Light Clients</SidebarLink>
+          <SidebarLink href='#supported-networks'>Supported Networks</SidebarLink>
+          <SidebarLink href='#getting-started'>Getting Started</SidebarLink>
+          <SidebarLink href='#projects'>Projects</SidebarLink>
+          <SidebarLink href='#playground'>Playground</SidebarLink>
         </Sidebar>
         {/* TODO: Footer */}
       </UIContainer>

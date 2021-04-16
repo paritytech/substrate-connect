@@ -17,6 +17,7 @@ export const substrateGray = {
 	100: '#F5F8FA',
 	200: '#EAEEF1',
 	400: '#C6D0D7',
+	500: '#ABB8BF',
 	600: '#7E8D95',
   800: '#323F47',
   900: '#323F47',

@@ -56,11 +56,12 @@ export const Section: React.FunctionComponent<BoxProps> = ({children, ...props})
 
 interface HeadingProps {
   prefix?: string | number;
+  id?: string,
 }
-export const SectionHeading: React.FunctionComponent<HeadingProps> = ({children, prefix}) => {
+export const SectionHeading: React.FunctionComponent<HeadingProps> = ({children, prefix, id}) => {
   const classes = useStyles();
   return (
-    <Typography variant='h2' className={classes.heading}>
+    <Typography id={id} variant='h2' className={classes.heading}>
       {prefix && 
         <Typography variant='h4' component='sup'>
           {prefix}
