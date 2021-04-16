@@ -7,6 +7,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     height: theme.spacing(0.5),
     backgroundColor: theme.palette.primary.main,
+    zIndex: 1,
   },
 }));
 

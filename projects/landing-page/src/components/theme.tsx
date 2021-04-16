@@ -14,6 +14,7 @@ export const substrateGreen = {
   600: '#1A9A6C',
 };
 export const substrateGray = {
+	100: '#F5F8FA',
 	200: '#EAEEF1',
 	400: '#C6D0D7',
 	600: '#7E8D95',
@@ -119,7 +120,7 @@ const light: ThemeOptions = {
 			lineHeight: '120%',
 		},
 		h3: {
-			fontWeight: 500,
+			fontWeight: 600,
 			fontSize: 18,
 			lineHeight: '120%',
 		},
@@ -157,8 +158,9 @@ const light: ThemeOptions = {
 		subtitle2: {
 			fontFamily: 'SFMono-Regular, Consolas , Liberation Mono, Menlo, monospace',
 			fontWeight: 400,
-			fontSize: 13,
+			fontSize: 12,
 			lineHeight: '135%',
+			color: grey[700],
 			letterSpacing: 0.1,
 		},
 		overline: {
@@ -190,7 +192,7 @@ export const dark: ThemeOptions = {
 			color: grey[200],
 		},
 		h3: {
-			fontWeight: 500,
+			fontWeight: 600,
 			fontSize: 18,
 			lineHeight: '120%',
 		},

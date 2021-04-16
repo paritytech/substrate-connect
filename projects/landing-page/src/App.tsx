@@ -1,6 +1,7 @@
 import React from 'react';
-import { CssBaseline, ThemeProvider, createMuiTheme, Typography, Link, Box } from '@material-ui/core';
+import { CssBaseline, ThemeProvider, createMuiTheme, Typography, Box, Grid } from '@material-ui/core';
 import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeading, SectionText, SectionRef, FooterLink } from './components';
+import { CardNetwork, CardProject } from './components/Cards';
 
 const App: React.FunctionComponent = () => {
   return (
@@ -39,7 +40,36 @@ const App: React.FunctionComponent = () => {
 
           <Section>
             <SectionHeading prefix='3'>Supported Networks</SectionHeading>
-            {/* TODO: Cards */}
+            <Grid container>
+              <CardNetwork
+                title='Westend'
+                statusProps={{status:'supported'}}
+                linkProps={{href:'https://wiki.polkadot.network/docs/en/maintain-networks#westend-test-network'}}
+              >
+                Testing environment for Polkadot and Kusama deployments and processes
+              </CardNetwork>
+              <CardNetwork
+                title='Rococo'
+                statusProps={{status:'very soon'}}
+                linkProps={{href:'https://polkadot.network/rococo-v1-a-holiday-gift-to-the-polkadot-community/'}}
+              >
+                Testnet designed for parachains and related technologies: Cumulus and HRMP
+              </CardNetwork>
+              <CardNetwork
+                title='Kusama'
+                statusProps={{status:'soon'}}
+                linkProps={{href:'https://kusama.network/'}}
+              >
+                A network built as a risk-taking, fast-moving ‘canary in the coal mine’ for its cousin Polkadot
+              </CardNetwork>
+              <CardNetwork
+                title='Polkadot'
+                statusProps={{status:'soon'}}
+                linkProps={{href:'https://polkadot.network/'}}
+              >
+                Scalable sharded chain and the first protocol that provides a secure environment for cross-chain composability
+              </CardNetwork>
+            </Grid>
             <SectionRef href='https://github.com/paritytech/substrate-connect/tree/13bd26a1ca2904f8e0b5d04dfa35e82364d37d99/packages/connect/assets'>
               Github repo with chainspecs
             </SectionRef>
@@ -51,7 +81,33 @@ const App: React.FunctionComponent = () => {
           </Section>
           <Section>
             <SectionHeading prefix='5'>Projects</SectionHeading>
-            {/* TODO: ProjectCard */}
+            {/* TODO: ImagePath */}
+            <CardProject
+              title='Browser Demo'
+              subtitle='Minimal implementation'
+              // iamgePath='path'
+              linkProps={{href:'https://paritytech.github.io/substrate-connect/smoldot-browser-demo/'}}
+            />
+            <CardProject
+              title='Extension'
+              subtitle='Light clients broker for browser'
+              // iamgePath='path'
+              linkProps={{href:'https://github.com/paritytech/substrate-connect/tree/master/projects/extension'}}
+            />
+            <CardProject
+              title='Burnr'
+              subtitle='Insecure redeemable wallet'
+              // iamgePath='path'
+              linkProps={{href:'https://paritytech.github.io/substrate-connect/burnr/'}}
+            />
+            <CardProject
+              title='Next Project'
+              // iamgePath='path'
+            >
+              <SectionRef href=''>
+                Contributor’s guide
+              </SectionRef>
+            </CardProject>
           </Section>
           <ThemeProvider theme={createMuiTheme(dark)}>
             <Section pt={5} pb={5}>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, BoxProps, Button, ButtonProps, makeStyles, ThemeProvider, Typography } from '@material-ui/core';
+import { Box, BoxProps, Button, ButtonProps, makeStyles, Typography } from '@material-ui/core';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { substrateGreen } from './theme';
 
