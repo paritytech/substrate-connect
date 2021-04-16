@@ -20,7 +20,7 @@ afterEach(() => {
   router.stop();
 });
 
-function waitForMessageToBePosted(): Promise<null> {
+const waitForMessageToBePosted = (): Promise<null> => {
   // window.postMessge is async so we must do a short setTimeout to yield to
   // the event loop
   return new Promise(resolve => setTimeout(resolve, 10, null));
