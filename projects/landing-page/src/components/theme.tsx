@@ -27,11 +27,11 @@ const paletteLight: PaletteOptions = {
 	type: 'light',
 	common: {
 		black: 'black',
-		white: 'white',
+		white: '#FFFFFF',
 	},
 	background: {
-		paper: 'white',
-		default: 'white',
+		paper: '#FFFFFF',
+		default: '#FFFFFF',
 	},
 	primary: {
 		light: substrateGreen[100],
@@ -67,7 +67,7 @@ const paletteDark: PaletteOptions = {
 	type: 'dark',
 	common: {
 		black: 'black',
-		white: 'white',
+		white: '#FFFFFF',
 	},
 	background: {
 		paper: 'black',

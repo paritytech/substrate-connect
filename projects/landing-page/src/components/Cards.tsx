@@ -18,10 +18,16 @@ const useStyles = makeStyles(theme => ({
     borderRadius: theme.spacing(),
     justifyContent: 'center',
     textAlign: 'center',
+    [theme.breakpoints.down('sm')]: {
+      width: `calc(100% - ${theme.spacing(2)}px)`,
+    },
     '&.network': {
       textAlign: 'left',
       width: `calc(25% - ${theme.spacing(2)}px)`,
       justifyContent: 'start',
+      [theme.breakpoints.down('sm')]: {
+        width: `calc(50% - ${theme.spacing(2)}px)`,
+      },
     },
     '& .subtitle': {
       paddingBottom: theme.spacing(),

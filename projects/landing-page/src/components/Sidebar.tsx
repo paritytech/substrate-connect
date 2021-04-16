@@ -1,14 +1,26 @@
 import * as React from 'react';
 import { Link, LinkProps, makeStyles, Typography } from '@material-ui/core';
 import { substrateGray } from './theme';
+import { fade } from '@material-ui/core/styles/colorManipulator';
 
 const useStyles = makeStyles(theme => ({
   sidebar: {
-    width: '345px !important',
+    width: '345px',
     paddingLeft: theme.spacing(10),
     '& .fixed': {
       position: 'fixed',
-    }
+    },
+    [theme.breakpoints.down('sm')]: {
+      '& .fixed': {
+        width: '100%',
+        left: 0,
+        top: theme.spacing(0.5),
+        padding: theme.spacing(),
+        paddingLeft: theme.spacing(5),
+        backgroundColor: fade(theme.palette.background.default, 0.9),
+        borderBottom: `1px solid ${substrateGray[200]}`
+      },
+    },
   },
   link: {
     display: 'block',
@@ -17,6 +29,12 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       color: substrateGray[900],
       textDecoration: 'none',
+    },
+    [theme.breakpoints.down('sm')]: {
+      display: 'inline-block',
+      marginRight: theme.spacing(3),
+      marginBottom: theme.spacing(),
+      color: substrateGray[900],
     },
     '& *': {
       color: 'inherit',
