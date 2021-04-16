@@ -1,8 +1,27 @@
 import {jest} from '@jest/globals'
-import { ExtensionProvider } from './ExtensionProvider';
+import { 
+  ExtensionProvider, 
+} from './ExtensionProvider';
+import {
+  ProviderMessage,
+  ProviderMessageData,
+  ExtensionMessageData
+} from './types';
 
+const waitForMessageToBePosted = (): Promise<null> => {
+  // window.postMessge is async so we must do a short setTimeout to yield to
+  // the event loop
+  return new Promise(resolve => setTimeout(resolve, 10, null));
+}
+
+let handler = jest.fn();
 beforeEach(() => {
-  window.postMessage = jest.fn();
+  handler = jest.fn();
+  window.addEventListener('message', handler);
+});
+
+afterEach(() => {
+  window.removeEventListener('message', handler);
 });
 
 test('constructor sets properties', async () => {
@@ -16,9 +35,9 @@ test('connect sends init message and emits connected', async () => {
   const emitted = jest.fn();
   ep.on('connected', emitted);
   await ep.connect();
+  await waitForMessageToBePosted();
 
-
-  const expectedMessage = {
+  const expectedMessage: ProviderMessageData = {
     appName: 'test',
     chainName: 'test-chain',
     action: 'forward',
@@ -28,8 +47,9 @@ test('connect sends init message and emits connected', async () => {
     },
     origin: 'extension-provider'
   };
-  expect(window.postMessage).toHaveBeenCalledTimes(1);
-  expect(window.postMessage).toHaveBeenCalledWith(expectedMessage, '*');
+  expect(handler).toHaveBeenCalledTimes(1);
+  const { data } = handler.mock.calls[0][0] as ProviderMessage;
+  expect(data).toEqual(expectedMessage);
   expect(ep.isConnected).toBe(true);
   expect(emitted).toHaveBeenCalledTimes(1);
 });
@@ -41,15 +61,38 @@ test('disconnect sends disconnect message and emits disconnected', async () => {
 
   ep.on('disconnected', emitted);
   await ep.disconnect();
+  await waitForMessageToBePosted();
 
-  const expectedMessage = {
+  const expectedMessage: ProviderMessageData = {
     appName: 'test',
     chainName: 'test-chain',
     action: 'disconnect',
     origin: 'extension-provider'
   };
-  expect(window.postMessage).toHaveBeenCalledTimes(2);
-  expect(window.postMessage).toHaveBeenNthCalledWith(2, expectedMessage, '*');
+  expect(handler).toHaveBeenCalledTimes(2);
+  const { data } = handler.mock.calls[1][0] as ProviderMessage;
+  expect(data).toEqual(expectedMessage);
   expect(ep.isConnected).toBe(false);
   expect(emitted).toHaveBeenCalledTimes(1);
+});
+
+test('emits error when it receives an error message', async () => {
+  const ep = new ExtensionProvider('test', 'test-chain');
+  await ep.connect();
+  await waitForMessageToBePosted();
+  const errorMessage: ExtensionMessageData = {
+    origin: 'content-script',
+    message: {
+      type: 'error',
+      payload: 'Boom!'
+    }
+  };
+  const errorHandler = jest.fn();
+  ep.on('error', errorHandler);
+  window.postMessage(errorMessage, '*');
+  await waitForMessageToBePosted();
+
+  expect(errorHandler).toHaveBeenCalled();
+  const error = errorHandler.mock.calls[0][0] as Error;
+  expect(error.message).toEqual(errorMessage.message.payload);
 });

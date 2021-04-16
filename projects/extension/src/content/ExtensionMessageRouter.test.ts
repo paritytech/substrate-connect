@@ -4,6 +4,10 @@ import { ExtensionMessage } from '../types';
 import { MockPort } from '../mocks';
 import { chrome } from 'jest-chrome';
 
+interface RouterMessage {
+  data: ExtensionMessage
+}
+
 let router: ExtensionMessageRouter;
 
 beforeEach(() => {
@@ -16,7 +20,7 @@ afterEach(() => {
   router.stop();
 });
 
-function waitForMessageToBePosted(): Promise<null> {
+const waitForMessageToBePosted = (): Promise<null> => {
   // window.postMessge is async so we must do a short setTimeout to yield to
   // the event loop
   return new Promise(resolve => setTimeout(resolve, 10, null));
@@ -125,14 +129,34 @@ test('forwards rpc message from extension -> app', async () => {
   port.triggerMessage(message);
   await waitForMessageToBePosted();
 
-  interface RouterMessage {
-    data: ExtensionMessage
-  }
-
   expect(chrome.runtime.connect).toHaveBeenCalledTimes(1);
   expect(port.disconnect).not.toHaveBeenCalled();
   expect(handler).toHaveBeenCalled();
   const forwarded = handler.mock.calls[0][0] as RouterMessage;
-  expect(forwarded.data).toEqual({ origin: 'content-script', message: message.payload });
+  expect(forwarded.data).toEqual({ origin: 'content-script', message: message });
+});
+
+test('forwards error message from extension -> app', async () => {
+  const port = new MockPort('test-app::westend');
+  chrome.runtime.connect.mockImplementation(_ => port);
+  // connect
+  window.postMessage({
+    appName: 'test-app',
+    chainName: 'westend',
+    action: 'forward',
+    message: { type: 'associate', payload: 'westend' },
+    origin: 'extension-provider'
+  }, '*');
+  await waitForMessageToBePosted();
+
+  const handler = jest.fn();
+  window.addEventListener('message', handler);
+  const errorMessage: ExtensionMessage = { type: 'error', payload: 'Boom!' };
+  port.triggerMessage(errorMessage);
+  await waitForMessageToBePosted();
+
+  expect(handler).toHaveBeenCalled();
+  const forwarded = handler.mock.calls[0][0] as RouterMessage;
+  expect(forwarded.data).toEqual({ origin: 'content-script', message: errorMessage });
 });
 
