@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
         top: theme.spacing(0.5),
         padding: theme.spacing(),
         paddingLeft: theme.spacing(5),
-        backgroundColor: fade(theme.palette.background.default, 0.9),
+        backgroundColor: fade(theme.palette.background.default, 0.95),
         borderBottom: `1px solid ${substrateGray[200]}`
       },
     },

@@ -88,7 +88,7 @@ const useStyles = makeStyles(theme => ({
     '&.supported svg': {
       color: substrateGreen[400],
     },
-    '&.soon svg': {
+    '&.very svg': {
       color: '#EAC920',
     },
   },

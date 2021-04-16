@@ -32,6 +32,11 @@ const useStyles = makeStyles(theme => ({
       marginRight: theme.spacing(1.2),
     },
   },
+  hero: {
+    fontSize: '80px',
+    marginTop: '0.2em',
+    marginBottom: '0.2em',
+  },
   ref: {
     display: 'block',
     width: 'fit-content',
@@ -78,6 +83,16 @@ export const SectionText: React.FunctionComponent = ({children}) => (
     {children}
   </Typography>
 );
+
+
+export const SectionHeroText: React.FunctionComponent = ({children}) => {
+  const classes = useStyles();
+  return (
+    <Typography component='div' color='primary' variant='h1' className={classes.hero}>
+      {children}
+    </Typography>
+  )
+};
 
 export const SectionRef: React.FunctionComponent<ButtonProps> = ({
   children,

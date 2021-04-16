@@ -1,6 +1,6 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider, createMuiTheme, Typography, Box, Grid } from '@material-ui/core';
-import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeading, SectionText, SectionRef, FooterLink, SidebarLink, Code } from './components';
+import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeading, SectionText, SectionHeroText, SectionRef, FooterLink, SidebarLink, Code } from './components';
 import { CardNetwork, CardProject } from './components/Cards';
 
 const App: React.FunctionComponent = () => {
@@ -139,6 +139,9 @@ const App: React.FunctionComponent = () => {
             <Section pt={5} pb={5}>
               <SectionHeading id='playground' prefix='6'>Playground</SectionHeading>
               <SectionText>Save logged API as global variable. Call methods</SectionText>
+              <SectionHeroText>cmd + alt + i</SectionHeroText>
+              <SectionHeroText>ctrl + shift + i</SectionHeroText>
+              {/* TODO: Playground */}
               <Box pt={25}>
                 <FooterLink>© 2021 Parity Technologies</FooterLink>
                 <FooterLink>Terms & conditions</FooterLink>
@@ -146,7 +149,6 @@ const App: React.FunctionComponent = () => {
                 <FooterLink>Report an issue</FooterLink>
                 <FooterLink href='https://github.com/paritytech/substrate-connect'>GitHub</FooterLink>
               </Box>
-              {/* TODO: Playground */}
             </Section>
           </ThemeProvider>
         </div>
