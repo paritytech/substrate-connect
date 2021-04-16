@@ -50,7 +50,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         };
         result.apps.push(a);
       }
-      a.networks.push({ name: app.smoldotName as string });
+      a.networks.push({ name: app.smoldotName });
       return result;
     }, state);
   }

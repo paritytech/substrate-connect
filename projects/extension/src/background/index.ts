@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { ConnectionManager } from './ConnectionManager';
-import westend from '../assets/westend.json';
-import kusama from '../assets/kusama.json';
-import polkadot from '../assets/polkadot.json';
+import westend from '../../public/assets/westend.json';
+import kusama from '../../public/assets/kusama.json';
+import polkadot from '../../public/assets/polkadot.json';
 import { debug } from '../utils/debug';
 import { AppType } from './types';
+import { Network } from '../types';
 
 const manager = new ConnectionManager();
+const networks: Network[] = [];
 
 manager.on('stateChanged', () => {
   debug('CONNECTION MANAGER STATE CHANGED', manager.getState());
@@ -25,38 +27,45 @@ export interface RequestRpcSend {
   params: unknown[];
 }
 
+const createSmoldot = async (name: string, spec: unknown) => {
+  const stringifiedSpec = JSON.stringify(spec);
+  try {
+    await manager.addSmoldot(name, stringifiedSpec);
+    networks.push({
+      name: name,
+      status: 'connected',
+      isKnown: true,
+      chainspecPath: `${name}.json`
+    });
+  } catch (e) {
+    console.error(`Error creating ${name} smoldot: ${e}`); 
+  }
+}
+
 chrome.runtime.onInstalled.addListener(() => {
-  const westendChainSpec = JSON.stringify(westend);
-  const kusamaChainSpec = JSON.stringify(kusama);
-  const polkadotChainSpec = JSON.stringify(polkadot);
-  manager.addSmoldot('westend', westendChainSpec).catch((e) => { 
-    console.error('Error creating westend smoldot: ', e); 
-  });
-  manager.addSmoldot('kusama', kusamaChainSpec).catch((e) => { 
-    console.error('Error Creating kusama smoldot', e); 
-  });
-  manager.addSmoldot('polkadot', polkadotChainSpec).catch((e) => { 
-    console.error('Error Creating polkadot smoldot', e); 
-  });
+  void createSmoldot('polkadot', polkadot);
+  void createSmoldot('kusama', kusama);
+  void createSmoldot('westend', westend);
 });
 
 chrome.runtime.onConnect.addListener((port) => {
-  console.log('port onConnect:', port)
   if (port.name === 'substrateExtension') {
     const apps: AppType[] = [];
     // Map the apps that exist in the ConnectionManager to the
     // format that the extension expects
-    manager?.apps?.forEach(s => {
+    manager?.apps?.forEach(a => {
       apps.push({
-        appName: s.appName,
-        name: s.name,
-        smoldotName: s.smoldotName,
-        state: s.state,
-        tabId: s.tabId,
-        url: s.url
+        appName: a.appName,
+        name: a.name,
+        smoldotName: a.smoldotName,
+        state: a.state,
+        tabId: a.tabId,
+        url: a.url
       });
     })
-    port.postMessage({ type: 'info', payload: apps });
+
+    port.postMessage({ type: 'info', about: 'apps', payload: apps });
+    port.postMessage({ type: 'info', about: 'networks', payload: networks });
   } else {
     manager.addApp(port);
   }

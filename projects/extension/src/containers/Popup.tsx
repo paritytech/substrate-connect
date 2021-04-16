@@ -35,11 +35,11 @@ const Popup: React.FunctionComponent = () => {
 
   React.useEffect((): void => {
     const port = chrome.runtime.connect({ name: `substrateExtension` });
-    port.onMessage.addListener(( { type, payload }): void => {
+    port.onMessage.addListener(( { type, about, payload }): void => {
       if (type === 'error') {
         console.error('ERROR: ', payload);
       } else {
-        setApps(payload);
+        about === 'apps' && setApps(payload);
       }
     });
   }, []);
@@ -66,11 +66,7 @@ const Popup: React.FunctionComponent = () => {
         })
       });
       gatherTabs.forEach(t => {
-        if (t.isActive) {
-          setActiveTab(<Tab current tab={t} />);
-         } else {
-          restTabs.push(<Tab key={t.tabId} tab={t}/>);
-        }
+        (t.isActive) ? setActiveTab(<Tab current tab={t} />) : restTabs.push(<Tab key={t.tabId} tab={t}/>);
       })
       setRTabs(restTabs);
     });

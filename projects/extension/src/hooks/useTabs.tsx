@@ -9,7 +9,6 @@ const useTabs = (): NetworkCtx => {
   
   useEffect((): void => {
     chrome.tabs.query({"currentWindow": true }, chromeTabs => {
-      console.log('Chromes tabs are', chromeTabs);
       setTabs(chromeTabs.map(t => {
         return ({
           isActive: t.active,
