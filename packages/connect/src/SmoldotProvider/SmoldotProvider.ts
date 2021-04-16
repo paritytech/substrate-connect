@@ -1,7 +1,3 @@
-// Copyright 2018-2021 @paritytech/substrate-connect authors & contributors
-// This software may be modified and distributed under the terms
-// of the Apache-2.0 license. See the LICENSE file for details.
-
 import {RpcCoder} from '@polkadot/rpc-provider/coder';
 import {
   JsonRpcResponse,
@@ -40,7 +36,6 @@ interface HealthResponse {
   peers: number;
   shouldHavePeers: boolean;
 }
-
 
 const ANGLICISMS: { [index: string]: string } = {
   chain_finalisedHead: 'chain_finalizedHead',
