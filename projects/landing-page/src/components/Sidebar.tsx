@@ -6,6 +6,7 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 const useStyles = makeStyles(theme => ({
   sidebar: {
     width: '345px',
+    maxWidth: '345px',
     paddingLeft: theme.spacing(10),
     '& .fixed': {
       position: 'fixed',
@@ -13,6 +14,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('sm')]: {
       '& .fixed': {
         width: '100%',
+        maxWidth: 'none',
         left: 0,
         top: theme.spacing(0.5),
         padding: theme.spacing(),

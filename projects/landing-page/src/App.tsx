@@ -1,6 +1,6 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider, createMuiTheme, Typography, Box, Grid } from '@material-ui/core';
-import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeading, SectionText, SectionRef, FooterLink, SidebarLink } from './components';
+import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeading, SectionText, SectionRef, FooterLink, SidebarLink, Code } from './components';
 import { CardNetwork, CardProject } from './components/Cards';
 
 const App: React.FunctionComponent = () => {
@@ -77,7 +77,33 @@ const App: React.FunctionComponent = () => {
 
           <Section>
             <SectionHeading id='getting-started' prefix='4'>Getting Started</SectionHeading>
-            {/* TODO: CodeSnippet */}
+            <ThemeProvider theme={createMuiTheme(dark)}>
+              <Code>
+                yarn add @substrate/substrate-connect
+              </Code>
+              <Code heading='index.ts'>
+                  {`import { UApp } from '@substrate/connect';`}<br/>​
+                  <br/>​
+                  {`// Create a new UApp with a unique name`}<br/>​
+                  {`const app = new UApp('burnr-wallet');`}<br/>​
+                  <br/>​
+                  {`const westend = app.detect('westend');`}<br/>​
+                  {`const kusama = app.detect('kusama');`}<br/>​
+                  <br/>​
+                  {`westend.rpc.chain.subscribeNewHeads((lastHeader) => {`}<br/>​
+                  {`  console.log(lastHeader.hash);`}<br/>​
+                  {`);`}
+                  <br/>​
+                  {`kusama.rpc.chain.subscribeNewHeads((lastHeader) => {`}<br/>​
+                  {`  console.log(lastHeader.hash);`}<br/>​
+                  {`});`}<br/>​
+                  <br/>​
+                  {`// etc ...`}<br/>​
+                  <br/>​
+                  {`westend.disconnect();`}<br/>​
+                  {`kusama.disconnect();`}
+              </Code>
+            </ThemeProvider>
           </Section>
           <Section>
             <SectionHeading id='projects' prefix='5'>Projects</SectionHeading>

@@ -20,7 +20,7 @@ export const substrateGray = {
 	500: '#ABB8BF',
 	600: '#7E8D95',
   800: '#323F47',
-  900: '#323F47',
+  900: '#202B33',
 };
 
 const paletteLight: PaletteOptions = {
@@ -70,7 +70,7 @@ const paletteDark: PaletteOptions = {
 		white: '#FFFFFF',
 	},
 	background: {
-		paper: 'black',
+		paper: substrateGray[800],
 		default: 'black',
 	},
 	primary: {
@@ -100,7 +100,7 @@ const paletteDark: PaletteOptions = {
 	action: {
 		active: substrateGreen[300],
 	},
-	divider: grey[300],
+	divider: grey[600],
 }
 
 const light: ThemeOptions = {
