@@ -35,7 +35,7 @@ export class ExtensionMessageRouter {
   }
 
   #establishNewConnection = (message: ExtensionProviderMessage): void => {
-     const data = message.data;
+    const data = message.data;
     const port = chrome.runtime.connect({ name: `${data.appName}::${data.chainName}` });
     debug(`CONNECTED ${data.chainName} PORT`, port);
     // forward any messages: extension -> page
@@ -43,7 +43,7 @@ export class ExtensionMessageRouter {
     port.onMessage.addListener((data): void => {
       debug(`RECIEVED MESSGE FROM ${chainName} PORT`, data);
       window.postMessage({
-        message: data.payload,
+        message: data,
         origin: CONTENT_SCRIPT_ORIGIN
       }, '*');
     });
