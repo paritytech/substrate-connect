@@ -9,8 +9,6 @@ import { CallMade as Save } from '@material-ui/icons';
 
 import { TabInterface } from '../types';
 
-import { openInNewTab } from '../utils/utils';
-
 import { AppType } from '../background/types';
 
 const { createMuiTheme, ThemeProvider, Box, Divider } = material;
@@ -48,7 +46,6 @@ const Popup: React.FunctionComponent = () => {
     const gatherTabs: TabInterface[] = [];
     const restTabs: React.ReactElement[] = [];
     chrome.tabs.query({"currentWindow": true, }, tabs => {
-      console.log('apps', apps, tabs);
       tabs.forEach(t => {
         apps?.find(({ tabId, smoldotName, appName, }) => {
           if (tabId === t.id) {
@@ -82,7 +79,7 @@ const Popup: React.FunctionComponent = () => {
           {rTabs.map(r => r)}
         </Box>
         <Divider />
-        <MenuButton fullWidth onClick={() => openInNewTab('chrome-extension://npfgeeonalpabakkpdobjngodgljemkb/options.html')}>My Networks</MenuButton>
+        <MenuButton fullWidth onClick={() => chrome.runtime.openOptionsPage()}>My Networks</MenuButton>
         <MenuButton fullWidth endIcon={<Save />}>Url to uApps list</MenuButton>
         <Divider />
         <MenuButton className='danger' fullWidth>Stop all connections</MenuButton>
