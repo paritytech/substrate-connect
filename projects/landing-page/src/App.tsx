@@ -1,5 +1,5 @@
 import React from 'react';
-import { CssBaseline, ThemeProvider, createMuiTheme, Typography, Box, Grid } from '@material-ui/core';
+import { CssBaseline, ThemeProvider, createMuiTheme, Typography, Box, Grid} from '@material-ui/core';
 import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeading, SectionText, SectionHeroText, SectionRef, FooterLink, SidebarLink, Code } from './components';
 import { CardNetwork, CardProject } from './components/Cards';
 
@@ -82,26 +82,25 @@ const App: React.FunctionComponent = () => {
                 yarn add @substrate/substrate-connect
               </Code>
               <Code heading='index.ts'>
-                  {`import { UApp } from '@substrate/connect';`}<br/>​
-                  <br/>​
-                  {`// Create a new UApp with a unique name`}<br/>​
-                  {`const app = new UApp('burnr-wallet');`}<br/>​
-                  <br/>​
-                  {`const westend = app.detect('westend');`}<br/>​
-                  {`const kusama = app.detect('kusama');`}<br/>​
-                  <br/>​
-                  {`westend.rpc.chain.subscribeNewHeads((lastHeader) => {`}<br/>​
-                  {`  console.log(lastHeader.hash);`}<br/>​
-                  {`);`}
-                  <br/>​
-                  {`kusama.rpc.chain.subscribeNewHeads((lastHeader) => {`}<br/>​
-                  {`  console.log(lastHeader.hash);`}<br/>​
-                  {`});`}<br/>​
-                  <br/>​
-                  {`// etc ...`}<br/>​
-                  <br/>​
-                  {`westend.disconnect();`}<br/>​
-                  {`kusama.disconnect();`}
+                <Box>{`import { UApp } from '@substrate/connect';`}</Box>
+
+                <Box mt={2}>{`// Create a new UApp with a unique name`}</Box>
+                <Box>{`const app = new UApp('burnr-wallet');`}</Box>
+                <Box>{`const westend = app.detect('westend');`}</Box>
+                <Box>{`const kusama = app.detect('kusama');`}</Box>
+
+                <Box mt={2}>{`westend.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
+                <Box>{`);`}</Box>
+
+                <Box mt={2}>{`kusama.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
+                <Box>{`});`}</Box>
+
+                <Box mt={2}>{`// etc ...`}</Box>
+
+                <Box mt={2}>{`westend.disconnect();`}</Box>
+                <Box>{`kusama.disconnect();`}</Box>
               </Code>
             </ThemeProvider>
           </Section>

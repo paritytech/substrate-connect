@@ -102,7 +102,7 @@ export const SectionRef: React.FunctionComponent<ButtonProps> = ({
 }) => {
   const classes = useStyles();
   return (
-    <a target='_blank' href={href} className={classes.ref}>
+    <a target='_blank' rel='noreferrer' href={href} className={classes.ref}>
       <Button 
         color='secondary'
         startIcon={startIcon}

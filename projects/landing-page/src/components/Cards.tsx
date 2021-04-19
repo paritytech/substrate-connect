@@ -101,7 +101,7 @@ interface CardLinkProps {
 const CardLink: React.FunctionComponent<CardLinkProps> = ({href, children}) => {
   const classes = useStyles();
   return (
-    <a target='_blank' href={href} className={classes.link}>
+    <a target='_blank' rel='noreferrer' href={href} className={classes.link}>
       <CallMadeIcon/>
       <Typography variant='subtitle2'>{children}</Typography>
     </a>
@@ -150,11 +150,10 @@ export const CardStatus: React.FunctionComponent<CardStatusProps> = ({status}) =
 
 interface CardNetworkProps {
   title: string;
-  link?: CardLinkProps;
   statusProps: CardStatusProps;
   linkProps?: CardLinkProps;
 }
-export const CardNetwork: React.FunctionComponent<CardNetworkProps> = ({children, title, link, statusProps, linkProps}) => {
+export const CardNetwork: React.FunctionComponent<CardNetworkProps> = ({children, title, statusProps, linkProps}) => {
   const classes = useStyles();
   return (
     <Grid item className={`${classes.card} network`}>

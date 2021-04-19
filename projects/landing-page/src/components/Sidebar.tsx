@@ -55,7 +55,7 @@ export const Sidebar: React.FunctionComponent = ({children}) => {
   )
 };
 
-export const SidebarLink: React.FunctionComponent<LinkProps> = ({children, underline='none', ...props}) => {
+export const SidebarLink: React.FunctionComponent<LinkProps> = ({children, ...props}) => {
   const classes = useStyles();
   return (
     <Link className={classes.link} {...props}>
