@@ -36,6 +36,9 @@ const useStyles = makeStyles(theme => ({
     fontSize: '80px',
     marginTop: '0.2em',
     marginBottom: '0.2em',
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '10vw',
+    },
   },
   ref: {
     display: 'block',

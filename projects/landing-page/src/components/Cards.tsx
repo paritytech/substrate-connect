@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Box, Grid, GridProps, makeStyles, Typography } from '@material-ui/core';
 import CallMadeIcon from '@material-ui/icons/CallMade';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { IconWeb3 } from '.';
@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
     borderRadius: theme.spacing(),
     justifyContent: 'center',
     textAlign: 'center',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('xs')]: {
       width: `calc(100% - ${theme.spacing(2)}px)`,
     },
     '&.network': {
@@ -109,13 +109,16 @@ const CardLink: React.FunctionComponent<CardLinkProps> = ({href, children}) => {
 };
 
 
-interface CardProjectProps {
+interface CardProjectProps extends GridProps {
   title?: string;
   subtitle?: string;
-  imagePath?: string;
+  imageProps?: {
+    path: string;
+    position?: string; 
+  },
   linkProps?: CardLinkProps;
 }
-export const CardProject: React.FunctionComponent<CardProjectProps> = ({children, title, subtitle, imagePath, linkProps}) => {
+export const CardProject: React.FunctionComponent<CardProjectProps> = ({children, title, subtitle, linkProps, imageProps}) => {
   const classes = useStyles();
   return (
     <Grid item className={classes.card}>
@@ -125,7 +128,7 @@ export const CardProject: React.FunctionComponent<CardProjectProps> = ({children
         ? <Typography className='subtitle' variant='body2'>{subtitle}</Typography>
         : <Typography className='subtitle placeholder' variant='body2'>no</Typography>
       }
-      <img src={imagePath || ''} alt={title}/>
+      <img src={imageProps?.path || ''} alt={title} style={{objectPosition:imageProps?.position}} />
       <div className='content'>
         {children}
       </div>

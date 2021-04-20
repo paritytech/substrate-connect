@@ -45,7 +45,6 @@ const App: React.FunctionComponent = () => {
           </Section>
 
           <Section>
-            <img src={BrowserDemo} />
             <SectionHeading id='supported-networks' prefix='3'>Supported Networks</SectionHeading>
             <Grid container>
               <CardNetwork
@@ -113,28 +112,27 @@ const App: React.FunctionComponent = () => {
           </Section>
           <Section>
             <SectionHeading id='projects' prefix='5'>Projects</SectionHeading>
-            {/* TODO: ImagePath */}
             <CardProject
               title='Browser Demo'
               subtitle='Minimal implementation'
-              imagePath={BrowserDemo}
+              imageProps={{path:BrowserDemo, position: 'left top'}}
               linkProps={{href:'https://paritytech.github.io/substrate-connect/smoldot-browser-demo/'}}
             />
             <CardProject
               title='Extension'
               subtitle='Light clients broker for browser'
-              imagePath={Extension}
+              imageProps={{path:Extension, position: 'center top'}}
               linkProps={{href:'https://github.com/paritytech/substrate-connect/tree/master/projects/extension'}}
             />
             <CardProject
               title='Burnr'
               subtitle='Insecure redeemable wallet'
-              imagePath={Burnr}
+              imageProps={{path:Burnr, position: 'center top'}}
               linkProps={{href:'https://paritytech.github.io/substrate-connect/burnr/'}}
             />
             <CardProject
               title='Next Project'
-              imagePath={YourProject}
+              imageProps={{path:YourProject}}
             >
               <SectionRef href=''>
                 Contributor’s guide
