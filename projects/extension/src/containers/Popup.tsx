@@ -9,8 +9,6 @@ import { CallMade as Save } from '@material-ui/icons';
 
 import { TabInterface } from '../types';
 
-import { AppType } from '../background/types';
-
 const { createMuiTheme, ThemeProvider, Box, Divider } = material;
 
 const SearchBar: React.FC = (): React.ReactElement => (
@@ -26,20 +24,15 @@ const SearchBar: React.FC = (): React.ReactElement => (
 );
 
 const Popup: React.FunctionComponent = () => {
-  const [apps, setApps] = React.useState<AppType[]>([{} as AppType]);
+  const [apps, setApps] = React.useState<Window | null>(null);
   const [activeTab, setActiveTab] = React.useState<React.ReactElement | undefined>();
   const [rTabs, setRTabs] = React.useState<React.ReactElement[]>([]);
   const appliedTheme = createMuiTheme(light);
 
   React.useEffect((): void => {
-    const port = chrome.runtime.connect({ name: `substrateExtension` });
-    port.onMessage.addListener(( { type, about, payload }): void => {
-      if (type === 'error') {
-        console.error('ERROR: ', payload);
-      } else {
-        about === 'apps' && setApps(payload);
-      }
-    });
+    const bgPage = chrome?.extension?.getBackgroundPage();
+    bgPage && bgPage.manager && setApps(bgPage.manager.apps);
+    console.log('bgPage', bgPage?.manager?.apps);
   }, []);
 
   React.useEffect((): void => {
@@ -47,7 +40,7 @@ const Popup: React.FunctionComponent = () => {
     const restTabs: React.ReactElement[] = [];
     chrome.tabs.query({"currentWindow": true, }, tabs => {
       tabs.forEach(t => {
-        apps?.find(({ tabId, smoldotName, appName, }) => {
+        apps && apps.find(({ tabId, smoldotName, appName, }) => {
           if (tabId === t.id) {
             gatherTabs.push({
               isActive: t.active,

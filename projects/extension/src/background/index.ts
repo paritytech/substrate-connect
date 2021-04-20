@@ -7,8 +7,13 @@ import polkadot from '../../public/assets/polkadot.json';
 import { debug } from '../utils/debug';
 import { AppType } from './types';
 import { Network } from '../types';
+export interface Background extends Window {
+  manager: ConnectionManager
+}
 
-const manager = new ConnectionManager();
+declare let window: Background;
+
+const manager = window.manager = new ConnectionManager();
 const networks: Network[] = [];
 
 manager.on('stateChanged', () => {
