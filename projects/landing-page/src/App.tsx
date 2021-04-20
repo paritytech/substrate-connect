@@ -1,7 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from 'react';
 import { CssBaseline, ThemeProvider, createMuiTheme, Typography, Box, Grid} from '@material-ui/core';
 import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeading, SectionText, SectionHeroText, SectionRef, FooterLink, SidebarLink, Code } from './components';
 import { CardNetwork, CardProject } from './components/Cards';
+
+import BrowserDemo from 'url:../public/assets/images/BrowserDemo.png';
+import Burnr from 'url:../public/assets/images/burnr.png';
+import Extension from 'url:../public/assets/images/Extension.png';
+import YourProject from 'url:../public/assets/images/YourProject.png';
 
 const App: React.FunctionComponent = () => {
   return (
@@ -39,6 +45,7 @@ const App: React.FunctionComponent = () => {
           </Section>
 
           <Section>
+            <img src={BrowserDemo} />
             <SectionHeading id='supported-networks' prefix='3'>Supported Networks</SectionHeading>
             <Grid container>
               <CardNetwork
@@ -110,24 +117,24 @@ const App: React.FunctionComponent = () => {
             <CardProject
               title='Browser Demo'
               subtitle='Minimal implementation'
-              imagePath='images/BrowserDemo.png'
+              imagePath={BrowserDemo}
               linkProps={{href:'https://paritytech.github.io/substrate-connect/smoldot-browser-demo/'}}
             />
             <CardProject
               title='Extension'
               subtitle='Light clients broker for browser'
-              // iamgePath='path'
+              imagePath={Extension}
               linkProps={{href:'https://github.com/paritytech/substrate-connect/tree/master/projects/extension'}}
             />
             <CardProject
               title='Burnr'
               subtitle='Insecure redeemable wallet'
-              // iamgePath='path'
+              imagePath={Burnr}
               linkProps={{href:'https://paritytech.github.io/substrate-connect/burnr/'}}
             />
             <CardProject
               title='Next Project'
-              // iamgePath='path'
+              imagePath={YourProject}
             >
               <SectionRef href=''>
                 Contributor’s guide

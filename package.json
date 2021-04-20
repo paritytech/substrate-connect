@@ -36,8 +36,10 @@
     "connect-tester": "yarn workspace @substrate/extension-provider run build && yarn workspace @substrate/connect run build && yarn run dev:smoldot-browser-demo"
   },
   "devDependencies": {
+    "@parcel/transformer-image": "nightly",
     "copyfiles": "^2.3.0",
-    "husky": "^5.0.8"
+    "husky": "^5.0.8",
+    "parcel": "nightly"
   },
   "dependencies": {
     "@wasm-tool/wasm-pack-plugin": "^1.3.1"
