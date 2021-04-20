@@ -5,7 +5,7 @@ import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeadin
 import { CardNetwork, CardProject } from './components/Cards';
 
 import BrowserDemo from 'url:../public/assets/images/BrowserDemo.png';
-import Burnr from 'url:../public/assets/images/burnr.png';
+import Burnr from 'url:../public/assets/images/Burnr.png';
 import Extension from 'url:../public/assets/images/Extension.png';
 import YourProject from 'url:../public/assets/images/YourProject.png';
 
