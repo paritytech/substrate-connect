@@ -1,0 +1,16 @@
+/dist
+.env
+.idea
+.vscode
+.cache/
+.parcel-cache/
+yarn-error.log*
+
+# dependencies
+/node_modules
+
+# misc
+.DS_Store
+
+# testing
+/coverage
