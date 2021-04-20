@@ -1,7 +1,8 @@
 import React, { FunctionComponent } from 'react';
-import { Grid, Typography, Box } from '@material-ui/core';
+import { Grid, Typography, Box, IconButton, createStyles, makeStyles } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import { Switch, IconWeb3 } from '../components';
+import CloseIcon from '@material-ui/icons/Close';
+import { IconWeb3 } from '../components';
 import { TabInterface } from '../types';
 
 interface TabProps {
@@ -9,14 +10,34 @@ interface TabProps {
   tab?: TabInterface;
 }
 
-// TDODO: data structure. Will we ever need map here at all?
-// each uApp will be associated with one url
-// if the same uApp, or uApp with the same title will be opened in >1 tab, it's ok to duplicate it on the UI too
+const useStyles = makeStyles(() =>
+  createStyles({
+    disableButton: {
+      color: grey[800],
+      '&:not(:hover)': {
+        opacity: 0.1,
+      },
+      '& svg': {
+        fontSize: '0.8rem',
+      }
+    }
+  })
+);
+
+const ButtonDisableTab: FunctionComponent = () => {
+  const classes = useStyles();
+  return (
+    <IconButton size='small' className={classes.disableButton}>
+      <CloseIcon />
+    </IconButton>
+  );
+}
+
 const Tab: FunctionComponent<TabProps> = ({ tab, current=false }) => (
   <Box 
     pt={current ? 2 : 1}
     pb={current ? 2 : 1}
-    pr={current ? 1.5 : 3}
+    pr={1}
     pl={3}
   >
     <Grid
@@ -48,7 +69,7 @@ const Tab: FunctionComponent<TabProps> = ({ tab, current=false }) => (
             </Grid>
           )}
           <Grid item>
-            <Switch size={current ? 'medium' : 'small'} isActive={tab?.uApp.enabled} />
+            <ButtonDisableTab />
           </Grid>
         </Grid>
       </Grid>
