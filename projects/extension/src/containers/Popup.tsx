@@ -6,7 +6,9 @@ import * as material from '@material-ui/core';
 import GlobalFonts from '../fonts/fonts';
 import { light, Tab, MenuButton, MenuInputText } from '../components';
 import { CallMade as Save } from '@material-ui/icons';
-
+import { Background } from '../background/';
+import { ConnectionManager, State } from '../background/ConnectionManager';
+import { debug } from '../utils/debug';
 import { TabInterface } from '../types';
 
 const { createMuiTheme, ThemeProvider, Box, Divider } = material;
@@ -24,15 +26,22 @@ const SearchBar: React.FC = (): React.ReactElement => (
 );
 
 const Popup: React.FunctionComponent = () => {
-  const [apps, setApps] = React.useState<Window | null>(null);
   const [activeTab, setActiveTab] = React.useState<React.ReactElement | undefined>();
   const [rTabs, setRTabs] = React.useState<React.ReactElement[]>([]);
   const appliedTheme = createMuiTheme(light);
 
+  const [manager, setManager] = React.useState<ConnectionManager | null>(null);
+  const [state, setState] = React.useState<State | null>(null);
+
   React.useEffect((): void => {
-    const bgPage = chrome?.extension?.getBackgroundPage();
-    bgPage && bgPage.manager && setApps(bgPage.manager.apps);
-    console.log('bgPage', bgPage?.manager?.apps);
+    chrome.runtime.getBackgroundPage(backgroundPage => {
+      const bg = backgroundPage as Background;
+      setManager(bg.manager);
+      bg.manager.on('stateChanged', () => {
+        const theState = bg.manager.getState();
+        setState(theState);
+      });
+    });
   }, []);
 
   React.useEffect((): void => {
@@ -40,7 +49,7 @@ const Popup: React.FunctionComponent = () => {
     const restTabs: React.ReactElement[] = [];
     chrome.tabs.query({"currentWindow": true, }, tabs => {
       tabs.forEach(t => {
-        apps && apps.find(({ tabId, smoldotName, appName, }) => {
+        manager?.apps && manager.apps.find(({ tabId, smoldotName, appName, }) => {
           if (tabId === t.id) {
             gatherTabs.push({
               isActive: t.active,
@@ -60,7 +69,7 @@ const Popup: React.FunctionComponent = () => {
       })
       setRTabs(restTabs);
     });
-  }, [apps]);
+  }, [manager, state]);
 
 	return (
     <ThemeProvider theme={appliedTheme}>
