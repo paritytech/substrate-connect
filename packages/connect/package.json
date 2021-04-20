@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@polkadot/rpc-provider": "^3.7.3",
+    "@substrate/connect-extension-protocol": "1.0.0",
     "browserify-fs": "^1.0.0",
     "eventemitter3": "^4.0.7",
     "file-entry-cache": "^6.0.1",

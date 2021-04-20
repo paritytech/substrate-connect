@@ -12,13 +12,6 @@ declare let window: Background;
 
 const manager = window.manager = new ConnectionManager();
 
-export type AppMessageType = 'associate' | 'rpc';
-
-export interface AppMessage {
-  type: AppMessageType;
-  payload: string; // name of the network or an rpc string (json stringified RPC message)
-}
-
 export interface RequestRpcSend {
   method: string;
   params: unknown[];

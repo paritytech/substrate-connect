@@ -1,8 +1,8 @@
 import EventEmitter from 'eventemitter3';
 import {
-  AppMessage,
-  ExtensionMessage
-} from '../types';
+  MessageToManager,
+  MessageFromManager
+} from '@substrate/connect-extension-protocol';
 import { 
   AppState, 
   ConnectionManagerInterface,
@@ -27,7 +27,6 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   readonly subscriptions: SubscriptionMapping[];
   readonly requests: MessageIDMapping[];
   highestUAppRequestId = 0;
-  #notifyOnDisconnected = false;
 
   constructor(port: chrome.runtime.Port, manager: ConnectionManagerInterface) {
     super();
@@ -41,7 +40,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     this.#manager = manager;
     // Open listeners for the incoming rpc messages
     this.#port.onMessage.addListener(this.#handlePortMessage);
-    this.#port.onDisconnect.addListener(() => { this.#handleDisconnect(false) });
+    this.#port.onDisconnect.addListener(() => { this.#handleDisconnect() });
   }
 
   get name(): string {
@@ -78,7 +77,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   }
 
   #sendError = (message: string): void => {
-    const error: ExtensionMessage = { type: 'error', payload: message };
+    const error: MessageFromManager = { type: 'error', payload: message };
     this.#port.postMessage(error);
   }
 
@@ -164,7 +163,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
         ? `The app is not associated with a blockchain client`
         : `The app is ${this.#state}`;
 
-      const error: ExtensionMessage = { type: 'error', payload: message };
+      const error: MessageFromManager = { type: 'error', payload: message };
       this.#port.postMessage(error);
       return;
     }
@@ -205,7 +204,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     return;
   }
 
-  #handlePortMessage = (message: AppMessage): void => {
+  #handlePortMessage = (message: MessageToManager): void => {
     if (message.type == 'associate') {
       this.#handleAssociateRequest(message.payload);
       return;
@@ -218,7 +217,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   }
 
   disconnect(): void {
-    this.#handleDisconnect(true);
+    this.#handleDisconnect();
   }
 
   #sendUnsubscribe = (sub: SubscriptionMapping): void => {
@@ -239,13 +238,12 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     this.requests.push({ appID, smoldotID });
   };
 
-  #handleDisconnect = (notify: boolean): void => {
+  #handleDisconnect = (): void => {
     if (this.#state === 'disconnecting' || this.#state === 'disconnected') {
       throw new Error('Cannot disconnect - already disconnecting / disconnected');
     }
 
     this.#state = 'disconnecting';
-    this.#notifyOnDisconnected = notify;
     this.subscriptions.forEach(this.#sendUnsubscribe);
     // remove all the subscriptions
     this.subscriptions.splice(0, this.subscriptions.length);

@@ -64,6 +64,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/styles": "^4.11.3",
     "@polkadot/rpc-provider": "^3.10.2",
+    "@substrate/connect-extension-protocol": "1.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hot-loader": "^4.13.0",

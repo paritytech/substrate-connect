@@ -5,8 +5,9 @@ import {
 import {
   ProviderMessage,
   ProviderMessageData,
-  ExtensionMessageData
-} from './types';
+  ExtensionMessageData,
+  extension
+} from '@substrate/connect-extension-protocol';
 
 const waitForMessageToBePosted = (): Promise<null> => {
   // window.postMessge is async so we must do a short setTimeout to yield to
@@ -17,7 +18,7 @@ const waitForMessageToBePosted = (): Promise<null> => {
 let handler = jest.fn();
 beforeEach(() => {
   handler = jest.fn();
-  window.addEventListener('message', handler);
+  extension.listen(handler);
 });
 
 afterEach(() => {

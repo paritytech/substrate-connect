@@ -1,7 +1,10 @@
 import { jest } from '@jest/globals';
 import { AppMediator } from './background/AppMediator';
 import { ConnectionManagerInterface } from './background/types';
-import { AppMessage, ExtensionMessage } from './types';
+import { 
+  MessageToManager, 
+  MessageFromManager 
+} from '@substrate/connect-extension-protocol';
 
 export class MockPort implements chrome.runtime.Port {
   sender: any;
@@ -18,7 +21,7 @@ export class MockPort implements chrome.runtime.Port {
     this.sender.tab.id = id;
   }
 
-  triggerMessage(message: AppMessage | ExtensionMessage): void {
+  triggerMessage(message: MessageFromManager | MessageToManager): void {
     this.#messageListeners.forEach((l: any) => {
       l(message);
     });

@@ -14,6 +14,7 @@
   "private": true,
   "workspaces": [
     "packages/connect",
+    "packages/connect-extension-protocol",
     "projects/extension",
     "projects/smoldot-browser-demo",
     "projects/multiple-network-demo",

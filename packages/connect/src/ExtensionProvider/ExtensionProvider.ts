@@ -10,10 +10,11 @@ import { logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 import { isUndefined } from '../utils';
 import {
+  ProviderMessageData,
   ExtensionMessage,
   ExtensionMessageData,
-  ProviderMessageData
-} from './types';
+  provider
+} from '@substrate/connect-extension-protocol';
 
 const CONTENT_SCRIPT_ORIGIN = 'content-script';
 const EXTENSION_PROVIDER_ORIGIN = 'extension-provider';
@@ -178,8 +179,8 @@ export class ExtensionProvider implements ProviderInterface {
       },
       origin: EXTENSION_PROVIDER_ORIGIN
     }
-    window.postMessage(initMsg, '*');
-    window.addEventListener('message', ({data}: ExtensionMessage) => {
+    provider.send(initMsg);
+    provider.listen(({data}: ExtensionMessage) => {
       if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         this.#handleMessage(data);
@@ -203,7 +204,7 @@ export class ExtensionProvider implements ProviderInterface {
       origin: EXTENSION_PROVIDER_ORIGIN
     };
 
-    window.postMessage(disconnectMsg, '*');
+    provider.send(disconnectMsg);
     this.#isConnected = false;
     this.emit('disconnected');
   }
@@ -276,7 +277,7 @@ export class ExtensionProvider implements ProviderInterface {
         },
         origin: EXTENSION_PROVIDER_ORIGIN
       }
-      window.postMessage(rpcMsg, '*');
+      provider.send(rpcMsg);
     });
   }
 
