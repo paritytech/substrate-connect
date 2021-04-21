@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as material from '@material-ui/core';
 import { light, ClientSearch, Logo, ClientItem } from '../components/';
 import GlobalFonts from '../fonts/fonts';
+import { Background } from '../background/';
 import {
   // DEACTIVATE FOR NOW - will be needed once parachains will be integrated
   //  Parachain,
@@ -15,13 +16,9 @@ const Options: React.FunctionComponent = () => {
 	const [networks, setNetworks] = React.useState<Network[]>([{} as Network]);
 
   React.useEffect((): void => {
-    const port = chrome.runtime.connect({ name: `substrateExtension` });
-    port.onMessage.addListener(( { type, about, payload }): void => {
-      if (type === 'error') {
-        console.error('Error from port: ', payload);
-      } else {
-        about === 'networks' && setNetworks(payload);
-      }
+    chrome.runtime.getBackgroundPage(backgroundPage => {
+      const bg = backgroundPage as Background;
+      setNetworks(bg.manager.networks);
     });
   }, []);
 	

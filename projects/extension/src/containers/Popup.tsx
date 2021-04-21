@@ -6,10 +6,10 @@ import * as material from '@material-ui/core';
 import GlobalFonts from '../fonts/fonts';
 import { light, Tab, MenuButton, MenuInputText } from '../components';
 import { CallMade as Save } from '@material-ui/icons';
-
+import { Background } from '../background/';
+import { debug } from '../utils/debug';
 import { TabInterface } from '../types';
-
-import { AppType } from '../background/types';
+import { AppMediator } from 'src/background/AppMediator';
 
 const { createMuiTheme, ThemeProvider, Box, Divider } = material;
 
@@ -26,19 +26,20 @@ const SearchBar: React.FC = (): React.ReactElement => (
 );
 
 const Popup: React.FunctionComponent = () => {
-  const [apps, setApps] = React.useState<AppType[]>([{} as AppType]);
   const [activeTab, setActiveTab] = React.useState<React.ReactElement | undefined>();
   const [rTabs, setRTabs] = React.useState<React.ReactElement[]>([]);
   const appliedTheme = createMuiTheme(light);
+  const [apps, setApps] = React.useState<AppMediator[]>([]);
 
   React.useEffect((): void => {
-    const port = chrome.runtime.connect({ name: `substrateExtension` });
-    port.onMessage.addListener(( { type, about, payload }): void => {
-      if (type === 'error') {
-        console.error('ERROR: ', payload);
-      } else {
-        about === 'apps' && setApps(payload);
-      }
+    chrome.runtime.getBackgroundPage(backgroundPage => {
+      const bg = backgroundPage as Background;
+      bg.manager && setApps(bg.manager.apps);
+
+      // TODO: change the state when stateChanged occurs
+      bg.manager.on('stateChanged', () => {
+        debug('CONNECTION MANAGER STATE CHANGED', bg.manager.getState());
+      });
     });
   }, []);
 
@@ -47,7 +48,8 @@ const Popup: React.FunctionComponent = () => {
     const restTabs: React.ReactElement[] = [];
     chrome.tabs.query({"currentWindow": true, }, tabs => {
       tabs.forEach(t => {
-        apps?.find(({ tabId, smoldotName, appName, }) => {
+        // TODO: This could be migrated to backend - so that no transformation is needed in Popup
+        apps.find(({ tabId, smoldotName, appName, }) => {
           if (tabId === t.id) {
             gatherTabs.push({
               isActive: t.active,

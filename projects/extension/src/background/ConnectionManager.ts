@@ -7,6 +7,7 @@ import { SmoldotMediator } from './SmoldotMediator';
 import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
 import { StateEmitter } from './types';
+import { Network } from '../types';
 
 interface NetworkState {
   name: string;
@@ -26,6 +27,8 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   readonly #apps:  AppMediator[] = [];
   smoldotLogLevel = 3;
 
+  readonly #networks: Network[] = [];
+
   get registeredApps(): string[] {
     return this.#apps.map(a => a.name);
   }
@@ -36,6 +39,10 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
 
   get apps(): AppMediator[] {
     return this.#apps;
+  }
+
+  get networks(): Network[] {
+    return this.#networks;
   }
 
   getState(): State {
@@ -124,7 +131,14 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       const sm = new SmoldotMediator(name, sc);
 
       this.#smoldots.push(sm);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      //  temp solution until correct mapping takes place
+      // TODO: fix this when mapping is corrected
+      this.#networks.push({
+        name: name,
+        status: 'connected',
+        isKnown: true,
+        chainspecPath: `${name}.json`
+      });
     } catch (err) {
       console.error('Error starting smoldot', err);
     }
