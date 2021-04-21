@@ -172,7 +172,7 @@ const ClientItem: React.FunctionComponent<Network | Parachain> = ({...props}) =>
     <Grid container className={`${classes.root} ${!props.isKnown ? 'unknown' : ''} ${isParachain ? 'parachain' : ''}`} >
       <Typography variant='h2' component='div'>
         <Box component='span' className={classes.networkIconRoot}>
-          <IconWeb3>{icon.toLowerCase()}</IconWeb3>
+          <IconWeb3>{icon && icon.toLowerCase()}</IconWeb3>
         </Box>
         {props.name}
       </Typography>

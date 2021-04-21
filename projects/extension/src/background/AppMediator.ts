@@ -52,8 +52,8 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     return this.#appName;
   }
 
-  get smoldotName(): string | undefined {
-    return this.#smoldotName;
+  get smoldotName(): string {
+    return this.#smoldotName || '';
   }
 
   get tabId(): number | undefined {

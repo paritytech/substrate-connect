@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { ConnectionManager } from './ConnectionManager';
-import westend from '../assets/westend.json';
-import kusama from '../assets/kusama.json';
-import polkadot from '../assets/polkadot.json';
-import { debug } from '../utils/debug';
+import westend from '../../public/assets/westend.json';
+import kusama from '../../public/assets/kusama.json';
+import polkadot from '../../public/assets/polkadot.json';
+export interface Background extends Window {
+  manager: ConnectionManager
+}
 
-const manager = new ConnectionManager();
+declare let window: Background;
 
-manager.on('stateChanged', () => {
-  debug('CONNECTION MANAGER STATE CHANGED', manager.getState());
-});
+const manager = window.manager = new ConnectionManager();
 
 export type AppMessageType = 'associate' | 'rpc';
+
 export interface AppMessage {
   type: AppMessageType;
   payload: string; // name of the network or an rpc string (json stringified RPC message)
@@ -23,19 +24,19 @@ export interface RequestRpcSend {
   params: unknown[];
 }
 
+const createSmoldot = async (name: string, spec: unknown) => {
+  const stringifiedSpec = JSON.stringify(spec);
+  try {
+    await manager.addSmoldot(name, stringifiedSpec);
+  } catch (e) {
+    console.error(`Error creating ${name} smoldot: ${e}`); 
+  }
+}
+
 chrome.runtime.onInstalled.addListener(() => {
-  const westendChainSpec = JSON.stringify(westend);
-  const kusamaChainSpec = JSON.stringify(kusama);
-  const polkadotChainSpec = JSON.stringify(polkadot);
-  manager.addSmoldot('westend', westendChainSpec).catch((e) => { 
-    console.error('Error creating westend smoldot: ', e); 
-  });
-  manager.addSmoldot('kusama', kusamaChainSpec).catch((e) => { 
-    console.error('Error Creating kusama smoldot', e); 
-  });
-  manager.addSmoldot('polkadot', polkadotChainSpec).catch((e) => { 
-    console.error('Error Creating polkadot smoldot', e); 
-  });
+  void createSmoldot('polkadot', polkadot);
+  void createSmoldot('kusama', kusama);
+  void createSmoldot('westend', westend);
 });
 
 chrome.runtime.onConnect.addListener((port) => {
