@@ -7,9 +7,9 @@ import GlobalFonts from '../fonts/fonts';
 import { light, Tab, MenuButton, MenuInputText } from '../components';
 import { CallMade as Save } from '@material-ui/icons';
 import { Background } from '../background/';
-import { ConnectionManager, State } from '../background/ConnectionManager';
 import { debug } from '../utils/debug';
 import { TabInterface } from '../types';
+import { AppMediator } from 'src/background/AppMediator';
 
 const { createMuiTheme, ThemeProvider, Box, Divider } = material;
 
@@ -29,17 +29,16 @@ const Popup: React.FunctionComponent = () => {
   const [activeTab, setActiveTab] = React.useState<React.ReactElement | undefined>();
   const [rTabs, setRTabs] = React.useState<React.ReactElement[]>([]);
   const appliedTheme = createMuiTheme(light);
-
-  const [manager, setManager] = React.useState<ConnectionManager | null>(null);
-  const [state, setState] = React.useState<State | null>(null);
+  const [apps, setApps] = React.useState<AppMediator[]>([]);
 
   React.useEffect((): void => {
     chrome.runtime.getBackgroundPage(backgroundPage => {
       const bg = backgroundPage as Background;
-      setManager(bg.manager);
+      bg.manager && setApps(bg.manager.apps);
+
+      // TODO: change the state when stateChanged occurs
       bg.manager.on('stateChanged', () => {
-        const theState = bg.manager.getState();
-        setState(theState);
+        debug('CONNECTION MANAGER STATE CHANGED', bg.manager.getState());
       });
     });
   }, []);
@@ -49,7 +48,8 @@ const Popup: React.FunctionComponent = () => {
     const restTabs: React.ReactElement[] = [];
     chrome.tabs.query({"currentWindow": true, }, tabs => {
       tabs.forEach(t => {
-        manager?.apps && manager.apps.find(({ tabId, smoldotName, appName, }) => {
+        // TODO: This could be migrated to backend - so that no transformation is needed in Popup
+        apps.find(({ tabId, smoldotName, appName, }) => {
           if (tabId === t.id) {
             gatherTabs.push({
               isActive: t.active,
@@ -69,7 +69,7 @@ const Popup: React.FunctionComponent = () => {
       })
       setRTabs(restTabs);
     });
-  }, [manager, state]);
+  }, [apps]);
 
 	return (
     <ThemeProvider theme={appliedTheme}>
