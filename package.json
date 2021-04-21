@@ -14,6 +14,7 @@
   "private": true,
   "workspaces": [
     "packages/connect",
+    "packages/connect-extension-protocol",
     "projects/extension",
     "projects/smoldot-browser-demo",
     "projects/multiple-network-demo",
@@ -22,6 +23,7 @@
   ],
   "scripts": {
     "clean": " yarn workspaces run clean && rm -rf .parcel-cache && rm -rf node_modules",
+    "prelint": "yarn workspace @substrate/connect-extension-protocol run build",
     "lint": "yarn workspaces run lint",
     "build": "yarn workspaces run build",
     "test": "yarn workspaces run test",

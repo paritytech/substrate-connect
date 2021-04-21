@@ -1,0 +1,46 @@
+{
+  "name": "@substrate/connect-extension-protocol",
+  "version": "1.0.0",
+  "description": "Protocol for connect message passing with the extension",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "clean": "rm -rf dist/",
+    "build": "tsc --build",
+    "test": "echo \"No tests: this package is only types\"",
+    "lint": "yarn eslint . --ext .js,.ts"
+  },
+  "author": "Parity Team <admin@parity.io>",
+  "license": "GPL-3.0-only",
+  "devDependencies": {
+    "@typescript-eslint/parser": "^4.17.0",
+    "eslint": "^7.21.0",
+    "eslint-plugin-tsdoc": "^0.2.14",
+    "typescript": "^4.2.3"
+  },
+  "eslintConfig": {
+    "root": true,
+    "rules": {
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "tsdoc/syntax": "warn"
+    },
+    "parser": "@typescript-eslint/parser",
+    "settings": {},
+    "plugins": [
+      "@typescript-eslint",
+      "eslint-plugin-tsdoc"
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json",
+      "createDefaultProgram": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    ],
+    "env": {
+      "browser": true
+    }
+  }
+}

@@ -1,4 +1,6 @@
-import { ExtensionMessage } from '../types';
+import {
+  MessageFromManager
+} from '@substrate/connect-extension-protocol';
 import { AppMediator } from './AppMediator';
 import { MockPort, MockConnectionManager } from '../mocks';
 import { JsonRpcResponse } from './types';
@@ -40,8 +42,8 @@ test('emits error when manager does not have client for the network', () => {
 
   port.triggerMessage({ type: 'associate', payload: network });
   expect(port.postMessage).toBeCalledTimes(1);
-  expect(port.postMessage).toBeCalledWith({ 
-    type: 'error', 
+  expect(port.postMessage).toBeCalledWith({
+    type: 'error',
     payload: `Extension does not have client for ${network}`
   });
 });
@@ -53,8 +55,8 @@ test('emits error when recieves RPC message before associated', () => {
 
   port.triggerMessage({ type: 'rpc', payload: '' });
   expect(port.postMessage).toBeCalledTimes(1);
-  expect(port.postMessage).toBeCalledWith({ 
-    type: 'error', 
+  expect(port.postMessage).toBeCalledWith({
+    type: 'error',
     payload: `The app is not associated with a blockchain client`
   });
 });
@@ -79,9 +81,9 @@ test('remaps the id to the apps id', () => {
   associateWithNetwork(am, port, 'kusama');
 
   // Fake getting a request from UApp to send an RPC message
-  port.triggerMessage({ 
-    type: 'rpc', 
-    payload: '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}' 
+  port.triggerMessage({
+    type: 'rpc',
+    payload: '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}'
   });
   // should have a request mapping
   expect(am.cloneRequests().length).toBe(1);
@@ -92,7 +94,7 @@ test('remaps the id to the apps id', () => {
   // should have removed request mapping
   expect(am.cloneRequests().length).toBe(0);
   // should have posted the message back to the UApp with the mapped ID
-  expect((port.postMessage.mock.calls[0][0] as ExtensionMessage).payload)
+  expect((port.postMessage.mock.calls[0][0] as MessageFromManager).payload)
     .toEqual('{"id":1,"jsonrpc":"2.0","result":{}}');
 });
 
@@ -101,8 +103,8 @@ function setupAppMediatorWithSubscription(am: AppMediator, port: MockPort, appID
   const prevSubCount = am.cloneSubscriptions().length;
 
   // Fake a message with an RPC request to add a subscription
-  port.triggerMessage({ 
-    type: 'rpc', 
+  port.triggerMessage({
+    type: 'rpc',
     payload: `{"id":${appIDForRequest},"jsonrpc":"2.0","method":"system_health","params":[]}`,
     subscription: true
   });
@@ -115,10 +117,10 @@ function setupAppMediatorWithSubscription(am: AppMediator, port: MockPort, appID
     .toEqual({ appIDForRequest, subID: undefined, method: 'system_health' });
 
   // Fake receiving an RPC response to the subscription request
-  const message: JsonRpcResponse = { 
-    id: pendingRequests[pendingRequests.length - 1].smoldotID, 
-    jsonrpc: '2.0', 
-    result: subID 
+  const message: JsonRpcResponse = {
+    id: pendingRequests[pendingRequests.length - 1].smoldotID,
+    jsonrpc: '2.0',
+    result: subID
   };
   am.processSmoldotMessage(message);
 
@@ -129,7 +131,7 @@ function setupAppMediatorWithSubscription(am: AppMediator, port: MockPort, appID
 
   // should send the acknowledgement of the subscription request back to the UApp
   const msgCalls = port.postMessage.mock.calls;
-  const lastMsg = msgCalls[msgCalls.length - 1][0] as ExtensionMessage;
+  const lastMsg = msgCalls[msgCalls.length - 1][0] as MessageFromManager;
   expect(lastMsg.payload).toEqual(`{"id":${appIDForRequest},"jsonrpc":"2.0","result":${subID}}`);
 }
 
@@ -145,21 +147,21 @@ test('tracks and forwards subscriptions', () => {
   setupAppMediatorWithSubscription(am, port, appIDForRequest, subscriptionId);
 
   // Fake receiving an RPC message for the subscription
-  const subMessage = { 
-    jsonrpc: '2.0', 
+  const subMessage = {
+    jsonrpc: '2.0',
     method: 'system_health',
     params: { subscription: subscriptionId, result: "subscription value" }
   };
   expect(am.processSmoldotMessage(subMessage)).toBe(true);
 
-  // should send subcription message back to the UApp unchanged 
-  expect((port.postMessage.mock.calls[1][0] as ExtensionMessage).payload)
+  // should send subcription message back to the UApp unchanged
+  expect((port.postMessage.mock.calls[1][0] as MessageFromManager).payload)
     .toEqual(JSON.stringify(subMessage));
 
   // Fake receiving an RPC message with a subscription ID that is not one of
   // our subscriptions
-  const subMessage2 = { 
-    jsonrpc: '2.0', 
+  const subMessage2 = {
+    jsonrpc: '2.0',
     method: 'system_health',
     params: { subscription: 666, result: "subscription value" }
   };

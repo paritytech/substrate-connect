@@ -1,12 +1,14 @@
 import { jest } from '@jest/globals';
 import { ExtensionMessageRouter } from './ExtensionMessageRouter';
-import { ExtensionMessage } from '../types';
+import { 
+  ProviderMessage, 
+  ProviderMessageData, 
+  MessageFromManager,
+  ExtensionMessage,
+  provider
+} from '@substrate/connect-extension-protocol';
 import { MockPort } from '../mocks';
 import { chrome } from 'jest-chrome';
-
-interface RouterMessage {
-  data: ExtensionMessage
-}
 
 let router: ExtensionMessageRouter;
 
@@ -28,13 +30,13 @@ const waitForMessageToBePosted = (): Promise<null> => {
 
 test('associate establishes a port', async () => {
   chrome.runtime.connect.mockImplementation(_ => new MockPort('test-app::westend'));
-  window.postMessage({
+  provider.send({
     appName: 'test-app',
     chainName: 'westend',
     action: 'forward',
     message: { type: 'associate', payload: 'westend' },
     origin: 'extension-provider'
-  }, '*');
+  });
 
   await waitForMessageToBePosted();
   expect(chrome.runtime.connect).toHaveBeenCalledTimes(1);
@@ -55,21 +57,21 @@ test('incorrect origin does nothing to connections', async () => {
 test('disconnect disconnects established connection', async () => {
   const port = new MockPort('test-app::westend');
   chrome.runtime.connect.mockImplementation(_ => port);
-  window.postMessage({
+  provider.send({
     appName: 'test-app',
     chainName: 'westend',
     action: 'forward',
     message: { type: 'associate', payload: 'westend' },
     origin: 'extension-provider'
-  }, '*');
+  });
   await waitForMessageToBePosted();
 
-  window.postMessage({
+  provider.send({
     appName: 'test-app',
     chainName: 'westend',
     action: 'disconnect',
     origin: 'extension-provider'
-  }, '*');
+  });
   await waitForMessageToBePosted();
 
 
@@ -82,17 +84,17 @@ test('forwards rpc message from app -> extension', async () => {
   const port = new MockPort('test-app::westend');
   chrome.runtime.connect.mockImplementation(_ => port);
   // connect
-  window.postMessage({
+  provider.send({
     appName: 'test-app',
     chainName: 'westend',
     action: 'forward',
     message: { type: 'associate', payload: 'westend' },
     origin: 'extension-provider'
-  }, '*');
+  });
   await waitForMessageToBePosted();
 
   // rpc
-  const rpcMessage = {
+  const rpcMessage: ProviderMessageData = {
     appName: 'test-app',
     chainName: 'westend',
     action: 'forward',
@@ -102,7 +104,7 @@ test('forwards rpc message from app -> extension', async () => {
     },
     origin: 'extension-provider'
   };
-  window.postMessage(rpcMessage, '*');
+  provider.send(rpcMessage);
   await waitForMessageToBePosted();
 
   expect(chrome.runtime.connect).toHaveBeenCalledTimes(1);
@@ -114,25 +116,25 @@ test('forwards rpc message from extension -> app', async () => {
   const port = new MockPort('test-app::westend');
   chrome.runtime.connect.mockImplementation(_ => port);
   // connect
-  window.postMessage({
+  provider.send({
     appName: 'test-app',
     chainName: 'westend',
     action: 'forward',
     message: { type: 'associate', payload: 'westend' },
     origin: 'extension-provider'
-  }, '*');
+  });
   await waitForMessageToBePosted();
 
   const handler = jest.fn();
   window.addEventListener('message', handler);
-  const message: ExtensionMessage = { type: 'rpc', payload: '{"id:":1,"jsonrpc:"2.0","result":666}' };
+  const message: MessageFromManager = { type: 'rpc', payload: '{"id:":1,"jsonrpc:"2.0","result":666}' };
   port.triggerMessage(message);
   await waitForMessageToBePosted();
 
   expect(chrome.runtime.connect).toHaveBeenCalledTimes(1);
   expect(port.disconnect).not.toHaveBeenCalled();
   expect(handler).toHaveBeenCalled();
-  const forwarded = handler.mock.calls[0][0] as RouterMessage;
+  const forwarded = handler.mock.calls[0][0] as ExtensionMessage;
   expect(forwarded.data).toEqual({ origin: 'content-script', message: message });
 });
 
@@ -151,12 +153,12 @@ test('forwards error message from extension -> app', async () => {
 
   const handler = jest.fn();
   window.addEventListener('message', handler);
-  const errorMessage: ExtensionMessage = { type: 'error', payload: 'Boom!' };
+  const errorMessage: MessageFromManager = { type: 'error', payload: 'Boom!' };
   port.triggerMessage(errorMessage);
   await waitForMessageToBePosted();
 
   expect(handler).toHaveBeenCalled();
-  const forwarded = handler.mock.calls[0][0] as RouterMessage;
+  const forwarded = handler.mock.calls[0][0] as ExtensionMessage;
   expect(forwarded.data).toEqual({ origin: 'content-script', message: errorMessage });
 });
 

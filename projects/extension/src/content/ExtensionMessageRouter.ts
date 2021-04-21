@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import type { ExtensionProviderMessage, AppMessage } from '../types';
+import {
+  MessageToManager,
+  ProviderMessage,
+  extension
+} from '@substrate/connect-extension-protocol';
 import { debug } from '../utils/debug';
 
 const CONTENT_SCRIPT_ORIGIN = 'content-script';
@@ -26,7 +30,7 @@ export class ExtensionMessageRouter {
   }
 
   listen(): void {
-    window.addEventListener('message', this.#handleMessage);
+    extension.listen(this.#handleMessage);
   }
 
   stop(): void {
@@ -34,7 +38,7 @@ export class ExtensionMessageRouter {
 
   }
 
-  #establishNewConnection = (message: ExtensionProviderMessage): void => {
+  #establishNewConnection = (message: ProviderMessage): void => {
     const data = message.data;
     const port = chrome.runtime.connect({ name: `${data.appName}::${data.chainName}` });
     debug(`CONNECTED ${data.chainName} PORT`, port);
@@ -42,10 +46,7 @@ export class ExtensionMessageRouter {
     const chainName = data.chainName;
     port.onMessage.addListener((data): void => {
       debug(`RECIEVED MESSGE FROM ${chainName} PORT`, data);
-      window.postMessage({
-        message: data,
-        origin: CONTENT_SCRIPT_ORIGIN
-      }, '*');
+      extension.send({ message: data, origin: CONTENT_SCRIPT_ORIGIN });
     });
 
     this.#ports[data.chainName] = port;
@@ -53,7 +54,7 @@ export class ExtensionMessageRouter {
     port.postMessage(data.message);
   }
 
-  #forwardRpcMessage = (message: ExtensionProviderMessage): void => {
+  #forwardRpcMessage = (message: ProviderMessage): void => {
     const data = message.data;
     const port = this.#ports[data.chainName];
     if (!port) {
@@ -66,7 +67,7 @@ export class ExtensionMessageRouter {
     port.postMessage(data.message);
   }
 
-  #disconnectPort = (message: ExtensionProviderMessage): void => {
+  #disconnectPort = (message: ProviderMessage): void => {
     const data = message.data;
     const port = this.#ports[data.chainName];
 
@@ -82,7 +83,7 @@ export class ExtensionMessageRouter {
     return;
   }
 
-  #handleMessage = (message: ExtensionProviderMessage): void => {
+  #handleMessage = (message: ProviderMessage): void => {
     const data = message.data;
     if (!data.origin || data.origin !== EXTENSION_PROVIDER_ORIGIN) {
       return;
@@ -99,7 +100,7 @@ export class ExtensionMessageRouter {
     }
 
     if (data.action === 'forward') {
-      const innerMessage = data.message as AppMessage;
+      const innerMessage = data.message as MessageToManager;
       if (!innerMessage.type) {
         // probably someone abusing the extension
         console.warn('Malformed message - missing message.type', data);
