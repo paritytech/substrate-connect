@@ -1,6 +1,6 @@
 {
   "name": "@substrate/connect-extension-protocol",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Protocol for connect message passing with the extension",
   "main": "dist/index.js",
   "type": "module",
