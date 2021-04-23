@@ -24,10 +24,6 @@ initDirs() {
   mkdir -p ./$directory/multiple-network-demo
 }
 
-landingPage() {
-  cp ./README.md ./$directory/.
-}
-
 deployGhPages() {
   echo "Init demo for github pages process..."
   initDirs
@@ -38,7 +34,7 @@ deployGhPages() {
   echo "Place Multiple network demo's files."
   cp -r ./projects/multiple-network-demo/dist/* ./$directory/multiple-network-demo/.
   echo "Place landing page's files."
-  landingPage
+  cp -r ./projects/landing-page/dist/* ./$directory/.
  }
 
 echo -e "\033[0;32mDeleting old content...\033[0m"
