@@ -38,8 +38,8 @@ deployGhPages() {
   cp -r ./projects/smoldot-browser-demo/dist/* ./$directory/smoldot-browser-demo/.
   echo "Place Multiple network demo's files."
   cp -r ./projects/multiple-network-demo/dist/* ./$directory/multiple-network-demo/.
-  echo "Place Multiple extension's zip."
-  cp -r ./projects/extension/dist/substrate-connect.zip ./$directory/extension/.
+  echo "Place Substrate-connect extension's zip."
+  cp -r ./projects/extension/dist/substrate-connect.zip ./$directory/extension/substrate-connect.zip
   echo "Place landing page's files."
   landingPage
  }
