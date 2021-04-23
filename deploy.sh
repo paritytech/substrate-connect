@@ -39,7 +39,7 @@ deployGhPages() {
   echo "Place Multiple network demo's files."
   cp -r ./projects/multiple-network-demo/dist/* ./$directory/multiple-network-demo/.
   echo "Place Substrate-connect extension's zip."
-  cp -r ./projects/extension/dist/substrate-connect.zip ./$directory/extension/substrate-connect.zip
+  cp ./projects/extension/dist/substrate-connect.zip ./$directory/extension/substrate-connect.zip
   echo "Place landing page's files."
   landingPage
  }
