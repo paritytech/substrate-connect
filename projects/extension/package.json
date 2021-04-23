@@ -10,7 +10,7 @@
     "clean": "rm -rf dist",
     "pretest": "yarn clean && tsc",
     "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --coverage dist/",
-    "build": "yarn run clean && webpack --config webpack.prod.js",
+    "build": "yarn run clean && webpack --config webpack.prod.js && zip -r ./dist/substrate-connect.zip ./dist/*",
     "dev": "yarn run clean && webpack --node-env development --config webpack.dev.js",
     "start": "web-ext run --source-dir ./dist -t chromium",
     "start:firefox": "web-ext run --source-dir ./dist -t firefox-desktop",
