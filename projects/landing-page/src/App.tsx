@@ -126,43 +126,33 @@ const App: React.FunctionComponent = () => {
               linkProps={{href:'./burnr/'}}
             />
             <CardProject
-              title='Multi-Network'
-              subtitle='1 uApp - multiple networks implementation'
-              imageProps={{path:NetworksDemo, position: 'left top'}}
+              title='Multi Network Demo'
+              subtitle='One uApp - multiple networks implementation'
+              imageProps={{path:NetworksDemo, position: 'center top'}}
               linkProps={{href:'./multiple-network-demo/'}}
             />
-            <CardProject
-              title='Next Project'
-              imageProps={{path:YourProject}}
-            >
-              <SectionRef href=''>
-                Contributor’s guide
-              </SectionRef>
-            </CardProject>
-          </Section>
-          <Section>
-            <SectionHeading id='extension' prefix='6'>Extension</SectionHeading>
-            <Grid container justify="center" alignItems="center">
             <CardProject
               title='Extension'
               subtitle='Light clients broker for browser'
               imageProps={{path:Extension, position: 'center top'}}
-            />
-            </Grid>
-            <Grid container justify="center" alignItems="center" spacing={3}>
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                href="./extension/substrate-connect.zip"
-              >
-                Download Substrate-Connect Extension
-              </Button>
-            </Grid>
+              linkProps={{href:'https://github.com/paritytech/substrate-connect/tree/master/projects/extension'}}
+            >
+              <SectionRef href='./extension/substrate-connect.zip'>
+                Download
+              </SectionRef>
+            </CardProject>
+            <CardProject
+              title='Next Project'
+              imageProps={{path:YourProject}}
+            >
+              <SectionRef href='https://github.com/paritytech/substrate/blob/master/docs/CONTRIBUTING.adoc#rules'>
+                Contributor’s guide
+              </SectionRef>
+            </CardProject>
           </Section>
           <ThemeProvider theme={createMuiTheme(dark)}>
             <Section pt={5} pb={5}>
-              <SectionHeading id='playground' prefix='7'>Playground</SectionHeading>
+              <SectionHeading id='playground' prefix='6'>Playground</SectionHeading>
               <SectionText>Save logged API as global variable. Call methods</SectionText>
               <SectionHeroText>cmd + alt + i</SectionHeroText>
               <SectionHeroText>ctrl + shift + i</SectionHeroText>
@@ -184,7 +174,6 @@ const App: React.FunctionComponent = () => {
           <SidebarLink href='#supported-networks'>Supported Networks</SidebarLink>
           <SidebarLink href='#getting-started'>Getting Started</SidebarLink>
           <SidebarLink href='#projects'>Projects</SidebarLink>
-          <SidebarLink href='#extension'>Extension</SidebarLink>
           <SidebarLink href='#playground'>Playground</SidebarLink>
         </Sidebar>
         {/* TODO: Footer */}
