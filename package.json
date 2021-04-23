@@ -22,7 +22,8 @@
     "projects/landing-page"
   ],
   "scripts": {
-    "clean": " yarn workspaces run clean && rm -rf .parcel-cache && rm -rf node_modules",
+    "deep-clean": "yarn workspaces run deep-clean && rm -rf .parcel-cache && rm -rf node_modules",
+    "clean": " yarn workspaces run clean",
     "prelint": "yarn workspace @substrate/connect-extension-protocol run build",
     "lint": "yarn workspaces run lint",
     "build": "yarn workspaces run build",
