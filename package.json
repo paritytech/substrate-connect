@@ -13,8 +13,9 @@
   "license": "GPL-3.0-only",
   "private": true,
   "workspaces": [
-    "packages/connect",
+    "packages/smoldot-test-utils",
     "packages/connect-extension-protocol",
+    "packages/connect",
     "projects/extension",
     "projects/smoldot-browser-demo",
     "projects/multiple-network-demo",
