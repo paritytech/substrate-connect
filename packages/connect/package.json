@@ -22,6 +22,7 @@
     "prebuild": "yarn clean",
     "pretest": "yarn build",
     "test": "node --experimental-vm-modules node_modules/.bin/jest --env=node --colors --coverage dist",
+    "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist",
     "build": "tsc --build",
     "lint": "yarn eslint . --ext .js,.ts"

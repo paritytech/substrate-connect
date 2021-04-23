@@ -12,6 +12,7 @@
     "last 2 versions"
   ],
   "scripts": {
+    "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist/ && mkdir -p dist/assets",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
