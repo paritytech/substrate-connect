@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from 'react';
-import { CssBaseline, ThemeProvider, createMuiTheme, Typography, Box, Grid} from '@material-ui/core';
+import { CssBaseline, ThemeProvider, createMuiTheme, Typography, Box, Grid, Button } from '@material-ui/core';
 import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeading, SectionText, SectionHeroText, SectionRef, FooterLink, SidebarLink, Code } from './components';
 import { CardNetwork, CardProject } from './components/Cards';
 
 import BrowserDemo from 'url:../public/assets/images/BrowserDemo.png';
+import NetworksDemo from 'url:../public/assets/images/NetworksDemo.png';
 import Burnr from 'url:../public/assets/images/Burnr.png';
 import Extension from 'url:../public/assets/images/Extension.png';
 import YourProject from 'url:../public/assets/images/YourProject.png';
@@ -116,25 +117,35 @@ const App: React.FunctionComponent = () => {
               title='Browser Demo'
               subtitle='Minimal implementation'
               imageProps={{path:BrowserDemo, position: 'left top'}}
-              linkProps={{href:'https://paritytech.github.io/substrate-connect/smoldot-browser-demo/'}}
+              linkProps={{href:'./smoldot-browser-demo/'}}
+            />
+            <CardProject
+              title='Burnr'
+              subtitle='Insecure redeemable wallet'
+              imageProps={{path:Burnr, position: 'center top'}}
+              linkProps={{href:'./burnr/'}}
+            />
+            <CardProject
+              title='Multi Network Demo'
+              subtitle='One uApp - multiple networks implementation'
+              imageProps={{path:NetworksDemo, position: 'center top'}}
+              linkProps={{href:'./multiple-network-demo/'}}
             />
             <CardProject
               title='Extension'
               subtitle='Light clients broker for browser'
               imageProps={{path:Extension, position: 'center top'}}
               linkProps={{href:'https://github.com/paritytech/substrate-connect/tree/master/projects/extension'}}
-            />
-            <CardProject
-              title='Burnr'
-              subtitle='Insecure redeemable wallet'
-              imageProps={{path:Burnr, position: 'center top'}}
-              linkProps={{href:'https://paritytech.github.io/substrate-connect/burnr/'}}
-            />
+            >
+              <SectionRef href='./extension/substrate-connect.zip'>
+                Download
+              </SectionRef>
+            </CardProject>
             <CardProject
               title='Next Project'
               imageProps={{path:YourProject}}
             >
-              <SectionRef href=''>
+              <SectionRef href='https://github.com/paritytech/substrate/blob/master/docs/CONTRIBUTING.adoc#rules'>
                 Contributor’s guide
               </SectionRef>
             </CardProject>
