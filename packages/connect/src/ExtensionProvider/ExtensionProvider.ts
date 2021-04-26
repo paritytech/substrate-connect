@@ -61,25 +61,43 @@ export class ExtensionProvider implements ProviderInterface {
     this.#chainName = chainName;
   }
 
+  /**
+   * name
+   *
+   * @returns the name of this app to be used by the extension for display
+   * purposes.  
+   *
+   * @remarks Apps are expected to make efforts to make this name reasonably 
+   * unique.
+   */
   public get name(): string {
     return this.#appName;
   }
 
+  /**
+   * chainName
+   *
+   * @returns the name of the chain this `ExtensionProvider` is talking to.
+   */
   public get chainName(): string {
     return this.#chainName;
   }
 
   /**
-   * @description Lets polkadot-js know we support subscriptions
-   * @summary `true`
+   * Lets polkadot-js know we support subscriptions
+   *
+   * @remarks Always returns `true` - this provider supports subscriptions.
+   * PolkadotJS uses this internally.
    */
   public get hasSubscriptions(): boolean {
     return true;
   }
 
   /**
-   * @description Returns a clone of the object
-   * @summary throws an error as this is not supported.
+   * clone
+   *
+   * @remarks This method is not supported
+   * @throws {@link Error}
    */
   public clone(): ExtensionProvider {
     throw new Error('clone() is not supported.');
@@ -166,7 +184,11 @@ export class ExtensionProvider implements ProviderInterface {
   }
 
   /**
-   * @description "Connect" the WASM client - starts the smoldot WASM client
+   * "Connect" to the extension - sends a message to the `ExtensionMessageRouter`
+   * asking it to connect to the extension background.
+   *
+   * @returns a resolved Promise 
+   * @remarks this is async to fulfill the interface with PolkadotJS
    */
   public connect(): Promise<void> {
     const initMsg: ProviderMessageData = {
@@ -193,7 +215,8 @@ export class ExtensionProvider implements ProviderInterface {
   }
 
   /**
-   * @description Manually "disconnect" - drops the reference to the WASM client
+   * Manually "disconnect" - sends a message to the `ExtensionMessageRouter`
+   * telling it to disconnect the port with the background manager.
    */
   // eslint-disable-next-line @typescript-eslint/require-await
   public async disconnect(): Promise<void> {
@@ -211,7 +234,7 @@ export class ExtensionProvider implements ProviderInterface {
 
   /**
    * @summary Whether the node is connected or not.
-   * @return {boolean} true if connected
+   * @return true if connected otherwise false
    */
   public get isConnected (): boolean {
     return this.#isConnected;
@@ -236,10 +259,11 @@ export class ExtensionProvider implements ProviderInterface {
   }
 
   /**
-   * @summary Send an RPC request  the wasm client
-   * @param method The RPC methods to execute
-   * @param params Encoded paramaters as applicable for the method
-   * @param subscription Subscription details (internally used by `subscribe`)
+   * Send an RPC request  the wasm client
+   *
+   * @param method - The RPC methods to execute
+   * @param params - Encoded paramaters as applicable for the method
+   * @param subscription - Subscription details (internally used by `subscribe`)
    */
   public async send(
     method: string,
@@ -282,13 +306,13 @@ export class ExtensionProvider implements ProviderInterface {
   }
 
   /**
-   * @name subscribe
-   * @summary Allows subscribing to a specific event.
-   * @param  {string}                     type     Subscription type
-   * @param  {string}                     method   Subscription method
-   * @param  {any[]}                      params   Parameters
-   * @param  {ProviderInterfaceCallback}  callback Callback
-   * @return {Promise<number|string>}     Promise resolving to the id of the subscription you can use with [[unsubscribe]].
+   * Allows subscribing to a specific event.
+   *
+   * @param type     - Subscription type
+   * @param method   - Subscription method
+   * @param params   - Parameters
+   * @param callback - Callback
+   * @returns Promise  - resolves to the id of the subscription you can use with [[unsubscribe]].
    *
    * @example
    * <BR>
@@ -318,7 +342,12 @@ export class ExtensionProvider implements ProviderInterface {
   }
 
   /**
-   * @summary Allows unsubscribing to subscriptions made with [[subscribe]].
+   * Allows unsubscribing to subscriptions made with [[subscribe]].
+   *
+   * @param type
+   * @param method
+   * @param id
+   * @returns Promise resolving to whether the unsunscribe request was successful.
    */
   public async unsubscribe(
     type: string,
