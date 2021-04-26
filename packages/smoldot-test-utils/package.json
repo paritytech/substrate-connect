@@ -9,6 +9,7 @@
   "license": "GPL-3.0-only",
   "scripts": {
     "prebuild": "yarn clean",
+    "deep-clean": "rm -rf node_modules",
     "clean": "rm -rf dist/",
     "build": "tsc",
     "test": "echo \"No tests for smoldot-test-utils\"",
