@@ -10,6 +10,7 @@ import { logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 import { isUndefined } from '../utils';
 import {
+  MessageFromManager,
   ProviderMessageData,
   ExtensionMessage,
   ExtensionMessageData,
@@ -104,13 +105,19 @@ export class ExtensionProvider implements ProviderInterface {
   }
 
   #handleMessage = (data: ExtensionMessageData): void => {
-    const type = data.message.type;
-    if (type === 'error') {
-      return this.emit('error', new Error(data.message.payload));
+    if (data.disconnect && data.disconnect === true) {
+      this.#isConnected = false;
+      this.emit('disconnected');
+      return;
     }
 
-    if (type === 'rpc') {
-      const rpcString = data.message.payload;
+    const message = data.message as MessageFromManager;
+    if (message.type === 'error') {
+      return this.emit('error', new Error(message.payload));
+    }
+
+    if (message.type === 'rpc') {
+      const rpcString = message.payload;
       l.debug(() => ['received', rpcString]);
       const response = JSON.parse(rpcString) as JsonRpcResponse;
 
@@ -119,7 +126,7 @@ export class ExtensionProvider implements ProviderInterface {
         : this.#onMessageSubscribe(response);
     }
 
-    const errorMessage =`Unrecognised message type from extension ${type}`;
+    const errorMessage =`Unrecognised message type from extension ${message.type}`;
     return this.emit('error', new Error(errorMessage));
   }
 
