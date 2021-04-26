@@ -46,6 +46,12 @@ const ANGLICISMS: { [index: string]: string } = {
   chain_unsubscribeFinalisedHeads: 'chain_unsubscribeFinalizedHeads'
 };
 
+/**
+ * The ExtensionProvider allows interacting with a smoldot-based WASM light
+ * client running in a browser extension.  It is not designed to be used
+ * directly.  You should use the `\@substrate/connect` package.
+ * ```
+ */
 export class ExtensionProvider implements ProviderInterface {
   readonly #coder: RpcCoder = new RpcCoder();
   readonly #eventemitter: EventEmitter = new EventEmitter();
