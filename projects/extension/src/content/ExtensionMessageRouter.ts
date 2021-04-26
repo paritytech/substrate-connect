@@ -56,9 +56,15 @@ export class ExtensionMessageRouter {
     debug(`CONNECTED ${data.chainName} PORT`, port);
     // forward any messages: extension -> page
     const chainName = data.chainName;
+
     port.onMessage.addListener((data): void => {
       debug(`RECIEVED MESSGE FROM ${chainName} PORT`, data);
       extension.send({ message: data, origin: CONTENT_SCRIPT_ORIGIN });
+    });
+
+    port.onDisconnect.addListener(() => {
+      extension.send({ origin: 'content-script', disconnect: true });
+      delete this.#ports[data.chainName];
     });
 
     this.#ports[data.chainName] = port;

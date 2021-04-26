@@ -5,6 +5,7 @@ import {
   ProviderMessageData, 
   MessageFromManager,
   ExtensionMessage,
+  ExtensionMessageData,
   provider
 } from '@substrate/connect-extension-protocol';
 import { MockPort } from '../mocks';
@@ -42,6 +43,32 @@ test('associate establishes a port', async () => {
   expect(chrome.runtime.connect).toHaveBeenCalledTimes(1);
   expect(router.connections.length).toBe(1);
   expect(router.connections[0]).toBe('westend');
+});
+
+test('port disconnecting sends disconnect message and removes port', async () => {
+  const port = new MockPort('test-app::westend');
+  chrome.runtime.connect.mockImplementation(_ => port);
+  provider.send({
+    appName: 'test-app',
+    chainName: 'westend',
+    action: 'forward',
+    message: { type: 'associate', payload: 'westend' },
+    origin: 'extension-provider'
+  });
+  await waitForMessageToBePosted();
+
+  const handler = jest.fn();
+  provider.listen(handler);
+  port.triggerDisconnect();
+  await waitForMessageToBePosted();
+
+  const expectedMessage: ExtensionMessageData = {
+    origin: 'content-script',
+    disconnect: true
+  };
+  expect(router.connections.length).toBe(0);
+  const { data } = handler.mock.calls[0][0] as ExtensionMessage;
+  expect(data).toEqual(expectedMessage);
 });
 
 test('incorrect origin does nothing to connections', async () => {
