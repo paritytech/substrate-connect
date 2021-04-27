@@ -96,6 +96,16 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   }
 
   /**
+   * disconnectTab disconnects all instances of {@link AppMediator} connected
+   * from the supplied tabId
+   *
+   * @param tabId - the id of the tab to disconnect
+   */
+  disconnectTab(tabId: number): void {
+    this.#apps.filter(a => a.tabId && a.tabId === tabId).forEach(a => a.disconnect());
+  }
+
+  /**
    * addApp registers a new app to be tracked by the background.
    *
    * @param port - a port for a fresh connection that was made to the background
