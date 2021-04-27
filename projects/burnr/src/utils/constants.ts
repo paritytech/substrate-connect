@@ -83,7 +83,7 @@ export const REMOTE_PROVIDERS: Record<string, LazyProvider> = {
   'Local-Polkadot-WsProvider': {
     description: `Local node running on ${endpoints.local}`,
     id: 'Local-Polkadot-WsProvider',
-    network: 'Local Polkadot Network',
+    network: 'Local Network',
     node: 'light',
     source: 'remote',
     endpoint: endpoints.local,

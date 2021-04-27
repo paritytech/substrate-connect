@@ -15,6 +15,7 @@ import {
 import { AccountContext } from '../utils/contexts';
 import { HistoryTableRow } from '.';
 import { Data, Column } from '../utils/types';
+import { useBalance } from '../hooks';
 
 const columns: Column[] = [
 	{ id: 'withWhom', label: '', width: 160},
@@ -61,6 +62,8 @@ const HistoryTable: React.FunctionComponent = () => {
 	const classes = useStyles();
 	const { account } = useContext(AccountContext);
 	const rows:Data[] = account.userHistory;
+  const balanceArr = useBalance(account?.userAddress || '');
+  const unit = balanceArr[3];
 
 	return (
 		<>
@@ -83,6 +86,7 @@ const HistoryTable: React.FunctionComponent = () => {
 						{rows.map((row, i) => {
 							return (
 								<HistoryTableRow
+                  unit={unit}
 									key={i}
 									row={row}
 									columns={columns}

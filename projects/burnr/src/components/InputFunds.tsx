@@ -9,24 +9,22 @@ interface Props {
   setAmount: Dispatch<SetStateAction<string>>;
 }
 
-// @TODO bn.js
-
 const InputFunds: React.FunctionComponent<Props> = ({ total, setAmount, currency, hidePercentages = false }: Props) => {
 	// const [value, setValue] = React.useState<string>('');
 	const [showValue, setShowValue] = React.useState<string>('');
-	const handleChangeButton = (e: MouseEvent) => {
+	const handleClickButton = (e: MouseEvent) => {
 		const val = ((new BN((e.currentTarget as HTMLButtonElement).value)).mul(total)).toString();
 		setAmount(val);
 		document.getElementById('SendFundsAmountField')?.focus();
 	};
 	const handleChange = (e: ChangeEvent) => {
-		const value = ((e.currentTarget as HTMLButtonElement).value).replace(/\D/g,'');
-			setShowValue(value !== '' ? value : '');
-			setAmount(value !== '' ? value : '0');
+    const value = (e.currentTarget as HTMLButtonElement).value;
+    const v: number = parseFloat(value);
+		setShowValue(value !== '' ? value : '');
+		setAmount(value !== '' ? (v * 1000000000000).toString() : '0');
 	};
 
 	// @TODO focus/blur TextField and %Buttons at the same time in a React way
-
 	const [focus, setFocus] = React.useState<boolean>(false);
 	const handleFocus = () => {
 		setFocus(!focus);
@@ -40,6 +38,7 @@ const InputFunds: React.FunctionComponent<Props> = ({ total, setAmount, currency
 					value={showValue}
 					label="Amount"
 					fullWidth
+          type="number"
 					variant="outlined"
 					onChange={handleChange}
 					onFocus={handleFocus}
@@ -62,7 +61,7 @@ const InputFunds: React.FunctionComponent<Props> = ({ total, setAmount, currency
 							return(
 								<Grid key={index} item>
 									<Button
-										onClick={ handleChangeButton }
+										onClick={ handleClickButton }
 										variant='outlined'
 										color={focus ? 'primary' : 'default'}
 										size='small'
