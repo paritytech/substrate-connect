@@ -33,6 +33,10 @@ const useStyles = makeStyles((theme: Theme) => {
 		},
     errorMessage: {
       color: red[500],
+      width: '100%',
+      margin: '10px 0',
+      fontSize: '16px',
+      textAlign: 'center'
     },
 		button: {
 			color: theme.palette.getContrastText(theme.palette.secondary.main),
@@ -145,7 +149,6 @@ const SendFundsForm: FunctionComponent = () => {
 				}
 			});
 		} catch (err) {
-			console.log('There is an error: ', err);
 			setLoading(false);
 			setRowStatus(2);
 			setMessage(`😞 Error: ${err}`);
@@ -198,7 +201,7 @@ const SendFundsForm: FunctionComponent = () => {
 					variant='contained'
 					size='large'
 					color='secondary'
-					disabled={loading || !parseInt(amount) || !isValidAddressPolkadotAddress(address) || account.userAddress !== address}
+					disabled={loading || !parseInt(amount) || !isValidAddressPolkadotAddress(address) || account.userAddress === address}
 					onClick={handleSubmit}
 					className={classes.button}
 				>Send</Button>
@@ -222,6 +225,7 @@ const SendFundsForm: FunctionComponent = () => {
 									value: amount,
 									status: rowStatus
 								}}
+                unit={unit}
 								columns={columns} />
 						</Table>
 					</TableContainer>
