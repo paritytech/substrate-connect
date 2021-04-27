@@ -3,6 +3,7 @@ import {
   ExtensionProvider, 
 } from './ExtensionProvider';
 import {
+  MessageFromManager,
   ProviderMessage,
   ProviderMessageData,
   ExtensionMessageData,
@@ -77,6 +78,22 @@ test('disconnect sends disconnect message and emits disconnected', async () => {
   expect(emitted).toHaveBeenCalledTimes(1);
 });
 
+test('disconnects and emits disconnected when it receives a disconnect message', async () => {
+  const ep = new ExtensionProvider('test', 'test-chain');
+  const emitted = jest.fn();
+  await ep.connect();
+
+  ep.on('disconnected', emitted);
+  await waitForMessageToBePosted();
+  extension.send({
+    origin: 'content-script',
+    disconnect: true
+  });
+  await waitForMessageToBePosted();
+  expect(emitted).toHaveBeenCalled();
+  expect(ep.isConnected).toBe(false);
+});
+
 test('emits error when it receives an error message', async () => {
   const ep = new ExtensionProvider('test', 'test-chain');
   await ep.connect();
@@ -95,5 +112,6 @@ test('emits error when it receives an error message', async () => {
 
   expect(errorHandler).toHaveBeenCalled();
   const error = errorHandler.mock.calls[0][0] as Error;
-  expect(error.message).toEqual(errorMessage.message.payload);
+  const innerMessage = errorMessage.message as MessageFromManager;
+  expect(error.message).toEqual(innerMessage.payload);
 });

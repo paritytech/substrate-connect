@@ -25,17 +25,24 @@ const EXTENSION_PROVIDER_ORIGIN ='extension-provider';
 export class ExtensionMessageRouter {
   #ports: Record<string, chrome.runtime.Port> = {};
 
+  /**
+   * connections returns the names of all the ports this `ExtensionMessageRouter`
+   * is managing for the app.
+   *
+   * @returns A list of strings
+   */
   get connections(): string[] {
     return Object.keys(this.#ports);
   }
 
+  /** listen starts listening for messages sent by an app.  */
   listen(): void {
     extension.listen(this.#handleMessage);
   }
 
+  /** stop stops listening for messages sent by apps.  */
   stop(): void {
     window.removeEventListener('message', this.#handleMessage);
-
   }
 
   #establishNewConnection = (message: ProviderMessage): void => {
@@ -44,9 +51,15 @@ export class ExtensionMessageRouter {
     debug(`CONNECTED ${data.chainName} PORT`, port);
     // forward any messages: extension -> page
     const chainName = data.chainName;
+
     port.onMessage.addListener((data): void => {
       debug(`RECIEVED MESSGE FROM ${chainName} PORT`, data);
       extension.send({ message: data, origin: CONTENT_SCRIPT_ORIGIN });
+    });
+
+    port.onDisconnect.addListener(() => {
+      extension.send({ origin: 'content-script', disconnect: true });
+      delete this.#ports[data.chainName];
     });
 
     this.#ports[data.chainName] = port;

@@ -22,6 +22,16 @@ interface State {
   apps: AppState[];
 }
 
+/**
+ * ConnectionManager is the main class involved in managing connections from
+ * apps and smoldots.  It keeps track of apps in {@link AppMediator} instances
+ * and smoldot clients in {@link SmoldotMediator} instances.  It is also
+ * responsible for triggering events when the state changes for the UI to update
+ * accordingly. 
+ *
+ * The 3 classes act in concert to multiples requests from various apps to
+ * smoldot clients and to clean up all an app's subscriptions when disconnected.
+ */
 export class ConnectionManager extends (EventEmitter as { new(): StateEmitter }) implements ConnectionManagerInterface {
   readonly #smoldots: SmoldotMediator[] = [];
   readonly #apps:  AppMediator[] = [];
@@ -29,22 +39,45 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
 
   readonly #networks: Network[] = [];
 
+  /** registeredApps
+   *
+   * @returns a list of the names of apps that are currently connected
+   */
   get registeredApps(): string[] {
     return this.#apps.map(a => a.name);
   }
 
+  /** registeredClients
+   *
+   * @returns a list of the networks that are currently connected
+   */
   get registeredClients(): string[] {
     return this.#smoldots.map(s => s.name);
   }
 
+  /**
+   * apps
+   *
+   * @returns all the connected apps.
+   */
   get apps(): AppMediator[] {
     return this.#apps;
   }
 
+  /**
+   * networks
+   *
+   * @returns all the connected networks
+   */
   get networks(): Network[] {
     return this.#networks;
   }
 
+  /**
+   * getState
+   *
+   * @returns a view of the current state of the connection manager
+   */
   getState(): State {
     const state: State = { apps: [] };
     return this.#apps.reduce((result, app) => {
@@ -62,6 +95,22 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     }, state);
   }
 
+  /**
+   * disconnectTab disconnects all instances of {@link AppMediator} connected
+   * from the supplied tabId
+   *
+   * @param tabId - the id of the tab to disconnect
+   */
+  disconnectTab(tabId: number): void {
+    this.#apps.filter(a => a.tabId && a.tabId === tabId).forEach(a => a.disconnect());
+  }
+
+  /**
+   * addApp registers a new app to be tracked by the background.
+   *
+   * @param port - a port for a fresh connection that was made to the background
+   * by a content script.
+   */
   addApp(port: chrome.runtime.Port): void {
     const app = this.#apps.find(s => s.name === port.name);
     if (app) {
@@ -74,10 +123,24 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     }
   }
 
+  /**
+   * hasClientFor
+   *
+   * @param name - the name of the network.
+   * @returns whether the ConnectionManager has a smoldot client for the network.
+   */
   hasClientFor(name: string): boolean {
     return this.#smoldots.find(s => s.name === name) !== undefined;
   }
 
+  /**
+   * sendRpcMessageTo is used by the {@link AppMediator} instances to send an
+   * RPC message to a smoldot client.
+   *
+   * @param name - the name of the network.
+   * @param message - the RPC message to send.
+   * @returns the actual (remapped) ID of the message that was sent.
+   */
   sendRpcMessageTo(name: string, message: JsonRpcRequest): number {
     const sm = this.#smoldots.find(s => s.name === name);
     if (!sm) {
@@ -86,6 +149,13 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     return sm.sendRpcMessage(message);
   }
 
+  /**
+   * registerApp is used by the {@link AppMediator} instances to associate an
+   * app with a network
+   *
+   * @param app - The app
+   * @param smoldotName - The name of the network
+   */
   registerApp(app: AppMediator, smoldotName: string): void {
     const sm = this.#smoldots.find(s => s.name === smoldotName);
     if (!sm) {
@@ -94,6 +164,13 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     sm.addApp(app);
   }
 
+  /**
+   * unregisterApp is used after an app has finished processing any unsubscribe
+   * messages and disconnected to fully unregister itself.
+   *
+   * @param app - The app
+   * @param smoldotName = The name of the network the app was connected to.
+   */
   unregisterApp(app: AppMediator, smoldotName: string): void {
     const sm = this.#smoldots.find(s => s.name === smoldotName);
     if (!sm) {
@@ -107,6 +184,13 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   }
 
 
+  /**
+   * addSmoldot connects and adds a new smoldot client.
+   *
+   * @param name - The name of the network.
+   * @param chainSpec - The chain spec for the network.
+   * @returns a Promise
+   */
   async addSmoldot(name: string,  chainSpec: string): Promise<void> {
     if (this.#smoldots.find(s => s.name === name)) {
       throw new Error(`Extension already has a smoldot client named ${name}`);
@@ -144,6 +228,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     }
   }
 
+  /** shutdown shuts down all the connected smoldot clients. */
   shutdown(): void {
     for (const sm of this.#smoldots) {
       sm.shutdown();

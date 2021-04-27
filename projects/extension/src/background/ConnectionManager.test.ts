@@ -83,5 +83,9 @@ test('adding and removing apps changes state', async () => {
   });
 
 
+  handler.mockClear();
+  manager.disconnectTab(42);
+  expect(handler).toHaveBeenCalledTimes(2);
+  expect(manager.getState()).toEqual({ apps: [ ] });
   manager.shutdown();
 });
