@@ -204,17 +204,13 @@ export class ExtensionProvider implements ProviderInterface {
    * @remarks this is async to fulfill the interface with PolkadotJS
    */
   public connect(): Promise<void> {
-    const initMsg: ProviderMessageData = {
+    const connectMsg: ProviderMessageData = {
       appName: this.#appName,
       chainName: this.#chainName,
-      action: 'forward',
-      message: {
-        type: 'associate',
-        payload: this.#chainName
-      },
+      action: 'connect',
       origin: EXTENSION_PROVIDER_ORIGIN
     }
-    provider.send(initMsg);
+    provider.send(connectMsg);
     provider.listen(({data}: ExtensionMessage) => {
       if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
