@@ -12954,10 +12954,10 @@ smoldot@^0.1.11:
     randombytes "^2.1.0"
     websocket "^1.0.32"
 
-smoldot@^0.1.22:
-  version "0.1.22"
-  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.1.22.tgz#6c55b9268e852f08c41fefa7472c2dd6e2a509e5"
-  integrity sha512-dZcOP7GdYBu1rt1jTJkpilQgiZce+7vgCGrw716TDsXs0TC4cuBUdvizxvXG6D39RcOhX+91xQjYuBzhpv2Grg==
+smoldot@^0.1.24:
+  version "0.1.24"
+  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.1.24.tgz#4bd41d94ab58fc61b62ecedd56af4fa8a5148186"
+  integrity sha512-PNOVsbSypCTAM0m/v3HpwwzdvDFsl3JjaIFflW1hTRVFpVFE2Cmwqb7thtOTcNO7mPFR1bl7VvMDVM0bwjJzmQ==
   dependencies:
     buffer "^6.0.1"
     performance-now "^2.1.0"
