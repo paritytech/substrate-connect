@@ -25,7 +25,6 @@ const InputFunds: React.FunctionComponent<Props> = ({ total, setAmount, currency
 	};
 
 	// @TODO focus/blur TextField and %Buttons at the same time in a React way
-
 	const [focus, setFocus] = React.useState<boolean>(false);
 	const handleFocus = () => {
 		setFocus(!focus);
