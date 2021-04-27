@@ -34,6 +34,7 @@ const Home: React.FunctionComponent<Props> =  ({ account, loader }: Props) => {
 	const classes = useStyles();
 	const balanceArr = useBalance(account?.userAddress || '');
 	const balance = balanceArr[1];
+  const unit = balanceArr[3];
 	useEffect((): void => {
 		setLocalBalance(balanceVisibility ? 'true' : 'false')
 	}, [balanceVisibility, setLocalBalance])
@@ -77,6 +78,7 @@ const Home: React.FunctionComponent<Props> =  ({ account, loader }: Props) => {
 								<Grid item xs={12}>
 									<BalanceValue
 										isVisible={balanceVisibility}
+                    unit={unit}
 										value={balance}
 										size='large'
 										style={{ width: '100%', justifyContent: 'flex-end' }}

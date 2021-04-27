@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const BalanceValue: React.FunctionComponent<Props> = ({ value, isVisible, unit = '', size, style }: Props) => {
-	const api = useApi();
+  const api = useApi();
 	const fBalance = formatBalance(value, { withSi: false });
 	const fUnit = transformCurrency(formatBalance.calcSi(value.toString(), api.registry.chainDecimals[0]).value, unit);
 	const isColored = parseInt(fBalance) >= 0;
