@@ -35,19 +35,14 @@ export class ExtensionMessageRouter {
     return Object.keys(this.#ports);
   }
 
-  /**
-   * listen starts listening for messages sent by an app.
-   */
+  /** listen starts listening for messages sent by an app.  */
   listen(): void {
     extension.listen(this.#handleMessage);
   }
 
-  /**
-   * stop stops listening for messages sent by apps.
-   */
+  /** stop stops listening for messages sent by apps.  */
   stop(): void {
     window.removeEventListener('message', this.#handleMessage);
-
   }
 
   #establishNewConnection = (message: ProviderMessage): void => {
