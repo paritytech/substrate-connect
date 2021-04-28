@@ -97,6 +97,18 @@ const SendFundsForm: FunctionComponent = () => {
 	const [message, setMessage] = useState<string>('');
 	const [countdownNo, setCountdownNo] = useState<number>(0);
 	const [rowStatus, setRowStatus] = useState<number>(0);
+  const [fee, setFee] = useState<number>(0);
+
+  useEffect((): void => {
+    const calcFee = async (): Promise<void> => {
+      const keyring = new Keyring({ type: 'sr25519' });
+      const sender = keyring.addFromUri(account.userSeed);
+      const fee = await api.tx.balances.transfer(address, new BN(amount)).paymentInfo(sender);
+      setFee(fee.weight.toNumber());
+    };
+
+    amount ? void calcFee() : setFee(0);
+  }, [amount, account.userSeed, address, api.tx.balances]);
 
 	useEffect((): () => void => {
 		let countdown: ReturnType<typeof setInterval>;
@@ -207,6 +219,9 @@ const SendFundsForm: FunctionComponent = () => {
 				>Send</Button>
 			</Grid>
       <Grid item xs={12}>
+      <Typography variant='body1' className={classes.errorMessage}>
+          {fee ? `Fee: ${fee/1000000000000} ${unit}.` : ''}
+        </Typography>
         <Typography variant='body1' className={classes.errorMessage}>
           {!isValidAddressPolkadotAddress(address) && 'You need to add a valid address.'}
         </Typography>
