@@ -2,6 +2,8 @@ import { Account, LocalStorageAccountCtx } from './types';
 import { uniqueNamesGenerator, Config, starWars } from 'unique-names-generator';
 import { mnemonicGenerate } from '@polkadot/util-crypto';
 import { Keyring } from '@polkadot/api';
+import { decodeAddress, encodeAddress } from '@polkadot/keyring';
+import { hexToU8a, isHex } from '@polkadot/util';
 
 const keyring = new Keyring({ type: 'sr25519' });
 
@@ -59,3 +61,17 @@ export const getKeyring = (): Keyring => keyring;
 
 export const transformCurrency = (currencyLevel: string, currency: string): string =>
     (currencyLevel !== '-') ? currencyLevel.concat(currency) : currency;
+
+export const isValidAddressPolkadotAddress = (add = ''): boolean => {
+  try {
+    encodeAddress(
+      isHex(add)
+        ? hexToU8a(add.toString())
+        : decodeAddress(add)
+    );
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+};

@@ -10,16 +10,15 @@ import {
 	LinearProgress,
 	Table,
 	TableContainer } from '@material-ui/core';
-import { decodeAddress, encodeAddress } from '@polkadot/keyring';
-import { hexToU8a, isHex } from '@polkadot/util';
 import { Keyring } from '@polkadot/api';
 import { AccountContext } from '../utils/contexts';
 import { InputAddress, InputFunds } from '../components';
 import { useBalance, useApi, useLocalStorage } from '../hooks'
 import { HistoryTableRow } from '.';
+import { isValidAddressPolkadotAddress } from '../utils/utils';
 import { Column } from '../utils/types';
 
-import { red, green } from '@material-ui/core/colors';
+import { green } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme: Theme) => {
 	return createStyles({
@@ -27,15 +26,13 @@ const useStyles = makeStyles((theme: Theme) => {
 			marginTop: theme.spacing(3),
 		},
 		formSubmitContainer: {
-			display: 'flex',
 			marginTop: theme.spacing(3),
 			alignContent: 'center',
+      textAlign: 'center'
 		},
-    errorMessage: {
-      color: red[500],
+    feesMessage: {
       width: '100%',
-      margin: '10px 0',
-      fontSize: '16px',
+      fontSize: '14px',
       textAlign: 'center'
     },
 		button: {
@@ -106,8 +103,7 @@ const SendFundsForm: FunctionComponent = () => {
       const fee = await api.tx.balances.transfer(address, new BN(amount)).paymentInfo(sender);
       setFee(fee.weight.toNumber());
     };
-
-    amount ? void calcFee() : setFee(0);
+    (!amount || amount === '0' || !isValidAddressPolkadotAddress(address) || !account.userSeed) ? setFee(0) : void calcFee();
   }, [amount, account.userSeed, address, api.tx.balances]);
 
 	useEffect((): () => void => {
@@ -175,19 +171,7 @@ const SendFundsForm: FunctionComponent = () => {
 		}
 	}
 
-  const isValidAddressPolkadotAddress = (add = '') => {
-    try {
-      encodeAddress(
-        isHex(add)
-          ? hexToU8a(add.toString())
-          : decodeAddress(add)
-      );
-  
-      return true;
-    } catch (error) {
-      return false;
-    }
-  };
+  const humanReadable = (amnt: number) => amnt/1000000000000;
 
 	return (
 		<Grid
@@ -196,18 +180,28 @@ const SendFundsForm: FunctionComponent = () => {
 			direction='column'
 			className={classes.container}
 		>
-			<Grid item>
+			<Grid item> 
 				<InputAddress setAddress={setAddress} />
 			</Grid>
 			<Grid item>
 				<InputFunds
-					hidePercentages
 					total={maxAmountFull}
 					currency={unit}
 					setAmount={setAmount}
 				/>
 			</Grid>
-			<Grid item xs={12} className={classes.formSubmitContainer}>
+      <Grid item xs={12} className={classes.formSubmitContainer}>
+        <Typography variant='subtitle1' className={classes.feesMessage}>
+          {fee ? `Receiver will get: ${humanReadable(parseFloat(amount))} ${unit}.` : ''}
+        </Typography>
+        <Typography variant='subtitle1' className={classes.feesMessage}>
+          {fee ? `Fees: ${humanReadable(fee)} ${unit}.` : ''}
+        </Typography>
+        <Typography variant='subtitle1' className={classes.feesMessage}>
+          {fee ? `Total Sent: ${humanReadable(parseFloat(amount) + fee)} ${unit}.` : ''}
+        </Typography>
+      </Grid>
+      <Grid item xs={12} className={classes.formSubmitContainer}>
 				<Button
 					type='submit'
 					variant='contained'
@@ -218,17 +212,6 @@ const SendFundsForm: FunctionComponent = () => {
 					className={classes.button}
 				>Send</Button>
 			</Grid>
-      <Grid item xs={12}>
-      <Typography variant='body1' className={classes.errorMessage}>
-          {fee ? `Fee: ${fee/1000000000000} ${unit}.` : ''}
-        </Typography>
-        <Typography variant='body1' className={classes.errorMessage}>
-          {!isValidAddressPolkadotAddress(address) && 'You need to add a valid address.'}
-        </Typography>
-        <Typography variant='body1' className={classes.errorMessage}>
-          {!parseInt(amount) && 'You should add some amount.'}
-        </Typography>
-      </Grid>
 			{ countdownNo !== 0 && (
 				<Grid item xs={12}>
 					<TableContainer className={classes.container}>
@@ -237,7 +220,7 @@ const SendFundsForm: FunctionComponent = () => {
 								row={{
 									withWhom: address,
 									extrinsic: 'Transfer',
-									value: amount,
+									value: parseFloat(amount),
 									status: rowStatus
 								}}
                 unit={unit}

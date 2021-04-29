@@ -2,7 +2,7 @@ import { ThemeOptions } from '@material-ui/core/styles';
 
 const typography: ThemeOptions = {
 	typography: {
-		fontFamily: 'Inter, Helvetica, Roboto, Arial, sans-serif',
+    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, Segoe UI, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Web3-Regular"',
 		h1: {
 			fontWeight: 500,
 			fontSize: 30,
