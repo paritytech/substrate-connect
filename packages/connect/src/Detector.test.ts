@@ -32,20 +32,6 @@ describe('Initialize Detector without extension', () => {
     }
   }, 30000);
 
-  test('Should connect with known chain "kusama".', async done => {
-    try {
-      const chainName = 'kusama';
-      detect = new Detector('test-uapp');
-      const api = await detect.connect(chainName);
-      expect(api).toBeTruthy();
-      done();
-    } catch (err: unknown) {
-      done(err);
-    } finally {
-      await detect.disconnect('kusama');
-    }
-  }, 30000);
-
   test('Should connect with unknown chain westedn2 and chainSpecs.', async done => {
     try {
       const chainSpec = JSON.stringify(westend2);
@@ -57,23 +43,17 @@ describe('Initialize Detector without extension', () => {
     } catch (err: unknown) {
       done(err);
     } finally {
-      await detect.disconnect('kusama');
+      await detect.disconnect('westend2');
     }
   }, 30000);
 
   test('Should NOT connect with unknown chain westedn2 and without chainSpecs.', async done => {
-    try {
-      const chainName = 'westend2';
-      detect = new Detector('test-uapp');
-      void expect(detect.connect(chainName))
-      .rejects
-      .toThrow(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('polkadot', 'kusama', 'westend') or provide valid chainSpecs.`);
-      done();
-    } catch (err: unknown) {
-      done(err);
-    } finally {
-      await detect.disconnect('kusama');
-    }
+    const chainName = 'westend2';
+    detect = new Detector('test-uapp');
+    void expect(detect.connect(chainName))
+    .rejects
+    .toThrow(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('polkadot', 'kusama', 'westend') or provide valid chainSpecs.`);
+    done();
   }, 30000);
 
 });
