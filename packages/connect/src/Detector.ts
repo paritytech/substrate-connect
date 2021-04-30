@@ -2,9 +2,9 @@ import { ApiPromise } from '@polkadot/api';
 import { ProviderInterface } from '@polkadot/rpc-provider/types';
 import { SmoldotProvider }  from './SmoldotProvider';
 import { ExtensionProvider } from './ExtensionProvider';
-import westend from '../assets/westend.json';
-import kusama from '../assets/kusama.json';
-import polkadot from '../assets/polkadot.json';
+import westend from './specs/westend.json';
+import kusama from './specs/kusama.json';
+import polkadot from './specs/polkadot.json';
 
 const chainSpecs: Record<string, unknown> = {
   'polkadot': polkadot,
