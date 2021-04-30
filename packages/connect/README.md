@@ -9,15 +9,25 @@ smoldot clients of extension will be used. If not, a new smoldot client will sta
 sync with given chainspecs.
 
 ## Usage
+Provide a known Chain Name ('kusama', 'polkadot', 'westend'):
+```js
+import { Detector }  from '@substrate/connect';
+
+const detect = new Detector('my cool unstoppable app');
+
+const api = await detect.connect('westend');
+```
+
+or provide your custom substrate chain's name and chainspec:
 
 ```js
 import { Detector }  from '@substrate/connect';
-import substrateChainSpec from './substrateChainSpec.json';
+import mySubstrateChainSpec from './mySubstrateChainSpec.json';
 
-const chainSpec =  JSON.stringify(substrateChainSpec);
+const chainSpec =  JSON.stringify(mySubstrateChainSpec);
 const detect = new Detector('my cool unstoppable app');
 
-const api = await detect.connect('westend', chainSpec());
+const api = await detect.connect('mySubstrateChainName', chainSpec());
 ```
 
 ## Scripts

@@ -2,6 +2,15 @@ import { ApiPromise } from '@polkadot/api';
 import { ProviderInterface } from '@polkadot/rpc-provider/types';
 import { SmoldotProvider }  from './SmoldotProvider';
 import { ExtensionProvider } from './ExtensionProvider';
+import westend from '../assets/westend.json';
+import kusama from '../assets/kusama.json';
+import polkadot from '../assets/polkadot.json';
+
+const chainSpecs: Record<string, unknown> = {
+  'polkadot': polkadot,
+  'kusama': kusama,
+  'westend': westend
+}
 
 export class Detector {
   #name: string;
@@ -17,18 +26,22 @@ export class Detector {
     this.#name = name;
   }
 
-  public connect = async (chainName: string, chainSpec?: string): Promise<ApiPromise> => {
-    let provider;
+  public connect = async (chainName: string, providedChainSpec?: string): Promise<ApiPromise> => {
+    let provider: ExtensionProvider | SmoldotProvider = {} as ExtensionProvider | SmoldotProvider;
 
-    if (this.#isExtension && chainName) {
-      provider = new ExtensionProvider(this.#name, chainName);
-      await provider.connect();
-    } else if (this.#isExtension && !chainName) {
-      throw new Error('You must provide at least a chainName')
-    } else if (!this.#isExtension && chainSpec) {
-      provider = new SmoldotProvider(chainSpec);
-      await provider.connect();
+    if (Object.keys(chainSpecs).includes(chainName)) {
+      if (this.#isExtension) {
+        provider = new ExtensionProvider(this.#name, chainName);
+      } else if (!this.#isExtension) {
+        const chainSpec = JSON.stringify(chainSpecs[chainName]);
+        provider = new SmoldotProvider(chainSpec);
+      }
+    } else if (providedChainSpec) {
+        provider = new SmoldotProvider(providedChainSpec);
+    } else if (!providedChainSpec) {
+      throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(chainSpecs).join(', \'')}') or provide valid chainSpecs.`)
     }
+    await provider.connect();
     this.#providers[chainName] = provider as ProviderInterface;
     return await ApiPromise.create({ provider });
   }
