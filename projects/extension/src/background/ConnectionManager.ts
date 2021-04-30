@@ -117,9 +117,11 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       port.postMessage({ type: 'info', payload: `App ${port.name} already exists.` });
     } else {
       const newApp = new AppMediator(port, this as ConnectionManagerInterface)
-      this.#apps.push(newApp);
-      newApp.on('stateChanged', () => this.emit('stateChanged'));
-      this.emit('stateChanged');
+      if (newApp.associate()) {
+        this.#apps.push(newApp);
+        newApp.on('stateChanged', () => this.emit('stateChanged'));
+        this.emit('stateChanged');
+      }
     }
   }
 

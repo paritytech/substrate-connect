@@ -11,7 +11,7 @@ export interface InitAppNameSpec {
 }
 
 // TODO: this is duplicated with `NetworkStatus` in ../types
-export type AppState = 'connected' | 'ready' | 'disconnecting' | 'disconnected';
+export type AppState = 'connected' | 'disconnecting' | 'disconnected';
 
 export interface MessageIDMapping {
   readonly appID: number | undefined;

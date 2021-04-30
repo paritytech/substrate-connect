@@ -29,13 +29,12 @@ const waitForMessageToBePosted = (): Promise<null> => {
   return new Promise(resolve => setTimeout(resolve, 10, null));
 }
 
-test('associate establishes a port', async () => {
+test('connect establishes a port', async () => {
   chrome.runtime.connect.mockImplementation(_ => new MockPort('test-app::westend'));
   provider.send({
     appName: 'test-app',
     chainName: 'westend',
-    action: 'forward',
-    message: { type: 'associate', payload: 'westend' },
+    action: 'connect',
     origin: 'extension-provider'
   });
 
@@ -51,8 +50,7 @@ test('port disconnecting sends disconnect message and removes port', async () =>
   provider.send({
     appName: 'test-app',
     chainName: 'westend',
-    action: 'forward',
-    message: { type: 'associate', payload: 'westend' },
+    action: 'connect',
     origin: 'extension-provider'
   });
   await waitForMessageToBePosted();
@@ -87,8 +85,7 @@ test('disconnect disconnects established connection', async () => {
   provider.send({
     appName: 'test-app',
     chainName: 'westend',
-    action: 'forward',
-    message: { type: 'associate', payload: 'westend' },
+    action: 'connect',
     origin: 'extension-provider'
   });
   await waitForMessageToBePosted();
@@ -114,8 +111,7 @@ test('forwards rpc message from app -> extension', async () => {
   provider.send({
     appName: 'test-app',
     chainName: 'westend',
-    action: 'forward',
-    message: { type: 'associate', payload: 'westend' },
+    action: 'connect',
     origin: 'extension-provider'
   });
   await waitForMessageToBePosted();
@@ -146,8 +142,7 @@ test('forwards rpc message from extension -> app', async () => {
   provider.send({
     appName: 'test-app',
     chainName: 'westend',
-    action: 'forward',
-    message: { type: 'associate', payload: 'westend' },
+    action: 'connect',
     origin: 'extension-provider'
   });
   await waitForMessageToBePosted();
@@ -172,8 +167,7 @@ test('forwards error message from extension -> app', async () => {
   window.postMessage({
     appName: 'test-app',
     chainName: 'westend',
-    action: 'forward',
-    message: { type: 'associate', payload: 'westend' },
+    action: 'connect',
     origin: 'extension-provider'
   }, '*');
   await waitForMessageToBePosted();
