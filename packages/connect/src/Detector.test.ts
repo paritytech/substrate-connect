@@ -47,7 +47,7 @@ describe('Initialize Detector without extension', () => {
   //   }
   // }, 30000);
 
-  test('Should connect with unknown chain westedn2 and chainSpecs.', async done => {
+  test('Should connect with unknown chain westend2 and chainSpecs.', async done => {
     try {
       const chainSpec = JSON.stringify(westend2);
       const chainName = 'westend2';
@@ -62,7 +62,7 @@ describe('Initialize Detector without extension', () => {
     }
   }, 30000);
 
-  test('Should NOT connect with unknown chain westedn2 and without chainSpecs.', async done => {
+  test('Should NOT connect with unknown chain westend2 and without chainSpecs.', async done => {
     const chainName = 'westend2';
     detect = new Detector('test-uapp');
     void expect(detect.connect(chainName))
