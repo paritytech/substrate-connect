@@ -8,7 +8,6 @@ const  connectApp = (manager: ConnectionManager, tabId: number, name: string, ne
   const port = new MockPort(`${name}::${network}`);
   port.setTabId(tabId);
   manager.addApp(port);
-  port.triggerMessage({ type: 'associate', payload: network });
   return port;
 }
 
@@ -23,8 +22,8 @@ test('adding and removing apps changes state', async () => {
   manager.on('stateChanged', handler);
 
   // app connects to first network
-  const port1 = connectApp(manager, 42, 'test-app', 'westend');
-  expect(handler).toHaveBeenCalledTimes(2);
+  connectApp(manager, 42, 'test-app', 'westend');
+  expect(handler).toHaveBeenCalledTimes(1);
   expect(manager.getState()).toEqual({
     apps: [
       { 
@@ -37,8 +36,8 @@ test('adding and removing apps changes state', async () => {
 
   // app connects to second network
   handler.mockClear();
-  const port2 = connectApp(manager, 42, 'test-app', 'kusama');
-  expect(handler).toHaveBeenCalledTimes(2);
+  connectApp(manager, 42, 'test-app', 'kusama');
+  expect(handler).toHaveBeenCalledTimes(1);
   expect(manager.getState()).toEqual({
     apps: [
       { 
@@ -51,8 +50,8 @@ test('adding and removing apps changes state', async () => {
 
   // different app connects to second network
   handler.mockClear();
-  const port3 = connectApp(manager, 43, 'another-app', 'kusama');
-  expect(handler).toHaveBeenCalledTimes(2);
+  const port = connectApp(manager, 43, 'another-app', 'kusama');
+  expect(handler).toHaveBeenCalledTimes(1);
   expect(manager.getState()).toEqual({
     apps: [
       { 
@@ -70,7 +69,7 @@ test('adding and removing apps changes state', async () => {
 
   // disconnect second app
   handler.mockClear();
-  port3.triggerDisconnect();
+  port.triggerDisconnect();
   expect(handler).toHaveBeenCalled();
   expect(manager.getState()).toEqual({
     apps: [

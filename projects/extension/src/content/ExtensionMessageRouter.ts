@@ -49,22 +49,22 @@ export class ExtensionMessageRouter {
     const data = message.data;
     const port = chrome.runtime.connect({ name: `${data.appName}::${data.chainName}` });
     debug(`CONNECTED ${data.chainName} PORT`, port);
-    // forward any messages: extension -> page
     const chainName = data.chainName;
 
+    // forward any messages: extension -> page
     port.onMessage.addListener((data): void => {
       debug(`RECIEVED MESSGE FROM ${chainName} PORT`, data);
       extension.send({ message: data, origin: CONTENT_SCRIPT_ORIGIN });
     });
 
+    // tell the page when the port disconnects
     port.onDisconnect.addListener(() => {
       extension.send({ origin: 'content-script', disconnect: true });
       delete this.#ports[data.chainName];
     });
 
     this.#ports[data.chainName] = port;
-    debug(`SENDING ASSOCIATE MESSAGE TO ${data.chainName} PORT`, data.message);
-    port.postMessage(data.message);
+    debug(`CONNECTED TO ${data.chainName} PORT`, data.message);
   }
 
   #forwardRpcMessage = (message: ProviderMessage): void => {
@@ -108,6 +108,10 @@ export class ExtensionMessageRouter {
       return console.warn('Malformed message - missing action', message);
     }
 
+    if (data.action === 'connect') {
+      return this.#establishNewConnection(message);
+    }
+
     if (data.action === 'disconnect') {
       return this.#disconnectPort(message);
     }
@@ -118,10 +122,6 @@ export class ExtensionMessageRouter {
         // probably someone abusing the extension
         console.warn('Malformed message - missing message.type', data);
         return;
-      }
-
-      if (innerMessage.type === 'associate') {
-        return this.#establishNewConnection(message);
       }
 
       if (innerMessage.type === 'rpc') {

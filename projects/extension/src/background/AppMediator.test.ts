@@ -15,58 +15,50 @@ test('initialises correctly', () => {
   expect(am.tabId).toBe(port.sender.tab.id);
 });
 
-function associateWithNetwork(am: AppMediator, port: MockPort, network: string) {
-  port.triggerMessage({ type: 'associate', payload: network });
-  expect(am.state).toBe('ready');
-  expect(am.smoldotName).toBe(network);
-
-  // TODO: check that an info message is sent back to the UApp on success
-}
-
-test('becomes ready after associating with a client and can send messages', () => {
+test('becomes connected after connecting with a client and can send messages', () => {
   const port = new MockPort('test-app::westend');
   const manager = new MockConnectionManager(true);
   const am = new AppMediator(port, manager);
 
-  associateWithNetwork(am, port, 'westend');
-
   port.triggerMessage({ type: 'rpc', payload: '{ "id": 1 }'});
   expect(am.requests.length).toBe(1);
+  expect(am.state).toBe('connected');
 });
 
 test('emits error when manager does not have client for the network', () => {
   const port = new MockPort('test-app::westend');
   const manager = new MockConnectionManager(false);
-  new AppMediator(port, manager);
-  const network = 'westend';
+  const app =  new AppMediator(port, manager);
 
-  port.triggerMessage({ type: 'associate', payload: network });
+  app.associate();
+
   expect(port.postMessage).toBeCalledTimes(1);
   expect(port.postMessage).toBeCalledWith({
     type: 'error',
-    payload: `Extension does not have client for ${network}`
+    payload: `Extension does not have client for westend`
   });
+  expect(port.disconnect).toBeCalled();
 });
 
-test('emits error when recieves RPC message before associated', () => {
-  const port = new MockPort('test-app::westend');
+test('emits error when port name is wrong format', () => {
+  const port = new MockPort('garbage');
   const manager = new MockConnectionManager(false);
-  const am = new AppMediator(port, manager);
+  const app =  new AppMediator(port, manager);
 
-  port.triggerMessage({ type: 'rpc', payload: '' });
+  app.associate();
+
   expect(port.postMessage).toBeCalledTimes(1);
   expect(port.postMessage).toBeCalledWith({
     type: 'error',
-    payload: `The app is not associated with a blockchain client`
+    payload: `Invalid port name garbage expected <app_name>::<chain_name>`
   });
+  expect(port.disconnect).toBeCalled();
 });
 
 test('does nothing when it has sent no requests', () => {
   const port = new MockPort('test-app::polkadot');
   const manager = new MockConnectionManager(true);
   const am = new AppMediator(port, manager);
-
-  associateWithNetwork(am, port, 'polkadot');
 
   const message: JsonRpcResponse = { id: 1, jsonrpc: '2.0', result: {} };
 
@@ -77,8 +69,6 @@ test('remaps the id to the apps id', () => {
   const port = new MockPort('test-app::kusama');
   const manager = new MockConnectionManager(true);
   const am = new AppMediator(port, manager);
-
-  associateWithNetwork(am, port, 'kusama');
 
   // Fake getting a request from UApp to send an RPC message
   port.triggerMessage({
@@ -140,8 +130,6 @@ test('tracks and forwards subscriptions', () => {
   const manager = new MockConnectionManager(true);
   const am = new AppMediator(port, manager);
 
-  associateWithNetwork(am, port, 'westend');
-
   const appIDForRequest = 1
   const subscriptionId = 2;
   setupAppMediatorWithSubscription(am, port, appIDForRequest, subscriptionId);
@@ -173,8 +161,6 @@ test('unsubscribes from all subs on disconnect', () => {
   const port = new MockPort('test-app::westend');
   const manager = new MockConnectionManager(true);
   const am = new AppMediator(port, manager);
-
-  associateWithNetwork(am, port, 'westend');
 
   setupAppMediatorWithSubscription(am, port, 1, 1);
   setupAppMediatorWithSubscription(am, port, 2, 2);

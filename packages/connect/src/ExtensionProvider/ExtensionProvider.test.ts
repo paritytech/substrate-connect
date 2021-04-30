@@ -32,7 +32,7 @@ test('constructor sets properties', async () => {
   expect(ep.chainName).toBe('kusama');
 });
 
-test('connect sends init message and emits connected', async () => {
+test('connect sends connect message and emits connected', async () => {
   const ep = new ExtensionProvider('test', 'test-chain');
   const emitted = jest.fn();
   ep.on('connected', emitted);
@@ -42,11 +42,7 @@ test('connect sends init message and emits connected', async () => {
   const expectedMessage: ProviderMessageData = {
     appName: 'test',
     chainName: 'test-chain',
-    action: 'forward',
-    message: {
-      type: 'associate',
-      payload: 'test-chain'
-    },
+    action: 'connect',
     origin: 'extension-provider'
   };
   expect(handler).toHaveBeenCalledTimes(1);
