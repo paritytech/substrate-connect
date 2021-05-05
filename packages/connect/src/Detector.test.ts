@@ -6,9 +6,8 @@ describe('Initialize Detector without extension', () => {
 
   test('Should connect with known chain "westend".', async done => {
     try {
-      const chainName = 'westend';
       detect = new Detector('test-uapp');
-      const api = await detect.connect(chainName);
+      const api = await detect.connect('westend');
       expect(api).toBeTruthy();
       done();
     } catch (err: unknown) {
@@ -20,9 +19,8 @@ describe('Initialize Detector without extension', () => {
 
   test('Should connect with known chain "polkadot".', async done => {
     try {
-      const chainName = 'polkadot';
       detect = new Detector('test-uapp');
-      const api = await detect.connect(chainName);
+      const api = await detect.connect('polkadot');
       expect(api).toBeTruthy();
       done();
     } catch (err: unknown) {
@@ -35,9 +33,8 @@ describe('Initialize Detector without extension', () => {
   // DEACTIVATED for now due to chainSpecs - once Kusama specs are available this should be activated
   // test('Should connect with known chain "kusama".', async done => {
   //   try {
-  //     const chainName = 'kusama';
   //     detect = new Detector('test-uapp');
-  //     const api = await detect.connect(chainName);
+  //     const api = await detect.connect('kusama');
   //     expect(api).toBeTruthy();
   //     done();
   //   } catch (err: unknown) {

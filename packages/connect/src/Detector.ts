@@ -50,10 +50,6 @@ export class Detector {
     Object.keys(this.#chainSpecs).forEach(k => {
       void this.#getSpecs(k);
     });
-
-    // this.#chainSpecs['polkadot'] = this.#getSpecs('polkadot');
-    // this.#chainSpecs['kusama'] = this.#getSpecs('kusama');
-    // this.#chainSpecs['westend'] = this.#getSpecs('westend');
   }
 
   public connect = async (chainName: string, providedChainSpec?: string): Promise<ApiPromise> => {
