@@ -36,7 +36,6 @@ export const downloadFile = (fileName: string, data: string, type: string): void
   export const createLocalStorageAccount = (): LocalStorageAccountCtx => {
     const mnemonic = mnemonicGenerate(12);
     const pair = keyring.addFromMnemonic(mnemonic, { name: uniqueNamesGenerator(config) }, 'sr25519');
-    // const pair = keyring.addFromUri('//Charlie', { name: 'Charlie default' });
     return {
         userAddress: pair.address,
         userName: pair.meta.name as string || '____ _____',
@@ -62,12 +61,12 @@ export const getKeyring = (): Keyring => keyring;
 export const transformCurrency = (currencyLevel: string, currency: string): string =>
     (currencyLevel !== '-') ? currencyLevel.concat(currency) : currency;
 
-export const isValidAddressPolkadotAddress = (add = ''): boolean => {
+export const isValidAddressPolkadotAddress = (address = ''): boolean => {
   try {
     encodeAddress(
-      isHex(add)
-        ? hexToU8a(add.toString())
-        : decodeAddress(add)
+      isHex(address)
+        ? hexToU8a(address.toString())
+        : decodeAddress(address)
     );
 
     return true;

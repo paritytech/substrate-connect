@@ -171,7 +171,7 @@ const SendFundsForm: FunctionComponent = () => {
 		}
 	}
 
-  const humanReadable = (amnt: number) => amnt/1000000000000;
+  const humanReadable = (amnt: number): string => (amnt/Math.pow(10, api.registry.chainDecimals[0])).toFixed(4);
 
 	return (
 		<Grid
@@ -192,13 +192,13 @@ const SendFundsForm: FunctionComponent = () => {
 			</Grid>
       <Grid item xs={12} className={classes.formSubmitContainer}>
         <Typography variant='subtitle1' className={classes.feesMessage}>
-          {fee ? `Receiver will get: ${humanReadable(parseFloat(amount))} ${unit}.` : ''}
+          {fee ? `Receiver will get: ${humanReadable(parseFloat(amount))} ${unit}` : ''}
         </Typography>
         <Typography variant='subtitle1' className={classes.feesMessage}>
-          {fee ? `Fees: ${humanReadable(fee)} ${unit}.` : ''}
+          {fee ? `Fees: ${humanReadable(fee)} ${unit}` : ''}
         </Typography>
         <Typography variant='subtitle1' className={classes.feesMessage}>
-          {fee ? `Total Sent: ${humanReadable(parseFloat(amount) + fee)} ${unit}.` : ''}
+          {fee ? `Total Sent: ${humanReadable(parseFloat(amount) + fee)} ${unit}` : ''}
         </Typography>
       </Grid>
       <Grid item xs={12} className={classes.formSubmitContainer}>

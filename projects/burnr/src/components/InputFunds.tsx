@@ -1,5 +1,6 @@
 import React, { ChangeEvent, MouseEvent, SetStateAction, Dispatch } from 'react';
 import { Button, Grid, TextField, Box, InputAdornment } from '@material-ui/core';
+import { useApi } from '../hooks';
 import BN from 'bn.js';
 
 interface Props {
@@ -10,19 +11,20 @@ interface Props {
 }
 
 const InputFunds: React.FunctionComponent<Props> = ({ total, setAmount, currency, hidePercentages = false }: Props) => {
-	// const [value, setValue] = React.useState<string>('');
-	const [showValue, setShowValue] = React.useState<string>('');
+  const api = useApi();
+  const [showValue, setShowValue] = React.useState<string>('');
 
 	const handleChange = (e: ChangeEvent | MouseEvent, fromButtons = false) => {
+    if ((e.currentTarget as HTMLButtonElement).value?.length > 6 ) return;
     if (fromButtons) {
-      const calcNewTotal = (parseFloat((e.currentTarget as HTMLButtonElement).value) * parseInt(new BN(total).toString()))/1000000000000;
-      const value = (calcNewTotal).toString();
-      setShowValue(value !== '' ? value : '');
-      setAmount(value);
+      const calcNewTotal = (parseFloat((e.currentTarget as HTMLButtonElement).value) * parseInt(new BN(total).toString()));
+      const truncDec = Math.trunc(calcNewTotal);
+      setShowValue((calcNewTotal).toString() !== '' ? (truncDec/Math.pow(10, api.registry.chainDecimals[0])).toFixed(4) : '');
+      setAmount((truncDec).toString());
       document.getElementById('SendFundsAmountField')?.focus();
     } else {
       const value = (e.currentTarget as HTMLButtonElement).value;
-      const v: number = (parseFloat(value) * 1000000000000);
+      const v: number = (parseFloat(value) * Math.pow(10, api.registry.chainDecimals[0]));
       setShowValue(value !== '' ? value : '');
       setAmount(value !== '' ? v.toString() : '0');
     }
@@ -41,7 +43,7 @@ const InputFunds: React.FunctionComponent<Props> = ({ total, setAmount, currency
 					id='SendFundsAmountField'
 					value={showValue}
 					label="Amount"
-          helperText={!parseInt(showValue) && 'You should add some amount.'}
+          helperText={!parseInt(showValue) && 'Enter valid amount'}
 					fullWidth
           type="number"
 					variant="outlined"

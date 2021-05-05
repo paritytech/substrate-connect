@@ -12,11 +12,11 @@ interface Props {
 
 const InputAddress: React.FunctionComponent<Props> = ({ setAddress }) => {
 	const [value, setValue] = useState<string>('');
-  const [add, setAdd] = useState<string>('');
+  const [addr, setAddr] = useState<string>('');
 
 	useEffect((): void => {
 		setAddress(value);
-    setAdd(value);
+    setAddr(value);
 	}, [value, setAddress]);
 
 	const handleChangeButton = (e: ChangeEvent) => {
@@ -33,7 +33,7 @@ const InputAddress: React.FunctionComponent<Props> = ({ setAddress }) => {
 						onChange={handleChangeButton}
 						onFocus={handleChangeButton}
 						onBlur={handleChangeButton}
-            helperText={(!isValidAddressPolkadotAddress(add) || !add) && 'You need to add a valid address.'}
+            helperText={(!isValidAddressPolkadotAddress(addr) || !addr) && 'Enter valid address'}
 						value={value}
 						variant="outlined"
 						InputProps={{
