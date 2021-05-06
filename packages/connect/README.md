@@ -32,6 +32,6 @@ const api = await detect.connect('mySubstrateChainName', chainSpec());
 
 ## Scripts
 
-* `yarn test` to run the unit tests
-* `yarn build` to build @substrate-connect
-* `yarn lint` to run linter for @substrate-connect
+* `npm run test` to run the unit tests
+* `npm run build` to build @substrate-connect
+* `npm run lint` to run linter for @substrate-connect

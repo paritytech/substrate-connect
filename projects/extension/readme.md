@@ -4,14 +4,14 @@
 Navigate to the project directory and install the dependencies.
 
 ```
-$ yarn
+$ npm install
 ```
 
 To build the extension, and rebuild it when the files are changed, run
 
 - Open a terminal and run
 ```
-$  yarn run dev
+$  npm run dev
 ```
 This will initiate a "watch" terminal that will hot reload in every change (Changes polling: 1 second. Aggregation of changes: every 1 second.)
 
@@ -20,11 +20,11 @@ After the project has been built, a directory named `dist` has been created.
 1. Open another terminal and run
 - For dev mode on chrome:
 ```
-$  yarn run start
+$  npm run start
 ```
 - For dev mode on Firefox:
 ```
-$  yarn run start:firefox
+$  npm run start:firefox
 ```
 
 ### 2nd way:

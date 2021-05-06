@@ -86,7 +86,7 @@ const App: React.FunctionComponent = () => {
             <SectionHeading id='getting-started' prefix='4'>Getting Started</SectionHeading>
             <ThemeProvider theme={createMuiTheme(dark)}>
               <Code>
-                yarn add @substrate/substrate-connect
+                npm install @substrate/substrate-connect
               </Code>
               <Code heading='index.ts'>
                 <Box>{`import { UApp } from '@substrate/connect';`}</Box>

@@ -23,9 +23,6 @@ When used in individual projects, the Substrate Connect node module will first c
 
 ## Installation:
 
-This repository is using [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) for dependency management together with [Lerna](https://lerna.js.org/) to handle releases.
-
-
 1. Clone the whole `substrate-connect` repository.
 
 ```bash
@@ -35,47 +32,47 @@ git clone https://github.com/paritytech/substrate-connect.git
 2. Install all dependencies
 
 ```bash
-yarn install
+npm install
 ```
 
 3. Compile all packages and projects
 
 ```bash
-yarn build
+npm run build
 ```
 
 To clean up all workspaces in the repository, run:
 
 ```bash
-yarn clean
+npm run clean
 ```
 
 ## Run local version of Burnr wallet
 Running the following command will build all necessary dependencies and run the Substrate Burnr Wallet in development mode with hot reloading enabled. It will be served on http://localhost:1234/
 
 ```bash
-yarn dev:burnr
+npm run dev:burnr
 ```
 
-(Make sure to run `$ yarn install` before.)
+(Make sure to run `$ npm install` before.)
 
 ## Run local version of the Smoldot browser demo
 Running the following command will build all necessary dependencies and run the Smoldot browser demo. It will be served on https://localhost:1234/
 
 ```bash
-yarn dev:smoldot-browser-demo
+npm run dev:smoldot-browser-demo
 ```
 
-(Make sure to run `$ yarn install` before.)
+(Make sure to run `$ npm install` before.)
 
 ## Run local version of Smoldot Extension
 Running the following command will build all necessary dependencies and run the Smoldot Extension in development mode with hot reloading enabled. Once run a new (Chrome) browser will appear with the extension added.
 
 ```bash
-yarn dev:smoldot-extension
+npm run dev:smoldot-extension
 ```
 
-(Make sure to run `$ yarn install` before.)
+(Make sure to run `$ npm install` before.)
 
 ## Deploy Smoldot browser demo to Github Pages
 
@@ -90,7 +87,7 @@ branch. The dist folder remains ignored by git.
 You can deploy to Github pages like so:
 
 ```bash
-yarn deploy:gh-pages:smoldot-browser-demo
+npm run deploy:gh-pages:smoldot-browser-demo
 ```
 
 ## Deploy Smoldot browser demo to IPFS
@@ -106,28 +103,8 @@ PINATA_API_SECRET=<your secret>
 You can then deploy to IPFS like so:
 
 ```bash
-yarn deploy:ipfs:smoldot-browser-demo
+npm run deploy:ipfs:smoldot-browser-demo
 ```
-
-## Working with this repository
-
-Substrate Connect is using Yarn workspaces to manage dependencies. 
-
-Read more about it here: https://classic.yarnpkg.com/en/docs/workspaces/
-
-### Adding modules to single repositories
-
-To add new dependencies, please use the following syntax:
-
-```
-yarn workspace [module name from package.json] add your-desired-npm-package
-```
-Example to add Jest to the Burnr Wallet:
-```
-yarn workspace @substrate/burnr add jest
-```
-
-Also see https://classic.yarnpkg.com/en/docs/cli/workspace/
 
 ### GH Pages Links
 This is a test for GH-Pages:
