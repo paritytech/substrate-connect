@@ -19,13 +19,13 @@
   },
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
-    "prebuild": "yarn clean",
-    "pretest": "yarn build",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest --env=node --colors --coverage dist",
-    "deep-clean": "yarn clean && rm -rf node_modules",
+    "prebuild": "npm run clean",
+    "pretest": "npm run build",
+    "test": "node --experimental-vm-modules $(npm bin)/jest --env=node --colors --coverage dist",
+    "deep-clean": "npm run clean && rm -rf node_modules",
     "clean": "rm -rf dist",
     "build": "tsc --build",
-    "lint": "yarn eslint . --ext .js,.ts"
+    "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {
     "@polkadot/rpc-provider": "^3.7.3",

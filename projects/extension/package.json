@@ -7,15 +7,15 @@
   "license": "GPL-3.0-only",
   "type": "module",
   "scripts": {
-    "deep-clean": "yarn clean && rm -rf node_modules",
+    "deep-clean": "npm run clean && rm -rf node_modules",
     "clean": "rm -rf dist",
-    "pretest": "yarn clean && tsc",
-    "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --coverage dist/",
-    "build": "yarn run clean && webpack --config webpack.prod.js && zip -r ./dist/substrate-connect.zip ./dist/*",
-    "dev": "yarn run clean && webpack --node-env development --config webpack.dev.js",
+    "pretest": "npm run clean && tsc",
+    "test": "node --experimental-vm-modules $(npm bin)/jest --colors --coverage dist/",
+    "build": "npm run clean && webpack --config webpack.prod.js && zip -r ./dist/substrate-connect.zip ./dist/*",
+    "dev": "npm run clean && webpack --node-env development --config webpack.dev.js",
     "start": "web-ext run --source-dir ./dist -t chromium",
     "start:firefox": "web-ext run --source-dir ./dist -t firefox-desktop",
-    "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "resolutions": {
     "styled-components": "^5"

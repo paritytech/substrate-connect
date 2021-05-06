@@ -11,15 +11,15 @@
     "last 2 versions"
   ],
   "scripts": {
-    "deep-clean": "yarn clean && rm -rf node_modules",
+    "deep-clean": "npm run clean && rm -rf node_modules",
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
-    "build": "yarn clean && yarn typecheck && parcel build index.html --public-url ./ --detailed-report",
-    "dev": "yarn clean && concurrently \"yarn typecheck:watch\" \"parcel --no-cache index.html\"",
+    "build": "npm run clean && npm run typecheck && parcel build index.html --public-url ./ --detailed-report",
+    "dev": "npm run clean && concurrently \"npm run typecheck:watch\" \"parcel --no-cache index.html\"",
     "test": "echo \"Warning: Jest has been setup but no tests exist.\"",
     "test:watch": "jest --watch",
-    "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",

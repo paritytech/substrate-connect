@@ -8,13 +8,13 @@
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
   "scripts": {
-    "prebuild": "yarn clean",
+    "prebuild": "npm run clean",
     "deep-clean": "rm -rf node_modules",
     "clean": "rm -rf dist/",
     "build": "tsc",
     "test": "echo \"No tests for smoldot-test-utils\"",
-    "lint": "echo \"No lint yet for smoldot-test-utils: actual command -> yarn eslint . --ext .js,.ts\"",
-    "postinstall": "yarn build"
+    "lint": "echo \"No lint yet for smoldot-test-utils: actual command -> eslint . --ext .js,.ts\"",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "smoldot": "^0.1.11"

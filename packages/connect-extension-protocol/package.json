@@ -5,11 +5,11 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "deep-clean": "yarn clean && rm -rf node_modules",
+    "deep-clean": "npm run clean && rm -rf node_modules",
     "clean": "rm -rf dist/",
     "build": "tsc --build",
     "test": "echo \"No tests: this package is only types\"",
-    "lint": "yarn eslint . --ext .js,.ts"
+    "lint": "eslint . --ext .js,.ts"
   },
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
