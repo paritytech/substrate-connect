@@ -4,7 +4,6 @@
 .vscode
 .cache/
 .parcel-cache/
-yarn-error.log*
 
 # dependencies
 /node_modules
