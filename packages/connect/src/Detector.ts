@@ -39,7 +39,7 @@ export class Detector {
     } else if (providedChainSpec) {
         provider = new SmoldotProvider(providedChainSpec);
     } else if (!providedChainSpec) {
-      throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(chainSpecs).join(', \'')}') or provide valid chainSpecs.`)
+      throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
     }
     await provider.connect();
     this.#providers[chainName] = provider as ProviderInterface;
