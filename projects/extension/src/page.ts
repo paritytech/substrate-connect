@@ -8,6 +8,7 @@ const injectExtension = () => {
   s.id = 'substrateExtension'
   s.setAttribute('name', pkg_name);
   s.setAttribute('version', version);
+  console.log('!!!!!!!! INJECTING EXTENSION SPAN');
   document.body.appendChild(s);
 }
 

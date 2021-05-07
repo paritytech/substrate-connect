@@ -3,10 +3,14 @@
  * mode.
  *
  * @param message - a descriptive message to print
- * @param ctx - an object to log out to the console
+ * @param ctx - an optional object to log out to the console
  */
-export function debug(message: string, ctx: unknown): void {
+export function debug(message: string, ctx?: unknown): void {
   if (process.env.NODE_ENV === 'development') {
-    console.debug(message, ctx);
+    if (ctx) {
+      console.debug(message, ctx);
+    } else {
+      console.debug(message);
+    }
   }
 }
