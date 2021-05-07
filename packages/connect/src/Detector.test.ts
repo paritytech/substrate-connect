@@ -31,18 +31,18 @@ describe('Initialize Detector without extension', () => {
   }, 30000);
 
   // DEACTIVATED for now due to chainSpecs - once Kusama specs are available this should be activated
-  // test('Should connect with known chain "kusama".', async done => {
-  //   try {
-  //     detect = new Detector('test-uapp');
-  //     const api = await detect.connect('kusama');
-  //     expect(api).toBeTruthy();
-  //     done();
-  //   } catch (err: unknown) {
-  //     done(err);
-  //   } finally {
-  //     await detect.disconnect('kusama');
-  //   }
-  // }, 30000);
+  test.skip('Should connect with known chain "kusama".', async done => {
+    try {
+      detect = new Detector('test-uapp');
+      const api = await detect.connect('kusama');
+      expect(api).toBeTruthy();
+      done();
+    } catch (err: unknown) {
+      done(err);
+    } finally {
+      await detect.disconnect('kusama');
+    }
+  }, 30000);
 
   test('Should connect with unknown chain westend2 and chainSpecs.', async done => {
     try {
