@@ -1,39 +1,39 @@
 import http from 'https';
 import fs from 'fs';
 
-const commonBridgesRepo = 'https://raw.githubusercontent.com/paritytech/smoldot/main/bin';
+const commonRepo = 'https://raw.githubusercontent.com/paritytech/smoldot/main/bin';
 const customTypesDir = 'src/specs';
 
 const filesConfig = [
   {
     path: `${customTypesDir}/polkadot.json`,
-    url: `${commonBridgesRepo}/polkadot.json`
+    url: `${commonRepo}/polkadot.json`
   },
   {
     path: `${customTypesDir}/kusama.json`,
-    url: `${commonBridgesRepo}/kusama.json`
+    url: `${commonRepo}/kusama.json`
   },
   {
     path: `${customTypesDir}/westend.json`,
-    url: `${commonBridgesRepo}/westend.json`
+    url: `${commonRepo}/westend.json`
   }
   // We can keep that for later use if needed
   // ,
   // {
   //   path: `${customTypesDir}/rococo.json`,
-  //   url: `${commonBridgesRepo}/rococo.json`
+  //   url: `${commonRepo}/rococo.json`
   // },
   // {
   //   path: `${customTypesDir}/tick.json`,
-  //   url: `${commonBridgesRepo}/tick.json`
+  //   url: `${commonRepo}/tick.json`
   // },
   // {
   //   path: `${customTypesDir}/track.json`,
-  //   url: `${commonBridgesRepo}/track.json`
+  //   url: `${commonRepo}/track.json`
   // },
   // {
   //   path: `${customTypesDir}/trick.json`,
-  //   url: `${commonBridgesRepo}/trick.json`
+  //   url: `${commonRepo}/trick.json`
   // }
 ];
 
