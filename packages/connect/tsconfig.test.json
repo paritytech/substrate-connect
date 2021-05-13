@@ -1,9 +1,9 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-        "target": "ES2018",
+        "target": "ESNEXT",
+        "module": "ES2020",
         "sourceMap": true,
-        "allowJs": true,
         "declaration": true,
         "resolveJsonModule": true,
         "moduleResolution": "node",
