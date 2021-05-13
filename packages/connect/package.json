@@ -4,12 +4,12 @@
   "description": "Substrate-connect to Smoldot clients. Using either substrate extension with predefined clients or an internal smoldot client based on chainSpecs provided.",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
+  "type": "module",
   "publishConfig": {
     "access": "public"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/paritytech/substrate-connect.git"
@@ -21,7 +21,7 @@
   "scripts": {
     "prebuild": "yarn clean",
     "pretest": "yarn build",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest --env=node --colors --coverage dist",
+    "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --coverage dist/",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist",
     "build": "tsc --build",
@@ -37,6 +37,9 @@
     "smoldot": "^0.1.25"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.2",
+    "@babel/preset-env": "^7.14.2",
+    "@babel/preset-typescript": "^7.13.0",
     "@polkadot/api": "^3.7.3",
     "@polkadot/extension-inject": "^0.36.1",
     "@substrate/smoldot-test-utils": "file:../smoldot-test-utils",
@@ -45,6 +48,7 @@
     "@types/mkdirp": "^1.0.1",
     "@types/sinon": "^9.0.10",
     "@typescript-eslint/parser": "^4.17.0",
+    "babel-jest": "^26.6.3",
     "eslint": "^7.21.0",
     "jest": "^26.6.3",
     "jsdom": "^16.5.1",
