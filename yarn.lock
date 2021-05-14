@@ -2830,7 +2830,7 @@
 "@substrate/smoldot-test-utils@file:packages/smoldot-test-utils":
   version "0.1.0"
   dependencies:
-    smoldot "^0.1.11"
+    smoldot "^0.2.0"
 
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
@@ -12939,20 +12939,10 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-smoldot@^0.1.11:
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.1.11.tgz#890cfbadb790148f2df9b63be676c9035066f2bb"
-  integrity sha512-983NvZXYa49fJ+GFy/bsUV7w/h0idRsS73mFuuHATCFH1rR4xCPkg+IL1IFtQpb4oTcG09rL28ItpAkwoijnNA==
-  dependencies:
-    buffer "^6.0.1"
-    performance-now "^2.1.0"
-    randombytes "^2.1.0"
-    websocket "^1.0.32"
-
-smoldot@^0.1.25:
-  version "0.1.25"
-  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.1.25.tgz#928670acc80fa70209e1bf69a1a11a8854e7813e"
-  integrity sha512-8kjUg5nWUzyVL6g0rpYJP94XOLlHl6h6Dg2UjlIdnCguou/nXJsWNNV1tnHCil9G7ZAfLkYlOWhB+hnOiSGAOg==
+smoldot@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.2.0.tgz#e093cac3a8df99f4a6aa630f86608db6c106b8de"
+  integrity sha512-Q55meqT5PfbZLx3QqnsNi/6e8d1M3R156hvwdoVxqZFESaLLLnjNSq5PcfysLOiZb9nusPcXDyzTWVrsVzB4ww==
   dependencies:
     buffer "^6.0.1"
     performance-now "^2.1.0"

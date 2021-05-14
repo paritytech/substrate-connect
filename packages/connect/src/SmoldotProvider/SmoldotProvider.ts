@@ -256,9 +256,9 @@ export class SmoldotProvider implements ProviderInterface {
     assert(!this.#client && !this.#isConnected, 'Client is already connected');
     try {
       this.#client = await this.#smoldot.start({
-        chain_spec: this.#chainSpec,
-        max_log_level: 3, /* no debug/trace messages */
-        json_rpc_callback: (response: string) => {
+        chainSpecs: [this.#chainSpec],
+        maxLogLevel: 3, /* no debug/trace messages */
+        jsonRpcCallback: (response: string) => {
             this.#handleRpcReponse(response);
         }
       })
@@ -349,7 +349,7 @@ export class SmoldotProvider implements ProviderInterface {
           subscription
         };
 
-      this.#client.send_json_rpc(json);
+      this.#client.sendJsonRpc(json, 0);
     });
   }
 

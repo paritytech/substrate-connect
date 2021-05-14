@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -53,7 +55,7 @@ export const devChainHealthResponder = (requestJSON: string) => {
 }
 
 // Mimics the behaviour of the WASM light client by deferring a call to 
-// `json_rpc_callback` after it is called which returns the response
+// `jsonRpcCallback` after it is called which returns the response
 // returned by the supplied `responder`.
 //
 // If this is called with an rpc string containing the word subscribe (but not
@@ -62,18 +64,18 @@ export const devChainHealthResponder = (requestJSON: string) => {
 // first returning the subscription id.  The second a response to the
 // subscription.
 const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder, healthResponder: RpcResponder) => {
-  return (rpcRequest: string) => {
+  return (rpcRequest: string, chainIndex: number) => {
     process.nextTick(() => {
-      if (options && options.json_rpc_callback) {
+      if (options && options.jsonRpcCallback) {
         if (/system_health/.test(rpcRequest)) {
-          options.json_rpc_callback(healthResponder(rpcRequest));
+          options.jsonRpcCallback(healthResponder(rpcRequest), chainIndex);
           return;
         }
 
         // non-health reponse
-        options.json_rpc_callback(responder(rpcRequest))
+        options.jsonRpcCallback(responder(rpcRequest), chainIndex)
         if (/(?<!un)[sS]ubscribe/.test(rpcRequest)) {
-          options.json_rpc_callback(responder(rpcRequest))
+          options.jsonRpcCallback(responder(rpcRequest), chainIndex)
         }
       }
     });
@@ -88,8 +90,9 @@ export const mockSmoldot = (responder: RpcResponder, healthResponder = healthyRe
       return Promise.resolve({
         terminate: () => {},
         // fake the async reply by using the reponder to format
-        // a reply via options.json_rpc_callback
-        send_json_rpc: fakeRpcSend(options, responder, healthResponder)
+        // a reply via options.jsonRpcCallback
+        sendJsonRpc: fakeRpcSend(options, responder, healthResponder),
+        cancelAll: () => {}
       });
     }
   };
@@ -102,12 +105,13 @@ export const smoldotSpy = (responder: RpcResponder, rpcSpy: any, healthResponder
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
       return Promise.resolve({
         terminate: () => {},
-        send_json_rpc: (rpc: string) => {
+        sendJsonRpc: (rpc: string, chainIndex: number) => {
           // record the message call
           rpcSpy(rpc);
           // fake the async reply using the responder
-          fakeRpcSend(options, responder, healthResponder)(rpc);
-        }
+          fakeRpcSend(options, responder, healthResponder)(rpc, chainIndex)
+        },
+        cancelAll: () => {}
       });
     }
   };
