@@ -202,9 +202,9 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       // TODO(rem): fix the typescript definition in smoldot
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
       const sc = await (smoldot as any).start({
-        chain_spec: chainSpec,
-        max_log_level: this.smoldotLogLevel,
-        json_rpc_callback: (message: string) => {
+        chainSpecs: [chainSpec],
+        maxLogLevel: this.smoldotLogLevel,
+        jsonRpcCallback: (message: string) => {
           const parsed = JSON.parse(message) as JsonRpcResponse;
           for (const app of sm.apps) {
             if (app.processSmoldotMessage(parsed)) {
