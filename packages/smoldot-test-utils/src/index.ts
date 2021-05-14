@@ -63,8 +63,8 @@ export const devChainHealthResponder = (requestJSON: string) => {
 // mock responses for each subscriptionrequest that the test will make.  The
 // first returning the subscription id.  The second a response to the
 // subscription.
-const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder, healthResponder: RpcResponder, chainIndex: number) => {
-  return (rpcRequest: string) => {
+const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder, healthResponder: RpcResponder) => {
+  return (rpcRequest: string, chainIndex: number) => {
     process.nextTick(() => {
       if (options && options.jsonRpcCallback) {
         if (/system_health/.test(rpcRequest)) {
@@ -91,7 +91,7 @@ export const mockSmoldot = (responder: RpcResponder, healthResponder = healthyRe
         terminate: () => {},
         // fake the async reply by using the reponder to format
         // a reply via options.jsonRpcCallback
-        sendJsonRpc: fakeRpcSend(options, responder, healthResponder, 0),
+        sendJsonRpc: fakeRpcSend(options, responder, healthResponder),
         cancelAll: () => {}
       });
     }
@@ -105,11 +105,11 @@ export const smoldotSpy = (responder: RpcResponder, rpcSpy: any, healthResponder
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
       return Promise.resolve({
         terminate: () => {},
-        sendJsonRpc: (rpc: string) => {
+        sendJsonRpc: (rpc: string, chainIndex: number) => {
           // record the message call
           rpcSpy(rpc);
           // fake the async reply using the responder
-          fakeRpcSend(options, responder, healthResponder, 0)(rpc)
+          fakeRpcSend(options, responder, healthResponder)(rpc, chainIndex)
         },
         cancelAll: () => {}
       });
