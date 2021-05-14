@@ -33,7 +33,7 @@
     "typescript": "^4.1.5"
   },
   "dependencies": {
-    "@substrate/connect": "^0.3.5",
+    "@substrate/connect": "^0.3.6",
     "regenerator-runtime": "^0.13.7"
   },
   "eslintConfig": {
