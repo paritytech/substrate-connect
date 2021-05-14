@@ -1,4 +1,4 @@
-import { Detector } from './Detector';
+import { Detector } from './Detector.js';
 export { 
   Detector,
 };
