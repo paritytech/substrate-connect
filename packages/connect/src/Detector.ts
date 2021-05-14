@@ -43,6 +43,7 @@ export class Detector {
     }
     await provider.connect();
     let derives, initWasm, metadata, registry, rpc, signedExtensions, signer, source;
+
     if (options) {
       derives = options?.derives;
       initWasm = options?.initWasm;
