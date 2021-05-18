@@ -44,8 +44,7 @@ export class Detector {
     await provider.connect();
 
     this.#providers[chainName] = provider as ProviderInterface;
-    const finalizedOptions = options ? Object.assign(options, {provider}) : {...provider};
-    return await ApiPromise.create(finalizedOptions);
+    return await ApiPromise.create(Object.assign(options ?? {}, {provider}));
   }
 
   public disconnect = async (chainName: string): Promise<void> => {
