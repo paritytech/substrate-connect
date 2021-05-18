@@ -31,7 +31,7 @@ describe('Initialize Detector without extension', () => {
   }, 30000);
 
   // DEACTIVATED for now due to chainSpecs - once Kusama specs are available this should be activated
-  test('Should connect with known chain "kusama".', async done => {
+  test.skip('Should connect with known chain "kusama".', async done => {
     try {
       detect = new Detector('test-uapp');
       const api = await detect.connect('kusama');
