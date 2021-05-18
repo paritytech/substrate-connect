@@ -42,20 +42,10 @@ export class Detector {
       throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(this.#chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
     }
     await provider.connect();
-    let derives, initWasm, metadata, registry, rpc, signedExtensions, signer, source;
 
-    if (options) {
-      derives = options?.derives;
-      initWasm = options?.initWasm;
-      metadata = options?.metadata;
-      registry = options?.registry;
-      rpc = options?.rpc;
-      signedExtensions = options?.signedExtensions;
-      signer = options?.signer;
-      source = options?.source;
-    }   
     this.#providers[chainName] = provider as ProviderInterface;
-    return await ApiPromise.create({ provider, derives, initWasm, metadata, registry, rpc, signedExtensions, signer, source });
+    const finalizedOptions = options ? Object.assign(options, {provider}) : {...provider};
+    return await ApiPromise.create(finalizedOptions);
   }
 
   public disconnect = async (chainName: string): Promise<void> => {
