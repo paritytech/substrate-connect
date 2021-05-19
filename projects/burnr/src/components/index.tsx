@@ -1,7 +1,7 @@
 export { default as AccountCard } from './AccountCard';
 export { default as AccountMenu } from './AccountMenu';
 export { default as AccountBurn } from './AccountBurn';
-export { default as Bg } from './Bg';
+export { BurnrBG, BurnrDivider } from './Bg';
 export { default as BalanceValue } from './BalanceValue';
 export { default as Head } from './Head';
 export { default as HistoryTable } from './HistoryTable';

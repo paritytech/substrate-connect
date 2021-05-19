@@ -1,16 +1,15 @@
 import React, { useState, useContext } from 'react';
 
 import { grey } from '@material-ui/core/colors';
-import { Typography, makeStyles, Theme, createStyles, IconButton, Divider } from '@material-ui/core';
+import { Typography, makeStyles, Theme, createStyles, IconButton, ListItem, Menu, MenuItem } from '@material-ui/core';
+import { BurnrDivider } from '../components';
 
 import { AccountContext } from '../utils/contexts';
-
 import { openInNewTab, downloadFile } from '../utils/utils';
 import { POLKA_ACCOUNT_ENDPOINTS } from '../utils/constants';
 import { useLocalStorage } from '../hooks';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { ListItem, Menu, MenuItem } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -71,7 +70,7 @@ const AccountMenu: React.FunctionComponent = () => {
 					Polkastats
 				</MenuItem>
 
-				<Divider />
+				<BurnrDivider />
 
 				<ListItem dense>
 					<Typography variant='overline'>

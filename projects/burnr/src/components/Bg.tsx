@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core';
+import { makeStyles, createStyles, Theme, Divider } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -21,10 +21,11 @@ const useStyles = makeStyles((theme: Theme) =>
 	})
 );
 
-const Bg: React.FunctionComponent = () => {
+export const BurnrBG: React.FunctionComponent = () => {
 	const classes = useStyles();
-
 	return <div className={classes.root} />;
 };
 
-export default Bg;
+export const BurnrDivider: React.FunctionComponent = () => (
+	<Divider style={{ backgroundColor: 'transparent', height: .5 }} />
+);

@@ -1,13 +1,12 @@
 import React, { useContext } from 'react';
 
-import { Tabs, Tab, Typography, Box, Paper, Divider, makeStyles, Theme } from '@material-ui/core';
+import { Tabs, Tab, Typography, Box, Paper, makeStyles, Theme } from '@material-ui/core';
 import SwapHorizSharpIcon from '@material-ui/icons/SwapHorizSharp';
 import CallMadeSharpIcon from '@material-ui/icons/CallMadeSharp';
 import CallReceivedSharpIcon from '@material-ui/icons/CallReceivedSharp';
 import WhatshotSharpIcon from '@material-ui/icons/WhatshotSharp';
 
-import { HistoryTable } from './index';
-import { SendFundsForm, ReceiveFundsForm } from '.';
+import { SendFundsForm, ReceiveFundsForm, BurnrDivider, HistoryTable } from '../components';
 
 import { useApi, useBalance, useLocalStorage } from '../hooks';
 import { AccountContext } from '../utils/contexts';
@@ -98,7 +97,7 @@ const NavTabs: React.FunctionComponent = () => {
 				</Tabs>
 			</Paper>
 
-			<Divider />
+			<BurnrDivider />
 
 			<Paper className={classes.root}>
 				<TabPanel value={value} index={1}>
