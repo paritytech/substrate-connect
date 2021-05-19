@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Paper, IconButton, Box, makeStyles, CircularProgress } from '@material-ui/core';
+import { Paper, IconButton, Box, makeStyles, CircularProgress } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import { NavTabs, AccountCard, BalanceValue, BurnrBG, BurnrDivider, AccountMenu } from './components';
+import { NavTabs, AccountCard, BalanceValue, BurnrDivider } from './components';
 
 import { BalanceVisibleContext } from './utils/contexts';
 import { LocalStorageAccountCtx } from './utils/types';
@@ -45,53 +45,31 @@ const Home: React.FunctionComponent<Props> =  ({ account, loader }: Props) => {
   ) : (
     <BalanceVisibleContext.Provider value={{ balanceVisibility, setBalanceVisibility }}>
       <Paper square className={classes.paperAccount}>
-        <Box paddingY={1} paddingX={2}>
-          <Grid container alignItems='center' spacing={1}>
-            <Grid item xs={6}>
-              {
-                account?.userAddress &&
-                <Grid container wrap='nowrap' alignItems='center'>
-                  <Grid item>
-                    <AccountCard
-                      account={{
-                        address: account?.userAddress,
-                        name: account?.userName
-                      }}
-                    />
-                  </Grid>
-                  <Grid item>
-                    <AccountMenu />
-                  </Grid>
-                </Grid>
-              }
-            </Grid>
-            <Grid item xs={6}>
-              <Grid
-                container
-                spacing={1}
-                wrap='nowrap'
-                alignItems='center'
-              >
-                <Grid item xs={12}>
-                  <BalanceValue
-                    isVisible={balanceVisibility}
-                    unit={unit}
-                    value={balance}
-                    size='large'
-                    style={{ width: '100%', justifyContent: 'flex-end' }}
-                  />
-                </Grid>
-                <Grid item>
-                  <IconButton style={{ borderRadius: 4 }} onClick={() => setBalanceVisibility(!balanceVisibility)}>
-                    {balanceVisibility ?
-                      (<VisibilityIcon />) :
-                      (<VisibilityOffIcon />)
-                    }
-                  </IconButton>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
+        <Box paddingY={1} paddingX={2} display='flex' alignItems='center'>
+
+          <Box width="50%">
+            { account?.userAddress &&
+              <AccountCard
+                account={{
+                  address: account?.userAddress,
+                  name: account?.userName
+                }}
+              />
+            }
+          </Box>
+          <Box width="50%" display='flex' alignItems='center'>  
+            <BalanceValue
+              isVisible={balanceVisibility}
+              unit={unit}
+              value={balance}
+              size='large'
+              style={{ width: '100%', justifyContent: 'flex-end' }}
+            />
+            <IconButton style={{ borderRadius: 4 }} onClick={() => setBalanceVisibility(!balanceVisibility)}>
+              {balanceVisibility ? <VisibilityIcon /> : <VisibilityOffIcon />}
+            </IconButton>
+          </Box>
+          
         </Box>
       </Paper>
       <BurnrDivider />
