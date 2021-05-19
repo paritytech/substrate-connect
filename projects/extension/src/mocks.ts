@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { jest } from '@jest/globals';
-import { AppMediator } from './background/AppMediator';
 import { ConnectionManagerInterface } from './background/types';
 import { 
   MessageToManager, 
@@ -57,19 +60,19 @@ export class MockConnectionManager implements ConnectionManagerInterface {
     this.#willFindClient = willFindClient;
   }
 
-  registerApp(app: AppMediator, name: string): void {
+  registerApp(): void {
     return;
   }
 
-  unregisterApp(app: AppMediator, name: string): void {
+  unregisterApp(): void {
     return;
   }
 
-  hasClientFor = (name: string): boolean => {
+  hasClientFor = (): boolean => {
     return this.#willFindClient;
   };
 
-  sendRpcMessageTo = (name: string, message: any): number => {
+  sendRpcMessageTo = (): number => {
     return ++this.lastId;
   };
 }

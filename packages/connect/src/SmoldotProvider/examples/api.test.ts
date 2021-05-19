@@ -16,19 +16,17 @@ let api: ApiPromise;
 let provider: SmoldotProvider;
 
 describe('API integration tests', () => {
-  beforeEach(async done => {
+  beforeEach(async () => {
       const chainSpec = JSON.stringify(westend);
       provider = new SmoldotProvider(chainSpec);
       await provider.connect();
       api = await ApiPromise.create({ provider });
       l.log('API is ready');
       expect(api).toBeTruthy();
-      done();
   }, 15000);
 
-  afterEach(done => {
-    provider && provider.disconnect();
-    done();
+  afterEach(() => {
+    provider.disconnect();
   }, 15000)
 
   test('API constants', () => {
