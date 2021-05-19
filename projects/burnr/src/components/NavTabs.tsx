@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme: Theme) => ({
       minHeight:'calc(100vh - 320px)',
     },
   },
+  rootHeading: {
+    marginBottom: theme.spacing(3),
+  },
   tabBurn: {
     '& svg, & .MuiTab-wrapper': {
       color: theme.palette.error.main
@@ -101,19 +104,19 @@ const NavTabs: React.FunctionComponent = () => {
 
       <Paper className={classes.root}>
         <TabPanel value={value} index={1}>
-          <Typography variant='h2'>
+          <Typography variant='h2' className={classes.rootHeading}>
             Transaction History
           </Typography>
           <HistoryTable />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <Typography variant='h2'>
+          <Typography variant='h2' className={classes.rootHeading}>
             Send Funds
           </Typography>
           <SendFundsForm />
         </TabPanel>
         <TabPanel value={value} index={3}>
-          <Typography variant='h2'>
+          <Typography variant='h2' className={classes.rootHeading}>
             Receive Funds
           </Typography>
           <ReceiveFundsForm />

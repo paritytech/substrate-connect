@@ -44,6 +44,7 @@ const InputFunds: React.FunctionComponent<Props> = ({ total, setAmount, currency
 					onFocus={handleFocus}
 					onBlur={handleFocus}
 					InputProps={{
+						fullWidth: true,
 						endAdornment: <InputAdornment position="start">{currency}</InputAdornment>,
 					}}
 				/>

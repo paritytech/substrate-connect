@@ -44,13 +44,13 @@ const typography: ThemeOptions = {
 			textTransform: 'none',
 		},
 		subtitle1: {
-			fontFamily: 'Cousine, monospace',
+			fontFamily: 'SFMono-Regular, Consolas , Liberation Mono, Menlo, monospace',
 			fontWeight: 400,
 			fontSize: 17,
 			lineHeight: '200%',
 		},
 		subtitle2: {
-			fontFamily: 'Cousine monospace',
+			fontFamily: 'SFMono-Regular, Consolas , Liberation Mono, Menlo, monospace',
 			fontWeight: 400,
 			fontSize: 13,
 			lineHeight: '135%',

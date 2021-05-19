@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Paper, IconButton, Box, makeStyles, CircularProgress } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import { NavTabs, AccountCard, BalanceValue, BurnrDivider } from './components';
+import { NavTabs, AccountCard, BalanceValue, BurnrDivider, AccountMenu } from './components';
 
 import { BalanceVisibleContext } from './utils/contexts';
 import { LocalStorageAccountCtx } from './utils/types';
@@ -47,14 +47,17 @@ const Home: React.FunctionComponent<Props> =  ({ account, loader }: Props) => {
       <Paper square className={classes.paperAccount}>
         <Box paddingY={1} paddingX={2} display='flex' alignItems='center'>
 
-          <Box width="50%">
+          <Box width='50%' display='flex'>
             { account?.userAddress &&
-              <AccountCard
-                account={{
-                  address: account?.userAddress,
-                  name: account?.userName
-                }}
-              />
+              <>
+                <AccountCard
+                  account={{
+                    address: account?.userAddress,
+                    name: account?.userName
+                  }}
+                />
+                <AccountMenu />
+              </>
             }
           </Box>
           <Box width="50%" display='flex' alignItems='center'>  

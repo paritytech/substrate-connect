@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Identicon from '@polkadot/react-identicon';
 import { Typography, Snackbar, Box } from '@material-ui/core';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
-import { AccountMenu } from '../components';
 import { Account } from '../utils/types';
 import { copyToClipboard } from '../utils/utils';
 
@@ -46,7 +45,6 @@ const AccountCard: React.FunctionComponent<Props> = ({ account, addressFormat }:
 						}
 					</Typography>
 				</Box>
-				<AccountMenu />
 			</Box>
 		</>
   );};
