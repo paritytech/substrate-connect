@@ -11,7 +11,7 @@ sync with given chainspecs.
 ## Usage
 Provide a known Chain Name ('kusama', 'polkadot', 'westend'):
 ```js
-import { Detector }  from '@substrate/connect';
+import { Detector } from '@substrate/connect';
 
 const detect = new Detector('my cool unstoppable app');
 
