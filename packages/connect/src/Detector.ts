@@ -1,4 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
+import { ApiOptions } from '@polkadot/api/types';
 import { ProviderInterface } from '@polkadot/rpc-provider/types';
 import { SmoldotProvider }  from './SmoldotProvider/SmoldotProvider.js';
 import { ExtensionProvider } from './ExtensionProvider/ExtensionProvider.js';
@@ -25,7 +26,7 @@ export class Detector {
     this.#name = name;
   }
 
-  public connect = async (chainName: string, providedChainSpec?: string): Promise<ApiPromise> => {
+  public connect = async (chainName: string, providedChainSpec?: string, options?: ApiOptions): Promise<ApiPromise> => {
     let provider: ExtensionProvider | SmoldotProvider = {} as ExtensionProvider | SmoldotProvider;
 
     if (Object.keys(this.#chainSpecs).includes(chainName)) {
@@ -41,8 +42,9 @@ export class Detector {
       throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(this.#chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
     }
     await provider.connect();
+
     this.#providers[chainName] = provider as ProviderInterface;
-    return await ApiPromise.create({ provider });
+    return await ApiPromise.create(Object.assign(options ?? {}, {provider}));
   }
 
   public disconnect = async (chainName: string): Promise<void> => {

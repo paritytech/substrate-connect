@@ -38,7 +38,7 @@ const filesConfig = [
 ];
 
 filesConfig.map(({ path, url }) => {
-  console.log('Start downloading file: ', url);
+  console.log('Start downloading file: ', url, path);
   const file = fs.createWriteStream(path, { flags: 'w' });
   http.get(url, function (response) {
     response.pipe(file);
