@@ -6,7 +6,7 @@ import { Keyring } from '@polkadot/api';
 const keyring = new Keyring({ type: 'sr25519' });
 
 const config: Config = {
-	dictionaries: [starWars]
+  dictionaries: [starWars]
 }
 
 export const getName = (account: Account): string => `${account.name}`;

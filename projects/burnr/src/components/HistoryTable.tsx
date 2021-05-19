@@ -7,8 +7,8 @@ import {
   TableHead,
   TableRow,
   Theme,
-	makeStyles,
-	fade
+  makeStyles,
+  fade
 } from '@material-ui/core';
 
 import { AccountContext } from '../utils/contexts';

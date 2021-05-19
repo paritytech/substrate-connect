@@ -9,22 +9,22 @@ interface Props {
 }
 
 const useStyles = makeStyles({
-	root: {
-		display: 'block',
-		width: '120px',
-		'& img': {
-			maxWidth: '100%',
-		},
-	},
+  root: {
+    display: 'block',
+    width: '120px',
+    '& img': {
+      maxWidth: '100%',
+    },
+  },
 });
 
 const LogoSubstrate: React.FunctionComponent<Props> = ({ theme }: Props) => {
-	const classes = useStyles();
-	return  (
-		<Link href='http://substrate.io/' target='_blank' className={classes.root}>
-			<img src={theme ? LogoLight : LogoDark}/>
-		</Link>
-	);
+  const classes = useStyles();
+  return  (
+    <Link href='http://substrate.io/' target='_blank' className={classes.root}>
+      <img src={theme ? LogoLight : LogoDark}/>
+    </Link>
+  );
 };
 
 export default LogoSubstrate;

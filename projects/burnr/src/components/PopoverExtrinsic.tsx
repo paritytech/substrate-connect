@@ -10,73 +10,73 @@ import ErrorIcon from '@material-ui/icons/Error';
 import { ExtrinsicInfo } from '../utils/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
-	popover: {
-		pointerEvents: 'none',
-	},
-	paper: {
-		padding: theme.spacing(1),
-		marginTop: theme.spacing(-0.5),
-		backgroundColor: theme.palette.common.black,
-		color: theme.palette.common.white,
-	},
+  popover: {
+    pointerEvents: 'none',
+  },
+  paper: {
+    padding: theme.spacing(1),
+    marginTop: theme.spacing(-0.5),
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
 })
 );
 
 // @TODO blockexplorer links
 
 const PopoverExtrinsic: React.FunctionComponent<ExtrinsicInfo> = ({ status }: ExtrinsicInfo) => {
-	const classes = useStyles();
-	const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
-	const handlePopoverOpen = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-		setAnchorEl(event.currentTarget);
-	};
+  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-	const handlePopoverClose = () => {
-		setAnchorEl(null);
-	};
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
 
-	const open = Boolean(anchorEl);
+  const open = Boolean(anchorEl);
 
-	return (
-		<>
-			<IconButton
-				onMouseEnter={handlePopoverOpen}
-				onMouseLeave={handlePopoverClose}
-			>
-				{status === 0 && <CachedIcon color='disabled' />}
-				{status === 1 && <CheckIcon color='action' />}
-				{status === 2 && <ErrorIcon color='error' />}
-				{status === 3 && <CircularProgress />}
+  return (
+    <>
+      <IconButton
+        onMouseEnter={handlePopoverOpen}
+        onMouseLeave={handlePopoverClose}
+      >
+        {status === 0 && <CachedIcon color='disabled' />}
+        {status === 1 && <CheckIcon color='action' />}
+        {status === 2 && <ErrorIcon color='error' />}
+        {status === 3 && <CircularProgress />}
 
-			</IconButton>
-			<Popover
-				elevation={2}
-				transitionDuration={0}
-				id="mouse-over-popover"
-				className={classes.popover}
-				classes={{
-					paper: classes.paper,
-				}}
-				open={open}
-				anchorEl={anchorEl}
-				anchorOrigin={{
-					vertical: 'top',
-					horizontal: 'center',
-				}}
-				transformOrigin={{
-					vertical: 'bottom',
-					horizontal: 'center',
-				}}
-				onClose={handlePopoverClose}
-				disableRestoreFocus
-			>
-				<Typography variant='body2'>
-					The content of the Popover, link to BlockExplorers
-				</Typography>
-			</Popover>
-		</>
-	);
+      </IconButton>
+      <Popover
+        elevation={2}
+        transitionDuration={0}
+        id="mouse-over-popover"
+        className={classes.popover}
+        classes={{
+          paper: classes.paper,
+        }}
+        open={open}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        onClose={handlePopoverClose}
+        disableRestoreFocus
+      >
+        <Typography variant='body2'>
+          The content of the Popover, link to BlockExplorers
+        </Typography>
+      </Popover>
+    </>
+  );
 };
 
 export default PopoverExtrinsic;

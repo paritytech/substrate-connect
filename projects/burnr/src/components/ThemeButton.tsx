@@ -10,18 +10,18 @@ interface Props extends IconButtonProps {
 }
 
 const useStyles = makeStyles(theme => ({
-	root: {
-		color: theme.palette.primary.main,
-	},
+  root: {
+    color: theme.palette.primary.main,
+  },
 }));
 
 const ThemeButton: React.FunctionComponent<Props> = ({ theme, ...props }: Props) => {
-	const classes = useStyles();
-	return (
-		<IconButton {...props} className={classes.root}>
-			{theme ? <Brightness3Icon /> : <Brightness7Icon />}
-		</IconButton>
-	);
+  const classes = useStyles();
+  return (
+    <IconButton {...props} className={classes.root}>
+      {theme ? <Brightness3Icon /> : <Brightness7Icon />}
+    </IconButton>
+  );
 };
 
 export default ThemeButton;

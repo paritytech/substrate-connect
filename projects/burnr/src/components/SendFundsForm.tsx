@@ -7,7 +7,7 @@ import {
   Typography,
   LinearProgress,
   Table,
-	Box} from '@material-ui/core';
+  Box} from '@material-ui/core';
 import { decodeAddress, encodeAddress } from '@polkadot/keyring';
 import { hexToU8a, isHex } from '@polkadot/util';
 import { Keyring } from '@polkadot/api';
@@ -165,25 +165,25 @@ const SendFundsForm: FunctionComponent = () => {
         </Typography>
       }
       
-			<Box mt={3}>
-				{ countdownNo !== 0 && 
-					<Table size="small">
-						<HistoryTableRow
-							row={{
-								withWhom: address,
-								extrinsic: 'Transfer',
-								value: amount,
-								status: rowStatus
-							}}
-							unit={unit}
-							columns={columns} />
-					</Table>
-				}
-				<Typography variant='subtitle2'>{message}</Typography>
-				{!loading && countdownNo !== 0 &&
-					<LinearProgress variant="determinate" value={countdownNo} />
-				}
-			</Box>
+      <Box mt={3}>
+        { countdownNo !== 0 && 
+          <Table size="small">
+            <HistoryTableRow
+              row={{
+                withWhom: address,
+                extrinsic: 'Transfer',
+                value: amount,
+                status: rowStatus
+              }}
+              unit={unit}
+              columns={columns} />
+          </Table>
+        }
+        <Typography variant='subtitle2'>{message}</Typography>
+        {!loading && countdownNo !== 0 &&
+          <LinearProgress variant="determinate" value={countdownNo} />
+        }
+      </Box>
     </>
   );
 };

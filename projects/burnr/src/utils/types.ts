@@ -120,9 +120,9 @@ export interface ExtrinsicInfo {
 }
 
 export interface Data extends ExtrinsicInfo {
-	withWhom: string;
-	value: string|number;
-	extrinsic: string;
+  withWhom: string;
+  value: string|number;
+  extrinsic: string;
 }
 export interface SizeScale {
   size?: 'large'|'medium'|'small';

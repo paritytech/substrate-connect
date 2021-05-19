@@ -8,7 +8,7 @@ const sampleNetworks: Network[] = [
     status: 'connected',
     isKnown: true,
     chainspecPath: '<polkadot.json>'
-	},
+  },
   {
     name: 'Kusama',
     status: 'connected',
