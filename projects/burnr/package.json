@@ -30,7 +30,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.11.3",
-    "@polkadot/api": "^3.7.3",
+    "@polkadot/api": "^4.2.4",
     "@polkadot/extension-inject": "^0.36.1",
     "@polkadot/keyring": "^5.5.2",
     "@polkadot/networks": "^5.5.2",
