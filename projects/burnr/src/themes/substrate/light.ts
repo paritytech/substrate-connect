@@ -2,6 +2,7 @@ import { ThemeOptions } from '@material-ui/core/styles';
 import colors from './colors';
 import typography from './typography';
 import shadows from './shadows';
+import { grey } from '@material-ui/core/colors';
 
 const light: ThemeOptions = {
 	typography: typography.typography,
@@ -43,7 +44,7 @@ const light: ThemeOptions = {
 		action: {
 			active: colors.substrate.dark,
 		},
-		divider: 'rgba(0, 0, 0, 0)',
+		divider: grey[300],
 	},
 };
 

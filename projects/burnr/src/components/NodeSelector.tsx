@@ -1,92 +1,62 @@
 import React, { useState, ChangeEvent } from 'react';
 
-import { createStyles,fade, makeStyles, Theme  } from '@material-ui/core/styles';
-import { Typography, ButtonBase, InputBase } from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import { createStyles, makeStyles, Theme  } from '@material-ui/core/styles';
+import { InputBase, ClickAwayListener,  Typography, Box } from '@material-ui/core';
 import Autocomplete, { AutocompleteCloseReason } from '@material-ui/lab/Autocomplete';
 
 import { ALL_PROVIDERS } from '../utils/constants';
-import { useLocalStorage } from '../hooks';
-import { NodeSelectorItem, NodeSelectorSelected } from '../components';
+import { useLocalStorage, useApi } from '../hooks';
+
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import DoneIcon from '@material-ui/icons/Done';
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
-		wrapper: {
+		nodeSelectorWrap: {
 			position: 'relative',
 			height: '60px',
-			backgroundColor: theme.palette.background.paper,
 			borderTopRightRadius: theme.spacing(0.5),
 			borderTopLeftRadius: theme.spacing(0.5),
+			backgroundColor: theme.palette.background.paper,
 		},
-		root: {
+		nodeSelectorInner: {
 			position: 'absolute',
 			zIndex: theme.zIndex.modal,
 			width: '100%',
-			padding: theme.spacing(1),
-			paddingTop: theme.spacing(1.5),
-			backgroundColor: theme.palette.background.paper,
 			borderRadius: theme.spacing(0.5),
-			'&.node-selector': {
+			backgroundColor: theme.palette.background.paper,
+			'&.open': {
 				boxShadow: theme.shadows[2],
 			},
 		},
-		button: {
-			width: '100%',
-			textAlign: 'left',
-		},
-		popper: {
-			position: 'relative',
-			width: '100%',
-			transform: 'none !important',
-			boxShadow: 'none',
-		},
-		acHeader: {
-			paddingTop: theme.spacing(1),
-			paddingLeft: theme.spacing(3),
-			paddingRight: theme.spacing(3),
-		},
-		acInput: {
-			width: '100%',
+		autocompleteInput: {
 			'& input': {
-				borderRadius: theme.spacing(0.5),
-				padding: theme.spacing(1),
-				border: '1px solid',
-				'&:focus': {
-					boxShadow: `${fade(theme.palette.primary.main, 0.25)} 0 0 0 0.2rem`,
-					borderColor: theme.palette.primary.main,
-				},
+				padding: theme.spacing(),
+				marginLeft: theme.spacing(),
+				marginRight: theme.spacing(),
+				borderRadius: theme.spacing(),
+				border: `1px solid ${theme.palette.divider}`,
 			},
 		},
-		acPopper: {
+		autocompletePopper: {
 			position: 'relative',
 		},
-		acPaper: {
-			margin: 0,
-			boxShadow: 'none',
-			backgroundColor: 'rgba(0,0,0,0)',
-			'& .MuiListSubheader-root': {
-				paddingLeft: theme.spacing(3),
-				paddingRight: theme.spacing(3),
-				fontSize: theme.typography.h4.fontSize,
-				lineHeight: `${theme.spacing(5)}px`,
-			},
-		},
-		option: {
-			paddingLeft: `${theme.spacing(1)}px !important`,
-			paddingRight: `${theme.spacing(1)}px !important`,
-			borderRadius: theme.spacing(0.5),
-			height: theme.spacing(5),
-			'&:hover': {
-				backgroundColor: theme.palette.primary.dark,
-				color: theme.palette.getContrastText(theme.palette.primary.main),
-			},
+		autocompleteOption: {
+			display: 'flex',
+			justifyContent: 'space-between',
+			marginLeft: theme.spacing(),
+			marginRight: theme.spacing(),
+			borderRadius: theme.spacing(),
 		},
 	})
 );
 
 export interface Option {
   network: string;
-	client: string|undefined;
+	client: string | undefined;
 	provider: string;
 }
 
@@ -102,19 +72,21 @@ const options = Object.entries(ALL_PROVIDERS).map(
 
 export default function NodeSelector(): React.ReactElement {
 	const classes = useStyles();
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const api = useApi();
 	const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
 	const endpointName = localEndpoint || 'Polkadot-WsProvider'
 	const [provider, setProvider] = useState<string>(ALL_PROVIDERS[endpointName].id);
-	const handleOpenDropdown = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorEl(event.currentTarget);
+	const [open, setOpen] = useState<boolean>(false);
+
+	const toggleOpen = () => {
+		setOpen(!open);
 	};
 
-	const handleClose = (event: ChangeEvent<unknown>, reason: AutocompleteCloseReason) => {
+	const handleClose = (event?: ChangeEvent<unknown>, reason?: AutocompleteCloseReason) => {
 		if (reason === 'toggleInput') {
 			return;
 		}
-		setAnchorEl(null);
+		setOpen(false);
 	};
 
 	const updateProvider = (provider: string) => {
@@ -127,67 +99,59 @@ export default function NodeSelector(): React.ReactElement {
 		// setChain(REMOTE_PROVIDERS[selectedEndpoint].network);
 	};
 
-	const open = Boolean(anchorEl);
-
 	return (
-		<div className={classes.wrapper}>
-			<div className={classes.root + (open ? ' node-selector' : '')}>
-				<ButtonBase
-					disableRipple
-					className={classes.button}
-					onClick={handleOpenDropdown}
-				>
-					<NodeSelectorSelected provider={ALL_PROVIDERS[provider]}/>
-					<ArrowDropDownIcon />
-				</ButtonBase>
+		<ClickAwayListener onClickAway={handleClose}>		
+			<div className={classes.nodeSelectorWrap}>
+				<div className={`${classes.nodeSelectorInner} ${open ? 'open' : ''}`}>
 
-				{ open &&
-				<>
-					<Typography
-						variant='overline'
-						color='textSecondary'
-						className={classes.acHeader}
-						component='div'
-					>
-						Select node provider
-					</Typography>
+					<Box display='flex' alignItems='center' pt={1.5} pb={1.5} pl={0.5} pr={0.5} onClick={toggleOpen}>
+						<FiberManualRecordIcon style={{ fontSize: '16px', marginRight: 4 }} color={api && api.isReady ? 'primary' : 'error'} />
+						<Box width='100%'>
+							<Typography variant='h4'>{ ALL_PROVIDERS[provider].network }</Typography>
+							<Typography variant='body2' color='textSecondary'>{ALL_PROVIDERS[provider].client} client</Typography>
+						</Box>
+						{open ? <ArrowDropUpIcon /> : <ArrowDropDownIcon /> }
+					</Box>
 
-					<Autocomplete
-						options={options}
-						disablePortal={true}
-						getOptionLabel={(option) => (option.client === 'string')
-							? `${option.client} client`
-							: `client`
-						}
-						open
-						classes={{
-							popper: classes.acPopper,
-							option: classes.option,
-							paper: classes.acPaper,
-						}}
-						onClose={handleClose}
-						// eslint-disable-next-line @typescript-eslint/no-explicit-any
-						onChange={(event: ChangeEvent<unknown>, {provider: selected}: any ) => {
-							updateProvider(selected)
-						}}
+					{open &&
+						<Autocomplete
+							open
+							options={options}
+							classes={{
+								option: classes.autocompleteOption,
+								popper: classes.autocompletePopper,
+							}}
+							renderOption={(option) => (
+								<>
+									{option.network}
+									<DoneIcon
+										fontSize='small'
+										style={{
+											visibility: option.provider === provider ? 'visible' : 'hidden'
+										}} />
+								</>
+							)}
+							getOptionLabel={(option) => option.network}
+							// eslint-disable-next-line @typescript-eslint/no-explicit-any
+							onChange={(event: ChangeEvent<unknown>, {provider: selected}: any ) => {
+								updateProvider(selected)
+							}}
+							disablePortal={true}
+							renderInput={(params) => (
+								<InputBase
+									ref={params.InputProps.ref}
+									inputProps={params.inputProps}
+									autoFocus
+									className={classes.autocompleteInput}
+									fullWidth
+									placeholder='select node provider'
+								/>
+							)}
+						/>
+					}
 
-						renderInput={(params) => (
-							<InputBase
-								ref={params.InputProps.ref}
-								inputProps={params.inputProps}
-								autoFocus
-								className={classes.acInput}
-							/>
-						)}
-						renderOption={(option) => (
-							<NodeSelectorItem provider={option} selected={option.provider === provider} />
-						)}
-						groupBy={(option) => option.network}
-					/>
-				</>
-				}
-
+				</div>
 			</div>
-		</div>
+		</ClickAwayListener>
 	);
 }
