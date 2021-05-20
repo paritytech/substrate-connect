@@ -12,5 +12,10 @@
     "babel-plugin-styled-components",
     "react-hot-loader/babel",
     "@babel/plugin-proposal-private-methods"
-  ]
+  ],
+  "env": {
+    "test": {
+      "plugins": ["transform-es2015-modules-commonjs"]
+    }
+  }
 }

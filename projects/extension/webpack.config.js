@@ -14,7 +14,8 @@ const config = {
   },
   output: {
     path: path.resolve("dist"),
-    filename: "[name].js"
+    filename: "[name].js",
+    sourceMapFilename: '[name].js.map'
   },
   module: {
     rules: [
