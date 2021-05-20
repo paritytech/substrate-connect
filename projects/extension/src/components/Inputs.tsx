@@ -95,30 +95,18 @@ export const InputButton = withStyles((theme: Theme) =>
 export const MenuButton = withStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
-      marginTop: theme.spacing(0.25),
-      marginBottom: theme.spacing(0.25),
+      padding: `${theme.spacing()}px ${theme.spacing(3)}px`,
       borderRadius: 0,
       transition: `backgrund-color 0s !important`,
       ...theme.typography.body1,
       '&.danger': {
         color: theme.palette.error.main,
-        '&:hover': {
-          color: theme.palette.common.white,
-          backgroundColor: theme.palette.error.main,
-        }
       },
       '& .MuiButton-label': {
         justifyContent: 'space-between',
       },
       '& svg': {
         color: theme.palette.text.secondary,
-      },
-      '&:hover': {
-        backgroundColor: theme.palette.primary.main,
-        '& svg': {
-          color: theme.palette.common.white,
-        },
       },
     },
   })

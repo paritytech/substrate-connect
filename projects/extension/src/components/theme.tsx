@@ -28,10 +28,10 @@ const palette: PaletteOptions = {
     contrastText: 'black',
   },
   secondary: {
-    light: substrateGreen[100],
-    main: substrateGreen[400],
-    dark: substrateGreen[500],
-    contrastText: 'black',
+    light: '#78B1D0',
+    main: '#78B1D0',
+    dark: '#78B1D0',
+    contrastText: '#000000',
   },
   error: {
     light: red[100],
@@ -40,7 +40,7 @@ const palette: PaletteOptions = {
     contrastText: 'black',
   },
   text: {
-    primary: grey[900],
+    primary: grey[800],
     secondary: grey[500],
     disabled: grey[300],
     hint: grey[700],
@@ -48,7 +48,7 @@ const palette: PaletteOptions = {
   action: {
     active: substrateGreen[300],
   },
-  divider: grey[300],
+  divider: grey[200],
 }
 
 const light: ThemeOptions = {
@@ -70,7 +70,7 @@ const light: ThemeOptions = {
     },
     h3: {
       fontWeight: 500,
-      fontSize: 18,
+      fontSize: 17,
       lineHeight: '120%',
     },
     h4: {

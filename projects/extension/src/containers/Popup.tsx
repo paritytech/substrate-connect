@@ -4,26 +4,13 @@
 import * as React from 'react';
 import * as material from '@material-ui/core';
 import GlobalFonts from '../fonts/fonts';
-import { light, Tab, MenuButton, MenuInputText } from '../components';
-import { CallMade as Save } from '@material-ui/icons';
+import { light, Tab, MenuButton } from '../components';
 import { Background } from '../background/';
 import { debug } from '../utils/debug';
 import { TabInterface } from '../types';
 import { AppMediator } from 'src/background/AppMediator';
 
 const { createMuiTheme, ThemeProvider, Box, Divider } = material;
-
-const SearchBar: React.FC = (): React.ReactElement => (
-  <Box
-    paddingY={1}
-    paddingX={3}
-    style={{ background: '#FCFCFC'}}
-    borderTop={'1px solid #EEEEEE'}
-    borderBottom={'1px solid #EEEEEE'}
-  >
-    <MenuInputText fullWidth placeholder="search by network, uApp or url" />
-  </Box>
-);
 
 const Popup: React.FunctionComponent = () => {
   const [activeTab, setActiveTab] = React.useState<React.ReactElement | undefined>();
@@ -75,16 +62,15 @@ const Popup: React.FunctionComponent = () => {
     <ThemeProvider theme={appliedTheme}>
       <Box width={'340px'} mb={0.1}>
         <GlobalFonts />
-        {activeTab}
-        <SearchBar />
+        {activeTab ? activeTab : <Tab current />}
         <Box marginY={1}>
           {rTabs.map(r => r)}
         </Box>
         <Divider />
         <MenuButton fullWidth onClick={() => chrome.runtime.openOptionsPage()}>My Networks</MenuButton>
-        <MenuButton fullWidth endIcon={<Save />}>Url to uApps list</MenuButton>
+        <MenuButton fullWidth>About</MenuButton>
         <Divider />
-        <MenuButton className='danger' fullWidth>Stop all connections</MenuButton>
+        <MenuButton fullWidth className='danger'>Stop all connections</MenuButton>
       </Box>
     </ThemeProvider>
   );

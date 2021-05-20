@@ -80,7 +80,7 @@ const HistoryTable: React.FunctionComponent = () => {
         })}
       </TableBody>
     </Table>
-);
+  );
 }
 
 export default HistoryTable;

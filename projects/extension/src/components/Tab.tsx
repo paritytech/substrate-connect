@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
-import { Grid, Typography, Box, IconButton, createStyles, makeStyles } from '@material-ui/core';
-import { grey } from '@material-ui/core/colors';
+import { Typography, Box, IconButton, createStyles, makeStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import { grey } from '@material-ui/core/colors';
 import { IconWeb3 } from '../components';
 import { TabInterface } from '../types';
 
@@ -10,12 +10,13 @@ interface TabProps {
   tab?: TabInterface;
 }
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme) =>
   createStyles({
     disableButton: {
-      color: grey[800],
+      color: theme.palette.text.hint,
+      marginLeft: theme.spacing(),
       '&:not(:hover)': {
-        opacity: 0.1,
+        opacity: 0.2,
       },
       '& svg': {
         fontSize: '0.8rem',
@@ -34,48 +35,34 @@ const ButtonDisableTab: FunctionComponent = () => {
 }
 
 const Tab: FunctionComponent<TabProps> = ({ tab, current=false }) => (
-  <Box 
-    pt={current ? 2 : 1}
-    pb={current ? 2 : 1}
-    pr={1}
-    pl={3}
-  >
-    <Grid
-      container
-      justify='space-between'
+  <Box pt={current ? 2 : 1} pb={1} pr={1} pl={3}>
+    <Box
+      display='flex'
       alignItems='center'
-      wrap='nowrap'
+      justifyContent='space-between'
     >
-      <Grid item>
-        <Typography noWrap variant={current ? 'h3' : 'h4'}>
-          {tab?.uApp.name}
-        </Typography>
-      </Grid>
-      <Grid item>
-        <Grid
-          container
-          alignItems='center'
-          wrap='nowrap'
-          spacing={1}
-        >
+      <Typography noWrap variant={current ? 'h3' : 'h4'}>
+        {tab ? tab.uApp.name : 'substrate connect'}
+      </Typography>
+
+      { tab &&
+        <Box display='flex'alignItems='center'> 
           {tab?.uApp.networks.map(n =>
-            <Grid item key={n}>
-              <IconWeb3
-                size='14px'
-                color={tab?.uApp.enabled ? grey[800] : grey[400]}
-              >
-                {n}
-              </IconWeb3>
-            </Grid>
+            <IconWeb3
+              key={n}
+              size='14px'
+              color={tab?.uApp.enabled ? grey[800] : grey[400]}
+            >
+              {n}
+            </IconWeb3>
           )}
-          <Grid item>
-            <ButtonDisableTab />
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+          <ButtonDisableTab />
+        </Box>
+      }
+    </Box>
+
     {!current &&
-      <Typography variant='body2' style={{color: '#78B1D0'}}>
+      <Typography variant='body2' color='secondary'>
         {tab?.url}
       </Typography>
     }
