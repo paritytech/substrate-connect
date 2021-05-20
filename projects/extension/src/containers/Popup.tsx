@@ -71,7 +71,7 @@ const Popup: React.FunctionComponent = () => {
     });
   }, [apps]);
 
-	return (
+  return (
     <ThemeProvider theme={appliedTheme}>
       <Box width={'340px'} mb={0.1}>
         <GlobalFonts />
@@ -87,7 +87,7 @@ const Popup: React.FunctionComponent = () => {
         <MenuButton className='danger' fullWidth>Stop all connections</MenuButton>
       </Box>
     </ThemeProvider>
-	);
+  );
 };
 
 export default Popup;
