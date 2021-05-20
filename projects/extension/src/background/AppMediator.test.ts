@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   MessageFromManager
 } from '@substrate/connect-extension-protocol';

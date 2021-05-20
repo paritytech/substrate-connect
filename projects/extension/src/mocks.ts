@@ -1,4 +1,7 @@
-import { jest } from '@jest/globals';
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AppMediator } from './background/AppMediator';
 import { ConnectionManagerInterface } from './background/types';
 import { 
@@ -17,6 +20,9 @@ export class MockPort implements chrome.runtime.Port {
     this.sender = { url: 'http://test.com/', tab: { id: 1234 } };
   }
 
+  postMessage = (message: unknown):unknown => message;
+  disconnect = ():void => { console.log('disconnect') };
+
   setTabId(id: number): void {
     this.sender.tab.id = id;
   }
@@ -32,9 +38,6 @@ export class MockPort implements chrome.runtime.Port {
       l();
     });
   }
-
-  postMessage = jest.fn();
-  disconnect = jest.fn();
 
   onMessage = {
     addListener: (listener: never) => {

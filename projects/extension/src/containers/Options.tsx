@@ -7,7 +7,7 @@ import {
   // DEACTIVATE FOR NOW - will be needed once parachains will be integrated
   //  Parachain,
   Network
-} from 'src/types';
+} from '../types';
 
 const { createMuiTheme, ThemeProvider, Box } = material;
 
