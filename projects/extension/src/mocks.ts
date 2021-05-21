@@ -20,8 +20,8 @@ export class MockPort implements chrome.runtime.Port {
     this.sender = { url: 'http://test.com/', tab: { id: 1234 } };
   }
 
-  postMessage = jest.fn();
-  disconnect = jest.fn();
+  postMessage: (message: any) => void = jest.fn();
+  disconnect: () => void = jest.fn();
 
   setTabId(id: number): void {
     this.sender.tab.id = id;

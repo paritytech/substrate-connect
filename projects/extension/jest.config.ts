@@ -1,4 +1,5 @@
 export default {
+  transform: {},
   testEnvironment: 'jsdom',
   moduleFileExtensions: ["js", "jsx"],
   setupFilesAfterEnv: ['./jest-setup.js'],
