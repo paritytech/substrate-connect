@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { jest } from '@jest/globals';
-import {
-  MessageFromManager
-} from '@substrate/connect-extension-protocol';
 import { AppMediator } from './AppMediator';
 import { MockPort, MockConnectionManager } from '../mocks';
-import { JsonRpcResponse, JsonRpcResponseSubscription } from './types';
+import { JsonRpcResponse } from './types';
 
 function setupAppMediatorWithSubscription(
   am: AppMediator,
@@ -45,8 +42,8 @@ function setupAppMediatorWithSubscription(
     .toEqual({ appIDForRequest, subID, method: 'system_health' });
 
   // should send the acknowledgement of the subscription request back to the UApp
-  // const msgCalls = port.postMessage.mock.calls;
-  // const lastMsg = msgCalls[msgCalls.length - 1][0] as MessageFromManager;
+  // const msgCalls = port.postMessage.mock.calls; // Replaced with the line below
+  // const lastMsg = msgCalls[msgCalls.length - 1][0] as MessageFromManager; // Replaced with the line below
   expect(spyPortPostMessage).toHaveBeenCalledWith({ type: 'rpc', payload: `{"id":${appIDForRequest},"jsonrpc":"2.0","result":${subID}}`});
 }
 

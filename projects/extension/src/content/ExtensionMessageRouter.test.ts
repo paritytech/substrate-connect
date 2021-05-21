@@ -30,8 +30,7 @@ describe('Disconnect and incorrect cases', () => {
     router.stop();
   });
 
-  // TODO: Skip for now
-  test.skip('port disconnecting sends disconnect message and removes port', async () => {
+  test('port disconnecting sends disconnect message and removes port', async () => {
     const port = new MockPort('test-app::westend');
     const connect = chrome.runtime.connect;
     connect.mockImplementation(() => port);
@@ -45,13 +44,14 @@ describe('Disconnect and incorrect cases', () => {
 
     const handler = jest.fn();
     provider.listen(handler);
-    port.disconnect();
+    port.triggerDisconnect();
     await waitForMessageToBePosted();
 
     const expectedMessage: ExtensionMessageData = {
       origin: 'content-script',
       disconnect: true
     };
+
     expect(router.connections.length).toBe(0);
     const { data } = handler.mock.calls[0][0] as ExtensionMessage;
     expect(data).toEqual(expectedMessage);
@@ -68,8 +68,6 @@ describe('Disconnect and incorrect cases', () => {
   });
 
   test('disconnect disconnects established connection', async () => {
-    const port = new MockPort('test-app::westend');
-    chrome.runtime.connect.mockImplementation(() => port);
     provider.send({
       appName: 'test-app',
       chainName: 'westend',
