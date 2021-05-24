@@ -4,7 +4,6 @@ import {
   MessageFromManager
 } from '@substrate/connect-extension-protocol';
 import { 
-  AppState, 
   ConnectionManagerInterface,
   JsonRpcRequest,
   JsonRpcResponse,
@@ -12,7 +11,9 @@ import {
   MessageIDMapping, 
   StateEmitter,
   SubscriptionMapping
-} from './types';
+} from '../types';
+
+import { Statuses } from '../types/enums';
 
 export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   readonly #name: string;
@@ -23,7 +24,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   readonly #url: string | undefined;
   readonly #manager: ConnectionManagerInterface;
   #smoldotName: string | undefined  = undefined;
-  #state: AppState = 'connected';
+  #state: Statuses = Statuses.connected;
   readonly subscriptions: SubscriptionMapping[];
   readonly requests: MessageIDMapping[];
   highestUAppRequestId = 0;
@@ -63,7 +64,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     return this.#url;
   }
 
-  get state(): AppState {
+  get state(): Statuses {
     return this.#state;
   }
 
@@ -84,20 +85,20 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   #checkForDisconnected = (): void => {
       if (this.requests.length === 0) {
         // All our unsubscription messages have been replied to
-        this.#state = 'disconnected';
+        this.#state = Statuses.disconnected;
         this.#manager.unregisterApp(this, this.#smoldotName as string);
       }
   }
 
   processSmoldotMessage(message: JsonRpcResponse): boolean {
-    if (this.#state === 'disconnected') {
+    if (this.#state === Statuses.disconnected) {
       // Shouldn't happen - we remove the AppMediator from the smoldot's apps
       // when we disconnect (below).
       console.error(`Asked a disconnected UApp (${this.name}) to process a message from ${this.#smoldotName as string}`);
       return false;
     }
 
-    if (this.#state === 'disconnecting') {
+    if (this.#state === Statuses.disconnecting) {
       // Handle responses to our unsubscription messages
       const request = this.requests.find(r => r.smoldotID === message.id);
       if (request !== undefined) {
@@ -227,11 +228,13 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   };
 
   #handleDisconnect = (): void => {
-    if (this.#state === 'disconnecting' || this.#state === 'disconnected') {
-      throw new Error('Cannot disconnect - already disconnecting / disconnected');
+    if (this.#state === Statuses.disconnecting) {
+      throw new Error('Cannot disconnect - currently disconnecting');
+    } else if (this.#state === Statuses.disconnected) {
+      throw new Error('Cannot disconnect - already disconnected');
     }
 
-    this.#state = 'disconnecting';
+    this.#state = Statuses.disconnecting;
     this.subscriptions.forEach(this.#sendUnsubscribe);
     // remove all the subscriptions
     this.subscriptions.splice(0, this.subscriptions.length);

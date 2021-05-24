@@ -4,23 +4,10 @@
 import * as smoldot from 'smoldot';
 import { AppMediator } from './AppMediator';
 import { SmoldotMediator } from './SmoldotMediator';
-import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface } from './types';
+import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface, Network, StateEmitter } from '../types';
 import EventEmitter from 'eventemitter3';
-import { StateEmitter } from './types';
-import { Network } from '../types';
-
-interface NetworkState {
-  name: string;
-}
-
-interface AppState {
-  name: string;
-  tabId: number;
-  networks: NetworkState[];
-}
-interface State {
-  apps: AppState[];
-}
+import { State } from '../types';
+import { Statuses } from '../types/enums';
 
 /**
  * ConnectionManager is the main class involved in managing connections from
@@ -221,7 +208,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       // TODO: fix this when mapping is corrected
       this.#networks.push({
         name: name,
-        status: 'connected',
+        status: Statuses.connected,
         isKnown: true,
         chainspecPath: `${name}.json`
       });

@@ -1,5 +1,5 @@
 import { AppMediator } from './AppMediator';
-import { JsonRpcRequest } from './types';
+import { JsonRpcRequest } from '../types';
 import { SmoldotClient } from 'smoldot';
 
 export class SmoldotMediator {
