@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) =>
 const Tab: FunctionComponent<TabProps> = ({ manager, tab, current=false }) => {
   const classes = useStyles();
   const onDisconnect = (): void => {
-    tab && tab.tabId && manager.disconnectTab(tab.tabId as number);
+    tab && tab.tabId && manager.disconnectTab(tab.tabId);
   }
 
   return (
