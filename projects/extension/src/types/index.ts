@@ -7,8 +7,7 @@ export interface MsgExchangePopup {
   ext: string;
   msg: string;
   tabId?: number;
-  action: ExtensionAction,
-  apps: AppMediator[]
+  action: ExtensionAction
 }
 
 export interface TabInterface {

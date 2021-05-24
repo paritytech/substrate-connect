@@ -86,23 +86,34 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * disconnectTab disconnects all instances of {@link AppMediator} connected
    * from the supplied tabId
    *
-   * @param tabId - the id of the tab to disconnect
+   * @param tabId - the id of the tab to disconnect (add 0 to disconnect all)
    */
   disconnectTab(tabId: number): void {
-    let app: AppMediator = {} as AppMediator;
     this.#apps.filter(a => a.tabId && a.tabId === tabId).forEach(a => {
-      app = a;
-      a.disconnect()
+      a.disconnect();
     });
-    const parts: string[] = app?.name?.split('::');
     const popupMsg: MsgExchangePopup = {
       ext: 'substrate-connect',
       action: ExtensionAction.remove,
-      msg: `App '${parts[0]}' got disconnected from ${parts[1]}.`,
-      tabId: tabId,
-      apps: this.#apps.filter(a => a.tabId !== tabId)
+      msg: 'App got disconnected.',
+      tabId: tabId
     };
-    chrome.runtime.sendMessage(popupMsg);
+    chrome.runtime.sendMessage(JSON.stringify(popupMsg));
+  }
+
+  /**
+   * disconnectTab disconnects all instances of {@link AppMediator} connected
+   */
+  disconnectAll(): void {
+    this.#apps.forEach(a => {
+      a.disconnect();
+    })
+    const popupMsg: MsgExchangePopup = {
+      ext: 'substrate-connect',
+      action: ExtensionAction.remove,
+      msg: 'All apps got disconnected.'
+    };
+    chrome.runtime.sendMessage(JSON.stringify(popupMsg));
   }
 
   /**
@@ -119,13 +130,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       const newApp = new AppMediator(port, this as ConnectionManagerInterface)
       if (newApp.associate()) {
         this.#apps.push(newApp);
-        const popupMsg: MsgExchangePopup = {
-          ext: 'substrate-connect',
-          action: ExtensionAction.add,
-          msg: `App added`,
-          apps: this.#apps
-        };
-        chrome.runtime.sendMessage(popupMsg);
         newApp.on('stateChanged', () => this.emit('stateChanged'));
         this.emit('stateChanged');
       }

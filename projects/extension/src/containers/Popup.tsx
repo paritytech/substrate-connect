@@ -22,17 +22,15 @@ const Popup: React.FunctionComponent = () => {
   const [manager, setManager] = React.useState<ConnectionManager>({} as ConnectionManager);
 
   React.useEffect((): (() => void) => {
-    const incomingMsgListener = (req: MsgExchangePopup) => {
-      if (req.ext !== 'substrate-connect') {
+    const incomingMsgListener = (req: string) => {
+      const { ext, action, tabId}: MsgExchangePopup = JSON.parse(req);
+      if (ext !== 'substrate-connect') {
         return
       }
-      switch (req.action) {
+      switch (action) {
         case ExtensionAction.remove:
-          setApps(req.apps);
-          currentTabId == req.tabId && setActiveTab(undefined);
-          break;
-        case ExtensionAction.add:
-          setApps(req.apps);
+          setApps(apps.filter(d => d.tabId !== tabId));
+          currentTabId == tabId && setActiveTab(undefined);
           break;
         default:
       }
@@ -49,7 +47,7 @@ const Popup: React.FunctionComponent = () => {
     return (): void => {
       chrome.runtime.onMessage.removeListener(incomingMsgListener);
     }
-  }, [currentTabId]);
+  }, [currentTabId, apps]);
 
   React.useEffect((): void => {
     const gatherTabs: TabInterface[] = [];
@@ -91,11 +89,8 @@ const Popup: React.FunctionComponent = () => {
   }, [apps, manager]);
 
   const disconnectAll = (): void => {
-    chrome.tabs.query({"currentWindow": true, }, tabs => {
-      console.log('tabs', tabs, apps);
-      apps.forEach(a => {
-        manager.disconnectTab(a.tabId as number);
-      })
+    apps.forEach(a => {
+      manager.disconnectTab(a.tabId as number);
     });
   }
 
