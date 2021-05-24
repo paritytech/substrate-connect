@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import {jest} from '@jest/globals'
 import { 
   ExtensionProvider, 

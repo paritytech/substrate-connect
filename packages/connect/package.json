@@ -29,7 +29,7 @@
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "dependencies": {
-    "@polkadot/rpc-provider": "^3.7.3",
+    "@polkadot/rpc-provider": "^4.10.1",
     "@substrate/connect-extension-protocol": "^0.3.0",
     "browserify-fs": "^1.0.0",
     "eventemitter3": "^4.0.7",
@@ -38,7 +38,7 @@
     "smoldot": "^0.2.0"
   },
   "devDependencies": {
-    "@polkadot/api": "^3.7.3",
+    "@polkadot/api": "^4.2.4",
     "@polkadot/extension-inject": "^0.36.1",
     "@substrate/smoldot-test-utils": "file:../smoldot-test-utils",
     "@types/jest": "^26.0.20",
@@ -47,7 +47,7 @@
     "@types/sinon": "^9.0.10",
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.21.0",
-    "jest": "^26.6.3",
+    "jest": "^27.0.0-next.9",
     "jsdom": "^16.5.1",
     "sinon": "^9.2.3",
     "ts-node": "^9.1.1",
