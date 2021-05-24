@@ -30,7 +30,6 @@ const Popup: React.FunctionComponent = () => {
         case ExtensionAction.remove:
           setApps(req.apps);
           currentTabId == req.tabId && setActiveTab(undefined);
-          window.postMessage('Hello', 'substrate-connect');
           break;
         case ExtensionAction.add:
           setApps(req.apps);
@@ -57,22 +56,28 @@ const Popup: React.FunctionComponent = () => {
     const restTabs: React.ReactElement[] = [];
     chrome.tabs.query({"currentWindow": true, }, tabs => {
       tabs.forEach(t => {
-        // TODO: This could be migrated to backend - so that no transformation is needed in Popup
-        apps.find(({ tabId, smoldotName, appName, }) => {
+        apps.find(({ tabId, smoldotName, appName }) => {
           if (tabId === t.id) {
-            gatherTabs.push({
-              isActive: t.active,
-              tabId: t.id,
-              url: t.url,
-              uApp: {
-                networks: [smoldotName],
-                name: appName,
-                enabled: true
-              }
-            })
+            if (gatherTabs.length > 0 && gatherTabs.some(g => g.tabId === t.id)) {
+              gatherTabs.forEach(g => {
+                g.tabId === t.id && g.uApp.networks.push(smoldotName);
+              })
+            } else {
+              gatherTabs.push({
+                isActive: t.active,
+                tabId: t.id,
+                url: t.url,
+                uApp: {
+                  networks: [smoldotName],
+                  name: appName,
+                  enabled: true
+                }
+              });
+            }
           }
         })
       });
+
       gatherTabs.forEach(t => {
         if (t.isActive) {
           setActiveTab(<Tab manager={manager} current tab={t} />);
