@@ -6,8 +6,8 @@ import { AppMediator } from './AppMediator';
 import { SmoldotMediator } from './SmoldotMediator';
 import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface, Network, StateEmitter } from '../types';
 import EventEmitter from 'eventemitter3';
-import { State } from '../types';
-import { Statuses } from '../types/enums';
+import { State, MsgExchangePopup } from '../types';
+import { Statuses, ExtensionAction } from '../types/enums';
 
 /**
  * ConnectionManager is the main class involved in managing connections from
@@ -89,7 +89,20 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param tabId - the id of the tab to disconnect
    */
   disconnectTab(tabId: number): void {
-    this.#apps.filter(a => a.tabId && a.tabId === tabId).forEach(a => a.disconnect());
+    let app: AppMediator = {} as AppMediator;
+    this.#apps.filter(a => a.tabId && a.tabId === tabId).forEach(a => {
+      app = a;
+      a.disconnect()
+    });
+    const parts: string[] = app?.name?.split('::');
+    const popupMsg: MsgExchangePopup = {
+      ext: 'substrate-connect',
+      action: ExtensionAction.remove,
+      msg: `App '${parts[0]}' got disconnected from ${parts[1]}.`,
+      tabId: tabId,
+      apps: this.#apps.filter(a => a.tabId !== tabId)
+    };
+    chrome.runtime.sendMessage(popupMsg);
   }
 
   /**
@@ -106,6 +119,13 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       const newApp = new AppMediator(port, this as ConnectionManagerInterface)
       if (newApp.associate()) {
         this.#apps.push(newApp);
+        const popupMsg: MsgExchangePopup = {
+          ext: 'substrate-connect',
+          action: ExtensionAction.add,
+          msg: `App added`,
+          apps: this.#apps
+        };
+        chrome.runtime.sendMessage(popupMsg);
         newApp.on('stateChanged', () => this.emit('stateChanged'));
         this.emit('stateChanged');
       }

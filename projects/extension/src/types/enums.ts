@@ -10,3 +10,9 @@ export enum Statuses {
   disconnecting = 'disconnecting',
   disconnected = 'disconnected'
 }
+
+export enum ExtensionAction {
+  add = 'add',
+  remove = 'remove',
+  update = 'update'
+}

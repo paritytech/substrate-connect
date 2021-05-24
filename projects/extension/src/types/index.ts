@@ -1,7 +1,15 @@
 import { AppMediator } from '../background/AppMediator';
-import { Statuses } from './enums';
+import { ExtensionAction, Statuses } from './enums';
 import EventEmitter from 'eventemitter3';
 import StrictEventEmitter from 'strict-event-emitter-types';
+
+export interface MsgExchangePopup {
+  ext: string;
+  msg: string;
+  tabId?: number;
+  action: ExtensionAction,
+  apps: AppMediator[]
+}
 
 export interface TabInterface {
     tabId: number | undefined;

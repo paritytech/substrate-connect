@@ -4,8 +4,10 @@ import CloseIcon from '@material-ui/icons/Close';
 import { grey } from '@material-ui/core/colors';
 import { IconWeb3 } from '../components';
 import { TabInterface } from '../types';
+import { ConnectionManager } from 'background/ConnectionManager';
 
 interface TabProps {
+  manager: ConnectionManager;
   current?: boolean;
   tab?: TabInterface;
 }
@@ -25,48 +27,48 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-const ButtonDisableTab: FunctionComponent = () => {
+const Tab: FunctionComponent<TabProps> = ({ manager, tab, current=false }) => {
   const classes = useStyles();
+  const onDisconnect = (): void => {
+    tab && tab.tabId && manager.disconnectTab(tab.tabId);
+  }
+
   return (
-    <IconButton size='small' className={classes.disableButton}>
-      <CloseIcon />
-    </IconButton>
-  );
-}
+    <Box pt={current ? 2 : 1} pb={1} pr={1} pl={3}>
+      <Box
+        display='flex'
+        alignItems='center'
+        justifyContent='space-between'
+      >
+        <Typography noWrap variant={current ? 'h3' : 'h4'}>
+          {tab ? tab.uApp.name : 'substrate connect'}
+        </Typography>
 
-const Tab: FunctionComponent<TabProps> = ({ tab, current=false }) => (
-  <Box pt={current ? 2 : 1} pb={1} pr={1} pl={3}>
-    <Box
-      display='flex'
-      alignItems='center'
-      justifyContent='space-between'
-    >
-      <Typography noWrap variant={current ? 'h3' : 'h4'}>
-        {tab ? tab.uApp.name : 'substrate connect'}
-      </Typography>
+        { tab &&
+          <Box display='flex'alignItems='center'> 
+            {tab?.uApp.networks.map(n =>
+              <IconWeb3
+                key={n}
+                size='14px'
+                color={tab?.uApp.enabled ? grey[800] : grey[400]}
+              >
+                {n}
+              </IconWeb3>
+            )}
+            <IconButton onClick={onDisconnect} size='small' className={classes.disableButton}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        }
+      </Box>
 
-      { tab &&
-        <Box display='flex'alignItems='center'> 
-          {tab?.uApp.networks.map(n =>
-            <IconWeb3
-              key={n}
-              size='14px'
-              color={tab?.uApp.enabled ? grey[800] : grey[400]}
-            >
-              {n}
-            </IconWeb3>
-          )}
-          <ButtonDisableTab />
-        </Box>
+      {!current &&
+        <Typography variant='body2' color='secondary'>
+          {tab?.url}
+        </Typography>
       }
     </Box>
-
-    {!current &&
-      <Typography variant='body2' color='secondary'>
-        {tab?.url}
-      </Typography>
-    }
-  </Box>
-);
+  );
+}
 
 export default Tab;
