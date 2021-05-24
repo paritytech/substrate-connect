@@ -20,6 +20,7 @@ const Popup: React.FunctionComponent = () => {
   const appliedTheme = createMuiTheme(light);
   const [apps, setApps] = React.useState<AppMediator[]>([] as AppMediator[]);
   const [manager, setManager] = React.useState<ConnectionManager>({} as ConnectionManager);
+
   React.useEffect((): (() => void) => {
     const incomingMsgListener = (req: MsgExchangePopup) => {
       if (req.ext !== 'substrate-connect') {
@@ -84,6 +85,15 @@ const Popup: React.FunctionComponent = () => {
     });
   }, [apps, manager]);
 
+  const disconnectAll = (): void => {
+    chrome.tabs.query({"currentWindow": true, }, tabs => {
+      console.log('tabs', tabs, apps);
+      apps.forEach(a => {
+        manager.disconnectTab(a.tabId as number);
+      })
+    });
+  }
+
   return (
     <ThemeProvider theme={appliedTheme}>
       <Box width={'340px'} mb={0.1}>
@@ -96,7 +106,7 @@ const Popup: React.FunctionComponent = () => {
         <MenuButton fullWidth onClick={() => chrome.runtime.openOptionsPage()}>My Networks</MenuButton>
         <MenuButton fullWidth>About</MenuButton>
         <Divider />
-        <MenuButton fullWidth className='danger'>Stop all connections</MenuButton>
+        <MenuButton fullWidth className='danger' onClick={disconnectAll}>Stop all connections</MenuButton>
       </Box>
     </ThemeProvider>
   );
