@@ -74,7 +74,7 @@ export default function NodeSelector(): React.ReactElement {
   const classes = useStyles();
   const api = useApi();
   const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
-  const endpointName = localEndpoint || 'Polkadot-WsProvider'
+  const endpointName = localEndpoint || 'Westend-WsProvider'
   const [provider, setProvider] = useState<string>(ALL_PROVIDERS[endpointName]?.id);
   const [open, setOpen] = useState<boolean>(false);
 
