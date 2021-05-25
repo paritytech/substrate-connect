@@ -22,7 +22,7 @@
     "downloadSpecs": "node downloadSpecs.js && cp ./src/specs/westend.json ./src/__mocks__/.",
     "prebuild": "yarn clean && yarn downloadSpecs",
     "pretest": "yarn build",
-    "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --coverage dist/",
+    "test": "node --experimental-vm-modules $(yarn bin)/jest --silent --colors --coverage dist/",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist",
     "build": "tsc --build",

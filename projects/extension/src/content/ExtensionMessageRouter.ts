@@ -5,7 +5,7 @@ import {
   ProviderMessage,
   extension
 } from '@substrate/connect-extension-protocol';
-import { debug } from '../utils/debug';
+import { debug } from '../utils';
 
 const CONTENT_SCRIPT_ORIGIN = 'content-script';
 const EXTENSION_PROVIDER_ORIGIN ='extension-provider';
@@ -53,7 +53,7 @@ export class ExtensionMessageRouter {
 
     // forward any messages: extension -> page
     port.onMessage.addListener((data): void => {
-      debug(`RECIEVED MESSGE FROM ${chainName} PORT`, data);
+      debug(`RECEIVED MESSAGE FROM ${chainName} PORT`, data);
       extension.send({ message: data, origin: CONTENT_SCRIPT_ORIGIN });
     });
 
@@ -102,7 +102,7 @@ export class ExtensionMessageRouter {
       return;
     }
 
-    debug(`RECEIEVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data);
+    debug(`RECEIVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data);
 
     if (!data.action) {
       return console.warn('Malformed message - missing action', message);

@@ -74,8 +74,8 @@ export default function NodeSelector(): React.ReactElement {
   const classes = useStyles();
   const api = useApi();
   const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
-  const endpointName = localEndpoint || 'Polkadot-WsProvider'
-  const [provider, setProvider] = useState<string>(ALL_PROVIDERS[endpointName].id);
+  const endpointName = localEndpoint || 'Westend-WsProvider'
+  const [provider, setProvider] = useState<string>(ALL_PROVIDERS[endpointName]?.id);
   const [open, setOpen] = useState<boolean>(false);
 
   const toggleOpen = () => {
@@ -93,7 +93,7 @@ export default function NodeSelector(): React.ReactElement {
     setLocalEndpoint(provider);
     setProvider(provider);
     
-    console.log("Burnr wallet is now connected to", ALL_PROVIDERS[provider].endpoint);
+    console.log("Burnr wallet is now connected to", ALL_PROVIDERS[provider]?.endpoint);
     // Tis is just a temporary work around. Api should be passed on as prop without reload
     location.reload();
     // setChain(REMOTE_PROVIDERS[selectedEndpoint].network);
@@ -107,8 +107,8 @@ export default function NodeSelector(): React.ReactElement {
           <Box display='flex' alignItems='center' pt={1.5} pb={1.5} pl={0.5} pr={0.5} onClick={toggleOpen}>
             <FiberManualRecordIcon style={{ fontSize: '16px', marginRight: 4 }} color={api && api.isReady ? 'primary' : 'error'} />
             <Box width='100%'>
-              <Typography variant='h4'>{ ALL_PROVIDERS[provider].network }</Typography>
-              <Typography variant='body2' color='textSecondary'>{ALL_PROVIDERS[provider].client} client</Typography>
+              <Typography variant='h4'>{ ALL_PROVIDERS[provider]?.network }</Typography>
+              <Typography variant='body2' color='textSecondary'>{ALL_PROVIDERS[provider]?.client} client</Typography>
             </Box>
             {open ? <ArrowDropUpIcon /> : <ArrowDropDownIcon /> }
           </Box>

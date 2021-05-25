@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { jest } from '@jest/globals';
-import { ConnectionManagerInterface } from './background/types';
+import { ConnectionManagerInterface } from './types';
 import { 
   MessageToManager, 
   MessageFromManager 

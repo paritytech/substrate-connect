@@ -15,7 +15,7 @@
     "build": "parcel build ./dist/index.html --public-url ./",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist",
-    "dev": "yarn run clean && tsc --noEmit & parcel ./public/index.html",
+    "dev": "yarn run clean && tsc --noEmit & parcel ./public/index.html -p 1234",
     "test": "echo \"Warning: Jest has been setup but no tests exist.\"",
     "test:watch": "jest --watch",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx",

@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
     "build": "yarn clean && yarn typecheck && parcel build index.html --public-url ./ --detailed-report",
-    "dev": "yarn clean && concurrently \"yarn typecheck:watch\" \"parcel --no-cache index.html\"",
+    "dev": "yarn clean && concurrently \"yarn typecheck:watch\" \"parcel --no-cache index.html\" -p 1235",
     "test": "echo \"Warning: Jest has been setup but no tests exist.\"",
     "test:watch": "jest --watch",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"

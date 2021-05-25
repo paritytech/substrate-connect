@@ -4,23 +4,10 @@
 import * as smoldot from 'smoldot';
 import { AppMediator } from './AppMediator';
 import { SmoldotMediator } from './SmoldotMediator';
-import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface } from './types';
+import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface, Network, StateEmitter } from '../types';
 import EventEmitter from 'eventemitter3';
-import { StateEmitter } from './types';
-import { Network } from '../types';
-
-interface NetworkState {
-  name: string;
-}
-
-interface AppState {
-  name: string;
-  tabId: number;
-  networks: NetworkState[];
-}
-interface State {
-  apps: AppState[];
-}
+import { State, MsgExchangePopup } from '../types';
+import { Statuses, ExtensionAction } from '../types/enums';
 
 /**
  * ConnectionManager is the main class involved in managing connections from
@@ -99,10 +86,34 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * disconnectTab disconnects all instances of {@link AppMediator} connected
    * from the supplied tabId
    *
-   * @param tabId - the id of the tab to disconnect
+   * @param tabId - the id of the tab to disconnect (add 0 to disconnect all)
    */
   disconnectTab(tabId: number): void {
-    this.#apps.filter(a => a.tabId && a.tabId === tabId).forEach(a => a.disconnect());
+    this.#apps.filter(a => a.tabId && a.tabId === tabId).forEach(a => {
+      a.disconnect();
+    });
+    const popupMsg: MsgExchangePopup = {
+      ext: 'substrate-connect',
+      action: ExtensionAction.remove,
+      msg: 'App got disconnected.',
+      tabId: tabId
+    };
+    chrome.runtime.sendMessage(JSON.stringify(popupMsg));
+  }
+
+  /**
+   * disconnectTab disconnects all instances of {@link AppMediator} connected
+   */
+  disconnectAll(): void {
+    this.#apps.forEach(a => {
+      a.disconnect();
+    })
+    const popupMsg: MsgExchangePopup = {
+      ext: 'substrate-connect',
+      action: ExtensionAction.remove,
+      msg: 'All apps got disconnected.'
+    };
+    chrome.runtime.sendMessage(JSON.stringify(popupMsg));
   }
 
   /**
@@ -221,7 +232,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       // TODO: fix this when mapping is corrected
       this.#networks.push({
         name: name,
-        status: 'connected',
+        status: Statuses.connected,
         isKnown: true,
         chainspecPath: `${name}.json`
       });

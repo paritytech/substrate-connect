@@ -1,6 +1,14 @@
-export type NetworkTypes = 'kusama' | 'polkadot' | 'westend' | 'kulupu'
+import { AppMediator } from '../background/AppMediator';
+import { ExtensionAction, Statuses } from './enums';
+import EventEmitter from 'eventemitter3';
+import StrictEventEmitter from 'strict-event-emitter-types';
 
-export type NetworkStatus =  'connected' | 'disconnecting' | 'disconnected';
+export interface MsgExchangePopup {
+  ext: string;
+  msg: string;
+  tabId?: number;
+  action: ExtensionAction
+}
 
 export interface TabInterface {
     tabId: number | undefined;
@@ -18,7 +26,7 @@ export type uApp = {
 interface ChainSpec {
   name: string;
   icon?: string;
-  status: NetworkStatus;
+  status: Statuses;
   isKnown: boolean;
   chainspecPath: string;
 }
@@ -30,3 +38,83 @@ export interface Parachain extends ChainSpec {
 }
 
 export type NetworkCtx = TabInterface[];
+
+export interface InitAppNameSpec {
+  id: string,
+  chainName: string,
+  origin: string,
+  uAppName: string,
+  chainSpec?: string
+}
+
+export interface State {
+  apps: AppState[];
+}
+
+interface AppState {
+  name: string;
+  tabId: number;
+  networks: NetworkState[];
+}
+
+interface NetworkState {
+  name: string;
+}
+
+export interface MessageIDMapping {
+  readonly appID: number | undefined;
+  readonly smoldotID: number;
+}
+
+export interface SubscriptionMapping {
+  readonly appIDForRequest: number | undefined;
+  subID: number | string  | undefined;
+  method: string;
+}
+
+export interface StateEvents {
+  stateChanged: void;
+}
+
+export type StateEmitter = StrictEventEmitter<EventEmitter, StateEvents>;
+
+export interface ConnectionManagerInterface {
+  hasClientFor: (name: string) => boolean;
+  sendRpcMessageTo: (name: string, message: JsonRpcRequest) => number;
+  registerApp: (app: AppMediator, name: string) => void;
+  unregisterApp: (app: AppMediator, name: string) => void;
+}
+
+export interface JsonRpcObject {
+  id?: number;
+  jsonrpc: string;
+}
+
+export interface JsonRpcRequest extends JsonRpcObject {
+  method: string;
+  params: unknown[];
+}
+
+export interface JsonRpcResponseBaseError {
+  code: number;
+  data?: number | string;
+  message: string;
+}
+
+export interface JsonRpcResponseSingle {
+  error?: JsonRpcResponseBaseError;
+  result?: unknown;
+}
+
+export interface JsonRpcResponseSubscription {
+  method?: string;
+  params?: {
+    error?: JsonRpcResponseBaseError;
+    result: unknown;
+    subscription: number | string;
+  };
+}
+
+export type JsonRpcResponseBase = JsonRpcResponseSingle & JsonRpcResponseSubscription;
+
+export type JsonRpcResponse = JsonRpcObject & JsonRpcResponseBase
