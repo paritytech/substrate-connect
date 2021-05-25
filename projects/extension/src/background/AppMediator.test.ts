@@ -57,9 +57,9 @@ describe("Test AppMediator class", () => {
   let spyPortPostMessage: unknown;
   let spyPortDisconnect: unknown;
   
-  const initFunc = (portStr: string, connManagerFlag: boolean) => {
+  const initFunc = (portStr: string, willFindClient: boolean) => {
     port = new MockPort(portStr);
-    manager = new MockConnectionManager(connManagerFlag);
+    manager = new MockConnectionManager(willFindClient);
     appMed = new AppMediator(port, manager);
     spyManagerRegisterApp = jest.spyOn(manager, 'registerApp');
     spyManagerUnregisterApp = jest.spyOn(manager, 'unregisterApp');
