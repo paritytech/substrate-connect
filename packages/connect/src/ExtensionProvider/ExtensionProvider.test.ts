@@ -147,15 +147,5 @@ import {jest} from '@jest/globals'
      const innerMessage = errorMessage.message as MessageFromManager;
      expect(error.message).toEqual(innerMessage.payload);
    });
-
-   test('emits rpc', async () => {
-    const ep = new ExtensionProvider('test', 'test-chain');
-    await ep.connect();
-    await waitForMessageToBePosted();
-
-    const spy = jest.spyOn(utils, )
-
-    expect(isUndefined).toHaveBeenCalled();
-  });
  });
  
