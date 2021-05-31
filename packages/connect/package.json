@@ -35,7 +35,7 @@
     "eventemitter3": "^4.0.7",
     "file-entry-cache": "^6.0.1",
     "mkdirp": "^1.0.4",
-    "smoldot": "^0.2.0"
+    "smoldot": "^0.2.1"
   },
   "devDependencies": {
     "@polkadot/api": "^4.2.4",
