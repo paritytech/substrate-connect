@@ -56,25 +56,25 @@ const App: React.FunctionComponent = () => {
                 Testing environment for Polkadot and Kusama deployments and processes
               </CardNetwork>
               <CardNetwork
-                title='Rococo'
-                statusProps={{status:'very soon'}}
-                linkProps={{href:'https://polkadot.network/rococo-v1-a-holiday-gift-to-the-polkadot-community/'}}
-              >
-                Testnet designed for parachains and related technologies: Cumulus and HRMP
-              </CardNetwork>
-              <CardNetwork
                 title='Kusama'
-                statusProps={{status:'soon'}}
+                statusProps={{status:'supported'}}
                 linkProps={{href:'https://kusama.network/'}}
               >
                 A network built as a risk-taking, fast-moving ‘canary in the coal mine’ for its cousin Polkadot
               </CardNetwork>
               <CardNetwork
                 title='Polkadot'
-                statusProps={{status:'soon'}}
+                statusProps={{status:'supported'}}
                 linkProps={{href:'https://polkadot.network/'}}
               >
                 Scalable sharded chain and the first protocol that provides a secure environment for cross-chain composability
+              </CardNetwork>
+              <CardNetwork
+                title='Rococo'
+                statusProps={{status:'very soon'}}
+                linkProps={{href:'https://polkadot.network/rococo-v1-a-holiday-gift-to-the-polkadot-community/'}}
+              >
+                Testnet designed for parachains and related technologies: Cumulus and HRMP
               </CardNetwork>
             </Grid>
             <SectionRef href='https://github.com/paritytech/substrate-connect/tree/13bd26a1ca2904f8e0b5d04dfa35e82364d37d99/packages/connect/assets'>
@@ -89,12 +89,12 @@ const App: React.FunctionComponent = () => {
                 yarn add @substrate/substrate-connect
               </Code>
               <Code heading='index.ts'>
-                <Box>{`import { UApp } from '@substrate/connect';`}</Box>
+                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
 
                 <Box mt={2}>{`// Create a new UApp with a unique name`}</Box>
-                <Box>{`const app = new UApp('burnr-wallet');`}</Box>
-                <Box>{`const westend = app.detect('westend');`}</Box>
-                <Box>{`const kusama = app.detect('kusama');`}</Box>
+                <Box>{`const app = new Detector('Burnr wallet');`}</Box>
+                <Box>{`const westend = await app.connect('westend');`}</Box>
+                <Box>{`const kusama = await app.connect('kusama');`}</Box>
 
                 <Box mt={2}>{`westend.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
@@ -106,8 +106,8 @@ const App: React.FunctionComponent = () => {
 
                 <Box mt={2}>{`// etc ...`}</Box>
 
-                <Box mt={2}>{`westend.disconnect();`}</Box>
-                <Box>{`kusama.disconnect();`}</Box>
+                <Box mt={2}>{`await westend.disconnect();`}</Box>
+                <Box>{`await kusama.disconnect();`}</Box>
               </Code>
             </ThemeProvider>
           </Section>
