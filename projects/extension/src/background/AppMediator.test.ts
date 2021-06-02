@@ -132,10 +132,21 @@ describe("Test AppMediator class", () => {
       expect(result).toBe(false);
     });
 
+    test('ProcessSmoldotMessage: return false when app is disconnected', () => {
+      console.error = jest.fn()
+      initFunc('test-app::westend', true);
+      const message: JsonRpcResponse = { id: 1, jsonrpc: '2.0', result: {} };
+      appMed.disconnect();
+      const result = appMed.processSmoldotMessage(message);
+      expect(result).toBe(false);
+      expect(console.error).toBeCalledTimes(1);
+      expect(console.error).toBeCalledWith('Asked a disconnected UApp (test-app::westend) to process a message from undefined');
+
+    });
+
     test('ProcessSmoldotMessage: does nothing when it has sent no requests', () => {
       initFunc('test-app::westend', true);    
       const message: JsonRpcResponse = { id: 1, jsonrpc: '2.0', result: {} };
-      appMed.disconnect();    
       const result = appMed.processSmoldotMessage(message);
       expect(result).toBe(false);
     });
