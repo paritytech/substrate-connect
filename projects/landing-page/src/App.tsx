@@ -91,7 +91,7 @@ const App: React.FunctionComponent = () => {
               <Code heading='index.ts'>
                 <Box>{`import { Detector } from '@substrate/connect';`}</Box>
 
-                <Box mt={2}>{`// Create a new UApp with a unique name`}</Box>
+                <Box mt={2}>{`// Create a new UApp with a unique name (e.g. Burn wallet)`}</Box>
                 <Box>{`const app = new Detector('Burnr wallet');`}</Box>
                 <Box>{`const westend = await app.connect('westend');`}</Box>
                 <Box>{`const kusama = await app.connect('kusama');`}</Box>
