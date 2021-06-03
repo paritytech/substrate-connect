@@ -8,7 +8,7 @@ import { light, Tab, MenuButton } from '../components';
 import { Background } from '../background/';
 import { debug } from '../utils/debug';
 import { TabInterface } from '../types';
-import { AppMediator } from 'src/background/AppMediator';
+import { AppMediator } from '../background/AppMediator';
 
 const { createMuiTheme, ThemeProvider, Box, Divider } = material;
 
