@@ -42,8 +42,6 @@ function setupAppMediatorWithSubscription(
     .toEqual({ appIDForRequest, subID, method: 'system_health' });
 
   // should send the acknowledgement of the subscription request back to the UApp
-  // const msgCalls = port.postMessage.mock.calls; // Replaced with the line below
-  // const lastMsg = msgCalls[msgCalls.length - 1][0] as MessageFromManager; // Replaced with the line below
   expect(spyPortPostMessage).toHaveBeenCalledWith({ type: 'rpc', payload: `{"id":${appIDForRequest},"jsonrpc":"2.0","result":${subID}}`});
 }
 
