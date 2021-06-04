@@ -18,8 +18,8 @@ import { SmoldotClient, SmoldotOptions } from 'smoldot';
  *
  * @returns a JSON string
  */
-const systemHealthReponse = (id: number, peerCount: number) => {
-  return `{"jsonrpc":"2.0","id":${id} ,"result":{"isSyncing":true,"peers":${peerCount},"shouldHavePeers":true}}`;
+const systemHealthReponse = (id: number, isSyncing: boolean, peerCount: number, shouldHavePeers: boolean) => {
+  return `{"jsonrpc":"2.0","id":${id} ,"result":{"isSyncing":${isSyncing},"peers":${peerCount},"shouldHavePeers":${shouldHavePeers}}`;
 }
 
 /**
@@ -33,7 +33,7 @@ const systemHealthReponse = (id: number, peerCount: number) => {
  * Dev chains never have peers
  */
 const devChainHealthResponse = (id: number) => {
-  return `{"jsonrpc":"2.0","id":${id} ,"result":{"isSyncing":true,"peers":0,"shouldHavePeers":false}}`;
+  return systemHealthReponse(id, true, 0, false);
 }
 
 /**
@@ -53,7 +53,7 @@ type RpcResponder = (request: string) => string;
  */
 const healthyResponder = (requestJSON: string) => {
   const id = JSON.parse(requestJSON).id;
-  return systemHealthReponse(id, 1);
+  return systemHealthReponse(id, false, 1, true);
 }
 
 /**
@@ -67,7 +67,7 @@ const healthyResponder = (requestJSON: string) => {
  */
 const unhealthyResponder = (requestJSON: string) => {
   const id = JSON.parse(requestJSON).id;
-  return systemHealthReponse(id, 0);
+  return systemHealthReponse(id, true, 0, true);
 }
 
 /**
