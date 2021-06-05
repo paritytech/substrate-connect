@@ -14,6 +14,7 @@ import {
   devChainHealthResponder,
   mockSmoldot,
   smoldotSpy,
+  SystemHealth,
   respondWith
 } from '@substrate/smoldot-test-utils';
 
@@ -65,7 +66,11 @@ test('emits error when system_health responds with error', async () => {
 });
 
 test('emits events when it connects then disconnects', async () => {
-  const ms = mockSmoldot(respondWith([]), customHealthResponder([true, false]));
+  const healthResponses = [
+    { isSyncing: true, peerCount: 1, shouldHavePeers: true },
+    { isSyncing: true, peerCount: 0, shouldHavePeers: true }
+  ];
+  const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
 
   // we don't want the test to be slow
@@ -82,7 +87,12 @@ test('emits events when it connects then disconnects', async () => {
 });
 
 test('emits events when it connects / disconnects / reconnects', async () => {
-  const ms = mockSmoldot(respondWith([]), customHealthResponder([true, false, true]));
+  const healthResponses = [
+    { isSyncing: true, peerCount: 1, shouldHavePeers: true },
+    { isSyncing: true, peerCount: 0, shouldHavePeers: true },
+    { isSyncing: true, peerCount: 1, shouldHavePeers: true }
+  ];
+  const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
 
   // we don't want the test to be slow

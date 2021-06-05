@@ -8,19 +8,25 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { SmoldotClient, SmoldotOptions } from 'smoldot';
 
+export interface SystemHealth {
+  isSyncing: boolean;
+  peerCount: number;
+  shouldHavePeers: boolean;
+}
+
 /**
  * Response builders - functions that simplify making RPC responses
  */
 
 /**
  * systemHealthReponse - creates a valid RPC response that looks like a response
- * to a "system_health" RPC request using the supplied arguments
+ * to a "system_health" RPC request using the supplied system health info
  *
  * @returns a JSON string
  */
-const systemHealthReponse = (id: number, isSyncing: boolean, peerCount: number, shouldHavePeers: boolean) => {
-  return `{"jsonrpc":"2.0","id":${id} ,"result":{"isSyncing":${isSyncing},"peers":${peerCount},"shouldHavePeers":${shouldHavePeers}}`;
-}
+const systemHealthReponse = (id: number, health: SystemHealth) => {
+  return `{"jsonrpc":"2.0","id":${id} ,"result":{"isSyncing":${health.isSyncing},"peers":${health.peerCount},"shouldHavePeers":${health.shouldHavePeers}}}`;
+  }
 
 /**
  * devChainHealthResponse - creates a valid RPC response that looks like a response
@@ -33,7 +39,7 @@ const systemHealthReponse = (id: number, isSyncing: boolean, peerCount: number, 
  * Dev chains never have peers
  */
 const devChainHealthResponse = (id: number) => {
-  return systemHealthReponse(id, true, 0, false);
+  return systemHealthReponse(id, { isSyncing: true, peerCount: 0, shouldHavePeers: false});
 }
 
 /**
@@ -53,21 +59,7 @@ type RpcResponder = (request: string) => string;
  */
 const healthyResponder = (requestJSON: string) => {
   const id = JSON.parse(requestJSON).id;
-  return systemHealthReponse(id, false, 1, true);
-}
-
-/**
- * unhealthyResponder - takes a JSON request that is expected to look like a valid
- * "system_health" RPC request and returns a valid matching unhealthy response. It
- * takes the ID from the request and ensures the response has the same ID. The
- * response will say there are no peers.
- *
- * @param requestJSON
- * @returns a JSON string
- */
-const unhealthyResponder = (requestJSON: string) => {
-  const id = JSON.parse(requestJSON).id;
-  return systemHealthReponse(id, true, 0, true);
+  return systemHealthReponse(id, { isSyncing: false, peerCount: 1, shouldHavePeers: true });
 }
 
 /**
@@ -104,14 +96,17 @@ export const erroringResponder = (requestJSON: string) => {
  * was supplied one-by-one
  */
 
+const NO_MORE_RESPONSES = "json_rpc_callback was called but there are no mock responses left to respond with";
+
 // Orchestrates a sequence of has peers / has no peers responses
-export const customHealthResponder = (hasPeers: boolean[]) => {
+export const customHealthResponder = (healthResponses: SystemHealth[]) => {
   return (requestJSON: string) => {
-    if (hasPeers.shift()) {
-      return healthyResponder(requestJSON);
-    } else {
-      return unhealthyResponder(requestJSON);
+    const id = JSON.parse(requestJSON).id;
+    const health = healthResponses.shift();
+    if (!health) { 
+      throw new Error(NO_MORE_RESPONSES); 
     }
+    return systemHealthReponse(id, health);
   };
 }
 
@@ -120,7 +115,7 @@ export const respondWith = (jsonResponses: string[]) => {
   return (_: string) => {
     const mockResponse = jsonResponses.shift();
     if (!mockResponse) { 
-      throw new Error("json_rpc_callback was called but there are no mock responses left to respond with"); 
+      throw new Error(NO_MORE_RESPONSES); 
     }
     return mockResponse;
   };
