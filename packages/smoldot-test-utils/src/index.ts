@@ -96,7 +96,13 @@ export const erroringResponder = (requestJSON: string) => {
   return `{ "id": ${id}, "jsonrpc": "2.0", "error": {"code": 666, "message": "boom!" } }`;
 }
 
-// ---
+
+/**
+ * Orchestrators - these are higher order factory functions take the
+ * definitions of a sequence of reponses to respond with and returns
+ * `RpcResponder` function that when called will return a reponse matching what
+ * was supplied one-by-one
+ */
 
 // Orchestrates a sequence of has peers / has no peers responses
 export const customHealthResponder = (hasPeers: boolean[]) => {
@@ -108,6 +114,23 @@ export const customHealthResponder = (hasPeers: boolean[]) => {
     }
   };
 }
+
+// Orchestrates an `RpcResponder` with a queue of mock reponses to respond with.
+export const respondWith = (jsonResponses: string[]) => {
+  return (_: string) => {
+    const mockResponse = jsonResponses.shift();
+    if (!mockResponse) { 
+      throw new Error("json_rpc_callback was called but there are no mock responses left to respond with"); 
+    }
+    return mockResponse;
+  };
+}
+
+
+/**
+ * Fakes - these are the actual mock / spy implementations you will 
+ * create to use in place of a real instance of smoldot
+ */
 
 
 // Mimics the behaviour of the WASM light client by deferring a call to 
@@ -173,13 +196,3 @@ export const smoldotSpy = (responder: RpcResponder, rpcSpy: any, healthResponder
   };
 };
 
-// Creates an `RpcResponder` with a queue of mock reponses to respond with.
-export const respondWith = (jsonResponses: string[]) => {
-  return (_: string) => {
-    const mockResponse = jsonResponses.shift();
-    if (!mockResponse) { 
-      throw new Error("json_rpc_callback was called but there are no mock responses left to respond with"); 
-    }
-    return mockResponse;
-  };
-}
