@@ -130,8 +130,8 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       const newApp = new AppMediator(port, this as ConnectionManagerInterface)
       if (newApp.associate()) {
         this.#apps.push(newApp);
-        newApp.on('stateChanged', () => this.emit('stateChanged'));
-        this.emit('stateChanged');
+        // newApp.on('stateChanged', () => this.emit('stateChanged', this.getState()));
+        this.emit('stateChanged', this.getState());
       }
     }
   }
