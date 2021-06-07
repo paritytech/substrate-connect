@@ -7,6 +7,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { SmoldotClient, SmoldotOptions } from 'smoldot';
+import { jest } from '@jest/globals'
 
 export interface SystemHealth {
   isSyncing: boolean;
@@ -174,14 +175,14 @@ export const mockSmoldot = (responder: RpcResponder, healthResponder = healthyRe
 
 // Creates a spying `smoldot` that records calls to `json_rpc_send` in `rpcSpy`
 // and then uses `fakeRpcSend` to mimic the light client behaviour.
-export const smoldotSpy = (responder: RpcResponder, rpcSpy: any, healthResponder = healthyResponder) => {
+export const smoldotSpy = (responder: RpcResponder, rpcSpy: jest.MockedFunction<(rpc: string, chainIndex: number) => void>, healthResponder = healthyResponder) => {
   return {
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
       return Promise.resolve({
         terminate: () => {},
         sendJsonRpc: (rpc: string, chainIndex: number) => {
           // record the message call
-          rpcSpy(rpc);
+          rpcSpy(rpc, chainIndex);
           // fake the async reply using the responder
           fakeRpcSend(options, responder, healthResponder)(rpc, chainIndex)
         },
