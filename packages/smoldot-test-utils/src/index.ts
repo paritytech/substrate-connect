@@ -135,16 +135,18 @@ export const respondWith = (jsonResponses: string[]) => {
  */
 
 
-// Mimics the behaviour of the WASM light client by deferring a call to 
-// `jsonRpcCallback` after it is called which returns the response
-// returned by the supplied `responder`.
-//
-// If this is called with an rpc string containing the word subscribe (but not
-// unsubscribe), it is considered a subscription and `responder` must have 2
-// mock responses for each subscriptionrequest that the test will make.  The
-// first returning the subscription id.  The second a response to the
-// subscription.
-const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder, healthResponder: RpcResponder) => {
+/** 
+ * createRequestProcessor - returns a function that mimics the behaviour of the
+ * WASM light client by deferring a call to `jsonRpcCallback` after it is
+ * called which returns the response returned by the supplied `responder`.
+ *
+ * If this is called with an rpc string containing the word subscribe (but not
+ * unsubscribe), it is considered a subscription and `responder` must have 2
+ * mock responses for each subscriptionrequest that the test will make.  The
+ * first returning the subscription id.  The second a response to the
+ * subscription.
+ */
+const createRequestProcessor = (options: SmoldotOptions, responder: RpcResponder, healthResponder: RpcResponder) => {
   return (rpcRequest: string, chainIndex: number) => {
     process.nextTick(() => {
       if (options && options.jsonRpcCallback) {
@@ -156,6 +158,10 @@ const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder, healthRes
         // non-health reponse
         options.jsonRpcCallback(responder(rpcRequest), chainIndex)
         if (/(?<!un)[sS]ubscribe/.test(rpcRequest)) {
+          // FIXME: by convention it is assumed the responder has a queue of
+          // responses setup so that a subscription response is immediately
+          // followed by a single subscription message.  Subscriptions mocking
+          // should be more flexible than this.
           options.jsonRpcCallback(responder(rpcRequest), chainIndex)
         }
       }
@@ -174,9 +180,7 @@ export const mockSmoldot = (responder: RpcResponder, healthResponder = healthyRe
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
       return Promise.resolve({
         terminate: doNothing,
-        // fake the async reply by using the reponder to format
-        // a reply via options.jsonRpcCallback
-        sendJsonRpc: fakeRpcSend(options, responder, healthResponder),
+        sendJsonRpc: createRequestProcessor(options, responder, healthResponder),
         cancelAll: doNothing
       });
     }
@@ -188,13 +192,12 @@ export const mockSmoldot = (responder: RpcResponder, healthResponder = healthyRe
 export const smoldotSpy = (responder: RpcResponder, rpcSpy: jest.MockedFunction<(rpc: string, chainIndex: number) => void>, healthResponder = healthyResponder): Smoldot => {
   return {
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
+      const processRequest = createRequestProcessor(options, responder, healthyResponder);
       return Promise.resolve({
         terminate: doNothing,
         sendJsonRpc: (rpc: string, chainIndex: number) => {
-          // record the message call
           rpcSpy(rpc, chainIndex);
-          // fake the async reply using the responder
-          fakeRpcSend(options, responder, healthResponder)(rpc, chainIndex)
+          processRequest(rpc, chainIndex);
         },
         cancelAll: doNothing
       });
