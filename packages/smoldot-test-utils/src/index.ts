@@ -10,7 +10,7 @@ import { jest } from '@jest/globals'
  * @remarks
  *
  * We define SystemHealth instead of using the Health type in
- * interfaces/system/types in @polkadot/api because its more ergonomic to use:
+ * interfaces/system/types in \@polkadot/api because its more ergonomic to use:
  * primitive booleans and numbers instead of the polkadotjs wrapped
  * Codec implementations of those.
  */
@@ -60,7 +60,7 @@ type RpcResponder = (request: string) => string;
  * "system_health" RPC request and returns a valid matching healthy response. It
  * takes the ID from the request and ensures the response has the same ID.
  *
- * @param requestJSON
+ * @param requestJSON - the RPC request JSON
  * @returns a JSON string
  */
 const healthyResponder = (requestJSON: string) => {
@@ -74,7 +74,7 @@ const healthyResponder = (requestJSON: string) => {
  * response for a "dev chain". It takes the ID from the request and ensures the
  * response has the same ID.
  *
- * @param requestJSON
+ * @param requestJSON - the RPC request JSON
  * @returns a JSON string
  */
 export const devChainHealthResponder = (requestJSON: string): string => {
@@ -86,7 +86,7 @@ export const devChainHealthResponder = (requestJSON: string): string => {
  * unhealthyResponder - takes a JSON request that is expected to look like any
  * valid RPC request and and always generates an RPC error response.
  *
- * @param requestJSON
+ * @param requestJSON - the RPC request JSON
  * @returns a JSON string
  */
 export const erroringResponder = (requestJSON: string): string => {
