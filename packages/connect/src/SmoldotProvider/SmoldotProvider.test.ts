@@ -5,7 +5,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import sinon from 'sinon';
 import { SmoldotProvider } from './SmoldotProvider';
 import { SmoldotClient, SmoldotOptions } from 'smoldot';
 import {
@@ -14,7 +13,6 @@ import {
   devChainHealthResponder,
   mockSmoldot,
   smoldotSpy,
-  SystemHealth,
   respondWith
 } from '@substrate/smoldot-test-utils';
 
@@ -136,15 +134,13 @@ test('emits connect and never emits disconnect for development chain', async () 
 test('send formats JSON RPC request correctly', async () => {
   // we don't really care what the reponse is
   const responses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
-  const rpcSend = sinon.spy();
+  const rpcSend = jest.fn();
   const ss = smoldotSpy(respondWith(responses), rpcSend);
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ss);
 
   await provider.connect();
   const reply = await provider.send('hello', [ 'world' ]);
-  expect(rpcSend.called).toBe(true);
-  const rpcJson = rpcSend.firstCall.firstArg;
-  expect(rpcJson).toBe('{"id":1,"jsonrpc":"2.0","method":"hello","params":["world"]}');
+  expect(rpcSend).toHaveBeenCalledWith('{"id":1,"jsonrpc":"2.0","method":"hello","params":["world"]}');
   await provider.disconnect();
 });
 
@@ -153,7 +149,7 @@ test('sending twice uses new id', async () => {
     '{ "id": 1, "jsonrpc": "2.0", "result": "success" }',
     '{ "id": 2, "jsonrpc": "2.0", "result": "success" }'
   ];
-  const rpcSend = sinon.spy();
+  const rpcSend = jest.fn();
   const ss = smoldotSpy(respondWith(responses), rpcSend);
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ss);
 
@@ -161,12 +157,11 @@ test('sending twice uses new id', async () => {
   await provider.send('hello', [ 'world' ]);
   await provider.send('hello', [ 'world' ]);
 
-  expect(rpcSend.called).toBe(true);
-  expect(rpcSend.calledTwice).toBe(true);
+  expect(rpcSend).toHaveBeenCalledTimes(2);
 
-  const rpcJson1 = rpcSend.firstCall.firstArg;
+  const rpcJson1 = rpcSend.mock.calls[0][0];
   expect(rpcJson1).toBe('{"id":1,"jsonrpc":"2.0","method":"hello","params":["world"]}');
-  const rpcJson2 = rpcSend.secondCall.firstArg;
+  const rpcJson2 = rpcSend.mock.calls[1][0];
   expect(rpcJson2).toBe('{"id":2,"jsonrpc":"2.0","method":"hello","params":["world"]}');
   await provider.disconnect();
 });

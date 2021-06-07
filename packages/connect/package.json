@@ -44,12 +44,10 @@
     "@types/jest": "^26.0.20",
     "@types/jsdom": "^16.2.7",
     "@types/mkdirp": "^1.0.1",
-    "@types/sinon": "^9.0.10",
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.21.0",
     "jest": "^27.0.0-next.9",
     "jsdom": "^16.5.1",
-    "sinon": "^9.2.3",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
   },
