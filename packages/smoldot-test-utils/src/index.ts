@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { SmoldotClient, SmoldotOptions } from 'smoldot';
+import { Smoldot, SmoldotClient, SmoldotOptions } from 'smoldot';
+import { JsonRpcObject } from '@polkadot/rpc-provider/types';
 import { jest } from '@jest/globals'
 
-// Temporary until we fix the exports in the typescript definitions for smoldot
-interface Smoldot {
-  start: (options: SmoldotOptions) => Promise<SmoldotClient>;
-}
-
-interface JsonRpcObject {
-  id?: number;
-  jsonrpc: string;
-}
-
+/** 
+ * SystemHealth is the type of the object in the `result` field of the JSON
+ * RPC responses from smoldot for the system_health RPC request.
+ *
+ * @remarks
+ *
+ * We define SystemHealth instead of using the Health type in
+ * interfaces/system/types in @polkadot/api because its more ergonomic to use:
+ * primitive booleans and numbers instead of the polkadotjs wrapped
+ * Codec implementations of those.
+ */
 export interface SystemHealth {
   isSyncing: boolean;
   peerCount: number;
@@ -64,7 +65,7 @@ type RpcResponder = (request: string) => string;
  */
 const healthyResponder = (requestJSON: string) => {
   const { id } = JSON.parse(requestJSON) as JsonRpcObject;
-  return systemHealthReponse(id!, { isSyncing: false, peerCount: 1, shouldHavePeers: true });
+  return systemHealthReponse(id, { isSyncing: false, peerCount: 1, shouldHavePeers: true });
 }
 
 /**
@@ -78,7 +79,7 @@ const healthyResponder = (requestJSON: string) => {
  */
 export const devChainHealthResponder = (requestJSON: string): string => {
   const { id } = JSON.parse(requestJSON) as JsonRpcObject;
-  return devChainHealthResponse(id!);
+  return devChainHealthResponse(id);
 }
 
 /**
@@ -112,7 +113,7 @@ export const customHealthResponder = (healthResponses: SystemHealth[]) => {
       throw new Error(NO_MORE_RESPONSES); 
     }
 
-    return systemHealthReponse(id!, health);
+    return systemHealthReponse(id, health);
   };
 }
 
