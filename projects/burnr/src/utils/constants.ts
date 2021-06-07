@@ -92,7 +92,9 @@ export const REMOTE_PROVIDERS: Record<string, LazyProvider> = {
       Promise.resolve(new WsProvider(endpoints.local)),
     transport: 'WsProvider',
   },
-  // DEACTIVATE LIVE NETWORKS
+  /* DEACTIVATE LIVE NETWORKS - This is for ensuring that there will not be any
+  ** problems and loss of funds on the burnr wallet with live networks
+  */
   // 'Polkadot-WsProvider': {
   //   description: 'Remote node hosted by W3F',
   //   id: 'Polkadot-WsProvider',
