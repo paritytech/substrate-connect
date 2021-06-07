@@ -173,8 +173,15 @@ const doNothing = () => {
   // Do nothing
 }
 
-// Creates a fake smoldot. Calls to send use `fakeRpcSend` to mimic the light
-// client behaviour
+/**
+ * mockSmoldot - creates a fake smoldot using the reponder and optional 
+ * healthResponder to orchestrate the responses it should reply with.
+ *
+ * @param responder - controls what responses to reply with for regular messages
+ * and subscription messages.
+ * @param healthResponder - controls what reponses to reply with for
+ * "system_health" RPC requests
+ */
 export const mockSmoldot = (responder: RpcResponder, healthResponder = healthyResponder): Smoldot => {
   return {
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
@@ -187,12 +194,22 @@ export const mockSmoldot = (responder: RpcResponder, healthResponder = healthyRe
   };
 };
 
-// Creates a spying `smoldot` that records calls to `json_rpc_send` in `rpcSpy`
-// and then uses `fakeRpcSend` to mimic the light client behaviour.
+/**
+ * spySmoldot - creates a fake smoldot using the reponder and optional 
+ * healthResponder to orchestrate the responses it should reply with that also
+ * takes a spy so that you can inspect the calls that are made internally
+ * to `sendJsonRpc`
+ *
+ * @param responder - controls what responses to reply with for regular messages
+ * and subscription messages.
+ * @param rpcSpy - a jest mock function to record the calls to `sendJsonRpc`
+ * @param healthResponder - controls what reponses to reply with for
+ * "system_health" RPC requests
+ */
 export const smoldotSpy = (responder: RpcResponder, rpcSpy: jest.MockedFunction<(rpc: string, chainIndex: number) => void>, healthResponder = healthyResponder): Smoldot => {
   return {
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
-      const processRequest = createRequestProcessor(options, responder, healthyResponder);
+      const processRequest = createRequestProcessor(options, responder, healthResponder);
       return Promise.resolve({
         terminate: doNothing,
         sendJsonRpc: (rpc: string, chainIndex: number) => {
