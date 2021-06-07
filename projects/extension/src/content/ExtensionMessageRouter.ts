@@ -5,7 +5,7 @@ import {
   ProviderMessage,
   extension
 } from '@substrate/connect-extension-protocol';
-import { debug } from '../utils';
+import { debug } from '../utils/debug';
 
 const CONTENT_SCRIPT_ORIGIN = 'content-script';
 const EXTENSION_PROVIDER_ORIGIN ='extension-provider';

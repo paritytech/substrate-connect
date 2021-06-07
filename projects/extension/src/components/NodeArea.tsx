@@ -1,11 +1,11 @@
 import React, { FunctionComponent } from 'react';
 import { Box, Typography, Divider } from '@material-ui/core';
 import { IconWeb3 } from '../components';
-import { NetworkName } from '../types/enums';
-import { capitalizeFirstLetter } from '../utils';
+import { NetworkTypes } from '../types';
+import { capitalizeFirstLetter } from '../utils/utils';
 
 interface Props {
-    network: NetworkName;
+    network: NetworkTypes;
 }
 
 const NodeArea: FunctionComponent<Props> = ({ network, children }) => (

@@ -3,8 +3,7 @@
 import { jest } from '@jest/globals';
 import { AppMediator } from './AppMediator';
 import { MockPort, MockConnectionManager } from '../mocks';
-import { JsonRpcResponse } from '../types'
-import { Statuses } from '../types/enums';
+import { JsonRpcResponse } from './types';
 
 function setupAppMediatorWithSubscription(
   am: AppMediator,
@@ -73,14 +72,14 @@ describe("Test AppMediator class", () => {
     expect(appMed.tabId).toBe(port.sender.tab.id);
     expect(appMed.subscriptions).toEqual([]);
     expect(appMed.requests).toEqual([]);
-    expect(appMed.state).toEqual(Statuses.connected);
+    expect(appMed.state).toEqual('connected');
   });
 
   test('Connected  with client and can send messages', () => {
     initFunc('test-app::westend', true);
     port.triggerMessage({ type: 'rpc', payload: '{ "id": 1 }'});
     expect(appMed.requests.length).toBe(1);
-    expect(appMed.state).toBe(Statuses.connected);
+    expect(appMed.state).toBe('connected');
   });
   
   test('Test associate', () => {
@@ -111,7 +110,7 @@ describe("Test AppMediator class", () => {
   test('Disconnect: happy path', () => {
     initFunc('test-app::westend', true);
     appMed.disconnect();
-    expect(appMed.state).toBe(Statuses.disconnected);
+    expect(appMed.state).toBe('disconnected');
     expect(spyManagerUnregisterApp).toHaveBeenCalled();
   });
 
@@ -204,21 +203,21 @@ describe("Test AppMediator class", () => {
     setupAppMediatorWithSubscription(appMed, port, 2, 2, spyPortPostMessage);
 
     port.triggerDisconnect();
-    expect(appMed.state).toBe(Statuses.disconnecting);
+    expect(appMed.state).toBe('disconnecting');
     let pendingRequests = appMed.cloneRequests();
     expect(pendingRequests.length).toBe(2);
 
     // First unsub repsonse
     const unsub1 = { jsonrpc:'2.0', id: pendingRequests[0].smoldotID, result: true };
     expect(appMed.processSmoldotMessage(unsub1)).toBe(true);
-    expect(appMed.state).toBe(Statuses.disconnecting);
+    expect(appMed.state).toBe('disconnecting');
     pendingRequests = appMed.cloneRequests();
     expect(pendingRequests.length).toBe(1);
 
     // Second unsub repsonse
     const unsub2 = { jsonrpc:'2.0', id: pendingRequests[0].smoldotID, result: true };
     expect(appMed.processSmoldotMessage(unsub2)).toBe(true);
-    expect(appMed.state).toBe(Statuses.disconnected);
+    expect(appMed.state).toBe('disconnected');
     pendingRequests = appMed.cloneRequests();
     expect(pendingRequests.length).toBe(0);
   });

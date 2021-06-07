@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import EventEmitter from 'eventemitter3';
 import {
   MessageToManager,
   MessageFromManager
 } from '@substrate/connect-extension-protocol';
 import { 
+  AppState,
   ConnectionManagerInterface,
   JsonRpcRequest,
   JsonRpcResponse,
@@ -11,9 +13,7 @@ import {
   MessageIDMapping, 
   StateEmitter,
   SubscriptionMapping
-} from '../types';
-
-import { Statuses } from '../types/enums';
+} from './types';
 
 export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   readonly #name: string;
@@ -24,7 +24,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   readonly #url: string | undefined;
   readonly #manager: ConnectionManagerInterface;
   #smoldotName: string | undefined  = undefined;
-  #state: Statuses = Statuses.connected;
+  #state: AppState = 'connected';
   readonly subscriptions: SubscriptionMapping[];
   readonly requests: MessageIDMapping[];
   highestUAppRequestId = 0;
@@ -64,7 +64,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     return this.#url;
   }
 
-  get state(): Statuses {
+  get state(): AppState {
     return this.#state;
   }
 
@@ -85,20 +85,20 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   #checkForDisconnected = (): void => {
       if (this.requests.length === 0) {
         // All our unsubscription messages have been replied to
-        this.#state = Statuses.disconnected;
+        this.#state = 'disconnected';
         this.#manager.unregisterApp(this, this.#smoldotName as string);
       }
   }
 
   processSmoldotMessage(message: JsonRpcResponse): boolean {
-    if (this.#state === Statuses.disconnected) {
+    if (this.#state === 'disconnected') {
       // Shouldn't happen - we remove the AppMediator from the smoldot's apps
       // when we disconnect (below).
       console.error(`Asked a disconnected UApp (${this.name}) to process a message from ${this.#smoldotName as string}`);
       return false;
     }
 
-    if (this.#state === Statuses.disconnecting) {
+    if (this.#state === 'disconnecting') {
       // Handle responses to our unsubscription messages
       const request = this.requests.find(r => r.smoldotID === message.id);
       if (request !== undefined) {
@@ -228,13 +228,13 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   };
 
   #handleDisconnect = (): void => {
-    if (this.#state === Statuses.disconnecting) {
-      throw new Error('Cannot disconnect - currently disconnecting');
-    } else if (this.#state === Statuses.disconnected) {
+    if (this.#state === 'disconnecting') {
+      throw new Error('Cannot disconnect - already disconnecting / disconnected');
+    } else if (this.#state === 'disconnected') {
       throw new Error('Cannot disconnect - already disconnected');
     }
 
-    this.#state = Statuses.disconnecting;
+    this.#state = 'disconnecting';
     this.subscriptions.forEach(this.#sendUnsubscribe);
     // remove all the subscriptions
     this.subscriptions.splice(0, this.subscriptions.length);

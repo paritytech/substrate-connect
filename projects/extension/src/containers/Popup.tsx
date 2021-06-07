@@ -6,13 +6,14 @@ import * as material from '@material-ui/core';
 import GlobalFonts from '../fonts/fonts';
 import { light, MenuButton, Tab } from '../components';
 import { Background } from '../background/';
-import { debug } from '../utils';
-import { State, TabInterface, AppState } from '../types';
+import { debug } from '../utils/debug';
+import { TabInterface } from '../types';
+import { State, AppInfo } from '../background/types';
 import { ConnectionManager } from 'background/ConnectionManager';
 
 const { createMuiTheme, ThemeProvider, Box, Divider } = material;
 
-const createTab = (a: AppState, url: string | undefined): TabInterface => {
+const createTab = (a: AppInfo, url: string | undefined): TabInterface => {
   return {
     tabId: a.tabId,
     url: url,
