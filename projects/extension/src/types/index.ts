@@ -51,7 +51,7 @@ export interface State {
   apps: AppState[];
 }
 
-interface AppState {
+export interface AppState {
   name: string;
   tabId: number;
   networks: NetworkState[];
@@ -73,7 +73,7 @@ export interface SubscriptionMapping {
 }
 
 export interface StateEvents {
-  stateChanged: void;
+  stateChanged: State;
 }
 
 export type StateEmitter = StrictEventEmitter<EventEmitter, StateEvents>;

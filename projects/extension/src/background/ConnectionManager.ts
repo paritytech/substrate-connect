@@ -193,7 +193,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     sm.removeApp(app);
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
-    this.emit('stateChanged');
+    this.emit('stateChanged', this.getState());
   }
 
 
