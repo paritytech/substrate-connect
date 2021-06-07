@@ -13,7 +13,7 @@
     "clean": "rm -rf dist/",
     "build": "tsc",
     "test": "echo \"No tests for smoldot-test-utils\"",
-    "lint": "echo \"No lint yet for smoldot-test-utils: actual command -> yarn eslint . --ext .js,.ts\"",
+    "lint": "eslint . --ext .js,.ts",
     "postinstall": "yarn build"
   },
   "dependencies": {

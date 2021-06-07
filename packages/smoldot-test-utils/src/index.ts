@@ -1,13 +1,17 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { SmoldotClient, SmoldotOptions } from 'smoldot';
 import { jest } from '@jest/globals'
+
+// Temporary until we fix the exports in the typescript definitions for smoldot
+interface Smoldot {
+  start: (options: SmoldotOptions) => Promise<SmoldotClient>;
+}
+
+interface JsonRpcObject {
+  id?: number;
+  jsonrpc: string;
+}
 
 export interface SystemHealth {
   isSyncing: boolean;
@@ -59,8 +63,8 @@ type RpcResponder = (request: string) => string;
  * @returns a JSON string
  */
 const healthyResponder = (requestJSON: string) => {
-  const id = JSON.parse(requestJSON).id;
-  return systemHealthReponse(id, { isSyncing: false, peerCount: 1, shouldHavePeers: true });
+  const { id } = JSON.parse(requestJSON) as JsonRpcObject;
+  return systemHealthReponse(id!, { isSyncing: false, peerCount: 1, shouldHavePeers: true });
 }
 
 /**
@@ -72,9 +76,9 @@ const healthyResponder = (requestJSON: string) => {
  * @param requestJSON
  * @returns a JSON string
  */
-export const devChainHealthResponder = (requestJSON: string) => {
-  const id = JSON.parse(requestJSON).id;
-  return devChainHealthResponse(id);
+export const devChainHealthResponder = (requestJSON: string): string => {
+  const { id } = JSON.parse(requestJSON) as JsonRpcObject;
+  return devChainHealthResponse(id!);
 }
 
 /**
@@ -84,8 +88,8 @@ export const devChainHealthResponder = (requestJSON: string) => {
  * @param requestJSON
  * @returns a JSON string
  */
-export const erroringResponder = (requestJSON: string) => {
-  const id = JSON.parse(requestJSON).id;
+export const erroringResponder = (requestJSON: string): string => {
+  const { id } = JSON.parse(requestJSON) as JsonRpcObject;
   return `{ "id": ${id}, "jsonrpc": "2.0", "error": {"code": 666, "message": "boom!" } }`;
 }
 
@@ -101,19 +105,20 @@ const NO_MORE_RESPONSES = "json_rpc_callback was called but there are no mock re
 
 // Orchestrates a sequence of has peers / has no peers responses
 export const customHealthResponder = (healthResponses: SystemHealth[]) => {
-  return (requestJSON: string) => {
-    const id = JSON.parse(requestJSON).id;
+  return (requestJSON: string): string => {
+    const { id } = JSON.parse(requestJSON) as JsonRpcObject;
     const health = healthResponses.shift();
     if (!health) { 
       throw new Error(NO_MORE_RESPONSES); 
     }
-    return systemHealthReponse(id, health);
+
+    return systemHealthReponse(id!, health);
   };
 }
 
 // Orchestrates an `RpcResponder` with a queue of mock reponses to respond with.
 export const respondWith = (jsonResponses: string[]) => {
-  return (_: string) => {
+  return (_: string): string => {
     const mockResponse = jsonResponses.shift();
     if (!mockResponse) { 
       throw new Error(NO_MORE_RESPONSES); 
@@ -157,17 +162,21 @@ const fakeRpcSend = (options: SmoldotOptions, responder: RpcResponder, healthRes
   };
 }
 
+const doNothing = () => {
+  // Do nothing
+}
+
 // Creates a fake smoldot. Calls to send use `fakeRpcSend` to mimic the light
 // client behaviour
-export const mockSmoldot = (responder: RpcResponder, healthResponder = healthyResponder) => {
+export const mockSmoldot = (responder: RpcResponder, healthResponder = healthyResponder): Smoldot => {
   return {
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
       return Promise.resolve({
-        terminate: () => {},
+        terminate: doNothing,
         // fake the async reply by using the reponder to format
         // a reply via options.jsonRpcCallback
         sendJsonRpc: fakeRpcSend(options, responder, healthResponder),
-        cancelAll: () => {}
+        cancelAll: doNothing
       });
     }
   };
@@ -175,18 +184,18 @@ export const mockSmoldot = (responder: RpcResponder, healthResponder = healthyRe
 
 // Creates a spying `smoldot` that records calls to `json_rpc_send` in `rpcSpy`
 // and then uses `fakeRpcSend` to mimic the light client behaviour.
-export const smoldotSpy = (responder: RpcResponder, rpcSpy: jest.MockedFunction<(rpc: string, chainIndex: number) => void>, healthResponder = healthyResponder) => {
+export const smoldotSpy = (responder: RpcResponder, rpcSpy: jest.MockedFunction<(rpc: string, chainIndex: number) => void>, healthResponder = healthyResponder): Smoldot => {
   return {
     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
       return Promise.resolve({
-        terminate: () => {},
+        terminate: doNothing,
         sendJsonRpc: (rpc: string, chainIndex: number) => {
           // record the message call
           rpcSpy(rpc, chainIndex);
           // fake the async reply using the responder
           fakeRpcSend(options, responder, healthResponder)(rpc, chainIndex)
         },
-        cancelAll: () => {}
+        cancelAll: doNothing
       });
     }
   };
