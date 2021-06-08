@@ -86,5 +86,46 @@ test('adding and removing apps changes state', async () => {
   manager.disconnectTab(42);
   expect(handler).toHaveBeenCalledTimes(2);
   expect(manager.getState()).toEqual({ apps: [ ] });
+
+  // Connect 2 apps on the same network and 2nd one on another network
+  // in order to test disconnectAll functionality
+  handler.mockClear();
+  // first app connects to network
+  connectApp(manager, 1, 'test-app-1', 'westend');
+  expect(handler).toHaveBeenCalledTimes(1);
+  expect(manager.getState()).toEqual({
+    apps: [
+      { 
+        name: 'test-app-1',
+        tabId: 1,
+        networks: [ { name: 'westend' } ]
+      }
+    ]
+  });
+
+  // second app connects to same network
+  handler.mockClear();
+  connectApp(manager, 2, 'test-app-2', 'westend');
+  connectApp(manager, 2, 'test-app-2', 'kusama');
+  expect(handler).toHaveBeenCalledTimes(2);
+  expect(manager.getState()).toEqual({
+    apps: [
+      { 
+        name: 'test-app-1',
+        tabId: 1,
+        networks: [ { name: 'westend' } ]
+      },
+      { 
+        name: 'test-app-2',
+        tabId: 2,
+        networks: [ { name: 'westend' }, { name: 'kusama' }  ]
+      }
+    ]
+  });
+  handler.mockClear();
+  // disconnect all apps;
+  manager.disconnectAll();
+  expect(handler).toHaveBeenCalledTimes(3);
+  expect(manager.getState()).toEqual({ apps: [] });
   manager.shutdown();
 });
