@@ -101,8 +101,8 @@ export class SmoldotProvider implements ProviderInterface {
   healthPingerInterval = CONNECTION_STATE_PINGER_INTERVAL;
 
    /**
-   * @param string -  chainSpec  The chainSpec for the WASM client
-   * @param any    -  sm         Optional (only used for testing) defaults to the actual smoldot module
+   * @param chainSpec - The chainSpec for the WASM client
+   * @param sm - (only used for testing) defaults to the actual smoldot module
    */
   //eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
   public constructor(chainSpec: string, sm?: any) {
@@ -293,7 +293,7 @@ export class SmoldotProvider implements ProviderInterface {
 
   /**
    * Whether the node is connected or not.
-   * @returns boolean true if connected
+   * @returns true if connected
    */
   public get isConnected (): boolean {
     return this.#isConnected;
