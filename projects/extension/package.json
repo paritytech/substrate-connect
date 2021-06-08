@@ -47,6 +47,7 @@
     "eslint": "^7.20.0",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-tsdoc": "^0.2.14",
     "file-loader": "^6.2.0",
     "html-minimizer-webpack-plugin": "^2.1.0",
     "jest": "^27.0.0-next.9",
@@ -79,6 +80,7 @@
     "root": true,
     "rules": {
       "@typescript-eslint/restrict-template-expressions": 0,
+      "tsdoc/syntax": "warn",
       "react/prop-types": 0,
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
@@ -92,7 +94,8 @@
     },
     "plugins": [
       "@typescript-eslint",
-      "react-hooks"
+      "react-hooks",
+      "eslint-plugin-tsdoc"
     ],
     "parserOptions": {
       "project": [

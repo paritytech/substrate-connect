@@ -1,76 +1,119 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* TODO(nik): Fix smoldot definition (see: https://github.com/paritytech/substrate-connect/blob/3350cdff9c4c294393160189816168a93c983f79/projects/extension/src/background/ConnectionManager.ts#L202)
+** eslints disable below seems to be due to smoldot definition */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import * as React from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import * as material from '@material-ui/core';
 import GlobalFonts from '../fonts/fonts';
-import { light, Tab, MenuButton } from '../components';
+import { light, MenuButton, Tab } from '../components';
 import { Background } from '../background/';
 import { debug } from '../utils/debug';
 import { TabInterface } from '../types';
-import { AppMediator } from '../background/AppMediator';
+import { State, AppInfo } from '../background/types';
+import { ConnectionManager } from 'background/ConnectionManager';
 
 const { createMuiTheme, ThemeProvider, Box, Divider } = material;
 
-const Popup: React.FunctionComponent = () => {
-  const [activeTab, setActiveTab] = React.useState<React.ReactElement | undefined>();
-  const [rTabs, setRTabs] = React.useState<React.ReactElement[]>([]);
-  const appliedTheme = createMuiTheme(light);
-  const [apps, setApps] = React.useState<AppMediator[]>([]);
+const createTab = (a: AppInfo, url: string | undefined): TabInterface => {
+  return {
+    tabId: a.tabId,
+    url: url,
+    uApp: {
+      networks: a.networks.map(b => b.name),
+      name: a.name,
+      enabled: true
+    }
+  };
+}
 
-  React.useEffect((): void => {
+const Popup: FunctionComponent = () => {
+  const [activeTab, setActiveTab] = useState<TabInterface | undefined>();
+  const [apps, setApps] = useState<TabInterface[]>([]);
+  const appliedTheme = createMuiTheme(light);
+  const [manager, setManager] = useState<ConnectionManager | undefined>();
+  const [browserTabs, setBrowserTabs] = useState<chrome.tabs.Tab[]>();
+  const [appsInitState, setAppsInitState] = useState<State>();
+
+  // We gather all needed information (from manager[apps] and browserTabs)
+  useEffect((): void => {
+    // retrieve all information from background page and assign to local state
     chrome.runtime.getBackgroundPage(backgroundPage => {
       const bg = backgroundPage as Background;
-      bg.manager && setApps(bg.manager.apps);
-
-      // TODO: change the state when stateChanged occurs
-      bg.manager.on('stateChanged', () => {
-        debug('CONNECTION MANAGER STATE CHANGED', bg.manager.getState());
-      });
+      if (bg.manager) {
+        setManager(bg.manager);
+        setAppsInitState(bg.manager.getState());
+      }
     });
+    // retrieve open tabs and assign to local state
+    chrome.tabs.query({"currentWindow": true, }, tabs => {
+      setBrowserTabs(tabs);
+    })
   }, []);
 
-  React.useEffect((): void => {
-    const gatherTabs: TabInterface[] = [];
-    const restTabs: React.ReactElement[] = [];
-    chrome.tabs.query({"currentWindow": true, }, tabs => {
-      tabs.forEach(t => {
-        // TODO: This could be migrated to backend - so that no transformation is needed in Popup
-        apps.find(({ tabId, smoldotName, appName, }) => {
-          if (tabId === t.id) {
-            gatherTabs.push({
-              isActive: t.active,
-              tabId: t.id,
-              url: t.url,
-              uApp: {
-                networks: [smoldotName],
-                name: appName,
-                enabled: true
-              }
-            })
+  useEffect((): void => {
+    /**
+     * Iterates through the tabs in order to identify uApps and set them with all info needed
+     * in local state. In addition identify which App is active for showing them in respectful
+     * position in the extension
+     * @param browserTabs - The tabs that are open when extension popup windows open (set on previous useEffect)
+     * @param appState - The apps that are retrieved from background through getState() 
+    **/ 
+    const setExtensionApps = (
+      browserTabs: chrome.tabs.Tab[] | undefined,
+      appState: State | undefined
+      ) => {
+      const ti: TabInterface[] = [] as TabInterface[];
+      browserTabs?.forEach((t: chrome.tabs.Tab) => {
+        appState?.apps.find(a => {
+          if (t.id === a.tabId) {
+            if (t.active) {
+              setActiveTab(createTab(a, t.url));
+            } else {
+              ti.push(createTab(a, t.url));
+            }
           }
-        })
+        });
       });
-      gatherTabs.forEach(t => {
-        (t.isActive) ? setActiveTab(<Tab current tab={t} />) : restTabs.push(<Tab key={t.tabId} tab={t}/>);
-      })
-      setRTabs(restTabs);
+      setApps(ti);
+    }
+
+    setExtensionApps(browserTabs, appsInitState);
+
+    manager?.on('stateChanged', state => {
+      debug('CONNECTION MANAGER APP STATE CHANGED');
+      setExtensionApps(browserTabs, state);
     });
-  }, [apps]);
+}, [appsInitState, browserTabs, manager]);
+
+  /**
+   * If "Stop all connections" button is pressed then disconnectAll 
+   * function will be called to disconnect all apps.
+  **/ 
+  const onDisconnectAll = (): void => {
+    /* TODO(nik): Fix smoldot definition (see: https://github.com/paritytech/substrate-connect/blob/3350cdff9c4c294393160189816168a93c983f79/projects/extension/src/background/ConnectionManager.ts#L202)
+    ** eslint disable below seems to be due to smoldot definition */ 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    manager?.disconnectAll();
+  }
+
+  const goToOptions = (): void => {
+    chrome.runtime.openOptionsPage();
+  }
 
   return (
     <ThemeProvider theme={appliedTheme}>
       <Box width={'340px'} mb={0.1}>
         <GlobalFonts />
-        {activeTab ? activeTab : <Tab current />}
+        {activeTab ? <Tab manager={manager} current tab={activeTab} setActiveTab={setActiveTab} /> : <Tab manager={manager} current />}
         <Box marginY={1}>
-          {rTabs.map(r => r)}
+          {apps.map(t => <Tab manager={manager} key={t.tabId} tab={t}/>)}
         </Box>
         <Divider />
-        <MenuButton fullWidth onClick={() => chrome.runtime.openOptionsPage()}>My Networks</MenuButton>
+        <MenuButton fullWidth onClick={goToOptions}>My Networks</MenuButton>
         <MenuButton fullWidth>About</MenuButton>
         <Divider />
-        <MenuButton fullWidth className='danger'>Stop all connections</MenuButton>
+        <MenuButton fullWidth className='danger' onClick={onDisconnectAll}>Stop all connections</MenuButton>
       </Box>
     </ThemeProvider>
   );
