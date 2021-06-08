@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, SetStateAction, Dispatch } from 'react';
 import { Typography, Box, IconButton, createStyles, makeStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { grey } from '@material-ui/core/colors';
@@ -11,6 +11,7 @@ interface TabProps {
   manager?: ConnectionManager;
   current?: boolean;
   tab?: TabInterface;
+  setActiveTab?: Dispatch<SetStateAction<TabInterface | undefined>>;
 }
 
 const useStyles = makeStyles((theme) =>
@@ -28,12 +29,24 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-const Tab: FunctionComponent<TabProps> = ({ manager, tab, current=false }) => {
+const Tab: FunctionComponent<TabProps> = ({ manager, tab, current=false, setActiveTab }) => {
   const classes = useStyles();
+  /**
+     * @summary If Tab that initiated this function has a tabId (check for validity) then disconnectTab 
+     * function will be called to disconnect the tab. At the same time, in case the tan is marked as current
+     * (meaning opened at the same window) - it is ensured that it will be removed from UI through passing setActiveTab
+     * Dispatcher.
+    **/ 
   const onDisconnect = (): void => {
-    // TODO: Fix smoldot definition (see: https://github.com/paritytech/substrate-connect/blob/3350cdff9c4c294393160189816168a93c983f79/projects/extension/src/background/ConnectionManager.ts#L202)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    tab && tab.tabId && manager?.disconnectTab(tab.tabId);
+    if (tab && tab.tabId) {
+      /* TODO(nik): Fix smoldot definition (see: https://github.com/paritytech/substrate-connect/blob/3350cdff9c4c294393160189816168a93c983f79/projects/extension/src/background/ConnectionManager.ts#L202)
+      ** eslint disable below seems to be due to smoldot definition */ 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      manager?.disconnectTab(tab.tabId);
+      if (setActiveTab && current) {
+        setActiveTab(undefined);
+      }
+    }
   }
 
   return (
