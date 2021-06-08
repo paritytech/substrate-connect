@@ -3,13 +3,13 @@ import { Smoldot, SmoldotClient, SmoldotOptions } from 'smoldot';
 import { JsonRpcObject } from '@polkadot/rpc-provider/types';
 import { jest } from '@jest/globals'
 
-/** 
+/**
  * SystemHealth is the type of the object in the `result` field of the JSON
- * RPC responses from smoldot for the system_health RPC request.
+ * RPC responses from smoldot for the "system_health" RPC request.
  *
  * @remarks
  *
- * We define SystemHealth instead of using the Health type in
+ * We define `SystemHealth` instead of using the `Health` type in
  * interfaces/system/types in \@polkadot/api because its more ergonomic to use:
  * primitive booleans and numbers instead of the polkadotjs wrapped
  * Codec implementations of those.
@@ -42,7 +42,10 @@ const systemHealthReponse = (id: number, health: SystemHealth) => {
  *
  * @remarks
  *
- * Dev chains never have peers
+ * If you're creating a temporary brand new chain locally, for testing purposes,
+ * then you will be the only peer that exists for that chain. In which case
+ * shouldHavePeers will be false to indicate that it's normal that peers is
+ * equal to 0.
  */
 const devChainHealthResponse = (id: number) => {
   return systemHealthReponse(id, { isSyncing: true, peerCount: 0, shouldHavePeers: false});
@@ -53,7 +56,7 @@ const devChainHealthResponse = (id: number) => {
  * a JSON string representing an RPC request and uses it to create a JSON RPC
  * response.
  */
-type RpcResponder = (request: string) => string;
+type RpcResponder = (requestJSON: string) => string;
 
 /**
  * healthyResponder - takes a JSON request that is expected to look like a valid
@@ -99,30 +102,45 @@ export const erroringResponder = (requestJSON: string): string => {
  * Orchestrators - these are higher order factory functions take the
  * definitions of a sequence of reponses to respond with and returns
  * `RpcResponder` function that when called will return a reponse matching what
- * was supplied one-by-one
+ * was supplied one-by-one each time it is called until there are no more 
+ * responses.
  */
 
 const NO_MORE_RESPONSES = "json_rpc_callback was called but there are no mock responses left to respond with";
 
-// Orchestrates a sequence of has peers / has no peers responses
+/**
+ * customHealthResponder - takes a sequence of SystemHealth info and returns
+ * a function that when called with valid RPC request strings will return
+ * "system_health" responses until it has iterated all the supplied infos.
+ *
+ * @param healthResponses - The sequence of health infos to respond with
+ * @returns an RpcResponder
+ */
 export const customHealthResponder = (healthResponses: SystemHealth[]) => {
   return (requestJSON: string): string => {
     const { id } = JSON.parse(requestJSON) as JsonRpcObject;
     const health = healthResponses.shift();
-    if (!health) { 
-      throw new Error(NO_MORE_RESPONSES); 
+    if (!health) {
+      throw new Error(NO_MORE_RESPONSES);
     }
 
     return systemHealthReponse(id, health);
   };
 }
 
-// Orchestrates an `RpcResponder` with a queue of mock reponses to respond with.
+/**
+ * respondWith - takes a sequence of JSON RPC response strings and returns
+ * a function that when called with valid RPC request strings will return
+ * the responses until it has iterated them all.
+ *
+ * @param jsonResponses - The sequence of responses
+ * @returns an RpcResponder
+ */
 export const respondWith = (jsonResponses: string[]) => {
   return (_: string): string => {
     const mockResponse = jsonResponses.shift();
-    if (!mockResponse) { 
-      throw new Error(NO_MORE_RESPONSES); 
+    if (!mockResponse) {
+      throw new Error(NO_MORE_RESPONSES);
     }
     return mockResponse;
   };
@@ -130,12 +148,12 @@ export const respondWith = (jsonResponses: string[]) => {
 
 
 /**
- * Fakes - these are the actual mock / spy implementations you will 
+ * Fakes - these are the actual mock / spy implementations you will
  * create to use in place of a real instance of smoldot
  */
 
 
-/** 
+/**
  * createRequestProcessor - returns a function that mimics the behaviour of the
  * WASM light client by deferring a call to `jsonRpcCallback` after it is
  * called which returns the response returned by the supplied `responder`.
@@ -174,7 +192,7 @@ const doNothing = () => {
 }
 
 /**
- * mockSmoldot - creates a fake smoldot using the reponder and optional 
+ * mockSmoldot - creates a fake smoldot using the reponder and optional
  * healthResponder to orchestrate the responses it should reply with.
  *
  * @param responder - controls what responses to reply with for regular messages
@@ -195,7 +213,7 @@ export const mockSmoldot = (responder: RpcResponder, healthResponder = healthyRe
 };
 
 /**
- * spySmoldot - creates a fake smoldot using the reponder and optional 
+ * spySmoldot - creates a fake smoldot using the reponder and optional
  * healthResponder to orchestrate the responses it should reply with that also
  * takes a spy so that you can inspect the calls that are made internally
  * to `sendJsonRpc`
