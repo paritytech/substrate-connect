@@ -11,7 +11,7 @@
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist",
     "pretest": "yarn clean && tsc",
-    "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --coverage /dist",
+    "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage /dist",
     "prebuild": "yarn clean && yarn downloadSpecs",
     "build": "webpack --config webpack.prod.js && zip -r ./dist/substrate-connect.zip ./dist/*",
     "dev": "yarn run prebuild && webpack --node-env development --config webpack.dev.js",
@@ -71,7 +71,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hot-loader": "^4.13.0",
-    "smoldot": "^0.2.0",
+    "smoldot": "^0.2.4",
     "strict-event-emitter-types": "^2.0.0",
     "styled-components": "^5.2.1"
   },
