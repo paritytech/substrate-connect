@@ -53,11 +53,11 @@ const Popup: FunctionComponent = () => {
 
   useEffect((): void => {
     /**
-     * @summary Iterates through the tabs in order to identify uApps and set them with all info needed
+     * Iterates through the tabs in order to identify uApps and set them with all info needed
      * in local state. In addition identify which App is active for showing them in respectful
      * position in the extension
-     * @param browserTabs The tabs that are open when extension popup windows open (set on previous useEffect)
-     * @param appState The apps that are retrieved from background through getState() 
+     * @param browserTabs - The tabs that are open when extension popup windows open (set on previous useEffect)
+     * @param appState - The apps that are retrieved from background through getState() 
     **/ 
     const setExtensionApps = (
       browserTabs: chrome.tabs.Tab[] | undefined,
@@ -87,7 +87,7 @@ const Popup: FunctionComponent = () => {
 }, [appsInitState, browserTabs, manager]);
 
   /**
-   * @summary If "Stop all connections" button is pressed then disconnectAll 
+   * If "Stop all connections" button is pressed then disconnectAll 
    * function will be called to disconnect all apps.
   **/ 
   const onDisconnectAll = (): void => {

@@ -83,7 +83,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   }
 
   /**
-   * @summary disconnectTab disconnects all instances of {@link AppMediator} connected
+   * disconnectTab disconnects all instances of {@link AppMediator} connected
    * from the supplied tabId
    *
    * @param tabId - the id of the tab to disconnect
@@ -93,7 +93,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   }
 
   /**
-   * @summary disconnectTab disconnects all instances of {@link AppMediator} connected
+   * disconnectAll disconnects all instances of {@link AppMediator} connected
    * for all tabs
    */
   disconnectAll(): void {
@@ -171,7 +171,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * messages and disconnected to fully unregister itself.
    *
    * @param app - The app
-   * @param smoldotName = The name of the network the app was connected to.
+   * @param smoldotName - The name of the network the app was connected to.
    */
   unregisterApp(app: AppMediator, smoldotName: string): void {
     const sm = this.#smoldots.find(s => s.name === smoldotName);

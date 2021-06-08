@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) =>
 const Tab: FunctionComponent<TabProps> = ({ manager, tab, current=false, setActiveTab }) => {
   const classes = useStyles();
   /**
-     * @summary If Tab that initiated this function has a tabId (check for validity) then disconnectTab 
+     * If Tab that initiated this function has a tabId (check for validity) then disconnectTab 
      * function will be called to disconnect the tab. At the same time, in case the tan is marked as current
      * (meaning opened at the same window) - it is ensured that it will be removed from UI through passing setActiveTab
      * Dispatcher.
