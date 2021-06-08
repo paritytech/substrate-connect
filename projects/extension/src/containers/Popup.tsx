@@ -51,7 +51,7 @@ const Popup: FunctionComponent = () => {
     })
   }, []);
 
-  useEffect(() => {
+  useEffect((): void => {
     /**
      * @summary Iterates through the tabs in order to identify uApps and set them with all info needed
      * in local state. In addition identify which App is active for showing them in respectful
@@ -86,6 +86,21 @@ const Popup: FunctionComponent = () => {
     });
 }, [appsInitState, browserTabs, manager]);
 
+  /**
+   * @summary If "Stop all connections" button is pressed then disconnectAll 
+   * function will be called to disconnect all apps.
+  **/ 
+  const onDisconnectAll = (): void => {
+    /* TODO(nik): Fix smoldot definition (see: https://github.com/paritytech/substrate-connect/blob/3350cdff9c4c294393160189816168a93c983f79/projects/extension/src/background/ConnectionManager.ts#L202)
+    ** eslint disable below seems to be due to smoldot definition */ 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    manager?.disconnectAll();
+  }
+
+  const goToOptions = (): void => {
+    chrome.runtime.openOptionsPage();
+  }
+
   return (
     <ThemeProvider theme={appliedTheme}>
       <Box width={'340px'} mb={0.1}>
@@ -95,10 +110,10 @@ const Popup: FunctionComponent = () => {
           {apps.map(t => <Tab manager={manager} key={t.tabId} tab={t}/>)}
         </Box>
         <Divider />
-        <MenuButton fullWidth onClick={() => chrome.runtime.openOptionsPage()}>My Networks</MenuButton>
+        <MenuButton fullWidth onClick={goToOptions}>My Networks</MenuButton>
         <MenuButton fullWidth>About</MenuButton>
         <Divider />
-        <MenuButton fullWidth className='danger'>Stop all connections</MenuButton>
+        <MenuButton fullWidth className='danger' onClick={onDisconnectAll}>Stop all connections</MenuButton>
       </Box>
     </ThemeProvider>
   );

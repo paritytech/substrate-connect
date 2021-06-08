@@ -83,26 +83,21 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   }
 
   /**
-   * disconnectTab disconnects all instances of {@link AppMediator} connected
+   * @summary disconnectTab disconnects all instances of {@link AppMediator} connected
    * from the supplied tabId
    *
    * @param tabId - the id of the tab to disconnect
    */
   disconnectTab(tabId: number): void {
-    this.#apps.filter(a => a.tabId && a.tabId === tabId).forEach(a => {
-      a.disconnect();
-    });
+    this.#apps.filter(a => a.tabId && a.tabId === tabId).forEach(a => a.disconnect());
   }
 
   /**
-   * disconnectTab disconnects all instances of {@link AppMediator} connected
+   * @summary disconnectTab disconnects all instances of {@link AppMediator} connected
    * for all tabs
    */
-  // TODO(nik): add test for this functionality
   disconnectAll(): void {
-    this.#apps.forEach(a => {
-      a.disconnect();
-    });
+    this.#apps.filter(a => a).forEach(a => a.disconnect());
   }
 
   /**
