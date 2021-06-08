@@ -15,6 +15,7 @@ import {
   smoldotSpy,
   respondWith
 } from '@substrate/smoldot-test-utils';
+import { jest } from '@jest/globals';
 
 const EMPTY_CHAIN_SPEC = '{}';
 
@@ -134,13 +135,13 @@ test('emits connect and never emits disconnect for development chain', async () 
 test('send formats JSON RPC request correctly', async () => {
   // we don't really care what the reponse is
   const responses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
-  const rpcSend = jest.fn();
+  const rpcSend = jest.fn() as jest.MockedFunction<(rpc: string, chainIndex: number) => void>;
   const ss = smoldotSpy(respondWith(responses), rpcSend);
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ss);
 
   await provider.connect();
   const reply = await provider.send('hello', [ 'world' ]);
-  expect(rpcSend).toHaveBeenCalledWith('{"id":1,"jsonrpc":"2.0","method":"hello","params":["world"]}');
+  expect(rpcSend).toHaveBeenCalledWith('{"id":1,"jsonrpc":"2.0","method":"hello","params":["world"]}', 0);
   await provider.disconnect();
 });
 
@@ -149,7 +150,7 @@ test('sending twice uses new id', async () => {
     '{ "id": 1, "jsonrpc": "2.0", "result": "success" }',
     '{ "id": 2, "jsonrpc": "2.0", "result": "success" }'
   ];
-  const rpcSend = jest.fn();
+  const rpcSend = jest.fn() as jest.MockedFunction<(rpc: string, chainIndex: number) => void>;
   const ss = smoldotSpy(respondWith(responses), rpcSend);
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ss);
 
