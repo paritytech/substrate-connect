@@ -6,21 +6,8 @@ import { AppMediator } from './AppMediator';
 import { SmoldotMediator } from './SmoldotMediator';
 import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
-import { StateEmitter } from './types';
+import { StateEmitter, State } from './types';
 import { Network } from '../types';
-
-interface NetworkState {
-  name: string;
-}
-
-interface AppState {
-  name: string;
-  tabId: number;
-  networks: NetworkState[];
-}
-interface State {
-  apps: AppState[];
-}
 
 /**
  * ConnectionManager is the main class involved in managing connections from
@@ -106,6 +93,14 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   }
 
   /**
+   * disconnectAll disconnects all instances of {@link AppMediator} connected
+   * for all tabs
+   */
+  disconnectAll(): void {
+    this.#apps.filter(a => a).forEach(a => a.disconnect());
+  }
+
+  /**
    * addApp registers a new app to be tracked by the background.
    *
    * @param port - a port for a fresh connection that was made to the background
@@ -119,8 +114,13 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       const newApp = new AppMediator(port, this as ConnectionManagerInterface)
       if (newApp.associate()) {
         this.#apps.push(newApp);
-        newApp.on('stateChanged', () => this.emit('stateChanged'));
-        this.emit('stateChanged');
+        /* TODO(nik): Test the newApp emit based on the quote: "we actually dont ever emit the stateChanged 
+        ** even in the AppMediator any more ... I removed that when I removed the associate message:
+        ** https://github.com/paritytech/substrate-connect/pull/254
+        ** so maybe we can simplify by not having the AppMediator emit any events
+        */
+        newApp.on('stateChanged', () => this.emit('stateChanged', this.getState()));
+        this.emit('stateChanged', this.getState());
       }
     }
   }
@@ -171,7 +171,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * messages and disconnected to fully unregister itself.
    *
    * @param app - The app
-   * @param smoldotName = The name of the network the app was connected to.
+   * @param smoldotName - The name of the network the app was connected to.
    */
   unregisterApp(app: AppMediator, smoldotName: string): void {
     const sm = this.#smoldots.find(s => s.name === smoldotName);
@@ -182,7 +182,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     sm.removeApp(app);
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
-    this.emit('stateChanged');
+    this.emit('stateChanged', this.getState());
   }
 
 

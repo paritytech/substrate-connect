@@ -46,6 +46,7 @@
     "@types/mkdirp": "^1.0.1",
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.21.0",
+    "eslint-plugin-tsdoc": "^0.2.14",
     "jest": "^27.0.0-next.9",
     "jsdom": "^16.5.1",
     "ts-node": "^9.1.1",
@@ -57,7 +58,8 @@
   "eslintConfig": {
     "root": true,
     "rules": {
-      "@typescript-eslint/restrict-template-expressions": "off"
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "tsdoc/syntax": "warn"
     },
     "parser": "@typescript-eslint/parser",
     "settings": {
@@ -66,7 +68,8 @@
       }
     },
     "plugins": [
-      "@typescript-eslint"
+      "@typescript-eslint",
+      "eslint-plugin-tsdoc"
     ],
     "parserOptions": {
       "project": "./tsconfig.json",

@@ -50,7 +50,6 @@ const ANGLICISMS: { [index: string]: string } = {
  * The ExtensionProvider allows interacting with a smoldot-based WASM light
  * client running in a browser extension.  It is not designed to be used
  * directly.  You should use the `\@substrate/connect` package.
- * ```
  */
 export class ExtensionProvider implements ProviderInterface {
   readonly #coder: RpcCoder = new RpcCoder();
@@ -242,15 +241,16 @@ export class ExtensionProvider implements ProviderInterface {
   }
 
   /**
-   * @summary Whether the node is connected or not.
-   * @return true if connected otherwise false
+   * Whether the node is connected or not.
+   * 
+   * @returns true - if connected otherwise false
    */
   public get isConnected (): boolean {
     return this.#isConnected;
   }
 
   /**
-   * @summary Listen to provider events - in practice the smoldot provider only
+   * Listen to provider events - in practice the smoldot provider only
    * emits a `connected` event after successfully starting the smoldot client
    * and `disconnected` after `disconnect` is called.
    * @param type - Event
@@ -353,9 +353,9 @@ export class ExtensionProvider implements ProviderInterface {
   /**
    * Allows unsubscribing to subscriptions made with [[subscribe]].
    *
-   * @param type
-   * @param method
-   * @param id
+   * @param type   - Subscription type
+   * @param method - Subscription method
+   * @param id     - Id passed for send parameter
    * @returns Promise resolving to whether the unsunscribe request was successful.
    */
   public async unsubscribe(
