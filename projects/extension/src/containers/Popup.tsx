@@ -6,10 +6,9 @@ import * as material from '@material-ui/core';
 import GlobalFonts from '../fonts/fonts';
 import { light, Tab, MenuButton } from '../components';
 import { Background } from '../background/';
-import { MsgExchangePopup, TabInterface } from '../types';
+import { debug } from '../utils/debug';
+import { TabInterface } from '../types';
 import { AppMediator } from '../background/AppMediator';
-import { ConnectionManager } from 'background/ConnectionManager';
-import { ExtensionAction } from '../types/enums';
 
 const { createMuiTheme, ThemeProvider, Box, Divider } = material;
 
