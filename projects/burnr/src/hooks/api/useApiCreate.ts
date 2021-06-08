@@ -16,30 +16,27 @@ export default function useApiCreate (): ApiPromise {
   const [api, setApi] = useState<ApiPromise>({} as ApiPromise);
   const [localEndpoint] = useLocalStorage('endpoint');
 
-  const [provider] = useState<LazyProvider>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Westend-WsProvider']);
+  const [provider] = useState<LazyProvider>(ALL_PROVIDERS[localEndpoint] || ALL_PROVIDERS['Polkadot-WsProvider']);
   const  mountedRef = useIsMountedRef();
 
   useEffect((): void => {
-    const choseSmoldot = async (endpoint: string): Promise<void> => {
+    const choseSmoldot = async () => {
       try {
         const detect = new Detector('burnr wallet');
-        const api = await detect.connect(endpoint);
-        console.log(`Burnr is now connected to ${endpoint}`);
+        const api = await detect.connect('westend');
         mountedRef.current && setApi(api);
       } catch (err) {
         console.log('A wild error appeared:', err);
       }
     }
 
-    const endpoint = provider.network.toLowerCase();
-
-    endpoint === 'local network' && ApiPromise
+    localEndpoint !== 'Westend-WsProvider' && ApiPromise
       .create({
-        provider: new WsProvider('ws://127.0.0.1:9944'),
+        provider: new WsProvider(provider.endpoint),
         types: {}
       })
       .then((api): void => {
-        console.log(`Burnr is now connected to local network`);
+        console.log(`Burnr is now connected to ${provider.endpoint === 'string' && provider.endpoint}`);
         console.log("API api", api);
         mountedRef.current && setApi(api);
       })
@@ -47,8 +44,8 @@ export default function useApiCreate (): ApiPromise {
         console.error(err);
       });
 
-      endpoint !== 'local network' && choseSmoldot(endpoint);
-  }, [mountedRef, provider.endpoint, provider.network, localEndpoint]);
+      localEndpoint === 'Westend-WsProvider' && choseSmoldot();
+  }, [mountedRef, provider.endpoint, localEndpoint]);
 
   return api;
 }

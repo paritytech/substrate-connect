@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import React, { FunctionComponent } from 'react';
 import { Typography, Box, IconButton, createStyles, makeStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -7,7 +8,7 @@ import { TabInterface } from '../types';
 import { ConnectionManager } from 'background/ConnectionManager';
 
 interface TabProps {
-  manager: ConnectionManager;
+  manager?: ConnectionManager;
   current?: boolean;
   tab?: TabInterface;
 }
@@ -30,7 +31,9 @@ const useStyles = makeStyles((theme) =>
 const Tab: FunctionComponent<TabProps> = ({ manager, tab, current=false }) => {
   const classes = useStyles();
   const onDisconnect = (): void => {
-    tab && tab.tabId && manager.disconnectTab(tab.tabId);
+    // TODO: Fix smoldot definition (see: https://github.com/paritytech/substrate-connect/blob/3350cdff9c4c294393160189816168a93c983f79/projects/extension/src/background/ConnectionManager.ts#L202)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    tab && tab.tabId && manager?.disconnectTab(tab.tabId);
   }
 
   return (

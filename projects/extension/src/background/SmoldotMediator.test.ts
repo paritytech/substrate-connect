@@ -6,7 +6,7 @@
 import { jest } from '@jest/globals';
 import * as smoldot from 'smoldot';
 import { SmoldotMediator } from './SmoldotMediator';
-import { JsonRpcRequest, JsonRpcResponse } from 'types';
+import { JsonRpcRequest, JsonRpcResponse } from './types';
 import westend from '../../public/assets/westend.json';
 import { AppMediator } from './AppMediator';
 import { MockPort, MockConnectionManager } from '../mocks';

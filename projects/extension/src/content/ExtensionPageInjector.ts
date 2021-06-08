@@ -1,4 +1,4 @@
-import { debug } from '../utils';
+import { debug } from '../utils/debug';
 
 const pkg_name = process.env.PKG_NAME as string;
 const version = process.env.PKG_VERSION as string;

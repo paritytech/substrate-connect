@@ -1,24 +1,23 @@
 // SPDX-License-Identifier: Apache-2
 import { useState } from 'react';
 import { Network } from '../types';
-import { Statuses } from '../types/enums';
 
 const sampleNetworks: Network[] = [
   {
     name: 'Polkadot',
-    status: Statuses.connected,
+    status: 'connected',
     isKnown: true,
     chainspecPath: '<polkadot.json>'
   },
   {
     name: 'Kusama',
-    status: Statuses.connected,
+    status: 'connected',
     isKnown: true,
     chainspecPath: '<kusama.json>'
   },
   {
     name: 'Rococo',
-    status: Statuses.connected,
+    status: 'connected',
     isKnown: true,
     chainspecPath: '<rococo.json>',
     parachains: [
@@ -26,7 +25,7 @@ const sampleNetworks: Network[] = [
         name: 'Tick',
         relaychain: 'Rococo',
         icon: 'rococo',
-        status: Statuses.connected,
+        status: 'connected',
         isKnown: true,
         chainspecPath: '<tick.json>',
       },
@@ -34,7 +33,7 @@ const sampleNetworks: Network[] = [
         name: 'Trick',
         relaychain: 'Rococo',
         icon: 'rococo',
-        status: Statuses.connected,
+        status: 'connected',
         isKnown: true,
         chainspecPath: '<trick.json>',
       },
@@ -42,7 +41,7 @@ const sampleNetworks: Network[] = [
         name: 'Track',
         relaychain: 'Rococo',
         icon: 'rococo',
-        status: Statuses.connected,
+        status: 'connected',
         isKnown: true,
         chainspecPath: '<track.json>',
       }
@@ -50,7 +49,7 @@ const sampleNetworks: Network[] = [
   },
   {
     name: '<Unknown network>',
-    status: Statuses.connected,
+    status: 'connected',
     isKnown: false,
     chainspecPath: '<url>'
   },

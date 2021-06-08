@@ -1,111 +1,110 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import * as React from 'react';
 import * as material from '@material-ui/core';
 import GlobalFonts from '../fonts/fonts';
-import { light, Tab, MenuButton } from '../components';
+import { light, MenuButton, Tab } from '../components';
 import { Background } from '../background/';
 import { debug } from '../utils/debug';
 import { TabInterface } from '../types';
-import { AppMediator } from '../background/AppMediator';
+import { State, AppInfo } from '../background/types';
+import { ConnectionManager } from 'background/ConnectionManager';
 
 const { createMuiTheme, ThemeProvider, Box, Divider } = material;
 
-const Popup: React.FunctionComponent = () => {
-  const [activeTab, setActiveTab] = React.useState<React.ReactElement | undefined>();
-  const [currentTabId, setCurrentTabId] = React.useState<number | undefined>();
-  const [rTabs, setRTabs] = React.useState<React.ReactElement[]>([]);
-  const appliedTheme = createMuiTheme(light);
-  const [apps, setApps] = React.useState<AppMediator[]>([] as AppMediator[]);
-  const [manager, setManager] = React.useState<ConnectionManager>({} as ConnectionManager);
-
-  React.useEffect((): (() => void) => {
-    const incomingMsgListener = (req: string) => {
-      const { ext, action, tabId}: MsgExchangePopup = JSON.parse(req);
-      if (ext !== 'substrate-connect') {
-        return
-      }
-      switch (action) {
-        case ExtensionAction.remove:
-          setApps(apps.filter(d => d.tabId !== tabId));
-          currentTabId == tabId && setActiveTab(undefined);
-          break;
-        default:
-      }
+const createTab = (a: AppInfo, url: string | undefined): TabInterface => {
+  return {
+    tabId: a.tabId,
+    url: url,
+    uApp: {
+      networks: a.networks.map(b => b.name),
+      name: a.name,
+      enabled: true
     }
+  };
+}
 
+const Popup: React.FunctionComponent = () => {
+  const [activeTab, setActiveTab] = React.useState<TabInterface | undefined>();
+  const [apps, setApps] = React.useState<TabInterface[]>([]);
+  const appliedTheme = createMuiTheme(light);
+  const [manager, setManager] = React.useState<ConnectionManager | undefined>();
+  const [browserTabs, setBrowserTabs] = React.useState<chrome.tabs.Tab[]>();
+  const [appsInitState, setAppsInitState] = React.useState<State>();
+
+  // We gather all needed information (from manager[apps] and browserTabs)
+  React.useEffect((): void => {
+    // retrieve all information from background page and assign to local state
     chrome.runtime.getBackgroundPage(backgroundPage => {
       const bg = backgroundPage as Background;
-      bg.manager && setManager(bg.manager);
-      bg.manager && setApps(bg.manager.apps);
+      if (bg.manager) {
+        setManager(bg.manager);
+        setAppsInitState(bg.manager.getState());
+      }
     });
-
-    chrome.runtime.onMessage.addListener(incomingMsgListener);
-
-    return (): void => {
-      chrome.runtime.onMessage.removeListener(incomingMsgListener);
-    }
-  }, [currentTabId, apps]);
-
-  React.useEffect((): void => {
-    const gatherTabs: TabInterface[] = [];
-    const restTabs: React.ReactElement[] = [];
+    
     chrome.tabs.query({"currentWindow": true, }, tabs => {
-      tabs.forEach(t => {
-        apps.find(({ tabId, smoldotName, appName }) => {
-          if (tabId === t.id) {
-            if (gatherTabs.length > 0 && gatherTabs.some(g => g.tabId === t.id)) {
-              gatherTabs.forEach(g => {
-                g.tabId === t.id && g.uApp.networks.push(smoldotName);
-              })
-            } else {
-              gatherTabs.push({
-                isActive: t.active,
-                tabId: t.id,
-                url: t.url,
-                uApp: {
-                  networks: [smoldotName],
-                  name: appName,
-                  enabled: true
-                }
-              });
-            }
+      // retrieve open tabs assign to local state
+      setBrowserTabs(tabs);
+    })
+  }, []);
+
+  // Fix TabInterface based on init retrieved state and browser tabs 
+  React.useEffect(() => {
+    const ti: TabInterface[] = [] as TabInterface[];
+    /* Iterate through the tabs in order to identify uApps and set them with all info needed
+    ** in local state. In addition identify which App is active for showing them in respectful
+    ** position in the extension
+    */ 
+    browserTabs?.forEach((t: chrome.tabs.Tab) => {
+      appsInitState?.apps.find(a => {
+        if (t.id === a.tabId) {
+          if (t.active) {
+            setActiveTab(createTab(a, t.url));
+          } else {
+            ti.push(createTab(a, t.url));
           }
-        })
-      });
-
-      gatherTabs.forEach(t => {
-        if (t.isActive) {
-          setActiveTab(<Tab manager={manager} current tab={t} />);
-          setCurrentTabId(t.tabId);
-        } else {
-          restTabs.push(<Tab  manager={manager} key={t.tabId} tab={t}/>);
         }
-      })
-      setRTabs(restTabs);
+      });
     });
-  }, [apps, manager]);
+    setApps(ti);
+}, [appsInitState, browserTabs]);
 
-  const disconnectAll = (): void => {
-    apps.forEach(a => {
-      manager.disconnectTab(a.tabId as number);
+React.useEffect(() => {
+  // Initialiaze the stateChanged listener in order to act accordingly.
+  // Update the extension Tabs based on the incoming state (manager.getState)
+  manager?.on('stateChanged', state => {
+    console.log('state Changed', state);
+    debug('CONNECTION MANAGER APP STATE CHANGED');
+    const incTabs: TabInterface[] = [];
+    apps.find(a => {
+      const result = state.apps.find(b => b.tabId === a.tabId);
+      if(result) {
+        incTabs?.push(createTab(result, a.url));
+      }
     });
-  }
+    const active = incTabs.find(c => activeTab?.tabId && activeTab.tabId === c.tabId);
+    if (!active) {
+      setActiveTab(undefined);
+    }
+    setApps(incTabs);
+  });
+}, [manager, apps, activeTab]);
 
   return (
     <ThemeProvider theme={appliedTheme}>
       <Box width={'340px'} mb={0.1}>
         <GlobalFonts />
-        {activeTab || <Tab current manager={manager} />}
+        {activeTab ? <Tab manager={manager} current tab={activeTab} /> : <Tab manager={manager} current />}
         <Box marginY={1}>
-          {rTabs.map(r => r)}
+          {apps.map(t => <Tab manager={manager} key={t.tabId} tab={t}/>)}
         </Box>
         <Divider />
         <MenuButton fullWidth onClick={() => chrome.runtime.openOptionsPage()}>My Networks</MenuButton>
         <MenuButton fullWidth>About</MenuButton>
         <Divider />
-        <MenuButton fullWidth className='danger' onClick={disconnectAll}>Stop all connections</MenuButton>
+        <MenuButton fullWidth className='danger'>Stop all connections</MenuButton>
       </Box>
     </ThemeProvider>
   );

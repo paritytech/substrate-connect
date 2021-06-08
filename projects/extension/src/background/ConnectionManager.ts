@@ -4,10 +4,10 @@
 import * as smoldot from 'smoldot';
 import { AppMediator } from './AppMediator';
 import { SmoldotMediator } from './SmoldotMediator';
-import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface, Network, StateEmitter } from '../types';
+import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
-import { State, MsgExchangePopup } from '../types';
-import { Statuses, ExtensionAction } from '../types/enums';
+import { StateEmitter, State } from './types';
+import { Network } from '../types';
 
 /**
  * ConnectionManager is the main class involved in managing connections from
@@ -86,34 +86,23 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * disconnectTab disconnects all instances of {@link AppMediator} connected
    * from the supplied tabId
    *
-   * @param tabId - the id of the tab to disconnect (add 0 to disconnect all)
+   * @param tabId - the id of the tab to disconnect
    */
   disconnectTab(tabId: number): void {
     this.#apps.filter(a => a.tabId && a.tabId === tabId).forEach(a => {
       a.disconnect();
     });
-    const popupMsg: MsgExchangePopup = {
-      ext: 'substrate-connect',
-      action: ExtensionAction.remove,
-      msg: 'App got disconnected.',
-      tabId: tabId
-    };
-    chrome.runtime.sendMessage(JSON.stringify(popupMsg));
   }
 
   /**
    * disconnectTab disconnects all instances of {@link AppMediator} connected
+   * for all tabs
    */
+  // TODO(nik): add test for this functionality
   disconnectAll(): void {
     this.#apps.forEach(a => {
       a.disconnect();
-    })
-    const popupMsg: MsgExchangePopup = {
-      ext: 'substrate-connect',
-      action: ExtensionAction.remove,
-      msg: 'All apps got disconnected.'
-    };
-    chrome.runtime.sendMessage(JSON.stringify(popupMsg));
+    });
   }
 
   /**
@@ -130,8 +119,13 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       const newApp = new AppMediator(port, this as ConnectionManagerInterface)
       if (newApp.associate()) {
         this.#apps.push(newApp);
-        newApp.on('stateChanged', () => this.emit('stateChanged'));
-        this.emit('stateChanged');
+        /* TODO(nik): Test the newApp emit based on the quote: "we actually dont ever emit the stateChanged 
+        ** even in the AppMediator any more ... I removed that when I removed the associate message:
+        ** https://github.com/paritytech/substrate-connect/pull/254
+        ** so maybe we can simplify by not having the AppMediator emit any events
+        */
+        newApp.on('stateChanged', () => this.emit('stateChanged', this.getState()));
+        this.emit('stateChanged', this.getState());
       }
     }
   }
@@ -193,7 +187,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     sm.removeApp(app);
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
-    this.emit('stateChanged');
+    this.emit('stateChanged', this.getState());
   }
 
 
@@ -232,7 +226,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       // TODO: fix this when mapping is corrected
       this.#networks.push({
         name: name,
-        status: Statuses.connected,
+        status: 'connected',
         isKnown: true,
         chainspecPath: `${name}.json`
       });
