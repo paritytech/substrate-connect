@@ -17,7 +17,7 @@
     "postinstall": "yarn build"
   },
   "dependencies": {
-    "smoldot": "^0.2.0"
+    "smoldot": "^0.2.4"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
