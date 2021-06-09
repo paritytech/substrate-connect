@@ -6,13 +6,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { jest } from '@jest/globals';
 import { SmoldotClient} from 'smoldot';
-
 import {
   customHealthResponder,
   smoldotSpy,
   respondWith
 } from '@substrate/smoldot-test-utils';
-
 import { SmoldotMediator } from './SmoldotMediator';
 import { JsonRpcRequest, JsonRpcResponse } from './types';
 import westend from '../../public/assets/westend.json';
@@ -22,7 +20,6 @@ import { MockPort, MockConnectionManager } from '../mocks';
 let sc: SmoldotClient;
 let sm: SmoldotMediator;
 let appMed: AppMediator;
-
 let spyScSendJsonRpc: unknown;
 let spyScTerminate: unknown;
 let expectedResponse: number;
@@ -35,7 +32,6 @@ const createMessage = (id: number): JsonRpcRequest => ({
   method: 'something',
   params: []
 });
-
 
 beforeAll(async () => {
   const healthResponses = [
@@ -78,11 +74,6 @@ test('Test addApp', () => {
   expect(sm.apps).toHaveLength(1);
 });
 
-test('Test removeApp', () => {
-  sm.removeApp(appMed);
-  expect(sm.apps).toHaveLength(0);
-});
-
 test('Test correctness of sendRpcMessage', () => {
   // at this point this.#id is 0; create a message with id: 1 and expect to receive id = 1
   expectedResponse = 1;
@@ -106,6 +97,11 @@ test('Test remapping of id on sendRpcMessage', () => {
   idReturned = sm.sendRpcMessage(message);
   expect(idReturned).toBe(++expectedResponse);
   expect(spyScSendJsonRpc).toHaveBeenNthCalledWith(3, "{\"id\":3,\"jsonrpc\":\"2.0\",\"method\":\"something\",\"params\":[]}", 0);
+});
+
+test('Test removeApp', () => {
+  sm.removeApp(appMed);
+  expect(sm.apps).toHaveLength(0);
 });
 
 test('Test shutdown', () => {
