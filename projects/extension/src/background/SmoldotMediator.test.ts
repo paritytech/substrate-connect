@@ -16,7 +16,6 @@ let sm: SmoldotMediator;
 let appMed: AppMediator;
 let spyScSendJsonRpc: unknown;
 let spyScTerminate: unknown;
-let expectedResponse: number;
 let message:JsonRpcRequest;
 let idReturned: number;
 
@@ -27,7 +26,7 @@ const createMessage = (id: number): JsonRpcRequest => ({
   params: []
 });
 
-beforeAll(async () => {
+beforeEach(async () => {
   const healthResponses = [
     { isSyncing: true, peerCount: 1, shouldHavePeers: true },
     { isSyncing: true, peerCount: 1, shouldHavePeers: true },
@@ -56,7 +55,8 @@ beforeAll(async () => {
   spyScTerminate = jest.spyOn(sc, 'terminate');
 });
 
-afterAll(() => {
+afterEach(() => {
+  jest.clearAllMocks();
   sm.shutdown();
 });
 
@@ -70,27 +70,25 @@ test('Test addApp', () => {
 
 test('Test correctness of sendRpcMessage', () => {
   // at this point this.#id is 0; create a message with id: 1 and expect to receive id = 1
-  expectedResponse = 1;
   message = createMessage(1);
   idReturned = sm.sendRpcMessage(message); // now on return it must be 1
   expect(spyScSendJsonRpc).toHaveBeenCalledTimes(1);
-  expect(spyScSendJsonRpc).toHaveBeenCalledWith(`{"id":1,"jsonrpc":"2.0","method":"something","params":[]}`, 0);
   expect(idReturned).toBe(1);
-  expect(spyScSendJsonRpc).toHaveBeenNthCalledWith(1, "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"something\",\"params\":[]}", 0);
+  expect(spyScSendJsonRpc).toHaveBeenCalledWith("{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"something\",\"params\":[]}", 0);
 });
 
 test('Test remapping of id on sendRpcMessage', () => {
   // at this point this.#id is 1; create a message with id: 2 and expect to receive id = 2
-  message = createMessage(2);
+  message = createMessage(1);
   idReturned = sm.sendRpcMessage(message);
-  expect(idReturned).toBe(++expectedResponse);
-  expect(spyScSendJsonRpc).toHaveBeenNthCalledWith(2, "{\"id\":2,\"jsonrpc\":\"2.0\",\"method\":\"something\",\"params\":[]}", 0);
+  expect(idReturned).toBe(1);
+  expect(spyScSendJsonRpc).toHaveBeenNthCalledWith(1, "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"something\",\"params\":[]}", 0);
 
   // at this point this.#id is 2; Send some id (other than next one) in order to ensure that next one (id: 3) will be used
   message = createMessage(255);
   idReturned = sm.sendRpcMessage(message);
-  expect(idReturned).toBe(++expectedResponse);
-  expect(spyScSendJsonRpc).toHaveBeenNthCalledWith(3, "{\"id\":3,\"jsonrpc\":\"2.0\",\"method\":\"something\",\"params\":[]}", 0);
+  expect(idReturned).toBe(2);
+  expect(spyScSendJsonRpc).toHaveBeenNthCalledWith(2, "{\"id\":2,\"jsonrpc\":\"2.0\",\"method\":\"something\",\"params\":[]}", 0);
 });
 
 test('Test removeApp', () => {
