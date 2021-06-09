@@ -6,6 +6,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { jest } from '@jest/globals';
 import * as smoldot from 'smoldot';
+
+import {
+  customHealthResponder,
+  smoldotSpy,
+  respondWith
+} from '@substrate/smoldot-test-utils';
+
 import { SmoldotMediator } from './SmoldotMediator';
 import { JsonRpcRequest, JsonRpcResponse } from './types';
 import westend from '../../public/assets/westend.json';
@@ -18,10 +25,31 @@ let appMed: AppMediator;
 
 let spyScSendJsonRpc: unknown;
 let spyScTerminate: unknown;
+let expectedResponse: number;
+let message:JsonRpcRequest;
+let idReturned: number;
+
+const createMessage = (id: number): JsonRpcRequest => ({
+  id: id,
+  jsonrpc: '2.0',
+  method: 'something',
+  params: []
+});
+
 
 beforeAll(async () => {
-  // init smoldot and SmoldotMediator
-  sc = await (smoldot as any).start({
+  const healthResponses = [
+    { isSyncing: true, peerCount: 1, shouldHavePeers: true },
+    { isSyncing: true, peerCount: 1, shouldHavePeers: true },
+    { isSyncing: true, peerCount: 1, shouldHavePeers: true }
+  ];
+  const responses =  [
+    '{ "id": 1, "jsonrpc": "2.0", "result": "success" }',
+    '{ "id": 2, "jsonrpc": "2.0", "result": "success" }',
+    '{ "id": 3, "jsonrpc": "2.0", "result": "success" }'
+  ];
+  const rpcSend = jest.fn() as jest.MockedFunction<(rpc: string, chainIndex: number) => void>;
+  sc = await smoldotSpy(respondWith(responses), rpcSend, customHealthResponder(healthResponses)).start({
     chainSpecs: [JSON.stringify(westend)],
     maxLogLevel: 3,
     jsonRpcCallback: (message: string) => {
@@ -55,17 +83,29 @@ test('Test removeApp', () => {
   expect(sm.apps).toHaveLength(0);
 });
 
-test('Test sendRpc', () => {
-  const message: JsonRpcRequest = {
-    id: 1,
-    jsonrpc: '2.0',
-    method: 'something',
-    params: []
-  };
-  const stringified = JSON.stringify(message);
-  sm.sendRpcMessage(message);
+test('Test correctness of sendRpcMessage', () => {
+  // at this point this.#id is 0; create a message with id: 1 and expect to receive id = 1
+  expectedResponse = 1;
+  message = createMessage(1);
+  idReturned = sm.sendRpcMessage(message); // now on return it must be 1
   expect(spyScSendJsonRpc).toHaveBeenCalledTimes(1);
-  expect(spyScSendJsonRpc).toHaveBeenCalledWith(stringified, 0);
+  expect(spyScSendJsonRpc).toHaveBeenCalledWith(`{"id":1,"jsonrpc":"2.0","method":"something","params":[]}`, 0);
+  expect(idReturned).toBe(1);
+  expect(spyScSendJsonRpc).toHaveBeenNthCalledWith(1, "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"something\",\"params\":[]}", 0);
+});
+
+test('Test remapping of id on sendRpcMessage', () => {
+  // at this point this.#id is 1; create a message with id: 2 and expect to receive id = 2
+  message = createMessage(2);
+  idReturned = sm.sendRpcMessage(message);
+  expect(idReturned).toBe(++expectedResponse);
+  expect(spyScSendJsonRpc).toHaveBeenNthCalledWith(2, "{\"id\":2,\"jsonrpc\":\"2.0\",\"method\":\"something\",\"params\":[]}", 0);
+
+  // at this point this.#id is 2; Send some id (other than next one) in order to ensure that next one (id: 3) will be used
+  message = createMessage(255);
+  idReturned = sm.sendRpcMessage(message);
+  expect(idReturned).toBe(++expectedResponse);
+  expect(spyScSendJsonRpc).toHaveBeenNthCalledWith(3, "{\"id\":3,\"jsonrpc\":\"2.0\",\"method\":\"something\",\"params\":[]}", 0);
 });
 
 test('Test shutdown', () => {
