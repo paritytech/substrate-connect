@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
 import { SmoldotClient} from 'smoldot';
 import {
-  customHealthResponder,
   smoldotSpy,
   respondWith
 } from '@substrate/smoldot-test-utils';
@@ -27,18 +26,13 @@ const createMessage = (id: number): JsonRpcRequest => ({
 });
 
 beforeEach(async () => {
-  const healthResponses = [
-    { isSyncing: true, peerCount: 1, shouldHavePeers: true },
-    { isSyncing: true, peerCount: 1, shouldHavePeers: true },
-    { isSyncing: true, peerCount: 1, shouldHavePeers: true }
-  ];
   const responses =  [
     '{ "id": 1, "jsonrpc": "2.0", "result": "success" }',
     '{ "id": 2, "jsonrpc": "2.0", "result": "success" }',
     '{ "id": 3, "jsonrpc": "2.0", "result": "success" }'
   ];
   const rpcSend = jest.fn() as jest.MockedFunction<(rpc: string, chainIndex: number) => void>;
-  sc = await smoldotSpy(respondWith(responses), rpcSend, customHealthResponder(healthResponses)).start({
+  sc = await smoldotSpy(respondWith(responses), rpcSend).start({
     chainSpecs: [JSON.stringify(westend)],
     maxLogLevel: 3,
     jsonRpcCallback: (message: string) => {
