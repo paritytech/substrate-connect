@@ -10,12 +10,12 @@ const config = {
     popup: path.resolve("src/popup.tsx"),
     options: path.resolve("src/options.tsx"),
     content: path.resolve("src/content/index.ts"),
-    page: path.resolve("src/page.ts"),
     background: path.resolve("src/background/index.ts")
   },
   output: {
     path: path.resolve("dist"),
-    filename: "[name].js"
+    filename: "[name].js",
+    sourceMapFilename: '[name].js.map'
   },
   module: {
     rules: [

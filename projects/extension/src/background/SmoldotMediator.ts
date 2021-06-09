@@ -32,7 +32,7 @@ export class SmoldotMediator {
     const nextID = ++this.#id;
     /* eslint-disable @typescript-eslint/no-unsafe-member-access */
     message.id = nextID;
-    this.#smoldotClient.send_json_rpc(JSON.stringify(message));
+    this.#smoldotClient.sendJsonRpc(JSON.stringify(message), 0);
     return nextID;
   }
 

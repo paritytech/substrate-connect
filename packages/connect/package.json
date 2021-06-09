@@ -1,15 +1,15 @@
 {
   "name": "@substrate/connect",
-  "version": "0.3.3",
+  "version": "0.3.6",
   "description": "Substrate-connect to Smoldot clients. Using either substrate extension with predefined clients or an internal smoldot client based on chainSpecs provided.",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
+  "type": "module",
   "publishConfig": {
     "access": "public"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/paritytech/substrate-connect.git"
@@ -19,37 +19,36 @@
   },
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
-    "prebuild": "yarn clean",
+    "downloadSpecs": "node downloadSpecs.js && cp ./src/specs/westend.json ./src/__mocks__/.",
+    "prebuild": "yarn clean && yarn downloadSpecs",
     "pretest": "yarn build",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest --env=node --colors --coverage dist",
+    "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --coverage dist/",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist",
     "build": "tsc --build",
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "dependencies": {
-    "@polkadot/rpc-provider": "^3.7.3",
-    "@substrate/connect-extension-protocol": "^0.2.0",
+    "@polkadot/rpc-provider": "^4.10.1",
+    "@substrate/connect-extension-protocol": "^0.3.0",
     "browserify-fs": "^1.0.0",
     "eventemitter3": "^4.0.7",
     "file-entry-cache": "^6.0.1",
     "mkdirp": "^1.0.4",
-    "smoldot": "^0.1.24"
+    "smoldot": "^0.2.0"
   },
   "devDependencies": {
-    "@polkadot/api": "^3.7.3",
+    "@polkadot/api": "^4.2.4",
     "@polkadot/extension-inject": "^0.36.1",
     "@substrate/smoldot-test-utils": "file:../smoldot-test-utils",
     "@types/jest": "^26.0.20",
     "@types/jsdom": "^16.2.7",
     "@types/mkdirp": "^1.0.1",
-    "@types/sinon": "^9.0.10",
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.21.0",
-    "jest": "^26.6.3",
+    "eslint-plugin-tsdoc": "^0.2.14",
+    "jest": "^27.0.0-next.9",
     "jsdom": "^16.5.1",
-    "sinon": "^9.2.3",
-    "ts-jest": "^26.5.3",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
   },
@@ -59,7 +58,8 @@
   "eslintConfig": {
     "root": true,
     "rules": {
-      "@typescript-eslint/restrict-template-expressions": "off"
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "tsdoc/syntax": "warn"
     },
     "parser": "@typescript-eslint/parser",
     "settings": {
@@ -68,7 +68,8 @@
       }
     },
     "plugins": [
-      "@typescript-eslint"
+      "@typescript-eslint",
+      "eslint-plugin-tsdoc"
     ],
     "parserOptions": {
       "project": "./tsconfig.json",

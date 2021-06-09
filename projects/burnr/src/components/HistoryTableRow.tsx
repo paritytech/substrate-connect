@@ -22,8 +22,8 @@ interface Props {
 }
 
 const HistoryTableRow: React.FunctionComponent<Props> = ({columns, row, unit = 'Unit', showStatus = true }) => {
-	const { balanceVisibility } = useContext(BalanceVisibleContext);
-	return (
+  const { balanceVisibility } = useContext(BalanceVisibleContext);
+  return (
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         <TableRow hover key={`transaction`}>
             {columns.map((column) => {

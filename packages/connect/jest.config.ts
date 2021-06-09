@@ -1,13 +1,10 @@
-export default {
-  preset: "ts-jest",
-  testEnvironment: 'node',
-  transform: {},
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.test.json'
-    }
-  },
-  setupFiles: ["./src/__mocks__/client.js"],
+import type {Config} from '@jest/types';
+
+const config: Config.InitialOptions = {
   verbose: true,
-  testURL: "http://localhost/"
+  transformIgnorePatterns:["./src/__mocks__/client.js"],
+  testURL: "http://localhost/",
+  transform: {},
+  extensionsToTreatAsEsm: [".ts", ".tsx"]
 };
+export default config;

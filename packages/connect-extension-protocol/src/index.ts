@@ -69,7 +69,7 @@ export interface ProviderMessageData {
   /** The name of the blockchain network the app is talking to **/
   chainName: string;
   /** What action the `ExtensionMessageRouter` should take **/
-  action: 'forward' | 'disconnect';
+  action: 'forward' | 'connect' | 'disconnect';
   /** The message the `ExtensionMessageRouter` should forward to the background **/
   message?: MessageToManager
 }

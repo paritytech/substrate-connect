@@ -13,16 +13,19 @@
     "clean": "rm -rf dist/",
     "build": "tsc",
     "test": "echo \"No tests for smoldot-test-utils\"",
-    "lint": "echo \"No lint yet for smoldot-test-utils: actual command -> yarn eslint . --ext .js,.ts\"",
+    "lint": "eslint . --ext .js,.ts",
     "postinstall": "yarn build"
   },
   "dependencies": {
-    "smoldot": "^0.1.11"
+    "smoldot": "^0.2.0"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
     "eslint": "^7.20.0",
+    "eslint-plugin-tsdoc": "^0.2.14",
+    "jest": "^27.0.0-next.9",
     "typescript": "^4.1.5"
   },
   "eslintConfig": {
@@ -34,7 +37,8 @@
       }
     },
     "plugins": [
-      "@typescript-eslint"
+      "@typescript-eslint",
+      "eslint-plugin-tsdoc"
     ],
     "parserOptions": {
       "project": "./tsconfig.json",
@@ -45,6 +49,11 @@
       "plugin:@typescript-eslint/recommended",
       "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
+    "rules": {
+      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "tsdoc/syntax": "error"
+    },
     "env": {
       "node": true
     }

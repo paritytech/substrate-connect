@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { ExtensionMessageRouter } from './ExtensionMessageRouter';
+import { ExtensionPageInjector } from './ExtensionPageInjector';
+import { debug } from '../utils/debug';
 
+debug('EXTENSION CONTENT SCRIPT RUNNING');
+
+new ExtensionPageInjector();
 const router = new ExtensionMessageRouter();
 router.listen();
-
-// inject page.ts to the tab
-const script = document.createElement('script');
-script.src = chrome.extension.getURL('page.js');
-
-(document.head || document.documentElement).appendChild(script);

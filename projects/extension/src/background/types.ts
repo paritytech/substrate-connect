@@ -10,8 +10,21 @@ export interface InitAppNameSpec {
   chainSpec?: string
 }
 
-// TODO: this is duplicated with `NetworkStatus` in ../types
-export type AppState = 'connected' | 'ready' | 'disconnecting' | 'disconnected';
+export type AppState = 'connected' | 'disconnecting' | 'disconnected';
+
+export interface AppInfo {
+  name: string;
+  tabId: number;
+  networks: NetworkState[];
+}
+
+export interface State {
+  apps: AppInfo[];
+}
+
+export interface NetworkState {
+  name: string;
+}
 
 export interface MessageIDMapping {
   readonly appID: number | undefined;
@@ -25,7 +38,7 @@ export interface SubscriptionMapping {
 }
 
 export interface StateEvents {
-  stateChanged: void;
+  stateChanged: State;
 }
 
 export type StateEmitter = StrictEventEmitter<EventEmitter, StateEvents>;

@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import EventEmitter from 'eventemitter3';
 import {
   MessageToManager,
   MessageFromManager
 } from '@substrate/connect-extension-protocol';
 import { 
-  AppState, 
+  AppState,
   ConnectionManagerInterface,
   JsonRpcRequest,
   JsonRpcResponse,
@@ -39,7 +40,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     this.#url = port.sender?.url;
     this.#manager = manager;
     // Open listeners for the incoming rpc messages
-    this.#port.onMessage.addListener(this.#handlePortMessage);
+    this.#port.onMessage.addListener(this.#handleRpcRequest);
     this.#port.onDisconnect.addListener(() => { this.#handleDisconnect() });
   }
 
@@ -157,16 +158,13 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     return true;
   }
 
-  #handleRpcRequest = (message: string, subscription?: boolean): void => {
-    if (this.#state !== 'ready' || this.#smoldotName === undefined) {
-      const message = this.#state === 'connected'
-        ? `The app is not associated with a blockchain client`
-        : `The app is ${this.#state}`;
-
-      const error: MessageFromManager = { type: 'error', payload: message };
-      this.#port.postMessage(error);
+  #handleRpcRequest = (msg: MessageToManager): void => {
+    if (msg.type !== 'rpc') {
+      console.warn(`Unrecognised message type ${msg.type} received from content script`);
       return;
     }
+
+    const { payload: message, subscription } = msg;
 
     const parsed =  JSON.parse(message) as JsonRpcRequest;
     const appID = parsed.id as number;
@@ -184,36 +182,27 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     // TODO: what about unsubscriptions requested by the UApp - we need to remove
     // the subscription from our subscriptions state
 
-    const smoldotID = this.#manager.sendRpcMessageTo(this.#smoldotName, parsed);
+    const smoldotID = this.#manager.sendRpcMessageTo(this.#smoldotName as string, parsed);
     this.requests.push({ appID, smoldotID });
   }
 
-  #handleAssociateRequest = (name: string): void => {
-    if (this.#state !== 'connected' && this.#smoldotName) {
-      this.#sendError(`Cannot reassociate, app is already associated with ${this.#smoldotName}`);
-      return;
+  public associate(): boolean {
+    const splitIdx = this.#port.name.indexOf('::');
+    if (splitIdx === -1) {
+      this.#sendError(`Invalid port name ${this.#port.name} expected <app_name>::<chain_name>`);
+      this.#port.disconnect();
+      return false;
     }
-    if (!this.#manager.hasClientFor(name)) {
-      this.#sendError(`Extension does not have client for ${name}`);
-      return;
-    }
-    this.#manager.registerApp(this, name);
-    this.#smoldotName = name;
-    this.#state = 'ready';
-    this.emit('stateChanged');
-    return;
-  }
+    this.#smoldotName = this.#port.name.substr(splitIdx + 2, this.#port.name.length);
 
-  #handlePortMessage = (message: MessageToManager): void => {
-    if (message.type == 'associate') {
-      this.#handleAssociateRequest(message.payload);
-      return;
+    if (!this.#manager.hasClientFor(this.#smoldotName)) {
+      this.#sendError(`Extension does not have client for ${this.#smoldotName}`);
+      this.#port.disconnect();
+      return false;
     }
 
-    if (message.type === 'rpc') {
-      this.#handleRpcRequest(message.payload, message.subscription);
-      return;
-    }
+    this.#manager.registerApp(this, this.#smoldotName);
+    return true;
   }
 
   disconnect(): void {
@@ -239,8 +228,10 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   };
 
   #handleDisconnect = (): void => {
-    if (this.#state === 'disconnecting' || this.#state === 'disconnected') {
+    if (this.#state === 'disconnecting') {
       throw new Error('Cannot disconnect - already disconnecting / disconnected');
+    } else if (this.#state === 'disconnected') {
+      throw new Error('Cannot disconnect - already disconnected');
     }
 
     this.#state = 'disconnecting';

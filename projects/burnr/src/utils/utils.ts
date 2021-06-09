@@ -4,11 +4,12 @@ import { mnemonicGenerate } from '@polkadot/util-crypto';
 import { Keyring } from '@polkadot/api';
 import { decodeAddress, encodeAddress } from '@polkadot/keyring';
 import { hexToU8a, isHex } from '@polkadot/util';
+import { KeyringPair$Json } from '@polkadot/keyring/types';
 
 const keyring = new Keyring({ type: 'sr25519' });
 
 const config: Config = {
-	dictionaries: [starWars]
+  dictionaries: [starWars]
 }
 
 export const getName = (account: Account): string => `${account.name}`;
@@ -40,7 +41,8 @@ export const downloadFile = (fileName: string, data: string, type: string): void
         userAddress: pair.address,
         userName: pair.meta.name as string || '____ _____',
         userSeed: mnemonic,
-        userJson: pair.toJson(),
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        userJson: pair.toJson as unknown as KeyringPair$Json,
         userHistory: []
     }
   }

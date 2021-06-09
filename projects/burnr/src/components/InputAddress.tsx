@@ -4,56 +4,53 @@ import { FormControl, TextField, Box } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import Identicon from '@polkadot/react-identicon';
-import { isValidAddressPolkadotAddress } from '../utils/utils';
 
 interface Props {
-	setAddress: Dispatch<SetStateAction<string>>;
+  setAddress: Dispatch<SetStateAction<string>>;
 }
 
 const InputAddress: React.FunctionComponent<Props> = ({ setAddress }) => {
-	const [value, setValue] = useState<string>('');
-  const [addr, setAddr] = useState<string>('');
+  const [value, setValue] = useState<string>('');
 
-	useEffect((): void => {
-		setAddress(value);
-    setAddr(value);
-	}, [value, setAddress]);
+  useEffect((): void => {
+    setAddress(value);
+  }, [value, setAddress]);
 
-	const handleChangeButton = (e: ChangeEvent) => {
-		const val = (e.currentTarget as HTMLTextAreaElement).value;
-		setValue(val);
-	};
+  const handleChangeButton = (e: ChangeEvent) => {
+    const val = (e.currentTarget as HTMLTextAreaElement).value;
+    setValue(val);
+  };
 
-	return (
-		<>
-			<Box marginY={1}>
-				<FormControl required fullWidth >
-					<TextField
-						label="Recepient Address"
-						onChange={handleChangeButton}
-						onFocus={handleChangeButton}
-						onBlur={handleChangeButton}
-            helperText={(!isValidAddressPolkadotAddress(addr) || !addr) && 'Enter valid address'}
-						value={value}
-						variant="outlined"
-						InputProps={{
-							spellCheck: 'false',
-							startAdornment:
-				<Box marginRight={1}>
-					{ (!value || value === '')
-						? <Skeleton variant='circle' width={32} height={32} />
-						: <Identicon
-							size={32}
-							theme='polkadot'
-							value={value}
-						/>
-					}
-				</Box>,
-						}}
-					/>
-				</FormControl>
-			</Box>
-		</>
-	);};
+  return (
+    <>
+      <Box marginY={1}>
+        <FormControl required fullWidth >
+          <TextField
+            label="Recepient Address"
+            onChange={handleChangeButton}
+            onFocus={handleChangeButton}
+            onBlur={handleChangeButton}
+            value={value}
+            variant="outlined"
+            fullWidth
+            InputProps={{
+              spellCheck: 'false',
+              startAdornment:
+                <Box marginRight={1}>
+                  { (!value || value === '')
+                    ? <Skeleton variant='circle' width={32} height={32} />
+                    : <Identicon
+                      size={32}
+                      theme='polkadot'
+                      value={value}
+                    />
+                  }
+                </Box>,
+            }}
+          />
+        </FormControl>
+      </Box>
+    </>
+  );};
 
 export default React.memo(InputAddress);
