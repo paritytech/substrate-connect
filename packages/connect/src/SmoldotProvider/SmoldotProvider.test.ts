@@ -66,8 +66,8 @@ test('emits error when system_health responds with error', async () => {
 
 test('emits events when it connects then disconnects', async () => {
   const healthResponses = [
-    { isSyncing: true, peerCount: 1, shouldHavePeers: true },
-    { isSyncing: true, peerCount: 0, shouldHavePeers: true }
+    { isSyncing: false, peerCount: 1, shouldHavePeers: true },
+    { isSyncing: false, peerCount: 0, shouldHavePeers: true }
   ];
   const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
@@ -87,9 +87,9 @@ test('emits events when it connects then disconnects', async () => {
 
 test('emits events when it connects / disconnects / reconnects', async () => {
   const healthResponses = [
-    { isSyncing: true, peerCount: 1, shouldHavePeers: true },
-    { isSyncing: true, peerCount: 0, shouldHavePeers: true },
-    { isSyncing: true, peerCount: 1, shouldHavePeers: true }
+    { isSyncing: false, peerCount: 1, shouldHavePeers: true },
+    { isSyncing: false, peerCount: 0, shouldHavePeers: true },
+    { isSyncing: false, peerCount: 1, shouldHavePeers: true }
   ];
   const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
