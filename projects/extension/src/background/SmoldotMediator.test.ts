@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { jest } from '@jest/globals';
-import * as smoldot from 'smoldot';
+import { SmoldotClient} from 'smoldot';
 
 import {
   customHealthResponder,
@@ -19,7 +19,7 @@ import westend from '../../public/assets/westend.json';
 import { AppMediator } from './AppMediator';
 import { MockPort, MockConnectionManager } from '../mocks';
 
-let sc: smoldot.SmoldotClient;
+let sc: SmoldotClient;
 let sm: SmoldotMediator;
 let appMed: AppMediator;
 
