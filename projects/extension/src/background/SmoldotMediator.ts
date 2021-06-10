@@ -30,7 +30,6 @@ export class SmoldotMediator {
 
   sendRpcMessage(message: JsonRpcRequest): number {
     const nextID = ++this.#id;
-    /* eslint-disable @typescript-eslint/no-unsafe-member-access */
     message.id = nextID;
     this.#smoldotClient.sendJsonRpc(JSON.stringify(message), 0);
     return nextID;

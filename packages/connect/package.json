@@ -22,7 +22,7 @@
     "downloadSpecs": "node downloadSpecs.js && cp ./src/specs/westend.json ./src/__mocks__/.",
     "prebuild": "yarn clean && yarn downloadSpecs",
     "pretest": "yarn build",
-    "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --coverage dist/",
+    "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage dist/",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist",
     "build": "tsc --build",
@@ -35,7 +35,7 @@
     "eventemitter3": "^4.0.7",
     "file-entry-cache": "^6.0.1",
     "mkdirp": "^1.0.4",
-    "smoldot": "^0.2.0"
+    "smoldot": "^0.2.4"
   },
   "devDependencies": {
     "@polkadot/api": "^4.2.4",

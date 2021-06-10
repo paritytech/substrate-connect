@@ -3322,7 +3322,7 @@
 "@substrate/smoldot-test-utils@file:packages/smoldot-test-utils":
   version "0.1.0"
   dependencies:
-    smoldot "^0.2.0"
+    smoldot "^0.2.4"
 
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
@@ -14027,10 +14027,10 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-smoldot@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.2.0.tgz#e093cac3a8df99f4a6aa630f86608db6c106b8de"
-  integrity sha512-Q55meqT5PfbZLx3QqnsNi/6e8d1M3R156hvwdoVxqZFESaLLLnjNSq5PcfysLOiZb9nusPcXDyzTWVrsVzB4ww==
+smoldot@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.2.4.tgz#53483fda8ec616f8863fb669af70e1fb072bebcc"
+  integrity sha512-t3rcQBCv+D/vKLXnSA27W8Q+wlBbKRtcwCBhM1DIzDE8Psx/yPzq0UKpOXuqSYbc6jA8towLFroTjITH9zIxgQ==
   dependencies:
     buffer "^6.0.1"
     performance-now "^2.1.0"
