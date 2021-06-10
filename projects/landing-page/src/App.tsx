@@ -56,13 +56,6 @@ const App: React.FunctionComponent = () => {
                 Testing environment for Polkadot and Kusama deployments and processes
               </CardNetwork>
               <CardNetwork
-                title='Rococo'
-                statusProps={{status:'soon'}}
-                linkProps={{href:'https://polkadot.network/rococo-v1-a-holiday-gift-to-the-polkadot-community/'}}
-              >
-                Testnet designed for parachains and related technologies: Cumulus and HRMP
-              </CardNetwork>
-              <CardNetwork
                 title='Kusama'
                 statusProps={{status:'supported'}}
                 linkProps={{href:'https://kusama.network/'}}
@@ -75,6 +68,13 @@ const App: React.FunctionComponent = () => {
                 linkProps={{href:'https://polkadot.network/'}}
               >
                 Scalable sharded chain and the first protocol that provides a secure environment for cross-chain composability
+              </CardNetwork>
+              <CardNetwork
+                title='Rococo'
+                statusProps={{status:'soon'}}
+                linkProps={{href:'https://polkadot.network/rococo-v1-a-holiday-gift-to-the-polkadot-community/'}}
+              >
+                Testnet designed for parachains and related technologies: Cumulus and HRMP
               </CardNetwork>
             </Grid>
             <SectionRef href='https://github.com/paritytech/substrate-connect/tree/13bd26a1ca2904f8e0b5d04dfa35e82364d37d99/packages/connect/assets'>
