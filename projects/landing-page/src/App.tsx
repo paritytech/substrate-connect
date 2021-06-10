@@ -152,10 +152,6 @@ const App: React.FunctionComponent = () => {
           </Section>
           <ThemeProvider theme={createMuiTheme(dark)}>
             <Section pt={5} pb={5}>
-              <SectionHeading id='playground' prefix='6'>Playground</SectionHeading>
-              <SectionText>Save logged API as global variable. Call methods</SectionText>
-              <SectionHeroText>cmd + alt + i</SectionHeroText>
-              <SectionHeroText>ctrl + shift + i</SectionHeroText>
               {/* TODO: Playground */}
               <Box pt={25}>
                 <FooterLink>© 2021 Parity Technologies</FooterLink>
