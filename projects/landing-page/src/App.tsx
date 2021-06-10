@@ -89,10 +89,10 @@ const App: React.FunctionComponent = () => {
                 yarn add @substrate/substrate-connect
               </Code>
               <Code heading='index.ts'>
-                <Box>{`import { UApp } from '@substrate/connect';`}</Box>
+                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
 
                 <Box mt={2}>{`// Create a new UApp with a unique name`}</Box>
-                <Box>{`const app = new UApp('burnr-wallet');`}</Box>
+                <Box>{`const app = new Detector('burnr-wallet');`}</Box>
                 <Box>{`const westend = app.detect('westend');`}</Box>
                 <Box>{`const kusama = app.detect('kusama');`}</Box>
 
