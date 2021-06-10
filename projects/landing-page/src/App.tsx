@@ -153,7 +153,7 @@ const App: React.FunctionComponent = () => {
           <ThemeProvider theme={createMuiTheme(dark)}>
             <Section pt={5} pb={5}>
               {/* TODO: Playground */}
-              <Box pt={25}>
+              <Box>
                 <FooterLink>© 2021 Parity Technologies</FooterLink>
                 <FooterLink>Terms & conditions</FooterLink>
                 <FooterLink>Privacy policy</FooterLink>
