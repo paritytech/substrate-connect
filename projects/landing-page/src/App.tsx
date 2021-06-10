@@ -57,21 +57,21 @@ const App: React.FunctionComponent = () => {
               </CardNetwork>
               <CardNetwork
                 title='Rococo'
-                statusProps={{status:'very soon'}}
+                statusProps={{status:'soon'}}
                 linkProps={{href:'https://polkadot.network/rococo-v1-a-holiday-gift-to-the-polkadot-community/'}}
               >
                 Testnet designed for parachains and related technologies: Cumulus and HRMP
               </CardNetwork>
               <CardNetwork
                 title='Kusama'
-                statusProps={{status:'soon'}}
+                statusProps={{status:'supported'}}
                 linkProps={{href:'https://kusama.network/'}}
               >
                 A network built as a risk-taking, fast-moving ‘canary in the coal mine’ for its cousin Polkadot
               </CardNetwork>
               <CardNetwork
                 title='Polkadot'
-                statusProps={{status:'soon'}}
+                statusProps={{status:'supported'}}
                 linkProps={{href:'https://polkadot.network/'}}
               >
                 Scalable sharded chain and the first protocol that provides a secure environment for cross-chain composability
