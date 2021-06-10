@@ -13,12 +13,6 @@ const  connectApp = (manager: ConnectionManager, tabId: number, name: string, ne
   return port;
 }
 
-const waitForMessageToBePosted = (): Promise<null> => {
-  // window.postMessge is async so we must do a short setTimeout to yield to
-  // the event loop
-  return new Promise(resolve => setTimeout(resolve, 10, null));
-}
-
 test('adding and removing apps changes state', async () => {
   //setup conenection manager with 2 networks
   const manager = new ConnectionManager();
