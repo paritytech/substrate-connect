@@ -145,7 +145,7 @@ const App: React.FunctionComponent = () => {
               title='Next Project'
               imageProps={{path:YourProject}}
             >
-              <SectionRef href='https://github.com/paritytech/substrate/blob/master/docs/CONTRIBUTING.adoc#rules'>
+              <SectionRef href='https://github.com/paritytech/substrate-connect/blob/master/CONTRIBUTING.md'>
                 Contributor’s guide
               </SectionRef>
             </CardProject>
