@@ -170,7 +170,6 @@ const App: React.FunctionComponent = () => {
           <SidebarLink href='#supported-networks'>Supported Networks</SidebarLink>
           <SidebarLink href='#getting-started'>Getting Started</SidebarLink>
           <SidebarLink href='#projects'>Projects</SidebarLink>
-          <SidebarLink href='#playground'>Playground</SidebarLink>
         </Sidebar>
         {/* TODO: Footer */}
       </UIContainer>
