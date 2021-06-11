@@ -1,14 +1,9 @@
 export default {
+  transform: {},
   testEnvironment: 'jsdom',
+  moduleFileExtensions: ["js", "jsx"],
   setupFilesAfterEnv: ['./jest-setup.js'],
-  transform: {
-     '\.[jt]sx?$': 'babel-jest'
-  },
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.test.json'
-    }
-  },
   verbose: true,
   testURL: 'http://localhost/'
 };
+

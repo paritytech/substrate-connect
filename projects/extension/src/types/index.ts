@@ -1,6 +1,6 @@
 export type NetworkTypes = 'kusama' | 'polkadot' | 'westend' | 'kulupu'
 
-export type NetworkStatus =  'connected' | 'disconnecting' | 'disconnected';
+export type NetworkStatus = 'connected' | 'disconnecting' | 'disconnected';
 
 export interface TabInterface {
     tabId: number | undefined;

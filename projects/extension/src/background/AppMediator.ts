@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import EventEmitter from 'eventemitter3';
 import {
   MessageToManager,
   MessageFromManager
 } from '@substrate/connect-extension-protocol';
 import { 
-  AppState, 
+  AppState,
   ConnectionManagerInterface,
   JsonRpcRequest,
   JsonRpcResponse,
@@ -227,8 +228,10 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   };
 
   #handleDisconnect = (): void => {
-    if (this.#state === 'disconnecting' || this.#state === 'disconnected') {
+    if (this.#state === 'disconnecting') {
       throw new Error('Cannot disconnect - already disconnecting / disconnected');
+    } else if (this.#state === 'disconnected') {
+      throw new Error('Cannot disconnect - already disconnected');
     }
 
     this.#state = 'disconnecting';

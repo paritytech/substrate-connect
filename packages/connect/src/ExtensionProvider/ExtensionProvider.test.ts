@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import {jest} from '@jest/globals'
 import { 
   ExtensionProvider, 
@@ -26,7 +29,7 @@ afterEach(() => {
   window.removeEventListener('message', handler);
 });
 
-test('constructor sets properties', async () => {
+test('constructor sets properties', () => {
   const ep = new ExtensionProvider('test', 'kusama');
   expect(ep.name).toBe('test');
   expect(ep.chainName).toBe('kusama');

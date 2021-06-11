@@ -7,12 +7,14 @@
   "license": "GPL-3.0-only",
   "type": "module",
   "scripts": {
+    "downloadSpecs": "node downloadSpecs.js",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist",
     "pretest": "yarn clean && tsc",
-    "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --coverage dist/",
-    "build": "yarn run clean && webpack --config webpack.prod.js && zip -r ./dist/substrate-connect.zip ./dist/*",
-    "dev": "yarn run clean && webpack --node-env development --config webpack.dev.js",
+    "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage /dist",
+    "prebuild": "yarn clean && yarn downloadSpecs",
+    "build": "webpack --config webpack.prod.js && zip -r ./dist/substrate-connect.zip ./dist/*",
+    "dev": "yarn run prebuild && webpack --node-env development --config webpack.dev.js",
     "start": "web-ext run --source-dir ./dist -t chromium",
     "start:firefox": "web-ext run --source-dir ./dist -t firefox-desktop",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
@@ -45,9 +47,10 @@
     "eslint": "^7.20.0",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-tsdoc": "^0.2.14",
     "file-loader": "^6.2.0",
     "html-minimizer-webpack-plugin": "^2.1.0",
-    "jest": "^26.6.3",
+    "jest": "^27.0.0-next.9",
     "jest-chrome": "^0.7.0",
     "jest-styled-components": "^7.0.3",
     "style-loader": "^2.0.0",
@@ -64,12 +67,12 @@
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/styles": "^4.11.3",
-    "@polkadot/rpc-provider": "^3.10.2",
+    "@polkadot/rpc-provider": "^4.10.1",
     "@substrate/connect-extension-protocol": "^0.3.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hot-loader": "^4.13.0",
-    "smoldot": "^0.2.0",
+    "smoldot": "^0.2.5",
     "strict-event-emitter-types": "^2.0.0",
     "styled-components": "^5.2.1"
   },
@@ -77,6 +80,7 @@
     "root": true,
     "rules": {
       "@typescript-eslint/restrict-template-expressions": 0,
+      "tsdoc/syntax": "warn",
       "react/prop-types": 0,
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
@@ -90,7 +94,8 @@
     },
     "plugins": [
       "@typescript-eslint",
-      "react-hooks"
+      "react-hooks",
+      "eslint-plugin-tsdoc"
     ],
     "parserOptions": {
       "project": [

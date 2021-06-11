@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from 'react';
 import { CssBaseline, ThemeProvider, createMuiTheme, Typography, Box, Grid } from '@material-ui/core';
-import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeading, SectionText, SectionHeroText, SectionRef, FooterLink, SidebarLink, Code } from './components';
+import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeading, SectionText, SectionRef, FooterLink, SidebarLink, Code } from './components';
 import { CardNetwork, CardProject } from './components/Cards';
 
 import BrowserDemo from 'url:../public/assets/images/BrowserDemo.png';
@@ -71,7 +71,7 @@ const App: React.FunctionComponent = () => {
               </CardNetwork>
               <CardNetwork
                 title='Rococo'
-                statusProps={{status:'very soon'}}
+                statusProps={{status:'soon'}}
                 linkProps={{href:'https://polkadot.network/rococo-v1-a-holiday-gift-to-the-polkadot-community/'}}
               >
                 Testnet designed for parachains and related technologies: Cumulus and HRMP
@@ -91,16 +91,16 @@ const App: React.FunctionComponent = () => {
               <Code heading='index.ts'>
                 <Box>{`import { Detector } from '@substrate/connect';`}</Box>
 
-                <Box mt={2}>{`// Create a new UApp with a unique name (e.g. Burn wallet)`}</Box>
-                <Box>{`const app = new Detector('Burnr wallet');`}</Box>
-                <Box>{`const westend = await app.connect('westend');`}</Box>
-                <Box>{`const kusama = await app.connect('kusama');`}</Box>
+                <Box mt={2}>{`// Create a new UApp with a unique name`}</Box>
+                <Box>{`const app = new Detector('burnr-wallet');`}</Box>
+                <Box>{`const westend = await app.detect('westend');`}</Box>
+                <Box>{`const kusama = await app.detect('kusama');`}</Box>
 
-                <Box mt={2}>{`westend.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                <Box mt={2}>{`await westend.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
 
-                <Box mt={2}>{`kusama.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                <Box mt={2}>{`await kusama.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`});`}</Box>
 
@@ -145,19 +145,15 @@ const App: React.FunctionComponent = () => {
               title='Next Project'
               imageProps={{path:YourProject}}
             >
-              <SectionRef href='https://github.com/paritytech/substrate/blob/master/docs/CONTRIBUTING.adoc#rules'>
+              <SectionRef href='https://github.com/paritytech/substrate-connect/blob/master/CONTRIBUTING.md'>
                 Contributor’s guide
               </SectionRef>
             </CardProject>
           </Section>
           <ThemeProvider theme={createMuiTheme(dark)}>
             <Section pt={5} pb={5}>
-              <SectionHeading id='playground' prefix='6'>Playground</SectionHeading>
-              <SectionText>Save logged API as global variable. Call methods</SectionText>
-              <SectionHeroText>cmd + alt + i</SectionHeroText>
-              <SectionHeroText>ctrl + shift + i</SectionHeroText>
               {/* TODO: Playground */}
-              <Box pt={25}>
+              <Box>
                 <FooterLink>© 2021 Parity Technologies</FooterLink>
                 <FooterLink>Terms & conditions</FooterLink>
                 <FooterLink>Privacy policy</FooterLink>
@@ -174,7 +170,6 @@ const App: React.FunctionComponent = () => {
           <SidebarLink href='#supported-networks'>Supported Networks</SidebarLink>
           <SidebarLink href='#getting-started'>Getting Started</SidebarLink>
           <SidebarLink href='#projects'>Projects</SidebarLink>
-          <SidebarLink href='#playground'>Playground</SidebarLink>
         </Sidebar>
         {/* TODO: Footer */}
       </UIContainer>

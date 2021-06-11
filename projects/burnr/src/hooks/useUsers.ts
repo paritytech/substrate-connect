@@ -15,7 +15,7 @@ export default function useUsers (): string[] {
         console.log('entries', entries)
         mountedRef.current && setUsers(
           entries
-            .filter(([, { refcount, data: { free } }]) => !refcount.isZero() || !free.isZero())
+            .filter(([, { data: { free } }]) => !free.isZero())
             .map(([key]) => key.args[0].toString())
         )
       })
