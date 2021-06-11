@@ -19,7 +19,8 @@
   },
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
-    "downloadSpecs": "node ../../downloadSpecs.js connect",
+    "downloadSpecs:test": "node ../../downloadSpecs.js test connect",
+    "downloadSpecs:build": "node ../../downloadSpecs.js build connect",
     "pretest": "yarn clean && yarn build",
     "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage dist/",
     "deep-clean": "yarn clean && rm -rf node_modules",
