@@ -29,18 +29,47 @@ function execute(keys) {
 }
 
 // remove 2 first inputs of process.argv which are 'node' command and this file's name
-const argument = process.argv.slice(2);
+const arguments = process.argv.slice(2);
+const action = arguments[0];
+let which;
 
-// this means that argument was provided - we expect only one which should
-// be the project/package's name
-if (argument && argument.length === 1) {
-  if (Object.keys(projectsDirs).includes(argument[0])) {
-    execute(argument);
-  } else {
-    console.log('Provided argument is unknown.');
+// stop script if action argument does not exist
+if (!action || (action !== 'test' && action !== 'build')) {
+  console.log(`A 'test' or a 'build' action must be provided. Exiting.`)
+  return;
+}
+
+which = arguments[1];
+
+// this means that argument action ("build" or "test") was provided
+if (action === 'build') {
+  // during build we need only 'extension' - so if connect is given as argument script should exit
+  if (which && which === 'connect') {
+    console.log('Connect does not need specs during build. Please read the README.md file');
+    return;
   }
-} else if (!argument.length) {
-  execute(Object.keys(projectsDirs));
-} else {
-  console.log('Error with arguments provided. Please read the README.md file.');
+
+  if (which && which.length === 1) {
+    if (!Object.keys(projectsDirs).includes(which)) {
+      console.log('Provided argument is unknown. Exiting.');
+      return;
+    }
+    execute(which);
+  } else if (!which) {
+    execute(['extension']);
+  } else {
+    console.log('Error with arguments provided. Please read the README.md file.');
+  }
+} else if (action === 'test') {
+  if (which && which.length === 1) {
+    if (!Object.keys(projectsDirs).includes(which)) {
+      console.log('Provided argument is unknown. Exiting.');
+      return;
+    }
+    execute(which);
+  } else if (!which) {
+    execute(Object.keys(projectsDirs));
+  } else {
+    console.log('Error with arguments provided. Please read the README.md file.');
+  }
 }
