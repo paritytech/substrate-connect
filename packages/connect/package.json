@@ -1,6 +1,6 @@
 {
   "name": "@substrate/connect",
-  "version": "0.3.6",
+  "version": "0.3.8",
   "description": "Substrate-connect to Smoldot clients. Using either substrate extension with predefined clients or an internal smoldot client based on chainSpecs provided.",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
@@ -29,17 +29,16 @@
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "dependencies": {
+    "@polkadot/api": "^4.2.4",
     "@polkadot/rpc-provider": "^4.10.1",
     "@substrate/connect-extension-protocol": "^0.3.0",
     "browserify-fs": "^1.0.0",
     "eventemitter3": "^4.0.7",
     "file-entry-cache": "^6.0.1",
     "mkdirp": "^1.0.4",
-    "smoldot": "^0.2.4"
+    "smoldot": "^0.2.5"
   },
   "devDependencies": {
-    "@polkadot/api": "^4.2.4",
-    "@polkadot/extension-inject": "^0.36.1",
     "@substrate/smoldot-test-utils": "file:../smoldot-test-utils",
     "@types/jest": "^26.0.20",
     "@types/jsdom": "^16.2.7",
