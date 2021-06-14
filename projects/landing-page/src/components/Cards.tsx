@@ -164,7 +164,7 @@ export const CardNetwork: React.FunctionComponent<CardNetworkProps> = ({children
       <CardStatus {...statusProps} />
       <Box mb>
         <Typography variant='h3'>
-          <Box component='span' mr>
+          <Box component='span' mr={0.75}>
             <IconWeb3>{title.toLowerCase()}</IconWeb3>
           </Box>
           {title}
