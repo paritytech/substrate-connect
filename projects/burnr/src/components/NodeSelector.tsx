@@ -108,7 +108,7 @@ export default function NodeSelector(): React.ReactElement {
             <FiberManualRecordIcon style={{ fontSize: '16px', marginRight: 4 }} color={api && api.isReady ? 'primary' : 'error'} />
             <Box width='100%'>
               <Typography variant='h4'>{ ALL_PROVIDERS[provider]?.network }</Typography>
-              <Typography variant='body2' color='textSecondary'>{ALL_PROVIDERS[provider]?.client} client</Typography>
+              <Typography variant='body2' color='textSecondary'>{ALL_PROVIDERS[provider]?.client}</Typography>
             </Box>
             {open ? <ArrowDropUpIcon /> : <ArrowDropDownIcon /> }
           </Box>
