@@ -36,7 +36,7 @@
     "eventemitter3": "^4.0.7",
     "file-entry-cache": "^6.0.1",
     "mkdirp": "^1.0.4",
-    "smoldot": "^0.2.5"
+    "smoldot": "^0.2.6"
   },
   "devDependencies": {
     "@substrate/smoldot-test-utils": "file:../smoldot-test-utils",
