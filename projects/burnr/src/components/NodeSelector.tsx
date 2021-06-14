@@ -109,7 +109,6 @@ export default function NodeSelector(): React.ReactElement {
       if (api && await api.isReady) {
         setFiberColor('primary');
       }
-      setFiberColor('error');
     }
 
     api && getColor(api);
