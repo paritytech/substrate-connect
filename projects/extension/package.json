@@ -10,7 +10,7 @@
     "downloadSpecs": "node downloadSpecs.js",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist",
-    "pretest": "yarn clean && tsc",
+    "pretest": "yarn clean && tsc -b",
     "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage /dist",
     "prebuild": "yarn clean && yarn downloadSpecs",
     "build": "webpack --config webpack.prod.js && zip -r ./dist/substrate-connect.zip ./dist/*",

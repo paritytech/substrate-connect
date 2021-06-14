@@ -25,7 +25,7 @@
     "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage dist/",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist",
-    "build": "tsc --build",
+    "build": "tsc -b",
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "dependencies": {

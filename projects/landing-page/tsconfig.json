@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
@@ -8,9 +9,6 @@
     "target": "ES2015",
     "types": [],
     "esModuleInterop": true,
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "skipLibCheck": true,

@@ -13,8 +13,8 @@
   "scripts": {
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist",
-    "typecheck": "tsc --noEmit",
-    "typecheck:watch": "tsc --noEmit --watch",
+    "typecheck": "tsc -b",
+    "typecheck:watch": "tsc -b --watch",
     "build": "yarn clean && yarn typecheck && parcel build index.html --public-url ./ --detailed-report",
     "dev": "yarn clean && concurrently \"yarn typecheck:watch\" \"parcel --no-cache index.html\"",
     "test": "echo \"Warning: Jest has been setup but no tests exist.\"",

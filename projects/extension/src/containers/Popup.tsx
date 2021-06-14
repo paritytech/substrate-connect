@@ -11,7 +11,7 @@ import { Background } from '../background/';
 import { debug } from '../utils/debug';
 import { TabInterface } from '../types';
 import { State, AppInfo } from '../background/types';
-import { ConnectionManager } from 'background/ConnectionManager';
+import { ConnectionManager } from '../background/ConnectionManager';
 
 const { createMuiTheme, ThemeProvider, Box, Divider } = material;
 

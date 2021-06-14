@@ -11,10 +11,9 @@
     "prebuild": "yarn clean",
     "deep-clean": "rm -rf node_modules",
     "clean": "rm -rf dist/",
-    "build": "tsc",
+    "build": "tsc -b",
     "test": "echo \"No tests for smoldot-test-utils\"",
-    "lint": "eslint . --ext .js,.ts",
-    "postinstall": "yarn build"
+    "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {
     "smoldot": "^0.2.5"
