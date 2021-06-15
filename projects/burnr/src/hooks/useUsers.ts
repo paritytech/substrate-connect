@@ -6,12 +6,12 @@ import useIsMountedRef from './api/useIsMountedRef';
 import { BURNR_WALLET } from '../utils/constants';
 
 export default function useUsers (): string[] {
-  const l = logger(BURNR_WALLET);
   const api = useApi();
   const [users, setUsers] = useState<string[]>([]);
   const  mountedRef = useIsMountedRef();
 
   useEffect((): void => {
+    const l = logger(BURNR_WALLET);
     api.query.system.account
       .entries()
       .then((entries): void => {

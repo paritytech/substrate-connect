@@ -36,7 +36,7 @@ export default function useUserInfo (address: string): UserInfo {
     return (): void => {
       unsubscribe && unsubscribe();
     }
-  }, [address, api, mountedRef]);
+  }, [address, api, l.error, mountedRef]);
 
   return usersInfo as UserInfo;
 }

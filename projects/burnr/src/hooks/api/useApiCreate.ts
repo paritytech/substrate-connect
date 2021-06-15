@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 import { useEffect, useState } from 'react';
-import { ApiPromise, WsProvider } from '@polkadot/api';
+import { ApiPromise } from '@polkadot/api';
 import { logger } from '@polkadot/util';
 import { Detector }  from '@substrate/connect';
 import { ALL_PROVIDERS, BURNR_WALLET } from '../../utils/constants';
@@ -36,7 +36,7 @@ export default function useApiCreate (): ApiPromise {
 
     const endpoint = provider.network.toLowerCase();
     
-    choseSmoldot(endpoint);
+    void choseSmoldot(endpoint);
   }, [mountedRef, provider.endpoint, provider.network, localEndpoint]);
 
   return api;

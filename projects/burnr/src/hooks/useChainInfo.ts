@@ -18,6 +18,6 @@ export default function useChainInfo (): Header | undefined {
       mountedRef.current && setNewHead(lastHeader)  
     }).catch(err => l.error('There was an error', err));
 
-  }, [api.rpc.chain, mountedRef]);
+  }, [api.rpc.chain, l, mountedRef]);
   return newHead;
 }
