@@ -2,16 +2,16 @@
 
 import BN from 'bn.js';
 import { useEffect, useState } from 'react';
-import { formatBalance } from '@polkadot/util';
+import { formatBalance, logger } from '@polkadot/util';
 import { Balance } from '@polkadot/types/interfaces';
 
+import { BURNR_WALLET } from '../utils/constants';
 import useApi from './api/useApi';
 import useIsMountedRef from './api/useIsMountedRef';
 
 type State = [string, Balance, boolean, string];
 
 const ZERO = new BN(0);
-
 export default function useBalance (address: string): State {
   const api = useApi();
   const [state, setState] = useState<State>([
@@ -22,6 +22,7 @@ export default function useBalance (address: string): State {
   ]);
   const  mountedRef = useIsMountedRef();
   useEffect((): () => void => {
+    const l = logger(BURNR_WALLET);
     let unsubscribe: null | (() => void) = null;
     address && api.query.system
       .account(address, ({ data }): void => {
@@ -35,7 +36,7 @@ export default function useBalance (address: string): State {
       .then((u): void => {
         unsubscribe = u;
       })
-      .catch(console.error);
+      .catch(l.error);
 
     return (): void => {
       unsubscribe && unsubscribe();

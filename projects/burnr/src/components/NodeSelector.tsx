@@ -4,14 +4,14 @@ import { createStyles, makeStyles, Theme  } from '@material-ui/core/styles';
 import { InputBase, ClickAwayListener,  Typography, Box } from '@material-ui/core';
 import Autocomplete, { AutocompleteCloseReason } from '@material-ui/lab/Autocomplete';
 
-import { ALL_PROVIDERS } from '../utils/constants';
+import { ALL_PROVIDERS, BURNR_WALLET } from '../utils/constants';
 import { useLocalStorage, useApi } from '../hooks';
+import { logger } from '@polkadot/util';
 
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import DoneIcon from '@material-ui/icons/Done';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -71,6 +71,7 @@ const options = Object.entries(ALL_PROVIDERS).map(
 ).sort((a,b) => (a.network > b.network) ? 1 : ((b.network > a.network) ? -1 : 0));
 
 export default function NodeSelector(): React.ReactElement {
+  const l = logger(BURNR_WALLET);
   const classes = useStyles();
   const api = useApi();
   const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
@@ -92,11 +93,9 @@ export default function NodeSelector(): React.ReactElement {
   const updateProvider = (provider: string) => {
     setLocalEndpoint(provider);
     setProvider(provider);
-    
-    console.log("Burnr wallet is now connected to", ALL_PROVIDERS[provider]?.endpoint);
+    l.log("Burnr wallet is now connected to", ALL_PROVIDERS[provider]?.endpoint);
     // Tis is just a temporary work around. Api should be passed on as prop without reload
     location.reload();
-    // setChain(REMOTE_PROVIDERS[selectedEndpoint].network);
   };
 
   return (
