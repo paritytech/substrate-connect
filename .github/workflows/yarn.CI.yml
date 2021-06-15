@@ -27,7 +27,7 @@ jobs:
     - run: yarn install
     - run: yarn lint
     - run: yarn build
-    - run: yarn test
+    # - run: yarn test
     - run: yarn deploy
       # only:
       #   - master
