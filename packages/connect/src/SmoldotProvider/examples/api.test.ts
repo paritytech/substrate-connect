@@ -55,7 +55,7 @@ describe('API integration tests', () => {
     l.log(`${chain}: last block #${lastHeader.number} has hash ${lastHeader.hash}`);
   }, 15000);
 
-  test('RPC query subscriptions', async () => {
+  test.skip('RPC query subscriptions', async () => {
     const chain = await api.rpc.system.chain();
     return new Promise<void>((resolve) => {
       let unsubscribe: any = undefined;
