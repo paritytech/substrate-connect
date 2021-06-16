@@ -1,3 +1,0 @@
-packages/connect/src/specs/kusama.json(235,590196): error TS1002: Unterminated string literal.
-packages/connect/src/specs/polkadot.json(8426,2773272): error TS1002: Unterminated string literal.
-packages/connect/src/specs/westend.json(54,1705158): error TS1002: Unterminated string literal.
