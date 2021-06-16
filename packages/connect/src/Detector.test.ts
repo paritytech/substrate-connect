@@ -32,7 +32,7 @@ describe('Initialize Detector without extension', () => {
     const api = await detect.connect(chainName, undefined, options);
     expect(api).toBeTruthy();
     await detect.disconnect('westend');
-  }, timeout);
+  }, extTimeout);
 
   test('Should connect with known chain "kusama".', async () => {
     detect = new Detector('test-uapp');
@@ -48,7 +48,7 @@ describe('Initialize Detector without extension', () => {
     const api = await detect.connect(chainName, chainSpec);
     expect(api).toBeTruthy();
     await detect.disconnect(chainName);
-  }, timeout);
+  }, extTimeout);
 
   test('Should NOT connect with unknown chain westend2 and without chainSpecs.', () => {
     const chainName = 'westend2';
