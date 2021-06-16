@@ -257,6 +257,7 @@ export class SmoldotProvider implements ProviderInterface {
     assert(!this.#client && !this.#isConnected, 'Client is already connected');
     try {
       this.#client = await this.#smoldot.start({
+        forbidWs: true, /* suppress console warnings about insecure connections */
         chainSpecs: [this.#chainSpec],
         maxLogLevel: 3, /* no debug/trace messages */
         jsonRpcCallback: (response: string) => {

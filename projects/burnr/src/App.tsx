@@ -40,16 +40,20 @@ const App: React.FunctionComponent<Props> = ({ className = '' }: Props) => {
   const [loader, setLoader] = useState(true)
 
   useEffect((): void => {
-    if (api && api.isReady) {
-      if (!localStorageAccount) {
-        const userTmp = createLocalStorageAccount();
-        setLocalStorageAccount(JSON.stringify(userTmp));
-        setCurrentAccount(userTmp);
-      } else {
-        setCurrentAccount(JSON.parse(localStorageAccount));
-      }
-      setLoader(false)
+    const callSetters = async () => {
+      if (await api.isReady) {
+        if (!localStorageAccount) {
+          const userTmp = createLocalStorageAccount();
+          setLocalStorageAccount(JSON.stringify(userTmp));
+          setCurrentAccount(userTmp);
+        } else {
+          setCurrentAccount(JSON.parse(localStorageAccount));
+        }
+        setLoader(false);
+      }  
     }
+
+    api && callSetters();
   }, [localStorageAccount, setLocalStorageAccount, api]);
 
   return (
