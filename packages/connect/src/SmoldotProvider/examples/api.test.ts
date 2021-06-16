@@ -1,19 +1,24 @@
-// /* eslint-disable @typescript-eslint/no-floating-promises */
-// /* eslint-disable @typescript-eslint/no-unsafe-return */
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// /* eslint-disable @typescript-eslint/restrict-template-expressions */
-// /* eslint-disable @typescript-eslint/no-unsafe-call */
-// /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-// /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-// import expect from 'expect';
-// import { ApiPromise } from '@polkadot/api';
-// import {SmoldotProvider} from '../';
-// import {logger} from '@polkadot/util';
-// import westend from '../../__mocks__/westend.json';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import expect from 'expect';
+import { ApiPromise } from '@polkadot/api';
+import {SmoldotProvider} from '../';
+import {logger} from '@polkadot/util';
+import westend from '../../__mocks__/westend.json';
 
-// const l = logger('examples');
-// let api: ApiPromise;
-// let provider: SmoldotProvider;
+const l = logger('examples');
+let api: ApiPromise;
+let provider: SmoldotProvider;
+
+test('fake test', () => {
+  expect(1).toBe(1);
+});
 
 // describe('API integration tests', () => {
 //   beforeEach(async () => {
@@ -55,7 +60,7 @@
 //     l.log(`${chain}: last block #${lastHeader.number} has hash ${lastHeader.hash}`);
 //   }, 15000);
 
-//   test.skip('RPC query subscriptions', async () => {
+//   test('RPC query subscriptions', async () => {
 //     const chain = await api.rpc.system.chain();
 //     return new Promise<void>((resolve) => {
 //       let unsubscribe: any = undefined;
