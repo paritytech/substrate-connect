@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -18,6 +19,35 @@ import {
 import { jest } from '@jest/globals';
 
 const EMPTY_CHAIN_SPEC = '{}';
+
+describe('Test Development chain', () => {
+  let provider: SmoldotProvider;
+
+  afterEach(async () => {
+    await provider.disconnect();
+  });
+
+  test('emits connect and never emits disconnect for development chain', async () => {  
+    const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
+    provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  
+    // we don't want the test to be slow
+    provider.healthPingerInterval = 1;
+    await provider.connect();
+    
+    return new Promise<void>((resolve, reject) => {
+      provider.on('connected', () => {
+        setTimeout(() => {
+          resolve();
+        }, 20);
+  
+        provider.on('disconnected', () => {
+          reject('should never disconnect');
+        });
+      });
+    });
+  }, 10000);
+});
 
 test('connect propagates errors', async () => {
   const badSmoldot = {
@@ -88,9 +118,9 @@ test('emits events when it connects then disconnects', async () => {
 /** Skip as a potential issue tests (see: https://github.com/paritytech/substrate-connect/issues/325#issuecomment-862585814) */
 test.skip('emits events when it connects / disconnects / reconnects', async () => {
   const healthResponses = [
-    { isSyncing: true, peerCount: 1, shouldHavePeers: true },
-    { isSyncing: true, peerCount: 0, shouldHavePeers: true },
-    { isSyncing: true, peerCount: 1, shouldHavePeers: true }
+    { isSyncing: false, peerCount: 1, shouldHavePeers: true },
+    { isSyncing: false, peerCount: 0, shouldHavePeers: true },
+    { isSyncing: false, peerCount: 1, shouldHavePeers: true }
   ];
   const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
@@ -110,27 +140,6 @@ test.skip('emits events when it connects / disconnects / reconnects', async () =
     });
   });
 });
-
-test.skip('emits connect and never emits disconnect for development chain', async () => {
-  const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
-
-  // we don't want the test to be slow
-  provider.healthPingerInterval = 1;
-  await provider.connect();
-
-  return new Promise<void>((resolve, reject) => {
-    provider.on('connected', () => {
-      setTimeout(() => {
-        resolve();
-      }, 20);
-
-      provider.on('disconnected', () => {
-        reject('should never disconnect');
-      });
-    });
-  });
-}, 10000);
 /** skip end */
 
 test('emits events when Grandpa finishes sync and then connects', async () => {
