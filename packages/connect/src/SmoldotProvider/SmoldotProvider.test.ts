@@ -86,30 +86,30 @@ test('emits events when it connects then disconnects', async () => {
 });
 
 /** POTENTIAL ISSUE TEST 1 */
-test('emits events when it connects / disconnects / reconnects', async () => {
-  const healthResponses = [
-    { isSyncing: true, peerCount: 1, shouldHavePeers: true },
-    { isSyncing: true, peerCount: 0, shouldHavePeers: true },
-    { isSyncing: true, peerCount: 1, shouldHavePeers: true }
-  ];
-  const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+// test('emits events when it connects / disconnects / reconnects', async () => {
+//   const healthResponses = [
+//     { isSyncing: true, peerCount: 1, shouldHavePeers: true },
+//     { isSyncing: true, peerCount: 0, shouldHavePeers: true },
+//     { isSyncing: true, peerCount: 1, shouldHavePeers: true }
+//   ];
+//   const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
+//   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
 
-  // we don't want the test to be slow
-  provider.healthPingerInterval = 1;
-  await provider.connect();
+//   // we don't want the test to be slow
+//   provider.healthPingerInterval = 1;
+//   await provider.connect();
 
-  return new Promise<void>((resolve, reject) => {
-    provider.on('connected', () => {
-      const off = provider.on('disconnected', () => {
-        off(); // stop listening
-        provider.on('connected', () => {
-          provider.disconnect().then(() => resolve());
-        });
-      });
-    });
-  });
-});
+//   return new Promise<void>((resolve, reject) => {
+//     provider.on('connected', () => {
+//       const off = provider.on('disconnected', () => {
+//         off(); // stop listening
+//         provider.on('connected', () => {
+//           provider.disconnect().then(() => resolve());
+//         });
+//       });
+//     });
+//   });
+// });
 
 /** POTENTIAL ISSUE TEST 2 */
 test('emits connect and never emits disconnect for development chain', async () => {
