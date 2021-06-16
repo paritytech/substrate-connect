@@ -25,7 +25,7 @@ const App: React.FunctionComponent = () => {
           <Section>
             <SectionHeading id='substrate-based-chains' prefix='1'>Substrate-based chains</SectionHeading>
             <SectionText>
-              Substrate is a modular framework to create purpose-built blockchains by composing custom or pre-built components. It is the backbone that powers Polkadot, a next generation, heterogeneous, multi-chain network and its ecosystem.
+              Substrate is a modular framework for creating use-case optimized blockchains at a low cost, by composing custom or pre-built components. Substrate is the backbone that powers Polkadot, a next-generation, heterogeneous, multi-chain network, and its ecosystem.
             </SectionText>
             <SectionRef href='https://www.substrate.io/'>
               substrate.io
@@ -38,7 +38,7 @@ const App: React.FunctionComponent = () => {
           <Section>
             <SectionHeading id='wasm-light-clients' prefix='2'>Wasm Light Clients</SectionHeading>
             <SectionText>
-              Substrate-connect turns a browser into a node in the network for the very end-users of web3 apps to interact with blockchains directly, without connecting to third-party remote nodes and servers. These in-browser light clients are a unique feature of substrate-based networks. 
+              Substrate-connect turns a browser into a node on a network allowing end-users of Web3 apps to interact with blockchains directly - without connecting to third-party remote nodes and other servers. Removing intermediary servers between network and its users improves security, simplifies infrastructure of a network and lowers its maintenance costs. Decentralized in-browser light clients are a unique feature of substrate-based networks.
             </SectionText>
             <SectionRef href='https://www.parity.io/what-is-a-light-client/'>
               “What is a light client and why you should care?” by Thibaut Sardan

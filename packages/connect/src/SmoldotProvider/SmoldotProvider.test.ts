@@ -66,8 +66,8 @@ test('emits error when system_health responds with error', async () => {
 
 test('emits events when it connects then disconnects', async () => {
   const healthResponses = [
-    { isSyncing: true, peerCount: 1, shouldHavePeers: true },
-    { isSyncing: true, peerCount: 0, shouldHavePeers: true }
+    { isSyncing: false, peerCount: 1, shouldHavePeers: true },
+    { isSyncing: false, peerCount: 0, shouldHavePeers: true }
   ];
   const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
@@ -133,6 +133,23 @@ test('emits connect and never emits disconnect for development chain', async () 
   });
 }, 10000);
 
+test('emits events when Grandpa finishes sync and then connects', async () => {
+  const healthResponses = [
+    { isSyncing: true, peerCount: 1, shouldHavePeers: true },
+    { isSyncing: false, peerCount: 1, shouldHavePeers: true }
+  ];
+  const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
+  return new Promise<void>((resolve, reject) => {
+    provider.on('connected', () => {
+      provider.disconnect().then(() => resolve());
+    })
+  });
+});
 
 test('send formats JSON RPC request correctly', async () => {
   // we don't really care what the reponse is

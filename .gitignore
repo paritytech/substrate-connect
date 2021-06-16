@@ -6,3 +6,4 @@ dist
 # testing
 coverage
 _site
+*.tsbuildinfo
