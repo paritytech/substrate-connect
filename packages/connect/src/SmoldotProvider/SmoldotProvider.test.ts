@@ -19,27 +19,23 @@ import { jest } from '@jest/globals';
 
 const EMPTY_CHAIN_SPEC = '{}';
 
-test('fake test', () => {
-  expect(1).toBe(1);
+test('connect propagates errors', async () => {
+  const badSmoldot = {
+    start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
+      return Promise.reject(new Error('boom!'));
+    }
+  };
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, badSmoldot);
+  let errored = false;
+
+  provider.on('error', () => { errored = true; });
+  try {
+    await provider.connect();
+  } catch (_) {
+    expect(errored).toBe(true);
+    await provider.disconnect();
+  }
 });
-
-// test('connect propagates errors', async () => {
-//   const badSmoldot = {
-//     start: async (options: SmoldotOptions): Promise<SmoldotClient> => {
-//       return Promise.reject(new Error('boom!'));
-//     }
-//   };
-//   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, badSmoldot);
-//   let errored = false;
-
-//   provider.on('error', () => { errored = true; });
-//   try {
-//     await provider.connect();
-//   } catch (_) {
-//     expect(errored).toBe(true);
-//     await provider.disconnect();
-//   }
-// });
 
 // // non-subscription send
 // test('awaiting send returns message result', async () => {
