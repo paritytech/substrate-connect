@@ -112,7 +112,6 @@ test('emits events when it connects / disconnects / reconnects', async () => {
 });
 
 /** POTENTIAL ISSUE TEST 2 */
-
 test('emits connect and never emits disconnect for development chain', async () => {
   const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
