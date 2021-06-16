@@ -1,6 +1,7 @@
 /**
  * @jest-environment jsdom
  */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Detector } from './Detector';
 import { ApiOptions } from '@polkadot/api/types';
 import westend2 from './__mocks__/westend.json';
@@ -25,14 +26,14 @@ describe('Initialize Detector without extension', () => {
   //   await detect.disconnect('polkadot');
   // }, extTimeout);
 
-  test('Should connect with known chain westend, no chainSpecs and options', async () => {
-    const chainName = 'westend';
-    detect = new Detector('test-uapp');
-    const options = {} as ApiOptions;
-    const api = await detect.connect(chainName, undefined, options);
-    expect(api).toBeTruthy();
-    await detect.disconnect('westend');
-  }, timeout);
+  // test('Should connect with known chain westend, no chainSpecs and options', async () => {
+  //   const chainName = 'westend';
+  //   detect = new Detector('test-uapp');
+  //   const options = {} as ApiOptions;
+  //   const api = await detect.connect(chainName, undefined, options);
+  //   expect(api).toBeTruthy();
+  //   await detect.disconnect('westend');
+  // }, extTimeout);
 
   // test('Should connect with known chain "kusama".', async () => {
   //   detect = new Detector('test-uapp');
@@ -41,14 +42,14 @@ describe('Initialize Detector without extension', () => {
   //   await detect.disconnect('kusama');
   // }, extTimeout);
 
-  test('Should connect with unknown chain westend2 and chainSpecs.', async () => {
-    const chainSpec = JSON.stringify(westend2);
-    const chainName = 'westend2';
-    const detect = new Detector('test-uapp');
-    const api = await detect.connect(chainName, chainSpec);
-    expect(api).toBeTruthy();
-    await detect.disconnect(chainName);
-  }, timeout);
+  // test('Should connect with unknown chain westend2 and chainSpecs.', async () => {
+  //   const chainSpec = JSON.stringify(westend2);
+  //   const chainName = 'westend2';
+  //   const detect = new Detector('test-uapp');
+  //   const api = await detect.connect(chainName, chainSpec);
+  //   expect(api).toBeTruthy();
+  //   await detect.disconnect(chainName);
+  // }, extTimeout);
 
   test('Should NOT connect with unknown chain westend2 and without chainSpecs.', () => {
     const chainName = 'westend2';
