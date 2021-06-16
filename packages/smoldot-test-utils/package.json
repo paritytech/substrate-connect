@@ -10,23 +10,22 @@
   "scripts": {
     "prebuild": "yarn clean",
     "deep-clean": "rm -rf node_modules",
-    "clean": "rm -rf dist/",
-    "build": "tsc",
+    "clean": "rm -rf dist/ tsconfig.tsbuildinfo",
+    "build": "tsc -b --clean",
     "test": "echo \"No tests for smoldot-test-utils\"",
-    "lint": "eslint . --ext .js,.ts",
-    "postinstall": "yarn build"
+    "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {
     "smoldot": "^0.2.5"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
-    "@typescript-eslint/eslint-plugin": "^4.15.1",
-    "@typescript-eslint/parser": "^4.15.1",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
     "eslint": "^7.20.0",
     "eslint-plugin-tsdoc": "^0.2.14",
     "jest": "^27.0.0-next.9",
-    "typescript": "^4.1.5"
+    "typescript": "^4.3.2"
   },
   "eslintConfig": {
     "root": true,

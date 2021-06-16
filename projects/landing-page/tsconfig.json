@@ -1,16 +1,13 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./",
     "outDir": "./dist",
     "lib": ["ES2015", "DOM", "DOM.Iterable", "ScriptHost"],
     "module": "ES2015",
     "target": "ES2015",
     "types": [],
     "esModuleInterop": true,
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "skipLibCheck": true,
