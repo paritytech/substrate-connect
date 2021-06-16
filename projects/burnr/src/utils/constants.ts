@@ -5,7 +5,7 @@ import { LazyProvider } from './types';
 
 /**
  * Temporary hard-coded work around to test Wasm Light client 
- * until @substrate/connect is properly implemented
+ * until \@substrate/connect is properly implemented
  */
 
 

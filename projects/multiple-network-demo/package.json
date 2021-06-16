@@ -35,31 +35,5 @@
   "dependencies": {
     "@substrate/connect": "^0.3.9",
     "regenerator-runtime": "^0.13.7"
-  },
-  "eslintConfig": {
-    "root": true,
-    "parser": "@typescript-eslint/parser",
-    "settings": {
-      "react": {
-        "version": "detect"
-      }
-    },
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "parserOptions": {
-      "project": [
-        "./tsconfig.json"
-      ],
-      "createDefaultProgram": true
-    },
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:@typescript-eslint/recommended-requiring-type-checking"
-    ],
-    "env": {
-      "node": true
-    }
   }
 }

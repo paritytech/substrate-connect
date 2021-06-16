@@ -18,30 +18,5 @@
     "eslint": "^7.21.0",
     "eslint-plugin-tsdoc": "^0.2.14",
     "typescript": "^4.3.2"
-  },
-  "eslintConfig": {
-    "root": true,
-    "rules": {
-      "@typescript-eslint/restrict-template-expressions": "off",
-      "tsdoc/syntax": "warn"
-    },
-    "parser": "@typescript-eslint/parser",
-    "settings": {},
-    "plugins": [
-      "@typescript-eslint",
-      "eslint-plugin-tsdoc"
-    ],
-    "parserOptions": {
-      "project": "./tsconfig.json",
-      "createDefaultProgram": true
-    },
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:@typescript-eslint/recommended-requiring-type-checking"
-    ],
-    "env": {
-      "browser": true
-    }
   }
 }

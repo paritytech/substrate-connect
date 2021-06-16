@@ -77,23 +77,6 @@
     "typescript": "^4.3.2"
   },
   "eslintConfig": {
-    "root": true,
-    "parser": "@typescript-eslint/parser",
-    "settings": {
-      "react": {
-        "version": "detect"
-      }
-    },
-    "plugins": [
-      "@typescript-eslint",
-      "react-hooks"
-    ],
-    "parserOptions": {
-      "project": [
-        "./tsconfig.json"
-      ],
-      "createDefaultProgram": true
-    },
     "rules": {
       "react/prop-types": 0,
       "react-hooks/rules-of-hooks": "error",
@@ -109,25 +92,13 @@
         {
           "checkCompoundAssignments": false
         }
-      ],
-      "@typescript-eslint/restrict-template-expressions": [
-        "warn",
-        {
-          "allowNumber": true,
-          "allowBoolean": true,
-          "allowNullable": true,
-          "allowAny": true
-        }
       ]
     },
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:react/recommended",
-      "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    "plugins": [
+      "react-hooks"
     ],
-    "env": {
-      "node": true
-    }
+    "extends": [
+      "plugin:react/recommended"
+    ]
   }
 }
