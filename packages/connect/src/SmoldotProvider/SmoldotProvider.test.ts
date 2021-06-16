@@ -86,53 +86,51 @@ test('emits events when it connects then disconnects', async () => {
 });
 
 /** Skip as a potential issue tests (see: https://github.com/paritytech/substrate-connect/issues/325#issuecomment-862585814) */
-if (!process.env.GITHUB_ACTIONS)
-  test('emits events when it connects / disconnects / reconnects', async () => {
-    const healthResponses = [
-      { isSyncing: true, peerCount: 1, shouldHavePeers: true },
-      { isSyncing: true, peerCount: 0, shouldHavePeers: true },
-      { isSyncing: true, peerCount: 1, shouldHavePeers: true }
-    ];
-    const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
-    const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+test.skip('emits events when it connects / disconnects / reconnects', async () => {
+  const healthResponses = [
+    { isSyncing: true, peerCount: 1, shouldHavePeers: true },
+    { isSyncing: true, peerCount: 0, shouldHavePeers: true },
+    { isSyncing: true, peerCount: 1, shouldHavePeers: true }
+  ];
+  const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
 
-    // we don't want the test to be slow
-    provider.healthPingerInterval = 1;
-    await provider.connect();
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
 
-    return new Promise<void>((resolve, reject) => {
-      provider.on('connected', () => {
-        const off = provider.on('disconnected', () => {
-          off(); // stop listening
-          provider.on('connected', () => {
-            provider.disconnect().then(() => resolve());
-          });
+  return new Promise<void>((resolve, reject) => {
+    provider.on('connected', () => {
+      const off = provider.on('disconnected', () => {
+        off(); // stop listening
+        provider.on('connected', () => {
+          provider.disconnect().then(() => resolve());
         });
       });
     });
   });
+});
 
-if (!process.env.GITHUB_ACTIONS) 
-  test('emits connect and never emits disconnect for development chain', async () => {
-    const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
-    const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+test.skip('emits connect and never emits disconnect for development chain', async () => {
+  const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
 
-    // we don't want the test to be slow
-    provider.healthPingerInterval = 1;
-    await provider.connect();
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
 
-    return new Promise<void>((resolve, reject) => {
-      provider.on('connected', () => {
-        setTimeout(() => {
-          resolve();
-        }, 20);
+  return new Promise<void>((resolve, reject) => {
+    provider.on('connected', () => {
+      setTimeout(() => {
+        resolve();
+      }, 20);
 
-        provider.on('disconnected', () => {
-          reject('should never disconnect');
-        });
+      provider.on('disconnected', () => {
+        reject('should never disconnect');
       });
     });
-  }, 10000);
+  });
+}, 10000);
 /** skip end */
 
 test('emits events when Grandpa finishes sync and then connects', async () => {

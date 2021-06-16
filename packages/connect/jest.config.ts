@@ -7,4 +7,12 @@ const config: Config.InitialOptions = {
   transform: {},
   extensionsToTreatAsEsm: [".ts", ".tsx"]
 };
+
+if (process.env.GITHUB_ACTIONS) {
+  config.testPathIgnorePatterns = [
+    "dist/Detector.test.js",
+    "dist/SmoldotProvider/examples/api.test.js",
+  ]
+}
+
 export default config;
