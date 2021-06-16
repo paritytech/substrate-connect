@@ -28,9 +28,9 @@ jobs:
     - run: yarn lint
     - run: yarn build
     - run: yarn test
-    - run: yarn deploy
-      only:
-        - master
+    # - run: yarn deploy
+      # only:
+      #   - master
     - uses: actions/checkout@v2
       with: 
         ref: 'gh-pages'
@@ -42,7 +42,7 @@ jobs:
         pinata-api-key: ${{ secrets.PINATA_KEY }}
         pinata-secret-api-key: ${{ secrets.PINATA_SECRET }}
         remove-old: true
-      only:
-        - master
+      # only:
+      #   - master
     - run: |
         echo "Uploaded hash: ${{ steps.ipfs-upload.outputs.hash }}"
