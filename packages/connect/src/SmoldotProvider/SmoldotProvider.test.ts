@@ -143,7 +143,10 @@ test('emits events when Grandpa finishes sync and then connects', async () => {
   provider.healthPingerInterval = 1;
   await provider.connect();
   return new Promise<void>((resolve, reject) => {
-    provider.on('connected', () => resolve())});
+    provider.on('connected', () => {
+      provider.disconnect().then(() => resolve());
+    })
+  });
 });
 
 test('send formats JSON RPC request correctly', async () => {
