@@ -75,18 +75,5 @@
     "smoldot": "^0.2.5",
     "strict-event-emitter-types": "^2.0.0",
     "styled-components": "^5.2.1"
-  },
-  "eslintConfig": {
-    "rules": {
-      "react/prop-types": 0,
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn"
-    },
-    "plugins": [
-      "react-hooks"
-    ],
-    "extends": [
-      "plugin:react/recommended"
-    ]
   }
 }
