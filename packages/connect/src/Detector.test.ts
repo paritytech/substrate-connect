@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * @jest-environment jsdom
  */
@@ -8,10 +7,6 @@ import westend2 from './__mocks__/westend.json';
 
 describe('Initialize Detector without extension', () => {
   let detect: Detector;
-
-  test('fake test', () => {
-    expect(1).toBe(1);
-  });
 
   test('Should connect with known chain "westend".', async () => {
     detect = new Detector('test-uapp');
