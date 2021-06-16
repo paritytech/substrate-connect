@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "deep-clean": "yarn clean && rm -rf node_modules",
-    "clean": "rm -rf dist/ && mkdir -p dist/assets",
+    "clean": "rm -rf dist/ tsconfig.tsbuildinfo && mkdir -p dist/assets",
     "typecheck": "tsc -b",
     "typecheck:watch": "tsc -b --watch",
     "copy-assets": "cp -R ./src/assets ./dist",

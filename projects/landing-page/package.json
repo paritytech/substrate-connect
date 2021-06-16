@@ -13,7 +13,7 @@
     "prebuild": "yarn clean && mkdir dist && cp -r ./public/* ./dist/.",
     "build": "parcel build ./dist/index.html --public-url ./",
     "deep-clean": "yarn clean && rm -rf node_modules",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "dev": "yarn run clean && tsc -b & parcel ./public/index.html",
     "test": "echo \"Warning: Jest has been setup but no tests exist.\"",
     "test:watch": "jest --watch",

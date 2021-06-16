@@ -9,7 +9,7 @@
   "scripts": {
     "downloadSpecs": "node downloadSpecs.js",
     "deep-clean": "yarn clean && rm -rf node_modules",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "pretest": "yarn clean && tsc -b",
     "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage /dist",
     "prebuild": "yarn clean && yarn downloadSpecs",

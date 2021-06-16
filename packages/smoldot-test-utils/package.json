@@ -10,8 +10,8 @@
   "scripts": {
     "prebuild": "yarn clean",
     "deep-clean": "rm -rf node_modules",
-    "clean": "rm -rf dist/",
-    "build": "tsc -b",
+    "clean": "rm -rf dist/ tsconfig.tsbuildinfo",
+    "build": "tsc -b --clean",
     "test": "echo \"No tests for smoldot-test-utils\"",
     "lint": "eslint . --ext .js,.ts"
   },
