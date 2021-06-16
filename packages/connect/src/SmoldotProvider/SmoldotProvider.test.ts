@@ -113,26 +113,26 @@ test('emits events when it connects / disconnects / reconnects', async () => {
 
 /** POTENTIAL ISSUE TEST 2 */
 
-// test('emits connect and never emits disconnect for development chain', async () => {
-//   const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
-//   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+test('emits connect and never emits disconnect for development chain', async () => {
+  const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
 
-//   // we don't want the test to be slow
-//   provider.healthPingerInterval = 1;
-//   await provider.connect();
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
 
-//   return new Promise<void>((resolve, reject) => {
-//     provider.on('connected', () => {
-//       setTimeout(() => {
-//         resolve();
-//       }, 20);
+  return new Promise<void>((resolve, reject) => {
+    provider.on('connected', () => {
+      setTimeout(() => {
+        resolve();
+      }, 20);
 
-//       provider.on('disconnected', () => {
-//         reject('should never disconnect');
-//       });
-//     });
-//   });
-// }, 10000);
+      provider.on('disconnected', () => {
+        reject('should never disconnect');
+      });
+    });
+  });
+}, 10000);
 
 
 test('send formats JSON RPC request correctly', async () => {
