@@ -123,7 +123,6 @@ test('emits connect and never emits disconnect for development chain', async () 
   return new Promise<void>((resolve, reject) => {
     provider.on('connected', () => {
       setTimeout(() => {
-        provider.disconnect();
         resolve();
       }, 20);
 
