@@ -31,18 +31,18 @@ jobs:
     # - run: yarn deploy
       # only:
       #   - master
-    - uses: actions/checkout@v2
-      with: 
-        ref: 'gh-pages'
-    - uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.3
-      id: ipfs-upload
-      with:
-        pin-name: 'substrate-connect'
-        path: '.'
-        pinata-api-key: ${{ secrets.PINATA_KEY }}
-        pinata-secret-api-key: ${{ secrets.PINATA_SECRET }}
-        remove-old: true
+    # - uses: actions/checkout@v2
+    #   with: 
+    #     ref: 'gh-pages'
+    # - uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.3
+    #   id: ipfs-upload
+    #   with:
+    #     pin-name: 'substrate-connect'
+    #     path: '.'
+    #     pinata-api-key: ${{ secrets.PINATA_KEY }}
+    #     pinata-secret-api-key: ${{ secrets.PINATA_SECRET }}
+    #     remove-old: true
       # only:
       #   - master
-    - run: |
-        echo "Uploaded hash: ${{ steps.ipfs-upload.outputs.hash }}"
+    # - run: |
+    #     echo "Uploaded hash: ${{ steps.ipfs-upload.outputs.hash }}"
