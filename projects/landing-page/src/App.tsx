@@ -154,7 +154,7 @@ const App: React.FunctionComponent = () => {
             <Section pt={5} pb={5}>
               {/* TODO: Playground */}
               <Box>
-                <FooterLink>© 2021 Parity Technologies</FooterLink>
+                <FooterLink href='https://parity.io/'>© 2021 Parity Technologies</FooterLink>
                 <FooterLink href='https://substrate.dev/terms'>Terms & conditions</FooterLink>
                 <FooterLink href='https://www.parity.io/privacy/'>Privacy policy</FooterLink>
                 <FooterLink href='https://github.com/paritytech/substrate-connect/issues'>Report an issue</FooterLink>
