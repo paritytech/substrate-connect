@@ -8,3 +8,5 @@ coverage
 # don't lint examples and tests
 src/examples/**/*.ts
 src/**/*.test.ts
+
+downloadSpecs.js
