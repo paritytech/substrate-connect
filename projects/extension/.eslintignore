@@ -8,3 +8,5 @@ src/**/*.test.ts
 src/mocks.ts
 jest-setup.js
 jest.config.ts
+webpack.*
+downloadSpecs.js
