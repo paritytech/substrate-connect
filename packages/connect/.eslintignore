@@ -10,3 +10,4 @@ src/examples/**/*.ts
 src/**/*.test.ts
 
 downloadSpecs.js
+jest.*.ts
