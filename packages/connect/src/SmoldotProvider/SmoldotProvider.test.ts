@@ -24,6 +24,31 @@ describe('Test Development chain', () => {
     await provider.disconnect();
   });
 
+  test('emits events when it connects / disconnects / reconnects', async () => {
+    const healthResponses = [
+      { isSyncing: false, peerCount: 1, shouldHavePeers: true },
+      { isSyncing: false, peerCount: 0, shouldHavePeers: true },
+      { isSyncing: false, peerCount: 1, shouldHavePeers: true }
+    ];
+    const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
+    provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  
+    // we don't want the test to be slow
+    provider.healthPingerInterval = 1;
+    await provider.connect();
+  
+    return new Promise<void>((resolve) => {
+      provider.on('connected', () => {
+        const off = provider.on('disconnected', () => {
+          off(); // stop listening
+          provider.on('connected', () => {
+            provider.disconnect().then(() => resolve());
+          });
+        });
+      });
+    });
+  });
+
   test('emits connect and never emits disconnect for development chain', async () => {  
     const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
     provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
@@ -111,33 +136,6 @@ test('emits events when it connects then disconnects', async () => {
     });
   });
 });
-
-/** Skip as a potential issue tests (see: https://github.com/paritytech/substrate-connect/issues/325#issuecomment-862585814) */
-test.skip('emits events when it connects / disconnects / reconnects', async () => {
-  const healthResponses = [
-    { isSyncing: false, peerCount: 1, shouldHavePeers: true },
-    { isSyncing: false, peerCount: 0, shouldHavePeers: true },
-    { isSyncing: false, peerCount: 1, shouldHavePeers: true }
-  ];
-  const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
-
-  // we don't want the test to be slow
-  provider.healthPingerInterval = 1;
-  await provider.connect();
-
-  return new Promise<void>((resolve) => {
-    provider.on('connected', () => {
-      const off = provider.on('disconnected', () => {
-        off(); // stop listening
-        provider.on('connected', () => {
-          provider.disconnect().then(() => resolve());
-        });
-      });
-    });
-  });
-});
-/** test skip end */
 
 test('emits events when Grandpa finishes sync and then connects', async () => {
   const healthResponses = [
@@ -305,7 +303,7 @@ test('unsubscribe fails when sub not found', async () => {
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
 
   await provider.connect();
-  await provider.subscribe('test', 'test_subscribe', [], () => {});
+  await provider.subscribe('test', 'test_subscribe', [], () => { return });
   const reply =  await provider.unsubscribe('test', 'test_subscribe', 666);
 
   expect(reply).toBe(false);
@@ -322,7 +320,7 @@ test('unsubscribe removes subscriptions', async () => {
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
 
   await provider.connect();
-  const id = await provider.subscribe('test', 'test_subscribe', [], () => {});
+  const id = await provider.subscribe('test', 'test_subscribe', [], () => { return });
   const reply =  await provider.unsubscribe('test', 'test_unsubscribe', id);
   expect(reply).toBe(true);
   await provider.disconnect();
