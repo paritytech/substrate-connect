@@ -4,3 +4,5 @@ node_modules
 dist
 # don't lint .cache
 .cache
+# don't lint the config file
+.eslintrc.js
