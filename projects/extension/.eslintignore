@@ -4,8 +4,7 @@ node_modules
 dist
 # don't lint .cache
 .cache
-src/**/*.test.ts
-src/mocks.ts
+
 jest-setup.js
 jest.config.ts
 webpack.*
