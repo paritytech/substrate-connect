@@ -1,18 +1,13 @@
 {
-  "exclude": ["**/build/**/*", "**/node_modules/**/*"],
-  "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "downlevelIteration": true,
-    "esModuleInterop": true,
-    "jsx": "react",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "es2015",
-    "outDir": "./client"
-  },
-  "include": ["./src"]
+  "files": [],
+  "references": [
+    { "path": "./packages/connect-extension-protocol" },
+    { "path": "./packages/smoldot-test-utils" },
+    { "path": "./packages/connect" },
+    { "path": "./projects/burnr" },
+    { "path": "./projects/extension" },
+    { "path": "./projects/landing-page" },
+    { "path": "./projects/multiple-network-demo" },
+    { "path": "./projects/smoldot-browser-demo" }
+  ]
 }

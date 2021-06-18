@@ -5,7 +5,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { grey } from '@material-ui/core/colors';
 import { IconWeb3 } from '../components';
 import { TabInterface } from '../types';
-import { ConnectionManager } from 'background/ConnectionManager';
+import { ConnectionManager } from '../background/ConnectionManager';
 
 interface TabProps {
   manager?: ConnectionManager;

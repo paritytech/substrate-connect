@@ -3,6 +3,12 @@ import { ProviderInterface } from '@polkadot/rpc-provider/types';
 
 import { LazyProvider } from './types'; 
 
+/**
+ * Temporary hard-coded work around to test Wasm Light client 
+ * until \@substrate/connect is properly implemented
+ */
+
+
 export const endpoints = {
   'kusama': 'wss://kusama-rpc.polkadot.io/',
   'polkadot': 'wss://rpc.polkadot.io',

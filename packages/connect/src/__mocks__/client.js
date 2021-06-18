@@ -2,12 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { JSDOM } from 'jsdom';
-const dom = new JSDOM();
-
-global.document = dom.window.document;
-global.window = dom.window;
-
 const localStorageMock = (() => {
     let store = {};
     return {
@@ -26,4 +20,4 @@ const localStorageMock = (() => {
     };
 })();
 
-Object.defineProperty(global.window, 'localStorage', { value: localStorageMock });
+Object.defineProperty(window, 'localStorage', { value: localStorageMock });

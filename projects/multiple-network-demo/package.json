@@ -12,9 +12,9 @@
   ],
   "scripts": {
     "deep-clean": "yarn clean && rm -rf node_modules",
-    "clean": "rm -rf dist",
-    "typecheck": "tsc --noEmit",
-    "typecheck:watch": "tsc --noEmit --watch",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "typecheck": "tsc -b",
+    "typecheck:watch": "tsc -b --watch",
     "build": "yarn clean && yarn typecheck && parcel build index.html --public-url ./ --detailed-report",
     "dev": "yarn clean && concurrently \"yarn typecheck:watch\" \"parcel --no-cache index.html\"",
     "test": "echo \"Warning: Jest has been setup but no tests exist.\"",
@@ -23,43 +23,17 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
-    "@typescript-eslint/eslint-plugin": "^4.15.1",
-    "@typescript-eslint/parser": "^4.15.1",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
     "concurrently": "^6.0.1",
     "eslint": "^7.20.0",
     "jest": "^26.6.3",
     "parcel": "2.0.0-beta.2",
     "ts-jest": "^26.5.1",
-    "typescript": "^4.1.5"
+    "typescript": "^4.3.2"
   },
   "dependencies": {
     "@substrate/connect": "^0.3.9",
     "regenerator-runtime": "^0.13.7"
-  },
-  "eslintConfig": {
-    "root": true,
-    "parser": "@typescript-eslint/parser",
-    "settings": {
-      "react": {
-        "version": "detect"
-      }
-    },
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "parserOptions": {
-      "project": [
-        "./tsconfig.json"
-      ],
-      "createDefaultProgram": true
-    },
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:@typescript-eslint/recommended-requiring-type-checking"
-    ],
-    "env": {
-      "node": true
-    }
   }
 }
