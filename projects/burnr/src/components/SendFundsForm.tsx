@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import React, { MouseEvent, useContext, useState, useEffect, FunctionComponent } from 'react';
 import BN from 'bn.js';
 import { 
@@ -7,6 +10,7 @@ import {
   Typography,
   LinearProgress,
   Table,
+  Grid,
   Box} from '@material-ui/core';
 import { Keyring } from '@polkadot/api';
 import { AccountContext } from '../utils/contexts';
@@ -26,6 +30,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     '&:hover': {
       color: theme.palette.getContrastText(theme.palette.secondary.dark),
     },
+  },
+  formSubmitContainer: {
+    marginTop: theme.spacing(3),
+    alignContent: 'center',
+    textAlign: 'center'
+  },
+  feesMessage: {
+    width: '100%',
+    fontSize: '14px',
+    textAlign: 'center'
   }
 }));
 
@@ -54,6 +68,17 @@ const SendFundsForm: FunctionComponent = () => {
   const [message, setMessage] = useState<string>('');
   const [countdownNo, setCountdownNo] = useState<number>(0);
   const [rowStatus, setRowStatus] = useState<number>(0);
+  const [fee, setFee] = useState<number>(0);
+
+  useEffect((): void => {
+    const calcFee = async (): Promise<void> => {
+      const keyring = new Keyring({ type: 'sr25519' });
+      const sender = keyring.addFromUri(account.userSeed);
+      const fee = await api.tx.balances.transfer(address, new BN(amount)).paymentInfo(sender);
+      setFee(fee.weight.toNumber());
+    };
+    (!amount || amount === '0' || !isValidAddressPolkadotAddress(address) || !account.userSeed) ? setFee(0) : void calcFee();
+  }, [amount, account.userSeed, address, api.tx.balances]);
 
   useEffect((): () => void => {
     let countdown: ReturnType<typeof setInterval>;
@@ -120,6 +145,8 @@ const SendFundsForm: FunctionComponent = () => {
     }
   }
 
+  const humanReadable = (amnt: number): string => (amnt/Math.pow(10, api.registry.chainDecimals[0])).toFixed(4);
+
   return (
     <>
       <InputAddress setAddress={setAddress} />
@@ -129,6 +156,17 @@ const SendFundsForm: FunctionComponent = () => {
         currency={unit}
         setAmount={setAmount}
       />
+      <Grid item xs={12} className={classes.formSubmitContainer}>
+        <Typography variant='subtitle1' className={classes.feesMessage}>
+          {fee ? `Receiver will get: ${humanReadable(parseFloat(amount))} ${unit}` : ''}
+        </Typography>
+        <Typography variant='subtitle1' className={classes.feesMessage}>
+          {fee ? `Fees: ${humanReadable(fee)} ${unit}` : ''}
+        </Typography>
+        <Typography variant='subtitle1' className={classes.feesMessage}>
+          {fee ? `Total Sent: ${humanReadable(parseFloat(amount) + fee)} ${unit}` : ''}
+        </Typography>
+      </Grid> 
       <Button
         type='submit'
         variant='contained'
@@ -141,12 +179,12 @@ const SendFundsForm: FunctionComponent = () => {
 
       {!isValidAddressPolkadotAddress(address) &&
         <Typography variant='body2' color='error' className={classes.errorMessage}>
-          You need to add a valid address.
+          Add a valid address.
         </Typography>
       }
       {!parseInt(amount) &&
         <Typography variant='body2' color='error' className={classes.errorMessage}>
-        You should add some amount.
+          Add some amount.
         </Typography>
       }
       

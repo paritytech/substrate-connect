@@ -11,9 +11,11 @@ interface Props {
 
 const InputAddress: React.FunctionComponent<Props> = ({ setAddress }) => {
   const [value, setValue] = useState<string>('');
+  const [addr, setAddr] = useState<string>('');
 
   useEffect((): void => {
     setAddress(value);
+    setAddr(value);
   }, [value, setAddress]);
 
   const handleChangeButton = (e: ChangeEvent) => {
