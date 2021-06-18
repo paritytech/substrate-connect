@@ -18,6 +18,7 @@
   },
   "include": [ "src/**/*", "public/assets/*.json" ],
   "references": [
-    { "path": "../../packages/connect-extension-protocol" }
+    { "path": "../../packages/connect-extension-protocol" },
+    { "path": "../../packages/smoldot-test-utils" }
   ]
 }
