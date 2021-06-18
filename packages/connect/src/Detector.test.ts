@@ -1,4 +1,4 @@
-/**
+/*
  * @jest-environment jsdom
  */
 import { Detector } from './Detector';

@@ -16,5 +16,9 @@
     "allowSyntheticDefaultImports" : true,
     "esModuleInterop": true
   },
-  "include": [ "src/**/*", "public/assets/*.json" ]
+  "include": [ "src/**/*", "public/assets/*.json" ],
+  "references": [
+    { "path": "../../packages/connect-extension-protocol" },
+    { "path": "../../packages/smoldot-test-utils" }
+  ]
 }
