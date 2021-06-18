@@ -32,7 +32,7 @@ const Home: React.FunctionComponent<Props> =  ({ account, loader }: Props) => {
   const [balanceVisibility, setBalanceVisibility] = useState<boolean>(localBalance !== 'false');
   const classes = useStyles();
   const balanceArr = useBalance(account?.userAddress || '');
-  const balance = balanceArr[1];
+  const balance = balanceArr[0];
   const unit = balanceArr[3];
   useEffect((): void => {
     setLocalBalance(balanceVisibility ? 'true' : 'false')

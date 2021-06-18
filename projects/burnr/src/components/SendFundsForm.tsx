@@ -12,12 +12,13 @@ import {
   Table,
   Grid,
   Box} from '@material-ui/core';
+import { Balance } from '@polkadot/types/interfaces';
 import { Keyring } from '@polkadot/api';
 import { AccountContext } from '../utils/contexts';
 import { InputAddress, InputFunds } from '../components';
 import { useBalance, useApi, useLocalStorage } from '../hooks'
 import { HistoryTableRow } from '.';
-import { isValidAddressPolkadotAddress } from '../utils/utils';
+import { isValidAddressPolkadotAddress, prettyBalance } from '../utils/utils';
 import { Column } from '../utils/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -68,16 +69,16 @@ const SendFundsForm: FunctionComponent = () => {
   const [message, setMessage] = useState<string>('');
   const [countdownNo, setCountdownNo] = useState<number>(0);
   const [rowStatus, setRowStatus] = useState<number>(0);
-  const [fee, setFee] = useState<number>(0);
+  const [fee, setFee] = useState<Balance | undefined>();
 
   useEffect((): void => {
     const calcFee = async (): Promise<void> => {
       const keyring = new Keyring({ type: 'sr25519' });
       const sender = keyring.addFromUri(account.userSeed);
       const fee = await api.tx.balances.transfer(address, new BN(amount)).paymentInfo(sender);
-      setFee(fee.weight.toNumber());
+      setFee(fee.partialFee);
     };
-    (!amount || amount === '0' || !isValidAddressPolkadotAddress(address) || !account.userSeed) ? setFee(0) : void calcFee();
+    (!amount || amount === '0' || !isValidAddressPolkadotAddress(address) || !account.userSeed) ? setFee(undefined) : void calcFee();
   }, [amount, account.userSeed, address, api.tx.balances]);
 
   useEffect((): () => void => {
@@ -110,15 +111,12 @@ const SendFundsForm: FunctionComponent = () => {
       const keyring = new Keyring({ type: 'sr25519' });
       const sender = keyring.addFromUri(account.userSeed);
       await api.tx.balances.transfer(address, new BN(amount)).signAndSend(sender, (result) => {
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         setMessage(`Current transaction status ${result.status}`);
         if (result.status.isInBlock) {
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           setMessage(`Transaction Block hash: ${result.status.asInBlock}`);
         } else if (result.status.isFinalized) {
           setLoading(false);
           setRowStatus(1);
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           setMessage(`Block hash:: ${result.status.asFinalized}.`);
           account.userHistory.unshift({
             withWhom: address,
@@ -145,8 +143,6 @@ const SendFundsForm: FunctionComponent = () => {
     }
   }
 
-  const humanReadable = (amnt: number): string => (amnt/Math.pow(10, api.registry.chainDecimals[0])).toFixed(4);
-
   return (
     <>
       <InputAddress setAddress={setAddress} />
@@ -158,13 +154,12 @@ const SendFundsForm: FunctionComponent = () => {
       />
       <Grid item xs={12} className={classes.formSubmitContainer}>
         <Typography variant='subtitle1' className={classes.feesMessage}>
-          {fee ? `Receiver will get: ${humanReadable(parseFloat(amount))} ${unit}` : ''}
+          {fee ? `Receiver will get: ${prettyBalance(parseFloat(amount))} ${unit}` : ''}
         </Typography>
         <Typography variant='subtitle1' className={classes.feesMessage}>
-          {fee ? `Fees: ${humanReadable(fee)} ${unit}` : ''}
+          {fee ? `Fees: ${fee?.toHuman()}` : ''}
         </Typography>
         <Typography variant='subtitle1' className={classes.feesMessage}>
-          {fee ? `Total Sent: ${humanReadable(parseFloat(amount) + fee)} ${unit}` : ''}
         </Typography>
       </Grid> 
       <Button

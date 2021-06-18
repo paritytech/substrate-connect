@@ -44,8 +44,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const BalanceValue: React.FunctionComponent<Props> = ({ value, isVisible, unit = '', size, style }: Props) => {
-  const fBalance = formatBalance(value, { withSi: false });
-  const isColored = parseInt(fBalance) >= 0;
+
+  const isColored = parseInt(value) >= 0;
   const classes = useStyles({ colored: isColored, visible: isVisible });
 
   const TypographyVariant = size === 'large' ? 'subtitle1' : 'subtitle2';
@@ -53,7 +53,7 @@ const BalanceValue: React.FunctionComponent<Props> = ({ value, isVisible, unit =
   return  (
     <Box component='span' className={classes.root} style={style}>
       <Typography variant={TypographyVariant} className={classes.blur} >
-        {`${fBalance} ${unit}`}
+        {`${value} ${unit}`}
       </Typography>
     </Box>
   );
