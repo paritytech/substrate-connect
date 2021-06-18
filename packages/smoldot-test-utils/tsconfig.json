@@ -1,12 +1,9 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./",
-    "declaration": true,
+    "rootDir": "./src",
     "esModuleInterop": true,
-    "sourceMap": true,
-    "declarationMap": true,
     "outDir": "./dist",
     "target": "ES2018",
     "moduleResolution": "node",

@@ -1,6 +1,6 @@
 {
   "name": "@substrate/connect",
-  "version": "0.3.6",
+  "version": "0.3.9",
   "description": "Substrate-connect to Smoldot clients. Using either substrate extension with predefined clients or an internal smoldot client based on chainSpecs provided.",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
@@ -22,66 +22,39 @@
     "downloadSpecs": "node downloadSpecs.js && cp ./src/specs/westend.json ./src/__mocks__/.",
     "prebuild": "yarn clean && yarn downloadSpecs",
     "pretest": "yarn build",
-    "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage dist/",
+    "test": "yarn test:unit",
+    "test:all": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage dist/",
+    "test:unit": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage dist/ --config=jest.config.unit.ts",
+    "test:integration": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage dist/ --config=jest.config.integration.ts",
     "deep-clean": "yarn clean && rm -rf node_modules",
-    "clean": "rm -rf dist",
-    "build": "tsc --build",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "build": "tsc -b",
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "dependencies": {
+    "@polkadot/api": "^4.2.4",
     "@polkadot/rpc-provider": "^4.10.1",
     "@substrate/connect-extension-protocol": "^0.3.0",
     "browserify-fs": "^1.0.0",
     "eventemitter3": "^4.0.7",
     "file-entry-cache": "^6.0.1",
     "mkdirp": "^1.0.4",
-    "smoldot": "^0.2.4"
+    "smoldot": "^0.2.6"
   },
   "devDependencies": {
-    "@polkadot/api": "^4.2.4",
-    "@polkadot/extension-inject": "^0.36.1",
     "@substrate/smoldot-test-utils": "file:../smoldot-test-utils",
     "@types/jest": "^26.0.20",
     "@types/jsdom": "^16.2.7",
     "@types/mkdirp": "^1.0.1",
-    "@typescript-eslint/parser": "^4.17.0",
+    "@typescript-eslint/parser": "^4.27.0",
     "eslint": "^7.21.0",
     "eslint-plugin-tsdoc": "^0.2.14",
     "jest": "^27.0.0-next.9",
     "jsdom": "^16.5.1",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.3"
+    "typescript": "^4.3.2"
   },
   "peerDependencies": {
     "@polkadot/wasm-crypto": "^3.2.2"
-  },
-  "eslintConfig": {
-    "root": true,
-    "rules": {
-      "@typescript-eslint/restrict-template-expressions": "off",
-      "tsdoc/syntax": "warn"
-    },
-    "parser": "@typescript-eslint/parser",
-    "settings": {
-      "react": {
-        "version": "detect"
-      }
-    },
-    "plugins": [
-      "@typescript-eslint",
-      "eslint-plugin-tsdoc"
-    ],
-    "parserOptions": {
-      "project": "./tsconfig.json",
-      "createDefaultProgram": true
-    },
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:@typescript-eslint/recommended-requiring-type-checking"
-    ],
-    "env": {
-      "node": true
-    }
   }
 }

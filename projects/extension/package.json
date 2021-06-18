@@ -9,8 +9,8 @@
   "scripts": {
     "downloadSpecs": "node downloadSpecs.js",
     "deep-clean": "yarn clean && rm -rf node_modules",
-    "clean": "rm -rf dist",
-    "pretest": "yarn clean && tsc",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "pretest": "yarn clean && tsc -b",
     "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage /dist",
     "prebuild": "yarn clean && yarn downloadSpecs",
     "build": "webpack --config webpack.prod.js && zip -r ./dist/substrate-connect.zip ./dist/*",
@@ -37,8 +37,8 @@
     "@types/react-dom": "^17.0.1",
     "@types/react-hot-loader": "^4.1.1",
     "@types/styled-components": "^5.1.7",
-    "@typescript-eslint/eslint-plugin": "^4.15.1",
-    "@typescript-eslint/parser": "^4.15.1",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
     "babel-jest": "^26.6.3",
     "babel-loader": "^8.2.2",
     "babel-plugin-styled-components": "^1.12.0",
@@ -55,7 +55,7 @@
     "jest-styled-components": "^7.0.3",
     "style-loader": "^2.0.0",
     "ts-loader": "^8.0.17",
-    "typescript": "^4.1.5",
+    "typescript": "^4.3.2",
     "url-loader": "^4.1.1",
     "web-ext": "^5.5.0",
     "webpack": "^5.23.0",
@@ -72,45 +72,8 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hot-loader": "^4.13.0",
-    "smoldot": "^0.2.4",
+    "smoldot": "^0.2.5",
     "strict-event-emitter-types": "^2.0.0",
     "styled-components": "^5.2.1"
-  },
-  "eslintConfig": {
-    "root": true,
-    "rules": {
-      "@typescript-eslint/restrict-template-expressions": 0,
-      "tsdoc/syntax": "warn",
-      "react/prop-types": 0,
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
-      "@typescript-eslint/no-var-requires": 0
-    },
-    "parser": "@typescript-eslint/parser",
-    "settings": {
-      "react": {
-        "version": "detect"
-      }
-    },
-    "plugins": [
-      "@typescript-eslint",
-      "react-hooks",
-      "eslint-plugin-tsdoc"
-    ],
-    "parserOptions": {
-      "project": [
-        "./tsconfig.json"
-      ],
-      "createDefaultProgram": true
-    },
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:react/recommended",
-      "plugin:@typescript-eslint/recommended-requiring-type-checking"
-    ],
-    "env": {
-      "node": true
-    }
   }
 }

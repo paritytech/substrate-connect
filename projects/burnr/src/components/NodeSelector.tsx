@@ -1,8 +1,10 @@
-import React, { useState, ChangeEvent } from 'react';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import React, { useState, ChangeEvent, useEffect } from 'react';
 
 import { createStyles, makeStyles, Theme  } from '@material-ui/core/styles';
 import { InputBase, ClickAwayListener,  Typography, Box } from '@material-ui/core';
 import Autocomplete, { AutocompleteCloseReason } from '@material-ui/lab/Autocomplete';
+import { ApiPromise } from '@polkadot/api';
 
 import { ALL_PROVIDERS } from '../utils/constants';
 import { useLocalStorage, useApi } from '../hooks';
@@ -70,13 +72,16 @@ const options = Object.entries(ALL_PROVIDERS).map(
   )
 ).sort((a,b) => (a.network > b.network) ? 1 : ((b.network > a.network) ? -1 : 0));
 
+type colorType = 'inherit' | 'primary' | 'secondary' | 'action' | 'disabled' | 'error';
+
 export default function NodeSelector(): React.ReactElement {
   const classes = useStyles();
   const api = useApi();
   const [localEndpoint, setLocalEndpoint] = useLocalStorage('endpoint');
-  const endpointName = localEndpoint || 'Polkadot-WsProvider'
-  const [provider, setProvider] = useState<string>(ALL_PROVIDERS[endpointName].id);
+  const endpointName = localEndpoint || 'Westend-WsProvider';
+  const [provider, setProvider] = useState<string>(ALL_PROVIDERS[endpointName]?.id);
   const [open, setOpen] = useState<boolean>(false);
+  const [fiberColor, setFiberColor] = useState<colorType>('error');
 
   const toggleOpen = () => {
     setOpen(!open);
@@ -93,11 +98,21 @@ export default function NodeSelector(): React.ReactElement {
     setLocalEndpoint(provider);
     setProvider(provider);
     
-    console.log("Burnr wallet is now connected to", ALL_PROVIDERS[provider].endpoint);
+    console.log("Burnr wallet is now connected to", ALL_PROVIDERS[provider]?.endpoint);
     // Tis is just a temporary work around. Api should be passed on as prop without reload
     location.reload();
     // setChain(REMOTE_PROVIDERS[selectedEndpoint].network);
   };
+
+  useEffect(() => {
+    const getColor = async (api: ApiPromise) => {
+      if (api && await api.isReady) {
+        setFiberColor('primary');
+      }
+    }
+
+    api && getColor(api);
+  }, [api]);
 
   return (
     <ClickAwayListener onClickAway={handleClose}>    
@@ -105,10 +120,10 @@ export default function NodeSelector(): React.ReactElement {
         <div className={`${classes.nodeSelectorInner} ${open ? 'open' : ''}`}>
 
           <Box display='flex' alignItems='center' pt={1.5} pb={1.5} pl={0.5} pr={0.5} onClick={toggleOpen}>
-            <FiberManualRecordIcon style={{ fontSize: '16px', marginRight: 4 }} color={api && api.isReady ? 'primary' : 'error'} />
+            <FiberManualRecordIcon style={{ fontSize: '16px', marginRight: 4 }} color={fiberColor} />
             <Box width='100%'>
-              <Typography variant='h4'>{ ALL_PROVIDERS[provider].network }</Typography>
-              <Typography variant='body2' color='textSecondary'>{ALL_PROVIDERS[provider].client} client</Typography>
+              <Typography variant='h4'>{ ALL_PROVIDERS[provider]?.network }</Typography>
+              <Typography variant='body2' color='textSecondary'>{ALL_PROVIDERS[provider]?.client} client</Typography>
             </Box>
             {open ? <ArrowDropUpIcon /> : <ArrowDropDownIcon /> }
           </Box>

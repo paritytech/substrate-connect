@@ -1,11 +1,10 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./src",
-    "declaration": true,
+    "baseUrl": ".",
+    "rootDir": "./src",
     "esModuleInterop": true,
-    "sourceMap": true,
-    "declarationMap": true,
     "outDir": "./dist",
     "target": "ES2018",
     "moduleResolution": "node",
@@ -14,5 +13,10 @@
     "strict": true,
     "module": "ES2020"
   },
-  "exclude": ["jest.config*", "tsconfig*"]
+  "exclude": ["jest.config*", "tsconfig*"],
+  "include": [ "src/**/*", "src/**/*.json" ],
+  "references": [
+    { "path": "../smoldot-test-utils" },
+    { "path": "../connect-extension-protocol" }
+  ]
 }
