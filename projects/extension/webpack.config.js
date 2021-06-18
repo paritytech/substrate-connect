@@ -34,6 +34,7 @@ const config = {
         loader: "ts-loader",
         exclude: /node_modules/,
         options: {
+          projectReferences: true,
           transpileOnly: true
         }
       },
