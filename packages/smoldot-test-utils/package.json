@@ -16,7 +16,7 @@
     "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {
-    "smoldot": "^0.2.5"
+    "smoldot": "^0.2.6"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
