@@ -27,7 +27,8 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   #state: AppState = 'connected';
   readonly subscriptions: SubscriptionMapping[];
   readonly requests: MessageIDMapping[];
-  highestUAppRequestId = 0;
+
+  #highestUAppRequestId = 0;
 
   constructor(port: chrome.runtime.Port, manager: ConnectionManagerInterface) {
     super();
@@ -168,7 +169,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
 
     const parsed =  JSON.parse(message) as JsonRpcRequest;
     const appID = parsed.id as number;
-    this.highestUAppRequestId = appID;
+    this.#highestUAppRequestId = appID;
 
     if (subscription) {
       // register a new sub that is waiting for a sub ID
@@ -213,7 +214,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     // use one higher than we've seen before from the UApp.  The UApp is now
     // disconnnecting so this won't ever be reused as we no longer
     // accept incoming RPC send requests
-    const appID = ++this.highestUAppRequestId;
+    const appID = ++this.#highestUAppRequestId;
     const unsubRequest = {
       id: appID,
       jsonrpc: '2.0',
