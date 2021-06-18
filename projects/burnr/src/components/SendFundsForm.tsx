@@ -46,7 +46,9 @@ const SendFundsForm: FunctionComponent = () => {
   const unit = balanceArr[3];
   // TODO: This must be prettier and reusable (exists already on App)
   const [endpoint, setEndpoint] = useLocalStorage('endpoint');
-  if (!endpoint) setEndpoint('Polkadot-WsProvider');
+  if (!endpoint) {
+    setEndpoint(Object.keys(ALL_PROVIDERS)[0]);
+  }
   const [ ,setLocalStorageAccount] = useLocalStorage(endpoint.split('-')[0]?.toLowerCase());
   // TODO END: This must be prettier and reusable (exists already on App)
   const [address, setAddress] = useState<string>('');
