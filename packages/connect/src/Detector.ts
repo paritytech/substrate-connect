@@ -79,7 +79,7 @@ export class Detector {
    * @param chainSpec - an optional chainSpec to connect to a different network
    * @param options - any extra API options to passed to PolkadotJS when
    * constructing it.
-   * @return a promise that resolves to an instance of the PolkadotJS API
+   * @returns a promise that resolves to an instance of the PolkadotJS API
    *
    * @remarks
    *
