@@ -32,7 +32,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   readonly #manager: ConnectionManagerInterface;
   #smoldotName: string | undefined  = undefined;
   #state: AppState = 'connected';
-  /** subscriptions is all the active message subscriptions this app has */
+  /** subscriptions is all the active message subscriptions this ap[ has */
   readonly subscriptions: SubscriptionMapping[];
   /**
    * requests is all the requests this app has sent that have not been replied
@@ -70,7 +70,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
    *
    * The name is a concatenation of the app's display name provided by the 
    * app developer and the name of the blockchain network to talk to in the
-   * format <app_name>::<chain_name>
+   * format \<app_name\>::\<chain_name\>
    */
   get name(): string {
     return this.#name;

@@ -62,7 +62,7 @@ export class SmoldotMediator {
    * available id for this smoldot client and returns it to the app.
    *
    * @param message - the JSON RPC request to send
-   * @return the id of the message actually sent
+   * @returns the id of the message actually sent
    */
   sendRpcMessage(message: JsonRpcRequest): number {
     const nextID = ++this.#id;
