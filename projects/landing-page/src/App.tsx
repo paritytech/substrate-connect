@@ -2,6 +2,7 @@
 import React from 'react';
 import { CssBaseline, ThemeProvider, createMuiTheme, Typography, Box, Grid } from '@material-ui/core';
 import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeading, SectionText, SectionRef, FooterLink, SidebarLink, Code } from './components';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { CardNetwork, CardProject } from './components/Cards';
 
 import BrowserDemo from 'url:../public/assets/images/BrowserDemo.png';
@@ -9,6 +10,10 @@ import NetworksDemo from 'url:../public/assets/images/NetworksDemo.png';
 import Burnr from 'url:../public/assets/images/Burnr.png';
 import Extension from 'url:../public/assets/images/Extension.png';
 import YourProject from 'url:../public/assets/images/YourProject.png';
+
+const Alert = (props: AlertProps) => {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const App: React.FunctionComponent = () => {
   return (
@@ -21,6 +26,9 @@ const App: React.FunctionComponent = () => {
             <Typography variant='h1'>
               Run Wasm Light Clients of any Substrate based chain directly in your browser
             </Typography>
+          </Section>
+          <Section>
+            <Alert severity="warning">This project is experimental!</Alert>
           </Section>
           <Section>
             <SectionHeading id='substrate-based-chains' prefix='1'>Substrate-based chains</SectionHeading>
@@ -154,10 +162,10 @@ const App: React.FunctionComponent = () => {
             <Section pt={5} pb={5}>
               {/* TODO: Playground */}
               <Box>
-                <FooterLink>© 2021 Parity Technologies</FooterLink>
-                <FooterLink>Terms & conditions</FooterLink>
-                <FooterLink>Privacy policy</FooterLink>
-                <FooterLink>Report an issue</FooterLink>
+                <FooterLink href='https://parity.io/'>© 2021 Parity Technologies</FooterLink>
+                <FooterLink href='https://substrate.dev/terms'>Terms & conditions</FooterLink>
+                <FooterLink href='https://www.parity.io/privacy/'>Privacy policy</FooterLink>
+                <FooterLink href='https://github.com/paritytech/substrate-connect/issues'>Report an issue</FooterLink>
                 <FooterLink href='https://github.com/paritytech/substrate-connect'>GitHub</FooterLink>
               </Box>
             </Section>

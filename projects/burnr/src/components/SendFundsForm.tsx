@@ -32,15 +32,9 @@ const useStyles = makeStyles((theme: Theme) => ({
       color: theme.palette.getContrastText(theme.palette.secondary.dark),
     },
   },
-  formSubmitContainer: {
-    marginTop: theme.spacing(3),
-    alignContent: 'center',
-    textAlign: 'center'
-  },
-  feesMessage: {
-    width: '100%',
-    fontSize: '14px',
-    textAlign: 'center'
+  transferInfoMessage: {
+    overflowWrap: 'break-word',
+    padding: '30px'
   }
 }));
 
@@ -197,7 +191,7 @@ const SendFundsForm: FunctionComponent = () => {
               columns={columns} />
           </Table>
         }
-        <Typography variant='subtitle2'>{message}</Typography>
+        <Typography variant='subtitle2' className={classes.transferInfoMessage}>{message}</Typography>
         {!loading && countdownNo !== 0 &&
           <LinearProgress variant="determinate" value={countdownNo} />
         }
