@@ -7,6 +7,33 @@ import westend from './specs/westend.json';
 import kusama from './specs/kusama.json';
 import polkadot from './specs/polkadot.json';
 
+/**
+ * Detector is an API for providing an instance of the PolkadotJS API configured
+ * to use a WASM-based light client.  It takes care of detecting whether the
+ * user has the substrate connect browser extension installed or not and 
+ * configures the PolkadotJS API appropriately; falling back to a provider
+ * which instantiates the WASM light client in the page when the extension is
+ * not available.
+ *
+ * @example
+ *
+ * ```
+ * import { Detector } from '@substrate/connect';
+ * // Create a new UApp with a unique name
+ * const app = new Detector('burnr-wallet');
+ * const westend = await app.detect('westend');
+ * const kusama = await app.detect('kusama');
+ * await westend.rpc.chain.subscribeNewHeads((lastHeader) => {
+ * console.log(lastHeader.hash);
+ * );
+ * await kusama.rpc.chain.subscribeNewHeads((lastHeader) => {
+ * console.log(lastHeader.hash);
+ * });
+ * // etc ...
+ * await westend.disconnect();
+ * await kusama.disconnect();
+ * ```
+ */
 export class Detector {
   #chainSpecs: Record<string, unknown> = {
     'polkadot': polkadot,
@@ -17,16 +44,55 @@ export class Detector {
   #isExtension: boolean;
   #providers: Record<string, ProviderInterface> = {};
 
+  /** 
+   * name is the name of the app. This is used by the extension to identify
+   * your app in the user interface
+   */
   get name(): string {
     return this.#name;
   }
 
+  /**
+   * @param name - the name of your app.
+   *
+   * @remarks
+   *
+   * You should make a best effort to make your app name unique to avoid
+   * confusion for users in the extension user interface
+   */
   public constructor (name: string) {
     this.#isExtension = !!document.getElementById('substrateExtension');
     this.#name = name;
   }
 
-  public connect = async (chainName: string, providedChainSpec?: string, options?: ApiOptions): Promise<ApiPromise> => {
+  /**
+   * connect attempts to detect the extension and configures the PolkadotJS 
+   * API instance to return appropriately.
+   *
+   * There are 3 bundled networks: "polkadot", "kusama" and "westend" which
+   * require no further configuration.
+   *
+   * Alternatively you may supply a chain spec and options to connect to a
+   * custom chain with a light client (in-page only).
+   *
+   * @param chainName - the name of the blockchain network to connect to
+   * @param chainSpec - an optional chainSpec to connect to a different network
+   * @param options - any extra API options to passed to PolkadotJS when
+   * constructing it.
+   * @return a promise that resolves to an instance of the PolkadotJS API
+   *
+   * @remarks
+   *
+   * When providing a custom chain spec, detect will always configure and return
+   * an in-page light client and not use the extension
+   *
+   * Typically options is used to pass custom types to PolkadotJS API.
+   *
+   * See the PolkadotJS docs for documentation on using PolkadotJS.
+   *
+   * {@link https://polkadot.js.org/docs/}
+   */
+  public connect = async (chainName: string, chainSpec?: string, options?: ApiOptions): Promise<ApiPromise> => {
     let provider: ExtensionProvider | SmoldotProvider = {} as ExtensionProvider | SmoldotProvider;
 
     if (Object.keys(this.#chainSpecs).includes(chainName)) {
@@ -36,9 +102,9 @@ export class Detector {
         const chainSpec = JSON.stringify(this.#chainSpecs[chainName]);
         provider = new SmoldotProvider(chainSpec);
       }
-    } else if (providedChainSpec) {
-        provider = new SmoldotProvider(providedChainSpec);
-    } else if (!providedChainSpec) {
+    } else if (chainSpec) {
+        provider = new SmoldotProvider(chainSpec);
+    } else if (!chainSpec) {
       throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(this.#chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
     }
     await provider.connect();
@@ -47,6 +113,11 @@ export class Detector {
     return await ApiPromise.create(Object.assign(options ?? {}, {provider}));
   }
 
+  /**
+   * disconnect disconnects the PolkadotJS API isntance
+   *
+   * @param chainName - the name of the blockchain network to disconnect from
+   */
   public disconnect = async (chainName: string): Promise<void> => {
     await this.#providers[chainName].disconnect();
     delete this.#providers[chainName];
