@@ -42,7 +42,7 @@
     "smoldot": "0.2.9"
   },
   "devDependencies": {
-    "@substrate/smoldot-test-utils": "file:../smoldot-test-utils",
+    "@substrate/smoldot-test-utils": "^0.1.0",
     "@types/jest": "^26.0.20",
     "@types/jsdom": "^16.2.7",
     "@types/mkdirp": "^1.0.1",
