@@ -23,6 +23,8 @@
     "projects/landing-page"
   ],
   "scripts": {
+    "preapi-docs": "yarn workspace @substrate/extension run compile",
+    "api-docs": "typedoc",
     "deep-clean": "yarn workspaces run deep-clean && rm -rf .parcel-cache && rm -rf node_modules",
     "clean": " yarn workspaces run clean",
     "lint": "yarn workspaces run lint",
@@ -43,7 +45,9 @@
     "@parcel/transformer-image": "2.0.0-beta.2",
     "copyfiles": "^2.3.0",
     "husky": "^5.0.8",
-    "parcel": "nightly"
+    "parcel": "2.0.0-beta.2",
+    "typedoc": "^0.21.0",
+    "typescript": "^4.3.2"
   },
   "dependencies": {
     "@wasm-tool/wasm-pack-plugin": "^1.3.1"
