@@ -19,17 +19,21 @@ import polkadot from './specs/polkadot.json';
  *
  * ```
  * import { Detector } from '@substrate/connect';
+ *
  * // Create a new UApp with a unique name
  * const app = new Detector('burnr-wallet');
  * const westend = await app.detect('westend');
  * const kusama = await app.detect('kusama');
+ *
  * await westend.rpc.chain.subscribeNewHeads((lastHeader) => {
- * console.log(lastHeader.hash);
+ *   console.log(lastHeader.hash);
  * );
  * await kusama.rpc.chain.subscribeNewHeads((lastHeader) => {
- * console.log(lastHeader.hash);
+ *   console.log(lastHeader.hash);
  * });
- * // etc ...
+ *
+ * // Interact with westend and kusama APIs ...
+ *
  * await westend.disconnect();
  * await kusama.disconnect();
  * ```
