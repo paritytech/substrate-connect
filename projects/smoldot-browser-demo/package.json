@@ -20,7 +20,6 @@
     "build": "yarn clean && yarn copy-assets && yarn typecheck && parcel build index.html --detailed-report --public-url ./ --no-autoinstall",
     "dev": "yarn clean && yarn copy-assets && concurrently \"yarn typecheck:watch\" \"parcel index.html\"",
     "test": "exit 0; #No tests",
-    "test:watch": "jest --watch",
     "lint": "exit 0; #Linting disabled"
   },
   "devDependencies": {

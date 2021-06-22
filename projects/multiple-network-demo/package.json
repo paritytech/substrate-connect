@@ -18,7 +18,6 @@
     "build": "yarn clean && yarn typecheck && parcel build index.html --public-url ./ --detailed-report",
     "dev": "yarn clean && concurrently \"yarn typecheck:watch\" \"parcel --no-cache index.html\"",
     "test": "exit 0; #No tests",
-    "test:watch": "jest --watch",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "devDependencies": {

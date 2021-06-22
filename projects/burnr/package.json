@@ -17,7 +17,6 @@
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "dev": "yarn run clean && tsc -b & parcel ./public/index.html",
     "test": "exit 0; #No tests",
-    "test:watch": "jest --watch",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx",
     "predeploy": "yarn run build"
   },
