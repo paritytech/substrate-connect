@@ -12,7 +12,7 @@
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "compile": "tsc -b",
     "pretest": "yarn clean && yarn compile",
-    "test": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage /dist",
+    "test": "../../bin/node-esm $(yarn bin)/jest --colors --silent --coverage /dist",
     "prebuild": "yarn clean && yarn downloadSpecs",
     "build": "webpack --config webpack.prod.js && zip -r ./dist/substrate-connect.zip ./dist/*",
     "dev": "yarn run prebuild && webpack --node-env development --config webpack.dev.js",
