@@ -16,9 +16,11 @@
     "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {
+    "asap": "^2.0.6",
     "smoldot": "0.2.9"
   },
   "devDependencies": {
+    "@types/asap": "^2.0.0",
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
