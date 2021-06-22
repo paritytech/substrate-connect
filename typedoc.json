@@ -1,0 +1,13 @@
+{
+  "name": "Substrate Connect",
+  "out": "_site/api",
+  "theme": "default",
+  "exclude": "*.test.ts",
+  "excludeExternals": false,
+  "excludePrivate": true,
+  "includeVersion": true,
+  "packages": [
+    "packages/*",
+    "projects/extension"
+  ]
+}

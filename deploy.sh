@@ -38,6 +38,8 @@ deployGhPages() {
   # cp ./projects/extension/dist/substrate-connect.zip ./$directory/extension/substrate-connect.zip
   echo "Place landing page's files."
   cp -r ./projects/landing-page/dist/* ./$directory/.
+  echo "Generate API docs."
+  yarn api-docs
  }
 
 echo -e "\033[0;32mDeleting old content...\033[0m"
