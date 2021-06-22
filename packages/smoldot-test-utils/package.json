@@ -12,7 +12,7 @@
     "deep-clean": "rm -rf node_modules",
     "clean": "rm -rf dist/ tsconfig.tsbuildinfo",
     "build": "tsc -b --clean",
-    "test": "echo \"No tests for smoldot-test-utils\"",
+    "test": "exit 0; #This is a test support library",
     "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {

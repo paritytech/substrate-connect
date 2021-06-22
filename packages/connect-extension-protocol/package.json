@@ -8,7 +8,7 @@
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist/ tsconfig.tsbuildinfo",
     "build": "tsc -b",
-    "test": "echo \"No tests: this package is only types\"",
+    "test": "exit 0; #This package is only types",
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "author": "Parity Team <admin@parity.io>",
