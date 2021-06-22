@@ -3166,7 +3166,7 @@
 "@substrate/smoldot-test-utils@file:packages/smoldot-test-utils":
   version "0.1.0"
   dependencies:
-    smoldot "0.2.6"
+    smoldot "0.2.9"
 
 "@swc/helpers@^0.2.11":
   version "0.2.12"
@@ -14004,10 +14004,10 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-smoldot@0.2.6:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.2.6.tgz#ecef568df76781bf5b8cbd2dcb302ec14562ede9"
-  integrity sha512-zZRfHOg8dmO40kTX4dqqySZO3luNTRr7XpEkVmbvGsABzM1CMU5idXZhW4SWRt3J8ay/DhTw81PG2oAe+7MgEA==
+smoldot@0.2.9:
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.2.9.tgz#65210558cca9324c76ac4394a5cf03f78953cf9b"
+  integrity sha512-+17jPzeENTQ0RyU+7SRmTyypYtrteLZ7B1byQWFLSaBfQMBkoAaFIEsA4dxPpwHfgIJWg2a4vjWnBvSXrcA9rQ==
   dependencies:
     buffer "^6.0.1"
     performance-now "^2.1.0"
