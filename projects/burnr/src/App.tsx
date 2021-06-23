@@ -35,7 +35,7 @@ const App: React.FunctionComponent<Props> = ({ className = '' }: Props) => {
   const classes = useStyles();
   const [endpoint, setEndpoint] = useLocalStorage('endpoint');
   if (!endpoint) {
-    setEndpoint(Object.keys(ALL_PROVIDERS)[0]);
+    setEndpoint(ALL_PROVIDERS.network);
   }
   const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint.split('-')[0]?.toLowerCase());
 

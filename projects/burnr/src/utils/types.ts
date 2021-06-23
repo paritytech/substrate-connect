@@ -13,8 +13,7 @@ export interface Option {
 }
 
 export interface SimpleProvider {
-  id: string;
-  endpoint: string | undefined;
+  endpont: string;
   network: string;
   client: string;
 }

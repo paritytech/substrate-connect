@@ -49,23 +49,20 @@ export default function NodeConnected(): React.ReactElement {
   const classes = useStyles();
   const api = useApi();
   const [localEndpoint] = useLocalStorage('endpoint');
-  const endpointName = localEndpoint || Object.keys(ALL_PROVIDERS)[0];
-  const [provider] = useState<string>(ALL_PROVIDERS[endpointName]?.id);
+  const endpointName = localEndpoint || ALL_PROVIDERS.network;
+  const [provider] = useState<string>(ALL_PROVIDERS.id);
   const [fiberColor, setFiberColor] = useState<colorType>('error');
 
   useEffect(() => {
     const getColor = async (api: ApiPromise) => {
       if (api && await api.isReady) {
         setFiberColor('primary');
-        l.log("Burnr wallet is now connected to", ALL_PROVIDERS[provider]?.endpoint);
+        l.log("Burnr wallet is now connected to", ALL_PROVIDERS.network);
       }
     }
 
     api && getColor(api);
   }, [api, l, provider]);
-
-  console.log('ALL_PROVIDERS', ALL_PROVIDERS);
-  console.log('provider', provider, 'endpointName', endpointName);
 
   return (
     <div className={classes.nodeSelectorWrap}>
@@ -73,8 +70,8 @@ export default function NodeConnected(): React.ReactElement {
         <Box display='flex' alignItems='center' pt={2.5} pb={2.5} pl={2.5} pr={2.5}>
           <FiberManualRecordIcon style={{ fontSize: '16px', marginRight: 4 }} color={fiberColor} />
           <Box width='100%' display='flex' alignItems='baseline'>
-            <Typography variant='h4'>{ ALL_PROVIDERS[provider]?.network }</Typography>
-            <Typography variant='body2' className={classes.nodeDesc} color='textSecondary'>{ALL_PROVIDERS[provider]?.client}</Typography>
+            <Typography variant='h4'>{ ALL_PROVIDERS.network }</Typography>
+            <Typography variant='body2' className={classes.nodeDesc} color='textSecondary'>{ALL_PROVIDERS.client}</Typography>
           </Box>
         </Box>
       </div>

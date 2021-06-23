@@ -13,13 +13,11 @@ import { useIsMountedRef, useLocalStorage } from '..';
 
 const l = logger(BURNR_WALLET);
 
-l.log('ALL_PROVIDERS: ', ALL_PROVIDERS)
-
 export default function useApiCreate (): ApiPromise {
   const [api, setApi] = useState<ApiPromise>({} as ApiPromise);
   const [localEndpoint] = useLocalStorage('endpoint');
 
-  const [provider] = useState<SimpleProvider>(ALL_PROVIDERS[localEndpoint] || Object.values(ALL_PROVIDERS)[0]);
+  const [network] = useState<SimpleProvider>(ALL_PROVIDERS[localEndpoint].toLowerCase() || ALL_PROVIDERS.network.toLowerCase());
   const  mountedRef = useIsMountedRef();
 
   useEffect((): void => {
@@ -33,11 +31,9 @@ export default function useApiCreate (): ApiPromise {
         l.error('Error:', err);
       }
     }
-
-    const endpoint = provider.network.toLowerCase();
     
-    void choseSmoldot(endpoint);
-  }, [mountedRef, provider.endpoint, provider.network, localEndpoint]);
+    void choseSmoldot(network);
+  }, [mountedRef, localEndpoint, network]);
 
   return api;
 }
