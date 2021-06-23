@@ -160,7 +160,7 @@ const App: React.FunctionComponent = () => {
           </Section>
           <Section>
             <SectionHeading id='api-docs' prefix='6'>API Documentation</SectionHeading>
-            <SectionText>For learning more about substrate-connect's API and usage follow the link below:</SectionText>
+            <SectionText>For learning more about substrate-connect`s API and usage follow the link below:</SectionText>
             <SectionRef href='https://paritytech.github.io/substrate-connect/api/'>Learn more</SectionRef>
           </Section>
           <ThemeProvider theme={createMuiTheme(dark)}>
