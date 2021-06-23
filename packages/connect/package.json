@@ -1,6 +1,6 @@
 {
   "name": "@substrate/connect",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "description": "Substrate-connect to Smoldot clients. Using either substrate extension with predefined clients or an internal smoldot client based on chainSpecs provided.",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
@@ -23,9 +23,9 @@
     "prebuild": "yarn clean && yarn downloadSpecs",
     "pretest": "yarn build",
     "test": "yarn test:unit",
-    "test:all": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage dist/",
-    "test:unit": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage dist/ --config=jest.config.unit.ts",
-    "test:integration": "node --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage dist/ --config=jest.config.integration.ts",
+    "test:all": "../../bin/node-esm $(yarn bin)/jest --colors --silent --coverage dist/",
+    "test:unit": "../../bin/node-esm $(yarn bin)/jest --colors --silent --coverage dist/ --config=jest.config.unit.ts",
+    "test:integration": "../../bin/node-esm $(yarn bin)/jest --colors --silent --coverage dist/ --config=jest.config.integration.ts",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "build": "tsc -b",
@@ -39,17 +39,18 @@
     "eventemitter3": "^4.0.7",
     "file-entry-cache": "^6.0.1",
     "mkdirp": "^1.0.4",
-    "smoldot": "^0.2.6"
+    "smoldot": "0.2.9"
   },
   "devDependencies": {
-    "@substrate/smoldot-test-utils": "file:../smoldot-test-utils",
+    "@substrate/smoldot-test-utils": "^0.1.0",
     "@types/jest": "^26.0.20",
     "@types/jsdom": "^16.2.7",
     "@types/mkdirp": "^1.0.1",
     "@typescript-eslint/parser": "^4.27.0",
     "eslint": "^7.21.0",
     "eslint-plugin-tsdoc": "^0.2.14",
-    "jest": "^27.0.0-next.9",
+    "jest": "^27.0.5",
+    "jest-silent-reporter": "^0.5.0",
     "jsdom": "^16.5.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.3.2"

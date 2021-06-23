@@ -27,6 +27,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     '&:hover': {
       color: theme.palette.getContrastText(theme.palette.secondary.dark),
     },
+  },
+  transferInfoMessage: {
+    overflowWrap: 'break-word',
+    padding: '30px'
   }
 }));
 
@@ -181,7 +185,7 @@ const SendFundsForm: FunctionComponent = () => {
               columns={columns} />
           </Table>
         }
-        <Typography variant='subtitle2'>{message}</Typography>
+        <Typography variant='subtitle2' className={classes.transferInfoMessage}>{message}</Typography>
         {!loading && countdownNo !== 0 &&
           <LinearProgress variant="determinate" value={countdownNo} />
         }

@@ -1,4 +1,6 @@
 export default {
+  coverageReporters: ["text-summary"],
+  reporters: ["jest-silent-reporter"],
   transform: {},
   testEnvironment: 'jsdom',
   moduleFileExtensions: ["js", "jsx"],
