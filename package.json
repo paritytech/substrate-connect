@@ -23,7 +23,7 @@
     "projects/landing-page"
   ],
   "scripts": {
-    "downloadSpecs": "node downloadSpecs.js && cp .chains/*.json ./projects/extension/public/assets/. && cp .chains/*.json ./packages/connect/src/assets/.",
+    "downloadSpecs": "node downloadSpecs.js",
     "preapi-docs": "yarn workspace @substrate/extension run compile",
     "api-docs": "typedoc",
     "deep-clean": "yarn workspaces -s run deep-clean && rm -rf .parcel-cache && rm -rf node_modules",
