@@ -1,6 +1,7 @@
 import { Smoldot, SmoldotClient, SmoldotOptions } from 'smoldot';
 import { JsonRpcObject } from '@polkadot/rpc-provider/types';
 import { jest } from '@jest/globals'
+import asap from 'asap';
 
 /**
  * SystemHealth is the type of the object in the `result` field of the JSON
@@ -165,7 +166,7 @@ export const respondWith = (jsonResponses: string[]) => {
  */
 const createRequestProcessor = (options: SmoldotOptions, responder: RpcResponder, healthResponder: RpcResponder) => {
   return (rpcRequest: string, chainIndex: number) => {
-    process.nextTick(() => {
+    asap(() => {
       if (options && options.jsonRpcCallback) {
         if (/system_health/.test(rpcRequest)) {
           options.jsonRpcCallback(healthResponder(rpcRequest), chainIndex);
