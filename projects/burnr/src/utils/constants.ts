@@ -9,6 +9,5 @@ export const POLKA_ACCOUNT_ENDPOINTS = {
 
 export const ALL_PROVIDERS: SimpleProvider =  {
   network: 'Westend',
-  endpoint: 'wss://westend-rpc.polkadot.io',
   client: 'Light client'
 };
