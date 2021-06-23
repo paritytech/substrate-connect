@@ -158,6 +158,11 @@ const App: React.FunctionComponent = () => {
               </SectionRef>
             </CardProject>
           </Section>
+          <Section>
+            <SectionHeading id='api-docs' prefix='6'>API Documentation</SectionHeading>
+            <SectionText>For learning more about substrate-connect's API and usage follow the link below:</SectionText>
+            <SectionRef href='https://paritytech.github.io/substrate-connect/api/'>Learn more</SectionRef>
+          </Section>
           <ThemeProvider theme={createMuiTheme(dark)}>
             <Section pt={5} pb={5}>
               {/* TODO: Playground */}
@@ -178,7 +183,7 @@ const App: React.FunctionComponent = () => {
           <SidebarLink href='#supported-networks'>Supported Networks</SidebarLink>
           <SidebarLink href='#getting-started'>Getting Started</SidebarLink>
           <SidebarLink href='#projects'>Projects</SidebarLink>
-          <SidebarLink href='./api/'>API Documentation</SidebarLink>
+          <SidebarLink href='#api-docs'>API Documentation</SidebarLink>
         </Sidebar>
         {/* TODO: Footer */}
       </UIContainer>
