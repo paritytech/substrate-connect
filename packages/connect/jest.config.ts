@@ -6,7 +6,6 @@ const config: Config.InitialOptions = {
   roots: ['<rootDir>/dist'],
   verbose: true,
   transformIgnorePatterns:["./src/__mocks__/client.js"],
-  testURL: "http://localhost/",
-  transform: {}
+  testURL: "http://localhost/"
 };
 export default config;
