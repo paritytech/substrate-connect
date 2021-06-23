@@ -6,7 +6,7 @@ import { Typography, Box } from '@material-ui/core';
 import { ApiPromise } from '@polkadot/api';
 
 import { ALL_PROVIDERS, BURNR_WALLET } from '../utils/constants';
-import { useLocalStorage, useApi } from '../hooks';
+import { useApi } from '../hooks';
 import { logger } from '@polkadot/util';
 
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
@@ -48,8 +48,6 @@ export default function NodeConnected(): React.ReactElement {
   const l = logger(BURNR_WALLET);
   const classes = useStyles();
   const api = useApi();
-  const [localEndpoint] = useLocalStorage('endpoint');
-  const endpointName = localEndpoint || ALL_PROVIDERS.network;
   const [fiberColor, setFiberColor] = useState<colorType>('error');
 
   useEffect(() => {
