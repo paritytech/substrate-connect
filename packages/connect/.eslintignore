@@ -6,5 +6,6 @@ coverage
 # don't lint .cache
 .chains
 
-downloadSpecs.js
+/assets/*.json
+/src/specs/*.json
 jest.*.ts

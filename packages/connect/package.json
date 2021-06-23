@@ -20,7 +20,7 @@
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
     "downloadSpecs": "node downloadSpecs.js && cp ./src/specs/westend.json ./src/__mocks__/.",
-    "prebuild": "yarn clean && yarn downloadSpecs",
+    "prebuild": "yarn clean",
     "pretest": "yarn build",
     "test": "yarn test:unit",
     "test:all": "../../bin/node-esm $(yarn bin)/jest --colors --silent --coverage dist/",

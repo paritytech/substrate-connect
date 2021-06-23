@@ -8,4 +8,4 @@ dist
 jest-setup.js
 jest.config.ts
 webpack.*
-downloadSpecs.js
+/public/assets/*.json
