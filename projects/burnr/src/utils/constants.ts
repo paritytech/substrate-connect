@@ -1,7 +1,4 @@
-import { WsProvider } from '@polkadot/api';
-import { ProviderInterface } from '@polkadot/rpc-provider/types';
-
-import { LazyProvider } from './types'; 
+import { SimpleProvider } from './types'; 
 
 /**
  * Temporary hard-coded work around to test Wasm Light client 
@@ -30,18 +27,12 @@ export const users = {
   'westend': '12gG5fz9A7k7CgZeis8JesCoZiARDioonHYp5W9Vkwc6nFyB'
 }
 
-export const REMOTE_PROVIDERS: Record<string, LazyProvider> = {
+export const REMOTE_PROVIDERS: Record<string, SimpleProvider> = {
   'Westend-WsProvider': {
-    description: 'Remote node hosted by W3F',
     id: 'Westend-WsProvider',
     network: 'Westend',
-    node: 'light',
-    source: 'remote',
     endpoint: endpoints.westend,
     client: 'Light client',
-    start: (): Promise<ProviderInterface> =>
-      Promise.resolve(new WsProvider(endpoints.westend)),
-    transport: 'WsProvider',
   }
 };
 

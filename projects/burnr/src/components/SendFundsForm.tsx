@@ -16,6 +16,7 @@ import { InputAddress, InputFunds } from '../components';
 import { useBalance, useApi, useLocalStorage } from '../hooks'
 import { HistoryTableRow } from '.';
 import { Column } from '../utils/types';
+import { ALL_PROVIDERS } from '../utils/constants';
 
 const useStyles = makeStyles((theme: Theme) => ({
   errorMessage: {

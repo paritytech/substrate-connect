@@ -8,7 +8,7 @@ import { ApiPromise } from '@polkadot/api';
 import { logger } from '@polkadot/util';
 import { Detector }  from '@substrate/connect';
 import { ALL_PROVIDERS, BURNR_WALLET } from '../../utils/constants';
-import { LazyProvider } from '../../utils/types'; 
+import { SimpleProvider } from '../../utils/types'; 
 import { useIsMountedRef, useLocalStorage } from '..';
 
 const l = logger(BURNR_WALLET);
@@ -19,7 +19,7 @@ export default function useApiCreate (): ApiPromise {
   const [api, setApi] = useState<ApiPromise>({} as ApiPromise);
   const [localEndpoint] = useLocalStorage('endpoint');
 
-  const [provider] = useState<LazyProvider>(ALL_PROVIDERS[localEndpoint] || Object.values(ALL_PROVIDERS)[0]);
+  const [provider] = useState<SimpleProvider>(ALL_PROVIDERS[localEndpoint] || Object.values(ALL_PROVIDERS)[0]);
   const  mountedRef = useIsMountedRef();
 
   useEffect((): void => {
