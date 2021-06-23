@@ -149,14 +149,14 @@ const SendFundsForm: FunctionComponent = () => {
         currency={unit}
         setAmount={setAmount}
       />
-      <Grid item xs={12} className={classes.formSubmitContainer}>
-        <Typography variant='subtitle1' className={classes.feesMessage}>
+      <Grid item xs={12}>
+        <Typography variant='subtitle1'>
           {fee ? `Receiver will get: ${prettyBalance(parseFloat(amount))} ${unit}` : ''}
         </Typography>
-        <Typography variant='subtitle1' className={classes.feesMessage}>
+        <Typography variant='subtitle1'>
           {fee ? `Fees: ${fee?.toHuman()}` : ''}
         </Typography>
-        <Typography variant='subtitle1' className={classes.feesMessage}>
+        <Typography variant='subtitle1'>
         </Typography>
       </Grid> 
       <Button

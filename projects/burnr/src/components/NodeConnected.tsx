@@ -50,7 +50,6 @@ export default function NodeConnected(): React.ReactElement {
   const api = useApi();
   const [localEndpoint] = useLocalStorage('endpoint');
   const endpointName = localEndpoint || ALL_PROVIDERS.network;
-  const [provider] = useState<string>(ALL_PROVIDERS.id);
   const [fiberColor, setFiberColor] = useState<colorType>('error');
 
   useEffect(() => {
@@ -62,7 +61,7 @@ export default function NodeConnected(): React.ReactElement {
     }
 
     api && getColor(api);
-  }, [api, l, provider]);
+  }, [api, l]);
 
   return (
     <div className={classes.nodeSelectorWrap}>
