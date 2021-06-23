@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import React, { MouseEvent, useContext, useState, useEffect, FunctionComponent } from 'react';
 import BN from 'bn.js';
 import { 
@@ -7,14 +10,15 @@ import {
   Typography,
   LinearProgress,
   Table,
+  Grid,
   Box} from '@material-ui/core';
-import { decodeAddress, encodeAddress } from '@polkadot/keyring';
-import { hexToU8a, isHex } from '@polkadot/util';
+import { Balance } from '@polkadot/types/interfaces';
 import { Keyring } from '@polkadot/api';
 import { AccountContext } from '../utils/contexts';
 import { InputAddress, InputFunds } from '../components';
 import { useBalance, useApi, useLocalStorage } from '../hooks'
 import { HistoryTableRow } from '.';
+import { isValidAddressPolkadotAddress, prettyBalance } from '../utils/utils';
 import { Column } from '../utils/types';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -59,6 +63,17 @@ const SendFundsForm: FunctionComponent = () => {
   const [message, setMessage] = useState<string>('');
   const [countdownNo, setCountdownNo] = useState<number>(0);
   const [rowStatus, setRowStatus] = useState<number>(0);
+  const [fee, setFee] = useState<Balance | undefined>();
+
+  useEffect((): void => {
+    const calcFee = async (): Promise<void> => {
+      const keyring = new Keyring({ type: 'sr25519' });
+      const sender = keyring.addFromUri(account.userSeed);
+      const fee = await api.tx.balances.transfer(address, new BN(amount)).paymentInfo(sender);
+      setFee(fee.partialFee);
+    };
+    (!amount || amount === '0' || !isValidAddressPolkadotAddress(address) || !account.userSeed) ? setFee(undefined) : void calcFee();
+  }, [amount, account.userSeed, address, api.tx.balances]);
 
   useEffect((): () => void => {
     let countdown: ReturnType<typeof setInterval>;
@@ -90,15 +105,12 @@ const SendFundsForm: FunctionComponent = () => {
       const keyring = new Keyring({ type: 'sr25519' });
       const sender = keyring.addFromUri(account.userSeed);
       await api.tx.balances.transfer(address, new BN(amount)).signAndSend(sender, (result) => {
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         setMessage(`Current transaction status ${result.status}`);
         if (result.status.isInBlock) {
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           setMessage(`Transaction Block hash: ${result.status.asInBlock}`);
         } else if (result.status.isFinalized) {
           setLoading(false);
           setRowStatus(1);
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           setMessage(`Block hash:: ${result.status.asFinalized}.`);
           account.userHistory.unshift({
             withWhom: address,
@@ -125,20 +137,6 @@ const SendFundsForm: FunctionComponent = () => {
     }
   }
 
-  const isValidAddressPolkadotAddress = (add = '') => {
-    try {
-      encodeAddress(
-        isHex(add)
-          ? hexToU8a(add.toString())
-          : decodeAddress(add)
-      );
-  
-      return true;
-    } catch (error) {
-      return false;
-    }
-  };
-
   return (
     <>
       <InputAddress setAddress={setAddress} />
@@ -148,6 +146,16 @@ const SendFundsForm: FunctionComponent = () => {
         currency={unit}
         setAmount={setAmount}
       />
+      <Grid item xs={12} className={classes.formSubmitContainer}>
+        <Typography variant='subtitle1' className={classes.feesMessage}>
+          {fee ? `Receiver will get: ${prettyBalance(parseFloat(amount))} ${unit}` : ''}
+        </Typography>
+        <Typography variant='subtitle1' className={classes.feesMessage}>
+          {fee ? `Fees: ${fee?.toHuman()}` : ''}
+        </Typography>
+        <Typography variant='subtitle1' className={classes.feesMessage}>
+        </Typography>
+      </Grid> 
       <Button
         type='submit'
         variant='contained'
@@ -160,12 +168,12 @@ const SendFundsForm: FunctionComponent = () => {
 
       {!isValidAddressPolkadotAddress(address) &&
         <Typography variant='body2' color='error' className={classes.errorMessage}>
-          You need to add a valid address.
+          Add a valid address.
         </Typography>
       }
       {!parseInt(amount) &&
         <Typography variant='body2' color='error' className={classes.errorMessage}>
-        You should add some amount.
+          Add some amount.
         </Typography>
       }
       

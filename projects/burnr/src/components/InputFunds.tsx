@@ -1,5 +1,6 @@
 import React, { ChangeEvent, MouseEvent, SetStateAction, Dispatch } from 'react';
 import { Button, Grid, TextField, Box, InputAdornment } from '@material-ui/core';
+import { useApi } from '../hooks';
 import BN from 'bn.js';
 
 interface Props {
@@ -10,19 +11,24 @@ interface Props {
 }
 
 const InputFunds: React.FunctionComponent<Props> = ({ total, setAmount, currency, hidePercentages = false }: Props) => {
-  // const [value, setValue] = React.useState<string>('');
+  const api = useApi();
   const [showValue, setShowValue] = React.useState<string>('');
-  const handleClickButton = (e: MouseEvent) => {
-    const val = ((new BN((e.currentTarget as HTMLButtonElement).value)).mul(total)).toString();
-    setAmount(val);
-    document.getElementById('SendFundsAmountField')?.focus();
-  };
-  const handleChange = (e: ChangeEvent) => {
-    const value = (e.currentTarget as HTMLButtonElement).value;
-    const v: number = parseFloat(value);
-    setShowValue(value !== '' ? value : '');
-    setAmount(value !== '' ? (v * 1000000000000).toString() : '0');
-  };
+
+	const handleChange = (e: ChangeEvent | MouseEvent, fromButtons = false) => {
+    if ((e.currentTarget as HTMLButtonElement).value?.length > 6 ) return;
+    if (fromButtons) {
+      const calcNewTotal = (parseFloat((e.currentTarget as HTMLButtonElement).value) * parseInt(new BN(total).toString()));
+      const truncDec = Math.trunc(calcNewTotal);
+      setShowValue((calcNewTotal).toString() !== '' ? (truncDec/Math.pow(10, api.registry.chainDecimals[0])).toFixed(4) : '');
+      setAmount((truncDec).toString());
+      document.getElementById('SendFundsAmountField')?.focus();
+    } else {
+      const value = (e.currentTarget as HTMLButtonElement).value;
+      const v: number = (parseFloat(value) * Math.pow(10, api.registry.chainDecimals[0]));
+      setShowValue(value !== '' ? value : '');
+      setAmount(value !== '' ? v.toString() : '0');
+    }
+	};
 
   // @TODO focus/blur TextField and %Buttons at the same time in a React way
   const [focus, setFocus] = React.useState<boolean>(false);
@@ -62,7 +68,7 @@ const InputFunds: React.FunctionComponent<Props> = ({ total, setAmount, currency
               return(
                 <Grid key={index} item>
                   <Button
-                    onClick={ handleClickButton }
+                    onClick={(e) => handleChange(e, true) }
                     variant='outlined'
                     color={focus ? 'primary' : 'default'}
                     size='small'
