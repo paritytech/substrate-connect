@@ -3,7 +3,7 @@
  */
 import { Detector } from './Detector';
 import { ApiOptions } from '@polkadot/api/types';
-import westend2 from './__mocks__/westend.json';
+import westend2 from './specs/westend.json';
 
 describe('Initialize Detector without extension', () => {
   let detect: Detector;
