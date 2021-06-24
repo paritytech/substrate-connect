@@ -6,6 +6,5 @@ coverage
 # don't lint .cache
 .chains
 
-/assets/*.json
 /src/specs/*.json
 jest.*.ts
