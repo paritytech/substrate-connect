@@ -1,5 +1,3 @@
-console.log('process.cwd()', process.cwd());
-
 const fs = require('fs');
 const path = require('path');
 const networks = [
