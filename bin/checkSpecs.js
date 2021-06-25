@@ -19,7 +19,7 @@ const workspacePath = `${path.resolve()}/${paths[workspace]}`;
 const pathExist = fs.existsSync(workspacePath);
 
 // check if path exist. If not create it
-(!pathExist) && fs.mkdirSync(workspacePath);
+if (!pathExist) fs.mkdirSync(workspacePath);
 
 networks.forEach(network => {
   const file = `${workspacePath}/${network}.json`; 
