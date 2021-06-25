@@ -10,6 +10,7 @@
     "downloadSpecs": "node downloadSpecs.js",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "compile": "tsc -b",
     "test": "../../bin/node-esm $(yarn bin)/jest --colors --silent --coverage",
     "prebuild": "yarn clean && yarn downloadSpecs",
     "build": "webpack --config webpack.prod.js && zip -r ./dist/substrate-connect.zip ./dist/*",
