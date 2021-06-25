@@ -1,9 +1,9 @@
 import config from './jest.config';
 
 const configIntegration = Object.assign({}, config, { testPathIgnorePatterns: [
-  "dist/ExtensionProvider/ExtensionProvider.test.js",
-  "dist/SmoldotProvider/SmoldotProvider.test.js",
-  "dist/utils/utils.test.js"
+  "src/ExtensionProvider/ExtensionProvider.test.ts",
+  "src/SmoldotProvider/SmoldotProvider.test.ts",
+  "src/utils/utils.test.ts"
 ]
 });
 

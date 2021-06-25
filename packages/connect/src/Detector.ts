@@ -1,8 +1,8 @@
 import { ApiPromise } from '@polkadot/api';
 import { ApiOptions } from '@polkadot/api/types';
 import { ProviderInterface } from '@polkadot/rpc-provider/types';
-import { SmoldotProvider }  from './SmoldotProvider/SmoldotProvider.js';
-import { ExtensionProvider } from './ExtensionProvider/ExtensionProvider.js';
+import { SmoldotProvider }  from './SmoldotProvider/SmoldotProvider';
+import { ExtensionProvider } from './ExtensionProvider/ExtensionProvider';
 import westend from './specs/westend.json';
 import kusama from './specs/kusama.json';
 import polkadot from './specs/polkadot.json';
