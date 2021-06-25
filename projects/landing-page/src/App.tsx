@@ -120,7 +120,12 @@ const App: React.FunctionComponent = () => {
             </ThemeProvider>
           </Section>
           <Section>
-            <SectionHeading id='projects' prefix='5'>Projects</SectionHeading>
+            <SectionHeading id='api-docs' prefix='5'>API Documentation</SectionHeading>
+            <SectionText>For learning more about substrate-connect`s API and usage follow the link below:</SectionText>
+            <SectionRef href='https://paritytech.github.io/substrate-connect/api/'>Learn more</SectionRef>
+          </Section>
+          <Section>
+            <SectionHeading id='projects' prefix='6'>Projects</SectionHeading>
             <CardProject
               title='Browser Demo'
               subtitle='Minimal implementation'
@@ -158,11 +163,6 @@ const App: React.FunctionComponent = () => {
               </SectionRef>
             </CardProject>
           </Section>
-          <Section>
-            <SectionHeading id='api-docs' prefix='6'>API Documentation</SectionHeading>
-            <SectionText>For learning more about substrate-connect`s API and usage follow the link below:</SectionText>
-            <SectionRef href='https://paritytech.github.io/substrate-connect/api/'>Learn more</SectionRef>
-          </Section>
           <ThemeProvider theme={createMuiTheme(dark)}>
             <Section pt={5} pb={5}>
               {/* TODO: Playground */}
@@ -182,8 +182,8 @@ const App: React.FunctionComponent = () => {
           <SidebarLink href='#wasm-light-clients'>Wasm Light Clients</SidebarLink>
           <SidebarLink href='#supported-networks'>Supported Networks</SidebarLink>
           <SidebarLink href='#getting-started'>Getting Started</SidebarLink>
-          <SidebarLink href='#projects'>Projects</SidebarLink>
           <SidebarLink href='#api-docs'>API Documentation</SidebarLink>
+          <SidebarLink href='#projects'>Projects</SidebarLink>
         </Sidebar>
         {/* TODO: Footer */}
       </UIContainer>

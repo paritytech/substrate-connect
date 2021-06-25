@@ -23,16 +23,16 @@
     "prebuild": "yarn clean && yarn checkSpecs",
     "pretest": "yarn build",
     "test": "yarn test:unit",
-    "test:all": "../../bin/node-esm $(yarn bin)/jest --colors --silent --coverage dist/",
-    "test:unit": "../../bin/node-esm $(yarn bin)/jest --colors --silent --coverage dist/ --config=jest.config.unit.ts",
-    "test:integration": "../../bin/node-esm $(yarn bin)/jest --colors --silent --coverage dist/ --config=jest.config.integration.ts",
+    "test:all": "../../bin/node-esm $(yarn bin)/jest --colors --silent --coverage",
+    "test:unit": "../../bin/node-esm $(yarn bin)/jest --colors --silent --coverage --config=jest.config.unit.ts",
+    "test:integration": "../../bin/node-esm $(yarn bin)/jest --colors --silent --coverage --config=jest.config.integration.ts",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "build": "tsc -b",
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "dependencies": {
-    "@polkadot/api": "^4.2.4",
+    "@polkadot/api": "^4.15.1",
     "@polkadot/rpc-provider": "^4.10.1",
     "@substrate/connect-extension-protocol": "^0.3.0",
     "browserify-fs": "^1.0.0",
@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@substrate/smoldot-test-utils": "^0.1.0",
-    "@types/jest": "^26.0.20",
+    "@types/jest": "^26.0.23",
     "@types/jsdom": "^16.2.7",
     "@types/mkdirp": "^1.0.1",
     "@typescript-eslint/parser": "^4.27.0",
@@ -52,6 +52,7 @@
     "jest": "^27.0.5",
     "jest-silent-reporter": "^0.5.0",
     "jsdom": "^16.5.1",
+    "ts-jest": "^27.0.3",
     "ts-node": "^9.1.1",
     "typescript": "^4.3.2"
   },
