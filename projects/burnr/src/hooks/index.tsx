@@ -5,7 +5,6 @@
  */
 export { default as useApi } from './api/useApi';
 export { default as useApiCreate } from './api/useApiCreate';
-export { default as useProvider } from './api/useProvider';
 export { default as useIsMountedRef } from './api/useIsMountedRef';
 export { default as useLocalStorage } from './api/useLocalStorage';
 

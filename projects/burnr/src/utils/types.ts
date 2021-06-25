@@ -1,22 +1,20 @@
 // SPDX-License-Identifier: Apache-2
 import { Balance, Index, RefCount } from '@polkadot/types/interfaces';
-import { ProviderInterface } from '@polkadot/rpc-provider/types';
-import { ProviderMeta } from '@polkadot/extension-inject/types';
 import { u32 } from '@polkadot/types';
 import { Codec } from '@polkadot/types/types';
 
 import { ApiPromise } from '@polkadot/api';
 import { KeyringPair, KeyringPair$Json } from '@polkadot/keyring/types';
 
-/**
- * Interface describing a Provider, lazily loaded.
- */
-export interface LazyProvider extends ProviderMeta {
-  description: string;
-  id: string;
-  endpoint?: string | undefined;
-  client?: string;
-  start: () => Promise<ProviderInterface>;
+export interface Option {
+  network: string;
+  client: string | undefined;
+  provider: string;
+}
+
+export interface SimpleProvider {
+  network: string;
+  client: string;
 }
 
 export interface Account {

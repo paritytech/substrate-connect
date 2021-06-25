@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: Apache-2
 import BN from 'bn.js';
 import { useEffect, useState } from 'react';
+import { logger } from '@polkadot/util';
 
 import useApi from './api/useApi';
 import useIsMountedRef from './api/useIsMountedRef';
 import { UserInfo } from '../utils/types';
+import { BURNR_WALLET } from '../utils/constants';
 
 export default function useUserInfo (address: string): UserInfo {
+  const l = logger(BURNR_WALLET);
   const api = useApi();
   const  mountedRef = useIsMountedRef();
   const [usersInfo, setUsersInfo] = useState<unknown>([]);
@@ -28,12 +31,12 @@ export default function useUserInfo (address: string): UserInfo {
         .then((u: null | (() => void)): void => {
           unsubscribe = u;
         })
-        .catch(console.error);
+        .catch(l.error);
 
     return (): void => {
       unsubscribe && unsubscribe();
     }
-  }, [address, api, mountedRef]);
+  }, [address, api, l.error, mountedRef]);
 
   return usersInfo as UserInfo;
 }

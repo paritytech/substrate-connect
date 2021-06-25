@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Box, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
-import { NodeSelector } from '../components';
+import { NodeConnected } from '../components';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -22,7 +22,7 @@ const Head: React.FunctionComponent = () => {
         </Box>
       </Grid>
       <Grid item xs={6}>
-        <NodeSelector/>
+        <NodeConnected/>
       </Grid>
     </Grid>
   );

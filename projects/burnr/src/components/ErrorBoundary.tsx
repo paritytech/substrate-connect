@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import React, { Component, ErrorInfo, ReactNode } from "react";
+import { logger } from '@polkadot/util';
+import { BURNR_WALLET } from '../utils/constants';
 
 interface Props {
   children: ReactNode;
@@ -8,6 +10,8 @@ interface Props {
 interface State {
   hasError: boolean;
 }
+
+const l = logger(BURNR_WALLET);
 
 class ErrorBoundary extends Component<Props, State> {
   public state: State = {
@@ -21,7 +25,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error("Uncaught error:", error, errorInfo);
+    l.error("Uncaught error:", error, errorInfo);
   }
 
   public render() {

@@ -20,6 +20,7 @@ import { useBalance, useApi, useLocalStorage } from '../hooks'
 import { HistoryTableRow } from '.';
 import { isValidAddressPolkadotAddress, prettyBalance } from '../utils/utils';
 import { Column } from '../utils/types';
+import { ALL_PROVIDERS } from '../utils/constants';
 
 const useStyles = makeStyles((theme: Theme) => ({
   errorMessage: {
@@ -54,7 +55,9 @@ const SendFundsForm: FunctionComponent = () => {
   const unit = balanceArr[3];
   // TODO: This must be prettier and reusable (exists already on App)
   const [endpoint, setEndpoint] = useLocalStorage('endpoint');
-  if (!endpoint) setEndpoint('Polkadot-WsProvider');
+  if (!endpoint) {
+    setEndpoint(Object.keys(ALL_PROVIDERS)[0]);
+  }
   const [ ,setLocalStorageAccount] = useLocalStorage(endpoint.split('-')[0]?.toLowerCase());
   // TODO END: This must be prettier and reusable (exists already on App)
   const [address, setAddress] = useState<string>('');
@@ -146,14 +149,14 @@ const SendFundsForm: FunctionComponent = () => {
         currency={unit}
         setAmount={setAmount}
       />
-      <Grid item xs={12} className={classes.formSubmitContainer}>
-        <Typography variant='subtitle1' className={classes.feesMessage}>
+      <Grid item xs={12}>
+        <Typography variant='subtitle1'>
           {fee ? `Receiver will get: ${prettyBalance(parseFloat(amount))} ${unit}` : ''}
         </Typography>
-        <Typography variant='subtitle1' className={classes.feesMessage}>
+        <Typography variant='subtitle1'>
           {fee ? `Fees: ${fee?.toHuman()}` : ''}
         </Typography>
-        <Typography variant='subtitle1' className={classes.feesMessage}>
+        <Typography variant='subtitle1'>
         </Typography>
       </Grid> 
       <Button

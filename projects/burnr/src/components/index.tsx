@@ -11,7 +11,7 @@ export { default as InputFunds } from './InputFunds';
 export { default as LogoSubstrate } from './LogoSubstrate';
 export { default as NavFooter } from './NavFooter';
 export { default as NavTabs } from './NavTabs';
-export { default as NodeSelector } from './NodeSelector';
+export { default as NodeConnected } from './NodeConnected';
 export { default as PopoverInfo } from './PopoverInfo';
 export { default as PopoverExtrinsic } from './PopoverExtrinsic';
 export { default as SendFundsForm } from './SendFundsForm';
