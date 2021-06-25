@@ -9,7 +9,7 @@ import expect from 'expect';
 import { ApiPromise } from '@polkadot/api';
 import {SmoldotProvider} from '../';
 import {logger} from '@polkadot/util';
-import westend from '../../__mocks__/westend.json';
+import westend from '../../specs/westend.json';
 
 const l = logger('examples');
 let api: ApiPromise;

@@ -40,8 +40,11 @@ import polkadot from './specs/polkadot.json';
  */
 export class Detector {
   #chainSpecs: Record<string, unknown> = {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     'polkadot': polkadot,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     'kusama': kusama,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     'westend': westend
   }
   #name: string;

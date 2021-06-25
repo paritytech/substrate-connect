@@ -23,6 +23,7 @@
     "projects/landing-page"
   ],
   "scripts": {
+    "downloadSpecs": "node bin/downloadSpecs.js",
     "preapi-docs": "yarn workspace @substrate/extension run compile",
     "api-docs": "typedoc",
     "deep-clean": "yarn workspaces -s run deep-clean && rm -rf .parcel-cache && rm -rf node_modules",
