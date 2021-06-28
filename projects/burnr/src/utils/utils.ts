@@ -109,31 +109,27 @@ export const validateLocalstorage = (): void => {
     "endpoint": ALL_PROVIDERS.network
   };
 
-  const setLocalStorage = (key: string, value: string) => {
-    localStorage.setItem(key, value);
-  }
-
   Object.keys(expectedValues).forEach(key => {
     if (!Object.keys(localStorage).includes(key)) {
       console.warn(`Endpoint ${key} not set in localStorage. Setting it up now.`);
       switch (key) {
         case "endpoint":
           if (localStorage["endpoint"] !== ALL_PROVIDERS.network) {
-            setLocalStorage("endpoint", ALL_PROVIDERS.network);
+            localStorage.setItem("endpoint", ALL_PROVIDERS.network);
           }
           break;
         case "theme":
-          setLocalStorage("theme", "");
+          localStorage.setItem("theme", "");
           break;
         case "balanceVisibility":
-          setLocalStorage("balanceVisibility", "true");
+          localStorage.setItem("balanceVisibility", "true");
           break;
       }
     } else {
       // Check if the values of existing keys are among the accepted ones
       // if not then set the default value of expectedValies (index 0)
       if (expectedValues[key] && !(expectedValues[key] as string[]).includes(localStorage[key])) {
-        localStorage.removeItem(key);
+        localStorage.setItem(key);
       }
     }
   });
