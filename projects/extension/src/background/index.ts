@@ -34,6 +34,8 @@ const init = () => {
   createSmoldot('westend', westend).catch(err => l.error('Error', err));
 }
 
+chrome.runtime.onInstalled.addListener(() => { init(); });
+
 chrome.runtime.onStartup.addListener(() => { init(); });
 
 chrome.runtime.onConnect.addListener((port) => {
