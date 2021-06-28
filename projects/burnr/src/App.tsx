@@ -31,13 +31,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const App: React.FunctionComponent<Props> = ({ className = '' }: Props) => {
-  const api = useApiCreate();
+  const api: ApiPromise = useApiCreate();
   const classes = useStyles();
   const [endpoint, setEndpoint] = useLocalStorage('endpoint');
   if (!endpoint) {
     setEndpoint(ALL_PROVIDERS.network);
   }
-  const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint.split('-')[0]?.toLowerCase());
+  const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint?.toLowerCase());
 
   const [account, setCurrentAccount] = useState<LocalStorageAccountCtx>({} as LocalStorageAccountCtx);
   const [loader, setLoader] = useState(true)

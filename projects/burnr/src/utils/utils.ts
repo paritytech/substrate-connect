@@ -9,6 +9,8 @@ import { KeyringPair$Json } from '@polkadot/keyring/types';
 import { formatBalance } from '@polkadot/util';
 import type { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
+import { ALL_PROVIDERS } from './constants';
+import { useLocalStorage } from '../hooks';
 
 const keyring = new Keyring({ type: 'sr25519' });
 
@@ -89,8 +91,8 @@ export const prettyBalance = (rawBalance: Balance | BN | number): string => {
   
   if( (typeof(rawBalance) === 'number' &&  rawBalance === 0) || !rawBalance) {
     return '0'
-  } else if (rawBalance.toString() === '0'){
-    return rawBalance.toString();
+  } else if (rawBalance as string === '0'){
+    return rawBalance as string;
   }
   // Use `api.registry.chainDecimals` instead of decimals
   const firstPass = formatBalance(rawBalance,  { decimals: 12, forceUnit: '-', withSi: false });
@@ -99,3 +101,42 @@ export const prettyBalance = (rawBalance: Balance | BN | number): string => {
 }
 
 export const humanReadable = (amnt: number, api: ApiPromise): string => (amnt/Math.pow(10, api.registry.chainDecimals[0])).toFixed(4);
+
+export const validateLocalstorage = (): void => {
+  // expected acceptable values of localStorage.
+  const expectedValues = {
+    "theme": ["true", "false"],
+    "balanceVisibility": ["true", "false"],
+    "endpoint": ALL_PROVIDERS.network
+  };
+
+  const setLocalStorage = (key: string, value: string) => {
+    localStorage.setItem(key, value);
+  }
+
+  Object.keys(expectedValues).forEach(key => {
+    console.log('localStorage[key]', key, localStorage[key]);
+    if (!Object.keys(localStorage).includes(key)) {
+      console.warn(`Endpoint ${key} not set in localStorage. Setting it up now.`);
+      switch (key) {
+        case "endpoint":
+          if (localStorage["endpoint"] !== ALL_PROVIDERS.network) {
+            setLocalStorage("endpoint", ALL_PROVIDERS.network);
+          }
+          break;
+        case "theme":
+          setLocalStorage("theme", "");
+          break;
+        case "balanceVisibility":
+          setLocalStorage("balanceVisibility", "true");
+          break;
+      }
+    } else {
+      // Check if the values of existing keys are among the accepted ones
+      // if not then set the default value of expectedValies (index 0)
+      if (expectedValues[key] && !(expectedValues[key] as string[]).includes(localStorage[key])) {
+        localStorage.removeItem(key);
+      }
+    }
+  });
+}

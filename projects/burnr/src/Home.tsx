@@ -5,7 +5,8 @@ import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { NavTabs, AccountCard, BalanceValue, BurnrDivider, AccountMenu } from './components';
 
 import { BalanceVisibleContext } from './utils/contexts';
-import { LocalStorageAccountCtx } from './utils/types';
+import { LocalStorageAccountCtx, State } from './utils/types';
+import { validateLocalstorage } from './utils/utils';
 import { useBalance, useLocalStorage } from './hooks';
 
 const useStyles = makeStyles(theme => ({
@@ -32,8 +33,13 @@ const Home: React.FunctionComponent<Props> =  ({ account, loader }: Props) => {
   const [balanceVisibility, setBalanceVisibility] = useState<boolean>(localBalance !== 'false');
   const classes = useStyles();
   const balanceArr = useBalance(account?.userAddress || '');
-  const balance = balanceArr[1];
-  const unit = balanceArr[3];
+  const balance: State = balanceArr[1];
+  const unit: State = balanceArr[3];
+  
+  useEffect((): void => {
+    validateLocalstorage();
+  }, []);
+
   useEffect((): void => {
     setLocalBalance(balanceVisibility ? 'true' : 'false')
   }, [balanceVisibility, setLocalBalance])
