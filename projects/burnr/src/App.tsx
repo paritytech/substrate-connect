@@ -6,6 +6,7 @@ import { LocalStorageAccountCtx } from './utils/types';
 import { useApiCreate, useLocalStorage } from './hooks';
 import { createLocalStorageAccount } from './utils/utils';
 import { ALL_PROVIDERS } from './utils/constants';
+import { ApiPromise } from '@polkadot/api';
 
 import Home from './Home';
 

@@ -10,7 +10,6 @@ import { formatBalance } from '@polkadot/util';
 import type { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 import { ALL_PROVIDERS } from './constants';
-import { useLocalStorage } from '../hooks';
 
 const keyring = new Keyring({ type: 'sr25519' });
 
@@ -91,8 +90,8 @@ export const prettyBalance = (rawBalance: Balance | BN | number): string => {
   
   if( (typeof(rawBalance) === 'number' &&  rawBalance === 0) || !rawBalance) {
     return '0'
-  } else if (rawBalance as string === '0'){
-    return rawBalance as string;
+  } else if (rawBalance.toString() === '0'){
+    return rawBalance.toString();
   }
   // Use `api.registry.chainDecimals` instead of decimals
   const firstPass = formatBalance(rawBalance,  { decimals: 12, forceUnit: '-', withSi: false });
