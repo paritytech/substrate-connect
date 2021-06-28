@@ -151,7 +151,7 @@ const SendFundsForm: FunctionComponent = () => {
       />
       <Grid item xs={12}>
         <Typography variant='subtitle1'>
-          {fee ? `Receiver will get: ${prettyBalance(parseFloat(amount))} ${unit}` : ''}
+          {fee ? `Balance after transaction: ${prettyBalance((new BN(maxAmountFull)).sub(new BN(amount)).sub(fee))} ${unit}` : ''}
         </Typography>
         <Typography variant='subtitle1'>
           {fee ? `Fees: ${prettyBalance(fee)} ${unit}` : ''}
