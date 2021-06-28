@@ -114,7 +114,6 @@ export const validateLocalstorage = (): void => {
   }
 
   Object.keys(expectedValues).forEach(key => {
-    console.log('localStorage[key]', key, localStorage[key]);
     if (!Object.keys(localStorage).includes(key)) {
       console.warn(`Endpoint ${key} not set in localStorage. Setting it up now.`);
       switch (key) {
