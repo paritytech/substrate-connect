@@ -154,7 +154,7 @@ const SendFundsForm: FunctionComponent = () => {
           {fee ? `Receiver will get: ${prettyBalance(parseFloat(amount))} ${unit}` : ''}
         </Typography>
         <Typography variant='subtitle1'>
-          {fee ? `Fees: ${fee?.toHuman()}` : ''}
+          {fee ? `Fees: ${prettyBalance(fee)} ${unit}` : ''}
         </Typography>
         <Typography variant='subtitle1'>
         </Typography>
