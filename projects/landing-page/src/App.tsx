@@ -126,7 +126,7 @@ const App: React.FunctionComponent = () => {
           </Section>
           <Section>
             <SectionHeading id='extension' prefix='6'>Browser Extension</SectionHeading>
-            <SectionText>For in-browser use, Substrate Connect provides a Browser Extension built upon the @substrate/light node module that is running the selected light clients inside the extension so that the end-user doesn't need to fire up a light node in every browser tab. This will also allow the light-node to keep syncing as long as the browser window stays open.</SectionText>
+            <SectionText>For in-browser use, Substrate Connect provides a Browser Extension built upon the @substrate/light node module that is running the selected light clients inside the extension so that the end-user does not need to fire up a light node in every browser tab. This will also allow the light-node to keep syncing as long as the browser window stays open.</SectionText>
             <CardProject
               imageProps={{path: Extension, position: 'center center', fullWidth: true}}
             >
