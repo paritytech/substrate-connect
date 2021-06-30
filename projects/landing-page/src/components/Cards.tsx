@@ -38,7 +38,6 @@ const useStyles = makeStyles(theme => ({
     },
     '& img': {
       width: '100%',
-      height: '204px',
       objectFit: 'cover',
       backgroundColor: 'whitesmoke',
     },
@@ -108,25 +107,25 @@ const CardLink: React.FunctionComponent<CardLinkProps> = ({href, children}) => {
   );
 };
 
-
 interface CardProjectProps extends GridProps {
   title?: string;
   subtitle?: string;
   imageProps?: {
     path: string;
-    position?: string; 
+    position?: string;
+    fullWidth?: boolean;
   },
   linkProps?: CardLinkProps;
 }
 export const CardProject: React.FunctionComponent<CardProjectProps> = ({children, title, subtitle, linkProps, imageProps}) => {
   const classes = useStyles();
   return (
-    <Grid item className={classes.card}>
+    <Grid item className={classes.card} style={imageProps?.fullWidth ? { width: 'calc(100%)' } : {}}>
       {linkProps && <CardLink {...linkProps}/>}
       <Typography variant='h3'>{title}</Typography>
       {subtitle 
         ? <Typography className='subtitle' variant='body2'>{subtitle}</Typography>
-        : <Typography className='subtitle placeholder' variant='body2'>no</Typography>
+        : <Typography className='subtitle placeholder' variant='body2'></Typography>
       }
       <img src={imageProps?.path || ''} alt={title} style={{objectPosition:imageProps?.position}} />
       <div className='content'>
@@ -135,7 +134,6 @@ export const CardProject: React.FunctionComponent<CardProjectProps> = ({children
     </Grid>
   );
 };
-
 
 interface CardStatusProps {
   status: 'supported' | 'soon' | 'very soon';
@@ -149,7 +147,6 @@ export const CardStatus: React.FunctionComponent<CardStatusProps> = ({status}) =
     </span>
   )
 };
-
 
 interface CardNetworkProps {
   title: string;
