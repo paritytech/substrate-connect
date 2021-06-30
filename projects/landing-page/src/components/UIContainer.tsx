@@ -13,8 +13,9 @@ const useStyles = makeStyles(theme => ({
     '& > *': {
       width: '100%',
     },
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column-reverse',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+      paddingTop: theme.spacing(12),
     },
   },
 }));
