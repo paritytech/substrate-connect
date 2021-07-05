@@ -7,6 +7,9 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(7),
     fontWeight: 600,
     lineHeight: 1,
+    [theme.breakpoints.down('md')]: {
+      marginBottom: theme.spacing(),
+    },
     '& .green': {
       color: substrateGreen[300],
     },
