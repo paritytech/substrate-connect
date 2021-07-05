@@ -1,7 +1,7 @@
 import { useEffect, useState} from 'react';
  
 const useLocalStorage = (localStorageKey: string): [string, React.Dispatch<React.SetStateAction<string>>] => {
-  const [localValue, setLocalValue] = useState(
+  const [localValue, setLocalValue] = useState<string>(
     localStorage.getItem(localStorageKey) || ''
   );
  

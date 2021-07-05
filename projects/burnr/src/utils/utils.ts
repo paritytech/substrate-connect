@@ -9,6 +9,7 @@ import { KeyringPair$Json } from '@polkadot/keyring/types';
 import { formatBalance } from '@polkadot/util';
 import type { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
+import { ALL_PROVIDERS } from './constants';
 
 const keyring = new Keyring({ type: 'sr25519' });
 
@@ -99,3 +100,37 @@ export const prettyBalance = (rawBalance: Balance | BN | number): string => {
 }
 
 export const humanReadable = (amnt: number, api: ApiPromise): string => (amnt/Math.pow(10, api.registry.chainDecimals[0])).toFixed(4);
+
+export const validateLocalstorage = (): void => {
+  // expected acceptable values of localStorage.
+  const expectedValues = {
+    "theme": ["true", "false"],
+    "balanceVisibility": ["true", "false"],
+    "endpoint": ALL_PROVIDERS.network
+  };
+
+  Object.keys(expectedValues).forEach(key => {
+    if (!Object.keys(localStorage).includes(key)) {
+      console.warn(`Endpoint ${key} not set in localStorage. Setting it up now.`);
+      switch (key) {
+        case "endpoint":
+          if (localStorage["endpoint"] !== ALL_PROVIDERS.network) {
+            localStorage.setItem("endpoint", ALL_PROVIDERS.network);
+          }
+          break;
+        case "theme":
+          localStorage.setItem("theme", "");
+          break;
+        case "balanceVisibility":
+          localStorage.setItem("balanceVisibility", "true");
+          break;
+      }
+    } else {
+      // Check if the values of existing keys are among the accepted ones
+      // if not then set the default value of expectedValies (index 0)
+      if (expectedValues[key] && !(expectedValues[key] as string[]).includes(localStorage[key])) {
+        localStorage.setItem(key);
+      }
+    }
+  });
+}

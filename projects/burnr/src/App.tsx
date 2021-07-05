@@ -6,6 +6,7 @@ import { LocalStorageAccountCtx } from './utils/types';
 import { useApiCreate, useLocalStorage } from './hooks';
 import { createLocalStorageAccount } from './utils/utils';
 import { ALL_PROVIDERS } from './utils/constants';
+import { ApiPromise } from '@polkadot/api';
 
 import Home from './Home';
 
@@ -31,13 +32,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const App: React.FunctionComponent<Props> = ({ className = '' }: Props) => {
-  const api = useApiCreate();
+  const api: ApiPromise = useApiCreate();
   const classes = useStyles();
   const [endpoint, setEndpoint] = useLocalStorage('endpoint');
   if (!endpoint) {
     setEndpoint(ALL_PROVIDERS.network);
   }
-  const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint.split('-')[0]?.toLowerCase());
+  const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(endpoint?.toLowerCase());
 
   const [account, setCurrentAccount] = useState<LocalStorageAccountCtx>({} as LocalStorageAccountCtx);
   const [loader, setLoader] = useState(true)
