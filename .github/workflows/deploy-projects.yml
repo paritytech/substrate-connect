@@ -1,0 +1,71 @@
+# This workflow will do a clean install of node dependencies, build the source code on node v 15. and
+# execute the deployment process that exists in deploy.sh script
+
+name: Substrate Connect - Deploy Projects
+
+on:
+  workflow_run:
+    workflows: ["Substrate Connect CI"]
+    types:
+      - completed
+  push:
+    branches: 
+      - nik-create-ci-for-deployment
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [15.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Checkout gh-pages branch
+      run:
+        rm -rf _site
+        git worktree add _site -f gh-pages
+    - name: Install
+      run: yarn install
+    - name: Build
+      run: yarn build
+    - name: Deploy
+      run: mkdir -p ./_site/burnr &&
+          mkdir -p ./_site/smoldot-browser-demo &&
+          mkdir -p ./_site/multiple-network-demo &&
+          mkdir -p ./_site/extension &&
+          touch ./_site/.nojekyll &&
+          echo "Place burnr wallet demo's files." &&
+          cp -r ./projects/burnr/dist/* ./_site/burnr/. &&
+          echo "Place Smoldot browser demo's files." &&
+          cp -r ./projects/smoldot-browser-demo/dist/* ./_site/smoldot-browser-demo/. &&
+          echo "Place Multiple network demo's files." &&
+          cp -r ./projects/multiple-network-demo/dist/* ./_site/multiple-network-demo/. &&
+          echo "Place Substrate-connect extension's zip." &&
+          cp ./projects/extension/dist/substrate-connect.zip ./_site/extension/substrate-connect.zip &&
+          echo "Place landing page's files." &&
+          cp -r ./projects/landing-page/dist/* ./_site/. &&
+          echo "Generate API docs." &&
+          yarn api-docs &&
+          echo -e "\033[0;32mDeleting old content...\033[0m"
+    - uses: actions/checkout@v2
+      with: 
+        ref: 'gh-pages'
+    - uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.3
+      id: ipfs-upload
+      with:
+        pin-name: 'substrate-connect'
+        path: '.'
+        pinata-api-key: ${{ secrets.PINATA_KEY }}
+        pinata-secret-api-key: ${{ secrets.PINATA_SECRET }}
+        remove-old: true
+      # only:
+      #   - master
+    - run: |
+        echo "Uploaded hash: ${{ steps.ipfs-upload.outputs.hash }}"
