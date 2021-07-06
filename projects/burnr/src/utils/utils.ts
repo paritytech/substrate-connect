@@ -128,8 +128,8 @@ export const validateLocalstorage = (): void => {
     } else {
       // Check if the values of existing keys are among the accepted ones
       // if not then set the default value of expectedValies (index 0)
-      if (expectedValues[key] && !(expectedValues[key] as string[]).includes(localStorage[key])) {
-        localStorage.setItem(key);
+      if (expectedValues[key] && !(expectedValues[key] as string).includes(localStorage[key])) {
+        localStorage.setItem(key, expectedValues[key] as string);
       }
     }
   });
