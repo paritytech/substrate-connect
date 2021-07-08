@@ -101,8 +101,8 @@ const App: React.FunctionComponent = () => {
 
                 <Box mt={2}>{`// Create a new UApp with a unique name`}</Box>
                 <Box>{`const app = new Detector('burnr-wallet');`}</Box>
-                <Box>{`const westend = await app.detect('westend');`}</Box>
-                <Box>{`const kusama = await app.detect('kusama');`}</Box>
+                <Box>{`const westend = await app.connect('westend');`}</Box>
+                <Box>{`const kusama = await app.connect('kusama');`}</Box>
 
                 <Box mt={2}>{`await westend.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
