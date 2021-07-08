@@ -13272,6 +13272,16 @@ smoldot@0.3.1:
     randombytes "^2.1.0"
     websocket "^1.0.32"
 
+smoldot@0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.3.2.tgz#41ec04e1fd7ee39f660a14019acfe6ca09dfeea2"
+  integrity sha512-taydQhlmlYOr9f8ezikbTrVuNxEQ8PTPJQbLpfVmQOu9h0KE0t7u7KFAunAoCP7lrNe/vclIEATauMONJID8RQ==
+  dependencies:
+    buffer "^6.0.1"
+    performance-now "^2.1.0"
+    randombytes "^2.1.0"
+    websocket "^1.0.32"
+
 snapdragon-node@^2.0.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/snapdragon-node/-/snapdragon-node-2.1.1.tgz#6c175f86ff14bdb0724563e8f3c1b021a286853b"
