@@ -265,7 +265,7 @@ export class SmoldotProvider implements ProviderInterface {
         chainSpec: this.#chainSpec,
         jsonRpcCallback: (response: string) => {
           this.#handleRpcReponse(response);
-        },
+        }
       });
       this.#connectionStatePingerId = setInterval(
       this.#checkClientPeercount, this.healthPingerInterval);
