@@ -91,6 +91,7 @@ export class SmoldotProvider implements ProviderInterface {
   #connectionStatePingerId: ReturnType<typeof setInterval> | null;
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
+  #chain: smoldot.SmoldotChain | undefined = undefined;
   // reference to the smoldot module so we can defer loading the wasm client
   // until connect is called
   #smoldot: smoldot.Smoldot;
@@ -258,12 +259,14 @@ export class SmoldotProvider implements ProviderInterface {
     try {
       this.#client = await this.#smoldot.start({
         forbidWs: true, /* suppress console warnings about insecure connections */
-        chainSpecs: [this.#chainSpec],
         maxLogLevel: 3, /* no debug/trace messages */
+      });
+      this.#chain = await this.#client.addChain({
+        chainSpec: this.#chainSpec,
         jsonRpcCallback: (response: string) => {
-            this.#handleRpcReponse(response);
-        }
-      })
+          this.#handleRpcReponse(response);
+        },
+      });
       this.#connectionStatePingerId = setInterval(
       this.#checkClientPeercount, this.healthPingerInterval);
     } catch(error: unknown) {
@@ -334,6 +337,7 @@ export class SmoldotProvider implements ProviderInterface {
   ): Promise<any> {
     return new Promise((resolve, reject): void => {
         assert(this.#client, 'Client is not initialised');
+        assert(this.#chain, 'Chain is not initialised');
         const json = this.#coder.encodeJson(method, params);
         const id = this.#coder.getId();
 
@@ -350,8 +354,7 @@ export class SmoldotProvider implements ProviderInterface {
           method,
           subscription
         };
-
-      this.#client.sendJsonRpc(json, 0);
+      this.#chain.sendJsonRpc(json);
     });
   }
 
