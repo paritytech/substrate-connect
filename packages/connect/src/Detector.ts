@@ -22,8 +22,8 @@ import polkadot from './specs/polkadot.json';
  *
  * // Create a new UApp with a unique name
  * const app = new Detector('burnr-wallet');
- * const westend = await app.detect('westend');
- * const kusama = await app.detect('kusama');
+ * const westend = await app.connect('westend');
+ * const kusama = await app.connect('kusama');
  *
  * await westend.rpc.chain.subscribeNewHeads((lastHeader) => {
  *   console.log(lastHeader.hash);
@@ -107,15 +107,17 @@ export class Detector {
     return await ApiPromise.create(Object.assign(options ?? {}, {provider}));
   }
 
-  /**
-   * creates and returns a provider (either Smoldot or Extension one) to be used
-   * in PolkadotJS API instance
+  /** 
+   * Detects and returns an appropriate PolkadotJS provider depending on whether the user has the substrate connect extension installed
    * 
    * @param chainName - the name of the blockchain network to connect to
    * @param chainSpec - an optional chainSpec to connect to a different network
    * @returns a provider will be used in a ApiPromise create for PolkadotJS API
    *
    * @internal
+   * 
+   * @remarks 
+   * This is used internally for advanced PolkadotJS use cases and is not supported.  Use {@link connect} instead.
    */
   public provider = (chainName: string, chainSpec?: string): ExtensionProvider | SmoldotProvider => {
     let provider: ExtensionProvider | SmoldotProvider = {} as ExtensionProvider | SmoldotProvider;
