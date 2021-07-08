@@ -13252,6 +13252,16 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
+smoldot@0.2.10:
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.2.10.tgz#1be9851415882a870ce0fb1ff0f160ad4812c366"
+  integrity sha512-sCxxISLczT6nH7GHc62k9YHF9nc7xuQNAP7f0gt5nALd0tNac73QIk4kZHE2lU8oBMUxoqwVthYj20wj/k90Fw==
+  dependencies:
+    buffer "^6.0.1"
+    performance-now "^2.1.0"
+    randombytes "^2.1.0"
+    websocket "^1.0.32"
+
 smoldot@0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.3.1.tgz#fbf135db18e0723e8b3e7f94ef9974bd82c7a0a0"

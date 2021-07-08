@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import { SmoldotClient} from 'smoldot';
 import {
-  smoldotSpy,
+  smoldotSpyTemp,
   respondWith
 } from '@substrate/smoldot-test-utils';
 import { SmoldotMediator } from './SmoldotMediator';
@@ -32,7 +32,7 @@ beforeEach(async () => {
     '{ "id": 3, "jsonrpc": "2.0", "result": "success" }'
   ];
   const rpcSend = jest.fn() as jest.MockedFunction<(rpc: string, chainIndex: number) => void>;
-  sc = await smoldotSpy(respondWith(responses), rpcSend).start({
+  sc = await smoldotSpyTemp(respondWith(responses), rpcSend).start({
     chainSpecs: [JSON.stringify(westend)],
     maxLogLevel: 3,
     jsonRpcCallback: (message: string) => {
