@@ -13252,10 +13252,30 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-smoldot@0.2.9:
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.2.9.tgz#65210558cca9324c76ac4394a5cf03f78953cf9b"
-  integrity sha512-+17jPzeENTQ0RyU+7SRmTyypYtrteLZ7B1byQWFLSaBfQMBkoAaFIEsA4dxPpwHfgIJWg2a4vjWnBvSXrcA9rQ==
+smoldot@0.2.10:
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.2.10.tgz#1be9851415882a870ce0fb1ff0f160ad4812c366"
+  integrity sha512-sCxxISLczT6nH7GHc62k9YHF9nc7xuQNAP7f0gt5nALd0tNac73QIk4kZHE2lU8oBMUxoqwVthYj20wj/k90Fw==
+  dependencies:
+    buffer "^6.0.1"
+    performance-now "^2.1.0"
+    randombytes "^2.1.0"
+    websocket "^1.0.32"
+
+smoldot@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.3.1.tgz#fbf135db18e0723e8b3e7f94ef9974bd82c7a0a0"
+  integrity sha512-Uq5n0fS9lq3LDsbFlnvFd7ujC6TzEn0jtcInpuIijQznY0s8tfED65Z8BSHGfMJh+AC4oKAB1eIE0BJYRJBo8Q==
+  dependencies:
+    buffer "^6.0.1"
+    performance-now "^2.1.0"
+    randombytes "^2.1.0"
+    websocket "^1.0.32"
+
+smoldot@0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.3.2.tgz#41ec04e1fd7ee39f660a14019acfe6ca09dfeea2"
+  integrity sha512-taydQhlmlYOr9f8ezikbTrVuNxEQ8PTPJQbLpfVmQOu9h0KE0t7u7KFAunAoCP7lrNe/vclIEATauMONJID8RQ==
   dependencies:
     buffer "^6.0.1"
     performance-now "^2.1.0"
