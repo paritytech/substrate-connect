@@ -100,6 +100,24 @@ export class Detector {
    * {@link https://polkadot.js.org/docs/}
    */
   public connect = async (chainName: string, chainSpec?: string, options?: ApiOptions): Promise<ApiPromise> => {
+    const provider: ExtensionProvider | SmoldotProvider = this.provider(chainName, chainSpec);
+    provider.connect().catch(console.error);
+
+    this.#providers[chainName] = provider as ProviderInterface;
+    return await ApiPromise.create(Object.assign(options ?? {}, {provider}));
+  }
+
+  /**
+   * creates and returns a provider (either Smoldot or Extension one) to be used
+   * in PolkadotJS API instance
+   * 
+   * @param chainName - the name of the blockchain network to connect to
+   * @param chainSpec - an optional chainSpec to connect to a different network
+   * @returns a provider will be used in a ApiPromise create for PolkadotJS API
+   *
+   * @internal
+   */
+  public provider = (chainName: string, chainSpec?: string): ExtensionProvider | SmoldotProvider => {
     let provider: ExtensionProvider | SmoldotProvider = {} as ExtensionProvider | SmoldotProvider;
 
     if (Object.keys(this.#chainSpecs).includes(chainName)) {
@@ -114,10 +132,7 @@ export class Detector {
     } else if (!chainSpec) {
       throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(this.#chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
     }
-    await provider.connect();
-
-    this.#providers[chainName] = provider as ProviderInterface;
-    return await ApiPromise.create(Object.assign(options ?? {}, {provider}));
+    return provider;
   }
 
   /**
