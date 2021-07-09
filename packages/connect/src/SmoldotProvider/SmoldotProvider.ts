@@ -9,8 +9,8 @@ import {
 import { assert, logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 import * as smoldot from 'smoldot';
-import { HealthCheckError } from './errors';
-import { isUndefined } from '../utils/index';
+import { HealthCheckError } from './errors.js';
+import { isUndefined } from '../utils/index.js';
 
 const l = logger('smoldot-provider');
 
