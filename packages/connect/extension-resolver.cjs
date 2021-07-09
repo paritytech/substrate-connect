@@ -1,3 +1,7 @@
+// This code was adapted from https://github.com/AyogoHealth/jest-ts-webcompat-resolver
+// Original code was MIT Licensed: https://opensource.org/licenses/MIT
+// Original author: Darryl Pogue <darryl@dpogue.ca>
+// Original copyright 2019 Ayogo Health Inc.
 let defaultResolver;
 
 function requireDefaultResolver() {
