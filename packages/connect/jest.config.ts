@@ -3,7 +3,7 @@ import type {Config} from '@jest/types';
 const config: Config.InitialOptions = {
   coverageReporters: ["text-summary"],
   reporters: ["jest-silent-reporter"],
-  resolver: "jest-ts-webcompat-resolver",
+  resolver: "./extension-resolver.cjs",
   roots: ['<rootDir>/src'],
   verbose: true,
   transformIgnorePatterns:["./src/__mocks__/client.js"],

@@ -51,7 +51,6 @@
     "eslint-plugin-tsdoc": "^0.2.14",
     "jest": "^27.0.5",
     "jest-silent-reporter": "^0.5.0",
-    "jest-ts-webcompat-resolver": "^1.0.0",
     "jsdom": "^16.5.1",
     "ts-jest": "^27.0.3",
     "ts-node": "^9.1.1",
