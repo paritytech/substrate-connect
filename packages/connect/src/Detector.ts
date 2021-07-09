@@ -99,8 +99,8 @@ export class Detector {
    *
    * {@link https://polkadot.js.org/docs/}
    */
-  public connect = async (chainName: string, chainSpec?: string, options?: ApiOptions): Promise<ApiPromise> => {
-    const provider: ExtensionProvider | SmoldotProvider = this.provider(chainName, chainSpec);
+   public connect = async (chainName: string, chainSpec?: string, options?: ApiOptions): Promise<ApiPromise> => {
+    const provider: ProviderInterface = this.provider(chainName, chainSpec);
     provider.connect().catch(console.error);
 
     this.#providers[chainName] = provider as ProviderInterface;
@@ -119,8 +119,8 @@ export class Detector {
    * @remarks 
    * This is used internally for advanced PolkadotJS use cases and is not supported.  Use {@link connect} instead.
    */
-  public provider = (chainName: string, chainSpec?: string): ExtensionProvider | SmoldotProvider => {
-    let provider: ExtensionProvider | SmoldotProvider = {} as ExtensionProvider | SmoldotProvider;
+  public provider = (chainName: string, chainSpec?: string): ProviderInterface => {
+    let provider: ProviderInterface = {} as ProviderInterface;
 
     if (Object.keys(this.#chainSpecs).includes(chainName)) {
       if (this.#isExtension) {
@@ -134,7 +134,7 @@ export class Detector {
     } else if (!chainSpec) {
       throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(this.#chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
     }
-    return provider;
+    return provider as ProviderInterface;
   }
 
   /**
