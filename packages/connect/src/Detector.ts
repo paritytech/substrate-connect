@@ -103,7 +103,7 @@ export class Detector {
     const provider: ProviderInterface = this.provider(chainName, chainSpec);
     provider.connect().catch(console.error);
 
-    this.#providers[chainName] = provider as ProviderInterface;
+    this.#providers[chainName] = provider;
     return await ApiPromise.create(Object.assign(options ?? {}, {provider}));
   }
 
@@ -134,7 +134,7 @@ export class Detector {
     } else if (!chainSpec) {
       throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(this.#chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
     }
-    return provider as ProviderInterface;
+    return provider;
   }
 
   /**
