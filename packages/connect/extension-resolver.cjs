@@ -23,8 +23,7 @@ module.exports = (request, options) => {
   try {
     return defaultResolver(request, options);
   } catch (e) {
-    console.error(e);
-    console.info(`Try to resolve extension '.js' to '.ts' for tests to run.`)
+    console.log(`${e} - Temporary replace extension '.js' to '.ts' for tests to run.\n`)
     return defaultResolver(request.replace(/\.js$/, '.ts'), options);
   }
 }
