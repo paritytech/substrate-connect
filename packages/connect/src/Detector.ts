@@ -99,7 +99,7 @@ export class Detector {
    *
    * {@link https://polkadot.js.org/docs/}
    */
-   public connect = async (chainName: string, chainSpec?: string, options?: ApiOptions): Promise<ApiPromise> => {
+  public connect = async (chainName: string, chainSpec?: string, options?: ApiOptions): Promise<ApiPromise> => {
     const provider: ProviderInterface = this.provider(chainName, chainSpec);
     provider.connect().catch(console.error);
 
