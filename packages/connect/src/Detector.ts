@@ -100,10 +100,10 @@ export class Detector {
    * {@link https://polkadot.js.org/docs/}
    */
   public connect = async (chainName: string, chainSpec?: string, options?: ApiOptions): Promise<ApiPromise> => {
-    const provider: ExtensionProvider | SmoldotProvider = this.provider(chainName, chainSpec);
+    const provider: ProviderInterface = this.provider(chainName, chainSpec);
     provider.connect().catch(console.error);
 
-    this.#providers[chainName] = provider as ProviderInterface;
+    this.#providers[chainName] = provider;
     return await ApiPromise.create(Object.assign(options ?? {}, {provider}));
   }
 
@@ -119,8 +119,8 @@ export class Detector {
    * @remarks 
    * This is used internally for advanced PolkadotJS use cases and is not supported.  Use {@link connect} instead.
    */
-  public provider = (chainName: string, chainSpec?: string): ExtensionProvider | SmoldotProvider => {
-    let provider: ExtensionProvider | SmoldotProvider = {} as ExtensionProvider | SmoldotProvider;
+  public provider = (chainName: string, chainSpec?: string): ProviderInterface => {
+    let provider: ProviderInterface = {} as ProviderInterface;
 
     if (Object.keys(this.#chainSpecs).includes(chainName)) {
       if (this.#isExtension) {
