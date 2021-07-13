@@ -83,9 +83,6 @@ const config = {
     new CopyPlugin({
       patterns: [{ from: "public", to: "." }],
     }),
-    new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer'],
-    }),
     new webpack.EnvironmentPlugin({
       PKG_NAME: '@substrate/extension',
       PKG_VERSION: '0.0.1'
