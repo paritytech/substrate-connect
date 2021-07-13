@@ -5,6 +5,7 @@ import westend from '../../public/assets/westend.json';
 import kusama from '../../public/assets/kusama.json';
 import polkadot from '../../public/assets/polkadot.json';
 import { logger } from '@polkadot/util';
+
 export interface Background extends Window {
   manager: ConnectionManager
 }
@@ -19,24 +20,24 @@ export interface RequestRpcSend {
   params: unknown[];
 }
 
-const createSmoldot = async (name: string, spec: unknown) => {
-  const stringifiedSpec = JSON.stringify(spec);
+const init = async () => {
   try {
-    await manager.addSmoldot(name, stringifiedSpec);
+    await manager.initSmoldot();
+    await manager.addChain('polkadot', JSON.stringify(polkadot)).catch(err => l.error('Error', err));
+    await manager.addChain('kusama', JSON.stringify(kusama)).catch(err => l.error('Error', err));
+    await manager.addChain('westend', JSON.stringify(westend)).catch(err => l.error('Error', err));
   } catch (e) {
-    console.error(`Error creating ${name} smoldot: ${e}`); 
+    l.error(`Error creating smoldot: ${e}`); 
   }
 }
 
-const init = () => {
-  createSmoldot('polkadot', polkadot).catch(err => l.error('Error', err));
-  createSmoldot('kusama', kusama).catch(err => l.error('Error', err));
-  createSmoldot('westend', westend).catch(err => l.error('Error', err));
-}
+chrome.runtime.onInstalled.addListener(() => {
+  init().catch(console.error);
+});
 
-chrome.runtime.onInstalled.addListener(() => { init(); });
-
-chrome.runtime.onStartup.addListener(() => { init(); });
+chrome.runtime.onStartup.addListener(() => {
+  init().catch(console.error);
+});
 
 chrome.runtime.onConnect.addListener((port) => {
   manager.addApp(port);
