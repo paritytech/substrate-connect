@@ -52,8 +52,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @returns a list of the networks that are currently connected
    */
   get registeredClients(): string[] {
-    return ['a client TODO'];
-    //TODO: return this.#smoldots.map(s => s.name);
+    return this.#chains.map(s => s.name);
   }
 
   /**
@@ -130,6 +129,9 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * by a content script.
    */
   addApp(port: chrome.runtime.Port): void {
+    if (!this.#client) {
+      throw new Error('Smoldot client does not exist.');
+    }
     const app = this.#apps.find(s => s.name === port.name);
     if (app) {
       port.postMessage({ type: 'info', payload: `App ${port.name} already exists.` });
@@ -162,10 +164,10 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    */
   sendRpcMessageTo(name: string, message: JsonRpcRequest): number {
     if (!this.#client) {
-      throw new Error('Smoldot client a does not exist.');
+      throw new Error('Smoldot client does not exist.');
     }
     const c = this.#chains.filter(ch => ch.name === name);
-    if (!c) {
+    if (c.length === 0) {
       throw new Error(`Chain ${name} does not exist.`);
     }
     const nextID = ++this.#id;
@@ -182,7 +184,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    */
   registerApp(app: AppMediator): void {
     if (!this.#client) {
-      throw new Error('Smoldot client does not exist.');
+      throw new Error('Tried to register an app to smoldot client that does not exist.');
     }
     this.#apps.push(app);
   }
@@ -195,7 +197,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    */
   unregisterApp(app: AppMediator): void {
     if (!this.#client) {
-      throw new Error('Smoldot client does not exist.');
+      throw new Error('Tried to unregister an app to smoldot client that does not exist.');
     }
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
@@ -205,6 +207,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   /** shutdown shuts down the connected smoldot client. */
   shutdown(): void {
     this.#client?.terminate();
+    this.#client = undefined;
   }
 
   /**
@@ -212,7 +215,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    */
   async initSmoldot () {
     try {
-      this.#client = await smoldot.start({
+      this.#client = await (smoldot as any).start({ 
         forbidWs: true, /* suppress console warnings about insecure connections */
         maxLogLevel: this.smoldotLogLevel
       });

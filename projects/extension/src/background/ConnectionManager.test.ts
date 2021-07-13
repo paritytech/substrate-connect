@@ -14,11 +14,12 @@ const  connectApp = (manager: ConnectionManager, tabId: number, name: string, ne
 }
 
 test('adding and removing apps changes state', async () => {
-  //setup conenection manager with 2 networks
+  //setup conenection manager with 2 chains
   const manager = new ConnectionManager();
   manager.smoldotLogLevel = 1;
-  await manager.addSmoldot('westend', JSON.stringify(westend));
-  await manager.addSmoldot('kusama', JSON.stringify(kusama));
+  await manager.initSmoldot();
+  await manager.addChain('westend', JSON.stringify(westend));
+  await manager.addChain('kusama', JSON.stringify(kusama));
 
   const handler = jest.fn();
   manager.on('stateChanged', handler);
@@ -139,8 +140,9 @@ describe('Unit tests', () => {
   beforeAll(async () => {
     manager.smoldotLogLevel = 1;
     //setup connection manager with 2 networks
-    await manager.addSmoldot('westend', JSON.stringify(westend));
-    await manager.addSmoldot('kusama', JSON.stringify(kusama));
+    await manager.initSmoldot();
+    await manager.addChain('westend', JSON.stringify(westend));
+    await manager.addChain('kusama', JSON.stringify(kusama));
     manager.on('stateChanged', handler);
 
     //add 4 apps in clients
@@ -181,6 +183,18 @@ describe('Unit tests', () => {
     ]);
   });
 
+  test('Get chains', () => {
+    const tmpChains: unknown[] = [];
+    manager.chains.forEach(ch => {
+      tmpChains.push({
+        idx: ch.idx,
+        name: ch.name
+      })
+    })
+    expect(tmpChains).toEqual([{ idx: 1, name: 'westend' },{ idx: 2, name: 'kusama' }]);
+    expect(manager.chains).toHaveLength(2);
+  });
+
   test('Add an app that already exists', () => {
     const port = connectApp(manager, 13, 'test-app-3', 'westend');
     expect(port.postMessage).toHaveBeenCalledTimes(1);
@@ -194,22 +208,42 @@ describe('Unit tests', () => {
     expect(responseId).toBe(1);
     expect(() => {
       manager.sendRpcMessageTo('someSmoldot', rpcRequest);
-    }).toThrowError('No smoldot client named someSmoldot');
+    }).toThrowError('Chain someSmoldot does not exist.');
+  });
+});
+
+describe('Test functions when smoldot client is terminated', () => {
+  const manager = new ConnectionManager();
+
+  beforeEach(async () => {
+    manager.smoldotLogLevel = 1;
+    await manager.initSmoldot();
+  });
+
+  test('Test manager.addApp error', () => {
+    const port = new MockPort('test-app-5::westend');
+    port.setTabId(15);
+    expect(() => {
+      manager.shutdown();
+      manager.addApp(port);
+    }).toThrowError('Smoldot client does not exist.');
   });
 
   test('Test registerApp error', () => {
     const port = connectApp(manager, 15, 'test-app-5', 'westend');
     const appMed = new AppMediator(port, manager);
     expect(() => {
-      manager.registerApp(appMed, 'someSmoldot');
-    }).toThrowError('Tried to add app to smoldot that does not exist.');
+      manager.shutdown();
+      manager.registerApp(appMed);
+    }).toThrowError('Tried to register an app to smoldot client that does not exist.');
   });
 
   test('Test unregisterApp error', () => {
     const port = connectApp(manager, 15, 'test-app-5', 'westend');
     const appMed = new AppMediator(port, manager);
     expect(() => {
-      manager.unregisterApp(appMed, 'someSmoldot');
-    }).toThrowError('Tried to remove an app from smoldot that does not exist.');
+      manager.shutdown();
+      manager.unregisterApp(appMed);
+    }).toThrowError('Tried to unregister an app to smoldot client that does not exist.');
   });
 });
