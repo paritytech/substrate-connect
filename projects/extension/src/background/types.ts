@@ -28,7 +28,7 @@ export interface NetworkState {
 
 export interface MessageIDMapping {
   readonly appID: number | undefined;
-  readonly smoldotID: number;
+  readonly chainID: number;
 }
 
 export interface SubscriptionMapping {
