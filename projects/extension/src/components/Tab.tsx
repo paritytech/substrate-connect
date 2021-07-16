@@ -3,7 +3,7 @@ import React, { FunctionComponent, SetStateAction, Dispatch } from 'react';
 import { Typography, Box, IconButton, createStyles, makeStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { grey } from '@material-ui/core/colors';
-import { IconWeb3 } from '../components';
+import { IconWeb3, Logo } from '.';
 import { TabInterface } from '../types';
 import { ConnectionManager } from '../background/ConnectionManager';
 
@@ -50,16 +50,19 @@ const Tab: FunctionComponent<TabProps> = ({ manager, tab, current=false, setActi
   }
 
   return (
-    <Box pt={current ? 2 : 1} pb={1} pr={1} pl={3}>
+    <Box pt={current ? 2 : 1} pb={1} pr={1} pl={3} style={!tab ? { height: '10px' } : {}}>
       <Box
         display='flex'
         alignItems='center'
         justifyContent='space-between'
       >
-        <Typography noWrap variant={current ? 'h3' : 'h4'}>
-          {tab ? tab.uApp.name : 'substrate connect'}
-        </Typography>
-
+        {tab ? (
+          <Typography noWrap variant={current ? 'h3' : 'h4'}>
+            {tab.uApp.name}
+          </Typography>
+        ) : (
+          <Logo />
+        )}
         { tab &&
           <Box display='flex'alignItems='center'> 
             {tab?.uApp.networks.map(n =>
