@@ -1,8 +1,5 @@
 /* TODO(nik): Fix smoldot definition (see: https://github.com/paritytech/substrate-connect/blob/3350cdff9c4c294393160189816168a93c983f79/projects/extension/src/background/ConnectionManager.ts#L202)
 ** eslints disable below seems to be due to smoldot definition */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import * as material from '@material-ui/core';
 import GlobalFonts from '../fonts/fonts';

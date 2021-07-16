@@ -1,8 +1,8 @@
 import { ApiPromise } from '@polkadot/api';
 import { ApiOptions } from '@polkadot/api/types';
 import { ProviderInterface } from '@polkadot/rpc-provider/types';
-import { SmoldotProvider }  from './SmoldotProvider/SmoldotProvider';
-import { ExtensionProvider } from './ExtensionProvider/ExtensionProvider';
+import { SmoldotProvider }  from './SmoldotProvider/SmoldotProvider.js';
+import { ExtensionProvider } from './ExtensionProvider/ExtensionProvider.js';
 import westend from './specs/westend.json';
 import kusama from './specs/kusama.json';
 import polkadot from './specs/polkadot.json';
@@ -22,8 +22,8 @@ import polkadot from './specs/polkadot.json';
  *
  * // Create a new UApp with a unique name
  * const app = new Detector('burnr-wallet');
- * const westend = await app.detect('westend');
- * const kusama = await app.detect('kusama');
+ * const westend = await app.connect('westend');
+ * const kusama = await app.connect('kusama');
  *
  * await westend.rpc.chain.subscribeNewHeads((lastHeader) => {
  *   console.log(lastHeader.hash);
@@ -100,7 +100,27 @@ export class Detector {
    * {@link https://polkadot.js.org/docs/}
    */
   public connect = async (chainName: string, chainSpec?: string, options?: ApiOptions): Promise<ApiPromise> => {
-    let provider: ExtensionProvider | SmoldotProvider = {} as ExtensionProvider | SmoldotProvider;
+    const provider: ProviderInterface = this.provider(chainName, chainSpec);
+    provider.connect().catch(console.error);
+
+    this.#providers[chainName] = provider;
+    return await ApiPromise.create(Object.assign(options ?? {}, {provider}));
+  }
+
+  /** 
+   * Detects and returns an appropriate PolkadotJS provider depending on whether the user has the substrate connect extension installed
+   * 
+   * @param chainName - the name of the blockchain network to connect to
+   * @param chainSpec - an optional chainSpec to connect to a different network
+   * @returns a provider will be used in a ApiPromise create for PolkadotJS API
+   *
+   * @internal
+   * 
+   * @remarks 
+   * This is used internally for advanced PolkadotJS use cases and is not supported.  Use {@link connect} instead.
+   */
+  public provider = (chainName: string, chainSpec?: string): ProviderInterface => {
+    let provider: ProviderInterface = {} as ProviderInterface;
 
     if (Object.keys(this.#chainSpecs).includes(chainName)) {
       if (this.#isExtension) {
@@ -114,10 +134,7 @@ export class Detector {
     } else if (!chainSpec) {
       throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(this.#chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
     }
-    await provider.connect();
-
-    this.#providers[chainName] = provider as ProviderInterface;
-    return await ApiPromise.create(Object.assign(options ?? {}, {provider}));
+    return provider;
   }
 
   /**
