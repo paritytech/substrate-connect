@@ -1,6 +1,5 @@
 import { ConnectionManager } from './background/ConnectionManager';
 import { AppMediator } from './background/AppMediator';
-import { SmoldotMediator } from './background/SmoldotMediator';
 import { ExtensionMessageRouter } from './content/ExtensionMessageRouter';
 import { ExtensionPageInjector } from './content/ExtensionPageInjector';
 
@@ -11,7 +10,6 @@ import { ExtensionPageInjector } from './content/ExtensionPageInjector';
 export {
   ConnectionManager,
   AppMediator,
-  SmoldotMediator,
   ExtensionMessageRouter,
   ExtensionPageInjector
 };
