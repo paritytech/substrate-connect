@@ -11,4 +11,4 @@ yarn-error.log*
 
 # testing
 /coverage
-# /src/specs/*.json
+/src/specs/*.json
