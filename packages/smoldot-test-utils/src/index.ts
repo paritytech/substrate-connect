@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-// REMOVE LINES ABOVE once smoldot is upgraded to v3.
-
 import { Smoldot, SmoldotAddChainOptions, SmoldotChain, SmoldotClient, SmoldotJsonRpcCallback } from 'smoldot';
 import { JsonRpcObject } from '@polkadot/rpc-provider/types';
 import { jest } from '@jest/globals'
