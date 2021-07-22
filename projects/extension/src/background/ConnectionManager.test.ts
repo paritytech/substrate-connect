@@ -177,8 +177,6 @@ describe('Unit tests', () => {
   });
 
   test('Get networks/chains', () => {
-    console.log('networks', manager.networks);
-
     const tmpChains: unknown[] = [];
     // With this look the "chain" is removed intentionally as "chain"
     // object cannot be compared with jest 
