@@ -9,6 +9,7 @@ import { KeyringPair$Json } from '@polkadot/keyring/types';
 import { formatBalance } from '@polkadot/util';
 import type { Balance } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
+import { ALL_PROVIDERS } from './constants';
 
 const keyring = new Keyring({ type: 'sr25519' });
 
@@ -99,3 +100,23 @@ export const prettyBalance = (rawBalance: Balance | BN | number): string => {
 }
 
 export const humanReadable = (amnt: number, api: ApiPromise): string => (amnt/Math.pow(10, api.registry.chainDecimals[0])).toFixed(4);
+
+export const validateLocalstorage = (): void => {
+  // expected acceptable values of localStorage.
+  // Add type info to avoid having to cast
+  const expectedValues: Record<string, string[]> = {
+    "theme": ["true", "false"],
+    "balanceVisibility": ["true", "false"],
+    "endpoint": [ ALL_PROVIDERS.network ] // now an array although we don't even really need this in storage any more
+  };
+
+  Object.keys(expectedValues).forEach(key => {
+    if (!Object.keys(localStorage).includes(key)) { 
+      return;
+    }
+    
+    if (!expectedValues[key].includes(localStorage[key])) {
+      localStorage.removeItem(key);
+    }
+  });
+}

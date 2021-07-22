@@ -30,7 +30,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   readonly #tabId: number | undefined;
   readonly #url: string | undefined;
   readonly #manager: ConnectionManagerInterface;
-  #smoldotName: string | undefined  = undefined;
+  #chainName: string | undefined  = undefined;
   #state: AppState = 'connected';
   /** subscriptions is all the active message subscriptions this ap[ has */
   readonly subscriptions: SubscriptionMapping[];
@@ -82,11 +82,11 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   }
 
   /** 
-   * smoldotName is the name of the smoldot client to talk to; this is the
+   * chainName is the name of the smoldot client to talk to; this is the
    * name of the blockchain network.
    */
-  get smoldotName(): string {
-    return this.#smoldotName || '';
+  get chainName(): string {
+    return this.#chainName || '';
   }
 
   /** tabId is the tabId of the app in the browser */
@@ -134,7 +134,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
       if (this.requests.length === 0) {
         // All our unsubscription messages have been replied to
         this.#state = 'disconnected';
-        this.#manager.unregisterApp(this, this.#smoldotName as string);
+        this.#manager.unregisterApp(this, this.#chainName as string);
       }
   }
 
@@ -152,13 +152,13 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     if (this.#state === 'disconnected') {
       // Shouldn't happen - we remove the AppMediator from the smoldot's apps
       // when we disconnect (below).
-      console.error(`Asked a disconnected UApp (${this.name}) to process a message from ${this.#smoldotName as string}`);
+      console.error(`Asked a disconnected UApp (${this.name}) to process a message from ${this.#chainName as string}`);
       return false;
     }
 
     if (this.#state === 'disconnecting') {
       // Handle responses to our unsubscription messages
-      const request = this.requests.find(r => r.smoldotID === message.id);
+      const request = this.requests.find(r => r.chainID === message.id);
       if (request !== undefined) {
         // We don't forward the RPC message to the UApp - it's not there any more
         const idx = this.requests.indexOf(request);
@@ -185,7 +185,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     }
 
     // regular message
-    const request = this.requests.find(r => r.smoldotID === message.id);
+    const request = this.requests.find(r => r.chainID === message.id);
     if (request === undefined) {
       // Not our message
       return false;
@@ -239,9 +239,8 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
 
     // TODO: what about unsubscriptions requested by the UApp - we need to remove
     // the subscription from our subscriptions state
-
-    const smoldotID = this.#manager.sendRpcMessageTo(this.#smoldotName as string, parsed);
-    this.requests.push({ appID, smoldotID });
+    const chainID = this.#manager.sendRpcMessageTo(this.#chainName as string, parsed);
+    this.requests.push({ appID, chainID });
   }
 
   /** 
@@ -261,15 +260,13 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
       this.#port.disconnect();
       return false;
     }
-    this.#smoldotName = this.#port.name.substr(splitIdx + 2, this.#port.name.length);
-
-    if (!this.#manager.hasClientFor(this.#smoldotName)) {
-      this.#sendError(`Extension does not have client for ${this.#smoldotName}`);
+    this.#chainName = this.#port.name.substr(splitIdx + 2, this.#port.name.length);
+    if (!this.#manager.hasClientFor(this.#chainName)) {
+      this.#sendError(`Extension does not have client for ${this.#chainName}`);
       this.#port.disconnect();
       return false;
     }
-
-    this.#manager.registerApp(this, this.#smoldotName);
+    this.#manager.registerApp(this, this.#chainName);
     return true;
   }
 
@@ -294,9 +291,9 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     }
 
     // send the unsubscribe message
-    const smoldotID = this.#manager.sendRpcMessageTo(this.#smoldotName as string,  unsubRequest);
+    const chainID = this.#manager.sendRpcMessageTo(this.#chainName as string,  unsubRequest);
     // track the request so we know when its completed
-    this.requests.push({ appID, smoldotID });
+    this.requests.push({ appID, chainID });
   };
 
   #handleDisconnect = (): void => {

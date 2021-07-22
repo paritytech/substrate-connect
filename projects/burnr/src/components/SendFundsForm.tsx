@@ -61,12 +61,14 @@ const SendFundsForm: FunctionComponent = () => {
   const [ ,setLocalStorageAccount] = useLocalStorage(endpoint.split('-')[0]?.toLowerCase());
   // TODO END: This must be prettier and reusable (exists already on App)
   const [address, setAddress] = useState<string>('');
-  const [amount, setAmount] = useState<string>('0');  
+  const [amount, setAmount] = useState<string>('0');
+  const [fundsIssue, setFundsIssue] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
   const [countdownNo, setCountdownNo] = useState<number>(0);
   const [rowStatus, setRowStatus] = useState<number>(0);
   const [fee, setFee] = useState<Balance | undefined>();
+  const [errorMsg, setErrorMsg] = useState<string>('');
 
   useEffect((): void => {
     const calcFee = async (): Promise<void> => {
@@ -112,7 +114,6 @@ const SendFundsForm: FunctionComponent = () => {
         if (result.status.isInBlock) {
           setMessage(`Transaction Block hash: ${result.status.asInBlock}`);
         } else if (result.status.isFinalized) {
-          setLoading(false);
           setRowStatus(1);
           setMessage(`Block hash:: ${result.status.asFinalized}.`);
           account.userHistory.unshift({
@@ -125,6 +126,7 @@ const SendFundsForm: FunctionComponent = () => {
           setLocalStorageAccount(JSON.stringify(account));
         }
       });
+      setLoading(false);
     } catch (err) {
       setLoading(false);
       setRowStatus(2);
@@ -140,6 +142,22 @@ const SendFundsForm: FunctionComponent = () => {
     }
   }
 
+  useEffect(() => {
+    maxAmountFull && amount && fee && setFundsIssue((new BN(maxAmountFull)).sub(new BN(amount)).sub(fee).isNeg());
+  }, [amount, fee, maxAmountFull])
+
+  useEffect(() => {
+    if (!isValidAddressPolkadotAddress(address)) {
+      setErrorMsg('Add a valid address');
+    } else if (!parseInt(amount)) {
+      setErrorMsg('Add some amount');
+    } else if (fundsIssue) {
+      setErrorMsg('Insufficient funds');
+    } else {
+      setErrorMsg('');
+    }
+  }, [address, amount, fundsIssue])
+
   return (
     <>
       <InputAddress setAddress={setAddress} />
@@ -151,10 +169,10 @@ const SendFundsForm: FunctionComponent = () => {
       />
       <Grid item xs={12}>
         <Typography variant='subtitle1'>
-          {fee ? `Receiver will get: ${prettyBalance(parseFloat(amount))} ${unit}` : ''}
+          {fee ? `Balance after transaction: ${prettyBalance((new BN(maxAmountFull)).sub(new BN(amount)).sub(fee))} ${unit}` : ''}
         </Typography>
         <Typography variant='subtitle1'>
-          {fee ? `Fees: ${fee?.toHuman()}` : ''}
+          {fee ? `Fees: ${prettyBalance(fee)} ${unit}` : ''}
         </Typography>
         <Typography variant='subtitle1'>
         </Typography>
@@ -164,19 +182,14 @@ const SendFundsForm: FunctionComponent = () => {
         variant='contained'
         size='large'
         color='secondary'
-        disabled={loading || !parseInt(amount) || !isValidAddressPolkadotAddress(address) || account.userAddress === address}
+        disabled={loading || !parseInt(amount) || !isValidAddressPolkadotAddress(address) || account.userAddress === address || fundsIssue}
         onClick={handleSubmit}
         className={classes.button}
       >Send</Button>
 
-      {!isValidAddressPolkadotAddress(address) &&
+      {errorMsg &&
         <Typography variant='body2' color='error' className={classes.errorMessage}>
-          Add a valid address.
-        </Typography>
-      }
-      {!parseInt(amount) &&
-        <Typography variant='body2' color='error' className={classes.errorMessage}>
-          Add some amount.
+          {errorMsg}
         </Typography>
       }
       

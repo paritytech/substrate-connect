@@ -101,8 +101,8 @@ const App: React.FunctionComponent = () => {
 
                 <Box mt={2}>{`// Create a new UApp with a unique name`}</Box>
                 <Box>{`const app = new Detector('burnr-wallet');`}</Box>
-                <Box>{`const westend = await app.detect('westend');`}</Box>
-                <Box>{`const kusama = await app.detect('kusama');`}</Box>
+                <Box>{`const westend = await app.connect('westend');`}</Box>
+                <Box>{`const kusama = await app.connect('kusama');`}</Box>
 
                 <Box mt={2}>{`await westend.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
@@ -125,7 +125,19 @@ const App: React.FunctionComponent = () => {
             <SectionRef href='https://paritytech.github.io/substrate-connect/api/'>Learn more</SectionRef>
           </Section>
           <Section>
-            <SectionHeading id='projects' prefix='6'>Projects</SectionHeading>
+            <SectionHeading id='extension' prefix='6'>Browser Extension</SectionHeading>
+            <SectionText>For in-browser use, Substrate Connect provides a Browser Extension built upon the @substrate/light node module that is running the selected light clients inside the extension so that the end-user does not need to fire up a light node in every browser tab. This will also allow the light-node to keep syncing as long as the browser window stays open.</SectionText>
+            <CardProject
+              imageProps={{path: Extension, position: 'center center', fullWidth: true}}
+            >
+            </CardProject>
+            <SectionRef href='https://github.com/paritytech/substrate-connect/tree/master/projects/extension'>Learn more</SectionRef>
+            {/* Deactivate straight download for now 
+              <SectionRef href='./extension/substrate-connect.zip'>Download</SectionRef> 
+            */}
+          </Section>
+          <Section>
+            <SectionHeading id='projects' prefix='7'>Projects</SectionHeading>
             <CardProject
               title='Browser Demo'
               subtitle='Minimal implementation'
@@ -144,16 +156,6 @@ const App: React.FunctionComponent = () => {
               imageProps={{path:NetworksDemo, position: 'center top'}}
               linkProps={{href:'./multiple-network-demo/'}}
             />
-            <CardProject
-              title='Extension'
-              subtitle='Light clients broker for browser'
-              imageProps={{path:Extension, position: 'center top'}}
-              linkProps={{href:'https://github.com/paritytech/substrate-connect/tree/master/projects/extension'}}
-            >
-              <SectionRef href='./extension/substrate-connect.zip'>
-                Download
-              </SectionRef>
-            </CardProject>
             <CardProject
               title='Next Project'
               imageProps={{path:YourProject}}
@@ -183,6 +185,7 @@ const App: React.FunctionComponent = () => {
           <SidebarLink href='#supported-networks'>Supported Networks</SidebarLink>
           <SidebarLink href='#getting-started'>Getting Started</SidebarLink>
           <SidebarLink href='#api-docs'>API Documentation</SidebarLink>
+          <SidebarLink href='#extension'>Browser Extension</SidebarLink>
           <SidebarLink href='#projects'>Projects</SidebarLink>
         </Sidebar>
         {/* TODO: Footer */}

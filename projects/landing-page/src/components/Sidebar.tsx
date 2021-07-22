@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
     '& .fixed': {
       position: 'fixed',
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       '& .fixed': {
         width: '100%',
         maxWidth: 'none',
@@ -32,11 +32,8 @@ const useStyles = makeStyles(theme => ({
       color: substrateGray[900],
       textDecoration: 'none',
     },
-    [theme.breakpoints.down('sm')]: {
-      display: 'inline-block',
-      marginRight: theme.spacing(3),
-      marginBottom: theme.spacing(),
-      color: substrateGray[900],
+    [theme.breakpoints.down('md')]: {
+      display: 'none',
     },
     '& *': {
       color: 'inherit',

@@ -6,6 +6,7 @@ import { NavTabs, AccountCard, BalanceValue, BurnrDivider, AccountMenu } from '.
 
 import { BalanceVisibleContext } from './utils/contexts';
 import { LocalStorageAccountCtx } from './utils/types';
+import { validateLocalstorage } from './utils/utils';
 import { useBalance, useLocalStorage } from './hooks';
 
 const useStyles = makeStyles(theme => ({
@@ -34,6 +35,11 @@ const Home: React.FunctionComponent<Props> =  ({ account, loader }: Props) => {
   const balanceArr = useBalance(account?.userAddress || '');
   const balance = balanceArr[1];
   const unit = balanceArr[3];
+  
+  useEffect((): void => {
+    validateLocalstorage();
+  }, []);
+
   useEffect((): void => {
     setLocalBalance(balanceVisibility ? 'true' : 'false')
   }, [balanceVisibility, setLocalBalance])

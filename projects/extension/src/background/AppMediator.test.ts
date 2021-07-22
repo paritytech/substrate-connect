@@ -30,7 +30,7 @@ function setupAppMediatorWithSubscription(
 
   // Fake receiving an RPC response to the subscription request
   const message: JsonRpcResponse = {
-    id: pendingRequests[pendingRequests.length - 1].smoldotID,
+    id: pendingRequests[pendingRequests.length - 1].chainID,
     jsonrpc: '2.0',
     result: subID
   };
@@ -208,14 +208,14 @@ describe("Test AppMediator class", () => {
     expect(pendingRequests.length).toBe(2);
 
     // First unsub repsonse
-    const unsub1 = { jsonrpc:'2.0', id: pendingRequests[0].smoldotID, result: true };
+    const unsub1 = { jsonrpc:'2.0', id: pendingRequests[0].chainID, result: true };
     expect(appMed.processSmoldotMessage(unsub1)).toBe(true);
     expect(appMed.state).toBe('disconnecting');
     pendingRequests = appMed.cloneRequests();
     expect(pendingRequests.length).toBe(1);
 
     // Second unsub repsonse
-    const unsub2 = { jsonrpc:'2.0', id: pendingRequests[0].smoldotID, result: true };
+    const unsub2 = { jsonrpc:'2.0', id: pendingRequests[0].chainID, result: true };
     expect(appMed.processSmoldotMessage(unsub2)).toBe(true);
     expect(appMed.state).toBe('disconnected');
     pendingRequests = appMed.cloneRequests();

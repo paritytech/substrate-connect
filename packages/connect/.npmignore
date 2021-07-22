@@ -1,3 +1,11 @@
-tsconfig.json
-tsconfig.*.json
-/src
+yarn-error.log*
+.nyc_output/
+.chains/
+.eslintrc.cjs
+.eslintignore
+/coverage
+tsconfig.*
+extension-resolver.cjs
+jest.config*
+
+src/**/*

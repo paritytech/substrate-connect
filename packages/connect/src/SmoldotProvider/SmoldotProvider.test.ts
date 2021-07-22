@@ -158,13 +158,13 @@ test('emits events when Grandpa finishes sync and then connects', async () => {
 test('send formats JSON RPC request correctly', async () => {
   // we don't really care what the reponse is
   const responses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
-  const rpcSend = jest.fn() as jest.MockedFunction<(rpc: string, chainIndex: number) => void>;
+  const rpcSend = jest.fn() as jest.MockedFunction<(rpc: string) => void>;
   const ss = smoldotSpy(respondWith(responses), rpcSend);
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ss);
 
   await provider.connect();
   await provider.send('hello', [ 'world' ]);
-  expect(rpcSend).toHaveBeenCalledWith('{"id":1,"jsonrpc":"2.0","method":"hello","params":["world"]}', 0);
+  expect(rpcSend).toHaveBeenCalledWith('{"id":1,"jsonrpc":"2.0","method":"hello","params":["world"]}');
   await provider.disconnect();
 });
 
@@ -173,7 +173,7 @@ test('sending twice uses new id', async () => {
     '{ "id": 1, "jsonrpc": "2.0", "result": "success" }',
     '{ "id": 2, "jsonrpc": "2.0", "result": "success" }'
   ];
-  const rpcSend = jest.fn() as jest.MockedFunction<(rpc: string, chainIndex: number) => void>;
+  const rpcSend = jest.fn() as jest.MockedFunction<(rpc: string) => void>;
   const ss = smoldotSpy(respondWith(responses), rpcSend);
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ss);
 

@@ -8,7 +8,7 @@ import {
 } from '@polkadot/rpc-provider/types';
 import { logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
-import { isUndefined } from '../utils/index';
+import { isUndefined } from '../utils/index.js';
 import {
   MessageFromManager,
   ProviderMessageData,
