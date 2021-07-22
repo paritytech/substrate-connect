@@ -176,23 +176,28 @@ describe('Unit tests', () => {
     expect(manager.apps).toHaveLength(4);
   });
 
-  test('Get networks', () => {
-    expect(manager.networks).toEqual([
-      { name: 'westend', status: "connected", chainspecPath: "westend.json", isKnown: true },
-      { name: 'kusama', status: "connected", chainspecPath: "kusama.json", isKnown: true }
-    ]);
-  });
+  test('Get networks/chains', () => {
+    console.log('networks', manager.networks);
 
-  test('Get chains', () => {
     const tmpChains: unknown[] = [];
-    manager.chains.forEach(ch => {
+    // With this look the "chain" is removed intentionally as "chain"
+    // object cannot be compared with jest 
+    manager.networks.forEach(n => {
       tmpChains.push({
-        idx: ch.idx,
-        name: ch.name
+        idx: n.idx,
+        name: n.name,
+        status: n.status,
+        chainspecPath: n.chainspecPath,
+        isKnown: n.isKnown
       })
     })
-    expect(tmpChains).toEqual([{ idx: 1, name: 'westend' },{ idx: 2, name: 'kusama' }]);
-    expect(manager.chains).toHaveLength(2);
+
+    expect(tmpChains).toEqual([
+      { idx: 1, name: 'westend', status: "connected", chainspecPath: "westend.json", isKnown: true },
+      { idx: 2, name: 'kusama', status: "connected", chainspecPath: "kusama.json", isKnown: true }
+    ]);
+
+    expect(manager.networks).toHaveLength(2);
   });
 
   test('Add an app that already exists', () => {
