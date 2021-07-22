@@ -1,8 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-// REMOVE LINES ABOVE once smoldot is upgraded to v3.
-
-import { Smoldot, SmoldotAddChainOptions, SmoldotChain, SmoldotClient, SmoldotJsonRpcCallback, SmoldotLogCallback } from 'smoldot';
+import { Smoldot, SmoldotAddChainOptions, SmoldotChain, SmoldotClient, SmoldotJsonRpcCallback } from 'smoldot';
 import { JsonRpcObject } from '@polkadot/rpc-provider/types';
 import { jest } from '@jest/globals'
 import asap from 'asap';
@@ -257,70 +253,3 @@ export const smoldotSpy = (responder: RpcResponder, rpcSpy: jest.MockedFunction<
     }
   };
 };
-
-
-/**
- * NOTE: All functions from this point forward are temporary 
- * and meant only to support the running tests of smoldot version 2
- * Should be removed once Smoldot is updated to version 3 
- */
- export interface SmoldotOptionsTmp {
-  maxLogLevel?: number;
-  chainSpecs: string[];
-  jsonRpcCallback?: SmoldotJsonRpcCallbackTmp;
-  logCallback?: SmoldotLogCallback;
-  forbidTcp?: boolean;
-  forbidWs?: boolean;
-  forbidWss?: boolean;
-}
-
-export interface SmoldotClientTmp {
-  sendJsonRpc(rpc: string, chainIndex: number, userData?: number): void;
-  cancelAll(userData: number): void;
-  terminate(): void;
-}
-
-export type SmoldotJsonRpcCallbackTmp = (response: string, chainIndex: number, userData?: number) => void;
-
-export interface SmoldotTmp {
-  start(options: SmoldotOptionsTmp): Promise<SmoldotClientTmp>;
-}
-
-export const smoldotSpyTemp = (responder: RpcResponder, rpcSpy: jest.MockedFunction<(rpc: string, chainIndex: number) => void>, healthResponder = healthyResponder): SmoldotTmp => {
-  return {
-    start: async (options: SmoldotOptionsTmp): Promise<SmoldotClientTmp> => {
-      const processRequest = createRequestProcessorTmp(options, responder, healthResponder);
-      return Promise.resolve({
-        terminate: doNothing,
-        sendJsonRpc: (rpc: string, chainIndex: number) => {
-          rpcSpy(rpc, chainIndex);
-          processRequest(rpc, chainIndex);
-        },
-        cancelAll: doNothing
-      });
-    }
-  };
-};
-
-const createRequestProcessorTmp = (options: SmoldotOptionsTmp, responder: RpcResponder, healthResponder: RpcResponder) => {
-  return (rpcRequest: string, chainIndex: number) => {
-      asap(() => {
-      if (options && options.jsonRpcCallback) {
-        if (/system_health/.test(rpcRequest)) {
-          options.jsonRpcCallback(healthResponder(rpcRequest), chainIndex);
-          return;
-        }
-
-        // non-health reponse
-        options.jsonRpcCallback(responder(rpcRequest), chainIndex)
-        if (/(?<!un)[sS]ubscribe/.test(rpcRequest)) {
-          // FIXME: by convention it is assumed the responder has a queue of
-          // responses setup so that a subscription response is immediately
-          // followed by a single subscription message.  Subscriptions mocking
-          // should be more flexible than this.
-          options.jsonRpcCallback(responder(rpcRequest), chainIndex)
-        }
-      }
-    });
-  };
-}
