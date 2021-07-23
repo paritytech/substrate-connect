@@ -1,16 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import * as smoldot from 'smoldot';
 import { AppMediator } from './AppMediator';
 import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
 import { StateEmitter, State } from './types';
 import { Network } from '../types';
-import { logger } from '@polkadot/util';
+import { assert, logger } from '@polkadot/util';
 
 const l = logger('Extension Connection Manager');
 
@@ -30,7 +24,7 @@ export interface ChainsInterface {
  * smoldot clients and to clean up all an app's subscriptions when disconnected.
  */
 export class ConnectionManager extends (EventEmitter as { new(): StateEmitter }) implements ConnectionManagerInterface {
-  // #isConnected = false;
+  #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
   #chains: ChainsInterface[] = [];
   readonly #networks: Network[] = [];
@@ -219,6 +213,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         forbidWs: true, /* suppress console warnings about insecure connections */
         maxLogLevel: this.smoldotLogLevel
       });
+      this.#isConnected = true;
     } catch (err) {
       l.error(`Error while initializing smoldot: ${err}`);
     }
@@ -239,6 +234,8 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         chainSpec: spec,
         jsonRpcCallback: (message: string) => {
           const parsed = JSON.parse(message) as JsonRpcResponse;
+          // SOMETHING IS WRONG HERE CONCERNING THE ROLLBACK
+          console.log('parsed', parsed);
           for (const app of this.#apps) {
             app.processSmoldotMessage(parsed);
           }

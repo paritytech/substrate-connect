@@ -61,10 +61,16 @@ export class ExtensionProvider implements ProviderInterface {
 
   #appName: string;
   #chainName: string;
+  // TODO: NIK CHAINSPECS FOR EXTENSION
+  #chainSpecs: string | undefined;
 
-  public constructor(appName: string, chainName: string) {
+
+  // TODO: NIK CHAINSPECS FOR EXTENSION
+  public constructor(appName: string, chainName: string, chainSpecs?: string) {
     this.#appName = appName;
     this.#chainName = chainName;
+    // TODO: NIK CHAINSPECS FOR EXTENSION
+    this.#chainSpecs = chainSpecs;
   }
 
   /**
