@@ -4,7 +4,7 @@ import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface } from './t
 import EventEmitter from 'eventemitter3';
 import { StateEmitter, State } from './types';
 import { Network } from '../types';
-import { assert, logger } from '@polkadot/util';
+import { logger } from '@polkadot/util';
 
 const l = logger('Extension Connection Manager');
 
@@ -24,7 +24,7 @@ export interface ChainsInterface {
  * smoldot clients and to clean up all an app's subscriptions when disconnected.
  */
 export class ConnectionManager extends (EventEmitter as { new(): StateEmitter }) implements ConnectionManagerInterface {
-  #isConnected = false;
+  // #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
   #chains: ChainsInterface[] = [];
   readonly #networks: Network[] = [];
@@ -213,7 +213,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         forbidWs: true, /* suppress console warnings about insecure connections */
         maxLogLevel: this.smoldotLogLevel
       });
-      this.#isConnected = true;
+      // this.#isConnected = true;
     } catch (err) {
       l.error(`Error while initializing smoldot: ${err}`);
     }

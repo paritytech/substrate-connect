@@ -121,19 +121,36 @@ export class Detector {
    */
   public provider = (chainName: string, chainSpec?: string): ProviderInterface => {
     let provider: ProviderInterface = {} as ProviderInterface;
-
+    let spec: string | undefined = undefined;
     if (Object.keys(this.#chainSpecs).includes(chainName)) {
-      if (this.#isExtension) {
-        provider = new ExtensionProvider(this.#name, chainName);
-      } else if (!this.#isExtension) {
-        const chainSpec = JSON.stringify(this.#chainSpecs[chainName]);
-        provider = new SmoldotProvider(chainSpec);
-      }
+      spec = JSON.stringify(this.#chainSpecs[chainName]);
     } else if (chainSpec) {
-        provider = new SmoldotProvider(chainSpec);
-    } else if (!chainSpec) {
+      spec = chainSpec;
+    }
+    
+    if (!spec) {
       throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(this.#chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
     }
+
+    if (this.#isExtension) {
+      provider = new ExtensionProvider(this.#name, chainName, spec);
+    } else if (!this.#isExtension) {
+      provider = new SmoldotProvider(spec);
+    }
+
+    // LOGIC must change to provide chainName and chainSpecs
+    // if (Object.keys(this.#chainSpecs).includes(chainName)) {
+    //   if (this.#isExtension) {
+    //     provider = new ExtensionProvider(this.#name, chainName);
+    //   } else if (!this.#isExtension) {
+    //     const chainSpec = JSON.stringify(this.#chainSpecs[chainName]);
+    //     provider = new SmoldotProvider(chainSpec);
+    //   }
+    // } else if (chainSpec) {
+    //     provider = new SmoldotProvider(chainSpec);
+    // } else if (!chainSpec) {
+    //   throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(this.#chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
+    // }
     return provider;
   }
 

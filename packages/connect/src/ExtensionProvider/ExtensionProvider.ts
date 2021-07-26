@@ -64,7 +64,6 @@ export class ExtensionProvider implements ProviderInterface {
   // TODO: NIK CHAINSPECS FOR EXTENSION
   #chainSpecs: string | undefined;
 
-
   // TODO: NIK CHAINSPECS FOR EXTENSION
   public constructor(appName: string, chainName: string, chainSpecs?: string) {
     this.#appName = appName;
