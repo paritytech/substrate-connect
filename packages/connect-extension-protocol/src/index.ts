@@ -80,9 +80,9 @@ export interface ProviderMessageData {
  */
 export interface MessageToManager {
   /** Type of the message. Defines how to interpret the {@link payload} */
-  type: 'associate' | 'rpc';
-  /** Payload of the message. Either a JSON encoded RPC response or the name of a network **/
-  payload: string; // smoldot name or JSON encoded RPC message
+  type: 'rpc';
+  /** Payload of the message -  a JSON encoded RPC request **/
+  payload: string;
   /** whether an RPC message is a subscription or not **/
   subscription?: boolean;
 }
