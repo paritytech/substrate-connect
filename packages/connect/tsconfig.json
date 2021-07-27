@@ -13,8 +13,8 @@
     "strict": true,
     "module": "ES2020"
   },
-  "exclude": ["jest.config*", "tsconfig*"],
-  "include": [ "src/**/*", "src/**/*.json", ".parcel*", "*node_modules*"],
+  "exclude": ["jest.config*", "tsconfig*", "*node_modules*", "../../node_modules*", ".parcel*"],
+  "include": [ "src/**/*", "src/**/*.json"],
   "references": [
     { "path": "../smoldot-test-utils" },
     { "path": "../connect-extension-protocol" }
