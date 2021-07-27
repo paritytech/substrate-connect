@@ -48,7 +48,7 @@ test('connect sends connect message and emits connected', async () => {
     action: 'connect',
     origin: 'extension-provider'
   };
-  expect(handler).toHaveBeenCalledTimes(1);
+  expect(handler).toHaveBeenCalledTimes(2);
   const { data } = handler.mock.calls[0][0] as ProviderMessage;
   expect(data).toEqual(expectedMessage);
   expect(ep.isConnected).toBe(true);
@@ -70,8 +70,8 @@ test('disconnect sends disconnect message and emits disconnected', async () => {
     action: 'disconnect',
     origin: 'extension-provider'
   };
-  expect(handler).toHaveBeenCalledTimes(2);
-  const { data } = handler.mock.calls[1][0] as ProviderMessage;
+  expect(handler).toHaveBeenCalledTimes(3);
+  const { data } = handler.mock.calls[2][0] as ProviderMessage;
   expect(data).toEqual(expectedMessage);
   expect(ep.isConnected).toBe(false);
   expect(emitted).toHaveBeenCalledTimes(1);

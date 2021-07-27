@@ -60,6 +60,10 @@ export class MockConnectionManager implements ConnectionManagerInterface {
     this.#willFindClient = willFindClient;
   }
 
+  addChain (name: string, spec: string): Promise<number | undefined> {
+    return Promise.resolve(1);
+  }
+
   registerApp(): void {
     return;
   }
