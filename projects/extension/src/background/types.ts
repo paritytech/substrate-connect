@@ -48,6 +48,7 @@ export interface ConnectionManagerInterface {
   sendRpcMessageTo: (name: string, message: JsonRpcRequest) => number;
   registerApp: (app: AppMediator, name: string) => void;
   unregisterApp: (app: AppMediator, name: string) => void;
+  addChain: (name: string, spec: string) => Promise<number | undefined>;
 }
 
 export interface JsonRpcObject {

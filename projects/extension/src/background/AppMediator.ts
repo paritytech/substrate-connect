@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import EventEmitter from 'eventemitter3';
 import {
   MessageToManager,
@@ -31,6 +30,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   readonly #url: string | undefined;
   readonly #manager: ConnectionManagerInterface;
   #chainName: string | undefined  = undefined;
+  #chainNo: number | undefined;
   #state: AppState = 'connected';
   /** subscriptions is all the active message subscriptions this ap[ has */
   readonly subscriptions: SubscriptionMapping[];
@@ -82,11 +82,18 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   }
 
   /** 
-   * chainName is the name of the smoldot client to talk to; this is the
+   * chainName is the name of the chain to talk to; this is the
    * name of the blockchain network.
    */
   get chainName(): string {
     return this.#chainName || '';
+  }
+
+  /** 
+   * chainNo is the id of the chain to talk to
+   */
+  get chainNo(): number | undefined {
+    return this.#chainNo;
   }
 
   /** tabId is the tabId of the app in the browser */
@@ -216,6 +223,10 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     return true;
   }
 
+  #addChain = async (chainName: string, chainSpecs: string): Promise<void> => {
+    this.#chainNo = await this.#manager.addChain(chainName, chainSpecs);
+  }
+
   #handleRpcRequest = (msg: MessageToManager): void => {
     if (msg.type !== 'rpc') {
       console.warn(`Unrecognised message type ${msg.type} received from content script`);
@@ -237,10 +248,16 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
       });
     }
 
-    // TODO: what about unsubscriptions requested by the UApp - we need to remove
-    // the subscription from our subscriptions state
-    const chainID = this.#manager.sendRpcMessageTo(this.#chainName as string, parsed);
-    this.requests.push({ appID, chainID });
+    const chainName = this.#chainName as string;
+
+    if (parsed.method === 'spec' && chainName) {
+      this.#addChain(chainName, parsed.params[0] as string);
+    } else {
+      // TODO: what about unsubscriptions requested by the UApp - we need to remove
+      // the subscription from our subscriptions state
+      const chainID = this.#manager.sendRpcMessageTo(chainName, parsed);
+      this.requests.push({ appID, chainID });
+    }
   }
 
   /** 

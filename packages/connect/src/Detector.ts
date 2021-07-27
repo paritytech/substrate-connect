@@ -137,20 +137,6 @@ export class Detector {
     } else if (!this.#isExtension) {
       provider = new SmoldotProvider(spec);
     }
-
-    // LOGIC must change to provide chainName and chainSpecs
-    // if (Object.keys(this.#chainSpecs).includes(chainName)) {
-    //   if (this.#isExtension) {
-    //     provider = new ExtensionProvider(this.#name, chainName);
-    //   } else if (!this.#isExtension) {
-    //     const chainSpec = JSON.stringify(this.#chainSpecs[chainName]);
-    //     provider = new SmoldotProvider(chainSpec);
-    //   }
-    // } else if (chainSpec) {
-    //     provider = new SmoldotProvider(chainSpec);
-    // } else if (!chainSpec) {
-    //   throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(this.#chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
-    // }
     return provider;
   }
 

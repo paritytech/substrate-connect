@@ -193,6 +193,11 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     if (!this.#client) {
       throw new Error('Tried to unregister an app to smoldot client that does not exist.');
     }
+    console.log('app', app, this);
+    if (!app.chainNo) {
+      throw new Error('Tried to remove an app from a chain that does not exist.');
+    }
+    console.log('!!!!', this.#networks)
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
     this.emit('stateChanged', this.getState());
@@ -225,7 +230,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param name - Name of the chain
    * @param spec - ChainSpec of chain to be added
    */
-  async addChain (name: string, spec: string) {
+  async addChain (name: string, spec: string): Promise<number | undefined> {
     try {
       if (!this.#client) {
         throw new Error('Smoldot client does not exist.');
@@ -234,16 +239,16 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         chainSpec: spec,
         jsonRpcCallback: (message: string) => {
           const parsed = JSON.parse(message) as JsonRpcResponse;
-          // SOMETHING IS WRONG HERE CONCERNING THE ROLLBACK
-          console.log('parsed', parsed);
           for (const app of this.#apps) {
             app.processSmoldotMessage(parsed);
           }
         }
       });
 
+      const chainNo = ++this.#chainCounter;
+
       this.#chains.push({
-        idx: ++this.#chainCounter,
+        idx: chainNo,
         name,
         chain: addedChain
       })
@@ -255,6 +260,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         chainspecPath: `${name}.json`
       });
 
+      return chainNo;
     } catch (err) {
       l.error(`Error while trying to connect to chain ${name}: ${err}`);
     }

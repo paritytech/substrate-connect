@@ -71,7 +71,7 @@ export interface ProviderMessageData {
   /** What action the `ExtensionMessageRouter` should take **/
   action: 'forward' | 'connect' | 'disconnect';
   /** The message the `ExtensionMessageRouter` should forward to the background **/
-  message?: MessageToManager
+  message?: MessageToManager;
 }
 
 /**

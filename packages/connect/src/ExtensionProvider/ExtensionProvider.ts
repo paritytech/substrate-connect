@@ -61,14 +61,11 @@ export class ExtensionProvider implements ProviderInterface {
 
   #appName: string;
   #chainName: string;
-  // TODO: NIK CHAINSPECS FOR EXTENSION
   #chainSpecs: string | undefined;
 
-  // TODO: NIK CHAINSPECS FOR EXTENSION
   public constructor(appName: string, chainName: string, chainSpecs?: string) {
     this.#appName = appName;
     this.#chainName = chainName;
-    // TODO: NIK CHAINSPECS FOR EXTENSION
     this.#chainSpecs = chainSpecs;
   }
 
@@ -215,9 +212,13 @@ export class ExtensionProvider implements ProviderInterface {
       origin: EXTENSION_PROVIDER_ORIGIN
     }
     provider.send(connectMsg);
+
+    // Once connect is sent - send rpc to extension that will contain the chainSpecs
+    // for the extension to call addChain on smoldot
+    this.send('spec', [this.#chainSpecs]);
+
     provider.listen(({data}: ExtensionMessage) => {
       if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         this.#handleMessage(data);
       }
     });
@@ -231,7 +232,6 @@ export class ExtensionProvider implements ProviderInterface {
    * Manually "disconnect" - sends a message to the `ExtensionMessageRouter`
    * telling it to disconnect the port with the background manager.
    */
-  // eslint-disable-next-line @typescript-eslint/require-await
   public async disconnect(): Promise<void> {
     const disconnectMsg: ProviderMessageData = {
       appName: this.#appName,
@@ -281,10 +281,8 @@ export class ExtensionProvider implements ProviderInterface {
    */
   public async send(
     method: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: any[],
     subscription?: SubscriptionHandler
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     return new Promise((resolve, reject): void => {
       const json = this.#coder.encodeJson(method, params);
@@ -381,7 +379,6 @@ export class ExtensionProvider implements ProviderInterface {
     return await this.send(method, [id]) as Promise<boolean>;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private emit(type: ProviderInterfaceEmitted, ...args: any[]): void {
     this.#eventemitter.emit(type, ...args);
   }

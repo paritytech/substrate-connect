@@ -90,6 +90,9 @@ export class ExtensionMessageRouter {
       return;
     }
 
+    // Call background to "remove()" the chain
+    port.postMessage(data.message);
+
     port.disconnect();
     debug(`DISCONNECTED ${data.chainName} PORT`, port);
     delete this.#ports[data.chainName];

@@ -37,12 +37,7 @@ chrome.runtime.onStartup.addListener(() => {
   init().catch(console.error);
 });
 
-chrome.runtime.onConnect.addListener(async (port) => {
-  const chainName: string = port.name.split('::')[1];
-  console.log('pooort', port, chainName);
-  // await manager.addChain(chainName, JSON.stringify(westend)).catch(err => l.error('Error', err));
-
-  // If the chain name/spec exists then continue and addApp
+chrome.runtime.onConnect.addListener(port => {
   manager.addApp(port);
 });
 
