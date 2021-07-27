@@ -14,12 +14,6 @@ import { logger } from '@polkadot/util';
 
 const l = logger('Extension Connection Manager');
 
-export interface ChainsInterface {
-  idx: number;
-  name: string;
-  chain: smoldot.SmoldotChain | undefined;
-}
-
 /**
  * ConnectionManager is the main class involved in managing connections from
  * apps and smoldots.  It keeps track of apps in {@link AppMediator} instances.
@@ -30,9 +24,7 @@ export interface ChainsInterface {
  * smoldot clients and to clean up all an app's subscriptions when disconnected.
  */
 export class ConnectionManager extends (EventEmitter as { new(): StateEmitter }) implements ConnectionManagerInterface {
-  // #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
-  #chains: ChainsInterface[] = [];
   readonly #networks: Network[] = [];
   readonly #apps:  AppMediator[] = [];
   smoldotLogLevel = 3;
@@ -52,7 +44,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @returns a list of the networks that are currently connected
    */
   get registeredClients(): string[] {
-    return this.#chains.map(s => s.name);
+    return this.#networks.map(s => s.name);
   }
 
   /**
@@ -71,15 +63,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    */
   get networks(): Network[] {
     return this.#networks;
-  }
-
-  /**
-   * apps
-   *
-   * @returns all the connected apps.
-   */
-  get chains(): ChainsInterface[] {
-    return this.#chains;
   }
 
   /**
@@ -151,7 +134,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @returns whether the ConnectionManager has a smoldot client for the network.
    */
   hasClientFor(name: string): boolean {
-    return this.#chains.find(ch => ch.name === name) !== undefined;
+    return this.#networks.find(ch => ch.name === name) !== undefined;
   }
 
   /**
@@ -166,7 +149,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     if (!this.#client) {
       throw new Error('Smoldot client does not exist.');
     }
-    const c = this.#chains.filter(ch => ch.name === name);
+    const c = this.#networks.filter(ch => ch.name === name);
     if (c.length === 0) {
       throw new Error(`Chain ${name} does not exist.`);
     }
@@ -245,14 +228,10 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         }
       });
 
-      this.#chains.push({
-        idx: ++this.#chainCounter,
-        name,
-        chain: addedChain
-      })
-
       this.#networks.push({
+        idx: ++this.#chainCounter,
         name: name,
+        chain: addedChain,
         status: 'connected',
         isKnown: true,
         chainspecPath: `${name}.json`

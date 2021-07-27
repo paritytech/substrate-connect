@@ -1,3 +1,5 @@
+import * as smoldot from 'smoldot';
+
 export type NetworkTypes = 'kusama' | 'polkadot' | 'westend' | 'kulupu'
 
 export type NetworkStatus = 'connected' | 'disconnecting' | 'disconnected';
@@ -23,6 +25,8 @@ interface ChainSpec {
   chainspecPath: string;
 }
 export interface Network extends ChainSpec {
+  idx: number;
+  chain: smoldot.SmoldotChain | undefined;
   parachains?: Parachain[];
 }
 export interface Parachain extends ChainSpec {
