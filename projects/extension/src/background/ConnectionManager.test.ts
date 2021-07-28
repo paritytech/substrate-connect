@@ -177,22 +177,20 @@ describe('Unit tests', () => {
   });
 
   test('Get networks/chains', () => {
-    const tmpChains: unknown[] = [];
     // With this look the "chain" is removed intentionally as "chain"
     // object cannot be compared with jest 
-    manager.networks.forEach(n => {
-      tmpChains.push({
-        idx: n.idx,
+    const tmpChains = manager.networks.map(n => (
+      {
         name: n.name,
         status: n.status,
         chainspecPath: n.chainspecPath,
         isKnown: n.isKnown
       })
-    })
+    )
 
     expect(tmpChains).toEqual([
-      { idx: 1, name: 'westend', status: "connected", chainspecPath: "westend.json", isKnown: true },
-      { idx: 2, name: 'kusama', status: "connected", chainspecPath: "kusama.json", isKnown: true }
+      { name: 'westend', status: "connected", chainspecPath: "westend.json", isKnown: true },
+      { name: 'kusama', status: "connected", chainspecPath: "kusama.json", isKnown: true }
     ]);
 
     expect(manager.networks).toHaveLength(2);

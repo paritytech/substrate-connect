@@ -179,7 +179,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     if (!app.chain) {
       throw new Error('Tried to remove an app from a chain that does not exist.');
     }
-    console.log('app', app);
     app.chain?.remove();
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
