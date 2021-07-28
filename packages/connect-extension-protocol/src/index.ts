@@ -24,7 +24,7 @@ export interface ExtensionMessageData {
   /** message is telling the `ExtensionProvider` the port has been closed **/
   disconnect?: boolean;
   /** message is the message from the manager to be forwarded to the app **/
-  message?: MessageFromManager
+  message?: MessageFromManager;
 }
 
 /**
