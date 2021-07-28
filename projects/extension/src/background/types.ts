@@ -1,3 +1,4 @@
+import * as smoldot from 'smoldot';
 import { AppMediator } from './AppMediator';
 import EventEmitter from 'eventemitter3';
 import StrictEventEmitter from 'strict-event-emitter-types';
@@ -48,7 +49,7 @@ export interface ConnectionManagerInterface {
   sendRpcMessageTo: (name: string, message: JsonRpcRequest) => number;
   registerApp: (app: AppMediator, name: string) => void;
   unregisterApp: (app: AppMediator, name: string) => void;
-  addChain: (name: string, spec: string) => Promise<number | undefined>;
+  addChain: (name: string, spec: string) => Promise<smoldot.SmoldotChain | undefined>;
 }
 
 export interface JsonRpcObject {

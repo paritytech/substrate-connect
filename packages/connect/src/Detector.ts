@@ -121,20 +121,15 @@ export class Detector {
    */
   public provider = (chainName: string, chainSpec?: string): ProviderInterface => {
     let provider: ProviderInterface = {} as ProviderInterface;
-    let spec: string | undefined = undefined;
-    if (Object.keys(this.#chainSpecs).includes(chainName)) {
-      spec = JSON.stringify(this.#chainSpecs[chainName]);
-    } else if (chainSpec) {
-      spec = chainSpec;
-    }
     
-    if (!spec) {
+    if (!chainSpec && !Object.keys(this.#chainSpecs).includes(chainName)) {
       throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(this.#chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
     }
 
     if (this.#isExtension) {
-      provider = new ExtensionProvider(this.#name, chainName, spec);
+      provider = new ExtensionProvider(this.#name, chainName, chainSpec);
     } else if (!this.#isExtension) {
+      const spec = JSON.stringify(this.#chainSpecs[chainName]);
       provider = new SmoldotProvider(spec);
     }
     return provider;

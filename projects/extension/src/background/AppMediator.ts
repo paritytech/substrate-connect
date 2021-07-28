@@ -13,7 +13,8 @@ import {
   StateEmitter,
   SubscriptionMapping
 } from './types';
-
+import { SmoldotChain } from 'smoldot';
+import { relayChains } from './index';
 /**
  * AppMediator is the class that represents and manages an app's connection to
  * a blockchain network.  N.B. an app that connects to multiple nblockchain
@@ -30,7 +31,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   readonly #url: string | undefined;
   readonly #manager: ConnectionManagerInterface;
   #chainName: string | undefined  = undefined;
-  #chainNo: number | undefined;
+  #chain: SmoldotChain | undefined;
   #state: AppState = 'connected';
   /** subscriptions is all the active message subscriptions this ap[ has */
   readonly subscriptions: SubscriptionMapping[];
@@ -90,10 +91,10 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   }
 
   /** 
-   * chainNo is the id of the chain to talk to
+   * returns the chain that the app is connected to
    */
-  get chainNo(): number | undefined {
-    return this.#chainNo;
+  get chain(): SmoldotChain | undefined {
+    return this.#chain;
   }
 
   /** tabId is the tabId of the app in the browser */
@@ -224,7 +225,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   }
 
   #addChain = async (chainName: string, chainSpecs: string): Promise<void> => {
-    this.#chainNo = await this.#manager.addChain(chainName, chainSpecs);
+    this.#chain = await this.#manager.addChain(chainName, chainSpecs);
   }
 
   #handleRpcRequest = (msg: MessageToManager): void => {
@@ -251,7 +252,15 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     const chainName = this.#chainName as string;
 
     if (parsed.method === 'spec' && chainName) {
-      this.#addChain(chainName, parsed.params[0] as string);
+      // When params[0] (chainSpecs in the current case is empty) then this is a
+      // known relay chain and specs should be retrieved from inside the extension
+      let chainSpec: string;
+      if (Object.keys(relayChains).includes(chainName)) {
+        chainSpec = relayChains[chainName];
+      } else {
+        chainSpec = parsed.params[0] as string;
+      }
+      this.#addChain(chainName, chainSpec);
     } else {
       // TODO: what about unsubscriptions requested by the UApp - we need to remove
       // the subscription from our subscriptions state

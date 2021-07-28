@@ -12,6 +12,14 @@ declare let window: Background;
 
 const manager = window.manager = new ConnectionManager();
 
+type RelayType = Record<string, string>
+
+export const relayChains: RelayType = {
+  "polkadot": JSON.stringify(polkadot),
+  "kusama": JSON.stringify(kusama),
+  "westend": JSON.stringify(westend)
+}
+
 const l = logger('Extension');
 export interface RequestRpcSend {
   method: string;
@@ -21,9 +29,9 @@ export interface RequestRpcSend {
 const init = async () => {
   try {
     await manager.initSmoldot();
-    await manager.addChain('polkadot', JSON.stringify(polkadot)).catch(err => l.error('Error', err));
-    await manager.addChain('kusama', JSON.stringify(kusama)).catch(err => l.error('Error', err));
-    await manager.addChain('westend', JSON.stringify(westend)).catch(err => l.error('Error', err));
+    for(const [key, value] of Object.entries(relayChains)) {
+      await manager.addChain(key, value).catch(err => l.error('Error', err));
+    }
   } catch (e) {
     l.error(`Error creating smoldot: ${e}`); 
   }

@@ -22,7 +22,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   readonly #networks: Network[] = [];
   readonly #apps:  AppMediator[] = [];
   smoldotLogLevel = 3;
-  #chainCounter = 0;
   #id = 0;
 
   /** registeredApps
@@ -177,11 +176,11 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     if (!this.#client) {
       throw new Error('Tried to unregister an app to smoldot client that does not exist.');
     }
-    const client = this.#networks.find(a => a.idx === app.chainNo);
-    if (!app.chainNo || !client) {
+    if (!app.chain) {
       throw new Error('Tried to remove an app from a chain that does not exist.');
     }
-    client?.chain?.remove();
+    console.log('app', app);
+    app.chain?.remove();
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
     this.emit('stateChanged', this.getState());
@@ -214,7 +213,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param name - Name of the chain
    * @param spec - ChainSpec of chain to be added
    */
-  async addChain (name: string, spec: string): Promise<number | undefined> {
+  async addChain (name: string, spec: string): Promise<smoldot.SmoldotChain | undefined> {
     try {
       if (!this.#client) {
         throw new Error('Smoldot client does not exist.');
@@ -229,10 +228,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         }
       });
 
-      const chainNo = ++this.#chainCounter;
-
       this.#networks.push({
-        idx: chainNo,
         name: name,
         chain: addedChain,
         status: 'connected',
@@ -240,7 +236,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         chainspecPath: `${name}.json`
       });
 
-      return chainNo;
+      return addedChain;
     } catch (err) {
       l.error(`Error while trying to connect to chain ${name}: ${err}`);
     }
