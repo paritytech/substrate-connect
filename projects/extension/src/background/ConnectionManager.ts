@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as smoldot from 'smoldot';
 import { AppMediator } from './AppMediator';
 import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface } from './types';
@@ -194,13 +198,12 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   /**
    * initSmoldot initializes the smoldot client.
    */
-  async initSmoldot () {
+  async initSmoldot(): Promise<void> {
     try {
       this.#client = await (smoldot as any).start({ 
         forbidWs: true, /* suppress console warnings about insecure connections */
         maxLogLevel: this.smoldotLogLevel
       });
-      // this.#isConnected = true;
     } catch (err) {
       l.error(`Error while initializing smoldot: ${err}`);
     }

@@ -61,7 +61,7 @@ test('disconnect sends disconnect message and emits disconnected', async () => {
   await ep.connect();
 
   ep.on('disconnected', emitted);
-  await ep.disconnect();
+  ep.disconnect();
   await waitForMessageToBePosted();
 
   const expectedMessage: ProviderMessageData = {

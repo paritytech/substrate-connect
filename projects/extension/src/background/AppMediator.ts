@@ -260,7 +260,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
       } else {
         chainSpec = parsed.params[0] as string;
       }
-      this.#addChain(chainName, chainSpec);
+      this.#addChain(chainName, chainSpec).catch(console.error);
     } else {
       // TODO: what about unsubscriptions requested by the UApp - we need to remove
       // the subscription from our subscriptions state

@@ -1,7 +1,6 @@
 export default {
   coverageReporters: ["text-summary"],
   roots: ['<rootDir>/src'],
-  reporters: ["jest-silent-reporter"],
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['./jest-setup.js'],
   verbose: true,

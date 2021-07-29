@@ -14,7 +14,7 @@ const  connectApp = (manager: ConnectionManager, tabId: number, name: string, ne
 }
 
 test('adding and removing apps changes state', async () => {
-  //setup conenection manager with 2 chains
+  //setup connection manager with 2 chains
   const manager = new ConnectionManager();
   manager.smoldotLogLevel = 1;
   await manager.initSmoldot();

@@ -127,7 +127,7 @@ export class Detector {
     }
 
     if (this.#isExtension) {
-      provider = new ExtensionProvider(this.#name, chainName, chainSpec);
+      provider = new ExtensionProvider(this.#name, chainName, chainSpec) as ProviderInterface;
     } else if (!this.#isExtension) {
       const spec = JSON.stringify(this.#chainSpecs[chainName]);
       provider = new SmoldotProvider(spec);
@@ -140,8 +140,8 @@ export class Detector {
    *
    * @param chainName - the name of the blockchain network to disconnect from
    */
-  public disconnect = async (chainName: string): Promise<void> => {
-    await this.#providers[chainName].disconnect();
+  public disconnect = (chainName: string): void => {
+    this.#providers[chainName].disconnect();
     delete this.#providers[chainName];
   };
 }

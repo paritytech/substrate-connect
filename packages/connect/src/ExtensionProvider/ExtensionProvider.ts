@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {RpcCoder} from '@polkadot/rpc-provider/coder';
 import {
   JsonRpcResponse,
@@ -107,7 +108,7 @@ export class ExtensionProvider implements ProviderInterface {
    * @remarks This method is not supported
    * @throws {@link Error}
    */
-  public clone(): ExtensionProvider {
+  public clone(): ProviderInterface {
     throw new Error('clone() is not supported.');
   }
 
@@ -215,7 +216,7 @@ export class ExtensionProvider implements ProviderInterface {
 
     // Once connect is sent - send rpc to extension that will contain the chainSpecs
     // for the extension to call addChain on smoldot
-    this.send('spec', [this.#chainSpecs]);
+    this.send('spec', [this.#chainSpecs]).catch(console.error);
 
     provider.listen(({data}: ExtensionMessage) => {
       if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
@@ -232,7 +233,7 @@ export class ExtensionProvider implements ProviderInterface {
    * Manually "disconnect" - sends a message to the `ExtensionMessageRouter`
    * telling it to disconnect the port with the background manager.
    */
-  public async disconnect(): Promise<void> {
+  public disconnect(): void {
     const disconnectMsg: ProviderMessageData = {
       appName: this.#appName,
       chainName: this.#chainName,
@@ -350,7 +351,7 @@ export class ExtensionProvider implements ProviderInterface {
     callback: ProviderInterfaceCallback
   ): Promise<number | string> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return await this.send(method, params, { callback, type });
+    return await this.send(method, params, { callback, type }) as Promise<number | string>;
   }
 
   /**
@@ -379,7 +380,7 @@ export class ExtensionProvider implements ProviderInterface {
     return await this.send(method, [id]) as Promise<boolean>;
   }
 
-  private emit(type: ProviderInterfaceEmitted, ...args: any[]): void {
+  private emit(type: ProviderInterfaceEmitted, ...args: unknown[]): void {
     this.#eventemitter.emit(type, ...args);
   }
 }

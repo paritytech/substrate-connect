@@ -61,7 +61,7 @@ export class MockConnectionManager implements ConnectionManagerInterface {
     this.#willFindClient = willFindClient;
   }
 
-  addChain (name: string, spec: string): Promise<SmoldotChain | undefined> {
+  addChain (): Promise<SmoldotChain | undefined> {
     return Promise.resolve({} as SmoldotChain);
   }
 
