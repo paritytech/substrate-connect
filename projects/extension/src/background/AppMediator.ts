@@ -261,8 +261,6 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     }
     const chainName = this.#chainName as string;
 
-    console.log('parsed.method', parsed.method);
-
     if (parsed.method === 'spec' && chainName) {
       // When params[0] (chainSpecs in the current case is empty) then this is a
       // known relay chain and specs should be retrieved from inside the extension
