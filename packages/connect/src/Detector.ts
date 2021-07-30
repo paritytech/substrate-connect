@@ -141,7 +141,7 @@ export class Detector {
    * @param chainName - the name of the blockchain network to disconnect from
    */
   public disconnect = (chainName: string): void => {
-    this.#providers[chainName].disconnect();
+    void this.#providers[chainName].disconnect();
     delete this.#providers[chainName];
   };
 }
