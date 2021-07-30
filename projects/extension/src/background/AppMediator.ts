@@ -14,7 +14,18 @@ import {
   SubscriptionMapping
 } from './types';
 import { SmoldotChain } from 'smoldot';
-import { relayChains } from './index';
+import westend from '../../public/assets/westend.json';
+import kusama from '../../public/assets/kusama.json';
+import polkadot from '../../public/assets/polkadot.json';
+
+type RelayType = Record<string, string>
+
+export const relayChains: RelayType = {
+  "polkadot": JSON.stringify(polkadot),
+  "kusama": JSON.stringify(kusama),
+  "westend": JSON.stringify(westend)
+}
+
 /**
  * AppMediator is the class that represents and manages an app's connection to
  * a blockchain network.  N.B. an app that connects to multiple nblockchain
@@ -248,8 +259,9 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
         method: parsed.method
       });
     }
-
     const chainName = this.#chainName as string;
+
+    console.log('parsed.method', parsed.method);
 
     if (parsed.method === 'spec' && chainName) {
       // When params[0] (chainSpecs in the current case is empty) then this is a

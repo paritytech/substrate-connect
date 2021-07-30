@@ -217,7 +217,7 @@ export class ExtensionProvider implements ProviderInterface {
     // Once connect is sent - send rpc to extension that will contain the chainSpecs
     // for the extension to call addChain on smoldot
     this.send('spec', [this.#chainSpecs]).catch(console.error);
-
+    
     provider.listen(({data}: ExtensionMessage) => {
       if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
         this.#handleMessage(data);
@@ -233,7 +233,7 @@ export class ExtensionProvider implements ProviderInterface {
    * Manually "disconnect" - sends a message to the `ExtensionMessageRouter`
    * telling it to disconnect the port with the background manager.
    */
-  public disconnect(): void {
+  public disconnect(): Promise<void> {
     const disconnectMsg: ProviderMessageData = {
       appName: this.#appName,
       chainName: this.#chainName,
@@ -244,6 +244,7 @@ export class ExtensionProvider implements ProviderInterface {
     provider.send(disconnectMsg);
     this.#isConnected = false;
     this.emit('disconnected');
+    return Promise.resolve();
   }
 
   /**

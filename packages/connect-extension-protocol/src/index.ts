@@ -53,7 +53,6 @@ export const extension = {
   }
 };
 
-
 /**
  * ProviderMessage represents messages sent via `window.postMessage` from
  * `ExtensionProvider` to `ExtensionMessageRouter` as received by the extension.

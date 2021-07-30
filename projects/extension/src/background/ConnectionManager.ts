@@ -173,17 +173,14 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * unregisterApp is used after an app has finished processing any unsubscribe
    * messages and disconnected to fully unregister itself.
    * It also retrieves the chain that app was connected to and calls smoldot for removal
-   *
+   * 
    * @param app - The app
    */
   unregisterApp(app: AppMediator): void {
     if (!this.#client) {
       throw new Error('Tried to unregister an app to smoldot client that does not exist.');
     }
-    if (!app.chain) {
-      throw new Error('Tried to remove an app from a chain that does not exist.');
-    }
-    app.chain?.remove();
+    app.chain && app.chain?.remove();
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
     this.emit('stateChanged', this.getState());

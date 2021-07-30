@@ -121,11 +121,11 @@ export class Detector {
    */
   public provider = (chainName: string, chainSpec?: string): ProviderInterface => {
     let provider: ProviderInterface = {} as ProviderInterface;
-    
+
     if (!chainSpec && !Object.keys(this.#chainSpecs).includes(chainName)) {
       throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(this.#chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
     }
-
+    
     if (this.#isExtension) {
       provider = new ExtensionProvider(this.#name, chainName, chainSpec) as ProviderInterface;
     } else if (!this.#isExtension) {
