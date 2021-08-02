@@ -240,7 +240,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   }
 
   #handleRpcRequest = (msg: MessageToManager): void => {
-    if (msg.type !== 'rpc') {
+    if (msg.type !== 'rpc' && msg.type !== 'spec') {
       console.warn(`Unrecognised message type ${msg.type} received from content script`);
       return;
     }
@@ -261,14 +261,14 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     }
     const chainName = this.#chainName as string;
 
-    if (parsed.method === 'spec' && chainName) {
+    if (msg.type === 'spec' && chainName) {
       // When params[0] (chainSpecs in the current case is empty) then this is a
       // known relay chain and specs should be retrieved from inside the extension
       let chainSpec: string;
       if (Object.keys(relayChains).includes(chainName)) {
         chainSpec = relayChains[chainName];
       } else {
-        chainSpec = parsed.params[0] as string;
+        chainSpec = msg.payload;
       }
       this.#addChain(chainName, chainSpec).catch(console.error);
     } else {

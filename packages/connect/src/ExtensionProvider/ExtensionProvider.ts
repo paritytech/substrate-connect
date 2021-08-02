@@ -219,7 +219,7 @@ export class ExtensionProvider implements ProviderInterface {
     const someMsg: ProviderMessageData = {
       appName: this.#appName,
       chainName: this.#chainName,
-      action: 'spec',
+      action: 'forward',
       origin: EXTENSION_PROVIDER_ORIGIN,
       message: {
         type: 'spec',
