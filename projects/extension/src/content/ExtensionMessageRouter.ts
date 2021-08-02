@@ -45,6 +45,18 @@ export class ExtensionMessageRouter {
     window.removeEventListener('message', this.#handleMessage);
   }
 
+  #sendSpecs = (message: ProviderMessage): void => {
+    const {data: { chainName }} = message;
+    const port = this.#ports[chainName];
+    if (!port) {
+      // this is probably someone trying to abuse the extension.
+      console.warn(`App requested to send message to ${chainName} - no port found`);
+      return;
+    }
+    debug(`SENDING SPECS TO ${chainName} PORT`, message);
+    port.postMessage(message);
+  }
+
   #establishNewConnection = (message: ProviderMessage): void => {
     const data = message.data;
     const port = chrome.runtime.connect({ name: `${data.appName}::${data.chainName}` });
@@ -110,6 +122,12 @@ export class ExtensionMessageRouter {
 
     if (data.action === 'connect') {
       return this.#establishNewConnection(message);
+    }
+
+    if (data.action === 'spec') {
+      console.log('data action: ', data.action);
+      console.log('message', message.data)
+      return this.#sendSpecs(message);
     }
 
     if (data.action === 'disconnect') {

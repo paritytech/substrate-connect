@@ -216,8 +216,19 @@ export class ExtensionProvider implements ProviderInterface {
 
     // Once connect is sent - send rpc to extension that will contain the chainSpecs
     // for the extension to call addChain on smoldot
-    this.send('spec', [this.#chainSpecs]).catch(console.error);
-    
+    const someMsg: ProviderMessageData = {
+      appName: this.#appName,
+      chainName: this.#chainName,
+      action: 'spec',
+      origin: EXTENSION_PROVIDER_ORIGIN,
+      message: {
+        type: 'spec',
+        payload: this.#chainSpecs || ''
+      }
+    }
+
+    provider.send(someMsg);
+
     provider.listen(({data}: ExtensionMessage) => {
       if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
         this.#handleMessage(data);

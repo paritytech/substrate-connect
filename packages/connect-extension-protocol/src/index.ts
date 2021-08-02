@@ -68,7 +68,7 @@ export interface ProviderMessageData {
   /** The name of the blockchain network the app is talking to **/
   chainName: string;
   /** What action the `ExtensionMessageRouter` should take **/
-  action: 'forward' | 'connect' | 'disconnect';
+  action: 'forward' | 'connect' | 'disconnect' | 'spec';
   /** The message the `ExtensionMessageRouter` should forward to the background **/
   message?: MessageToManager;
 }
@@ -79,7 +79,7 @@ export interface ProviderMessageData {
  */
 export interface MessageToManager {
   /** Type of the message. Defines how to interpret the {@link payload} */
-  type: 'rpc';
+  type: 'rpc' | 'spec';
   /** Payload of the message -  a JSON encoded RPC request **/
   payload: string;
   /** whether an RPC message is a subscription or not **/
