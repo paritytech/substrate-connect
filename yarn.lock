@@ -13252,10 +13252,10 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-smoldot@^0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.3.4.tgz#2bb20bf85cd1261a18fe6f2171ffa3fa339e55e2"
-  integrity sha512-VoWb3E8mCtMPglAB6IguzimPj60s1l53CFEIDfO2J3bmClDozRINaeuwrFTUZv4YFqgCO/37GCHfZezZdb0bbw==
+smoldot@^0.3.6:
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.3.6.tgz#08031fa2523e99c767e967e43de6193f7a06b1c0"
+  integrity sha512-+bjlWPfZBGFpR9FSjtNS61FUeWSBvpJoZDotjEa9c2+QfRzTFmjPvxaZ9/3P1QvVp8uT4QshKoPd7Slhlq6G3g==
   dependencies:
     buffer "^6.0.1"
     performance-now "^2.1.0"
