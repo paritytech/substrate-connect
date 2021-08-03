@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as smoldot from 'smoldot';
 import { AppMediator } from './AppMediator';
-import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface } from './types';
+import { ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
 import { StateEmitter, State } from './types';
 import { Network } from '../types';
@@ -17,16 +17,12 @@ const l = logger('Extension Connection Manager');
  * apps and smoldots.  It keeps track of apps in {@link AppMediator} instances.
  * It is also responsible for triggering events when the state changes for 
  * the UI to update accordingly. 
- *
- * The 3 classes act in concert to multiples requests from various apps to
- * smoldot clients and to clean up all an app's subscriptions when disconnected.
  */
 export class ConnectionManager extends (EventEmitter as { new(): StateEmitter }) implements ConnectionManagerInterface {
   #client: smoldot.SmoldotClient | undefined = undefined;
   readonly #networks: Network[] = [];
   readonly #apps:  AppMediator[] = [];
   smoldotLogLevel = 3;
-  #id = 0;
 
   /** registeredApps
    *
@@ -114,46 +110,15 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     }
     const app = this.#apps.find(s => s.name === port.name);
     if (app) {
-      port.postMessage({ type: 'info', payload: `App ${port.name} already exists.` });
+      port.postMessage({ type: 'error', payload: `App ${port.name} already exists.` });
     } else {
-      const newApp = new AppMediator(port, this as ConnectionManagerInterface)
-      if (newApp.associate()) {
-        newApp.on('stateChanged', () => this.emit('stateChanged', this.getState()));
-        this.emit('stateChanged', this.getState());
+      const app = new AppMediator(port, this as ConnectionManagerInterface)
+      // if associate fails by returning false it has sent an error down the
+      // port and disconnected it, so we should just discard this `AppMediator`
+      if (app.associate()) {
+        this.registerApp(app);
       }
     }
-  }
-
-  /**
-   * hasClientFor
-   *
-   * @param name - the name of the network.
-   * @returns whether the ConnectionManager has a smoldot client for the network.
-   */
-  hasClientFor(name: string): boolean {
-    return this.#networks.find(ch => ch.name === name) !== undefined;
-  }
-
-  /**
-   * sendRpcMessageTo is used by the {@link AppMediator} instances to send an
-   * RPC message to the smoldot chain.
-   *
-   * @param name - the name of the chain.
-   * @param message - the RPC message to send.
-   * @returns the actual (remapped) ID of the message that was sent.
-   */
-  sendRpcMessageTo(name: string, message: JsonRpcRequest): number {
-    if (!this.#client) {
-      throw new Error('Smoldot client does not exist.');
-    }
-    const c = this.#networks.filter(ch => ch.name === name);
-    if (c.length === 0) {
-      throw new Error(`Chain ${name} does not exist.`);
-    }
-    const nextID = ++this.#id;
-    message.id = nextID;
-    c[0].chain?.sendJsonRpc(JSON.stringify(message));
-    return nextID;
   }
 
   /**
@@ -163,10 +128,8 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param app - The app
    */
   registerApp(app: AppMediator): void {
-    if (!this.#client) {
-      throw new Error('Tried to register an app to smoldot client that does not exist.');
-    }
     this.#apps.push(app);
+    this.emit('stateChanged', this.getState());
   }
 
   /**
@@ -177,10 +140,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param app - The app
    */
   unregisterApp(app: AppMediator): void {
-    if (!this.#client) {
-      throw new Error('Tried to unregister an app to smoldot client that does not exist.');
-    }
-    app.chain && app.chain?.remove();
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
     this.emit('stateChanged', this.getState());
@@ -212,23 +171,18 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param name - Name of the chain
    * @param spec - ChainSpec of chain to be added
    */
-  async addChain (name: string, spec: string): Promise<smoldot.SmoldotChain | undefined> {
+  async addChain (name: string, chainSpec: string, jsonRpcCallback: smoldot.SmoldotJsonRpcCallback): Promise<smoldot.SmoldotChain | undefined> {
     try {
       if (!this.#client) {
         throw new Error('Smoldot client does not exist.');
       }
       const addedChain = await this.#client.addChain({
-        chainSpec: spec,
-        jsonRpcCallback: (message: string) => {
-          const parsed = JSON.parse(message) as JsonRpcResponse;
-          for (const app of this.#apps) {
-            app.processSmoldotMessage(parsed);
-          }
-        }
+        chainSpec,
+        jsonRpcCallback
       });
 
       this.#networks.push({
-        name: name,
+        name,
         chain: addedChain,
         status: 'connected',
         isKnown: true,
@@ -237,6 +191,9 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
 
       return addedChain;
     } catch (err) {
+      // TODO: we shouldnt catch the error here - we need to report it back to
+      // the app and disconnect the port if e.g. they have sent an invalid chain
+      // spec
       l.error(`Error while trying to connect to chain ${name}: ${err}`);
     }
   }
