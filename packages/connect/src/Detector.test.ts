@@ -15,14 +15,14 @@ describe('Initialize Detector without extension', () => {
     detect = new Detector('test-uapp');
     const api = await detect.connect('westend');
     expect(api).toBeTruthy();
-    await detect.disconnect('westend');
+    detect.disconnect('westend');
   }, timeout);
 
   test('Should connect with known chain "polkadot".', async () => {
     detect = new Detector('test-uapp');
     const api = await detect.connect('polkadot');
     expect(api).toBeTruthy();
-    await detect.disconnect('polkadot');
+    detect.disconnect('polkadot');
   }, extTimeout);
 
   test('Should connect with known chain westend, no chainSpecs and options', async () => {
@@ -31,14 +31,14 @@ describe('Initialize Detector without extension', () => {
     const options = {} as ApiOptions;
     const api = await detect.connect(chainName, undefined, options);
     expect(api).toBeTruthy();
-    await detect.disconnect('westend');
+    detect.disconnect('westend');
   }, extTimeout);
 
   test('Should connect with known chain "kusama".', async () => {
     detect = new Detector('test-uapp');
     const api = await detect.connect('kusama');
     expect(api).toBeTruthy();
-    await detect.disconnect('kusama');
+    detect.disconnect('kusama');
   }, extTimeout);
 
   test('Should connect with unknown chain westend2 and chainSpecs.', async () => {
@@ -47,7 +47,7 @@ describe('Initialize Detector without extension', () => {
     const detect = new Detector('test-uapp');
     const api = await detect.connect(chainName, chainSpec);
     expect(api).toBeTruthy();
-    await detect.disconnect(chainName);
+    detect.disconnect(chainName);
   }, extTimeout);
 
   test('Should NOT connect with unknown chain westend2 and without chainSpecs.', () => {

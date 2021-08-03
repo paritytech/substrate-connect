@@ -25,7 +25,6 @@ interface ChainSpec {
   chainspecPath: string;
 }
 export interface Network extends ChainSpec {
-  idx: number;
   chain: smoldot.SmoldotChain | undefined;
   parachains?: Parachain[];
 }

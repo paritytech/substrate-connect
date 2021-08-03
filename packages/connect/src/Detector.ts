@@ -122,17 +122,15 @@ export class Detector {
   public provider = (chainName: string, chainSpec?: string): ProviderInterface => {
     let provider: ProviderInterface = {} as ProviderInterface;
 
-    if (Object.keys(this.#chainSpecs).includes(chainName)) {
-      if (this.#isExtension) {
-        provider = new ExtensionProvider(this.#name, chainName);
-      } else if (!this.#isExtension) {
-        const chainSpec = JSON.stringify(this.#chainSpecs[chainName]);
-        provider = new SmoldotProvider(chainSpec);
-      }
-    } else if (chainSpec) {
-        provider = new SmoldotProvider(chainSpec);
-    } else if (!chainSpec) {
+    if (!chainSpec && !Object.keys(this.#chainSpecs).includes(chainName)) {
       throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(this.#chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
+    }
+    
+    if (this.#isExtension) {
+      provider = new ExtensionProvider(this.#name, chainName, chainSpec) as ProviderInterface;
+    } else if (!this.#isExtension) {
+      const spec = JSON.stringify(this.#chainSpecs[chainName]);
+      provider = new SmoldotProvider(spec);
     }
     return provider;
   }
@@ -142,8 +140,8 @@ export class Detector {
    *
    * @param chainName - the name of the blockchain network to disconnect from
    */
-  public disconnect = async (chainName: string): Promise<void> => {
-    await this.#providers[chainName].disconnect();
+  public disconnect = (chainName: string): void => {
+    void this.#providers[chainName].disconnect();
     delete this.#providers[chainName];
   };
 }

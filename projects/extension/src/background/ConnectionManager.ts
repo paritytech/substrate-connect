@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as smoldot from 'smoldot';
 import { AppMediator } from './AppMediator';
 import { JsonRpcResponse, JsonRpcRequest, ConnectionManagerInterface } from './types';
@@ -28,7 +26,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   readonly #networks: Network[] = [];
   readonly #apps:  AppMediator[] = [];
   smoldotLogLevel = 3;
-  #chainCounter = 0;
   #id = 0;
 
   /** registeredApps
@@ -175,13 +172,15 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   /**
    * unregisterApp is used after an app has finished processing any unsubscribe
    * messages and disconnected to fully unregister itself.
-   *
+   * It also retrieves the chain that app was connected to and calls smoldot for removal
+   * 
    * @param app - The app
    */
   unregisterApp(app: AppMediator): void {
     if (!this.#client) {
       throw new Error('Tried to unregister an app to smoldot client that does not exist.');
     }
+    app.chain && app.chain?.remove();
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
     this.emit('stateChanged', this.getState());
@@ -196,7 +195,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   /**
    * initSmoldot initializes the smoldot client.
    */
-  async initSmoldot () {
+  async initSmoldot(): Promise<void> {
     try {
       this.#client = await (smoldot as any).start({ 
         forbidWs: true, /* suppress console warnings about insecure connections */
@@ -213,7 +212,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param name - Name of the chain
    * @param spec - ChainSpec of chain to be added
    */
-  async addChain (name: string, spec: string) {
+  async addChain (name: string, spec: string): Promise<smoldot.SmoldotChain | undefined> {
     try {
       if (!this.#client) {
         throw new Error('Smoldot client does not exist.');
@@ -229,7 +228,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       });
 
       this.#networks.push({
-        idx: ++this.#chainCounter,
         name: name,
         chain: addedChain,
         status: 'connected',
@@ -237,6 +235,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         chainspecPath: `${name}.json`
       });
 
+      return addedChain;
     } catch (err) {
       l.error(`Error while trying to connect to chain ${name}: ${err}`);
     }

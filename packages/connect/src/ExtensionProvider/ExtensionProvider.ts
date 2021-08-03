@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {RpcCoder} from '@polkadot/rpc-provider/coder';
 import {
   JsonRpcResponse,
@@ -61,10 +62,12 @@ export class ExtensionProvider implements ProviderInterface {
 
   #appName: string;
   #chainName: string;
+  #chainSpecs: string | undefined;
 
-  public constructor(appName: string, chainName: string) {
+  public constructor(appName: string, chainName: string, chainSpecs?: string) {
     this.#appName = appName;
     this.#chainName = chainName;
+    this.#chainSpecs = chainSpecs;
   }
 
   /**
@@ -105,7 +108,7 @@ export class ExtensionProvider implements ProviderInterface {
    * @remarks This method is not supported
    * @throws {@link Error}
    */
-  public clone(): ExtensionProvider {
+  public clone(): ProviderInterface {
     throw new Error('clone() is not supported.');
   }
 
@@ -210,9 +213,24 @@ export class ExtensionProvider implements ProviderInterface {
       origin: EXTENSION_PROVIDER_ORIGIN
     }
     provider.send(connectMsg);
+
+    // Once connect is sent - send rpc to extension that will contain the chainSpecs
+    // for the extension to call addChain on smoldot
+    const someMsg: ProviderMessageData = {
+      appName: this.#appName,
+      chainName: this.#chainName,
+      action: 'forward',
+      origin: EXTENSION_PROVIDER_ORIGIN,
+      message: {
+        type: 'spec',
+        payload: this.#chainSpecs || ''
+      }
+    }
+
+    provider.send(someMsg);
+
     provider.listen(({data}: ExtensionMessage) => {
       if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         this.#handleMessage(data);
       }
     });
@@ -226,8 +244,7 @@ export class ExtensionProvider implements ProviderInterface {
    * Manually "disconnect" - sends a message to the `ExtensionMessageRouter`
    * telling it to disconnect the port with the background manager.
    */
-  // eslint-disable-next-line @typescript-eslint/require-await
-  public async disconnect(): Promise<void> {
+  public disconnect(): Promise<void> {
     const disconnectMsg: ProviderMessageData = {
       appName: this.#appName,
       chainName: this.#chainName,
@@ -238,6 +255,7 @@ export class ExtensionProvider implements ProviderInterface {
     provider.send(disconnectMsg);
     this.#isConnected = false;
     this.emit('disconnected');
+    return Promise.resolve();
   }
 
   /**
@@ -276,10 +294,8 @@ export class ExtensionProvider implements ProviderInterface {
    */
   public async send(
     method: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: any[],
     subscription?: SubscriptionHandler
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     return new Promise((resolve, reject): void => {
       const json = this.#coder.encodeJson(method, params);
@@ -347,7 +363,7 @@ export class ExtensionProvider implements ProviderInterface {
     callback: ProviderInterfaceCallback
   ): Promise<number | string> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return await this.send(method, params, { callback, type });
+    return await this.send(method, params, { callback, type }) as Promise<number | string>;
   }
 
   /**
@@ -376,8 +392,7 @@ export class ExtensionProvider implements ProviderInterface {
     return await this.send(method, [id]) as Promise<boolean>;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private emit(type: ProviderInterfaceEmitted, ...args: any[]): void {
+  private emit(type: ProviderInterfaceEmitted, ...args: unknown[]): void {
     this.#eventemitter.emit(type, ...args);
   }
 }

@@ -124,7 +124,7 @@ export class ExtensionMessageRouter {
         return;
       }
 
-      if (innerMessage.type === 'rpc') {
+      if (innerMessage.type === 'rpc' || innerMessage.type === 'spec') {
         return this.#forwardRpcMessage(message);
       }
 

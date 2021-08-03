@@ -24,7 +24,7 @@ export interface ExtensionMessageData {
   /** message is telling the `ExtensionProvider` the port has been closed **/
   disconnect?: boolean;
   /** message is the message from the manager to be forwarded to the app **/
-  message?: MessageFromManager
+  message?: MessageFromManager;
 }
 
 /**
@@ -53,7 +53,6 @@ export const extension = {
   }
 };
 
-
 /**
  * ProviderMessage represents messages sent via `window.postMessage` from
  * `ExtensionProvider` to `ExtensionMessageRouter` as received by the extension.
@@ -71,7 +70,7 @@ export interface ProviderMessageData {
   /** What action the `ExtensionMessageRouter` should take **/
   action: 'forward' | 'connect' | 'disconnect';
   /** The message the `ExtensionMessageRouter` should forward to the background **/
-  message?: MessageToManager
+  message?: MessageToManager;
 }
 
 /**
@@ -80,7 +79,7 @@ export interface ProviderMessageData {
  */
 export interface MessageToManager {
   /** Type of the message. Defines how to interpret the {@link payload} */
-  type: 'rpc';
+  type: 'rpc' | 'spec';
   /** Payload of the message -  a JSON encoded RPC request **/
   payload: string;
   /** whether an RPC message is a subscription or not **/

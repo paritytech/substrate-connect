@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { ConnectionManager } from './ConnectionManager';
 import westend from '../../public/assets/westend.json';
 import kusama from '../../public/assets/kusama.json';
@@ -14,6 +12,14 @@ declare let window: Background;
 
 const manager = window.manager = new ConnectionManager();
 
+type RelayType = Map<string, string>
+
+export const relayChains: RelayType = new Map<string, string>([
+  ["polkadot", JSON.stringify(polkadot)],
+  ["kusama", JSON.stringify(kusama)],
+  ["westend", JSON.stringify(westend)]
+])
+
 const l = logger('Extension');
 export interface RequestRpcSend {
   method: string;
@@ -23,9 +29,9 @@ export interface RequestRpcSend {
 const init = async () => {
   try {
     await manager.initSmoldot();
-    await manager.addChain('polkadot', JSON.stringify(polkadot)).catch(err => l.error('Error', err));
-    await manager.addChain('kusama', JSON.stringify(kusama)).catch(err => l.error('Error', err));
-    await manager.addChain('westend', JSON.stringify(westend)).catch(err => l.error('Error', err));
+    for(const [key, value] of relayChains.entries()) {
+      await manager.addChain(key, value).catch(err => l.error('Error', err));
+    }
   } catch (e) {
     l.error(`Error creating smoldot: ${e}`); 
   }
@@ -39,7 +45,7 @@ chrome.runtime.onStartup.addListener(() => {
   init().catch(console.error);
 });
 
-chrome.runtime.onConnect.addListener((port) => {
+chrome.runtime.onConnect.addListener(port => {
   manager.addApp(port);
 });
 

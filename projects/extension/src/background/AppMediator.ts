@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import EventEmitter from 'eventemitter3';
 import {
   MessageToManager,
@@ -14,7 +13,18 @@ import {
   StateEmitter,
   SubscriptionMapping
 } from './types';
+import { SmoldotChain } from 'smoldot';
+import westend from '../../public/assets/westend.json';
+import kusama from '../../public/assets/kusama.json';
+import polkadot from '../../public/assets/polkadot.json';
 
+type RelayType = Map<string, string>
+
+export const relayChains: RelayType = new Map<string, string>([
+  ["polkadot", JSON.stringify(polkadot)],
+  ["kusama", JSON.stringify(kusama)],
+  ["westend", JSON.stringify(westend)]
+])
 /**
  * AppMediator is the class that represents and manages an app's connection to
  * a blockchain network.  N.B. an app that connects to multiple nblockchain
@@ -31,6 +41,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   readonly #url: string | undefined;
   readonly #manager: ConnectionManagerInterface;
   #chainName: string | undefined  = undefined;
+  #chain: SmoldotChain | undefined;
   #state: AppState = 'connected';
   /** subscriptions is all the active message subscriptions this ap[ has */
   readonly subscriptions: SubscriptionMapping[];
@@ -82,11 +93,18 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   }
 
   /** 
-   * chainName is the name of the smoldot client to talk to; this is the
+   * chainName is the name of the chain to talk to; this is the
    * name of the blockchain network.
    */
   get chainName(): string {
     return this.#chainName || '';
+  }
+
+  /** 
+   * returns the chain that the app is connected to
+   */
+  get chain(): SmoldotChain | undefined {
+    return this.#chain;
   }
 
   /** tabId is the tabId of the app in the browser */
@@ -216,8 +234,12 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     return true;
   }
 
+  #addChain = async (chainName: string, chainSpecs: string): Promise<void> => {
+    this.#chain = await this.#manager.addChain(chainName, chainSpecs);
+  }
+
   #handleRpcRequest = (msg: MessageToManager): void => {
-    if (msg.type !== 'rpc') {
+    if (msg.type !== 'rpc' && msg.type !== 'spec') {
       console.warn(`Unrecognised message type ${msg.type} received from content script`);
       return;
     }
@@ -236,11 +258,19 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
         method: parsed.method
       });
     }
+    const chainName = this.#chainName as string;
 
-    // TODO: what about unsubscriptions requested by the UApp - we need to remove
-    // the subscription from our subscriptions state
-    const chainID = this.#manager.sendRpcMessageTo(this.#chainName as string, parsed);
-    this.requests.push({ appID, chainID });
+    if (msg.type === 'spec' && chainName) {
+      const chainSpec: string = relayChains.has(chainName) ?
+        (relayChains.get(chainName) || '') :
+        msg.payload
+      this.#addChain(chainName, chainSpec).catch(console.error);
+    } else {
+      // TODO: what about unsubscriptions requested by the UApp - we need to remove
+      // the subscription from our subscriptions state
+      const chainID = this.#manager.sendRpcMessageTo(chainName, parsed);
+      this.requests.push({ appID, chainID });
+    }
   }
 
   /** 

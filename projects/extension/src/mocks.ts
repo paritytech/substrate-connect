@@ -8,6 +8,7 @@ import {
   MessageToManager, 
   MessageFromManager 
 } from '@substrate/connect-extension-protocol';
+import { SmoldotChain } from 'smoldot';
 
 export class MockPort implements chrome.runtime.Port {
   sender: any;
@@ -58,6 +59,10 @@ export class MockConnectionManager implements ConnectionManagerInterface {
 
   constructor(willFindClient: boolean) {
     this.#willFindClient = willFindClient;
+  }
+
+  addChain (): Promise<SmoldotChain | undefined> {
+    return Promise.resolve({} as SmoldotChain);
   }
 
   registerApp(): void {
