@@ -12,13 +12,13 @@ declare let window: Background;
 
 const manager = window.manager = new ConnectionManager();
 
-type RelayType = Record<string, string>
+type RelayType = Map<string, string>
 
-export const relayChains: RelayType = {
-  "polkadot": JSON.stringify(polkadot),
-  "kusama": JSON.stringify(kusama),
-  "westend": JSON.stringify(westend)
-}
+export const relayChains: RelayType = new Map<string, string>([
+  ["polkadot", JSON.stringify(polkadot)],
+  ["kusama", JSON.stringify(kusama)],
+  ["westend", JSON.stringify(westend)]
+])
 
 const l = logger('Extension');
 export interface RequestRpcSend {
@@ -29,7 +29,7 @@ export interface RequestRpcSend {
 const init = async () => {
   try {
     await manager.initSmoldot();
-    for(const [key, value] of Object.entries(relayChains)) {
+    for(const [key, value] of relayChains.entries()) {
       await manager.addChain(key, value).catch(err => l.error('Error', err));
     }
   } catch (e) {

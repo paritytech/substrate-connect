@@ -18,14 +18,13 @@ import westend from '../../public/assets/westend.json';
 import kusama from '../../public/assets/kusama.json';
 import polkadot from '../../public/assets/polkadot.json';
 
-type RelayType = Record<string, string>
+type RelayType = Map<string, string>
 
-export const relayChains: RelayType = {
-  "polkadot": JSON.stringify(polkadot),
-  "kusama": JSON.stringify(kusama),
-  "westend": JSON.stringify(westend)
-}
-
+export const relayChains: RelayType = new Map<string, string>([
+  ["polkadot", JSON.stringify(polkadot)],
+  ["kusama", JSON.stringify(kusama)],
+  ["westend", JSON.stringify(westend)]
+])
 /**
  * AppMediator is the class that represents and manages an app's connection to
  * a blockchain network.  N.B. an app that connects to multiple nblockchain
@@ -262,14 +261,9 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     const chainName = this.#chainName as string;
 
     if (msg.type === 'spec' && chainName) {
-      // When params[0] (chainSpecs in the current case is empty) then this is a
-      // known relay chain and specs should be retrieved from inside the extension
-      let chainSpec: string;
-      if (Object.keys(relayChains).includes(chainName)) {
-        chainSpec = relayChains[chainName];
-      } else {
-        chainSpec = msg.payload;
-      }
+      const chainSpec: string = relayChains.has(chainName) ?
+        (relayChains.get(chainName) || '') :
+        msg.payload
       this.#addChain(chainName, chainSpec).catch(console.error);
     } else {
       // TODO: what about unsubscriptions requested by the UApp - we need to remove
