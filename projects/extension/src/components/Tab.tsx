@@ -2,6 +2,8 @@
 import React, { FunctionComponent, SetStateAction, Dispatch } from 'react';
 import { Typography, Box, IconButton, createStyles, makeStyles } from '@material-ui/core';
 import BlockIcon from '@material-ui/icons/Block';
+import Zoom from '@material-ui/core/Zoom';
+import Tooltip from '@material-ui/core/Tooltip';
 import { grey } from '@material-ui/core/colors';
 import { IconWeb3, Logo } from '.';
 import { TabInterface } from '../types';
@@ -13,6 +15,16 @@ interface TabProps {
   tab?: TabInterface;
   setActiveTab?: Dispatch<SetStateAction<TabInterface | undefined>>;
 }
+
+const useStylesBootstrap = makeStyles((theme) => ({
+  arrow: {
+    color: theme.palette.common.black,
+  },
+  tooltip: {
+    backgroundColor: theme.palette.common.black,
+    fontSize: 14,
+  },
+}));
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -28,6 +40,11 @@ const useStyles = makeStyles((theme) =>
     }
   })
 );
+
+const BootstrapTooltip = (props: any) => {
+  const classes = useStylesBootstrap();
+  return <Tooltip arrow classes={classes} {...props} />;
+}
 
 const Tab: FunctionComponent<TabProps> = ({ manager, tab, current=false, setActiveTab }) => {
   const classes = useStyles();
@@ -72,7 +89,10 @@ const Tab: FunctionComponent<TabProps> = ({ manager, tab, current=false, setActi
               </IconWeb3>
             )}
             <IconButton onClick={onDisconnect} size='small' className={classes.disableButton}>
-              <BlockIcon />
+              {/* TODO: Disconnect should be replacesd with Block/Unblock once functionality is implemented */}
+              <BootstrapTooltip title={'Disconnect this app'} TransitionComponent={Zoom} placement={'top'}>
+                <BlockIcon />
+              </BootstrapTooltip>
             </IconButton>
           </Box>
         </>
