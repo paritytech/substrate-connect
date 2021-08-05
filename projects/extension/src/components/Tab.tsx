@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import React, { FunctionComponent, SetStateAction, Dispatch } from 'react';
 import { Typography, Box, IconButton, createStyles, makeStyles } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import BlockIcon from '@material-ui/icons/Block';
 import { grey } from '@material-ui/core/colors';
 import { IconWeb3, Logo } from '.';
 import { TabInterface } from '../types';
@@ -50,20 +50,17 @@ const Tab: FunctionComponent<TabProps> = ({ manager, tab, current=false, setActi
   }
 
   return (
-    <Box pt={current ? 2 : 1} pb={1} pr={1} pl={3} style={!tab ? { height: '10px' } : {}}>
+    <Box pt={current ? 2 : 1} pb={1} pr={1} pl={0.8} style={!tab ? { height: '10px' } : {}}>
       <Box
         display='flex'
         alignItems='center'
         justifyContent='space-between'
       >
-        {tab ? (
+        {tab && (
+        <>
           <Typography noWrap variant={current ? 'h3' : 'h4'}>
             {tab.uApp.name}
           </Typography>
-        ) : (
-          <Logo />
-        )}
-        { tab &&
           <Box display='flex'alignItems='center'> 
             {tab?.uApp.networks.map(n =>
               <IconWeb3
@@ -75,10 +72,11 @@ const Tab: FunctionComponent<TabProps> = ({ manager, tab, current=false, setActi
               </IconWeb3>
             )}
             <IconButton onClick={onDisconnect} size='small' className={classes.disableButton}>
-              <CloseIcon />
+              <BlockIcon />
             </IconButton>
           </Box>
-        }
+        </>
+        )}
       </Box>
 
       {!current &&

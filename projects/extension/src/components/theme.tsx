@@ -69,7 +69,7 @@ const light: ThemeOptions = {
       letterSpacing: 0.25,
     },
     h3: {
-      fontWeight: 500,
+      fontWeight: 600,
       fontSize: 17,
       lineHeight: '120%',
     },
