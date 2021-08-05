@@ -38,6 +38,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   #chainName: string | undefined  = undefined;
   #chain: SmoldotChain | undefined;
   #state: AppState = 'connected';
+  #pendingRequests: string[] = [];
 
   /**
    * @param port - the open communication port between the app's content page
@@ -78,6 +79,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     this.#chainName = this.#port.name.substr(splitIdx + 2, this.#port.name.length);
     return true;
   }
+
   /** 
    * name is the name of the communication port 
    * 
@@ -143,6 +145,12 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
       .then(chain => {
         if (chain) {
           this.#chain = chain;
+          // process any RPC requests that came in while waiting for `addChain`
+          // to complete
+          if (this.#pendingRequests.length > 0) {
+            this.#pendingRequests.forEach(req => chain.sendJsonRpc(req));
+            this.#pendingRequests = [];
+          }
         } else {
           // TODO: remove this duplicate error block when `addChain` on the 
           // ConnectionManager has been cleaned up to not catch errors adding
@@ -172,9 +180,10 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     }
 
     if (this.#chain === undefined) {
-      this.#sendError('Cannot send RPC message to chain before spec message');
-      this.#manager.unregisterApp(this);
-      return this.#port.disconnect();
+      // `addChain` hasn't resolved yet after the spec message so buffer the
+      // messages to be sent when it does resolve
+      this.#pendingRequests.push(msg.payload);
+      return;
     }
 
     return this.#chain.sendJsonRpc(msg.payload);
