@@ -3,9 +3,9 @@ import React, { FunctionComponent, SetStateAction, Dispatch } from 'react';
 import { Typography, Box, IconButton, createStyles, makeStyles } from '@material-ui/core';
 import BlockIcon from '@material-ui/icons/Block';
 import Zoom from '@material-ui/core/Zoom';
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip, { TooltipProps } from '@material-ui/core/Tooltip';
 import { grey } from '@material-ui/core/colors';
-import { IconWeb3, Logo } from '.';
+import { IconWeb3 } from '.';
 import { TabInterface } from '../types';
 import { ConnectionManager } from '../background/ConnectionManager';
 
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-const BootstrapTooltip = (props: any) => {
+const BootstrapTooltip = (props: TooltipProps) => {
   const classes = useStylesBootstrap();
   return <Tooltip arrow classes={classes} {...props} />;
 }

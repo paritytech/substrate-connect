@@ -82,14 +82,6 @@ const Popup: FunctionComponent = () => {
     });
 }, [appsInitState, browserTabs, manager]);
 
-  /**
-   * If "Stop all connections" button is pressed then disconnectAll 
-   * function will be called to disconnect all apps.
-  **/ 
-  const onDisconnectAll = (): void => {
-    manager?.disconnectAll();
-  }
-
   const goToOptions = (): void => {
     chrome.runtime.openOptionsPage();
   }
@@ -116,7 +108,12 @@ const Popup: FunctionComponent = () => {
           endIcon={<CallMadeIcon />}
           onClick={() =>  chrome.tabs.update({ url: "https://paritytech.github.io/substrate-connect/#extension" }) }
           >About</MenuButton>
-        {/* <MenuButton fullWidth className='danger' onClick={onDisconnectAll}>Stop all connections</MenuButton> */}
+        {/* 
+        /**
+         * If "Stop all connections" button is pressed then disconnectAll 
+         * function will be called to disconnect all apps.
+          <MenuButton fullWidth className='danger' onClick={(): void => { manager?.disconnectAll(); }}>Stop all connections</MenuButton>
+        */}
       </Box>
     </ThemeProvider>
   );
