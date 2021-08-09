@@ -109,19 +109,31 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * by a content script.
    */
   addApp(port: chrome.runtime.Port): void {
+    let notifMsg: string;
     if (!this.#client) {
       throw new Error('Smoldot client does not exist.');
     }
     const app = this.#apps.find(s => s.name === port.name);
     if (app) {
+      notifMsg = `App ${port.name} already exists.`;
       port.postMessage({ type: 'info', payload: `App ${port.name} already exists.` });
     } else {
       const newApp = new AppMediator(port, this as ConnectionManagerInterface)
       if (newApp.associate()) {
         newApp.on('stateChanged', () => this.emit('stateChanged', this.getState()));
         this.emit('stateChanged', this.getState());
+        const appInfo = port.name.split('::');
+        notifMsg = `App ${appInfo[0]} connected to ${appInfo[1]}.`
       }
     }
+    chrome.storage.sync.get('notifications', (s) => {
+      s.notifications && chrome.notifications.create('', {
+        title: 'Substrate Connect',
+        message: notifMsg,
+        iconUrl: './icons/icon-32.png',
+        type: 'basic'
+      });
+    });
   }
 
   /**
