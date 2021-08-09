@@ -107,7 +107,7 @@ const Popup: FunctionComponent = () => {
           {apps.map(t => <Tab manager={manager} key={t.tabId} tab={t}/>)}
         </Box>
         <Divider />
-        <MenuButton fullWidth onClick={goToOptions}>My Networks</MenuButton>
+        <MenuButton fullWidth onClick={goToOptions}>Options</MenuButton>
         <MenuButton fullWidth>About</MenuButton>
         <Divider />
         <MenuButton fullWidth className='danger' onClick={onDisconnectAll}>Stop all connections</MenuButton>
