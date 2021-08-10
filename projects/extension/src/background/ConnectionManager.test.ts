@@ -3,23 +3,25 @@ import { ConnectionManager } from './ConnectionManager';
 import westend from '../../public/assets/westend.json';
 import kusama from '../../public/assets/kusama.json';
 import { MockPort } from '../mocks';
-import { JsonRpcRequest } from './types';
-import { AppMediator } from './AppMediator';
 
-const  connectApp = (manager: ConnectionManager, tabId: number, name: string, network: string): MockPort => {
+const connectApp = (manager: ConnectionManager, tabId: number, name: string, network: string): MockPort => {
   const port = new MockPort(`${name}::${network}`);
   port.setTabId(tabId);
   manager.addApp(port);
   return port;
-}
+};
+
+const doNothing = () => {
+  // Do nothing
+};
 
 test('adding and removing apps changes state', async () => {
   //setup connection manager with 2 chains
   const manager = new ConnectionManager();
   manager.smoldotLogLevel = 1;
   await manager.initSmoldot();
-  await manager.addChain('westend', JSON.stringify(westend));
-  await manager.addChain('kusama', JSON.stringify(kusama));
+  await manager.addChain('westend', JSON.stringify(westend), doNothing);
+  await manager.addChain('kusama', JSON.stringify(kusama), doNothing);
 
   const handler = jest.fn();
   manager.on('stateChanged', handler);
@@ -140,8 +142,8 @@ describe('Unit tests', () => {
     manager.smoldotLogLevel = 1;
     //setup connection manager with 2 networks
     await manager.initSmoldot();
-    await manager.addChain('westend', JSON.stringify(westend));
-    await manager.addChain('kusama', JSON.stringify(kusama));
+    await manager.addChain('westend', JSON.stringify(westend), doNothing);
+    await manager.addChain('kusama', JSON.stringify(kusama), doNothing);
     manager.on('stateChanged', handler);
 
     //add 4 apps in clients
@@ -198,17 +200,7 @@ describe('Unit tests', () => {
   test('Add an app that already exists', () => {
     const port = connectApp(manager, 13, 'test-app-3', 'westend');
     expect(port.postMessage).toHaveBeenCalledTimes(1);
-    expect(port.postMessage).toHaveBeenLastCalledWith({ type: 'info', payload: 'App test-app-3::westend already exists.' })
-  });
-
-  test('Test sendRpcMessage', () => {
-    const rpcRequest: JsonRpcRequest = { id: 13, jsonrpc: '2.0', method: 'something', params: [] };
-    // Westend's #id is 0 at this point - response should be 1
-    const responseId = manager.sendRpcMessageTo('westend', rpcRequest)
-    expect(responseId).toBe(1);
-    expect(() => {
-      manager.sendRpcMessageTo('someSmoldot', rpcRequest);
-    }).toThrowError('Chain someSmoldot does not exist.');
+    expect(port.postMessage).toHaveBeenLastCalledWith({ type: 'error', payload: 'App test-app-3::westend already exists.' })
   });
 });
 
@@ -227,23 +219,5 @@ describe('Test functions when smoldot client is terminated', () => {
       manager.shutdown();
       manager.addApp(port);
     }).toThrowError('Smoldot client does not exist.');
-  });
-
-  test('Test registerApp error', () => {
-    const port = connectApp(manager, 15, 'test-app-5', 'westend');
-    const appMed = new AppMediator(port, manager);
-    expect(() => {
-      manager.shutdown();
-      manager.registerApp(appMed);
-    }).toThrowError('Tried to register an app to smoldot client that does not exist.');
-  });
-
-  test('Test unregisterApp error', () => {
-    const port = connectApp(manager, 15, 'test-app-5', 'westend');
-    const appMed = new AppMediator(port, manager);
-    expect(() => {
-      manager.shutdown();
-      manager.unregisterApp(appMed);
-    }).toThrowError('Tried to unregister an app to smoldot client that does not exist.');
   });
 });

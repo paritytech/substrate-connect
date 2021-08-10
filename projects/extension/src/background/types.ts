@@ -11,7 +11,7 @@ export interface InitAppNameSpec {
   chainSpec?: string
 }
 
-export type AppState = 'connected' | 'disconnecting' | 'disconnected';
+export type AppState = 'connected' | 'disconnected';
 
 export interface AppInfo {
   name: string;
@@ -27,17 +27,6 @@ export interface NetworkState {
   name: string;
 }
 
-export interface MessageIDMapping {
-  readonly appID: number | undefined;
-  readonly chainID: number;
-}
-
-export interface SubscriptionMapping {
-  readonly appIDForRequest: number | undefined;
-  subID: number | string  | undefined;
-  method: string;
-}
-
 export interface StateEvents {
   stateChanged: State;
 }
@@ -45,43 +34,8 @@ export interface StateEvents {
 export type StateEmitter = StrictEventEmitter<EventEmitter, StateEvents>;
 
 export interface ConnectionManagerInterface {
-  hasClientFor: (name: string) => boolean;
-  sendRpcMessageTo: (name: string, message: JsonRpcRequest) => number;
-  registerApp: (app: AppMediator, name: string) => void;
-  unregisterApp: (app: AppMediator, name: string) => void;
-  addChain: (name: string, spec: string) => Promise<smoldot.SmoldotChain | undefined>;
+  registerApp: (app: AppMediator) => void;
+  unregisterApp: (app: AppMediator) => void;
+  addChain: (name: string, spec: string, jsonRpcCallback: smoldot.SmoldotJsonRpcCallback) => Promise<smoldot.SmoldotChain | undefined>;
 }
 
-export interface JsonRpcObject {
-  id?: number;
-  jsonrpc: string;
-}
-
-export interface JsonRpcRequest extends JsonRpcObject {
-  method: string;
-  params: unknown[];
-}
-
-export interface JsonRpcResponseBaseError {
-  code: number;
-  data?: number | string;
-  message: string;
-}
-
-export interface JsonRpcResponseSingle {
-  error?: JsonRpcResponseBaseError;
-  result?: unknown;
-}
-
-export interface JsonRpcResponseSubscription {
-  method?: string;
-  params?: {
-    error?: JsonRpcResponseBaseError;
-    result: unknown;
-    subscription: number | string;
-  };
-}
-
-export type JsonRpcResponseBase = JsonRpcResponseSingle & JsonRpcResponseSubscription;
-
-export type JsonRpcResponse = JsonRpcObject & JsonRpcResponseBase
