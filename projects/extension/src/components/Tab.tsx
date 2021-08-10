@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import React, { FunctionComponent, SetStateAction, Dispatch } from 'react';
 import { Typography, Box, IconButton, createStyles, makeStyles } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import BlockIcon from '@material-ui/icons/Block';
+import Zoom from '@material-ui/core/Zoom';
+import Tooltip, { TooltipProps } from '@material-ui/core/Tooltip';
 import { grey } from '@material-ui/core/colors';
-import { IconWeb3, Logo } from '.';
+import { IconWeb3 } from '.';
 import { TabInterface } from '../types';
 import { ConnectionManager } from '../background/ConnectionManager';
 
@@ -13,6 +15,16 @@ interface TabProps {
   tab?: TabInterface;
   setActiveTab?: Dispatch<SetStateAction<TabInterface | undefined>>;
 }
+
+const useStylesBootstrap = makeStyles((theme) => ({
+  arrow: {
+    color: theme.palette.common.black,
+  },
+  tooltip: {
+    backgroundColor: theme.palette.common.black,
+    fontSize: 14,
+  },
+}));
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -28,6 +40,11 @@ const useStyles = makeStyles((theme) =>
     }
   })
 );
+
+const BootstrapTooltip = (props: TooltipProps) => {
+  const classes = useStylesBootstrap();
+  return <Tooltip arrow classes={classes} {...props} />;
+}
 
 const Tab: FunctionComponent<TabProps> = ({ manager, tab, current=false, setActiveTab }) => {
   const classes = useStyles();
@@ -50,20 +67,17 @@ const Tab: FunctionComponent<TabProps> = ({ manager, tab, current=false, setActi
   }
 
   return (
-    <Box pt={current ? 2 : 1} pb={1} pr={1} pl={3} style={!tab ? { height: '10px' } : {}}>
+    <Box pt={current ? 2 : 1} pb={1} pr={1} pl={0.8} style={!tab ? { height: '10px' } : {}}>
       <Box
         display='flex'
         alignItems='center'
         justifyContent='space-between'
       >
-        {tab ? (
+        {tab && (
+        <>
           <Typography noWrap variant={current ? 'h3' : 'h4'}>
             {tab.uApp.name}
           </Typography>
-        ) : (
-          <Logo />
-        )}
-        { tab &&
           <Box display='flex'alignItems='center'> 
             {tab?.uApp.networks.map(n =>
               <IconWeb3
@@ -75,10 +89,14 @@ const Tab: FunctionComponent<TabProps> = ({ manager, tab, current=false, setActi
               </IconWeb3>
             )}
             <IconButton onClick={onDisconnect} size='small' className={classes.disableButton}>
-              <CloseIcon />
+              {/* TODO: Disconnect should be replacesd with Block/Unblock once functionality is implemented */}
+              <BootstrapTooltip title={'Disconnect this app'} TransitionComponent={Zoom} placement={'top'}>
+                <BlockIcon />
+              </BootstrapTooltip>
             </IconButton>
           </Box>
-        }
+        </>
+        )}
       </Box>
 
       {!current &&
