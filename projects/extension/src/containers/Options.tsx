@@ -12,7 +12,7 @@ import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import {
-  // DEACTIVATE FOR NOW - will be n./src/containers/Options.tsxeeded once parachains will be integrated
+  // DEACTIVATE FOR NOW - will be n./src/containers/Options.tsx once parachains will be integrated
   //  Parachain,
   Network
 } from '../types';
