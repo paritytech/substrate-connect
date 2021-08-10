@@ -30,7 +30,11 @@ const init = async () => {
   try {
     await manager.initSmoldot();
     for(const [key, value] of relayChains.entries()) {
-      await manager.addChain(key, value).catch(err => l.error('Error', err));
+      const rpcCallback = (rpc: string) => {
+        console.warn(`Got RPC from ${key} dummy chain: ${rpc}`);
+      };
+      await manager.addChain(key, value, rpcCallback)
+        .catch(err => l.error('Error', err));
     }
   } catch (e) {
     l.error(`Error creating smoldot: ${e}`); 
