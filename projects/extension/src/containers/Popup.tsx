@@ -100,8 +100,7 @@ const Popup: FunctionComponent = () => {
           {apps.map(t => <Tab manager={manager} key={t.tabId} tab={t}/>)}
         </Box>
         <Divider />
-        <MenuButton fullWidth>Allowed Apps</MenuButton>
-        <MenuButton fullWidth onClick={goToOptions}>Networks</MenuButton>
+        <MenuButton fullWidth onClick={goToOptions}>Options</MenuButton>
         <Divider />
         <MenuButton
           fullWidth
