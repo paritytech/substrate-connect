@@ -60,9 +60,9 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   }
 
   /** 
-   * associate parses the name of the network from the port name and associates
-   * the app with the smoldot client or sends an error and disconnects the port
-   * if there is no smoldot client for the network.
+   * associate parses the name of the network from the port name.
+   * It sends an error and disconnects the port if the port name is not in a
+   * valid format.
    *
    * @remarks
    * This MUST be called straight after constructing an AppMediator
