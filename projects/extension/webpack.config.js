@@ -78,6 +78,7 @@ const config = {
     alias: {
       "react-dom": "@hot-loader/react-dom",
     },
+    fallback: { "crypto": false }
   },
   plugins: [
     new CopyPlugin({

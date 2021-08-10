@@ -8,7 +8,7 @@ export interface Props {
     borderColor?: string;
 }
 
-const SCircle = styled('div')<Props>`
+const SCircle = styled.div<Props>`
         width: ${props =>
             props.size === 'small' ? '5px' :
             (props.size === 'medium' ? '10px' :
@@ -24,9 +24,8 @@ const SCircle = styled('div')<Props>`
             (props.size === 'medium' ? '10px' :
             (props.size === 'large' && '15px'))
         };
-        border: 1px solid ${props => props.borderColor || substrateGreen[500]};
-        background-color: ${props => props.color || substrateGreen[100]};
-        box-shadow: 0 0 5px 0px ${props => props.color || substrateGreen[100]};
+        border: 1px solid ${props => props.borderColor || substrateGreen[400]};
+        background-color: ${props => props.color || substrateGreen[400]};
     `;
 
 const StatusCircle: FunctionComponent<Props> = ({ size='medium', color, borderColor }: Props) => {

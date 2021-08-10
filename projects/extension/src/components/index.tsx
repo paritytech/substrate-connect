@@ -8,4 +8,5 @@ export { default as ClientSearch } from './ClientSearch';
 export { default as ClientItem } from './ClientItem';
 export { default as TabInfo } from './TabInfo';
 export { default as Tab } from './Tab';
+export { default as NetworkTab } from './NetworkTab';
 export * from './Inputs';
