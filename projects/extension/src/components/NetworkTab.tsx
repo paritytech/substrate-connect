@@ -11,9 +11,12 @@ import { Detector }  from '@substrate/connect';
 import { Network } from '../types';
 
 export const emojis = {
+  chain: '🔗',
+  tick: '✅',
   info: 'ℹ️',
   deal: '🤝',
-  chain: '✨',
+  chequeredFlag: '🏁',
+  star: '✨',
   clock: '🕒',
   seedling: '🌱'
 };
@@ -125,16 +128,19 @@ const NetworkContent = ({
 }: NetworkContentProps) => {
   const classes = useStyles();
 
-  return headerNumber ?
+  return headerNumber ? (
     <div className={classes.info}>
-      <p>{emojis.chain} Connected to <b>{chainName}</b></p>
-      <p>{emojis.deal} Syncing will start at block #{headerNumber}</p>
-      <p>{emojis.info} Genesis hash is {genesisHash}</p>
+      <p>{emojis.tick} Connected to <b>{chainName}</b></p>
+      <p>{emojis.seedling} Syncing will start at block #{headerNumber}</p>
+      <p>{emojis.chequeredFlag} Genesis hash is {genesisHash}</p>
       <p>{emojis.clock} Epoch duration is {epoch} blocks</p>
       <p>{emojis.info} Existential deposit is {existentialDeposit}</p>
-      <p>{emojis.seedling} Communicating with {healthPeers} peer{healthPeers === 1 ? '' : 's'}</p>
-    </div> :
-    <div>Loading...</div>
+      <p>{emojis.star} Communicating with {healthPeers} peer{healthPeers === 1 ? '' : 's'}</p>
+    </div>) : (
+    <div className={classes.info}>
+      <p>{emojis.chain} Syncing <b>{chainName}</b></p>
+    </div>
+  );
 }
 
 const NetworkTab = ({ name, status, isKnown, chainspecPath }: Network) => {
