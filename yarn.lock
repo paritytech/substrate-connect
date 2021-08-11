@@ -2889,10 +2889,10 @@
     "@types/filesystem" "*"
     "@types/har-format" "*"
 
-"@types/chrome@^0.0.132":
-  version "0.0.132"
-  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.132.tgz#8134139bf18ca38374bfc3dcac4a596b014c1946"
-  integrity sha512-+yTDaSmY+hCEoB0dIG4OeiVOPpvlDcjLcExtZqJEWv7NCSVnX9AfSUWyzlgK0Kd6yXKpDOjK/pZkeX4ElTzNKA==
+"@types/chrome@^0.0.154":
+  version "0.0.154"
+  resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.154.tgz#7992e97364f4447e961028ad07ac843d0b052c2d"
+  integrity sha512-6QmP744MeMUZUIUHED4d4L2la5dIF1e6bcrkGF4yGQTyO94ER+r++Ss165wkzA5cAGUYt8kToDa6L9xtNqVMxg==
   dependencies:
     "@types/filesystem" "*"
     "@types/har-format" "*"
@@ -8657,7 +8657,7 @@ jest-changed-files@^27.0.2:
     execa "^5.0.0"
     throat "^6.0.1"
 
-jest-chrome@^0.7.0:
+jest-chrome@^0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/jest-chrome/-/jest-chrome-0.7.1.tgz#72dd7cc0367e6b24f17974fb78f59665dafd0a10"
   integrity sha512-rUsDoOIxvZr4JpzyYWepE5/l0xM5VO6010g93jhbaeYwJaJGpazYIClbLtbeWg+zUxMJvLdN3iDMvT6m8wNMwA==
