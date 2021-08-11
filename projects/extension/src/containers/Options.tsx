@@ -5,7 +5,7 @@ import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import { light, Logo, ClientItem, NetworkTab } from '../components/';
+import { light, Logo, NetworkTab } from '../components/';
 import GlobalFonts from '../fonts/fonts';
 import { Background } from '../background/';
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles';

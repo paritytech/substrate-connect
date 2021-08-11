@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
+import React, { useState } from 'react';
 import { IconWeb3, StatusCircle } from '.';
 import { withStyles, makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import MuiAccordion from '@material-ui/core/Accordion';
@@ -152,6 +152,8 @@ const NetworkTab = ({ name, status, isKnown, chainspecPath }: Network) => {
   const [existentialDeposit, ] = useState<string>('');
   const [healthPeers, ] = useState<number>(0);
 
+  //TODO: remove this - This is here to overcome linter error until finalize implementation 
+  console.log( name, status, isKnown, chainspecPath);
   return (
     <div className={classes.root}>
       <div className={classes.onlineIcon}>
