@@ -6,7 +6,6 @@ import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import { Detector }  from '@substrate/connect';
 
 import { Network } from '../types';
 
@@ -65,19 +64,19 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
-      marginBottom: '10px',
+      marginBottom: theme.spacing(1),
       display: 'flex'
     },
     onlineIcon: {
-      width: '30px',
+      width: theme.spacing(3),
       position: 'relative',
-      top: '20px'
+      top: theme.spacing(2)
     },
     accordion: {
       width: '100%',
       border: '1px solid #ccc',
-      borderTopLeftRadius: '3px',
-      borderTopRightRadius: '3px'
+      borderTopLeftRadius: theme.spacing(0.3),
+      borderTopRightRadius: theme.spacing(0.3)
     },
     summary: {
       display: 'flex',
@@ -85,12 +84,12 @@ const useStyles = makeStyles((theme: Theme) =>
       flexBasis: '66.66%',
     },
     icon: {
-      width: '30px',
+      width: theme.spacing(3),
     },
     heading: {
       fontSize: theme.typography.pxToRem(20),
       lineHeight: '24px',
-      marginLeft: '5px',
+      marginLeft: theme.spacing(0.5),
       flexShrink: 0,
     },
     secondaryHeading: {
@@ -100,11 +99,11 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       backgroundColor: '#21262A',
       color: '#fff',
-      borderBottomLeftRadius: '3px',
-      borderBottomRightRadius: '3px'
+      borderBottomLeftRadius: theme.spacing(0.3),
+      borderBottomRightRadius: theme.spacing(0.3)
     },
     info: {
-      fontSize: '15px'
+      fontSize: theme.typography.pxToRem(15)
     }
   }),
 );
@@ -146,29 +145,12 @@ const NetworkContent = ({
 const NetworkTab = ({ name, status, isKnown, chainspecPath }: Network) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState<boolean>(false);
-  const [genesisHash, setGenesisHash] = useState<string>('');
-  const [headerNumber, setHeaderNumber] = useState<string>('');
-  const [chainName, setChainName] = useState<string>('');
-  const [epoch, setEpoch] = useState<number>(0);
-  const [existentialDeposit, setExistentialDeposit] = useState<string>('');
-  const [healthPeers, setHealthPeers] = useState<number>(0);
-
-  useEffect(() => {
-    const detect: Detector = new Detector('Extension App');
-    const connectToNetwork = async (detect: Detector) => {
-      const api = await detect.connect(name);
-      const header = await api.rpc.chain.getHeader()
-      const cn = await api.rpc.system.chain();
-      const health = await api.rpc.system.health();
-      setHeaderNumber(header.number.toString());
-      setGenesisHash(api.genesisHash.toHex())
-      setHealthPeers(health.peers.toNumber());
-      setChainName(cn.toString());
-      setEpoch(api.consts.babe.epochDuration.toNumber());
-      setExistentialDeposit(api.consts.balances.existentialDeposit.toHuman());
-    }
-    name && connectToNetwork(detect);
-  }, [name]);
+  const [genesisHash, ] = useState<string>('');
+  const [headerNumber, ] = useState<string>('');
+  const [chainName, ] = useState<string>('');
+  const [epoch, ] = useState<number>(0);
+  const [existentialDeposit, ] = useState<string>('');
+  const [healthPeers, ] = useState<number>(0);
 
   return (
     <div className={classes.root}>
