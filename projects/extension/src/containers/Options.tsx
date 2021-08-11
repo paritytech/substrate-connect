@@ -96,7 +96,7 @@ const Options: React.FunctionComponent = () => {
   }, []);
 
   useEffect(() => {
-    chrome.storage.sync.set({notifications: notifications});
+    chrome.storage.sync.set({notifications: notifications}).catch(console.error);
   }, [notifications])
 
   const handleChange = (event: React.ChangeEvent<unknown>, newValue: number) => {

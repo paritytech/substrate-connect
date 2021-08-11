@@ -113,6 +113,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     if (app) {
       notifMsg = `App ${port.name} already exists.`;
       port.postMessage({ type: 'error', payload: `App ${port.name} already exists.` });
+      port.disconnect();
     } else {
       const app = new AppMediator(port, this as ConnectionManagerInterface)
       // if associate fails by returning false it has sent an error down the
@@ -124,7 +125,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       }
     }
     chrome.storage.sync.get('notifications', (s) => {
-      s.notifications && chrome.notifications.create('', {
+      s.notifications && chrome.notifications.create(port.name, {
         title: 'Substrate Connect',
         message: notifMsg,
         iconUrl: './icons/icon-32.png',
