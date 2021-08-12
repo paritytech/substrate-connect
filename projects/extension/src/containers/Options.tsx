@@ -87,6 +87,7 @@ const Options: React.FunctionComponent = () => {
     chrome.runtime.getBackgroundPage(backgroundPage => {
       const bg = backgroundPage as Background;
       const nets: Network[] = [];
+      // TODO (nik): Temporary solution on react until https://github.com/paritytech/substrate-connect/issues/451 is implemented
       bg.manager.networks.forEach(network => {
         const check = nets.find(n => n.name === network.name)
         if (!check) nets.push(network)

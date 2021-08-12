@@ -77,8 +77,7 @@ const config = {
     extensions: [".js", ".jsx", ".tsx", ".ts"],
     alias: {
       "react-dom": "@hot-loader/react-dom",
-    },
-    fallback: { "crypto": false }
+    }
   },
   plugins: [
     new CopyPlugin({
