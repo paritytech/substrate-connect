@@ -223,7 +223,7 @@ describe('Test functions when smoldot client is terminated', () => {
   });
 });
 
-describe('Test manager.addApp storage sync and notification reactions', () => {
+describe('Check storage and send notification when adding an app', () => {
   const manager = new ConnectionManager();
 
   chrome.storage.sync.get.mockImplementation((keys, callback) => {
@@ -241,13 +241,13 @@ describe('Test manager.addApp storage sync and notification reactions', () => {
     manager.shutdown();
   })
 
-  test('Test storage sync', () => {
+  test('Checks storage for notifications preferences', () => {
     const port = new MockPort('test-app-6::westend');
     manager.addApp(port);
     expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1);
   });
 
-  test('Test notification', () => {
+  test('Sends a notification', () => {
     const port = new MockPort('test-app-7::westend');
     manager.addApp(port);
 
