@@ -1,18 +1,21 @@
-import * as React from 'react';
-import * as material from '@material-ui/core';
-import { light, ClientSearch, Logo, ClientItem } from '../components/';
+import React, { useEffect } from 'react';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core'
+import Box from '@material-ui/core/Box'
+import Switch from '@material-ui/core/Switch';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import { light, Logo, ClientItem } from '../components/';
 import GlobalFonts from '../fonts/fonts';
 import { Background } from '../background/';
-import {
-  // DEACTIVATE FOR NOW - will be needed once parachains will be integrated
-  //  Parachain,
-  Network
-} from '../types';
-
-const { createMuiTheme, ThemeProvider, Box } = material;
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import {
+  // DEACTIVATE FOR NOW - will be n./src/containers/Options.tsx once parachains will be integrated
+  //  Parachain,
+  Network
+} from '../types';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -74,18 +77,27 @@ const Options: React.FunctionComponent = () => {
   const appliedTheme = createMuiTheme(light);
   const [value, setValue] = React.useState<number>(0);
   const [networks, setNetworks] = React.useState<Network[]>([{} as Network]);
+  const [notifications, setNotifications] = React.useState<boolean>(false);
 
-  const handleChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
-    setValue(newValue);
-  };
+  useEffect((): void => {
+    chrome.storage.sync.get(['notifications'], (res) => {
+      setNotifications(res.notifications);
+    });
 
-  React.useEffect((): void => {
     chrome.runtime.getBackgroundPage(backgroundPage => {
       const bg = backgroundPage as Background;
       setNetworks(bg.manager.networks);
     });
   }, []);
-  
+
+  useEffect(() => {
+    chrome.storage.sync.set({notifications: notifications}).catch(console.error);
+  }, [notifications])
+
+  const handleChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
+    setValue(newValue);
+  };
+
   return (
     <ThemeProvider theme={appliedTheme}>
       <GlobalFonts />
@@ -105,7 +117,9 @@ const Options: React.FunctionComponent = () => {
       </MenuTabs>
       
       <TabPanel value={value} index={0}>
-        <ClientSearch />
+        {/*  Deactivate search for now
+          <ClientSearch />
+        */}
         {networks && networks.map((network: Network, i:number) => 
           <div key={i}>
             <ClientItem {...network} />
@@ -117,7 +131,24 @@ const Options: React.FunctionComponent = () => {
         )}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Settings
+        <FormControl component="fieldset">
+        <FormGroup aria-label="position" row>
+          <FormControlLabel
+            value="Notifications:"
+            control={
+              <Switch
+                checked={notifications}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNotifications(e.target.checked)}
+                color="primary"
+                name="checkedB"
+                inputProps={{ 'aria-label': 'primary checkbox' }}
+              />
+            }
+            label="Notifications:"
+            labelPlacement="start"
+          />
+        </FormGroup>
+      </FormControl>
       </TabPanel>
     </ThemeProvider>
   );

@@ -3,6 +3,8 @@ import westend from '../../public/assets/westend.json';
 import kusama from '../../public/assets/kusama.json';
 import polkadot from '../../public/assets/polkadot.json';
 import { logger } from '@polkadot/util';
+import { isEmpty } from '../utils/utils'
+import settings from './settings.json';
 
 export interface Background extends Window {
   manager: ConnectionManager
@@ -51,6 +53,13 @@ chrome.runtime.onStartup.addListener(() => {
 
 chrome.runtime.onConnect.addListener(port => {
   manager.addApp(port);
+});
+
+chrome.storage.sync.get(['notifications'], (result) => {
+  if (isEmpty(result)) {
+    // Setup default settings
+    chrome.storage.sync.set({notifications: settings.notifications}).catch(console.error);
+  }
 });
 
 // TODO (nik): once extension is on chrome/ff stores we need to take advantage 

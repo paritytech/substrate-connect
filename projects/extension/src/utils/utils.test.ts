@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import {  capitalizeFirstLetter } from './utils';
+import {  capitalizeFirstLetter, isEmpty } from './utils';
 
 const random = (length = 5) => {
   const chars = 'abcdefghijklmnopqrstuvwxyz';
@@ -15,4 +15,13 @@ test('Test capitalizeFirstLetter', () => {
   const strFirstLetter = str.charAt(0).toUpperCase();
   const outcome = capitalizeFirstLetter(str);
   expect(outcome.charAt(0)).toBe(strFirstLetter);
+});
+
+test('Test isEmpty', () => {
+  let obj = {};
+  let outcome = isEmpty(obj);
+  expect(outcome).toBeTruthy;
+  obj = { 'something': 'else' };
+  outcome = isEmpty(obj);
+  expect(outcome).toBeFalsy;
 });

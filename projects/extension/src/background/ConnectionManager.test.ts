@@ -3,6 +3,7 @@ import { ConnectionManager } from './ConnectionManager';
 import westend from '../../public/assets/westend.json';
 import kusama from '../../public/assets/kusama.json';
 import { MockPort } from '../mocks';
+import { chrome } from 'jest-chrome';
 
 const connectApp = (manager: ConnectionManager, tabId: number, name: string, network: string): MockPort => {
   const port = new MockPort(`${name}::${network}`);
@@ -219,5 +220,45 @@ describe('Test functions when smoldot client is terminated', () => {
       manager.shutdown();
       manager.addApp(port);
     }).toThrowError('Smoldot client does not exist.');
+  });
+});
+
+describe('Check storage and send notification when adding an app', () => {
+  const manager = new ConnectionManager();
+
+  chrome.storage.sync.get.mockImplementation((keys, callback) => {
+    callback({ notifications: true }) 
+  });
+
+  beforeEach(async () => {
+    chrome.storage.sync.get.mockClear();
+    chrome.notifications.create.mockClear();
+    manager.smoldotLogLevel = 1;
+    await manager.initSmoldot();
+  });
+
+  afterEach( () => {
+    manager.shutdown();
+  })
+
+  test('Checks storage for notifications preferences', () => {
+    const port = new MockPort('test-app-6::westend');
+    manager.addApp(port);
+    expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1);
+  });
+
+  test('Sends a notification', () => {
+    const port = new MockPort('test-app-7::westend');
+    manager.addApp(port);
+
+    const notificationData = {
+      message: "App test-app-7 connected to westend.",
+      title: "Substrate Connect",
+      iconUrl: "./icons/icon-32.png",
+      type: "basic"
+    }
+
+    expect(chrome.notifications.create).toHaveBeenCalledTimes(1);
+    expect(chrome.notifications.create).toHaveBeenCalledWith('test-app-7::westend', notificationData);
   });
 });
