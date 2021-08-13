@@ -58,7 +58,11 @@ chrome.runtime.onConnect.addListener(port => {
 chrome.storage.sync.get(['notifications'], (result) => {
   if (isEmpty(result)) {
     // Setup default settings
-    chrome.storage.sync.set({notifications: settings.notifications}).catch(console.error);
+    chrome.storage.sync.set({notifications: settings.notifications}, () => {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError);
+      }
+    });
   }
 });
 
