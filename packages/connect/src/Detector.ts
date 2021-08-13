@@ -114,7 +114,7 @@ export class Detector {
    */
   public connect = async (relay: ChainInfo | string, parachain?: ChainInfo, options?: ApiOptions): Promise<ApiPromise> => {
     const chain: ChainInfo | string = parachain || relay;
-    let relayName: string = "";
+    let relayName = "";
     if (parachain) {
       relayName = this.getChainName(relay);
     }
@@ -131,7 +131,7 @@ export class Detector {
 
   /**
    * 
-   * @param relay Param of ChainInfo or string. In case of ChainInfo,
+   * @param relay - Param of ChainInfo or string. In case of ChainInfo,
    * name (string - the name of the blockchain network to connect to) and
    * spec(string - a chainSpec to connect to a different network)
    * @returns a string of the name of the chain

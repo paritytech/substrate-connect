@@ -106,33 +106,34 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * by a content script.
    */
   addApp(port: chrome.runtime.Port): void {
-    let notifMsg: string;
     if (!this.#client) {
       throw new Error('Smoldot client does not exist.');
     }
-    const app = this.#apps.find(s => s.name === port.name);
-    if (app) {
-      notifMsg = `App ${port.name} already exists.`;
+
+    const existingApp = this.#apps.find(
+      a => a.name === port.name && a.tabId === port.sender?.tab?.id);
+
+    if (existingApp) {
       port.postMessage({ type: 'error', payload: `App ${port.name} already exists.` });
       port.disconnect();
-    } else {
-      const app = new AppMediator(port, this as ConnectionManagerInterface)
-      // if associate fails by returning false it has sent an error down the
-      // port and disconnected it, so we should just discard this `AppMediator`
-      if (app.associate()) {
-        this.registerApp(app);
-        const appInfo = port.name.split('::');
-        notifMsg = `App ${appInfo[0]} connected to ${appInfo[1]}.`
-      }
-    }
-    chrome.storage.sync.get('notifications', (s) => {
-      s.notifications && chrome.notifications.create(port.name, {
-        title: 'Substrate Connect',
-        message: notifMsg,
-        iconUrl: './icons/icon-32.png',
-        type: 'basic'
+      return;
+    } 
+
+    const app = new AppMediator(port, this as ConnectionManagerInterface)
+    // if associate fails by returning false it has sent an error down the
+    // port and disconnected it, so we should just discard this `AppMediator`
+    if (app.associate()) {
+      this.registerApp(app);
+      const appInfo = port.name.split('::');
+      chrome.storage.sync.get('notifications', (s) => {
+        s.notifications && chrome.notifications.create(port.name, {
+          title: 'Substrate Connect',
+          message: `App ${appInfo[0]} connected to ${appInfo[1]}.`,
+          iconUrl: './icons/icon-32.png',
+          type: 'basic'
+        });
       });
-    });
+    }
   }
 
   /**
@@ -184,45 +185,40 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    *
    * @param name - Name of the chain
    * @param spec - ChainSpec of chain to be added
+   * @param jsonRpcCallback - The jsonRpcCallback function that should be triggered
+   * @param relayChainName - optional string when parachain is added to depict the relay chain name
    */
-  async addChain (name: string, chainSpec: string, jsonRpcCallback: smoldot.SmoldotJsonRpcCallback, relayChainName?: string): Promise<smoldot.SmoldotChain | undefined> {
-    try {
-      if (!this.#client) {
-        throw new Error('Smoldot client does not exist.');
-      }
-      let relay: Network | undefined = undefined;
-      let addChainOptions = {} as SmoldotAddChainOptions;
-
-      // If this is a parachain - meaning a relayChainName is provided
-      if (relayChainName) {
-        relay = this.#networks.find(n => n.name === relayChainName)
-        addChainOptions = {
-          chainSpec,
-          jsonRpcCallback,
-          potentialRelayChains: [relay?.chain as SmoldotChain]
-        };
-      } else {
-        addChainOptions = {
-          chainSpec,
-          jsonRpcCallback
-        };
-      }
-      const addedChain = await this.#client.addChain(addChainOptions);
-
-      this.#networks.push({
-        name,
-        chain: addedChain,
-        status: 'connected',
-        isKnown: true,
-        chainspecPath: `${name}.json`
-      });
-
-      return addedChain;
-    } catch (err) {
-      // TODO: we shouldnt catch the error here - we need to report it back to
-      // the app and disconnect the port if e.g. they have sent an invalid chain
-      // spec
-      l.error(`Error while trying to connect to chain ${name}: ${err}`);
+  async addChain (name: string, chainSpec: string, jsonRpcCallback: smoldot.SmoldotJsonRpcCallback, relayChainName?: string): Promise<smoldot.SmoldotChain> {
+    if (!this.#client) {
+      throw new Error('Smoldot client does not exist.');
     }
+    let relay: Network | undefined = undefined;
+    let addChainOptions = {} as SmoldotAddChainOptions;
+
+    // If this is a parachain - meaning a relayChainName is provided
+    if (relayChainName) {
+      relay = this.#networks.find(n => n.name === relayChainName)
+      addChainOptions = {
+        chainSpec,
+        jsonRpcCallback,
+        potentialRelayChains: [relay?.chain as SmoldotChain]
+      };
+    } else {
+      addChainOptions = {
+        chainSpec,
+        jsonRpcCallback
+      };
+    }
+    const addedChain = await this.#client.addChain(addChainOptions);
+
+    this.#networks.push({
+      name,
+      chain: addedChain,
+      status: 'connected',
+      isKnown: true,
+      chainspecPath: `${name}.json`
+    });
+
+    return addedChain;
   }
 }
