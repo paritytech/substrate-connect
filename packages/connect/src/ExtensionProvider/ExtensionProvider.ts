@@ -10,6 +10,7 @@ import {
 import { logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
 import { isUndefined } from '../utils/index.js';
+import { HealthCheckError } from '../errors.js';
 import {
   MessageFromManager,
   ProviderMessageData,
@@ -22,7 +23,6 @@ const CONTENT_SCRIPT_ORIGIN = 'content-script';
 const EXTENSION_PROVIDER_ORIGIN = 'extension-provider';
 
 const l = logger(EXTENSION_PROVIDER_ORIGIN);
-
 
 interface RpcStateAwaiting {
   callback: ProviderInterfaceCallback;
@@ -41,11 +41,23 @@ interface StateSubscription extends SubscriptionHandler {
   method: string;
 }
 
+interface HealthResponse {
+  isSyncing: boolean;
+  peers: number;
+  shouldHavePeers: boolean;
+}
+
 const ANGLICISMS: { [index: string]: string } = {
   chain_finalisedHead: 'chain_finalizedHead',
   chain_subscribeFinalisedHeads: 'chain_subscribeFinalizedHeads',
   chain_unsubscribeFinalisedHeads: 'chain_unsubscribeFinalizedHeads'
 };
+
+/*
+ * Number of milliseconds to wait between checks to see if we have any 
+ * connected peers in the smoldot client
+ */
+const CONNECTION_STATE_PINGER_INTERVAL = 2000;
 
 /**
  * The ExtensionProvider allows interacting with a smoldot-based WASM light
@@ -58,16 +70,23 @@ export class ExtensionProvider implements ProviderInterface {
   readonly #handlers: Record<string, RpcStateAwaiting> = {};
   readonly #subscriptions: Record<string, StateSubscription> = {};
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
+  #connectionStatePingerId: ReturnType<typeof setInterval> | null;
   #isConnected = false;
 
   #appName: string;
   #chainName: string;
   #chainSpecs: string | undefined;
 
+  /*
+   * How frequently to see if we have any peers
+   */
+  healthPingerInterval = CONNECTION_STATE_PINGER_INTERVAL;
+
   public constructor(appName: string, chainName: string, chainSpecs?: string) {
     this.#appName = appName;
     this.#chainName = chainName;
     this.#chainSpecs = chainSpecs;
+    this.#connectionStatePingerId = null;
   }
 
   /**
@@ -198,6 +217,55 @@ export class ExtensionProvider implements ProviderInterface {
     }
   }
 
+  #simulateLifecycle = (health: HealthResponse): void => {
+    // development chains should not have peers so we only emit connected
+    // once and never disconnect
+    if (health.shouldHavePeers == false) {
+      
+      if (!this.#isConnected) {
+        this.#isConnected = true;
+        this.emit('connected');
+        l.debug(`emitted CONNECTED`);
+        return;
+      }
+
+      return;
+    }
+
+    const peerCount = health.peers
+    const peerChecks = (peerCount > 0 || !health.shouldHavePeers) && !health.isSyncing;
+
+    l.debug(`Simulating lifecylce events from system_health`);
+    l.debug(`isConnected: ${this.#isConnected.toString()}, new peerCount: ${peerCount}`);
+
+    if (this.#isConnected && peerChecks) {
+      // still connected
+      return;
+    }
+
+    if (this.#isConnected && peerCount === 0) {
+      this.#isConnected = false;
+      this.emit('disconnected');
+      l.debug(`emitted DISCONNECTED`);
+      return;
+    }
+
+    if (!this.#isConnected && peerChecks) {
+      this.#isConnected = true;
+      this.emit('connected');
+      l.debug(`emitted CONNECTED`);
+      return;
+    }
+
+    // still not connected
+  }
+
+  #checkClientPeercount = (): void => {
+    this.send('system_health', [])
+      .then(this.#simulateLifecycle)
+      .catch(error => this.emit('error', new HealthCheckError(error)));
+  }
+
   /**
    * "Connect" to the extension - sends a message to the `ExtensionMessageRouter`
    * asking it to connect to the extension background.
@@ -234,8 +302,8 @@ export class ExtensionProvider implements ProviderInterface {
         this.#handleMessage(data);
       }
     });
-    this.#isConnected = true;
-    this.emit('connected');
+    this.#connectionStatePingerId = setInterval(this.#checkClientPeercount, 
+      this.healthPingerInterval);
 
     return Promise.resolve();
   }
@@ -253,6 +321,9 @@ export class ExtensionProvider implements ProviderInterface {
     };
 
     provider.send(disconnectMsg);
+    if (this.#connectionStatePingerId !== null) {
+      clearInterval(this.#connectionStatePingerId);
+    }
     this.#isConnected = false;
     this.emit('disconnected');
     return Promise.resolve();
