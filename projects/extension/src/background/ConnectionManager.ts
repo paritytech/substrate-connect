@@ -109,7 +109,9 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       throw new Error('Smoldot client does not exist.');
     }
 
-    const existingApp = this.#apps.find(s => s.name === port.name);
+    const existingApp = this.#apps.find(
+      a => a.name === port.name && a.tabId === port.sender?.tab?.id);
+
     if (existingApp) {
       port.postMessage({ type: 'error', payload: `App ${port.name} already exists.` });
       port.disconnect();
