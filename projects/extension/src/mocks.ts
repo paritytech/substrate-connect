@@ -54,11 +54,21 @@ export class MockPort implements chrome.runtime.Port {
 
 export class MockConnectionManager implements ConnectionManagerInterface {
 
-  addChain (): Promise<SmoldotChain | undefined> {
+  addChain (): Promise<SmoldotChain> {
     return Promise.resolve({
       sendJsonRpc: jest.fn(),
       remove: jest.fn()
     } as SmoldotChain);
+  }
+
+  registerApp: () => void = jest.fn();
+  unregisterApp: () => void = jest.fn();
+}
+
+export class ErroringMockConnectionManager implements ConnectionManagerInterface {
+
+  addChain (): Promise<SmoldotChain> {
+    return Promise.reject(new Error('Invalid chain spec'));
   }
 
   registerApp: () => void = jest.fn();
