@@ -9,6 +9,7 @@ import EventEmitter from 'eventemitter3';
 import { StateEmitter, State } from './types';
 import { Network } from '../types';
 import { logger } from '@polkadot/util';
+import { SmoldotAddChainOptions, SmoldotChain } from 'smoldot';
 
 const l = logger('Extension Connection Manager');
 
@@ -184,15 +185,29 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param name - Name of the chain
    * @param spec - ChainSpec of chain to be added
    */
-  async addChain (name: string, chainSpec: string, jsonRpcCallback: smoldot.SmoldotJsonRpcCallback): Promise<smoldot.SmoldotChain | undefined> {
+  async addChain (name: string, chainSpec: string, jsonRpcCallback: smoldot.SmoldotJsonRpcCallback, relayChainName?: string): Promise<smoldot.SmoldotChain | undefined> {
     try {
       if (!this.#client) {
         throw new Error('Smoldot client does not exist.');
       }
-      const addedChain = await this.#client.addChain({
-        chainSpec,
-        jsonRpcCallback
-      });
+      let relay: Network | undefined = undefined;
+      let addChainOptions = {} as SmoldotAddChainOptions;
+
+      // If this is a parachain - meaning a relayChainName is provided
+      if (relayChainName) {
+        relay = this.#networks.find(n => n.name === relayChainName)
+        addChainOptions = {
+          chainSpec,
+          jsonRpcCallback,
+          potentialRelayChains: [relay?.chain as SmoldotChain]
+        };
+      } else {
+        addChainOptions = {
+          chainSpec,
+          jsonRpcCallback
+        };
+      }
+      const addedChain = await this.#client.addChain(addChainOptions);
 
       this.#networks.push({
         name,

@@ -7,6 +7,10 @@ import westend from './specs/westend.json';
 import kusama from './specs/kusama.json';
 import polkadot from './specs/polkadot.json';
 
+interface ChainInfo {
+  name: string
+  spec: string
+}
 /**
  * Detector is an API for providing an instance of the PolkadotJS API configured
  * to use a WASM-based light client.  It takes care of detecting whether the
@@ -40,11 +44,8 @@ import polkadot from './specs/polkadot.json';
  */
 export class Detector {
   #chainSpecs: Record<string, unknown> = {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     'polkadot': polkadot,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     'kusama': kusama,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     'westend': westend
   }
   #name: string;
@@ -57,6 +58,14 @@ export class Detector {
    */
   get name(): string {
     return this.#name;
+  }
+
+  /**
+   * Returns a boolean showing if the app that was created is interacting with 
+   * an extension or not
+   */
+  public hasExtension (): boolean {
+    return this.#isExtension;
   }
 
   /**
@@ -82,10 +91,14 @@ export class Detector {
    * Alternatively you may supply a chain spec and options to connect to a
    * custom chain with a light client (in-page only).
    *
-   * @param chainName - the name of the blockchain network to connect to
-   * @param chainSpec - an optional chainSpec to connect to a different network
-   * @param options - any extra API options to passed to PolkadotJS when
-   * constructing it.
+   * @param relay - param of ChainInfo or string type. In case of ChainInfo,
+   * name (string - the name of the blockchain network to connect to) and
+   * spec(string - a chainSpec to connect to a different network)
+   * @param parachain - an optional param of ChainInfo. This para is the
+   * name (string - the name of the parachain to connect to) and
+   * spec(string - parachain spec to connect to a different network)
+   * @param options - an optional param for any extra API options to passed to
+   * PolkadotJS when constructing it.
    * @returns a promise that resolves to an instance of the PolkadotJS API
    *
    * @remarks
@@ -99,19 +112,42 @@ export class Detector {
    *
    * {@link https://polkadot.js.org/docs/}
    */
-  public connect = async (chainName: string, chainSpec?: string, options?: ApiOptions): Promise<ApiPromise> => {
-    const provider: ProviderInterface = this.provider(chainName, chainSpec);
+  public connect = async (relay: ChainInfo | string, parachain?: ChainInfo, options?: ApiOptions): Promise<ApiPromise> => {
+    const chain: ChainInfo | string = parachain || relay;
+    let relayName: string = "";
+    if (parachain) {
+      relayName = this.getChainName(relay);
+    }
+
+    const provider: ProviderInterface = typeof chain === 'string' ?
+      this.provider(chain, undefined, parachain && relayName) :
+      this.provider(chain.name, chain.spec, parachain && relayName);
+
     provider.connect().catch(console.error);
 
-    this.#providers[chainName] = provider;
+    this.#providers[this.getChainName(chain)] = provider;
     return await ApiPromise.create(Object.assign(options ?? {}, {provider}));
   }
+
+  /**
+   * 
+   * @param relay Param of ChainInfo or string. In case of ChainInfo,
+   * name (string - the name of the blockchain network to connect to) and
+   * spec(string - a chainSpec to connect to a different network)
+   * @returns a string of the name of the chain
+   * 
+   * @internal
+   */
+  private getChainName = (chain: ChainInfo | string): string =>
+    typeof chain === 'string' ? chain : chain.name;
 
   /** 
    * Detects and returns an appropriate PolkadotJS provider depending on whether the user has the substrate connect extension installed
    * 
    * @param chainName - the name of the blockchain network to connect to
    * @param chainSpec - an optional chainSpec to connect to a different network
+   * @param relayChainName - an optional param of the relay chain name that (in case of parachain)
+   * the parachain will connect to
    * @returns a provider will be used in a ApiPromise create for PolkadotJS API
    *
    * @internal
@@ -119,7 +155,7 @@ export class Detector {
    * @remarks 
    * This is used internally for advanced PolkadotJS use cases and is not supported.  Use {@link connect} instead.
    */
-  public provider = (chainName: string, chainSpec?: string): ProviderInterface => {
+  public provider = (chainName: string, chainSpec?: string, relayChainName?: string): ProviderInterface => {
     let provider: ProviderInterface = {} as ProviderInterface;
 
     if (!chainSpec && !Object.keys(this.#chainSpecs).includes(chainName)) {
@@ -127,7 +163,7 @@ export class Detector {
     }
     
     if (this.#isExtension) {
-      provider = new ExtensionProvider(this.#name, chainName, chainSpec) as ProviderInterface;
+      provider = new ExtensionProvider(this.#name, chainName, chainSpec, relayChainName) as ProviderInterface;
     } else if (!this.#isExtension) {
       const spec = JSON.stringify(this.#chainSpecs[chainName]);
       provider = new SmoldotProvider(spec);

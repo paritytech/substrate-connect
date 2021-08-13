@@ -62,12 +62,14 @@ export class ExtensionProvider implements ProviderInterface {
 
   #appName: string;
   #chainName: string;
-  #chainSpecs: string | undefined;
+  #chainSpecs: string;
+  #relayChainName: string;
 
-  public constructor(appName: string, chainName: string, chainSpecs?: string) {
+  public constructor(appName: string, chainName: string, chainSpecs?: string, relayChainName?: string) {
     this.#appName = appName;
     this.#chainName = chainName;
-    this.#chainSpecs = chainSpecs;
+    this.#chainSpecs = chainSpecs || '';
+    this.#relayChainName = relayChainName || '';
   }
 
   /**
@@ -90,6 +92,24 @@ export class ExtensionProvider implements ProviderInterface {
    */
   public get chainName(): string {
     return this.#chainName;
+  }
+
+  /**
+  * chainSpecs
+  *
+  * @returns the name of the chain this `ExtensionProvider` is talking to.
+  */
+  public get chainSpecs(): string {
+    return this.#chainSpecs;
+  }
+
+  /**
+  * chainName
+  *
+  * @returns the name of the chain this `ExtensionProvider` is talking to.
+  */
+  public get relayChainName(): string {
+    return this.#relayChainName;
   }
 
   /**
@@ -216,18 +236,19 @@ export class ExtensionProvider implements ProviderInterface {
 
     // Once connect is sent - send rpc to extension that will contain the chainSpecs
     // for the extension to call addChain on smoldot
-    const someMsg: ProviderMessageData = {
+    const specMsg: ProviderMessageData = {
       appName: this.#appName,
       chainName: this.#chainName,
       action: 'forward',
       origin: EXTENSION_PROVIDER_ORIGIN,
       message: {
         type: 'spec',
-        payload: this.#chainSpecs || ''
+        payload: this.#chainSpecs || '',
+        relayChainName: this.#relayChainName,
       }
     }
 
-    provider.send(someMsg);
+    provider.send(specMsg);
 
     provider.listen(({data}: ExtensionMessage) => {
       if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
