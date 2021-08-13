@@ -143,27 +143,18 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
 
     this.#manager.addChain(chainName, chainSpec, rpcCallback)
       .then(chain => {
-        if (chain) {
-          this.#chain = chain;
-          // process any RPC requests that came in while waiting for `addChain`
-          // to complete
-          if (this.#pendingRequests.length > 0) {
-            this.#pendingRequests.forEach(req => chain.sendJsonRpc(req));
-            this.#pendingRequests = [];
-          }
-        } else {
-          // TODO: remove this duplicate error block when `addChain` on the 
-          // ConnectionManager has been cleaned up to not catch errors adding
-          // chains
-          this.#sendError('Error adding chainspec');
-          this.#manager.unregisterApp(this);
-          this.#port.disconnect();
+        this.#chain = chain;
+        // process any RPC requests that came in while waiting for `addChain`
+        // to complete
+        if (this.#pendingRequests.length > 0) {
+          this.#pendingRequests.forEach(req => chain.sendJsonRpc(req));
+          this.#pendingRequests = [];
         }
       })
       .catch(e => {
         this.#sendError((e as Error).message);
-        this.#manager.unregisterApp(this);
         this.#port.disconnect();
+        this.#manager.unregisterApp(this);
       });
   }
 

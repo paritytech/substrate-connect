@@ -183,30 +183,24 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param name - Name of the chain
    * @param spec - ChainSpec of chain to be added
    */
-  async addChain (name: string, chainSpec: string, jsonRpcCallback: smoldot.SmoldotJsonRpcCallback): Promise<smoldot.SmoldotChain | undefined> {
-    try {
-      if (!this.#client) {
-        throw new Error('Smoldot client does not exist.');
-      }
-      const addedChain = await this.#client.addChain({
-        chainSpec,
-        jsonRpcCallback
-      });
-
-      this.#networks.push({
-        name,
-        chain: addedChain,
-        status: 'connected',
-        isKnown: true,
-        chainspecPath: `${name}.json`
-      });
-
-      return addedChain;
-    } catch (err) {
-      // TODO: we shouldnt catch the error here - we need to report it back to
-      // the app and disconnect the port if e.g. they have sent an invalid chain
-      // spec
-      l.error(`Error while trying to connect to chain ${name}: ${err}`);
+  async addChain (name: string, chainSpec: string, jsonRpcCallback: smoldot.SmoldotJsonRpcCallback): Promise<smoldot.SmoldotChain> {
+    if (!this.#client) {
+      throw new Error('Smoldot client does not exist.');
     }
+
+    const addedChain = await this.#client.addChain({
+      chainSpec,
+      jsonRpcCallback
+    });
+
+    this.#networks.push({
+      name,
+      chain: addedChain,
+      status: 'connected',
+      isKnown: true,
+      chainspecPath: `${name}.json`
+    });
+
+    return addedChain;
   }
 }
