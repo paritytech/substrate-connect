@@ -116,19 +116,16 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       return;
     } 
 
-    let notifMsg: string;
     const app = new AppMediator(port, this as ConnectionManagerInterface)
     // if associate fails by returning false it has sent an error down the
     // port and disconnected it, so we should just discard this `AppMediator`
     if (app.associate()) {
       this.registerApp(app);
       const appInfo = port.name.split('::');
-      notifMsg = `App ${appInfo[0]} connected to ${appInfo[1]}.`
-
       chrome.storage.sync.get('notifications', (s) => {
         s.notifications && chrome.notifications.create(port.name, {
           title: 'Substrate Connect',
-          message: notifMsg,
+          message: `App ${appInfo[0]} connected to ${appInfo[1]}.`,
           iconUrl: './icons/icon-32.png',
           type: 'basic'
         });
