@@ -35,10 +35,8 @@ test('constructor sets properties', () => {
   expect(ep.chainName).toBe('kusama');
 });
 
-test('connect sends connect message and emits connected', async () => {
+test('connect sends connect message', async () => {
   const ep = new ExtensionProvider('test', 'test-chain');
-  const emitted = jest.fn();
-  ep.on('connected', emitted);
   await ep.connect();
   await waitForMessageToBePosted();
 
@@ -51,8 +49,6 @@ test('connect sends connect message and emits connected', async () => {
   expect(handler).toHaveBeenCalledTimes(2);
   const { data } = handler.mock.calls[0][0] as ProviderMessage;
   expect(data).toEqual(expectedMessage);
-  expect(ep.isConnected).toBe(true);
-  expect(emitted).toHaveBeenCalledTimes(1);
 });
 
 test('disconnect sends disconnect message and emits disconnected', async () => {
