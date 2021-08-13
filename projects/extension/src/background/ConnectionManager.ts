@@ -105,33 +105,35 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * by a content script.
    */
   addApp(port: chrome.runtime.Port): void {
-    let notifMsg: string;
     if (!this.#client) {
       throw new Error('Smoldot client does not exist.');
     }
-    const app = this.#apps.find(s => s.name === port.name);
-    if (app) {
-      notifMsg = `App ${port.name} already exists.`;
+
+    const existingApp = this.#apps.find(s => s.name === port.name);
+    if (existingApp) {
       port.postMessage({ type: 'error', payload: `App ${port.name} already exists.` });
       port.disconnect();
-    } else {
-      const app = new AppMediator(port, this as ConnectionManagerInterface)
-      // if associate fails by returning false it has sent an error down the
-      // port and disconnected it, so we should just discard this `AppMediator`
-      if (app.associate()) {
-        this.registerApp(app);
-        const appInfo = port.name.split('::');
-        notifMsg = `App ${appInfo[0]} connected to ${appInfo[1]}.`
-      }
-    }
-    chrome.storage.sync.get('notifications', (s) => {
-      s.notifications && chrome.notifications.create(port.name, {
-        title: 'Substrate Connect',
-        message: notifMsg,
-        iconUrl: './icons/icon-32.png',
-        type: 'basic'
+      return;
+    } 
+
+    let notifMsg: string;
+    const app = new AppMediator(port, this as ConnectionManagerInterface)
+    // if associate fails by returning false it has sent an error down the
+    // port and disconnected it, so we should just discard this `AppMediator`
+    if (app.associate()) {
+      this.registerApp(app);
+      const appInfo = port.name.split('::');
+      notifMsg = `App ${appInfo[0]} connected to ${appInfo[1]}.`
+
+      chrome.storage.sync.get('notifications', (s) => {
+        s.notifications && chrome.notifications.create(port.name, {
+          title: 'Substrate Connect',
+          message: notifMsg,
+          iconUrl: './icons/icon-32.png',
+          type: 'basic'
+        });
       });
-    });
+    }
   }
 
   /**
