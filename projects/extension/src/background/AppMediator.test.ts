@@ -3,7 +3,11 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { AppMediator } from './AppMediator';
 import { SmoldotChain } from 'smoldot';
-import { MockPort, MockConnectionManager } from '../mocks';
+import { 
+  MockPort, 
+  MockConnectionManager,
+  ErroringMockConnectionManager
+} from '../mocks';
 
 let port: MockPort;
 let manager: MockConnectionManager;
@@ -22,12 +26,26 @@ beforeEach(() => {
   appMed.associate();
 });
 
-test('Initialization and getters', () => {
+test('Construction parses the port name and gets port information', () => {
   expect(appMed.name).toBe('test-app::westend');
   expect(appMed.appName).toBe('test-app');
   expect(appMed.url).toBe(port.sender.url);
   expect(appMed.tabId).toBe(port.sender.tab.id);
   expect(appMed.state).toEqual('connected');
+});
+
+test('Invalid port name sends an error and disconnects', () => {
+  port = new MockPort('invalid');
+  manager = new MockConnectionManager();
+  appMed = new AppMediator(port, manager);
+
+  expect(appMed.associate()).toBe(false);
+  const errorMsg = { 
+    type: 'error', 
+    payload: 'Invalid port name invalid expected <app_name>::<chain_name>'
+  };
+  expect(port.postMessage).toHaveBeenCalledWith(errorMsg);
+  expect(port.disconnect).toHaveBeenCalled();
 });
 
 // TODO: This is not right we should have a new 'connecting' state until we get
@@ -80,4 +98,19 @@ test('RPC port message sends the message to the chain', async () => {
 
   const chain = appMed.chain as SmoldotChain;
   expect(chain.sendJsonRpc).toHaveBeenCalledWith(message);
+});
+
+test('Failing to add a chain sends an error and disconnects', async () => {
+  port = new MockPort('test-app::westend');
+  manager = new ErroringMockConnectionManager();
+  appMed = new AppMediator(port, manager);
+  appMed.associate();
+
+  port.triggerMessage({ type: 'spec', payload: 'westend'});
+  await waitForMessageToBePosted();
+
+  const errorMsg = { type: 'error', payload: 'Invalid chain spec' };
+  expect(port.postMessage).toHaveBeenCalledWith(errorMsg);
+  expect(port.disconnect).toHaveBeenCalled();
+  expect(manager.unregisterApp).toHaveBeenCalled();
 });
