@@ -141,7 +141,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
       this.#port.postMessage({ type: 'rpc', payload: rpc })
     }
 
-    this.#manager.addChain(chainName, chainSpec, rpcCallback)
+    this.#manager.addChain(chainName, chainSpec, rpcCallback, msg.relayChainName)
       .then(chain => {
         this.#chain = chain;
         // process any RPC requests that came in while waiting for `addChain`

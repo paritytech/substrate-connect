@@ -3,23 +3,22 @@
  */
 import { Detector } from './Detector';
 import { ApiOptions } from '@polkadot/api/types';
+import westmint from './specs/westend-westmint.json';
 import westend2 from './specs/westend.json';
 
 describe('Initialize Detector without extension', () => {
-  let detect: Detector;
-
   const timeout = 15000;
   const extTimeout = 35000;
 
   test('Should connect with known chain "westend".', async () => {
-    detect = new Detector('test-uapp');
+    const detect = new Detector('test-uapp');
     const api = await detect.connect('westend');
     expect(api).toBeTruthy();
     detect.disconnect('westend');
   }, timeout);
 
   test('Should connect with known chain "polkadot".', async () => {
-    detect = new Detector('test-uapp');
+    const detect = new Detector('test-uapp');
     const api = await detect.connect('polkadot');
     expect(api).toBeTruthy();
     detect.disconnect('polkadot');
@@ -27,7 +26,7 @@ describe('Initialize Detector without extension', () => {
 
   test('Should connect with known chain westend, no chainSpecs and options', async () => {
     const chainName = 'westend';
-    detect = new Detector('test-uapp');
+    const detect = new Detector('test-uapp');
     const options = {} as ApiOptions;
     const api = await detect.connect(chainName, undefined, options);
     expect(api).toBeTruthy();
@@ -35,7 +34,7 @@ describe('Initialize Detector without extension', () => {
   }, extTimeout);
 
   test('Should connect with known chain "kusama".', async () => {
-    detect = new Detector('test-uapp');
+    const detect = new Detector('test-uapp');
     const api = await detect.connect('kusama');
     expect(api).toBeTruthy();
     detect.disconnect('kusama');
@@ -45,7 +44,7 @@ describe('Initialize Detector without extension', () => {
     const chainSpec = JSON.stringify(westend2);
     const chainName = 'westend2';
     const detect = new Detector('test-uapp');
-    const api = await detect.connect(chainName, chainSpec);
+    const api = await detect.connect({ name: chainName, spec: chainSpec });
     expect(api).toBeTruthy();
     detect.disconnect(chainName);
   }, extTimeout);
@@ -56,5 +55,13 @@ describe('Initialize Detector without extension', () => {
     void expect(detect.connect(chainName))
     .rejects
     .toThrow(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('polkadot', 'kusama', 'westend') or provide valid chainSpecs.`);
+  }, timeout);
+
+  test('Should connect with known chain "westend" and parachain "westmint".', async () => {
+    const detect = new Detector('test-uapp');
+    const api = await detect.connect('westend', { name: 'westmint', spec: JSON.stringify(westmint) });
+    expect(api).toBeTruthy();
+    console.log('api', api);
+    detect.disconnect('westmint');
   }, timeout);
 });

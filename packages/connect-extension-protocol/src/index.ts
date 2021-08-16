@@ -109,6 +109,8 @@ export interface MessageToManager {
   payload: string;
   /** whether an RPC message is a subscription or not **/
   subscription?: boolean;
+  /** The name of the relay chain - if provided then the chain is a parachain  **/
+  relayChainName?: string;
 }
 
 /**
