@@ -9,7 +9,7 @@ import {
 } from '@polkadot/rpc-provider/types';
 import { logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
-import { isUndefined } from '../utils/index.js';
+import { isUndefined, eraseRecord } from '../utils/index.js';
 import { HealthCheckError } from '../errors.js';
 import {
   MessageFromManager,
@@ -46,6 +46,7 @@ interface HealthResponse {
   peers: number;
   shouldHavePeers: boolean;
 }
+
 
 const ANGLICISMS: { [index: string]: string } = {
   chain_finalisedHead: 'chain_finalizedHead',
@@ -155,6 +156,10 @@ export class ExtensionProvider implements ProviderInterface {
     if (data.disconnect && data.disconnect === true) {
       this.#isConnected = false;
       this.emit('disconnected');
+      const error = new Error('Disconnected from the extension');
+      // reject all hanging requests
+      eraseRecord(this.#handlers, (h) => h.callback(error, undefined));
+      eraseRecord(this.#waitingForId);
       return;
     }
 
