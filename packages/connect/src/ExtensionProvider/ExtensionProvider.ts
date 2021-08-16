@@ -47,6 +47,17 @@ interface HealthResponse {
   shouldHavePeers: boolean;
 }
 
+function eraseRecord<T> (record: Record<string, T>, cb?: (item: T) => void): void {
+  Object.keys(record).forEach((key): void => {
+    if (cb) {
+      cb(record[key]);
+    }
+
+    delete record[key];
+  });
+}
+
+
 const ANGLICISMS: { [index: string]: string } = {
   chain_finalisedHead: 'chain_finalizedHead',
   chain_subscribeFinalisedHeads: 'chain_subscribeFinalizedHeads',
@@ -135,6 +146,10 @@ export class ExtensionProvider implements ProviderInterface {
     if (data.disconnect && data.disconnect === true) {
       this.#isConnected = false;
       this.emit('disconnected');
+      const error = new Error('Disconnected from the extension');
+      // reject all hanging requests
+      eraseRecord(this.#handlers, (h) => h.callback(error, undefined));
+      eraseRecord(this.#waitingForId);
       return;
     }
 
