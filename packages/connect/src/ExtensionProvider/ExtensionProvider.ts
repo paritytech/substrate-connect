@@ -9,7 +9,7 @@ import {
 } from '@polkadot/rpc-provider/types';
 import { logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
-import { isUndefined } from '../utils/index.js';
+import { isUndefined, eraseRecord } from '../utils/index.js';
 import { HealthCheckError } from '../errors.js';
 import {
   MessageFromManager,
@@ -45,16 +45,6 @@ interface HealthResponse {
   isSyncing: boolean;
   peers: number;
   shouldHavePeers: boolean;
-}
-
-function eraseRecord<T> (record: Record<string, T>, cb?: (item: T) => void): void {
-  Object.keys(record).forEach((key): void => {
-    if (cb) {
-      cb(record[key]);
-    }
-
-    delete record[key];
-  });
 }
 
 
