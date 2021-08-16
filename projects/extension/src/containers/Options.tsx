@@ -5,7 +5,7 @@ import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import { light, Logo, ClientItem } from '../components/';
+import { light, Logo, NetworkTab } from '../components/';
 import GlobalFonts from '../fonts/fonts';
 import { Background } from '../background/';
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -86,7 +86,13 @@ const Options: React.FunctionComponent = () => {
 
     chrome.runtime.getBackgroundPage(backgroundPage => {
       const bg = backgroundPage as Background;
-      setNetworks(bg.manager.networks);
+      const nets: Network[] = [];
+      // TODO (nik): Temporary solution on react until https://github.com/paritytech/substrate-connect/issues/451 is implemented
+      bg.manager.networks.forEach(network => {
+        const check = nets.find(n => n.name === network.name)
+        if (!check) nets.push(network)
+      })
+      setNetworks(nets);
     });
   }, []);
 
@@ -125,13 +131,7 @@ const Options: React.FunctionComponent = () => {
           <ClientSearch />
         */}
         {networks && networks.map((network: Network, i:number) => 
-          <div key={i}>
-            <ClientItem {...network} />
-            {/*  DEACTIVATE FOR NOW - will be needed once parachains will be integrated
-            network.parachains && network.parachains.map((parachain: Parachain, p:number) => 
-              <ClientItem key={p} {...parachain}/>
-            ) */}
-          </div>
+          <NetworkTab key={i} name={network.name} />
         )}
       </TabPanel>
       <TabPanel value={value} index={1}>
