@@ -61,8 +61,9 @@ export class Detector {
   }
 
   /**
-   * Returns a boolean showing if the app that was created is interacting with 
-   * an extension or not
+   * Returns `true` if the user has the extension installed otherwise false
+   * @remarks
+   * You should check this if you wish to show UI to encourage users to download and install the extension or if you wish your app only to work with the extension installed.
    */
   public hasExtension (): boolean {
     return this.#isExtension;
@@ -91,10 +92,10 @@ export class Detector {
    * Alternatively you may supply a chain spec and options to connect to a
    * custom chain with a light client (in-page only).
    *
-   * @param relay - param of ChainInfo or string type. In case of ChainInfo,
+   * @param relay - param of {@link ChainInfo} or string type. In case of {@link ChainInfo},
    * name (string - the name of the blockchain network to connect to) and
    * spec(string - a chainSpec to connect to a different network)
-   * @param parachain - an optional param of ChainInfo. This para is the
+   * @param parachain - an optional param of {@link ChainInfo}. This para is the
    * name (string - the name of the parachain to connect to) and
    * spec(string - parachain spec to connect to a different network)
    * @param options - an optional param for any extra API options to passed to
