@@ -198,14 +198,15 @@ describe('Unit tests', () => {
     expect(manager.networks).toHaveLength(2);
   });
 
-  test('Add an app that already exists', () => {
+  test('Adding an app that already exists sends an error and disconnects', () => {
     const port = connectApp(manager, 13, 'test-app-3', 'westend');
     expect(port.postMessage).toHaveBeenCalledTimes(1);
     expect(port.postMessage).toHaveBeenLastCalledWith({ type: 'error', payload: 'App test-app-3::westend already exists.' })
+    expect(port.disconnect).toHaveBeenCalled();
   });
 });
 
-describe('Test functions when smoldot client is terminated', () => {
+describe('When the manager is shutdown', () => {
   const manager = new ConnectionManager();
 
   beforeEach(async () => {
@@ -213,7 +214,7 @@ describe('Test functions when smoldot client is terminated', () => {
     await manager.initSmoldot();
   });
 
-  test('Test manager.addApp error', () => {
+  test('adding an app after the manager is shutdown throws an error', () => {
     const port = new MockPort('test-app-5::westend');
     port.setTabId(15);
     expect(() => {

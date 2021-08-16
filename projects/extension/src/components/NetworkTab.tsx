@@ -142,7 +142,7 @@ const NetworkContent = ({
   );
 }
 
-const NetworkTab = ({ name, status, isKnown, chainspecPath }: Network) => {
+const NetworkTab: FunctionComponent<Network> = ({ name, status, isKnown, chainspecPath }: Network) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState<boolean>(false);
   const [genesisHash, ] = useState<string>('');
