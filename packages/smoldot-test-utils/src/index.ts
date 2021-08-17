@@ -1,4 +1,4 @@
-import { Smoldot, SmoldotAddChainOptions, SmoldotChain, SmoldotClient, SmoldotJsonRpcCallback } from 'smoldot';
+import { HealthChecker, Smoldot, SmoldotAddChainOptions, SmoldotChain, SmoldotClient, SmoldotJsonRpcCallback } from '@substrate/smoldot-light';
 import { JsonRpcObject } from '@polkadot/rpc-provider/types';
 import { jest } from '@jest/globals'
 import asap from 'asap';
@@ -211,6 +211,15 @@ export const mockSmoldot = (responder: RpcResponder, healthResponder = healthyRe
           jsonRpcCallback: createRequestProcessor(options, responder, healthResponder)
         })
       });
+    },
+    healthChecker: (): HealthChecker => {
+      return ({
+        setSendJsonRpc: doNothing,
+        sendJsonRpc: doNothing,
+        start: doNothing,
+        stop: doNothing,
+        responsePassThrough: (_resp: string) => ''
+      })
     }
   };
 };
@@ -250,6 +259,15 @@ export const smoldotSpy = (responder: RpcResponder, rpcSpy: jest.MockedFunction<
           })
         }
       });
+    },
+    healthChecker: (): HealthChecker => {
+      return ({
+        setSendJsonRpc: doNothing,
+        sendJsonRpc: doNothing,
+        start: doNothing,
+        stop: doNothing,
+        responsePassThrough: (_resp: string) => ''
+      })
     }
   };
 };

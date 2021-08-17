@@ -72,10 +72,10 @@
     "@material-ui/styles": "^4.11.3",
     "@polkadot/rpc-provider": "^4.10.1",
     "@substrate/connect-extension-protocol": "^0.3.0",
+    "@substrate/smoldot-light": "^0.4.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hot-loader": "^4.13.0",
-    "smoldot": "0.3.4",
     "strict-event-emitter-types": "^2.0.0",
     "styled-components": "^5.2.1"
   }

@@ -8,7 +8,7 @@ import {
   ConnectionManagerInterface,
   StateEmitter,
 } from './types';
-import { SmoldotChain } from 'smoldot';
+import { SmoldotChain } from '@substrate/smoldot-light';
 import westend from '../../public/assets/westend.json';
 import kusama from '../../public/assets/kusama.json';
 import polkadot from '../../public/assets/polkadot.json';

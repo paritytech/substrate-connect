@@ -2,14 +2,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as smoldot from 'smoldot';
+import * as smoldot from '@substrate/smoldot-light';
+import { SmoldotAddChainOptions, SmoldotChain } from '@substrate/smoldot-light';
 import { AppMediator } from './AppMediator';
 import { ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
 import { StateEmitter, State } from './types';
 import { Network } from '../types';
 import { logger } from '@polkadot/util';
-import { SmoldotAddChainOptions, SmoldotChain } from 'smoldot';
 
 const l = logger('Extension Connection Manager');
 

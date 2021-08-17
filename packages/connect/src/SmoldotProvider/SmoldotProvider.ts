@@ -8,7 +8,7 @@ import {
 } from '@polkadot/rpc-provider/types';
 import { assert, logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
-import * as smoldot from 'smoldot';
+import * as smoldot from '@substrate/smoldot-light';
 import { HealthCheckError } from '../errors.js';
 import { isUndefined } from '../utils/index.js';
 

@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { SmoldotProvider } from './SmoldotProvider';
-import { SmoldotClient } from 'smoldot';
+import { SmoldotClient } from '@substrate/smoldot-light';
 import {
   erroringResponder,
   customHealthResponder,

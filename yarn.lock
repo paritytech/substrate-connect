@@ -2739,6 +2739,16 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@substrate/smoldot-light@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.4.0.tgz#875d9dbfb0d63be1205b8666c8a07c7c9ed1e800"
+  integrity sha512-i2UZPqkDTaXBO0Org3+gMO2uOsoaato89HwbShmXDvVxsTwCzCOpL1EPCsx8tVZ+X4m73oJEfsMbCY+K3wceDA==
+  dependencies:
+    buffer "^6.0.1"
+    performance-now "^2.1.0"
+    randombytes "^2.1.0"
+    websocket "^1.0.32"
+
 "@swc/helpers@^0.2.11":
   version "0.2.13"
   resolved "https://registry.yarnpkg.com/@swc/helpers/-/helpers-0.2.13.tgz#95d69aaed0998040d455832efbe1342ed79d0809"
@@ -13144,16 +13154,6 @@ slice-ansi@^4.0.0:
     ansi-styles "^4.0.0"
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
-
-smoldot@0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.3.4.tgz#2bb20bf85cd1261a18fe6f2171ffa3fa339e55e2"
-  integrity sha512-VoWb3E8mCtMPglAB6IguzimPj60s1l53CFEIDfO2J3bmClDozRINaeuwrFTUZv4YFqgCO/37GCHfZezZdb0bbw==
-  dependencies:
-    buffer "^6.0.1"
-    performance-now "^2.1.0"
-    randombytes "^2.1.0"
-    websocket "^1.0.32"
 
 snapdragon-node@^2.0.1:
   version "2.1.1"

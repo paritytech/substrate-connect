@@ -1,4 +1,4 @@
-import * as smoldot from 'smoldot';
+import * as smoldot from '@substrate/smoldot-light';
 import { AppMediator } from './AppMediator';
 import EventEmitter from 'eventemitter3';
 import StrictEventEmitter from 'strict-event-emitter-types';
