@@ -2739,10 +2739,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@substrate/smoldot-light@^0.3.10":
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.3.10.tgz#e046c0fb9807b9a6e15d75e6005a20a78560374b"
-  integrity sha512-nzeT8UhazQSXZN+JL0IuMlVi1HoR38k7z9i9FFsnHGewo52k/CuYLe5+18S93bmRNW5+1sfXiJwR7u3puB2XmQ==
+"@substrate/smoldot-light@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.4.0.tgz#875d9dbfb0d63be1205b8666c8a07c7c9ed1e800"
+  integrity sha512-i2UZPqkDTaXBO0Org3+gMO2uOsoaato89HwbShmXDvVxsTwCzCOpL1EPCsx8tVZ+X4m73oJEfsMbCY+K3wceDA==
   dependencies:
     buffer "^6.0.1"
     performance-now "^2.1.0"
@@ -13155,16 +13155,6 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-smoldot@0.3.6:
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/smoldot/-/smoldot-0.3.6.tgz#08031fa2523e99c767e967e43de6193f7a06b1c0"
-  integrity sha512-+bjlWPfZBGFpR9FSjtNS61FUeWSBvpJoZDotjEa9c2+QfRzTFmjPvxaZ9/3P1QvVp8uT4QshKoPd7Slhlq6G3g==
-  dependencies:
-    buffer "^6.0.1"
-    performance-now "^2.1.0"
-    randombytes "^2.1.0"
-    websocket "^1.0.32"
-
 snapdragon-node@^2.0.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/snapdragon-node/-/snapdragon-node-2.1.1.tgz#6c175f86ff14bdb0724563e8f3c1b021a286853b"
@@ -13654,7 +13644,7 @@ style-loader@^2.0.0:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
 
-styled-components@^5, styled-components@^5.2.1:
+styled-components@^5.2.1:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-5.3.0.tgz#e47c3d3e9ddfff539f118a3dd0fd4f8f4fb25727"
   integrity sha512-bPJKwZCHjJPf/hwTJl6TbkSZg/3evha+XPEizrZUGb535jLImwDUdjTNxXqjjaASt2M4qO4AVfoHJNe3XB/tpQ==

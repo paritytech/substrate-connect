@@ -35,7 +35,7 @@
     "@polkadot/api": "^5.4.1",
     "@polkadot/rpc-provider": "^5.4.1",
     "@substrate/connect-extension-protocol": "^0.3.0",
-    "@substrate/smoldot-light": "^0.3.10",
+    "@substrate/smoldot-light": "^0.4.0",
     "browserify-fs": "^1.0.0",
     "eventemitter3": "^4.0.7",
     "file-entry-cache": "^6.0.1",

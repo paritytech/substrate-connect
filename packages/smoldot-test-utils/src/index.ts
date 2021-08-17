@@ -214,6 +214,8 @@ export const mockSmoldot = (responder: RpcResponder, healthResponder = healthyRe
     },
     healthChecker: (): HealthChecker => {
       return ({
+        setSendJsonRpc: doNothing,
+        sendJsonRpc: doNothing,
         start: doNothing,
         stop: doNothing,
         responsePassThrough: (_resp: string) => ''
@@ -260,6 +262,8 @@ export const smoldotSpy = (responder: RpcResponder, rpcSpy: jest.MockedFunction<
     },
     healthChecker: (): HealthChecker => {
       return ({
+        setSendJsonRpc: doNothing,
+        sendJsonRpc: doNothing,
         start: doNothing,
         stop: doNothing,
         responsePassThrough: (_resp: string) => ''
