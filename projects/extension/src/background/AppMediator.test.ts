@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { AppMediator } from './AppMediator';
-import { SmoldotChain } from 'smoldot';
+import { SmoldotChain } from '@substrate/smoldot-light';
 import { 
   MockPort, 
   MockConnectionManager,

@@ -1,4 +1,4 @@
-import * as smoldot from 'smoldot';
+import * as smoldot from '@substrate/smoldot-light';
 
 export type NetworkTypes = 'kusama' | 'polkadot' | 'westend' | 'kulupu'
 
