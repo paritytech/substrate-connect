@@ -72,7 +72,7 @@ yarn dev:smoldot-browser-demo
 Running the following command will build all necessary dependencies and run the Smoldot Extension in development mode with hot reloading enabled. Once run a new (Chrome) browser will appear with the extension added.
 
 ```bash
-yarn dev:smoldot-extension
+yarn dev:extension
 ```
 
 (Make sure to run `$ yarn install` before.)
@@ -108,6 +108,16 @@ You can then deploy to IPFS like so:
 ```bash
 yarn deploy:ipfs:smoldot-browser-demo
 ```
+
+## Run the Multi Network browser demo
+The Multiple Network functionality enables connecting to multiple networks from a single web-page.
+Running the following command will build all necessary dependencies and run the Multiple Network browser demo. It will be served on https://localhost:1234/
+
+```bash
+yarn dev:multiple-network-demo 
+```
+
+(Make sure to run `$ yarn install` before.)
 
 ## Working with this repository
 
