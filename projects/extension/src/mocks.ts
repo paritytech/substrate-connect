@@ -8,6 +8,7 @@ import {
   MessageToManager, 
   MessageFromManager 
 } from '@substrate/connect-extension-protocol';
+import { SmoldotChain } from '@substrate/smoldot-light';
 
 export class MockPort implements chrome.runtime.Port {
   sender: any;
@@ -52,29 +53,24 @@ export class MockPort implements chrome.runtime.Port {
 }
 
 export class MockConnectionManager implements ConnectionManagerInterface {
-  readonly #willFindClient: boolean;
-  lastId = 0;
 
-
-  constructor(willFindClient: boolean) {
-    this.#willFindClient = willFindClient;
+  addChain (): Promise<SmoldotChain> {
+    return Promise.resolve({
+      sendJsonRpc: jest.fn(),
+      remove: jest.fn()
+    } as SmoldotChain);
   }
 
-  registerApp(): void {
-    return;
-  }
-
-  unregisterApp(): void {
-    return;
-  }
-
-  hasClientFor = (): boolean => {
-    return this.#willFindClient;
-  };
-
-  sendRpcMessageTo = (): number => {
-    return ++this.lastId;
-  };
+  registerApp: () => void = jest.fn();
+  unregisterApp: () => void = jest.fn();
 }
 
+export class ErroringMockConnectionManager implements ConnectionManagerInterface {
 
+  addChain (): Promise<SmoldotChain> {
+    return Promise.reject(new Error('Invalid chain spec'));
+  }
+
+  registerApp: () => void = jest.fn();
+  unregisterApp: () => void = jest.fn();
+}

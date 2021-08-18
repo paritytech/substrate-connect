@@ -3,23 +3,26 @@ import { ConnectionManager } from './ConnectionManager';
 import westend from '../../public/assets/westend.json';
 import kusama from '../../public/assets/kusama.json';
 import { MockPort } from '../mocks';
-import { JsonRpcRequest } from './types';
-import { AppMediator } from './AppMediator';
+import { chrome } from 'jest-chrome';
 
-const  connectApp = (manager: ConnectionManager, tabId: number, name: string, network: string): MockPort => {
+const connectApp = (manager: ConnectionManager, tabId: number, name: string, network: string): MockPort => {
   const port = new MockPort(`${name}::${network}`);
   port.setTabId(tabId);
   manager.addApp(port);
   return port;
-}
+};
+
+const doNothing = () => {
+  // Do nothing
+};
 
 test('adding and removing apps changes state', async () => {
-  //setup conenection manager with 2 chains
+  //setup connection manager with 2 chains
   const manager = new ConnectionManager();
   manager.smoldotLogLevel = 1;
   await manager.initSmoldot();
-  await manager.addChain('westend', JSON.stringify(westend));
-  await manager.addChain('kusama', JSON.stringify(kusama));
+  await manager.addChain('westend', JSON.stringify(westend), doNothing);
+  await manager.addChain('kusama', JSON.stringify(kusama), doNothing);
 
   const handler = jest.fn();
   manager.on('stateChanged', handler);
@@ -84,7 +87,6 @@ test('adding and removing apps changes state', async () => {
     ]
   });
 
-
   handler.mockClear();
   manager.disconnectTab(42);
   expect(handler).toHaveBeenCalledTimes(2);
@@ -141,8 +143,8 @@ describe('Unit tests', () => {
     manager.smoldotLogLevel = 1;
     //setup connection manager with 2 networks
     await manager.initSmoldot();
-    await manager.addChain('westend', JSON.stringify(westend));
-    await manager.addChain('kusama', JSON.stringify(kusama));
+    await manager.addChain('westend', JSON.stringify(westend), doNothing);
+    await manager.addChain('kusama', JSON.stringify(kusama), doNothing);
     manager.on('stateChanged', handler);
 
     //add 4 apps in clients
@@ -176,43 +178,35 @@ describe('Unit tests', () => {
     expect(manager.apps).toHaveLength(4);
   });
 
-  test('Get networks', () => {
-    expect(manager.networks).toEqual([
+  test('Get networks/chains', () => {
+    // With this look the "chain" is removed intentionally as "chain"
+    // object cannot be compared with jest 
+    const tmpChains = manager.networks.map(n => (
+      {
+        name: n.name,
+        status: n.status,
+        chainspecPath: n.chainspecPath,
+        isKnown: n.isKnown
+      })
+    )
+
+    expect(tmpChains).toEqual([
       { name: 'westend', status: "connected", chainspecPath: "westend.json", isKnown: true },
       { name: 'kusama', status: "connected", chainspecPath: "kusama.json", isKnown: true }
     ]);
+
+    expect(manager.networks).toHaveLength(2);
   });
 
-  test('Get chains', () => {
-    const tmpChains: unknown[] = [];
-    manager.chains.forEach(ch => {
-      tmpChains.push({
-        idx: ch.idx,
-        name: ch.name
-      })
-    })
-    expect(tmpChains).toEqual([{ idx: 1, name: 'westend' },{ idx: 2, name: 'kusama' }]);
-    expect(manager.chains).toHaveLength(2);
-  });
-
-  test('Add an app that already exists', () => {
+  test('Adding an app that already exists sends an error and disconnects', () => {
     const port = connectApp(manager, 13, 'test-app-3', 'westend');
     expect(port.postMessage).toHaveBeenCalledTimes(1);
-    expect(port.postMessage).toHaveBeenLastCalledWith({ type: 'info', payload: 'App test-app-3::westend already exists.' })
-  });
-
-  test('Test sendRpcMessage', () => {
-    const rpcRequest: JsonRpcRequest = { id: 13, jsonrpc: '2.0', method: 'something', params: [] };
-    // Westend's #id is 0 at this point - response should be 1
-    const responseId = manager.sendRpcMessageTo('westend', rpcRequest)
-    expect(responseId).toBe(1);
-    expect(() => {
-      manager.sendRpcMessageTo('someSmoldot', rpcRequest);
-    }).toThrowError('Chain someSmoldot does not exist.');
+    expect(port.postMessage).toHaveBeenLastCalledWith({ type: 'error', payload: 'App test-app-3::westend already exists.' })
+    expect(port.disconnect).toHaveBeenCalled();
   });
 });
 
-describe('Test functions when smoldot client is terminated', () => {
+describe('When the manager is shutdown', () => {
   const manager = new ConnectionManager();
 
   beforeEach(async () => {
@@ -220,7 +214,7 @@ describe('Test functions when smoldot client is terminated', () => {
     await manager.initSmoldot();
   });
 
-  test('Test manager.addApp error', () => {
+  test('adding an app after the manager is shutdown throws an error', () => {
     const port = new MockPort('test-app-5::westend');
     port.setTabId(15);
     expect(() => {
@@ -228,22 +222,44 @@ describe('Test functions when smoldot client is terminated', () => {
       manager.addApp(port);
     }).toThrowError('Smoldot client does not exist.');
   });
+});
 
-  test('Test registerApp error', () => {
-    const port = connectApp(manager, 15, 'test-app-5', 'westend');
-    const appMed = new AppMediator(port, manager);
-    expect(() => {
-      manager.shutdown();
-      manager.registerApp(appMed);
-    }).toThrowError('Tried to register an app to smoldot client that does not exist.');
+describe('Check storage and send notification when adding an app', () => {
+  const manager = new ConnectionManager();
+
+  chrome.storage.sync.get.mockImplementation((keys, callback) => {
+    callback({ notifications: true }) 
   });
 
-  test('Test unregisterApp error', () => {
-    const port = connectApp(manager, 15, 'test-app-5', 'westend');
-    const appMed = new AppMediator(port, manager);
-    expect(() => {
-      manager.shutdown();
-      manager.unregisterApp(appMed);
-    }).toThrowError('Tried to unregister an app to smoldot client that does not exist.');
+  beforeEach(async () => {
+    chrome.storage.sync.get.mockClear();
+    chrome.notifications.create.mockClear();
+    manager.smoldotLogLevel = 1;
+    await manager.initSmoldot();
+  });
+
+  afterEach( () => {
+    manager.shutdown();
+  })
+
+  test('Checks storage for notifications preferences', () => {
+    const port = new MockPort('test-app-6::westend');
+    manager.addApp(port);
+    expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1);
+  });
+
+  test('Sends a notification', () => {
+    const port = new MockPort('test-app-7::westend');
+    manager.addApp(port);
+
+    const notificationData = {
+      message: "App test-app-7 connected to westend.",
+      title: "Substrate Connect",
+      iconUrl: "./icons/icon-32.png",
+      type: "basic"
+    }
+
+    expect(chrome.notifications.create).toHaveBeenCalledTimes(1);
+    expect(chrome.notifications.create).toHaveBeenCalledWith('test-app-7::westend', notificationData);
   });
 });

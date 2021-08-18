@@ -1,9 +1,8 @@
-/* TODO(nik): Fix smoldot definition (see: https://github.com/paritytech/substrate-connect/blob/3350cdff9c4c294393160189816168a93c983f79/projects/extension/src/background/ConnectionManager.ts#L202)
-** eslints disable below seems to be due to smoldot definition */
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import * as material from '@material-ui/core';
 import GlobalFonts from '../fonts/fonts';
-import { light, MenuButton, Tab } from '../components';
+import { light, MenuButton, Tab, Logo } from '../components';
+import CallMadeIcon from '@material-ui/icons/CallMade';
 import { Background } from '../background/';
 import { debug } from '../utils/debug';
 import { TabInterface } from '../types';
@@ -83,34 +82,37 @@ const Popup: FunctionComponent = () => {
     });
 }, [appsInitState, browserTabs, manager]);
 
-  /**
-   * If "Stop all connections" button is pressed then disconnectAll 
-   * function will be called to disconnect all apps.
-  **/ 
-  const onDisconnectAll = (): void => {
-    /* TODO(nik): Fix smoldot definition (see: https://github.com/paritytech/substrate-connect/blob/3350cdff9c4c294393160189816168a93c983f79/projects/extension/src/background/ConnectionManager.ts#L202)
-    ** eslint disable below seems to be due to smoldot definition */ 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    manager?.disconnectAll();
-  }
-
   const goToOptions = (): void => {
     chrome.runtime.openOptionsPage();
   }
 
   return (
     <ThemeProvider theme={appliedTheme}>
-      <Box width={'340px'} mb={0.1}>
+      <Box width={'320px'} mb={0.1} pl={1.6} pr={0.8}>
         <GlobalFonts />
-        {activeTab ? <Tab manager={manager} current tab={activeTab} setActiveTab={setActiveTab} /> : <Tab manager={manager} current />}
+        <Box pt={2} pb={1} pr={1} pl={0.8} style={{ height: '10px' }}>
+          <Box display='flex' alignItems='center' justifyContent='space-between'>
+            <Logo />
+          </Box>
+        </Box>
+        {activeTab && <Tab manager={manager} current tab={activeTab} setActiveTab={setActiveTab} />}
         <Box marginY={1}>
           {apps.map(t => <Tab manager={manager} key={t.tabId} tab={t}/>)}
         </Box>
         <Divider />
-        <MenuButton fullWidth onClick={goToOptions}>My Networks</MenuButton>
-        <MenuButton fullWidth>About</MenuButton>
+        <MenuButton fullWidth onClick={goToOptions}>Options</MenuButton>
         <Divider />
-        <MenuButton fullWidth className='danger' onClick={onDisconnectAll}>Stop all connections</MenuButton>
+        <MenuButton
+          fullWidth
+          endIcon={<CallMadeIcon />}
+          onClick={() =>  chrome.tabs.update({ url: "https://paritytech.github.io/substrate-connect/#extension" }) }
+          >About</MenuButton>
+        {/* 
+        /**
+         * If "Stop all connections" button is pressed then disconnectAll 
+         * function will be called to disconnect all apps.
+          <MenuButton fullWidth className='danger' onClick={(): void => { manager?.disconnectAll(); }}>Stop all connections</MenuButton>
+        */}
       </Box>
     </ThemeProvider>
   );

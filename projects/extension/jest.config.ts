@@ -1,5 +1,5 @@
 export default {
-  coverageReporters: ["text-summary"],
+  coverageReporters: ["text-summary","lcov"],
   roots: ['<rootDir>/src'],
   reporters: ["jest-silent-reporter"],
   testEnvironment: 'jsdom',

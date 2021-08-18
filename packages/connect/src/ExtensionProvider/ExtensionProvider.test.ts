@@ -35,10 +35,62 @@ test('constructor sets properties', () => {
   expect(ep.chainName).toBe('kusama');
 });
 
-test('connect sends connect message and emits connected', async () => {
-  const ep = new ExtensionProvider('test', 'test-chain');
+test('connected and sends correct spec message', async () => {
+  const ep = new ExtensionProvider('test', 'westend');
   const emitted = jest.fn();
   ep.on('connected', emitted);
+  await ep.connect();
+  await waitForMessageToBePosted();
+
+  const expectedMessage: ProviderMessageData = {
+    appName: 'test',
+    chainName: 'westend',
+    action: 'forward',
+    origin: 'extension-provider',
+    message: {
+      payload: "",
+      relayChainName: "",
+      type: "spec"
+    }  
+  };
+  expect(handler).toHaveBeenCalledTimes(2);
+  const { data } = handler.mock.calls[1][0] as ProviderMessage;
+  expect(data).toEqual(expectedMessage);
+});
+
+test('constructor sets properties for parachain', () => {
+  const ep = new ExtensionProvider('test', 'westmint', 'westmint-specs', 'westend');
+  expect(ep.name).toBe('test');
+  expect(ep.chainName).toBe('westmint');
+  expect(ep.chainSpecs).toBe('westmint-specs');
+  expect(ep.chainName).toBe('westmint');
+});
+
+test('connected parachain sends correct spec message', async () => {
+  const ep = new ExtensionProvider('test', 'westmint', 'westmint-specs', 'westend');
+  const emitted = jest.fn();
+  ep.on('connected', emitted);
+  await ep.connect();
+  await waitForMessageToBePosted();
+
+  const expectedMessage: ProviderMessageData = {
+    appName: 'test',
+    chainName: 'westmint',
+    action: 'forward',
+    origin: 'extension-provider',
+    message: {
+      payload: "westmint-specs",
+      relayChainName: "westend",
+      type: "spec"
+    }  
+  };
+  expect(handler).toHaveBeenCalledTimes(2);
+  const { data } = handler.mock.calls[1][0] as ProviderMessage;
+  expect(data).toEqual(expectedMessage);
+});
+
+test('connect sends connect message and emits connected', async () => {
+  const ep = new ExtensionProvider('test', 'test-chain');
   await ep.connect();
   await waitForMessageToBePosted();
 
@@ -48,11 +100,9 @@ test('connect sends connect message and emits connected', async () => {
     action: 'connect',
     origin: 'extension-provider'
   };
-  expect(handler).toHaveBeenCalledTimes(1);
+  expect(handler).toHaveBeenCalledTimes(2);
   const { data } = handler.mock.calls[0][0] as ProviderMessage;
   expect(data).toEqual(expectedMessage);
-  expect(ep.isConnected).toBe(true);
-  expect(emitted).toHaveBeenCalledTimes(1);
 });
 
 test('disconnect sends disconnect message and emits disconnected', async () => {
@@ -61,7 +111,7 @@ test('disconnect sends disconnect message and emits disconnected', async () => {
   await ep.connect();
 
   ep.on('disconnected', emitted);
-  await ep.disconnect();
+  void ep.disconnect();
   await waitForMessageToBePosted();
 
   const expectedMessage: ProviderMessageData = {
@@ -70,8 +120,8 @@ test('disconnect sends disconnect message and emits disconnected', async () => {
     action: 'disconnect',
     origin: 'extension-provider'
   };
-  expect(handler).toHaveBeenCalledTimes(2);
-  const { data } = handler.mock.calls[1][0] as ProviderMessage;
+  expect(handler).toHaveBeenCalledTimes(3);
+  const { data } = handler.mock.calls[2][0] as ProviderMessage;
   expect(data).toEqual(expectedMessage);
   expect(ep.isConnected).toBe(false);
   expect(emitted).toHaveBeenCalledTimes(1);

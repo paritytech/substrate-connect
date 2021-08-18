@@ -9,7 +9,6 @@
     "Nikolaos Kontakis <nikolaos@parity.io>"
   ],
   "license": "GPL-3.0-only",
-  "main": "./dist/index.html",
   "scripts": {
     "prebuild": "yarn clean && mkdir dist && cp -r ./public/* ./dist/.",
     "build": "parcel build ./dist/index.html --public-url ./",
@@ -34,7 +33,7 @@
     "@polkadot/react-identicon": "^0.68.1",
     "@polkadot/util": "^5.5.2",
     "@polkadot/util-crypto": "^5.5.2",
-    "@substrate/connect": "^0.3.16",
+    "@substrate/connect": "^0.3.18",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -63,7 +62,7 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "jest": "^26.6.3",
-    "parcel": "2.0.0-beta.2",
+    "parcel": "2.0.0-rc.0",
     "react-dom": "^17.0.1",
     "react-router": "^5.2.0",
     "react-test-renderer": "^17.0.1",

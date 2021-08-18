@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {RpcCoder} from '@polkadot/rpc-provider/coder';
 import {
   JsonRpcResponse,
@@ -8,7 +9,8 @@ import {
 } from '@polkadot/rpc-provider/types';
 import { logger } from '@polkadot/util';
 import EventEmitter from 'eventemitter3';
-import { isUndefined } from '../utils/index.js';
+import { isUndefined, eraseRecord } from '../utils/index.js';
+import { HealthCheckError } from '../errors.js';
 import {
   MessageFromManager,
   ProviderMessageData,
@@ -21,7 +23,6 @@ const CONTENT_SCRIPT_ORIGIN = 'content-script';
 const EXTENSION_PROVIDER_ORIGIN = 'extension-provider';
 
 const l = logger(EXTENSION_PROVIDER_ORIGIN);
-
 
 interface RpcStateAwaiting {
   callback: ProviderInterfaceCallback;
@@ -40,11 +41,24 @@ interface StateSubscription extends SubscriptionHandler {
   method: string;
 }
 
+interface HealthResponse {
+  isSyncing: boolean;
+  peers: number;
+  shouldHavePeers: boolean;
+}
+
+
 const ANGLICISMS: { [index: string]: string } = {
   chain_finalisedHead: 'chain_finalizedHead',
   chain_subscribeFinalisedHeads: 'chain_subscribeFinalizedHeads',
   chain_unsubscribeFinalisedHeads: 'chain_unsubscribeFinalizedHeads'
 };
+
+/*
+ * Number of milliseconds to wait between checks to see if we have any 
+ * connected peers in the smoldot client
+ */
+const CONNECTION_STATE_PINGER_INTERVAL = 2000;
 
 /**
  * The ExtensionProvider allows interacting with a smoldot-based WASM light
@@ -57,14 +71,25 @@ export class ExtensionProvider implements ProviderInterface {
   readonly #handlers: Record<string, RpcStateAwaiting> = {};
   readonly #subscriptions: Record<string, StateSubscription> = {};
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
+  #connectionStatePingerId: ReturnType<typeof setInterval> | null;
   #isConnected = false;
 
   #appName: string;
   #chainName: string;
+  #chainSpecs: string;
+  #relayChainName: string;
 
-  public constructor(appName: string, chainName: string) {
+  /*
+   * How frequently to see if we have any peers
+   */
+  healthPingerInterval = CONNECTION_STATE_PINGER_INTERVAL;
+
+  public constructor(appName: string, chainName: string, chainSpecs?: string, relayChainName?: string) {
     this.#appName = appName;
     this.#chainName = chainName;
+    this.#chainSpecs = chainSpecs || '';
+    this.#relayChainName = relayChainName || '';
+    this.#connectionStatePingerId = null;
   }
 
   /**
@@ -90,6 +115,24 @@ export class ExtensionProvider implements ProviderInterface {
   }
 
   /**
+  * chainSpecs
+  *
+  * @returns the name of the chain this `ExtensionProvider` is talking to.
+  */
+  public get chainSpecs(): string {
+    return this.#chainSpecs;
+  }
+
+  /**
+  * chainName
+  *
+  * @returns the name of the chain this `ExtensionProvider` is talking to.
+  */
+  public get relayChainName(): string {
+    return this.#relayChainName;
+  }
+
+  /**
    * Lets polkadot-js know we support subscriptions
    *
    * @remarks Always returns `true` - this provider supports subscriptions.
@@ -105,7 +148,7 @@ export class ExtensionProvider implements ProviderInterface {
    * @remarks This method is not supported
    * @throws {@link Error}
    */
-  public clone(): ExtensionProvider {
+  public clone(): ProviderInterface {
     throw new Error('clone() is not supported.');
   }
 
@@ -113,6 +156,10 @@ export class ExtensionProvider implements ProviderInterface {
     if (data.disconnect && data.disconnect === true) {
       this.#isConnected = false;
       this.emit('disconnected');
+      const error = new Error('Disconnected from the extension');
+      // reject all hanging requests
+      eraseRecord(this.#handlers, (h) => h.callback(error, undefined));
+      eraseRecord(this.#waitingForId);
       return;
     }
 
@@ -195,6 +242,55 @@ export class ExtensionProvider implements ProviderInterface {
     }
   }
 
+  #simulateLifecycle = (health: HealthResponse): void => {
+    // development chains should not have peers so we only emit connected
+    // once and never disconnect
+    if (health.shouldHavePeers == false) {
+      
+      if (!this.#isConnected) {
+        this.#isConnected = true;
+        this.emit('connected');
+        l.debug(`emitted CONNECTED`);
+        return;
+      }
+
+      return;
+    }
+
+    const peerCount = health.peers
+    const peerChecks = (peerCount > 0 || !health.shouldHavePeers) && !health.isSyncing;
+
+    l.debug(`Simulating lifecylce events from system_health`);
+    l.debug(`isConnected: ${this.#isConnected.toString()}, new peerCount: ${peerCount}`);
+
+    if (this.#isConnected && peerChecks) {
+      // still connected
+      return;
+    }
+
+    if (this.#isConnected && peerCount === 0) {
+      this.#isConnected = false;
+      this.emit('disconnected');
+      l.debug(`emitted DISCONNECTED`);
+      return;
+    }
+
+    if (!this.#isConnected && peerChecks) {
+      this.#isConnected = true;
+      this.emit('connected');
+      l.debug(`emitted CONNECTED`);
+      return;
+    }
+
+    // still not connected
+  }
+
+  #checkClientPeercount = (): void => {
+    this.send('system_health', [])
+      .then(this.#simulateLifecycle)
+      .catch(error => this.emit('error', new HealthCheckError(error)));
+  }
+
   /**
    * "Connect" to the extension - sends a message to the `ExtensionMessageRouter`
    * asking it to connect to the extension background.
@@ -210,14 +306,30 @@ export class ExtensionProvider implements ProviderInterface {
       origin: EXTENSION_PROVIDER_ORIGIN
     }
     provider.send(connectMsg);
+
+    // Once connect is sent - send rpc to extension that will contain the chainSpecs
+    // for the extension to call addChain on smoldot
+    const specMsg: ProviderMessageData = {
+      appName: this.#appName,
+      chainName: this.#chainName,
+      action: 'forward',
+      origin: EXTENSION_PROVIDER_ORIGIN,
+      message: {
+        type: 'spec',
+        payload: this.#chainSpecs || '',
+        relayChainName: this.#relayChainName,
+      }
+    }
+
+    provider.send(specMsg);
+
     provider.listen(({data}: ExtensionMessage) => {
       if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         this.#handleMessage(data);
       }
     });
-    this.#isConnected = true;
-    this.emit('connected');
+    this.#connectionStatePingerId = setInterval(this.#checkClientPeercount, 
+      this.healthPingerInterval);
 
     return Promise.resolve();
   }
@@ -226,8 +338,7 @@ export class ExtensionProvider implements ProviderInterface {
    * Manually "disconnect" - sends a message to the `ExtensionMessageRouter`
    * telling it to disconnect the port with the background manager.
    */
-  // eslint-disable-next-line @typescript-eslint/require-await
-  public async disconnect(): Promise<void> {
+  public disconnect(): Promise<void> {
     const disconnectMsg: ProviderMessageData = {
       appName: this.#appName,
       chainName: this.#chainName,
@@ -236,8 +347,12 @@ export class ExtensionProvider implements ProviderInterface {
     };
 
     provider.send(disconnectMsg);
+    if (this.#connectionStatePingerId !== null) {
+      clearInterval(this.#connectionStatePingerId);
+    }
     this.#isConnected = false;
     this.emit('disconnected');
+    return Promise.resolve();
   }
 
   /**
@@ -276,10 +391,8 @@ export class ExtensionProvider implements ProviderInterface {
    */
   public async send(
     method: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: any[],
     subscription?: SubscriptionHandler
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     return new Promise((resolve, reject): void => {
       const json = this.#coder.encodeJson(method, params);
@@ -347,7 +460,7 @@ export class ExtensionProvider implements ProviderInterface {
     callback: ProviderInterfaceCallback
   ): Promise<number | string> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return await this.send(method, params, { callback, type });
+    return await this.send(method, params, { callback, type }) as Promise<number | string>;
   }
 
   /**
@@ -376,8 +489,7 @@ export class ExtensionProvider implements ProviderInterface {
     return await this.send(method, [id]) as Promise<boolean>;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private emit(type: ProviderInterfaceEmitted, ...args: any[]): void {
+  private emit(type: ProviderInterfaceEmitted, ...args: unknown[]): void {
     this.#eventemitter.emit(type, ...args);
   }
 }
