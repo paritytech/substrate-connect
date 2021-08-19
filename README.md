@@ -19,6 +19,8 @@ Substrate connect builds on [Polkadot JS](https://polkadot.js.org/docs/api) so
 building an app is the same experience as with using a traditional RPC server
 node.
 
+The substrate connect [API documentation is published here](https://paritytech.github.io/substrate-connect/api/).
+
 ## Development
 
 This repository is using [yarn classic workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
@@ -89,5 +91,3 @@ yarn dev:smoldot-extension
 
 
 ## [Deployments and releases](./DEPLOY-RELEASE.md)
-
-
