@@ -19,10 +19,16 @@ Substrate connect builds on [Polkadot JS](https://polkadot.js.org/docs/api) so
 building an app is the same experience as with using a traditional RPC server
 node.
 
-## Installation:
+## Development
 
 This repository is using [yarn classic workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
 
+We are tracking our work and milestones in a [github project](https://github.com/paritytech/substrate-connect/projects/1).
+
+Please see our [contributing guidelines](./CONTRIBUTING.md) for details on how
+we like to work and how to smoothly contribute to the project.
+
+## Getting Started
 
 1. Clone the whole `substrate-connect` repository.
 
@@ -42,10 +48,16 @@ yarn install
 yarn build
 ```
 
-To clean up all workspaces in the repository, run:
+To clean up all build artefacts in workspaces in the repository, run:
 
 ```bash
 yarn clean
+```
+
+To clean up all build artefacts and dependencies in workspaces in the repository, run:
+
+```bash
+yarn deep-clean
 ```
 
 ## Run local version of Burnr wallet
