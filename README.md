@@ -118,29 +118,3 @@ You can then deploy to IPFS like so:
 ```bash
 yarn deploy:ipfs:smoldot-browser-demo
 ```
-
-## Working with this repository
-
-Substrate Connect is using Yarn workspaces to manage dependencies. 
-
-Read more about it here: https://classic.yarnpkg.com/en/docs/workspaces/
-
-### Adding modules to single repositories
-
-To add new dependencies, please use the following syntax:
-
-```
-yarn workspace [module name from package.json] add your-desired-npm-package
-```
-Example to add Jest to the Burnr Wallet:
-```
-yarn workspace @substrate/burnr add jest
-```
-
-Also see https://classic.yarnpkg.com/en/docs/cli/workspace/
-
-### GH Pages Links
-This is a test for GH-Pages:
-[Burnr](https://paritytech.github.io/substrate-connect/burnr) and
-[Smoldot Browser Demo](https://paritytech.github.io/substrate-connect/smoldot-browser-demo) and
-[Multiple Network Demo](https://paritytech.github.io/substrate-connect/multiple-network-demo)
