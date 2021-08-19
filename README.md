@@ -1,29 +1,27 @@
 # Substrate Connect
 
-Run Wasm Light Clients of any Substrate based chain directly in your browser.
+**[The most up-to-date usage instructions for app builders can be found here](https://paritytech.github.io/substrate-connect/)**
 
-**Substrate Connect** is not the name of a single product, it rather describes a vision or notion that will allow developers to quickly generate and run Wasm Light Clients of their Substrate based chains - as easy as installing a node module.
+Substrate connect provides a way to interact with [substrate](https://substrate.dev/)
+based blockchains in the browser without using an RPC server. Substrate connect
+uses a [smoldot](https://github.com/paritytech/smoldot/) WASM light client to
+securely connect to the blockchain network without relying on specific 3rd parties.
 
-Substrate Connect provides the infrastructure to run these clients directly in the browser and any other JavaScript or Node environment without deeper additional programming efforts needed. It adds Substrate light-client functionality to any Javascript environment, from in-browser applications to browser extensions and electron apps up to IOT devices and mobile phones.
+Due to browser limitations on websockets from https pages, establishing a good
+number of peers is difficult as many nodes need to be available with TLS.  Substrate
+connect provides a browser extension to overcome this limitation and to keep 
+the chains synced in the background, which makes your apps faster.
 
-It also provides an interface that enables Dapp developers to effortlessly make use of the light-client functionality in their applications.
+When building an app with substrate connect, it will detect whether the user has
+the extension and use it, or create the WASM light client in-page for them.
 
-### **Multiple building blocks on different levels are necessary to achieve this:**
-
-1. **Ready-to-use Substrate Wasm Light-Clients** to be executed in the browser. They are part of the Substrate framework and with that, available for every Substrate based project. If developers want to generate a light client of their chain, all it takes is just one command to compile a library that contains everything that's needed to run a light client in the browser.
-
-2) A **node module that bundles the light-clients** of different chains. It provides an interface that allows developers to run light nodes of different chains and to add runtimes and genesis configs of their own chain.
-
-The `@substrate/connect` node module will allow developers to include light client functionality into their application by using a predefined interface.
-
-3. For in-browser use, Substrate Connect provides a **Browser Extension** built upon the @substrate/light node module that is running the selected light clients inside the extension so that the end-user doesn't need to fire up a light node in every browser tab. This will also allow the light-node to keep syncing as long as the browser window stays open.
-
-When used in individual projects, the Substrate Connect node module will first check for the installed extension. If available, it will try to connect to the light client running inside the extension. Only if the extension is not installed it will start a light client in the browser tab.
-
+Substrate connect builds on [Polkadot JS](https://polkadot.js.org/docs/api) so
+building an app is the same experience as with using a traditional RPC server
+node.
 
 ## Installation:
 
-This repository is using [yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) for dependency management together with [Lerna](https://lerna.js.org/) to handle releases.
+This repository is using [yarn classic workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
 
 
 1. Clone the whole `substrate-connect` repository.
