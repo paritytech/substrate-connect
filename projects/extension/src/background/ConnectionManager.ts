@@ -133,7 +133,9 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
           type: 'basic'
         });
       });
-    } finally { }
+    } finally {
+      /* eslint-disable no-empty */
+    }
   }
 
   /**

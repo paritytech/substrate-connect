@@ -156,7 +156,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
       return;
     }
 
-    const chainName = this.#chainName as string;
+    const chainName = this.#chainName ;
 
     if (msg.type === 'spec' && chainName) {
       return this.#handleSpecMessage(msg, chainName);
