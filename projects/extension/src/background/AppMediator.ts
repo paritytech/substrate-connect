@@ -31,11 +31,11 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   readonly #name: string;
   readonly #appName: string;
   readonly #port: chrome.runtime.Port;
+  readonly #chainName: string;
   // REM: what to do about the fact these might be undefined?
   readonly #tabId: number | undefined;
   readonly #url: string | undefined;
   readonly #manager: ConnectionManagerInterface;
-  #chainName: string | undefined  = undefined;
   #chain: SmoldotChain | undefined;
   #state: AppState = 'connected';
   #pendingRequests: string[] = [];
@@ -45,10 +45,23 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
    * and the extension background.
    * @param manager - the extension's connection manager that keeps track of
    * all the apps and smoldots
+   * 
+   * @throws an error if the port name is not valid, in which case an error is
+   * sent on the port and the port gets disconnected
    */
   constructor(port: chrome.runtime.Port, manager: ConnectionManagerInterface) {
     super();
-    this.#appName = port.name.substr(0, port.name.indexOf('::'));
+
+    const splitIdx = port.name.indexOf('::');
+    if (splitIdx === -1) {
+      const error: MessageFromManager = { type: 'error', payload: `Invalid port name ${port.name} expected <app_name>::<chain_name>` };
+      port.postMessage(error);
+      port.disconnect();
+      throw new Error();
+    }
+
+    this.#appName = port.name.substr(0, splitIdx);
+    this.#chainName = port.name.substr(splitIdx + 2, port.name.length);
     this.#name = port.name;
     this.#port = port;
     this.#tabId = port.sender?.tab?.id;
@@ -57,27 +70,6 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     // Open listeners for the incoming rpc messages
     this.#port.onMessage.addListener(this.#handleMessage);
     this.#port.onDisconnect.addListener(() => { this.#handleDisconnect() });
-  }
-
-  /** 
-   * associate parses the name of the network from the port name.
-   * It sends an error and disconnects the port if the port name is not in a
-   * valid format.
-   *
-   * @remarks
-   * This MUST be called straight after constructing an AppMediator
-   *
-   * @returns true if it associated succesfully otherwise false
-   */
-  public associate(): boolean {
-    const splitIdx = this.#port.name.indexOf('::');
-    if (splitIdx === -1) {
-      this.#sendError(`Invalid port name ${this.#port.name} expected <app_name>::<chain_name>`);
-      this.#port.disconnect();
-      return false;
-    }
-    this.#chainName = this.#port.name.substr(splitIdx + 2, this.#port.name.length);
-    return true;
   }
 
   /** 
