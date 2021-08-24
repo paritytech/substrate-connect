@@ -160,7 +160,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
 
     const rpcCallback = (rpc: string) => {
       const rpcResp = this.#healthChecker?.responsePassThrough(rpc);
-      if (rpcRsp)
+      if (rpcResp)
             this.#port.postMessage({ type: 'rpc', payload: rpcResp })
     }
 
