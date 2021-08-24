@@ -8,7 +8,7 @@ import {
   MessageToManager, 
   MessageFromManager 
 } from '@substrate/connect-extension-protocol';
-import { SmoldotChain } from 'smoldot';
+import { SmoldotChain } from '@substrate/smoldot-light';
 
 export class MockPort implements chrome.runtime.Port {
   sender: any;

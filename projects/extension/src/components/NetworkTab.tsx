@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { IconWeb3, StatusCircle } from '.';
 import { withStyles, makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import MuiAccordion from '@material-ui/core/Accordion';

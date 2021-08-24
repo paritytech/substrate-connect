@@ -35,11 +35,11 @@
     "@polkadot/api": "^5.4.1",
     "@polkadot/rpc-provider": "^5.4.1",
     "@substrate/connect-extension-protocol": "^0.3.0",
+    "@substrate/smoldot-light": "^0.4.0",
     "browserify-fs": "^1.0.0",
     "eventemitter3": "^4.0.7",
     "file-entry-cache": "^6.0.1",
-    "mkdirp": "^1.0.4",
-    "smoldot": "0.3.4"
+    "mkdirp": "^1.0.4"
   },
   "devDependencies": {
     "@substrate/smoldot-test-utils": "^0.1.0",
