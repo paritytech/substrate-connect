@@ -6,9 +6,10 @@ import {
 import {
   AppState,
   ConnectionManagerInterface,
+  HealthResponse,
   StateEmitter,
 } from './types';
-import { SmoldotChain } from '@substrate/smoldot-light';
+import { SmoldotChain, HealthChecker } from '@substrate/smoldot-light';
 import westend from '../../public/assets/westend.json';
 import kusama from '../../public/assets/kusama.json';
 import polkadot from '../../public/assets/polkadot.json';
@@ -39,6 +40,8 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   #chain: SmoldotChain | undefined;
   #state: AppState = 'connected';
   #pendingRequests: string[] = [];
+  #healthChecker: HealthChecker | undefined = undefined;
+  #healthStatus: HealthResponse | undefined = undefined;
 
   /**
    * @param port - the open communication port between the app's content page
@@ -98,6 +101,20 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     return this.#appName;
   }
 
+  /** healthStatus returns the latest health status
+   * of app as set from the callback
+   */
+  get healthStatus(): HealthResponse {
+    return this.#healthStatus as HealthResponse;
+  }
+
+  /** 
+  * returns the healthChecker that the app is using
+  */
+  get healthChecker(): HealthChecker {
+    return this.#healthChecker as HealthChecker;
+  }
+
   /** 
    * chainName is the name of the chain to talk to; this is the
    * name of the blockchain network.
@@ -133,26 +150,34 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     this.#port.postMessage(error);
   }
 
+  #healthCheckCallback = (health: HealthResponse): void => {
+    this.#healthStatus = health;
+  }
+
   #handleSpecMessage = (msg: MessageToManager, chainName: string): void => {
     const chainSpec: string = relayChains.has(chainName) ?
       (relayChains.get(chainName) || '') : msg.payload;
 
     const rpcCallback = (rpc: string) => {
-      this.#port.postMessage({ type: 'rpc', payload: rpc })
+      const rpcResp = this.#healthChecker?.responsePassThrough(rpc) || rpc;
+      this.#port.postMessage({ type: 'rpc', payload: rpcResp })
     }
 
     this.#manager.addChain(chainName, chainSpec, rpcCallback, msg.relayChainName)
-      .then(chain => {
-        this.#chain = chain;
+      .then(o => {
+        this.#chain = o.chain
+        this.#healthChecker = o.healthChecker;
+        this.#healthChecker.setSendJsonRpc(this.#chain.sendJsonRpc);
+        this.#healthChecker.start(this.#healthCheckCallback);
         // process any RPC requests that came in while waiting for `addChain`
         // to complete
         if (this.#pendingRequests.length > 0) {
-          this.#pendingRequests.forEach(req => chain.sendJsonRpc(req));
+          this.#pendingRequests.forEach(req => this.#healthChecker?.sendJsonRpc(req));
           this.#pendingRequests = [];
         }
       })
       .catch(e => {
-        this.#sendError((e as Error).message);
+        this.#sendError((e.chain as Error).message);
         this.#port.disconnect();
         this.#manager.unregisterApp(this);
       });
@@ -177,7 +202,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
       return;
     }
 
-    return this.#chain.sendJsonRpc(msg.payload);
+    return this.#healthChecker?.sendJsonRpc(msg.payload);
   }
 
   /** 
@@ -200,7 +225,6 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     if (this.#state === 'disconnected') {
       throw new Error('Cannot disconnect - already disconnected');
     }
-
     this.#dispose();
 
     this.#state = 'disconnected';

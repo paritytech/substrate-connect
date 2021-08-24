@@ -3,11 +3,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as smoldot from '@substrate/smoldot-light';
-import { SmoldotAddChainOptions, SmoldotChain } from '@substrate/smoldot-light';
+import { SmoldotJsonRpcCallback, SmoldotAddChainOptions, SmoldotChain } from '@substrate/smoldot-light';
 import { AppMediator } from './AppMediator';
 import { ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
-import { StateEmitter, State } from './types';
+import { StateEmitter, State, ChainInstance } from './types';
 import { Network } from '../types';
 import { logger } from '@polkadot/util';
 
@@ -187,14 +187,21 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param spec - ChainSpec of chain to be added
    * @param jsonRpcCallback - The jsonRpcCallback function that should be triggered
    * @param relayChainName - optional string when parachain is added to depict the relay chain name
+   * 
+   * @returns addedChObj - An object that contains the chain info and the healthchecker for the connected chain
    */
-  async addChain (name: string, chainSpec: string, jsonRpcCallback: smoldot.SmoldotJsonRpcCallback, relayChainName?: string): Promise<smoldot.SmoldotChain> {
+  async addChain (
+    name: string,
+    chainSpec: string,
+    jsonRpcCallback: SmoldotJsonRpcCallback,
+    relayChainName?: string): Promise<ChainInstance> {
     if (!this.#client) {
       throw new Error('Smoldot client does not exist.');
     }
     let relay: Network | undefined = undefined;
     let addChainOptions = {} as SmoldotAddChainOptions;
 
+    const healthChecker = await (smoldot as any).healthChecker();
     // If this is a parachain - meaning a relayChainName is provided
     if (relayChainName) {
       relay = this.#networks.find(n => n.name === relayChainName)
@@ -219,6 +226,11 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       chainspecPath: `${name}.json`
     });
 
-    return addedChain;
+    const addedChObj: ChainInstance = {
+      chain: addedChain,
+      healthChecker: healthChecker
+    }
+
+    return addedChObj;
   }
 }

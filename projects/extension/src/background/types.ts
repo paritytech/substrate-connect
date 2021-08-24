@@ -3,6 +3,17 @@ import { AppMediator } from './AppMediator';
 import EventEmitter from 'eventemitter3';
 import StrictEventEmitter from 'strict-event-emitter-types';
 
+export interface HealthResponse {
+  isSyncing: boolean;
+  peers: number;
+  shouldHavePeers: boolean;
+}
+
+export interface ChainInstance {
+  chain: smoldot.SmoldotChain
+  healthChecker: smoldot.HealthChecker
+}
+
 export interface InitAppNameSpec {
   id: string,
   chainName: string,
@@ -36,6 +47,10 @@ export type StateEmitter = StrictEventEmitter<EventEmitter, StateEvents>;
 export interface ConnectionManagerInterface {
   registerApp: (app: AppMediator) => void;
   unregisterApp: (app: AppMediator) => void;
-  addChain: (name: string, spec: string, jsonRpcCallback: smoldot.SmoldotJsonRpcCallback, relayChainName?: string) => Promise<smoldot.SmoldotChain>;
+  addChain: (
+    name: string,
+    spec: string,
+    jsonRpcCallback: smoldot.SmoldotJsonRpcCallback,
+    relayChainName?: string) => Promise<ChainInstance>;
 }
 

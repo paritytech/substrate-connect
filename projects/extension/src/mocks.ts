@@ -3,12 +3,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { jest } from '@jest/globals';
-import { ConnectionManagerInterface } from './background/types';
+import { ChainInstance, ConnectionManagerInterface } from './background/types';
 import { 
   MessageToManager, 
   MessageFromManager 
 } from '@substrate/connect-extension-protocol';
-import { SmoldotChain } from '@substrate/smoldot-light';
+import { HealthChecker, SmoldotChain } from '@substrate/smoldot-light';
 
 export class MockPort implements chrome.runtime.Port {
   sender: any;
@@ -54,11 +54,21 @@ export class MockPort implements chrome.runtime.Port {
 
 export class MockConnectionManager implements ConnectionManagerInterface {
 
-  addChain (): Promise<SmoldotChain> {
-    return Promise.resolve({
-      sendJsonRpc: jest.fn(),
-      remove: jest.fn()
-    } as SmoldotChain);
+  addChain (): Promise<ChainInstance> {
+    return Promise.resolve(
+      {
+        chain: {
+          sendJsonRpc: jest.fn(),
+          remove: jest.fn()
+        } as SmoldotChain,
+        healthChecker: {
+          setSendJsonRpc: jest.fn(),
+          start: jest.fn(),
+          stop: jest.fn(),
+          sendJsonRpc: jest.fn(),
+          responsePassThrough: jest.fn()
+        }
+      });
   }
 
   registerApp: () => void = jest.fn();
@@ -67,8 +77,11 @@ export class MockConnectionManager implements ConnectionManagerInterface {
 
 export class ErroringMockConnectionManager implements ConnectionManagerInterface {
 
-  addChain (): Promise<SmoldotChain> {
-    return Promise.reject(new Error('Invalid chain spec'));
+  addChain (): Promise<ChainInstance> {
+    return Promise.reject({
+      chain: new Error('Invalid chain spec'),
+      healthChecker: {} as HealthChecker
+    });
   }
 
   registerApp: () => void = jest.fn();
