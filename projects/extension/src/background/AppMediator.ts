@@ -168,6 +168,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
       .then(o => {
         this.#chain = o.chain
         this.#healthChecker = o.healthChecker;
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         this.#healthChecker.setSendJsonRpc(this.#chain.sendJsonRpc);
         this.#healthChecker.start(this.#healthCheckCallback);
         // process any RPC requests that came in while waiting for `addChain`
@@ -178,6 +179,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
         }
       })
       .catch(e => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         this.#sendError((e.chain as Error).message);
         this.#port.disconnect();
         this.#manager.unregisterApp(this);
