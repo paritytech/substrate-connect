@@ -159,8 +159,9 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
       (relayChains.get(chainName) || '') : msg.payload;
 
     const rpcCallback = (rpc: string) => {
-      const rpcResp = this.#healthChecker?.responsePassThrough(rpc) || rpc;
-      this.#port.postMessage({ type: 'rpc', payload: rpcResp })
+      const rpcResp = this.#healthChecker?.responsePassThrough(rpc);
+      if (rpcRsp)
+            this.#port.postMessage({ type: 'rpc', payload: rpcResp })
     }
 
     this.#manager.addChain(chainName, chainSpec, rpcCallback, msg.relayChainName)
