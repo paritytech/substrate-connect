@@ -169,8 +169,8 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
         this.#chain = o.chain
         this.#healthChecker = o.healthChecker;
         // eslint-disable-next-line @typescript-eslint/unbound-method
-        this.#healthChecker.setSendJsonRpc(this.#chain.sendJsonRpc);
-        this.#healthChecker.start(this.#healthCheckCallback);
+        this.#chain && this.#healthChecker?.setSendJsonRpc(this.#chain.sendJsonRpc);
+        this.#healthChecker?.start(this.#healthCheckCallback);
         // process any RPC requests that came in while waiting for `addChain`
         // to complete
         if (this.#pendingRequests.length > 0) {

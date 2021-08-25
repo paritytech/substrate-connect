@@ -2,13 +2,19 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import * as smoldot from '@substrate/smoldot-light';
 import { jest } from '@jest/globals';
-import { ChainInstance, ConnectionManagerInterface } from './background/types';
+import { ConnectionManagerInterface } from './background/types';
 import { 
   MessageToManager, 
   MessageFromManager 
 } from '@substrate/connect-extension-protocol';
 import { HealthChecker, SmoldotChain } from '@substrate/smoldot-light';
+
+interface ChainInstance {
+  chain: smoldot.SmoldotChain
+  healthChecker: smoldot.HealthChecker
+}
 
 export class MockPort implements chrome.runtime.Port {
   sender: any;

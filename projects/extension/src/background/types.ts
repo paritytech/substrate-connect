@@ -9,10 +9,6 @@ export interface HealthResponse {
   shouldHavePeers: boolean;
 }
 
-export interface ChainInstance {
-  chain: smoldot.SmoldotChain
-  healthChecker: smoldot.HealthChecker
-}
 
 export interface InitAppNameSpec {
   id: string,

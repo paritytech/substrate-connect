@@ -7,11 +7,16 @@ import { SmoldotJsonRpcCallback, SmoldotAddChainOptions, SmoldotChain } from '@s
 import { AppMediator } from './AppMediator';
 import { ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
-import { StateEmitter, State, ChainInstance } from './types';
+import { StateEmitter, State } from './types';
 import { Network } from '../types';
 import { logger } from '@polkadot/util';
 
 const l = logger('Extension Connection Manager');
+
+interface ChainInstance {
+  chain: smoldot.SmoldotChain
+  healthChecker: smoldot.HealthChecker
+}
 
 /**
  * ConnectionManager is the main class involved in managing connections from
