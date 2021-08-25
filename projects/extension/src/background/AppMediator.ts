@@ -115,13 +115,6 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   }
 
   /** 
-  * returns the healthChecker that the app is using
-  */
-  get healthChecker(): HealthChecker {
-    return this.#healthChecker as HealthChecker;
-  }
-
-  /** 
    * chainName is the name of the chain to talk to; this is the
    * name of the blockchain network.
    */
