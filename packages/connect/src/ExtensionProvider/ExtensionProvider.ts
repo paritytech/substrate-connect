@@ -418,8 +418,7 @@ export class ExtensionProvider implements ProviderInterface {
         action: 'forward',
         message: {
           type: 'rpc',
-          payload: json,
-          subscription: !!subscription
+          payload: json
         },
         origin: EXTENSION_PROVIDER_ORIGIN
       }
