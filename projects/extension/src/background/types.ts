@@ -3,6 +3,11 @@ import { AppMediator } from './AppMediator';
 import EventEmitter from 'eventemitter3';
 import StrictEventEmitter from 'strict-event-emitter-types';
 
+interface ChainInstance {
+  chain: smoldot.SmoldotChain
+  healthChecker: smoldot.HealthChecker
+}
+
 export interface HealthResponse {
   isSyncing: boolean;
   peers: number;
