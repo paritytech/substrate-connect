@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as smoldot from '@substrate/smoldot-light';
 import EventEmitter from 'eventemitter3';
 import {
@@ -23,10 +27,6 @@ export const relayChains: RelayType = new Map<string, string>([
   ["westend", JSON.stringify(westend)]
 ])
 
-interface ChainInstance {
-  chain: smoldot.SmoldotChain
-  healthChecker: smoldot.HealthChecker
-}
 /**
  * AppMediator is the class that represents and manages an app's connection to
  * a blockchain network.  N.B. an app that connects to multiple nblockchain
@@ -66,6 +66,15 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     // Open listeners for the incoming rpc messages
     this.#port.onMessage.addListener(this.#handleMessage);
     this.#port.onDisconnect.addListener(() => { this.#handleDisconnect() });
+    void this.#createHealthChecker();
+  }
+
+  #createHealthChecker = async (): Promise<void> => {
+    try {
+      this.#healthChecker = await (smoldot as any).healthChecker();
+    } catch (e) {
+      this.#sendError((e as Error).message);
+    }
   }
 
   /** 
@@ -164,9 +173,8 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     }
 
     this.#manager.addChain(chainName, chainSpec, rpcCallback, msg.relayChainName)
-      .then((o: ChainInstance) => {
-        this.#chain = o.chain
-        this.#healthChecker = o.healthChecker;
+      .then(chain => {
+        this.#chain = chain;
         // eslint-disable-next-line @typescript-eslint/unbound-method
         this.#chain && this.#healthChecker?.setSendJsonRpc(this.#chain.sendJsonRpc);
         this.#healthChecker?.start(this.#healthCheckCallback);
@@ -178,8 +186,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
         }
       })
       .catch(e => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        this.#sendError((e.chain as Error).message);
+        this.#sendError((e as Error).message);
         this.#port.disconnect();
         this.#manager.unregisterApp(this);
       });

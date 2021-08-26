@@ -13,11 +13,6 @@ import { logger } from '@polkadot/util';
 
 const l = logger('Extension Connection Manager');
 
-interface ChainInstance {
-  chain: smoldot.SmoldotChain
-  healthChecker: smoldot.HealthChecker
-}
-
 /**
  * ConnectionManager is the main class involved in managing connections from
  * apps and smoldots.  It keeps track of apps in {@link AppMediator} instances.
@@ -193,20 +188,19 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param jsonRpcCallback - The jsonRpcCallback function that should be triggered
    * @param relayChainName - optional string when parachain is added to depict the relay chain name
    * 
-   * @returns addedChObj - An object that contains the chain info and the healthchecker for the connected chain
+   * @returns addedChain - An the newly added chain info
    */
   async addChain (
     name: string,
     chainSpec: string,
     jsonRpcCallback: SmoldotJsonRpcCallback,
-    relayChainName?: string): Promise<ChainInstance> {
+    relayChainName?: string): Promise<SmoldotChain> {
     if (!this.#client) {
       throw new Error('Smoldot client does not exist.');
     }
     let relay: Network | undefined = undefined;
     let addChainOptions = {} as SmoldotAddChainOptions;
 
-    const healthChecker = await (smoldot as any).healthChecker();
     // If this is a parachain - meaning a relayChainName is provided
     if (relayChainName) {
       relay = this.#networks.find(n => n.name === relayChainName)
@@ -231,11 +225,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       chainspecPath: `${name}.json`
     });
 
-    const addedChObj: ChainInstance = {
-      chain: addedChain,
-      healthChecker: healthChecker
-    }
-
-    return addedChObj;
+    return addedChain;
   }
 }
