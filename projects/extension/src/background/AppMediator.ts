@@ -70,11 +70,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   }
 
   #createHealthChecker = async (): Promise<void> => {
-    try {
-      this.#healthChecker = await (smoldot as any).healthChecker();
-    } catch (e) {
-      this.#sendError((e as Error).message);
-    }
+    this.#healthChecker = await (smoldot as any).healthChecker();
   }
 
   /** 
