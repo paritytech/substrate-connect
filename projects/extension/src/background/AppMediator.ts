@@ -66,11 +66,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     // Open listeners for the incoming rpc messages
     this.#port.onMessage.addListener(this.#handleMessage);
     this.#port.onDisconnect.addListener(() => { this.#handleDisconnect() });
-    void this.#createHealthChecker();
-  }
-
-  #createHealthChecker = async (): Promise<void> => {
-    this.#healthChecker = await (smoldot as any).healthChecker();
+    this.#healthChecker = (smoldot as any).healthChecker();
   }
 
   /** 
