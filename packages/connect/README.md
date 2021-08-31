@@ -27,7 +27,7 @@ import mySubstrateChainSpec from './mySubstrateChainSpec.json';
 const chainSpec =  JSON.stringify(mySubstrateChainSpec);
 const detect = new Detector('my cool unstoppable app');
 
-const api = await detect.connect('mySubstrateChainName', chainSpec());
+const api = await detect.connect('mySubstrateChainName', chainSpec);
 ```
 
 In addition besides substrate chain's name and/or chainspec, a list of options can be passed
@@ -49,7 +49,7 @@ const chainSpec =  JSON.stringify(mySubstrateChainSpec);
 const detect = new Detector('my cool unstoppable app');
 
 const options = { /* the options as per polkadot/api */ } as ApiOptions;
-const api = await detect.connect('mySubstrateChainName', chainSpec(), options);
+const api = await detect.connect('mySubstrateChainName', chainSpec, options);
 ```
 
 ## Scripts
