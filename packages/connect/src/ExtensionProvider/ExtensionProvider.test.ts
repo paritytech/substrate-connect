@@ -49,7 +49,6 @@ test('connected and sends correct spec message', async () => {
     origin: 'extension-provider',
     message: {
       payload: "",
-      relayChainName: "",
       type: "spec"
     }  
   };
@@ -59,7 +58,7 @@ test('connected and sends correct spec message', async () => {
 });
 
 test('constructor sets properties for parachain', () => {
-  const ep = new ExtensionProvider('test', 'westmint', 'westmint-specs', 'westend');
+  const ep = new ExtensionProvider('test', 'westmint', 'westmint-specs');
   expect(ep.name).toBe('test');
   expect(ep.chainName).toBe('westmint');
   expect(ep.chainSpecs).toBe('westmint-specs');
@@ -67,7 +66,7 @@ test('constructor sets properties for parachain', () => {
 });
 
 test('connected parachain sends correct spec message', async () => {
-  const ep = new ExtensionProvider('test', 'westmint', 'westmint-specs', 'westend');
+  const ep = new ExtensionProvider('test', 'westmint', 'westmint-specs');
   const emitted = jest.fn();
   ep.on('connected', emitted);
   await ep.connect();
@@ -80,7 +79,6 @@ test('connected parachain sends correct spec message', async () => {
     origin: 'extension-provider',
     message: {
       payload: "westmint-specs",
-      relayChainName: "westend",
       type: "spec"
     }  
   };
