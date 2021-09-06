@@ -3,13 +3,6 @@ import { AppMediator } from './AppMediator';
 import EventEmitter from 'eventemitter3';
 import StrictEventEmitter from 'strict-event-emitter-types';
 
-export interface HealthResponse {
-  isSyncing: boolean;
-  peers: number;
-  shouldHavePeers: boolean;
-}
-
-
 export interface InitAppNameSpec {
   id: string,
   chainName: string,
