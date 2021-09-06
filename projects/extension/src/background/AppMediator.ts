@@ -13,7 +13,7 @@ import {
   ConnectionManagerInterface,
   StateEmitter,
 } from './types';
-import { SmoldotChain, HealthChecker } from '@substrate/smoldot-light';
+import { SmoldotChain, HealthChecker, SmoldotHealth } from '@substrate/smoldot-light';
 import westend from '../../public/assets/westend.json';
 import kusama from '../../public/assets/kusama.json';
 import polkadot from '../../public/assets/polkadot.json';
@@ -46,7 +46,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   #state: AppState = 'connected';
   #pendingRequests: string[] = [];
   #healthChecker: HealthChecker | undefined = undefined;
-  #healthStatus: smoldot.SmoldotHealth | undefined = undefined;
+  #healthStatus: SmoldotHealth | undefined = undefined;
 
   /**
    * @param port - the open communication port between the app's content page
@@ -110,8 +110,8 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   /** healthStatus returns the latest health status
    * of app as set from the callback
    */
-  get healthStatus(): smoldot.SmoldotHealth {
-    return this.#healthStatus as smoldot.SmoldotHealth;
+  get healthStatus(): SmoldotHealth {
+    return this.#healthStatus as SmoldotHealth;
   }
 
   /** 
@@ -149,7 +149,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     this.#port.postMessage(error);
   }
 
-  #healthCheckCallback = (health: smoldot.SmoldotHealth): void => {
+  #healthCheckCallback = (health: SmoldotHealth): void => {
     this.#healthStatus = health;
   }
 
