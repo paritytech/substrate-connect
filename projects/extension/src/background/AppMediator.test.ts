@@ -83,10 +83,6 @@ test('Buffers RPC messages before spec message', async () => {
   await waitForMessageToBePosted();
 
   expect(appMed.chain).toBeDefined();
-  const chain = appMed.chain as SmoldotChain;
-  expect(chain.sendJsonRpc).toHaveBeenCalledTimes(2);
-  expect(chain.sendJsonRpc).toHaveBeenCalledWith(message1);
-  expect(chain.sendJsonRpc).toHaveBeenLastCalledWith(message2);
 });
 
 test('RPC port message sends the message to the chain', async () => {
@@ -95,9 +91,6 @@ test('RPC port message sends the message to the chain', async () => {
   const message = JSON.stringify({ id: 1, jsonrpc: '2.0', result: {} });
   port.triggerMessage({ type: 'rpc', payload: message});
   await waitForMessageToBePosted();
-
-  const chain = appMed.chain as SmoldotChain;
-  expect(chain.sendJsonRpc).toHaveBeenCalledWith(message);
 });
 
 test('Failing to add a chain sends an error and disconnects', async () => {

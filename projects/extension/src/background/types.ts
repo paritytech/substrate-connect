@@ -36,6 +36,10 @@ export type StateEmitter = StrictEventEmitter<EventEmitter, StateEvents>;
 export interface ConnectionManagerInterface {
   registerApp: (app: AppMediator) => void;
   unregisterApp: (app: AppMediator) => void;
-  addChain: (name: string, spec: string, jsonRpcCallback: smoldot.SmoldotJsonRpcCallback, relayChainName?: string) => Promise<smoldot.SmoldotChain>;
+  addChain: (
+    name: string,
+    spec: string,
+    jsonRpcCallback: smoldot.SmoldotJsonRpcCallback,
+    relayChainName?: string) => Promise<smoldot.SmoldotChain>;
 }
 

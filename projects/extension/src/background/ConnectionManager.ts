@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as smoldot from '@substrate/smoldot-light';
-import { SmoldotAddChainOptions, SmoldotChain } from '@substrate/smoldot-light';
+import { SmoldotJsonRpcCallback, SmoldotAddChainOptions, SmoldotChain } from '@substrate/smoldot-light';
 import { AppMediator } from './AppMediator';
 import { ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
@@ -187,8 +187,14 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param spec - ChainSpec of chain to be added
    * @param jsonRpcCallback - The jsonRpcCallback function that should be triggered
    * @param relayChainName - optional string when parachain is added to depict the relay chain name
+   * 
+   * @returns addedChain - An the newly added chain info
    */
-  async addChain (name: string, chainSpec: string, jsonRpcCallback: smoldot.SmoldotJsonRpcCallback, relayChainName?: string): Promise<smoldot.SmoldotChain> {
+  async addChain (
+    name: string,
+    chainSpec: string,
+    jsonRpcCallback: SmoldotJsonRpcCallback,
+    relayChainName?: string): Promise<SmoldotChain> {
     if (!this.#client) {
       throw new Error('Smoldot client does not exist.');
     }
