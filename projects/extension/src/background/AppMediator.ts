@@ -146,9 +146,9 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     this.#healthStatus = health;
   }
 
-  #handleSpecMessage = (msg: MessageToManager, chainName: string): void => {
-    const chainSpec: string = relayChains.has(chainName) ?
-      (relayChains.get(chainName) || '') : msg.payload;
+  #handleSpecMessage = (msg: MessageToManager): void => {
+    const chainSpec: string = relayChains.has(this.#chainName) ?
+      (relayChains.get(this.#chainName) || '') : msg.payload;
 
     const rpcCallback = (rpc: string) => {
       const rpcResp = this.#healthChecker?.responsePassThrough(rpc);
@@ -156,7 +156,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
             this.#port.postMessage({ type: 'rpc', payload: rpcResp })
     }
 
-    this.#manager.addChain(chainName, chainSpec, rpcCallback)
+    this.#manager.addChain(this.#chainName, chainSpec, rpcCallback)
       .then(chain => {
         this.#chain = chain;
         // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -182,10 +182,8 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
       return;
     }
 
-    const chainName = this.#chainName ;
-
-    if (msg.type === 'spec' && chainName) {
-      return this.#handleSpecMessage(msg, chainName);
+    if (msg.type === 'spec') {
+      return this.#handleSpecMessage(msg);
     }
 
     if (this.#chain === undefined) {
