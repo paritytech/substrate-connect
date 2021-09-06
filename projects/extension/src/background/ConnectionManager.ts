@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as smoldot from '@substrate/smoldot-light';
-import { SmoldotAddChainOptions, SmoldotChain } from '@substrate/smoldot-light';
+import { SmoldotJsonRpcCallback, SmoldotAddChainOptions, SmoldotChain } from '@substrate/smoldot-light';
 import { AppMediator } from './AppMediator';
 import { ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
@@ -22,7 +22,7 @@ const l = logger('Extension Connection Manager');
 export class ConnectionManager extends (EventEmitter as { new(): StateEmitter }) implements ConnectionManagerInterface {
   #client: smoldot.SmoldotClient | undefined = undefined;
   readonly #networks: Network[] = [];
-  readonly #apps:  AppMediator[] = [];
+  readonly #apps: AppMediator[] = [];
   smoldotLogLevel = 3;
 
   /** registeredApps
@@ -117,7 +117,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       port.postMessage({ type: 'error', payload: `App ${port.name} already exists.` });
       port.disconnect();
       return;
-    } 
+    }
 
     const app = new AppMediator(port, this as ConnectionManagerInterface)
     // if associate fails by returning false it has sent an error down the
@@ -171,7 +171,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    */
   async initSmoldot(): Promise<void> {
     try {
-      this.#client = await (smoldot as any).start({ 
+      this.#client = await (smoldot as any).start({
         forbidWs: true, /* suppress console warnings about insecure connections */
         maxLogLevel: this.smoldotLogLevel
       });
@@ -186,8 +186,14 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param name - Name of the chain
    * @param spec - ChainSpec of chain to be added
    * @param jsonRpcCallback - The jsonRpcCallback function that should be triggered
+   * @param relayChainName - optional string when parachain is added to depict the relay chain name
+   * 
+   * @returns addedChain - An the newly added chain info
    */
-  async addChain (name: string, chainSpec: string, jsonRpcCallback: smoldot.SmoldotJsonRpcCallback): Promise<smoldot.SmoldotChain> {
+  async addChain(
+    name: string,
+    chainSpec: string,
+    jsonRpcCallback: SmoldotJsonRpcCallback): Promise<SmoldotChain> {
     if (!this.#client) {
       throw new Error('Smoldot client does not exist.');
     }
