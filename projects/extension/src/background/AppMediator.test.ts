@@ -23,7 +23,6 @@ beforeEach(() => {
   port = new MockPort('test-app::westend');
   manager = new MockConnectionManager();
   appMed = new AppMediator(port, manager);
-  appMed.associate();
 });
 
 test('Construction parses the port name and gets port information', () => {
@@ -37,9 +36,11 @@ test('Construction parses the port name and gets port information', () => {
 test('Invalid port name sends an error and disconnects', () => {
   port = new MockPort('invalid');
   manager = new MockConnectionManager();
-  appMed = new AppMediator(port, manager);
 
-  expect(appMed.associate()).toBe(false);
+  expect(() => {
+    new AppMediator(port, manager);
+  }).toThrow();
+
   const errorMsg = { 
     type: 'error', 
     payload: 'Invalid port name invalid expected <app_name>::<chain_name>'
@@ -97,7 +98,6 @@ test('Failing to add a chain sends an error and disconnects', async () => {
   port = new MockPort('test-app::westend');
   manager = new ErroringMockConnectionManager();
   appMed = new AppMediator(port, manager);
-  appMed.associate();
 
   port.triggerMessage({ type: 'spec', payload: 'westend'});
   await waitForMessageToBePosted();

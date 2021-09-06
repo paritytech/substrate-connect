@@ -119,10 +119,10 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       return;
     }
 
-    const app = new AppMediator(port, this as ConnectionManagerInterface)
-    // if associate fails by returning false it has sent an error down the
-    // port and disconnected it, so we should just discard this `AppMediator`
-    if (app.associate()) {
+    // if create an `AppMediator` throws, it has sent an error down the
+    // port and disconnected it, so we should just ignore
+    try {
+      const app = new AppMediator(port, this as ConnectionManagerInterface);
       this.registerApp(app);
       const appInfo = port.name.split('::');
       chrome.storage.sync.get('notifications', (s) => {
@@ -133,6 +133,8 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
           type: 'basic'
         });
       });
+    } catch (error) {
+      l.error(`Error while adding chain: ${error}`);
     }
   }
 
