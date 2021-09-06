@@ -133,8 +133,8 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
           type: 'basic'
         });
       });
-    } finally {
-      /* eslint-disable no-empty */
+    } catch (error) {
+      l.error(`Error while adding chain: ${error}`);
     }
   }
 

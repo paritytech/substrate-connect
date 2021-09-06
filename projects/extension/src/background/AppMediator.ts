@@ -54,10 +54,11 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
 
     const splitIdx = port.name.indexOf('::');
     if (splitIdx === -1) {
-      const error: MessageFromManager = { type: 'error', payload: `Invalid port name ${port.name} expected <app_name>::<chain_name>` };
+      const payload = `Invalid port name ${port.name} expected <app_name>::<chain_name>`;
+      const error: MessageFromManager = { type: 'error', payload };
       port.postMessage(error);
       port.disconnect();
-      throw new Error();
+      throw new Error(payload);
     }
 
     this.#appName = port.name.substr(0, splitIdx);
