@@ -188,7 +188,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param name - Name of the chain
    * @param spec - ChainSpec of chain to be added
    * @param jsonRpcCallback - The jsonRpcCallback function that should be triggered
-   * @param relayChainName - optional string when parachain is added to depict the relay chain name
    * 
    * @returns addedChain - An the newly added chain info
    */
