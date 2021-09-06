@@ -163,7 +163,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
             this.#port.postMessage({ type: 'rpc', payload: rpcResp })
     }
 
-    this.#manager.addChain(chainName, chainSpec, rpcCallback, msg.relayChainName)
+    this.#manager.addChain(chainName, chainSpec, rpcCallback)
       .then(chain => {
         this.#chain = chain;
         // eslint-disable-next-line @typescript-eslint/unbound-method

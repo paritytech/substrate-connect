@@ -115,14 +115,10 @@ export class Detector {
    */
   public connect = async (relay: ChainInfo | string, parachain?: ChainInfo, options?: ApiOptions): Promise<ApiPromise> => {
     const chain: ChainInfo | string = parachain || relay;
-    let relayName = "";
-    if (parachain) {
-      relayName = this.getChainName(relay);
-    }
 
     const provider: ProviderInterface = typeof chain === 'string' ?
-      this.provider(chain, undefined, parachain && relayName) :
-      this.provider(chain.name, chain.spec, parachain && relayName);
+      this.provider(chain, undefined) :
+      this.provider(chain.name, chain.spec);
 
     provider.connect().catch(console.error);
 
@@ -147,8 +143,6 @@ export class Detector {
    * 
    * @param chainName - the name of the blockchain network to connect to
    * @param chainSpec - an optional chainSpec to connect to a different network
-   * @param relayChainName - an optional param of the relay chain name that (in case of parachain)
-   * the parachain will connect to
    * @returns a provider will be used in a ApiPromise create for PolkadotJS API
    *
    * @internal
@@ -156,7 +150,7 @@ export class Detector {
    * @remarks 
    * This is used internally for advanced PolkadotJS use cases and is not supported.  Use {@link connect} instead.
    */
-  public provider = (chainName: string, chainSpec?: string, relayChainName?: string): ProviderInterface => {
+  public provider = (chainName: string, chainSpec?: string): ProviderInterface => {
     let provider: ProviderInterface = {} as ProviderInterface;
 
     if (!chainSpec && !Object.keys(this.#chainSpecs).includes(chainName)) {
@@ -164,7 +158,7 @@ export class Detector {
     }
     
     if (this.#isExtension) {
-      provider = new ExtensionProvider(this.#name, chainName, chainSpec, relayChainName) as ProviderInterface;
+      provider = new ExtensionProvider(this.#name, chainName, chainSpec) as ProviderInterface;
     } else if (!this.#isExtension) {
       const spec = JSON.stringify(this.#chainSpecs[chainName]);
       provider = new SmoldotProvider(spec);

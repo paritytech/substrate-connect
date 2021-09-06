@@ -77,18 +77,16 @@ export class ExtensionProvider implements ProviderInterface {
   #appName: string;
   #chainName: string;
   #chainSpecs: string;
-  #relayChainName: string;
 
   /*
    * How frequently to see if we have any peers
    */
   healthPingerInterval = CONNECTION_STATE_PINGER_INTERVAL;
 
-  public constructor(appName: string, chainName: string, chainSpecs?: string, relayChainName?: string) {
+  public constructor(appName: string, chainName: string, chainSpecs?: string) {
     this.#appName = appName;
     this.#chainName = chainName;
     this.#chainSpecs = chainSpecs || '';
-    this.#relayChainName = relayChainName || '';
     this.#connectionStatePingerId = null;
   }
 
@@ -121,15 +119,6 @@ export class ExtensionProvider implements ProviderInterface {
   */
   public get chainSpecs(): string {
     return this.#chainSpecs;
-  }
-
-  /**
-  * chainName
-  *
-  * @returns the name of the chain this `ExtensionProvider` is talking to.
-  */
-  public get relayChainName(): string {
-    return this.#relayChainName;
   }
 
   /**
@@ -317,7 +306,6 @@ export class ExtensionProvider implements ProviderInterface {
       message: {
         type: 'spec',
         payload: this.#chainSpecs || '',
-        relayChainName: this.#relayChainName,
       }
     }
 

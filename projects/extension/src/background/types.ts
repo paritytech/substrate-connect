@@ -39,7 +39,6 @@ export interface ConnectionManagerInterface {
   addChain: (
     name: string,
     spec: string,
-    jsonRpcCallback: smoldot.SmoldotJsonRpcCallback,
-    relayChainName?: string) => Promise<smoldot.SmoldotChain>;
+    jsonRpcCallback: smoldot.SmoldotJsonRpcCallback) => Promise<smoldot.SmoldotChain>;
 }
 

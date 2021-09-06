@@ -107,8 +107,6 @@ export interface MessageToManager {
   type: 'rpc' | 'spec';
   /** Payload of the message -  a JSON encoded RPC request **/
   payload: string;
-  /** The name of the relay chain - if provided then the chain is a parachain  **/
-  relayChainName?: string;
 }
 
 /**
