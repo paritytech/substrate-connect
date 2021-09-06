@@ -32,8 +32,8 @@
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "dependencies": {
-    "@polkadot/api": "^5.4.1",
-    "@polkadot/rpc-provider": "^5.4.1",
+    "@polkadot/api": "^5.8.3",
+    "@polkadot/rpc-provider": "^5.8.3",
     "@substrate/connect-extension-protocol": "^0.3.0",
     "@substrate/smoldot-light": "^0.4.4",
     "browserify-fs": "^1.0.0",
