@@ -1,7 +1,5 @@
 # Substrate Connect
 
-**[The most up-to-date usage instructions for app builders can be found here](https://paritytech.github.io/substrate-connect/)**
-
 Substrate connect provides a way to interact with [substrate](https://substrate.dev/)
 based blockchains in the browser without using an RPC server. Substrate connect
 uses a [smoldot](https://github.com/paritytech/smoldot/) WASM light client to
@@ -20,6 +18,10 @@ building an app is the same experience as with using a traditional RPC server
 node.
 
 The substrate connect [API documentation is published here](https://paritytech.github.io/substrate-connect/api/).
+
+## Building an app with @substrate/connect and installing the extension
+
+**[The most up-to-date usage instructions for app builders can be found here](https://paritytech.github.io/substrate-connect/)**
 
 ## Development
 
