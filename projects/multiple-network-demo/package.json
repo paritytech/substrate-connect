@@ -5,7 +5,7 @@
   "contributors": [
     "Raoul Millais <raoul@parity.io>"
   ],
-  "license": "GPL-3.0-only",
+  "license": "Apache-2.0",
   "browserslist": [
     "last 2 versions"
   ],
