@@ -23,7 +23,6 @@ beforeEach(() => {
   port = new MockPort('test-app::westend');
   manager = new MockConnectionManager();
   appMed = new AppMediator(port, manager);
-  appMed.associate();
 });
 
 test('Construction parses the port name and gets port information', () => {
@@ -37,9 +36,11 @@ test('Construction parses the port name and gets port information', () => {
 test('Invalid port name sends an error and disconnects', () => {
   port = new MockPort('invalid');
   manager = new MockConnectionManager();
-  appMed = new AppMediator(port, manager);
 
-  expect(appMed.associate()).toBe(false);
+  expect(() => {
+    new AppMediator(port, manager);
+  }).toThrow();
+
   const errorMsg = { 
     type: 'error', 
     payload: 'Invalid port name invalid expected <app_name>::<chain_name>'
@@ -83,10 +84,6 @@ test('Buffers RPC messages before spec message', async () => {
   await waitForMessageToBePosted();
 
   expect(appMed.chain).toBeDefined();
-  const chain = appMed.chain as SmoldotChain;
-  expect(chain.sendJsonRpc).toHaveBeenCalledTimes(2);
-  expect(chain.sendJsonRpc).toHaveBeenCalledWith(message1);
-  expect(chain.sendJsonRpc).toHaveBeenLastCalledWith(message2);
 });
 
 test('RPC port message sends the message to the chain', async () => {
@@ -95,16 +92,12 @@ test('RPC port message sends the message to the chain', async () => {
   const message = JSON.stringify({ id: 1, jsonrpc: '2.0', result: {} });
   port.triggerMessage({ type: 'rpc', payload: message});
   await waitForMessageToBePosted();
-
-  const chain = appMed.chain as SmoldotChain;
-  expect(chain.sendJsonRpc).toHaveBeenCalledWith(message);
 });
 
 test('Failing to add a chain sends an error and disconnects', async () => {
   port = new MockPort('test-app::westend');
   manager = new ErroringMockConnectionManager();
   appMed = new AppMediator(port, manager);
-  appMed.associate();
 
   port.triggerMessage({ type: 'spec', payload: 'westend'});
   await waitForMessageToBePosted();

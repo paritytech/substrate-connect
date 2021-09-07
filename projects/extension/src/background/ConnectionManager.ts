@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as smoldot from '@substrate/smoldot-light';
-import { SmoldotAddChainOptions, SmoldotChain } from '@substrate/smoldot-light';
+import { SmoldotJsonRpcCallback, SmoldotChain } from '@substrate/smoldot-light';
 import { AppMediator } from './AppMediator';
 import { ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
@@ -22,7 +22,7 @@ const l = logger('Extension Connection Manager');
 export class ConnectionManager extends (EventEmitter as { new(): StateEmitter }) implements ConnectionManagerInterface {
   #client: smoldot.SmoldotClient | undefined = undefined;
   readonly #networks: Network[] = [];
-  readonly #apps:  AppMediator[] = [];
+  readonly #apps: AppMediator[] = [];
   smoldotLogLevel = 3;
 
   /** registeredApps
@@ -117,12 +117,12 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       port.postMessage({ type: 'error', payload: `App ${port.name} already exists.` });
       port.disconnect();
       return;
-    } 
+    }
 
-    const app = new AppMediator(port, this as ConnectionManagerInterface)
-    // if associate fails by returning false it has sent an error down the
-    // port and disconnected it, so we should just discard this `AppMediator`
-    if (app.associate()) {
+    // if create an `AppMediator` throws, it has sent an error down the
+    // port and disconnected it, so we should just ignore
+    try {
+      const app = new AppMediator(port, this as ConnectionManagerInterface);
       this.registerApp(app);
       const appInfo = port.name.split('::');
       chrome.storage.sync.get('notifications', (s) => {
@@ -133,6 +133,8 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
           type: 'basic'
         });
       });
+    } catch (error) {
+      l.error(`Error while adding chain: ${error}`);
     }
   }
 
@@ -171,7 +173,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    */
   async initSmoldot(): Promise<void> {
     try {
-      this.#client = await (smoldot as any).start({ 
+      this.#client = await (smoldot as any).start({
         forbidWs: true, /* suppress console warnings about insecure connections */
         maxLogLevel: this.smoldotLogLevel
       });
@@ -187,29 +189,22 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param spec - ChainSpec of chain to be added
    * @param jsonRpcCallback - The jsonRpcCallback function that should be triggered
    * @param relayChainName - optional string when parachain is added to depict the relay chain name
+   * 
+   * @returns addedChain - An the newly added chain info
    */
-  async addChain (name: string, chainSpec: string, jsonRpcCallback: smoldot.SmoldotJsonRpcCallback, relayChainName?: string): Promise<smoldot.SmoldotChain> {
+  async addChain(
+    name: string,
+    chainSpec: string,
+    jsonRpcCallback: SmoldotJsonRpcCallback): Promise<SmoldotChain> {
     if (!this.#client) {
       throw new Error('Smoldot client does not exist.');
     }
-    let relay: Network | undefined = undefined;
-    let addChainOptions = {} as SmoldotAddChainOptions;
 
-    // If this is a parachain - meaning a relayChainName is provided
-    if (relayChainName) {
-      relay = this.#networks.find(n => n.name === relayChainName)
-      addChainOptions = {
-        chainSpec,
-        jsonRpcCallback,
-        potentialRelayChains: [relay?.chain as SmoldotChain]
-      };
-    } else {
-      addChainOptions = {
-        chainSpec,
-        jsonRpcCallback
-      };
-    }
-    const addedChain = await this.#client.addChain(addChainOptions);
+    const addedChain = await this.#client.addChain({
+      chainSpec,
+      jsonRpcCallback,
+      potentialRelayChains: this.#networks.map(net => net.chain),
+    });
 
     this.#networks.push({
       name,

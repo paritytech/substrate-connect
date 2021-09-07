@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import * as smoldot from '@substrate/smoldot-light';
 import EventEmitter from 'eventemitter3';
 import {
   MessageToManager,
@@ -8,7 +13,7 @@ import {
   ConnectionManagerInterface,
   StateEmitter,
 } from './types';
-import { SmoldotChain } from '@substrate/smoldot-light';
+import { SmoldotChain, HealthChecker, SmoldotHealth } from '@substrate/smoldot-light';
 import westend from '../../public/assets/westend.json';
 import kusama from '../../public/assets/kusama.json';
 import polkadot from '../../public/assets/polkadot.json';
@@ -20,6 +25,7 @@ export const relayChains: RelayType = new Map<string, string>([
   ["kusama", JSON.stringify(kusama)],
   ["westend", JSON.stringify(westend)]
 ])
+
 /**
  * AppMediator is the class that represents and manages an app's connection to
  * a blockchain network.  N.B. an app that connects to multiple nblockchain
@@ -31,24 +37,40 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   readonly #name: string;
   readonly #appName: string;
   readonly #port: chrome.runtime.Port;
+  readonly #chainName: string;
   // REM: what to do about the fact these might be undefined?
   readonly #tabId: number | undefined;
   readonly #url: string | undefined;
   readonly #manager: ConnectionManagerInterface;
-  #chainName: string | undefined  = undefined;
   #chain: SmoldotChain | undefined;
   #state: AppState = 'connected';
   #pendingRequests: string[] = [];
+  #healthChecker: HealthChecker | undefined = undefined;
+  #healthStatus: SmoldotHealth | undefined = undefined;
 
   /**
    * @param port - the open communication port between the app's content page
    * and the extension background.
    * @param manager - the extension's connection manager that keeps track of
    * all the apps and smoldots
+   * 
+   * @throws an error if the port name is not valid, in which case an error is
+   * sent on the port and the port gets disconnected
    */
   constructor(port: chrome.runtime.Port, manager: ConnectionManagerInterface) {
     super();
-    this.#appName = port.name.substr(0, port.name.indexOf('::'));
+
+    const splitIdx = port.name.indexOf('::');
+    if (splitIdx === -1) {
+      const payload = `Invalid port name ${port.name} expected <app_name>::<chain_name>`;
+      const error: MessageFromManager = { type: 'error', payload };
+      port.postMessage(error);
+      port.disconnect();
+      throw new Error(payload);
+    }
+
+    this.#appName = port.name.substr(0, splitIdx);
+    this.#chainName = port.name.substr(splitIdx + 2, port.name.length);
     this.#name = port.name;
     this.#port = port;
     this.#tabId = port.sender?.tab?.id;
@@ -57,27 +79,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     // Open listeners for the incoming rpc messages
     this.#port.onMessage.addListener(this.#handleMessage);
     this.#port.onDisconnect.addListener(() => { this.#handleDisconnect() });
-  }
-
-  /** 
-   * associate parses the name of the network from the port name.
-   * It sends an error and disconnects the port if the port name is not in a
-   * valid format.
-   *
-   * @remarks
-   * This MUST be called straight after constructing an AppMediator
-   *
-   * @returns true if it associated succesfully otherwise false
-   */
-  public associate(): boolean {
-    const splitIdx = this.#port.name.indexOf('::');
-    if (splitIdx === -1) {
-      this.#sendError(`Invalid port name ${this.#port.name} expected <app_name>::<chain_name>`);
-      this.#port.disconnect();
-      return false;
-    }
-    this.#chainName = this.#port.name.substr(splitIdx + 2, this.#port.name.length);
-    return true;
+    this.#healthChecker = (smoldot as any).healthChecker();
   }
 
   /** 
@@ -96,6 +98,13 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   /** appName is the display name of the app provided by the app developer */
   get appName(): string {
     return this.#appName;
+  }
+
+  /** healthStatus returns the latest health status
+   * of app as set from the callback
+   */
+  get healthStatus(): SmoldotHealth {
+    return this.#healthStatus as SmoldotHealth;
   }
 
   /** 
@@ -133,21 +142,30 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     this.#port.postMessage(error);
   }
 
+  #healthCheckCallback = (health: SmoldotHealth): void => {
+    this.#healthStatus = health;
+  }
+
   #handleSpecMessage = (msg: MessageToManager, chainName: string): void => {
     const chainSpec: string = relayChains.has(chainName) ?
       (relayChains.get(chainName) || '') : msg.payload;
 
     const rpcCallback = (rpc: string) => {
-      this.#port.postMessage({ type: 'rpc', payload: rpc })
+      const rpcResp = this.#healthChecker?.responsePassThrough(rpc);
+      if (rpcResp)
+            this.#port.postMessage({ type: 'rpc', payload: rpcResp })
     }
 
-    this.#manager.addChain(chainName, chainSpec, rpcCallback, msg.relayChainName)
+    this.#manager.addChain(chainName, chainSpec, rpcCallback)
       .then(chain => {
         this.#chain = chain;
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        this.#chain && this.#healthChecker?.setSendJsonRpc(this.#chain.sendJsonRpc);
+        this.#healthChecker?.start(this.#healthCheckCallback);
         // process any RPC requests that came in while waiting for `addChain`
         // to complete
         if (this.#pendingRequests.length > 0) {
-          this.#pendingRequests.forEach(req => chain.sendJsonRpc(req));
+          this.#pendingRequests.forEach(req => this.#healthChecker?.sendJsonRpc(req));
           this.#pendingRequests = [];
         }
       })
@@ -164,7 +182,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
       return;
     }
 
-    const chainName = this.#chainName as string;
+    const chainName = this.#chainName ;
 
     if (msg.type === 'spec' && chainName) {
       return this.#handleSpecMessage(msg, chainName);
@@ -177,7 +195,7 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
       return;
     }
 
-    return this.#chain.sendJsonRpc(msg.payload);
+    return this.#healthChecker?.sendJsonRpc(msg.payload);
   }
 
   /** 
@@ -200,7 +218,6 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     if (this.#state === 'disconnected') {
       throw new Error('Cannot disconnect - already disconnected');
     }
-
     this.#dispose();
 
     this.#state = 'disconnected';
