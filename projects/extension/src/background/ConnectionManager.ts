@@ -20,10 +20,20 @@ const l = logger('Extension Connection Manager');
  * the UI to update accordingly. 
  */
 export class ConnectionManager extends (EventEmitter as { new(): StateEmitter }) implements ConnectionManagerInterface {
-  #client: smoldot.SmoldotClient | undefined = undefined;
+  #client: Promise<smoldot.SmoldotClient>;
   readonly #networks: Network[] = [];
   readonly #apps: AppMediator[] = [];
-  smoldotLogLevel = 3;
+
+  constructor() {
+    super();
+
+    this.#client = (smoldot as any)
+      .start({
+        forbidWs: true, /* suppress console warnings about insecure connections */
+        maxLogLevel: 3
+      })
+      .catch((err: any) => l.error(`Error while initializing smoldot: ${err}`))
+  }
 
   /** registeredApps
    *
@@ -164,22 +174,8 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
 
   /** shutdown shuts down the connected smoldot client. */
   shutdown(): void {
-    this.#client?.terminate();
-    this.#client = undefined;
-  }
-
-  /**
-   * initSmoldot initializes the smoldot client.
-   */
-  async initSmoldot(): Promise<void> {
-    try {
-      this.#client = await (smoldot as any).start({
-        forbidWs: true, /* suppress console warnings about insecure connections */
-        maxLogLevel: this.smoldotLogLevel
-      });
-    } catch (err) {
-      l.error(`Error while initializing smoldot: ${err}`);
-    }
+    this.#client.then(client => client.terminate());
+    this.#client = Promise.reject();
   }
 
   /**
@@ -199,10 +195,15 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       throw new Error('Smoldot client does not exist.');
     }
 
-    const addedChain = await this.#client.addChain({
-      chainSpec,
-      jsonRpcCallback,
-      potentialRelayChains: this.#networks.map(net => net.chain),
+    const addedChain = this.#client.then(async client => {
+      const potentialRelayChainsPromises = this.#networks.map(net => net.chain);
+      const potentialRelayChains = await Promise.all(potentialRelayChainsPromises);
+
+      return await client.addChain({
+        chainSpec,
+        jsonRpcCallback,
+        potentialRelayChains,
+      })
     });
 
     this.#networks.push({
@@ -213,6 +214,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       chainspecPath: `${name}.json`
     });
 
-    return addedChain;
+    return await addedChain;
   }
 }

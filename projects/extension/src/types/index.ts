@@ -25,7 +25,7 @@ interface ChainSpec {
   chainspecPath: string;
 }
 export interface Network extends ChainSpec {
-  chain: smoldot.SmoldotChain;
+  chain: Promise<smoldot.SmoldotChain>;
   parachains?: Parachain[];
 }
 export interface Parachain extends ChainSpec {
