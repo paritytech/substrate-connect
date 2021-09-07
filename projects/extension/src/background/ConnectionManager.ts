@@ -24,13 +24,13 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   readonly #networks: Network[] = [];
   readonly #apps: AppMediator[] = [];
 
-  constructor() {
+  constructor(smoldotLogLevel?: number) {
     super();
 
     this.#client = (smoldot as any)
       .start({
         forbidWs: true, /* suppress console warnings about insecure connections */
-        maxLogLevel: 3
+        maxLogLevel: smoldotLogLevel || 3
       })
       .catch((err: any) => l.error(`Error while initializing smoldot: ${err}`))
   }
@@ -116,10 +116,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * by a content script.
    */
   addApp(port: chrome.runtime.Port): void {
-    if (!this.#client) {
-      throw new Error('Smoldot client does not exist.');
-    }
-
     const existingApp = this.#apps.find(
       a => a.name === port.name && a.tabId === port.sender?.tab?.id);
 
@@ -174,7 +170,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
 
   /** shutdown shuts down the connected smoldot client. */
   shutdown(): void {
-    this.#client.then(client => client.terminate());
+    void this.#client.then(client => client.terminate());
     this.#client = Promise.reject();
   }
 
@@ -191,10 +187,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     name: string,
     chainSpec: string,
     jsonRpcCallback: SmoldotJsonRpcCallback): Promise<SmoldotChain> {
-    if (!this.#client) {
-      throw new Error('Smoldot client does not exist.');
-    }
-
     const addedChain = this.#client.then(async client => {
       const potentialRelayChainsPromises = this.#networks.map(net => net.chain);
       const potentialRelayChains = await Promise.all(potentialRelayChainsPromises);

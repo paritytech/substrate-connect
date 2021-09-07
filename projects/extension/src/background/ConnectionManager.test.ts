@@ -18,9 +18,7 @@ const doNothing = () => {
 
 test('adding and removing apps changes state', async () => {
   //setup connection manager with 2 chains
-  const manager = new ConnectionManager();
-  manager.smoldotLogLevel = 1;
-  await manager.initSmoldot();
+  const manager = new ConnectionManager(1);
   await manager.addChain('westend', JSON.stringify(westend), doNothing);
   await manager.addChain('kusama', JSON.stringify(kusama), doNothing);
 
@@ -32,10 +30,10 @@ test('adding and removing apps changes state', async () => {
   expect(handler).toHaveBeenCalledTimes(1);
   expect(manager.getState()).toEqual({
     apps: [
-      { 
+      {
         name: 'test-app',
         tabId: 42,
-        networks: [ { name: 'westend' } ]
+        networks: [{ name: 'westend' }]
       }
     ]
   });
@@ -46,10 +44,10 @@ test('adding and removing apps changes state', async () => {
   expect(handler).toHaveBeenCalledTimes(1);
   expect(manager.getState()).toEqual({
     apps: [
-      { 
+      {
         name: 'test-app',
         tabId: 42,
-        networks: [ { name: 'westend' }, { name: 'kusama' } ]
+        networks: [{ name: 'westend' }, { name: 'kusama' }]
       }
     ]
   });
@@ -60,15 +58,15 @@ test('adding and removing apps changes state', async () => {
   expect(handler).toHaveBeenCalledTimes(1);
   expect(manager.getState()).toEqual({
     apps: [
-      { 
+      {
         name: 'test-app',
         tabId: 42,
-        networks: [ { name: 'westend' }, { name: 'kusama' } ]
+        networks: [{ name: 'westend' }, { name: 'kusama' }]
       },
-      { 
+      {
         name: 'another-app',
         tabId: 43,
-        networks: [ { name: 'kusama' } ]
+        networks: [{ name: 'kusama' }]
       }
     ]
   });
@@ -79,10 +77,10 @@ test('adding and removing apps changes state', async () => {
   expect(handler).toHaveBeenCalled();
   expect(manager.getState()).toEqual({
     apps: [
-      { 
+      {
         name: 'test-app',
         tabId: 42,
-        networks: [ { name: 'westend' }, { name: 'kusama' } ]
+        networks: [{ name: 'westend' }, { name: 'kusama' }]
       }
     ]
   });
@@ -90,7 +88,7 @@ test('adding and removing apps changes state', async () => {
   handler.mockClear();
   manager.disconnectTab(42);
   expect(handler).toHaveBeenCalledTimes(2);
-  expect(manager.getState()).toEqual({ apps: [ ] });
+  expect(manager.getState()).toEqual({ apps: [] });
 
   // Connect 2 apps on the same network and 2nd one on another network
   // in order to test disconnectAll functionality
@@ -100,10 +98,10 @@ test('adding and removing apps changes state', async () => {
   expect(handler).toHaveBeenCalledTimes(1);
   expect(manager.getState()).toEqual({
     apps: [
-      { 
+      {
         name: 'test-app-1',
         tabId: 1,
-        networks: [ { name: 'westend' } ]
+        networks: [{ name: 'westend' }]
       }
     ]
   });
@@ -115,15 +113,15 @@ test('adding and removing apps changes state', async () => {
   expect(handler).toHaveBeenCalledTimes(2);
   expect(manager.getState()).toEqual({
     apps: [
-      { 
+      {
         name: 'test-app-1',
         tabId: 1,
-        networks: [ { name: 'westend' } ]
+        networks: [{ name: 'westend' }]
       },
-      { 
+      {
         name: 'test-app-2',
         tabId: 2,
-        networks: [ { name: 'westend' }, { name: 'kusama' }  ]
+        networks: [{ name: 'westend' }, { name: 'kusama' }]
       }
     ]
   });
@@ -136,13 +134,11 @@ test('adding and removing apps changes state', async () => {
 });
 
 describe('Unit tests', () => {
-  const manager = new ConnectionManager();
+  const manager = new ConnectionManager(1);
   const handler = jest.fn();
 
   beforeAll(async () => {
-    manager.smoldotLogLevel = 1;
     //setup connection manager with 2 networks
-    await manager.initSmoldot();
     await manager.addChain('westend', JSON.stringify(westend), doNothing);
     await manager.addChain('kusama', JSON.stringify(kusama), doNothing);
     manager.on('stateChanged', handler);
@@ -207,12 +203,7 @@ describe('Unit tests', () => {
 });
 
 describe('When the manager is shutdown', () => {
-  const manager = new ConnectionManager();
-
-  beforeEach(async () => {
-    manager.smoldotLogLevel = 1;
-    await manager.initSmoldot();
-  });
+  const manager = new ConnectionManager(1);
 
   test('adding an app after the manager is shutdown throws an error', () => {
     const port = new MockPort('test-app-5::westend');
@@ -225,20 +216,18 @@ describe('When the manager is shutdown', () => {
 });
 
 describe('Check storage and send notification when adding an app', () => {
-  const manager = new ConnectionManager();
+  const manager = new ConnectionManager(1);
 
   chrome.storage.sync.get.mockImplementation((keys, callback) => {
-    callback({ notifications: true }) 
+    callback({ notifications: true })
   });
 
-  beforeEach(async () => {
+  beforeEach(() => {
     chrome.storage.sync.get.mockClear();
     chrome.notifications.create.mockClear();
-    manager.smoldotLogLevel = 1;
-    await manager.initSmoldot();
   });
 
-  afterEach( () => {
+  afterEach(() => {
     manager.shutdown();
   })
 
