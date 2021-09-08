@@ -1,3 +1,4 @@
+import * as smoldot from '@substrate/smoldot-light';
 import { HealthChecker, Smoldot, SmoldotAddChainOptions, SmoldotChain, SmoldotClient, SmoldotJsonRpcCallback } from '@substrate/smoldot-light';
 import { JsonRpcObject } from '@polkadot/rpc-provider/types';
 import { jest } from '@jest/globals'
@@ -32,7 +33,7 @@ export interface SystemHealth {
  */
 const systemHealthReponse = (id: number, health: SystemHealth) => {
   return `{"jsonrpc":"2.0","id":${id} ,"result":{"isSyncing":${health.isSyncing},"peers":${health.peerCount},"shouldHavePeers":${health.shouldHavePeers}}}`;
-  }
+}
 
 /**
  * devChainHealthResponse - creates a valid RPC response that looks like a response
@@ -48,7 +49,7 @@ const systemHealthReponse = (id: number, health: SystemHealth) => {
  * equal to 0.
  */
 const devChainHealthResponse = (id: number) => {
-  return systemHealthReponse(id, { isSyncing: true, peerCount: 0, shouldHavePeers: false});
+  return systemHealthReponse(id, { isSyncing: true, peerCount: 0, shouldHavePeers: false });
 }
 
 /**
@@ -174,6 +175,11 @@ const createRequestProcessor = (options: SmoldotAddChainOptions, responder: RpcR
           return;
         }
 
+        if (/chain_subscribeNewHeads/.test(rpcRequest)) {
+          options.jsonRpcCallback(healthResponder(rpcRequest));
+          return;
+        }
+
         // non-health reponse
         options.jsonRpcCallback(responder(rpcRequest))
         if (/(?<!un)[sS]ubscribe/.test(rpcRequest)) {
@@ -212,15 +218,7 @@ export const mockSmoldot = (responder: RpcResponder, healthResponder = healthyRe
         })
       });
     },
-    healthChecker: (): HealthChecker => {
-      return ({
-        setSendJsonRpc: doNothing,
-        sendJsonRpc: doNothing,
-        start: doNothing,
-        stop: doNothing,
-        responsePassThrough: (_resp: string) => ''
-      })
-    }
+    healthChecker: (): HealthChecker => smoldot.smoldot.healthChecker(),
   };
 };
 
@@ -260,14 +258,6 @@ export const smoldotSpy = (responder: RpcResponder, rpcSpy: jest.MockedFunction<
         }
       });
     },
-    healthChecker: (): HealthChecker => {
-      return ({
-        setSendJsonRpc: doNothing,
-        sendJsonRpc: doNothing,
-        start: doNothing,
-        stop: doNothing,
-        responsePassThrough: (_resp: string) => ''
-      })
-    }
+    healthChecker: (): HealthChecker => smoldot.smoldot.healthChecker(),
   };
 };

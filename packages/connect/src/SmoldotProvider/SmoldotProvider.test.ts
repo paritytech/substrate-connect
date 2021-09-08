@@ -33,8 +33,6 @@ describe('Test Development chain', () => {
     const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
     provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
   
-    // we don't want the test to be slow
-    provider.healthPingerInterval = 1;
     await provider.connect();
   
     return new Promise<void>((resolve) => {
@@ -53,8 +51,6 @@ describe('Test Development chain', () => {
     const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
     provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
   
-    // we don't want the test to be slow
-    provider.healthPingerInterval = 1;
     await provider.connect();
     
     return new Promise<void>((resolve, reject) => {
@@ -101,21 +97,6 @@ test('awaiting send returns message result', async () => {
   await provider.disconnect();
 });
 
-test('emits error when system_health responds with error', async () => {
-  const ms = mockSmoldot(respondWith([]), erroringResponder);
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
-
-  // we don't want the test to be slow
-  provider.healthPingerInterval = 1;
-  await provider.connect();
-  return new Promise<void>((resolve) => {
-    provider.on('error', error => {
-      expect(error.message).toBe('Got error response asking for system health');
-      return provider.disconnect().then(() => resolve());
-    });
-  });
-});
-
 test('emits events when it connects then disconnects', async () => {
   const healthResponses = [
     { isSyncing: false, peerCount: 1, shouldHavePeers: true },
@@ -124,8 +105,6 @@ test('emits events when it connects then disconnects', async () => {
   const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
 
-  // we don't want the test to be slow
-  provider.healthPingerInterval = 1;
   await provider.connect();
   return new Promise<void>((resolve) => {
     provider.on('connected', () => {
@@ -145,8 +124,6 @@ test('emits events when Grandpa finishes sync and then connects', async () => {
   const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
 
-  // we don't want the test to be slow
-  provider.healthPingerInterval = 1;
   await provider.connect();
   return new Promise<void>((resolve) => {
     provider.on('connected', () => {
@@ -227,7 +204,7 @@ test('subscribe', async () => {
 
   await provider.connect();
 
-  expect.assertions(2);
+  expect.assertions(3);
   return new Promise<void>((resolve, reject) => {
     return provider.subscribe('state_test', 'test_subscribe', [],  (error: Error | null, result: any) => {
       if (error !== null) {
@@ -252,7 +229,7 @@ test('subscribe copes with out of order responses', async () => {
 
   await provider.connect();
 
-  expect.assertions(2);
+  expect.assertions(3);
   return new Promise<void>((resolve, reject) => {
     return provider.subscribe('state_test', 'test_subscribe', [],  (error: Error | null, result: any) => {
       if (error !== null) {
@@ -279,7 +256,7 @@ test('converts british english method spelling to US', async () => {
 
   await provider.connect();
 
-  expect.assertions(2);
+  expect.assertions(3);
   return new Promise<void>((resolve, reject) => {
     return provider.subscribe('chain_finalizedHead', 'chain_subscribeFinalizedHeads', [],  (error: Error | null, result: any) => {
       if (error !== null) {

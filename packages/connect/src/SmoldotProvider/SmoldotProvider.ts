@@ -1,4 +1,4 @@
-import {RpcCoder} from '@polkadot/rpc-provider/coder';
+import { RpcCoder } from '@polkadot/rpc-provider/coder';
 import {
   JsonRpcResponse,
   ProviderInterface,
@@ -28,7 +28,7 @@ interface SubscriptionHandler {
 }
 
 interface StateSubscription extends SubscriptionHandler {
-    method: string;
+  method: string;
 }
 
 interface HealthResponse {
@@ -88,29 +88,23 @@ export class SmoldotProvider implements ProviderInterface {
   readonly #handlers: Record<string, RpcStateAwaiting> = {};
   readonly #subscriptions: Record<string, StateSubscription> = {};
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
-  #connectionStatePingerId: ReturnType<typeof setInterval> | null;
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
   #chain: smoldot.SmoldotChain | undefined = undefined;
+  #healthChecker: smoldot.HealthChecker | undefined = undefined;
   // reference to the smoldot module so we can defer loading the wasm client
   // until connect is called
   #smoldot: smoldot.Smoldot;
 
-  /*
-   * How frequently to see if we have any peers
-   */
-  healthPingerInterval = CONNECTION_STATE_PINGER_INTERVAL;
-
-   /**
-   * @param chainSpec - The chainSpec for the WASM client
-   * @param sm - (only used for testing) defaults to the actual smoldot module
-   */
+  /**
+  * @param chainSpec - The chainSpec for the WASM client
+  * @param sm - (only used for testing) defaults to the actual smoldot module
+  */
   //eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
   public constructor(chainSpec: string, sm?: any) {
     this.#chainSpec = chainSpec;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.#smoldot = sm || smoldot;
-    this.#connectionStatePingerId = null;
   }
 
   /**
@@ -139,7 +133,7 @@ export class SmoldotProvider implements ProviderInterface {
       : this.#onMessageSubscribe(response);
   }
 
- #onMessageResult = (response: JsonRpcResponse): void => {
+  #onMessageResult = (response: JsonRpcResponse): void => {
     const handler = this.#handlers[response.id];
 
     if (!handler) {
@@ -206,7 +200,7 @@ export class SmoldotProvider implements ProviderInterface {
     // development chains should not have peers so we only emit connected
     // once and never disconnect
     if (health.shouldHavePeers == false) {
-      
+
       if (!this.#isConnected) {
         this.#isConnected = true;
         this.emit('connected');
@@ -245,12 +239,6 @@ export class SmoldotProvider implements ProviderInterface {
     // still not connected
   }
 
-  #checkClientPeercount = (): void => {
-    this.send('system_health', [])
-      .then(this.#simulateLifecycle)
-      .catch(error => this.emit('error', new HealthCheckError(error)));
-  }
-
   /**
    * "Connect" the WASM client - starts the smoldot WASM client
    */
@@ -261,15 +249,22 @@ export class SmoldotProvider implements ProviderInterface {
         forbidWs: true, /* suppress console warnings about insecure connections */
         maxLogLevel: 3, /* no debug/trace messages */
       });
-      this.#chain = await this.#client.addChain({
+      const healthChecker = this.#smoldot.healthChecker();
+      const chain = await this.#client.addChain({
         chainSpec: this.#chainSpec,
         jsonRpcCallback: (response: string) => {
-          this.#handleRpcReponse(response);
+          const filteredResponse = healthChecker.responsePassThrough(response);
+          if (filteredResponse)
+            this.#handleRpcReponse(filteredResponse);
         }
       });
-      this.#connectionStatePingerId = setInterval(
-      this.#checkClientPeercount, this.healthPingerInterval);
-    } catch(error: unknown) {
+      healthChecker.setSendJsonRpc((rq) => chain.sendJsonRpc(rq));
+      // the fields of `this` are assigned their values at the very bottom, in order to not
+      // be in a weird state in case an exception is thrown
+      this.#healthChecker = healthChecker;
+      this.#chain = chain;
+      this.#healthChecker.start((health) => this.#simulateLifecycle(health));
+    } catch (error: unknown) {
       this.emit('error', error);
     }
   }
@@ -280,27 +275,26 @@ export class SmoldotProvider implements ProviderInterface {
   // eslint-disable-next-line @typescript-eslint/require-await
   public async disconnect(): Promise<void> {
     try {
-        if (this.#client) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-          this.#client.terminate();
-        }
-      } catch(error: unknown) {
-        this.emit('error', error);
-      } finally {
-        if (this.#connectionStatePingerId !== null) {
-          clearInterval(this.#connectionStatePingerId);
-        }
-  
-        this.#isConnected = false;
-        this.emit('disconnected');
+      if (this.#healthChecker) {
+        this.#healthChecker.stop();
       }
+      if (this.#client) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        this.#client.terminate();
+      }
+    } catch (error: unknown) {
+      this.emit('error', error);
+    } finally {
+      this.#isConnected = false;
+      this.emit('disconnected');
+    }
   }
 
   /**
    * Whether the node is connected or not.
    * @returns true if connected
    */
-  public get isConnected (): boolean {
+  public get isConnected(): boolean {
     return this.#isConnected;
   }
 
@@ -336,25 +330,26 @@ export class SmoldotProvider implements ProviderInterface {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     return new Promise((resolve, reject): void => {
-        assert(this.#client, 'Client is not initialised');
-        assert(this.#chain, 'Chain is not initialised');
-        const json = this.#coder.encodeJson(method, params);
-        const id = this.#coder.getId();
+      assert(this.#client, 'Client is not initialised');
+      assert(this.#chain, 'Chain is not initialised');
+      assert(this.#healthChecker, 'Chain is not initialised');
+      const json = this.#coder.encodeJson(method, params);
+      const id = this.#coder.getId();
 
-        const callback = (error?: Error | null, result?: unknown): void => {
-          error
-            ? reject(error)
-            : resolve(result);
-        };
+      const callback = (error?: Error | null, result?: unknown): void => {
+        error
+          ? reject(error)
+          : resolve(result);
+      };
 
-        l.debug(() => ['calling', method, json]);
+      l.debug(() => ['calling', method, json]);
 
-        this.#handlers[id] = {
-          callback,
-          method,
-          subscription
-        };
-      this.#chain.sendJsonRpc(json);
+      this.#handlers[id] = {
+        callback,
+        method,
+        subscription
+      };
+      this.#healthChecker.sendJsonRpc(json);
     });
   }
 
