@@ -15,17 +15,22 @@ window.onload = () => {
   (async () => {
     try {
       const detect = new Detector('Parachain Demo');
-      const api = await detect.connect('westend', {name: 'Westmint', spec: JSON.stringify(westmint)});
-      console.log('api', api);
+      const api = await detect.connect('westend2', JSON.stringify(westmint));
+      
+      const [chain, nodeName, nodeVersion, properties] = await Promise.all([
+        api.rpc.system.chain(),
+        api.rpc.system.name(),
+        api.rpc.system.version(),
+        api.rpc.system.properties()
+      ]);
       const header = await api.rpc.chain.getHeader()
       const chainName = await api.rpc.system.chain()
 
       // Show chain constants - from chain spec
-      ui.log(`${emojis.seedling} Light client ready`, true);
+      ui.log(`${emojis.seedling} Light client ready - Using ${chain} - ${nodeName}: ${nodeVersion}`, true);
       ui.log(`${emojis.info} Connected to ${chainName}: syncing will start at block #${header.number}`);
-      // ui.log(`${emojis.chequeredFlag} Genesis hash is ${api.genesisHash.toHex()}`);
-      // ui.log(`${emojis.clock} Epoch duration is ${api.consts.babe.epochDuration.toNumber()} blocks`);
-      // ui.log(`${emojis.banknote} ExistentialDeposit is ${api.consts.balances.existentialDeposit.toHuman()}`);
+      ui.log(`${emojis.chequeredFlag} Token decimals: ${properties['tokenDecimals']} - symbol: ${properties['tokenSymbol']}`);
+      ui.log(`${emojis.chequeredFlag} Genesis hash is ${api.genesisHash.toHex()}`);
 
       // Show how many peers we are syncing with
       const health = await api.rpc.system.health();
