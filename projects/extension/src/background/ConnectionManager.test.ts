@@ -21,8 +21,8 @@ test('adding and removing apps changes state', async () => {
   const manager = new ConnectionManager();
   manager.smoldotLogLevel = 1;
   await manager.initSmoldot();
-  await manager.addChain('westend', JSON.stringify(westend), doNothing);
-  await manager.addChain('kusama', JSON.stringify(kusama), doNothing);
+  await manager.addChain(JSON.stringify(westend), doNothing);
+  await manager.addChain(JSON.stringify(kusama), doNothing);
 
   const handler = jest.fn();
   manager.on('stateChanged', handler);
@@ -143,15 +143,15 @@ describe('Unit tests', () => {
     manager.smoldotLogLevel = 1;
     //setup connection manager with 2 networks
     await manager.initSmoldot();
-    await manager.addChain('westend', JSON.stringify(westend), doNothing);
-    await manager.addChain('kusama', JSON.stringify(kusama), doNothing);
+    await manager.addChain(JSON.stringify(westend), doNothing);
+    await manager.addChain(JSON.stringify(kusama), doNothing);
     manager.on('stateChanged', handler);
 
     //add 4 apps in clients
-    connectApp(manager, 11, 'test-app-1', 'westend');
-    connectApp(manager, 12, 'test-app-2', 'kusama');
-    connectApp(manager, 13, 'test-app-3', 'westend');
-    connectApp(manager, 14, 'test-app-4', 'kusama');
+    connectApp(manager, 11, 'test-app-1', 'Westend');
+    connectApp(manager, 12, 'test-app-2', 'Kusama');
+    connectApp(manager, 13, 'test-app-3', 'Westend');
+    connectApp(manager, 14, 'test-app-4', 'Kusama');
   });
 
   afterAll(() => {
@@ -160,17 +160,17 @@ describe('Unit tests', () => {
 
   test('Get registered apps', () => {
     expect(manager.registeredApps).toEqual([
-      "test-app-1::westend",
-      "test-app-2::kusama",
-      "test-app-3::westend",
-      "test-app-4::kusama"
+      "test-app-1::Westend",
+      "test-app-2::Kusama",
+      "test-app-3::Westend",
+      "test-app-4::Kusama"
     ]);
   });
 
   test('Get registered clients', () => {
     expect(manager.registeredClients).toEqual([
-      "westend",
-      "kusama"
+      "Westend",
+      "Kusama"
     ]);
   });
 
@@ -191,17 +191,17 @@ describe('Unit tests', () => {
     )
 
     expect(tmpChains).toEqual([
-      { name: 'westend', status: "connected", chainspecPath: "westend.json", isKnown: true },
-      { name: 'kusama', status: "connected", chainspecPath: "kusama.json", isKnown: true }
+      { name: 'Westend', status: "connected", chainspecPath: "Westend.json", isKnown: true },
+      { name: 'Kusama', status: "connected", chainspecPath: "Kusama.json", isKnown: true }
     ]);
 
     expect(manager.networks).toHaveLength(2);
   });
 
   test('Adding an app that already exists sends an error and disconnects', () => {
-    const port = connectApp(manager, 13, 'test-app-3', 'westend');
+    const port = connectApp(manager, 13, 'test-app-3', 'Westend');
     expect(port.postMessage).toHaveBeenCalledTimes(1);
-    expect(port.postMessage).toHaveBeenLastCalledWith({ type: 'error', payload: 'App test-app-3::westend already exists.' })
+    expect(port.postMessage).toHaveBeenLastCalledWith({ type: 'error', payload: 'App test-app-3::Westend already exists.' })
     expect(port.disconnect).toHaveBeenCalled();
   });
 });

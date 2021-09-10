@@ -59,7 +59,7 @@ describe('Initialize Detector without extension', () => {
 
   test('Should connect with known chain "westend" and parachain "westmint".', async () => {
     const detect = new Detector('test-uapp');
-    const api = await detect.connect('westend', { name: 'westmint', spec: JSON.stringify(westmint) });
+    const api = await detect.connect('westend', JSON.stringify(westmint));
     expect(api).toBeTruthy();
     console.log('api', api);
     detect.disconnect('westmint');

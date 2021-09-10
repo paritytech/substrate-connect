@@ -30,13 +30,13 @@ afterEach(() => {
 });
 
 test('constructor sets properties', () => {
-  const ep = new ExtensionProvider('test', 'kusama');
+  const ep = new ExtensionProvider('test', { name:'kusama', spec: ''});
   expect(ep.name).toBe('test');
   expect(ep.chainName).toBe('kusama');
 });
 
 test('connected and sends correct spec message', async () => {
-  const ep = new ExtensionProvider('test', 'westend');
+  const ep = new ExtensionProvider('test', { name:'westend', spec: ''});
   const emitted = jest.fn();
   ep.on('connected', emitted);
   await ep.connect();
@@ -58,7 +58,7 @@ test('connected and sends correct spec message', async () => {
 });
 
 test('constructor sets properties for parachain', () => {
-  const ep = new ExtensionProvider('test', 'westmint', 'westmint-specs');
+  const ep = new ExtensionProvider('test', { name:'westmint', spec: 'westmint-specs'});
   expect(ep.name).toBe('test');
   expect(ep.chainName).toBe('westmint');
   expect(ep.chainSpecs).toBe('westmint-specs');
@@ -66,7 +66,7 @@ test('constructor sets properties for parachain', () => {
 });
 
 test('connected parachain sends correct spec message', async () => {
-  const ep = new ExtensionProvider('test', 'westmint', 'westmint-specs');
+  const ep = new ExtensionProvider('test', { name:'westmint', spec: 'westmint-specs'});
   const emitted = jest.fn();
   ep.on('connected', emitted);
   await ep.connect();
@@ -88,7 +88,7 @@ test('connected parachain sends correct spec message', async () => {
 });
 
 test('connect sends connect message and emits connected', async () => {
-  const ep = new ExtensionProvider('test', 'test-chain');
+  const ep = new ExtensionProvider('test', { name:'test-chain', spec: ''});
   await ep.connect();
   await waitForMessageToBePosted();
 
@@ -104,7 +104,7 @@ test('connect sends connect message and emits connected', async () => {
 });
 
 test('disconnect sends disconnect message and emits disconnected', async () => {
-  const ep = new ExtensionProvider('test', 'test-chain');
+  const ep = new ExtensionProvider('test', { name:'test-chain', spec: ''});
   const emitted = jest.fn();
   await ep.connect();
 
@@ -126,7 +126,7 @@ test('disconnect sends disconnect message and emits disconnected', async () => {
 });
 
 test('disconnects and emits disconnected when it receives a disconnect message', async () => {
-  const ep = new ExtensionProvider('test', 'test-chain');
+  const ep = new ExtensionProvider('test', { name:'test-chain', spec: ''});
   const emitted = jest.fn();
   await ep.connect();
 
@@ -142,7 +142,7 @@ test('disconnects and emits disconnected when it receives a disconnect message',
 });
 
 test('emits error when it receives an error message', async () => {
-  const ep = new ExtensionProvider('test', 'test-chain');
+  const ep = new ExtensionProvider('test', { name:'test-chain', spec: ''});
   await ep.connect();
   await waitForMessageToBePosted();
   const errorMessage: ExtensionMessageData = {
