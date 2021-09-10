@@ -174,7 +174,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   async initSmoldot(): Promise<void> {
     try {
       this.#client = await (smoldot as any).start({
-        forbidWs: true, /* suppress console warnings about insecure connections */
+        forbidWs: false, /* suppress console warnings about insecure connections */
         maxLogLevel: this.smoldotLogLevel
       });
     } catch (err) {
@@ -188,32 +188,53 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param name - Name of the chain
    * @param spec - ChainSpec of chain to be added
    * @param jsonRpcCallback - The jsonRpcCallback function that should be triggered
-   * @param relayChainName - optional string when parachain is added to depict the relay chain name
+   * @param relayChain - optional SmoldotChain for relay chain
    * 
    * @returns addedChain - An the newly added chain info
    */
   async addChain(
-    name: string,
     chainSpec: string,
-    jsonRpcCallback: SmoldotJsonRpcCallback): Promise<SmoldotChain> {
+    jsonRpcCallback?: SmoldotJsonRpcCallback,
+    relayChain?: SmoldotChain): Promise<SmoldotChain> {
     if (!this.#client) {
       throw new Error('Smoldot client does not exist.');
     }
 
-    const addedChain = await this.#client.addChain({
-      chainSpec,
-      jsonRpcCallback,
-      potentialRelayChains: this.#networks.map(net => net.chain),
-    });
+    if (relayChain) {
+      const addedChain = await this.#client.addChain({
+        chainSpec,
+        jsonRpcCallback,
+        potentialRelayChains: [relayChain],
+      });
+      const { id, name } = JSON.parse(chainSpec)
 
-    this.#networks.push({
-      name,
-      chain: addedChain,
-      status: 'connected',
-      isKnown: true,
-      chainspecPath: `${name}.json`
-    });
+      this.#networks.push({
+        id,
+        name,
+        chain: addedChain,
+        status: 'connected',
+        isKnown: true,
+        chainspecPath: `${name}.json`
+      });
+      return addedChain;
+    } else {
+      const addedChain = await this.#client.addChain({
+        chainSpec,
+        jsonRpcCallback,
+        potentialRelayChains: this.#networks.map(net => net.chain)
+      });
 
-    return addedChain;
+      const { id, name } = JSON.parse(chainSpec)
+  
+      this.#networks.push({
+        id,
+        name,
+        chain: addedChain,
+        status: 'connected',
+        isKnown: true,
+        chainspecPath: `${name}.json`
+      });
+      return addedChain;
+    }
   }
 }

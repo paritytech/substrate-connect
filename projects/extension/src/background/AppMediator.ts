@@ -21,9 +21,9 @@ import polkadot from '../../public/assets/polkadot.json';
 type RelayType = Map<string, string>;
 
 export const relayChains: RelayType = new Map<string, string>([
-  ["polkadot", JSON.stringify(polkadot)],
-  ["kusama", JSON.stringify(kusama)],
-  ["westend", JSON.stringify(westend)]
+  ['polkadot', JSON.stringify(polkadot)],
+  [kusama.id, JSON.stringify(kusama)],
+  [westend.id, JSON.stringify(westend)]
 ])
 
 /**
@@ -146,34 +146,60 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     this.#healthStatus = health;
   }
 
+  #initHealthChecker = (): void => {
+    this.#chain && this.#healthChecker?.setSendJsonRpc(this.#chain.sendJsonRpc);
+    this.#healthChecker?.start(this.#healthCheckCallback);
+    // process any RPC requests that came in while waiting for `addChain` to complete
+    if (this.#pendingRequests.length > 0) {
+      this.#pendingRequests.forEach(req => this.#healthChecker?.sendJsonRpc(req));
+      this.#pendingRequests = [];
+    }
+  }
+
   #handleSpecMessage = (msg: MessageToManager, chainName: string): void => {
     const chainSpec: string = relayChains.has(chainName) ?
       (relayChains.get(chainName) || '') : msg.payload;
 
     const rpcCallback = (rpc: string) => {
-      const rpcResp = this.#healthChecker?.responsePassThrough(rpc);
+      const rpcResp: string | null | undefined = this.#healthChecker?.responsePassThrough(rpc);
       if (rpcResp)
-            this.#port.postMessage({ type: 'rpc', payload: rpcResp })
+        this.#port.postMessage({ type: 'rpc', payload: rpcResp })
     }
 
-    this.#manager.addChain(chainName, chainSpec, rpcCallback)
-      .then(chain => {
-        this.#chain = chain;
-        // eslint-disable-next-line @typescript-eslint/unbound-method
-        this.#chain && this.#healthChecker?.setSendJsonRpc(this.#chain.sendJsonRpc);
-        this.#healthChecker?.start(this.#healthCheckCallback);
-        // process any RPC requests that came in while waiting for `addChain`
-        // to complete
-        if (this.#pendingRequests.length > 0) {
-          this.#pendingRequests.forEach(req => this.#healthChecker?.sendJsonRpc(req));
-          this.#pendingRequests = [];
-        }
-      })
-      .catch(e => {
-        this.#sendError((e as Error).message);
-        this.#port.disconnect();
-        this.#manager.unregisterApp(this);
-      });
+    // Means this is a parachain trying to connect
+    if (msg.parachainPayload) {
+      // Connect the main Chain first and on success the parachain with the chain
+      // that just got connected as the relayChain
+      const relayChainName: string = JSON.parse(msg.parachainPayload).relay_chain
+      const parachainSpec: string = msg.parachainPayload
+      const relaychainSpec: string | undefined = relayChains.get(relayChainName)
+
+      if (!relaychainSpec)
+        throw new Error('Relay chain spec was not found')
+
+      this.#manager.addChain(chainSpec).then(relayChain => {
+        this.#manager.addChain(parachainSpec, rpcCallback, relayChain).then(chain => {
+            this.#chain = chain;
+            this.#initHealthChecker();
+          });
+        }).catch(e => {
+          this.#sendError((e as Error).message);
+          this.#port.disconnect();
+          this.#manager.unregisterApp(this);
+        });
+    } else {
+      // Connect the main Chain only
+      this.#manager.addChain(chainSpec, rpcCallback)
+        .then(chain => {
+          this.#chain = chain;
+          this.#initHealthChecker();
+        })
+        .catch(e => {
+          this.#sendError((e as Error).message);
+          this.#port.disconnect();
+          this.#manager.unregisterApp(this);
+        });
+    }
   }
 
   #handleMessage = (msg: MessageToManager): void => {
@@ -182,10 +208,8 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
       return;
     }
 
-    const chainName = this.#chainName ;
-
-    if (msg.type === 'spec' && chainName) {
-      return this.#handleSpecMessage(msg, chainName);
+    if (msg.type === 'spec' && this.#chainName) {
+      return this.#handleSpecMessage(msg, this.#chainName);
     }
 
     if (this.#chain === undefined) {

@@ -37,8 +37,8 @@ export interface ConnectionManagerInterface {
   registerApp: (app: AppMediator) => void;
   unregisterApp: (app: AppMediator) => void;
   addChain: (
-    name: string,
     spec: string,
-    jsonRpcCallback: smoldot.SmoldotJsonRpcCallback) => Promise<smoldot.SmoldotChain>;
+    jsonRpcCallback?: smoldot.SmoldotJsonRpcCallback,
+    relayChain?: smoldot.SmoldotChain) => Promise<smoldot.SmoldotChain>;
 }
 
