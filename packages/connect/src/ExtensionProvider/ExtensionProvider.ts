@@ -60,6 +60,11 @@ const ANGLICISMS: { [index: string]: string } = {
  */
 const CONNECTION_STATE_PINGER_INTERVAL = 2000;
 
+interface ChainInfo {
+  name: string
+  spec: string
+}
+
 /**
  * The ExtensionProvider allows interacting with a smoldot-based WASM light
  * client running in a browser extension.  It is not designed to be used
@@ -77,17 +82,22 @@ export class ExtensionProvider implements ProviderInterface {
   #appName: string;
   #chainName: string;
   #chainSpecs: string;
+  #parachainSpecs: string;
 
   /*
    * How frequently to see if we have any peers
    */
   healthPingerInterval = CONNECTION_STATE_PINGER_INTERVAL;
 
-  public constructor(appName: string, chainName: string, chainSpecs?: string) {
+  public constructor(appName: string, relayChain: ChainInfo, parachain?: string) {
     this.#appName = appName;
-    this.#chainName = chainName;
-    this.#chainSpecs = chainSpecs || '';
+    this.#chainName = relayChain.name;
+    this.#chainSpecs = relayChain.spec || '';
     this.#connectionStatePingerId = null;
+    this.#parachainSpecs = '';
+    if (parachain) {
+      this.#parachainSpecs = parachain;
+    }
   }
 
   /**
@@ -308,7 +318,9 @@ export class ExtensionProvider implements ProviderInterface {
         payload: this.#chainSpecs || '',
       }
     }
-
+    if (this.#parachainSpecs && specMsg.message) {
+      specMsg.message.parachainPayload = this.#parachainSpecs;
+    }
     provider.send(specMsg);
 
     provider.listen(({data}: ExtensionMessage) => {
@@ -319,6 +331,7 @@ export class ExtensionProvider implements ProviderInterface {
     this.#connectionStatePingerId = setInterval(this.#checkClientPeercount, 
       this.healthPingerInterval);
 
+    // this.#isConnected = true;
     return Promise.resolve();
   }
 
