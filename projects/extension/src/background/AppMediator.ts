@@ -147,8 +147,9 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
   }
 
   #initHealthChecker = (): void => {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     this.#chain && this.#healthChecker?.setSendJsonRpc(this.#chain.sendJsonRpc);
-    this.#healthChecker?.start(this.#healthCheckCallback);
+    void this.#healthChecker?.start(this.#healthCheckCallback);
     // process any RPC requests that came in while waiting for `addChain` to complete
     if (this.#pendingRequests.length > 0) {
       this.#pendingRequests.forEach(req => this.#healthChecker?.sendJsonRpc(req));
@@ -156,6 +157,13 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
     }
   }
 
+  #handleError = (e: Error): void => {
+    this.#sendError(e.message);
+    this.#port.disconnect();
+    this.#manager.unregisterApp(this);
+  }
+
+  /** Handles the incoming message that contains Spec. */
   #handleSpecMessage = (msg: MessageToManager, chainName: string): void => {
     const chainSpec: string = relayChains.has(chainName) ?
       (relayChains.get(chainName) || '') : msg.payload;
@@ -181,11 +189,11 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
         this.#manager.addChain(parachainSpec, rpcCallback, relayChain).then(chain => {
             this.#chain = chain;
             this.#initHealthChecker();
+          }).catch(e => {
+            this.#handleError(e)
           });
         }).catch(e => {
-          this.#sendError((e as Error).message);
-          this.#port.disconnect();
-          this.#manager.unregisterApp(this);
+          this.#handleError(e)
         });
     } else {
       // Connect the main Chain only
@@ -193,11 +201,8 @@ export class AppMediator extends (EventEmitter as { new(): StateEmitter }) {
         .then(chain => {
           this.#chain = chain;
           this.#initHealthChecker();
-        })
-        .catch(e => {
-          this.#sendError((e as Error).message);
-          this.#port.disconnect();
-          this.#manager.unregisterApp(this);
+        }).catch(e => {
+          this.#handleError(e)
         });
     }
   }
