@@ -16,7 +16,7 @@ const manager = window.manager = new ConnectionManager();
 
 type RelayType = Map<string, string>
 
-export const relayChains: RelayType = new Map<string, string>([
+const relayChains: RelayType = new Map<string, string>([
   ["polkadot", JSON.stringify(polkadot)],
   ["kusama", JSON.stringify(kusama)],
   ["westend", JSON.stringify(westend)]

@@ -3,10 +3,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as smoldot from '@substrate/smoldot-light';
-import { SmoldotJsonRpcCallback, SmoldotHealth } from '@substrate/smoldot-light';
-import { AppProps, ConnectionManagerInterface } from './types';
+import { SmoldotJsonRpcCallback, SmoldotHealth, SmoldotChain, HealthChecker } from '@substrate/smoldot-light';
 import EventEmitter from 'eventemitter3';
-import { StateEmitter, State } from './types';
+import { StateEmitter, State, AppState } from './types';
 import { Network } from '../types';
 import { logger } from '@polkadot/util';
 import { MessageFromManager, MessageToManager } from '@substrate/connect-extension-protocol';
@@ -18,11 +17,34 @@ const l = logger('Extension Connection Manager');
 
 type RelayType = Map<string, string>;
 
-export const relayChains: RelayType = new Map<string, string>([
+const relayChains: RelayType = new Map<string, string>([
   ['polkadot', JSON.stringify(polkadot)],
   ['kusama', JSON.stringify(kusama)],
   ['westend', JSON.stringify(westend)]
 ])
+
+interface AppProps {
+  appName: string;
+  chain?: SmoldotChain;
+  chainName: string;
+  name: string;
+  tabId: number;
+  url?: string;
+  port: chrome.runtime.Port;
+  healthChecker?: HealthChecker;
+  healthStatus?: SmoldotHealth;
+  state: AppState;
+}
+
+interface ConnectionManagerInterface {
+  addChain: (
+    name: string,
+    spec: string,
+    jsonRpcCallback: smoldot.SmoldotJsonRpcCallback,
+    tabId?: number) => Promise<Network>;
+}
+
+
 
 /**
  * ConnectionManager is the main class involved in managing connections from
@@ -35,7 +57,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   #networks: Network[] = [];
   smoldotLogLevel = 3;
   #pendingRequests: string[] = [];
-  #chainId = 0;
 
   /** registeredApps
    *
@@ -112,7 +133,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     this.#apps.filter(a => a).forEach(a => this.disconnect(a));
   }
 
-  createApp(incPort: chrome.runtime.Port): AppProps {
+  #createApp(incPort: chrome.runtime.Port): AppProps {
     const splitIdx = incPort.name.indexOf('::');
     if (splitIdx === -1) {
       const payload = `Invalid port name ${incPort.name} expected <app_name>::<chain_name>`;
@@ -165,8 +186,9 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     // if create an `AppMediator` throws, it has sent an error down the
     // port and disconnected it, so we should just ignore
     try {
-      const app = this.createApp(port);
-      this.registerApp(app);
+      const app = this.#createApp(port);
+      this.#apps.push(app);
+      this.emit('stateChanged', this.getState());
       const appInfo = port.name.split('::');
       chrome.storage.sync.get('notifications', (s) => {
         s.notifications && chrome.notifications.create(port.name, {
@@ -182,23 +204,13 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   }
 
   /**
-   * registerApp is used to associate an app with a network
-   *
-   * @param app - The app
-   */
-   registerApp(app: AppProps): void {
-    this.#apps.push(app);
-    this.emit('stateChanged', this.getState());
-  }
-
-  /**
    * unregisterApp is used after an app has finished processing any unsubscribe
    * messages and disconnected to fully unregister itself.
    * It also retrieves the chain that app was connected to and calls smoldot for removal
    * 
    * @param app - The app
    */
-   unregisterApp(app: AppProps): void {
+   #unregisterApp(app: AppProps): void {
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
     this.emit('stateChanged', this.getState());
@@ -295,7 +307,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         const error: MessageFromManager = { type: 'error', payload: e.message };
         app.port.postMessage(error);
         app.port.disconnect();
-        this.unregisterApp(app);
+        this.#unregisterApp(app);
       });
   }
 
@@ -347,7 +359,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       this.#networks.splice(networkIdx, 1);
     }
 
-    this.unregisterApp(app);
+    this.#unregisterApp(app);
     
     app.state = 'disconnected';
   }

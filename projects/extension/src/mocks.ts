@@ -3,13 +3,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { jest } from '@jest/globals';
-import { AppProps, ConnectionManagerInterface } from './background/types';
 import { 
   MessageToManager, 
   MessageFromManager 
 } from '@substrate/connect-extension-protocol';
-import { SmoldotChain } from '@substrate/smoldot-light';
-import { Network } from './types';
 
 export class MockPort implements chrome.runtime.Port {
   sender: any;
@@ -51,29 +48,4 @@ export class MockPort implements chrome.runtime.Port {
       this.#disconnectListeners.push(listener);
     }
   } as any;
-}
-
-export class MockConnectionManager implements ConnectionManagerInterface {
-
-  addChain (): Promise<Network> {
-    return Promise.resolve({
-      chain: {} as SmoldotChain,
-      tabId: 0
-    } as Network);
-  }
-  createApp: (port: chrome.runtime.Port) => AppProps = jest.fn();
-  disconnect: (app: AppProps) => void = jest.fn();
-  registerApp: () => void = jest.fn();
-  unregisterApp: () => void = jest.fn();
-}
-
-export class ErroringMockConnectionManager implements ConnectionManagerInterface {
-
-  addChain (): Promise<Network> {
-    return Promise.reject(new Error('Invalid chain spec'));
-  }
-  createApp: (port: chrome.runtime.Port) => AppProps = jest.fn();
-  disconnect: (app: AppProps) => void = jest.fn();
-  registerApp: () => void = jest.fn();
-  unregisterApp: () => void = jest.fn();
 }
