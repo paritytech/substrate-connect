@@ -184,15 +184,13 @@ describe('Unit tests', () => {
     const tmpChains = manager.networks.map(n => (
       {
         name: n.name,
-        status: n.status,
-        chainspecPath: n.chainspecPath,
-        isKnown: n.isKnown
+        status: n.status
       })
     )
 
     expect(tmpChains).toEqual([
-      { name: 'westend', status: "connected", chainspecPath: "westend.json", isKnown: true },
-      { name: 'kusama', status: "connected", chainspecPath: "kusama.json", isKnown: true }
+      { name: 'westend', status: "connected" },
+      { name: 'kusama', status: "connected" }
     ]);
 
     expect(manager.networks).toHaveLength(2);

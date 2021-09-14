@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { makeStyles, Theme, Popover, Typography, Box, ButtonBase, Button, Grid, Tooltip, Divider } from '@material-ui/core';
+import { makeStyles, Theme, Popover, Typography, Box, ButtonBase, Button, Grid, Divider } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import { ExpandMore, SystemUpdateAlt, InsertDriveFile, Publish, ArrowDropDown } from '@material-ui/icons';
+import { ExpandMore, InsertDriveFile, ArrowDropDown } from '@material-ui/icons';
 import { IconWeb3, InputButton, InputText, InputWrap, InputSelect } from '../components';
 import { Network, Parachain } from '../types';
 
@@ -77,7 +77,7 @@ const useStyles = makeStyles<Theme>(theme => ({
   },
 }));
 
-const ClientMenu: React.FunctionComponent<Network | Parachain> = ({isKnown, name, chainspecPath, ...props}) => {
+const ClientMenu: React.FunctionComponent<Network | Parachain> = ({name, ...props}) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -91,17 +91,6 @@ const ClientMenu: React.FunctionComponent<Network | Parachain> = ({isKnown, name
   return (
     <>
       <div className={classes.buttonBaseGroup}>
-        { !isKnown &&
-        <Tooltip
-          title='Save <network> chainspec to extension'
-          placement='top'
-          arrow
-        >
-          <ButtonBase>
-            <SystemUpdateAlt fontSize='small' />
-          </ButtonBase>
-        </Tooltip>
-        }
         <ButtonBase onClick={handleClick}>
           <ExpandMore fontSize='small' />
         </ButtonBase>
@@ -118,21 +107,12 @@ const ClientMenu: React.FunctionComponent<Network | Parachain> = ({isKnown, name
         <Typography variant='overline'>Chainspec</Typography>
         <InputWrap>
 
-          <InputText readOnly defaultValue={chainspecPath}/>
           <Divider orientation='vertical' flexItem/>
           <InputButton>
             <InsertDriveFile fontSize='small'/>
           </InputButton>
           <Divider orientation='vertical' flexItem/>
 
-          { isKnown
-          ? <InputButton>
-            <Publish fontSize='small'/>
-          </InputButton>
-          : <InputButton>
-            <SystemUpdateAlt fontSize='small' />
-          </InputButton>
-          }
 
         </InputWrap>
         <InputWrap>
