@@ -43,9 +43,9 @@ export interface ConnectionManagerInterface {
   registerApp: (app: AppProps) => void;
   unregisterApp: (app: AppProps) => void;
   addChain: (
-    tabId: number,
     name: string,
     spec: string,
-    jsonRpcCallback: smoldot.SmoldotJsonRpcCallback) => Promise<Network>;
+    jsonRpcCallback: smoldot.SmoldotJsonRpcCallback,
+    tabId?: number) => Promise<Network>;
 }
 

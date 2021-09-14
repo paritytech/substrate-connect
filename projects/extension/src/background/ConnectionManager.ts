@@ -234,10 +234,10 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @returns addedChain - An the newly added chain info
    */
   async addChain(
-    tabId: number,
     name: string,
     chainSpec: string,
-    jsonRpcCallback: SmoldotJsonRpcCallback): Promise<Network> {
+    jsonRpcCallback: SmoldotJsonRpcCallback,
+    tabId?: number): Promise<Network> {
     if (!this.#client) {
       throw new Error('Smoldot client does not exist.');
     }
@@ -252,7 +252,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     });
 
     const network: Network = {
-      tabId,
+      tabId: tabId || 0,
       name,
       chain: addedChain,
       status: 'connected',
@@ -276,7 +276,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         app.port.postMessage({ type: 'rpc', payload: rpcResp })
     }
 
-    this.addChain(app.tabId, app.chainName, chainSpec, rpcCallback)
+    this.addChain(app.chainName, chainSpec, rpcCallback, app.tabId)
       .then(network => {
         app.chain = network.chain;
         // eslint-disable-next-line @typescript-eslint/unbound-method

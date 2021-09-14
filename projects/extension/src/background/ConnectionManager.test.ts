@@ -35,8 +35,8 @@ test('adding and removing apps changes state', async () => {
   const manager = new ConnectionManager();
   manager.smoldotLogLevel = 1;
   await manager.initSmoldot();
-  await manager.addChain(0, 'westend', JSON.stringify(westend), doNothing);
-  await manager.addChain(1, 'kusama', JSON.stringify(kusama), doNothing);
+  await manager.addChain('westend', JSON.stringify(westend), doNothing);
+  await manager.addChain('kusama', JSON.stringify(kusama), doNothing);
 
   const handler = jest.fn();
   manager.on('stateChanged', handler);
@@ -157,8 +157,8 @@ describe('Unit tests', () => {
     manager.smoldotLogLevel = 1;
     //setup connection manager with 2 networks
     await manager.initSmoldot();
-    await manager.addChain(0, 'westend', JSON.stringify(westend), doNothing);
-    await manager.addChain(1, 'kusama', JSON.stringify(kusama), doNothing);
+    await manager.addChain('westend', JSON.stringify(westend), doNothing);
+    await manager.addChain('kusama', JSON.stringify(kusama), doNothing);
     manager.on('stateChanged', handler);
 
     //add 4 apps in clients
@@ -328,7 +328,7 @@ describe('Apps specific tests with actual ConnectionManager', () => {
 
   test('Smoldot throws error when it does not exist', async () => {
     try {
-      await manager.addChain(1, 'kusama', JSON.stringify(kusama), doNothing);
+      await manager.addChain('kusama', JSON.stringify(kusama), doNothing);
     } catch (err: any) {
       expect(err.message).toBe('Smoldot client does not exist.')
     }
