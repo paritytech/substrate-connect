@@ -328,7 +328,7 @@ describe('Apps specific tests with actual ConnectionManager', () => {
   test('Smoldot throws error when it does not exist', async () => {
     try {
       await manager.addChain(1, 'kusama', JSON.stringify(kusama), doNothing);
-    } catch (err: any) {
+    } catch (err: unknown) {
       expect(err.message).toBe('Smoldot client does not exist.')
     }
   });

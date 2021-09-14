@@ -129,12 +129,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     const port: chrome.runtime.Port = incPort;
     const state = 'connected';
 
-    // const potentialExistingApp = this.#apps.find(a => a.tabId === tabId);
-    // if (potentialExistingApp && potentialExistingApp.appName === appName) {
-    //   console.log('App already exists');
-    //   return potentialExistingApp;
-    // }
-
     const healthChecker = (smoldot as any).healthChecker();
     const app: AppProps = {
       appName,
