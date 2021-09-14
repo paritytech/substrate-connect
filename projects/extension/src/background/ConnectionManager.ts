@@ -255,7 +255,9 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       tabId,
       name,
       chain: addedChain,
-      status: 'connected'
+      status: 'connected',
+      isKnown: true,
+      chainspecPath: `${name}.json`
     }
 
     this.#networks.push(network);
