@@ -79,7 +79,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   getState(): State {
     const state: State = { apps: [] };
     return this.#apps.reduce((result, app) => {
-      let a = result.apps.find(a => a.name === app.appName);
+      let a = result.apps.find(a => a.name === app.appName && a.tabId === app.tabId);
       if (a === undefined) {
         a = {
           name: app.appName,
