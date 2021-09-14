@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -328,7 +329,7 @@ describe('Apps specific tests with actual ConnectionManager', () => {
   test('Smoldot throws error when it does not exist', async () => {
     try {
       await manager.addChain(1, 'kusama', JSON.stringify(kusama), doNothing);
-    } catch (err: unknown) {
+    } catch (err: any) {
       expect(err.message).toBe('Smoldot client does not exist.')
     }
   });
