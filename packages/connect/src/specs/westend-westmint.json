@@ -10,7 +10,7 @@
    ],
   "telemetryEndpoints": null,
   "protocolId": null,
-  "relay_chain": "westend2",
+  "relay_chain": "westend",
   "properties": {
     "tokenDecimals": 12,
     "tokenSymbol": "WND"

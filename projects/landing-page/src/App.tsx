@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from 'react';
-import { CssBaseline, ThemeProvider, createMuiTheme, Typography, Box, Grid } from '@material-ui/core';
+import { CssBaseline, ThemeProvider, createTheme, Typography, Box, Grid } from '@material-ui/core';
 import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeading, SectionText, SectionRef, FooterLink, SidebarLink, Code } from './components';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { CardNetwork, CardProject } from './components/Cards';
@@ -17,7 +17,7 @@ const Alert = (props: AlertProps) => {
 
 const App: React.FunctionComponent = () => {
   return (
-    <ThemeProvider theme={createMuiTheme(theme)}>
+    <ThemeProvider theme={createTheme(theme)}>
       <CssBaseline />
       <Loader />
       <UIContainer>
@@ -92,7 +92,7 @@ const App: React.FunctionComponent = () => {
 
           <Section>
             <SectionHeading id='getting-started' prefix='4'>Getting Started</SectionHeading>
-            <ThemeProvider theme={createMuiTheme(dark)}>
+            <ThemeProvider theme={createTheme(dark)}>
               <Code>
                 yarn add @substrate/substrate-connect
               </Code>
@@ -165,7 +165,7 @@ const App: React.FunctionComponent = () => {
               </SectionRef>
             </CardProject>
           </Section>
-          <ThemeProvider theme={createMuiTheme(dark)}>
+          <ThemeProvider theme={createTheme(dark)}>
             <Section pt={5} pb={5}>
               {/* TODO: Playground */}
               <Box>
