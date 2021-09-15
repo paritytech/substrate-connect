@@ -24,6 +24,7 @@ interface ChainSpec {
 }
 export interface Network extends ChainSpec {
   chain: smoldot.SmoldotChain;
+  tabId: number;
   parachains?: Parachain[];
 }
 export interface Parachain extends ChainSpec {
