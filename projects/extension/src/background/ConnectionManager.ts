@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as smoldot from '@substrate/smoldot-light';
 import { SmoldotJsonRpcCallback, SmoldotHealth } from '@substrate/smoldot-light';
-import { AppProps, ConnectionManagerInterface } from './types';
+import { App, ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
 import { StateEmitter, State } from './types';
 import { Network } from '../types';
@@ -30,7 +30,7 @@ export const relayChains: RelayType = new Map<string, string>([
  * events when the state changes for the UI to update accordingly. 
  */
 export class ConnectionManager extends (EventEmitter as { new(): StateEmitter }) implements ConnectionManagerInterface {
-  readonly #apps: AppProps[] = [];
+  readonly #apps: App[] = [];
   #client: smoldot.SmoldotClient | undefined = undefined;
   #networks: Network[] = [];
   smoldotLogLevel = 3;
@@ -58,7 +58,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    *
    * @returns all the connected apps.
    */
-  get apps(): AppProps[] {
+  get apps(): App[] {
     return this.#apps;
   }
 
@@ -112,7 +112,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     this.#apps.filter(a => a).forEach(a => this.disconnect(a));
   }
 
-  createApp(incPort: chrome.runtime.Port): AppProps {
+  createApp(incPort: chrome.runtime.Port): App {
     const splitIdx = incPort.name.indexOf('::');
     if (splitIdx === -1) {
       const payload = `Invalid port name ${incPort.name} expected <app_name>::<chain_name>`;
@@ -130,7 +130,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     const state = 'connected';
 
     const healthChecker = (smoldot as any).healthChecker();
-    const app: AppProps = {
+    const app: App = {
       appName,
       chainName,
       name,
@@ -186,7 +186,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    *
    * @param app - The app
    */
-   registerApp(app: AppProps): void {
+   registerApp(app: App): void {
     this.#apps.push(app);
     this.emit('stateChanged', this.getState());
   }
@@ -198,7 +198,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * 
    * @param app - The app
    */
-   unregisterApp(app: AppProps): void {
+   unregisterApp(app: App): void {
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
     this.emit('stateChanged', this.getState());
@@ -266,7 +266,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   }
 
   /** Handles the incoming message that contains Spec. */
-  #handleSpecMessage = (msg: MessageToManager, app: AppProps): void => {
+  #handleSpecMessage = (msg: MessageToManager, app: App): void => {
     const chainSpec: string = relayChains.has(app.chainName) ?
       (relayChains.get(app.chainName) || '') : msg.payload;
 
@@ -299,7 +299,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       });
   }
 
-  #findApp (port: chrome.runtime.Port): AppProps | undefined {
+  #findApp (port: chrome.runtime.Port): App | undefined {
     return this.#apps.find(
       a => a.name === port.name && a.tabId === port.sender?.tab?.id);
   }
@@ -307,11 +307,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   #handleMessage = (msg: MessageToManager, port: chrome.runtime.Port): void => {
     const app = this.#findApp(port);
     if (app) {
-      if (msg.type !== 'rpc' && msg.type !== 'spec') {
-        console.warn(`Unrecognised message type ${msg.type} received from content script`);
-        return;
-      }
-
       if (msg.type === 'spec' && app.chainName) {
         return this.#handleSpecMessage(msg, app);
       }
@@ -331,11 +326,11 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * disconnect tells the app to clean up its state and unsubscribe from any
   * active subscriptions and ultimately disconnects the communication port.
   */
-  disconnect(app: AppProps): void {
+  disconnect(app: App): void {
     this.#handleDisconnect(app);
   }
 
-  #handleDisconnect = (app: AppProps): void => {
+  #handleDisconnect = (app: App): void => {
     if (app.state === 'disconnected') {
       throw new Error('Cannot disconnect - already disconnected');
     }

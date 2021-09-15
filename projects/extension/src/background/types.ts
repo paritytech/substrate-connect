@@ -4,7 +4,7 @@ import StrictEventEmitter from 'strict-event-emitter-types';
 import { HealthChecker, SmoldotChain, SmoldotHealth } from '@substrate/smoldot-light';
 import { Network } from '../types';
 
-export interface AppProps {
+export interface App {
   appName: string;
   chain?: SmoldotChain;
   chainName: string;
@@ -40,8 +40,8 @@ export interface StateEvents {
 export type StateEmitter = StrictEventEmitter<EventEmitter, StateEvents>;
 
 export interface ConnectionManagerInterface {
-  registerApp: (app: AppProps) => void;
-  unregisterApp: (app: AppProps) => void;
+  registerApp: (app: App) => void;
+  unregisterApp: (app: App) => void;
   addChain: (
     name: string,
     spec: string,

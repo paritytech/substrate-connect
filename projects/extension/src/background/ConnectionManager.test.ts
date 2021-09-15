@@ -8,7 +8,7 @@ import westend from '../../public/assets/westend.json';
 import kusama from '../../public/assets/kusama.json';
 import { MockPort } from '../mocks';
 import { chrome } from 'jest-chrome';
-import { AppProps } from './types';
+import { App } from './types';
 
 let port: MockPort;
 let manager: ConnectionManager;
@@ -277,7 +277,7 @@ describe('Check storage and send notification when adding an app', () => {
 });
 
 describe('Apps specific tests with actual ConnectionManager', () => {
-  let app: AppProps
+  let app: App
   beforeEach(() => {
     port = new MockPort('test-app::westend');
     manager = new ConnectionManager();
@@ -332,6 +332,30 @@ describe('Apps specific tests with actual ConnectionManager', () => {
     } catch (err: any) {
       expect(err.message).toBe('Smoldot client does not exist.')
     }
+  });
+
+  test('Spec message adds a chain', async () => {
+    port.triggerMessage({ type: 'spec', payload: 'westend'});
+    await waitForMessageToBePosted();
+    expect(app.healthChecker).toBeDefined();
+  });
+
+  test('Buffers RPC messages before spec message', async () => {
+    const message1 = JSON.stringify({ id: 1, jsonrpc: '2.0', result: {} });
+    port.triggerMessage({ type: 'rpc', payload: message1 });
+    const message2 = JSON.stringify({ id: 2, jsonrpc: '2.0', result: {} });
+    port.triggerMessage({ type: 'rpc', payload: message2 });
+    port.triggerMessage({ type: 'spec', payload: 'westend'});
+    await waitForMessageToBePosted();
+    expect(app.healthChecker).toBeDefined();
+  });
+
+  test('RPC port message sends the message to the chain', async () => {
+    port.triggerMessage({ type: 'spec', payload: 'westend'});
+    await waitForMessageToBePosted();
+    const message = JSON.stringify({ id: 1, jsonrpc: '2.0', result: {} });
+    port.triggerMessage({ type: 'rpc', payload: message});
+    await waitForMessageToBePosted();
   });
 
   test('App already disconnected', async () => {
