@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ThemeProvider, createMuiTheme, CssBaseline, makeStyles } from '@material-ui/core';
+import { ThemeProvider, createTheme, CssBaseline, makeStyles } from '@material-ui/core';
 import { SubstrateLight, SubstrateDark } from './../themes';
 import { useLocalStorage } from '../hooks';
 
@@ -28,7 +28,7 @@ const ThemeToggleProvider: React.FunctionComponent = ({ children }) => {
   const classes = useStyles();
   const [localTheme, setLocalTheme] = useLocalStorage('theme');
   const [theme, setTheme] = useState(localTheme === 'false' ? false : true);
-  const appliedTheme = createMuiTheme(theme ? SubstrateLight : SubstrateDark);
+  const appliedTheme = createTheme(theme ? SubstrateLight : SubstrateDark);
 
   const selectTheme = (selected: boolean) => {
     setLocalTheme(selected.toString());

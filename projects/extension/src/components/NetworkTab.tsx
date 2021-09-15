@@ -142,7 +142,7 @@ const NetworkContent = ({
   );
 }
 
-const NetworkTab: FunctionComponent<Network> = ({ name, status, isKnown, chainspecPath }: Network) => {
+const NetworkTab: FunctionComponent<Network> = ({ name, status }: Network) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState<boolean>(false);
   const [genesisHash, ] = useState<string>('');
@@ -153,7 +153,7 @@ const NetworkTab: FunctionComponent<Network> = ({ name, status, isKnown, chainsp
   const [healthPeers, ] = useState<number>(0);
 
   //TODO: remove this - This is here to overcome linter error until finalize implementation 
-  console.log( name, status, isKnown, chainspecPath);
+  console.log( name, status );
   return (
     <div className={classes.root}>
       <div className={classes.onlineIcon}>

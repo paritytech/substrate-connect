@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core'
+import { createTheme, ThemeProvider } from '@material-ui/core'
 import Box from '@material-ui/core/Box'
 import Switch from '@material-ui/core/Switch';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -74,7 +74,7 @@ const TabPanel = (props: TabPanelProps) => {
 }
 
 const Options: React.FunctionComponent = () => {
-  const appliedTheme = createMuiTheme(light);
+  const appliedTheme = createTheme(light);
   const [value, setValue] = React.useState<number>(0);
   const [networks, setNetworks] = React.useState<Network[]>([{} as Network]);
   const [notifications, setNotifications] = React.useState<boolean>(false);

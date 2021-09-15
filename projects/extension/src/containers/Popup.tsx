@@ -9,7 +9,7 @@ import { TabInterface } from '../types';
 import { State, AppInfo } from '../background/types';
 import { ConnectionManager } from '../background/ConnectionManager';
 
-const { createMuiTheme, ThemeProvider, Box, Divider } = material;
+const { createTheme, ThemeProvider, Box, Divider } = material;
 
 const createTab = (a: AppInfo, url: string | undefined): TabInterface => {
   return {
@@ -26,7 +26,7 @@ const createTab = (a: AppInfo, url: string | undefined): TabInterface => {
 const Popup: FunctionComponent = () => {
   const [activeTab, setActiveTab] = useState<TabInterface | undefined>();
   const [apps, setApps] = useState<TabInterface[]>([]);
-  const appliedTheme = createMuiTheme(light);
+  const appliedTheme = createTheme(light);
   const [manager, setManager] = useState<ConnectionManager | undefined>();
   const [browserTabs, setBrowserTabs] = useState<chrome.tabs.Tab[]>();
   const [appsInitState, setAppsInitState] = useState<State>();
