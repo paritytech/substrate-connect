@@ -252,9 +252,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         
     // identify all relay_chains init'ed from same app with tabId identifier
     const relayChains: Network[] = relay_chain ?
-      this.#networks.filter(n =>
-        n.tabId === tabId && n.name.toLowerCase() === relay_chain
-      ) :
+      this.#networks.filter(n => n.tabId === tabId) :
       this.#networks;
 
     const addedChain = await this.#client.addChain({
