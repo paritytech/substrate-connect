@@ -1,5 +1,4 @@
 import { ConnectionManager } from './background/ConnectionManager';
-import { AppMediator } from './background/AppMediator';
 import { ExtensionMessageRouter } from './content/ExtensionMessageRouter';
 import { ExtensionPageInjector } from './content/ExtensionPageInjector';
 
@@ -9,7 +8,6 @@ import { ExtensionPageInjector } from './content/ExtensionPageInjector';
 
 export {
   ConnectionManager,
-  AppMediator,
   ExtensionMessageRouter,
   ExtensionPageInjector
 };

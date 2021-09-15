@@ -20,7 +20,6 @@
  * The {@link ExtensionProvider} is the class in the app.
  * The {@link ExtensionMessageRouter} is the class in the content script.
  * The {@link ConnectionManager} is the class in the extension background.
- * (Although it's actally an {@link AppMediator} that processes the messages)
  */
 
 /**
