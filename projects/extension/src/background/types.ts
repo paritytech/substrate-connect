@@ -14,6 +14,7 @@ export interface App {
   port: chrome.runtime.Port;
   healthChecker?: HealthChecker;
   healthStatus?: SmoldotHealth;
+  pendingRequests: string[];
   state: AppState;
 }
 

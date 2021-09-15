@@ -34,7 +34,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   #client: smoldot.SmoldotClient | undefined = undefined;
   #networks: Network[] = [];
   smoldotLogLevel = 3;
-  #pendingRequests: string[] = [];
 
   /** registeredApps
    *
@@ -127,6 +126,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     const url: string | undefined = sender?.url;
     const port: chrome.runtime.Port = incPort;
     const state = 'connected';
+    const pendingRequests: string[] = [];
 
     const healthChecker = (smoldot as any).healthChecker();
     const app: App = {
@@ -137,7 +137,8 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       url,
       port,
       state,
-      healthChecker
+      healthChecker,
+      pendingRequests
     }
     port.onMessage.addListener(this.#handleMessage);
     port.onDisconnect.addListener(() => { this.#handleDisconnect(app) });
@@ -277,9 +278,9 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     app.chain && app.healthChecker?.setSendJsonRpc(app.chain.sendJsonRpc);
     void app.healthChecker?.start((health: SmoldotHealth) => app.healthStatus = health);
     // process any RPC requests that came in while waiting for `addChain` to complete
-    if (this.#pendingRequests.length > 0) {
-      this.#pendingRequests.forEach(req => app.healthChecker?.sendJsonRpc(req));
-      this.#pendingRequests = [];
+    if (app.pendingRequests.length > 0) {
+      app.pendingRequests.forEach(req => app.healthChecker?.sendJsonRpc(req));
+      app.pendingRequests = [];
     }
   }
 
@@ -352,7 +353,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       if (app.chain === undefined) {
         // `addChain` hasn't resolved yet after the spec message so buffer the
         // messages to be sent when it does resolve
-        this.#pendingRequests.push(msg.payload);
+        app.pendingRequests.push(msg.payload);
         return;
       }
 
