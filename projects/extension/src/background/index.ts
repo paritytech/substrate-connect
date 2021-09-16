@@ -19,7 +19,7 @@ type RelayType = Map<string, string>
 export const relayChains: RelayType = new Map<string, string>([
   ["polkadot", JSON.stringify(polkadot)],
   ["kusama", JSON.stringify(kusama)],
-  ["westend", JSON.stringify(westend)]
+  ["westend2", JSON.stringify(westend)]
 ])
 
 const l = logger('Extension');

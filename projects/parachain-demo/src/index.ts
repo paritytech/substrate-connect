@@ -15,7 +15,7 @@ window.onload = () => {
   (async () => {
     try {
       const detect = new Detector('Parachain Demo');
-      const api = await detect.connect('westend', JSON.stringify(westmint));
+      const api = await detect.connect('westend2', JSON.stringify(westmint));
       
       const [chain, nodeName, nodeVersion, properties] = await Promise.all([
         api.rpc.system.chain(),
