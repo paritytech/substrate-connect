@@ -9,6 +9,7 @@ import kusama from '../../public/assets/kusama.json';
 import { MockPort } from '../mocks';
 import { chrome } from 'jest-chrome';
 import { App } from './types';
+import { Client } from '../types';
 
 let port: MockPort;
 let manager: ConnectionManager;
@@ -195,7 +196,7 @@ describe('Unit tests', () => {
   test('Get networks/chains', () => {
     // With this look the "chain" is removed intentionally as "chain"
     // object cannot be compared with jest 
-    const tmpChains = manager.registeredClients.map((n: any) => (
+    const tmpChains = manager.registeredClients.map((n: Client) => (
       {
         name: n.name,
         status: n.status

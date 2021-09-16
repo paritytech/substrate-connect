@@ -120,16 +120,24 @@ const NetworkContent = ({
   const classes = useStyles();
   const peers = health && health.peers;
   const status = health && health.status;
-  const shouldHavePeers = health && health.shouldHavePeers;
   const isSyncing = health && health.isSyncing;
   return (
     <div className={classes.info}>
-      <p>{emojis.chain} Chain is {status} and should {!shouldHavePeers && 'not'} have peers.</p>
-      <p>{emojis.star} Communicating with {peers} peer{peers === 1 ? '' : 's'}.</p>
-      <p>{emojis.info} GrandPa sync is {isSyncing && 'not'} finished.</p>
+      {!isSyncing ? (
+        <>
+          <p>{emojis.chain} Chain is {status}.</p>
+          {peers ? (<p>{emojis.star} Communicating with {peers} peer{peers === 1 ? '' : 's'}.</p>) : null}
+        </>
+      ) : !peers ?
+        <div>No peers</div> :
+        <div>Chain is synching...</div>
+      }
       <h4>Apps</h4>
       <ul>
-        {apps.map(app => (<li key={app.name}>{app.name + ' - (' + app.url + ')'}</li>))}
+        {apps.map(app => (
+            <li key={app.name}>{`${app.name} - (${app.url})`}</li>
+          )
+        )}
       </ul>
     </div>
   );

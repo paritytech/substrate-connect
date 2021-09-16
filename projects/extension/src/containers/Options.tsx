@@ -14,10 +14,10 @@ import Tab from '@material-ui/core/Tab';
 import {
   // DEACTIVATE FOR NOW - will be n./src/containers/Options.tsx once parachains will be integrated
   //  Parachain,
-  Network,
   NetworkTabProps
 } from '../types';
 import { ConnectionManager } from '../background/ConnectionManager';
+import { ReducedApp } from '../background/types';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -94,9 +94,9 @@ const Options: React.FunctionComponent = () => {
   }, []);
 
   useEffect(() => {
-    const tmpNetworks: React.SetStateAction<NetworkTabProps[]> = networks;
-    manager && manager.apps.forEach((app:any) => {
-      const network = tmpNetworks.find(n => {
+    const tmpNetworks: React.SetStateAction<NetworkTabProps[]> = [];
+    manager && manager.apps.forEach((app:ReducedApp) => {
+      const network = tmpNetworks.find((n: NetworkTabProps) => {
         return app.chainName === n.name
       });
       if (network) {

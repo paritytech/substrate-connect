@@ -4,10 +4,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as smoldot from '@substrate/smoldot-light';
 import { SmoldotJsonRpcCallback, SmoldotHealth } from '@substrate/smoldot-light';
-import { App, ConnectionManagerInterface } from './types';
+import { ReducedApp, App, ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
 import { StateEmitter, State } from './types';
-import { Network } from '../types';
+import { Client, Network } from '../types';
 import { logger } from '@polkadot/util';
 import { MessageFromManager, MessageToManager } from '@substrate/connect-extension-protocol';
 import westend from '../../public/assets/westend.json';
@@ -49,8 +49,8 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    *
    * @returns a list of the networks that are currently connected
    */
-  get registeredClients(): unknown[] {
-    return this.#networks.map(s => ({name: s.name, status: s.status}));
+  get registeredClients(): Client[] {
+    return this.#networks.map((s: Network) => ({name: s.name, status: s.status}));
   }
 
   /**
@@ -58,7 +58,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    *
    * @returns all the connected apps.
    */
-  get apps(): unknown[] {
+  get apps(): ReducedApp[] {
     return this.#apps.map(a => ({
       appName: a.appName,
       chainName: a.chainName,
@@ -215,7 +215,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   async initSmoldot(): Promise<void> {
     try {
       this.#client = await (smoldot as any).start({
-        forbidWs: true, /* suppress console warnings about insecure connections */
+        forbidWs: false, /* suppress console warnings about insecure connections */
         maxLogLevel: this.smoldotLogLevel
       });
     } catch (err) {

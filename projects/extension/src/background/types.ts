@@ -4,17 +4,20 @@ import StrictEventEmitter from 'strict-event-emitter-types';
 import { HealthChecker, SmoldotChain, SmoldotHealth } from '@substrate/smoldot-light';
 import { Network } from '../types';
 
-export interface App {
+export interface ReducedApp {
   appName: string;
-  chain?: SmoldotChain;
   chainName: string;
-  name: string;
   tabId: number;
   url?: string;
-  port: chrome.runtime.Port;
-  healthChecker?: HealthChecker;
   healthStatus?: SmoldotHealth;
   state: AppState;
+}
+
+export interface App extends ReducedApp {
+  chain?: SmoldotChain;
+  name: string;
+  port: chrome.runtime.Port;
+  healthChecker?: HealthChecker;
 }
 
 export type AppState = 'connected' | 'disconnected';
