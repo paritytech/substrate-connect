@@ -49,8 +49,8 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    *
    * @returns a list of the networks that are currently connected
    */
-  get registeredClients(): string[] {
-    return this.#networks.map(s => s.name);
+  get registeredClients(): unknown[] {
+    return this.#networks.map(s => ({name: s.name, status: s.status}));
   }
 
   /**
@@ -58,18 +58,17 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    *
    * @returns all the connected apps.
    */
-  get apps(): App[] {
-    return this.#apps;
+  get apps(): unknown[] {
+    return this.#apps.map(a => ({
+      appName: a.appName,
+      chainName: a.chainName,
+      healthStatus: a.healthStatus,
+      state: a.state,
+      url: a.url,
+      tabId: a.tabId
+    }));
   }
 
-  /**
-   * networks
-   *
-   * @returns all the connected networks
-   */
-  get networks(): Network[] {
-    return this.#networks;
-  }
 
   /**
    * getState

@@ -183,8 +183,8 @@ describe('Unit tests', () => {
 
   test('Get registered clients', () => {
     expect(manager.registeredClients).toEqual([
-      "westend",
-      "kusama"
+      { name: 'westend', status: "connected" },
+      { name: 'kusama', status: "connected" }
     ]);
   });
 
@@ -195,7 +195,7 @@ describe('Unit tests', () => {
   test('Get networks/chains', () => {
     // With this look the "chain" is removed intentionally as "chain"
     // object cannot be compared with jest 
-    const tmpChains = manager.networks.map(n => (
+    const tmpChains = manager.registeredClients.map((n: any) => (
       {
         name: n.name,
         status: n.status
@@ -207,7 +207,7 @@ describe('Unit tests', () => {
       { name: 'kusama', status: "connected" }
     ]);
 
-    expect(manager.networks).toHaveLength(2);
+    expect(manager.registeredClients).toHaveLength(2);
   });
 
   test('Adding an app that already exists sends an error and disconnects', () => {
