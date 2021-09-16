@@ -95,7 +95,6 @@ const Options: React.FunctionComponent = () => {
 
   useEffect(() => {
     const tmpNetworks: React.SetStateAction<NetworkTabProps[]> = networks;
-    console.log('1', manager && manager.apps);
     manager && manager.apps.forEach((app:any) => {
       const network = tmpNetworks.find(n => {
         return app.chainName === n.name
@@ -160,7 +159,7 @@ const Options: React.FunctionComponent = () => {
         {/*  Deactivate search for now
           <ClientSearch />
         */}
-        {networks.map((network: NetworkTabProps, i:number) => {
+        {networks.length ? networks.map((network: NetworkTabProps, i:number) => {
           const { name, health, apps} = network;
           return (
           <NetworkTab
@@ -169,8 +168,7 @@ const Options: React.FunctionComponent = () => {
             health={health}
             apps={apps} />
           )
-        }
-        )}
+        }) : (<div>No networks or apps are connected to the extension.</div>) }
       </TabPanel>
       <TabPanel value={value} index={1}>
         <FormControl component="fieldset">
