@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createTheme, ThemeProvider } from '@material-ui/core'
 import Box from '@material-ui/core/Box'
 import Switch from '@material-ui/core/Switch';
@@ -14,8 +14,10 @@ import Tab from '@material-ui/core/Tab';
 import {
   // DEACTIVATE FOR NOW - will be n./src/containers/Options.tsx once parachains will be integrated
   //  Parachain,
-  Network
+  Network,
+  NetworkTabProps
 } from '../types';
+import { ConnectionManager } from '../background/ConnectionManager';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -75,9 +77,10 @@ const TabPanel = (props: TabPanelProps) => {
 
 const Options: React.FunctionComponent = () => {
   const appliedTheme = createTheme(light);
-  const [value, setValue] = React.useState<number>(0);
-  const [networks, setNetworks] = React.useState<Network[]>([{} as Network]);
-  const [notifications, setNotifications] = React.useState<boolean>(false);
+  const [value, setValue] = useState<number>(0);
+  const [networks, setNetworks] = useState<NetworkTabProps[]>([]);
+  const [notifications, setNotifications] = useState<boolean>(false);
+  const [manager, setManager] = useState<ConnectionManager | undefined>();
 
   useEffect((): void => {
     chrome.storage.sync.get(['notifications'], (res) => {
@@ -86,15 +89,42 @@ const Options: React.FunctionComponent = () => {
 
     chrome.runtime.getBackgroundPage(backgroundPage => {
       const bg = backgroundPage as Background;
-      const nets: Network[] = [];
-      // TODO (nik): Temporary solution on react until https://github.com/paritytech/substrate-connect/issues/451 is implemented
-      bg.manager.networks.forEach(network => {
-        const check = nets.find(n => n.name === network.name)
-        if (!check) nets.push(network)
-      })
-      setNetworks(nets);
+      setManager(bg.manager);
     });
   }, []);
+
+  useEffect(() => {
+    const tmpNetworks: React.SetStateAction<NetworkTabProps[]> = networks;
+    console.log('1', manager && manager.apps);
+    manager && manager.apps.forEach((app:any) => {
+      const network = tmpNetworks.find(n => {
+        return app.chainName === n.name
+      });
+      if (network) {
+        network.apps.push({
+          name: app.appName,
+          url: app.url
+        });
+      } else {
+        const tmp = {
+          name: app.chainName,
+          health: {
+            status: app.state,
+            isSyncing: app?.healthStatus?.isSyncing,
+            peers: app?.healthStatus?.peers,
+            shouldHavePeers: app?.healthStatus?.shouldHavePeers,
+          },
+          apps: [{
+            name: app.appName,
+            url: app.url,
+            tabId: app.tabId,  
+          }]
+        };
+        tmpNetworks.push(tmp);  
+      }
+    })
+    setNetworks(() => [...tmpNetworks]);
+  }, [manager])
 
   useEffect(() => {
     chrome.storage.sync.set({notifications: notifications}, () => {
@@ -130,8 +160,16 @@ const Options: React.FunctionComponent = () => {
         {/*  Deactivate search for now
           <ClientSearch />
         */}
-        {networks && networks.map((network: Network, i:number) => 
-          <NetworkTab key={i} name={network.name} />
+        {networks.map((network: NetworkTabProps, i:number) => {
+          const { name, health, apps} = network;
+          return (
+          <NetworkTab
+            key={i}
+            name={name}
+            health={health}
+            apps={apps} />
+          )
+        }
         )}
       </TabPanel>
       <TabPanel value={value} index={1}>

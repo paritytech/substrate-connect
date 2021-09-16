@@ -7,7 +7,7 @@ import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
-import { Network } from '../types';
+import { NetworkTabProps, App, NetHealth } from '../types';
 
 export const emojis = {
   chain: '🔗',
@@ -109,58 +109,47 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface NetworkContentProps {
-  genesisHash: string
-  headerNumber: string
-  chainName: string
-  epoch: number
-  existentialDeposit: string
-  healthPeers: number
+  health: NetHealth;
+  apps: App[];
 }
 
 const NetworkContent = ({
-  genesisHash,
-  headerNumber,
-  chainName,
-  epoch,
-  existentialDeposit,
-  healthPeers
+  health,
+  apps
 }: NetworkContentProps) => {
   const classes = useStyles();
-
-  return headerNumber ? (
+  const peers = health && health.peers;
+  const status = health && health.status;
+  const shouldHavePeers = health && health.shouldHavePeers;
+  const isSyncing = health && health.isSyncing;
+  return (
     <div className={classes.info}>
-      <p>{emojis.tick} Connected to <b>{chainName}</b></p>
-      <p>{emojis.seedling} Syncing will start at block #{headerNumber}</p>
-      <p>{emojis.chequeredFlag} Genesis hash is {genesisHash}</p>
-      <p>{emojis.clock} Epoch duration is {epoch} blocks</p>
-      <p>{emojis.info} Existential deposit is {existentialDeposit}</p>
-      <p>{emojis.star} Communicating with {healthPeers} peer{healthPeers === 1 ? '' : 's'}</p>
-    </div>) : (
-    <div className={classes.info}>
-      <p>{emojis.chain} Syncing <b>{chainName}</b></p>
+      <p>{emojis.chain} Chain is {status} and should {!shouldHavePeers && 'not'} have peers.</p>
+      <p>{emojis.star} Communicating with {peers} peer{peers === 1 ? '' : 's'}.</p>
+      <p>{emojis.info} GrandPa sync is {isSyncing && 'not'} finished.</p>
+      <h4>Apps</h4>
+      <ul>
+        {apps.map(app => (<li key={app.name}>{app.name + ' - (' + app.url + ')'}</li>))}
+      </ul>
     </div>
   );
 }
 
-const NetworkTab: FunctionComponent<Network> = ({ name, status }: Network) => {
+const NetworkTab: FunctionComponent<NetworkTabProps> = ({
+    name,
+    health,
+    apps }: NetworkTabProps
+    ) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState<boolean>(false);
-  const [genesisHash, ] = useState<string>('');
-  const [headerNumber, ] = useState<string>('');
-  const [chainName, ] = useState<string>('');
-  const [epoch, ] = useState<number>(0);
-  const [existentialDeposit, ] = useState<string>('');
-  const [healthPeers, ] = useState<number>(0);
 
-  //TODO: remove this - This is here to overcome linter error until finalize implementation 
-  console.log( name, status );
   return (
     <div className={classes.root}>
       <div className={classes.onlineIcon}>
         <StatusCircle
           size="medium"
           borderColor="#16DB9A"
-          color={!headerNumber ? 'transparent' : '#16DB9A'} />
+          color={health && health.status === 'connected' ? '#16DB9A' : 'transparent'} />
       </div>
       <Accordion
         TransitionProps={{ unmountOnExit: true }}
@@ -178,18 +167,11 @@ const NetworkTab: FunctionComponent<Network> = ({ name, status }: Network) => {
             <Typography className={classes.heading}>{name}</Typography>
           </div>
           <div>
-            <Typography className={classes.secondaryHeading}>Peer{healthPeers === 1 ? '' : 's'}: {healthPeers ?? '..'}</Typography>
+            <Typography className={classes.secondaryHeading}>Peer{health && health.peers === 1 ? '' : 's'}: {(health && health.peers) ?? '..'}</Typography>
           </div>
         </AccordionSummary>
         <AccordionDetails className={classes.content}>
-          <NetworkContent
-            genesisHash={genesisHash}
-            headerNumber={headerNumber}
-            chainName={chainName}
-            epoch={epoch}
-            existentialDeposit={existentialDeposit}
-            healthPeers={healthPeers}
-          />
+          <NetworkContent health={health} apps={apps} />
         </AccordionDetails>
       </Accordion>
     </div>

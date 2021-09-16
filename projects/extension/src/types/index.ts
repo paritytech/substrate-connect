@@ -31,4 +31,21 @@ export interface Parachain extends ChainSpec {
   relaychain: string;
 }
 
+export interface NetworkTabProps {
+  name: string;
+  health: NetHealth;
+  apps: App[];
+}
+
+export interface NetHealth {
+  isSyncing?: boolean;
+  peers?: number;
+  shouldHavePeers?: boolean;
+  status: NetworkStatus;
+} 
+export interface App {
+  name: string;
+  url?: string;
+}
+
 export type NetworkCtx = TabInterface[];
