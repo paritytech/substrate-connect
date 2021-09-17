@@ -61,7 +61,6 @@ describe('Initialize Detector without extension', () => {
     const detect = new Detector('test-uapp');
     const api = await detect.connect('westend', JSON.stringify(westmint));
     expect(api).toBeTruthy();
-    console.log('api', api);
     detect.disconnect('westmint');
   }, timeout);
 });

@@ -21,7 +21,7 @@ type RelayType = Map<string, string>;
 export const relayChains: RelayType = new Map<string, string>([
   ['polkadot', JSON.stringify(polkadot)],
   ['kusama', JSON.stringify(kusama)],
-  ['westend', JSON.stringify(westend)]
+  ['westend2', JSON.stringify(westend)]
 ])
 
 /**
@@ -276,7 +276,9 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   #initHealthChecker = (app: App): void => {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     app.chain && app.healthChecker?.setSendJsonRpc(app.chain.sendJsonRpc);
-    void app.healthChecker?.start((health: SmoldotHealth) => app.healthStatus = health);
+    void app.healthChecker?.start((health: SmoldotHealth) => {
+      app.healthStatus = health
+    });
     // process any RPC requests that came in while waiting for `addChain` to complete
     if (app.pendingRequests.length > 0) {
       app.pendingRequests.forEach(req => app.healthChecker?.sendJsonRpc(req));
@@ -302,36 +304,31 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         app.port.postMessage({ type: 'rpc', payload: rpcResp })
     }
 
+    let chainPromise: Promise<Network>
+    
+    // Means this is a parachain trying to connect
     if (msg.parachainPayload) {
       // Connect the main Chain first and on success the parachain with the chain
       // that just got connected as the relayChain
       const relayChainName: string = JSON.parse(msg.parachainPayload).relay_chain
       const parachainSpec: string = msg.parachainPayload
       const relaychainSpec: string | undefined = relayChains.get(relayChainName)
-
       if (!relaychainSpec)
         throw new Error('Relay chain spec was not found')
-
-      this.addChain(chainSpec, undefined, app.tabId).then(n => {
-        this.addChain(parachainSpec, rpcCallback, app.tabId).then(network => {
-          app.chain = network.chain;
-          this.#initHealthChecker(app);
-        }).catch(e => {
-          this.#handleError(app, e);
-        });
-      }).catch(e => {
-        this.#handleError(app, e);
-      });
+      chainPromise =  this.addChain(chainSpec, undefined, app.tabId).then(relayChain =>
+        this.addChain(parachainSpec, rpcCallback, app.tabId)
+      )
     } else {
       // Connect the main Chain only
-      this.addChain(chainSpec, rpcCallback, app.tabId)
-        .then(network => {
-          app.chain = network.chain;
-          this.#initHealthChecker(app);
-        }).catch(e => {
-          this.#handleError(app, e)
-        });
+      chainPromise = this.addChain(chainSpec, rpcCallback)
     }
+    
+    chainPromise.then(network => {
+      app.chain = network.chain;
+      this.#initHealthChecker(app);
+    }).catch(e => {
+      this.#handleError(app, e)
+    });
   }
 
   #findApp (port: chrome.runtime.Port): App | undefined {

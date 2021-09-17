@@ -37,29 +37,16 @@ window.onload = () => {
       // Resolves the first time the chain is fully synced so we can wait before
       // adding subscriptions. Carries on pinging to keep the UI consistent 
       // in case syncing stops or starts.
-      const waitForChainToSync = () => {
-        let resolved = false;
-        return new Promise<void>((resolve, reject) => {
-          setInterval(() => {
-            api.rpc.system.health().then(health => {
-              if (health.isSyncing.eq(false)) {
-                ui.showSynced();
-                if (!resolved) {
-                  resolved = true;
-                  resolve();
-                }
-              } else {
-                ui.showSyncing();
-              }
-            }).catch(error => {
-              ui.error(error);
-              if (!resolved) {
-                resolved = true;
-                reject();
-              }
-            });
-          }, 2000);
-        });
+      const wait = (ms: number) => new Promise<void>(res => { setTimeout(res, ms); })
+      const waitForChainToSync = async () => {
+        const health = await api.rpc.system.health();
+        if (health.isSyncing.eq(false)) {
+          ui.showSynced();
+        } else {
+          ui.showSyncing();
+          await wait(2000);
+          await waitForChainToSync();
+        }
       }
 
       await waitForChainToSync();
