@@ -7,7 +7,7 @@ import { SmoldotJsonRpcCallback, SmoldotHealth } from '@substrate/smoldot-light'
 import { ExposedAppInfo, App, ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
 import { StateEmitter, State } from './types';
-import { Client, Network } from '../types';
+import { NetworkMainInfo, Network } from '../types';
 import { logger } from '@polkadot/util';
 import { MessageFromManager, MessageToManager } from '@substrate/connect-extension-protocol';
 import westend from '../../public/assets/westend.json';
@@ -48,7 +48,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    *
    * @returns a list of the networks that are currently connected
    */
-  get registeredClients(): Client[] {
+  get registeredNetworks(): NetworkMainInfo[] {
     return this.#networks.map((s: Network) => ({name: s.name, status: s.status}));
   }
 

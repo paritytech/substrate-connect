@@ -17,17 +17,17 @@ export type uApp = {
     enabled: boolean;
 }
 
-export interface Client {
+export interface NetworkMainInfo {
   name: string;
   icon?: string;
   status: NetworkStatus;
 }
-export interface Network extends Client {
+export interface Network extends NetworkMainInfo {
   chain: smoldot.SmoldotChain;
   tabId: number;
   parachains?: Parachain[];
 }
-export interface Parachain extends Client {
+export interface Parachain extends NetworkMainInfo {
   relaychain: string;
 }
 

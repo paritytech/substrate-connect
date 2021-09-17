@@ -9,7 +9,7 @@ import kusama from '../../public/assets/kusama.json';
 import { MockPort } from '../mocks';
 import { chrome } from 'jest-chrome';
 import { App } from './types';
-import { Client } from '../types';
+import { NetworkMainInfo } from '../types';
 
 let port: MockPort;
 let manager: ConnectionManager;
@@ -183,7 +183,7 @@ describe('Unit tests', () => {
   });
 
   test('Get registered clients', () => {
-    expect(manager.registeredClients).toEqual([
+    expect(manager.registeredNetworks).toEqual([
       { name: 'westend', status: "connected" },
       { name: 'kusama', status: "connected" }
     ]);
@@ -196,7 +196,7 @@ describe('Unit tests', () => {
   test('Get networks/chains', () => {
     // With this look the "chain" is removed intentionally as "chain"
     // object cannot be compared with jest 
-    const tmpChains = manager.registeredClients.map((n: Client) => (
+    const tmpChains = manager.registeredNetworks.map((n: NetworkMainInfo) => (
       {
         name: n.name,
         status: n.status
@@ -208,7 +208,7 @@ describe('Unit tests', () => {
       { name: 'kusama', status: "connected" }
     ]);
 
-    expect(manager.registeredClients).toHaveLength(2);
+    expect(manager.registeredNetworks).toHaveLength(2);
   });
 
   test('Adding an app that already exists sends an error and disconnects', () => {
