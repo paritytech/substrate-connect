@@ -33,11 +33,11 @@ export interface Parachain extends Client {
 
 export interface NetworkTabProps {
   name: string;
-  health: NetHealth;
+  health: OptionsNetworkTabHealthContent;
   apps: App[];
 }
 
-export interface NetHealth {
+export interface OptionsNetworkTabHealthContent {
   isSyncing?: boolean;
   peers?: number;
   shouldHavePeers?: boolean;

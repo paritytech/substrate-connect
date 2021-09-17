@@ -17,7 +17,7 @@ import {
   NetworkTabProps
 } from '../types';
 import { ConnectionManager } from '../background/ConnectionManager';
-import { ReducedApp } from '../background/types';
+import { ExposedAppInfo } from '../background/types';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -94,35 +94,42 @@ const Options: React.FunctionComponent = () => {
   }, []);
 
   useEffect(() => {
-    const tmpNetworks: React.SetStateAction<NetworkTabProps[]> = [];
-    manager && manager.apps.forEach((app:ReducedApp) => {
-      const network = tmpNetworks.find((n: NetworkTabProps) => {
-        return app.chainName === n.name
-      });
-      if (network) {
-        network.apps.push({
-          name: app.appName,
-          url: app.url
+    const reduceApps = (apps: ExposedAppInfo[]) => {
+      const tmpNetworks: React.SetStateAction<NetworkTabProps[]> = [];
+      apps.forEach((app:ExposedAppInfo) => {
+        const network = tmpNetworks.find((n: NetworkTabProps) => {
+          return app.chainName === n.name
         });
-      } else {
-        const tmp = {
-          name: app.chainName,
-          health: {
-            status: app.state,
-            isSyncing: app?.healthStatus?.isSyncing,
-            peers: app?.healthStatus?.peers,
-            shouldHavePeers: app?.healthStatus?.shouldHavePeers,
-          },
-          apps: [{
+        if (network) {
+          network.apps.push({
             name: app.appName,
-            url: app.url,
-            tabId: app.tabId,  
-          }]
-        };
-        tmpNetworks.push(tmp);  
-      }
-    })
-    setNetworks(() => [...tmpNetworks]);
+            url: app.url
+          });
+        } else {
+          const tmp = {
+            name: app.chainName,
+            health: {
+              status: app.state,
+              isSyncing: app?.healthStatus?.isSyncing,
+              peers: app?.healthStatus?.peers,
+              shouldHavePeers: app?.healthStatus?.shouldHavePeers,
+            },
+            apps: [{
+              name: app.appName,
+              url: app.url,
+              tabId: app.tabId,  
+            }]
+          };
+          tmpNetworks.push(tmp);  
+        }
+      })
+      setNetworks(() => [...tmpNetworks]);
+    }
+
+    manager?.on('appsChanged', apps => {
+      reduceApps(apps);
+    });
+    manager && reduceApps(manager.apps);
   }, [manager])
 
   useEffect(() => {

@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as smoldot from '@substrate/smoldot-light';
 import { SmoldotJsonRpcCallback, SmoldotHealth } from '@substrate/smoldot-light';
-import { ReducedApp, App, ConnectionManagerInterface } from './types';
+import { ExposedAppInfo, App, ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
 import { StateEmitter, State } from './types';
 import { Client, Network } from '../types';
@@ -35,7 +35,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   #networks: Network[] = [];
   smoldotLogLevel = 3;
   #pendingRequests: string[] = [];
-  #chainId = 0;
 
   /** registeredApps
    *
@@ -58,8 +57,8 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    *
    * @returns all the connected apps.
    */
-  get apps(): ReducedApp[] {
-    return this.#apps.map(a => ({
+  get apps(): ExposedAppInfo[] {
+    return this.#apps.map((a: App) => ({
       appName: a.appName,
       chainName: a.chainName,
       healthStatus: a.healthStatus,
@@ -188,6 +187,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    registerApp(app: App): void {
     this.#apps.push(app);
     this.emit('stateChanged', this.getState());
+    this.emit('appsChanged', this.apps);
   }
 
   /**
@@ -201,6 +201,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
     this.emit('stateChanged', this.getState());
+    this.emit('appsChanged', this.apps);
   }
 
   /** shutdown shuts down the connected smoldot client. */
@@ -215,7 +216,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   async initSmoldot(): Promise<void> {
     try {
       this.#client = await (smoldot as any).start({
-        forbidWs: false, /* suppress console warnings about insecure connections */
+        forbidWs: false,
         maxLogLevel: this.smoldotLogLevel
       });
     } catch (err) {
@@ -279,6 +280,11 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         // eslint-disable-next-line @typescript-eslint/unbound-method
         app.healthChecker?.setSendJsonRpc(app.chain.sendJsonRpc);
         app.healthChecker?.start((health: SmoldotHealth) => {
+          if (app.healthStatus && (
+            app.healthStatus.isSyncing !== health.isSyncing ||
+            app.healthStatus.peers !== health.peers ||
+            app.healthStatus.shouldHavePeers !== health.shouldHavePeers))
+            this.emit('appsChanged', this.apps);
           app.healthStatus = health;
         });
         // process any RPC requests that came in while waiting for `addChain`

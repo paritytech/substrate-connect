@@ -6,12 +6,12 @@ import CallMadeIcon from '@material-ui/icons/CallMade';
 import { Background } from '../background/';
 import { debug } from '../utils/debug';
 import { TabInterface } from '../types';
-import { State, AppInfo } from '../background/types';
+import { State, PopupAppInfo } from '../background/types';
 import { ConnectionManager } from '../background/ConnectionManager';
 
 const { createTheme, ThemeProvider, Box, Divider } = material;
 
-const createTab = (a: AppInfo, url: string | undefined): TabInterface => {
+const createTab = (a: PopupAppInfo, url: string | undefined): TabInterface => {
   return {
     tabId: a.tabId,
     url: url,

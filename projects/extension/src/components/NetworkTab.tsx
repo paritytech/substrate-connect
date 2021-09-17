@@ -7,7 +7,7 @@ import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
-import { NetworkTabProps, App, NetHealth } from '../types';
+import { NetworkTabProps, App, OptionsNetworkTabHealthContent } from '../types';
 
 export const emojis = {
   chain: '🔗',
@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface NetworkContentProps {
-  health: NetHealth;
+  health: OptionsNetworkTabHealthContent;
   apps: App[];
 }
 
