@@ -9,7 +9,7 @@ smoldot clients of extension will be used. If not, a new smoldot client will sta
 sync with given chainspecs.
 
 ## Usage
-Provide a known Chain Name ('kusama', 'polkadot', 'westend'):
+Provide a known Chain Name ('kusama', 'polkadot', 'westend', 'rococo'):
 ```js
 import { Detector } from '@substrate/connect';
 

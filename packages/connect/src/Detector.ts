@@ -6,6 +6,7 @@ import { ExtensionProvider } from './ExtensionProvider/ExtensionProvider.js';
 import westend from './specs/westend.json';
 import kusama from './specs/kusama.json';
 import polkadot from './specs/polkadot.json';
+import rococo from './specs/rococo.json';
 
 interface ChainInfo {
   name: string
@@ -46,6 +47,7 @@ export class Detector {
   #chainSpecs: Record<string, unknown> = {
     'polkadot': polkadot,
     'kusama': kusama,
+    'rococo': rococo,
     'westend': westend
   }
   #name: string;
@@ -86,8 +88,8 @@ export class Detector {
    * connect attempts to detect the extension and configures the PolkadotJS 
    * API instance to return appropriately.
    *
-   * There are 3 bundled networks: "polkadot", "kusama" and "westend" which
-   * require no further configuration.
+   * There are 4 bundled networks: "polkadot", "kusama", "rococo" and
+   * "westend" which require no further configuration.
    *
    * Alternatively you may supply a chain spec and options to connect to a
    * custom chain with a light client (in-page only).

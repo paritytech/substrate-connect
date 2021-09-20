@@ -4,15 +4,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as smoldot from '@substrate/smoldot-light';
 import { SmoldotJsonRpcCallback, SmoldotHealth } from '@substrate/smoldot-light';
-import { App, ConnectionManagerInterface } from './types';
+import { ExposedAppInfo, App, ConnectionManagerInterface } from './types';
 import EventEmitter from 'eventemitter3';
 import { StateEmitter, State } from './types';
-import { Network } from '../types';
+import { NetworkMainInfo, Network } from '../types';
 import { logger } from '@polkadot/util';
 import { MessageFromManager, MessageToManager } from '@substrate/connect-extension-protocol';
 import westend from '../../public/assets/westend.json';
 import kusama from '../../public/assets/kusama.json';
 import polkadot from '../../public/assets/polkadot.json';
+import rococo from '../../public/assets/rococo.json';
 
 const l = logger('Extension Connection Manager');
 
@@ -21,6 +22,7 @@ type RelayType = Map<string, string>;
 export const relayChains: RelayType = new Map<string, string>([
   ['polkadot', JSON.stringify(polkadot)],
   ['kusama', JSON.stringify(kusama)],
+  ['rococo', JSON.stringify(rococo)],
   ['westend2', JSON.stringify(westend)]
 ])
 
@@ -47,8 +49,8 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    *
    * @returns a list of the networks that are currently connected
    */
-  get registeredClients(): string[] {
-    return this.#networks.map(s => s.name);
+  get registeredNetworks(): NetworkMainInfo[] {
+    return this.#networks.map((s: Network) => ({name: s.name, status: s.status}));
   }
 
   /**
@@ -56,18 +58,18 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    *
    * @returns all the connected apps.
    */
-  get apps(): App[] {
-    return this.#apps;
+  get apps(): ExposedAppInfo[] {
+    return this.#apps.map((a: App) => ({
+      appName: a.appName,
+      chainName: a.chainName,
+      healthStatus: a.healthStatus,
+      pendingRequests: a.pendingRequests,
+      state: a.state,
+      url: a.url,
+      tabId: a.tabId
+    }));
   }
 
-  /**
-   * networks
-   *
-   * @returns all the connected networks
-   */
-  get networks(): Network[] {
-    return this.#networks;
-  }
 
   /**
    * getState
@@ -189,6 +191,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    registerApp(app: App): void {
     this.#apps.push(app);
     this.emit('stateChanged', this.getState());
+    this.emit('appsChanged', this.apps);
   }
 
   /**
@@ -202,6 +205,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     const idx = this.#apps.findIndex(a => a.name === app.name);
     this.#apps.splice(idx, 1);
     this.emit('stateChanged', this.getState());
+    this.emit('appsChanged', this.apps);
   }
 
   /** shutdown shuts down the connected smoldot client. */
@@ -216,7 +220,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   async initSmoldot(): Promise<void> {
     try {
       this.#client = await (smoldot as any).start({
-        forbidWs: false, /* suppress console warnings about insecure connections */
+        forbidWs: false,
         maxLogLevel: this.smoldotLogLevel
       });
     } catch (err) {

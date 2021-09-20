@@ -3,8 +3,8 @@ const path = require('path');
 const networks = [
   'polkadot',
   'kusama',
-  'westend'
-  //, 'rococo', 'tick', 'track', 'trick'
+  'westend',
+  'rococo' //, 'tick', 'track', 'trick'
 ];
 
 const chainDir = '../../.chains';

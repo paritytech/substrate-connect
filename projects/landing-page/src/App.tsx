@@ -79,7 +79,7 @@ const App: React.FunctionComponent = () => {
               </CardNetwork>
               <CardNetwork
                 title='Rococo'
-                statusProps={{status:'soon'}}
+                statusProps={{status:'supported'}}
                 linkProps={{href:'https://polkadot.network/rococo-v1-a-holiday-gift-to-the-polkadot-community/'}}
               >
                 Testnet designed for parachains and related technologies: Cumulus and HRMP

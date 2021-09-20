@@ -7,8 +7,8 @@ const chainDir = '.chains';
 const networks = [
   'polkadot',
   'kusama',
-  'westend'
-  //, 'rococo', 'tick', 'track', 'trick'
+  'westend',
+  'rococo' //, 'tick', 'track', 'trick'
 ];
 
 const paths = [

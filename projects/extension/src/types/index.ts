@@ -1,6 +1,6 @@
 import * as smoldot from '@substrate/smoldot-light';
 
-export type NetworkTypes = 'kusama' | 'polkadot' | 'westend' | 'kulupu'
+export type NetworkTypes = 'kusama' | 'polkadot' | 'westend' | 'rococo'
 
 export type NetworkStatus = 'connected' | 'disconnecting' | 'disconnected';
 
@@ -17,18 +17,35 @@ export type uApp = {
     enabled: boolean;
 }
 
-interface ChainSpec {
+export interface NetworkMainInfo {
   name: string;
   icon?: string;
   status: NetworkStatus;
 }
-export interface Network extends ChainSpec {
+export interface Network extends NetworkMainInfo {
   chain: smoldot.SmoldotChain;
   tabId: number;
   parachains?: Parachain[];
 }
-export interface Parachain extends ChainSpec {
+export interface Parachain extends NetworkMainInfo {
   relaychain: string;
+}
+
+export interface NetworkTabProps {
+  name: string;
+  health: OptionsNetworkTabHealthContent;
+  apps: App[];
+}
+
+export interface OptionsNetworkTabHealthContent {
+  isSyncing?: boolean;
+  peers?: number;
+  shouldHavePeers?: boolean;
+  status: NetworkStatus;
+} 
+export interface App {
+  name: string;
+  url?: string;
 }
 
 export type NetworkCtx = TabInterface[];
