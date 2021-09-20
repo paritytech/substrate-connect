@@ -32,7 +32,9 @@ interface StateSubscription extends SubscriptionHandler {
 }
 
 interface HealthResponse {
+  //indicates whether GrandPa wrap syncing is done 
   isSyncing: boolean;
+  //indicates the amount of connected peers 
   peers: number;
   shouldHavePeers: boolean;
 }
@@ -258,7 +260,7 @@ export class SmoldotProvider implements ProviderInterface {
     assert(!this.#client && !this.#isConnected, 'Client is already connected');
     try {
       this.#client = await this.#smoldot.start({
-        forbidWs: true, /* suppress console warnings about insecure connections */
+        forbidWs: false,
         maxLogLevel: 3, /* no debug/trace messages */
       });
       this.#chain = await this.#client.addChain({
