@@ -13,6 +13,7 @@ import { MessageFromManager, MessageToManager } from '@substrate/connect-extensi
 import westend from '../../public/assets/westend.json';
 import kusama from '../../public/assets/kusama.json';
 import polkadot from '../../public/assets/polkadot.json';
+import rococo from '../../public/assets/rococo.json';
 
 const l = logger('Extension Connection Manager');
 
@@ -21,6 +22,7 @@ type RelayType = Map<string, string>;
 export const relayChains: RelayType = new Map<string, string>([
   ['polkadot', JSON.stringify(polkadot)],
   ['kusama', JSON.stringify(kusama)],
+  ['rococo', JSON.stringify(rococo)],
   ['westend', JSON.stringify(westend)]
 ])
 
