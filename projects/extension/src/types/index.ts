@@ -1,6 +1,6 @@
 import * as smoldot from '@substrate/smoldot-light';
 
-export type NetworkTypes = 'kusama' | 'polkadot' | 'westend' | 'kulupu'
+export type NetworkTypes = 'kusama' | 'polkadot' | 'westend' | 'rococo'
 
 export type NetworkStatus = 'connected' | 'disconnecting' | 'disconnected';
 
