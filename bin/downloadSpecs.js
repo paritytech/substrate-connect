@@ -1,7 +1,7 @@
 const http = require('https');
 const fs = require('fs');
 
-const specsRepo = 'https://raw.githubusercontent.com/paritytech/polkadot/8845ccabf26c925f2489950294e9015cd6e2ed50/node/service/res/';
+const specsRepo = 'https://raw.githubusercontent.com/paritytech/smoldot/main/bin';
 const chainDir = '.chains';
 
 const networks = [
