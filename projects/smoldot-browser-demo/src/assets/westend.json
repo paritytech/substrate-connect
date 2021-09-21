@@ -1,6 +1,6 @@
 {
   "name": "Westend",
-  "id": "westend2",
+  "id": "westend",
   "bootNodes": [
     "/dns/westend-connect-0.polkadot.io/tcp/443/wss/p2p/12D3KooWR3UGwwSP5wdBMk2JXXuzXoscPSudv8hmQkzfZTBzSbeE",
     "/dns/westend-connect-1.polkadot.io/tcp/443/wss/p2p/12D3KooWQeuYtdKUgC9A2wNchxQDXWHbotZWUHxnraBwiV15GH4K"
