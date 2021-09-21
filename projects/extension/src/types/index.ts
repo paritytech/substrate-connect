@@ -19,6 +19,7 @@ export type uApp = {
 
 export interface NetworkMainInfo {
   name: string;
+  id: string;
   icon?: string;
   status: NetworkStatus;
 }

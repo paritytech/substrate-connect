@@ -19,7 +19,14 @@ const l = logger('Extension Connection Manager');
 
 type RelayType = Map<string, string>;
 
-export const relayChains: RelayType = new Map<string, string>([
+const nameIdMapper = new Map<string, string>([
+  ['polkadot', 'polkadot'],
+  ['ksmcc3', 'kusama'],
+  ['rococo_v1_8', 'rococo'],
+  ['westend2', 'westend']
+]);
+
+const relayChains: RelayType = new Map<string, string>([
   ['polkadot', JSON.stringify(polkadot)],
   ['kusama', JSON.stringify(kusama)],
   ['rococo', JSON.stringify(rococo)],
@@ -50,7 +57,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @returns a list of the networks that are currently connected
    */
   get registeredNetworks(): NetworkMainInfo[] {
-    return this.#networks.map((s: Network) => ({name: s.name, status: s.status}));
+    return this.#networks.map((s: Network) => ({name: s.name, id: s.id, status: s.status}));
   }
 
   /**
@@ -244,42 +251,43 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     if (!this.#client) {
       throw new Error('Smoldot client does not exist.');
     }
-    const { name, relay_chain } = JSON.parse(chainSpec);
+    const { name, id, relay_chain } = JSON.parse(chainSpec);
 
-    // if relay_chain is not undefined then this is a parachain request
-    const existingNetwork = this.#networks.find(n =>
-      n.name === name.toLowerCase() && n.tabId === tabId
-    )
-
-    // Return an existing network (no need to re-add it)
-    if (existingNetwork)
-      return existingNetwork
-        
     // identify all relay_chains init'ed from same app with tabId identifier
-    const relayChains: Network[] = relay_chain ?
+    const potentialNetworks: Network[] = relay_chain ?
       this.#networks.filter(n => n.tabId === tabId) :
       this.#networks;
 
     const addedChain = await this.#client.addChain({
       chainSpec,
       jsonRpcCallback,
-      potentialRelayChains: relayChains.map(r => r.chain)
+      potentialRelayChains: potentialNetworks.map(r => r.chain)
     });
 
+    // This covers cases of refreshing browser in order to avoid
+    // pilling up on this.#networks, the ones that were created from same tab
+    const existingNetwork = this.#networks.find(n =>
+      n.name.toLowerCase() === name.toLowerCase() && n.tabId === tabId
+    );
     const network: Network = {
       tabId: tabId || 0,
+      id,
       name,
       chain: addedChain,
       status: 'connected'
     }
-
-    this.#networks.push(network);
-    return network;
+    !existingNetwork && this.#networks.push(network);
+    return existingNetwork || network;
   }
 
-  #initHealthChecker = (app: App): void => {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    app.chain && app.healthChecker?.setSendJsonRpc(app.chain.sendJsonRpc);
+  #initHealthChecker = (app: App, isParachain?: boolean): void => {
+    if (isParachain) {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      app.parachain && app.healthChecker?.setSendJsonRpc(app.parachain.sendJsonRpc);
+    } else {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      app.chain && app.healthChecker?.setSendJsonRpc(app.chain.sendJsonRpc);
+    }
     void app.healthChecker?.start((health: SmoldotHealth) => {
       app.healthStatus = health
     });
@@ -299,40 +307,49 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
 
   /** Handles the incoming message that contains Spec. */
   #handleSpecMessage = (msg: MessageToManager, app: App): void => {
-    const chainSpec: string = relayChains.has(app.chainName) ?
-      (relayChains.get(app.chainName) || '') : msg.payload;
+    const chainSpec: string = relayChains.has(app.chainName.toLowerCase()) ?
+      (relayChains.get(app.chainName.toLowerCase()) || '') : msg.payload;
 
     const rpcCallback = (rpc: string) => {
       const rpcResp: string | null | undefined = app.healthChecker?.responsePassThrough(rpc);
       if (rpcResp)
         app.port.postMessage({ type: 'rpc', payload: rpcResp })
     }
-
-    let chainPromise: Promise<Network>
     
     // Means this is a parachain trying to connect
     if (msg.parachainPayload) {
       // Connect the main Chain first and on success the parachain with the chain
       // that just got connected as the relayChain
-      const relayChainName: string = JSON.parse(msg.parachainPayload).relay_chain
-      const parachainSpec: string = msg.parachainPayload
-      const relaychainSpec: string | undefined = relayChains.get(relayChainName)
-      if (!relaychainSpec)
+      const relayId: string = JSON.parse(msg.parachainPayload).relay_chain;
+      const parachainSpec: string = msg.parachainPayload;
+
+      const relaychainSpec: string | undefined = relayChains.get(nameIdMapper.get(relayId) || '');
+
+      if (!relaychainSpec) {
         throw new Error('Relay chain spec was not found')
-      chainPromise =  this.addChain(chainSpec, undefined, app.tabId).then(relayChain =>
-        this.addChain(parachainSpec, rpcCallback, app.tabId)
-      )
+      }
+      this.addChain(chainSpec, undefined, app.tabId).then(network => {
+        app.chain = network.chain;
+        this.addChain(parachainSpec, rpcCallback, app.tabId).then(network => {
+          app.chainName = JSON.parse(parachainSpec).name;
+          app.parachain = network.chain;
+          this.#initHealthChecker(app, true);
+        }).catch(e => {
+          this.#handleError(app, e);
+        });
+      }).catch(e => {
+        this.#handleError(app, e);
+      });
     } else {
       // Connect the main Chain only
-      chainPromise = this.addChain(chainSpec, rpcCallback)
+      this.addChain(chainSpec, rpcCallback, app.tabId)
+        .then(network => {
+          app.chain = network.chain;
+          this.#initHealthChecker(app);
+        }).catch(e => {
+          this.#handleError(app, e);
+        });
     }
-    
-    chainPromise.then(network => {
-      app.chain = network.chain;
-      this.#initHealthChecker(app);
-    }).catch(e => {
-      this.#handleError(app, e)
-    });
   }
 
   #findApp (port: chrome.runtime.Port): App | undefined {
@@ -374,13 +391,10 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     if (app.state === 'disconnected') {
       throw new Error('Cannot disconnect - already disconnected');
     }
-    if (app.chain) {
-      app.chain.remove();
-    }
-    const networkIdx = this.#networks.findIndex(n => n.tabId === app.tabId);
-    if (networkIdx !== -1) {
-      this.#networks.splice(networkIdx, 1);
-    }
+    // call remove() for both relaychain and parachain
+    app.chain && app.chain.remove();
+    app.parachain && app.parachain.remove();
+    this.#networks = this.#networks.filter(n => n.tabId !== app.tabId);
 
     this.unregisterApp(app);
     

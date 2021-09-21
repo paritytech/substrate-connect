@@ -16,6 +16,7 @@ export interface ExposedAppInfo {
 
 export interface App extends ExposedAppInfo {
   chain?: SmoldotChain;
+  parachain?: SmoldotChain;
   name: string;
   port: chrome.runtime.Port;
   healthChecker?: HealthChecker;
