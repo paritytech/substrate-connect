@@ -272,7 +272,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     const network: Network = {
       tabId: tabId || 0,
       id,
-      name,
+      name: name.toLowerCase(),
       chain: addedChain,
       status: 'connected'
     }
