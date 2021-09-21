@@ -61,7 +61,7 @@ window.onload = () => {
         await api.query.assets.asset(i).then(asset => {
           if (asset.isNone) return
           ui.log(`${emojis.banknote} ---------------------------------- Asset No.${i+1}:`);
-          const { owner, issuer, admin, supply, isFrozen } = JSON.parse(asset);
+          const { owner, issuer, admin, supply, isFrozen } = JSON.parse(asset as unknown as string);
           ui.log(`${emojis.info} Owner: ${owner}`);
           ui.log(`${emojis.info} Issuer: ${issuer}`);
           ui.log(`${emojis.info} Admin: ${admin}`);
