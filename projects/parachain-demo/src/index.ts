@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
@@ -55,10 +56,19 @@ window.onload = () => {
       }
 
       await waitForChainToSync();
-      ui.log(`${emojis.newspaper} Subscribing to new block headers`);
-      await api.rpc.chain.subscribeNewHeads((lastHeader) => {
-        ui.log(`${emojis.brick} New block #${lastHeader.number} has hash ${lastHeader.hash}`);
-      });
+      ui.log(`${emojis.newspaper} Receiving first 10 tokens:`);
+      for (let i=0; i <= 9; i++) {
+        await api.query.assets.asset(i).then(asset => {
+          if (asset.isNone) return
+          ui.log(`${emojis.banknote} ---------------------------------- Asset No.${i+1}:`);
+          const { owner, issuer, admin, supply, isFrozen } = JSON.parse(asset);
+          ui.log(`${emojis.info} Owner: ${owner}`);
+          ui.log(`${emojis.info} Issuer: ${issuer}`);
+          ui.log(`${emojis.info} Admin: ${admin}`);
+          ui.log(`${emojis.info} Supply:${supply}`);
+          ui.log(`${emojis.info} Asset is ${!isFrozen && `not `} Frozen`);
+        });
+      }
     } catch (error) {
         ui.error(error);
     }

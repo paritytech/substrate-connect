@@ -316,40 +316,48 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         app.port.postMessage({ type: 'rpc', payload: rpcResp })
     }
     
-    // Means this is a parachain trying to connect
-    if (msg.parachainPayload) {
+    let chainPromise: Promise<void>;                                             
+                                                                                 
+    // Means this is a parachain trying to connect                               
+    if (msg.parachainPayload) {                                                  
       // Connect the main Chain first and on success the parachain with the chain
-      // that just got connected as the relayChain
-      const relayId: string = JSON.parse(msg.parachainPayload).relay_chain;
-      const parachainSpec: string = msg.parachainPayload;
-
-      const relaychainSpec: string | undefined = relayChains.get(nameIdMapper.get(relayId) || '');
-
-      if (!relaychainSpec) {
-        throw new Error('Relay chain spec was not found')
-      }
-      this.addChain(chainSpec, undefined, app.tabId).then(network => {
-        app.chain = network.chain;
-        this.addChain(parachainSpec, rpcCallback, app.tabId).then(network => {
-          app.chainName = JSON.parse(parachainSpec).name;
-          app.parachain = network.chain;
-          this.#initHealthChecker(app, true);
-        }).catch(e => {
-          this.#handleError(app, e);
-        });
-      }).catch(e => {
-        this.#handleError(app, e);
-      });
-    } else {
-      // Connect the main Chain only
-      this.addChain(chainSpec, rpcCallback, app.tabId)
-        .then(network => {
-          app.chain = network.chain;
-          this.#initHealthChecker(app);
-        }).catch(e => {
-          this.#handleError(app, e);
-        });
-    }
+      // that just got connected as the relayChain                               
+      const relayId: string = JSON.parse(msg.parachainPayload).relay_chain;      
+      const parachainSpec: string = msg.parachainPayload;                        
+                                                                                 
+      const relaychainSpec: string | undefined = relayChains.get(                
+        nameIdMapper.get(relayId) || ""                                          
+      );                                                                         
+                                                                                 
+      if (!relaychainSpec) {                                                     
+        throw new Error("Relay chain spec was not found");                       
+      }                                                                          
+                                                                                 
+      chainPromise = this.addChain(chainSpec, undefined, app.tabId)              
+        .then((network) => {                                                     
+          app.chain = network.chain;                                             
+          return this.addChain(parachainSpec, rpcCallback, app.tabId);           
+        })                                                                       
+        .then((network) => {                                                     
+          app.parachain = network.chain;                                         
+          app.chainName = JSON.parse(parachainSpec).name;                        
+        });                                                                      
+    } else {                                                                     
+      // Connect the main Chain only                                             
+      chainPromise = this.addChain(chainSpec, rpcCallback, app.tabId).then(      
+        (network) => {                                                           
+          app.chain = network.chain;                                             
+        }                                                                        
+      );                                                                         
+    }                                                                            
+                                                                                 
+    chainPromise                                                                 
+      .then(() => {                                                              
+        this.#initHealthChecker(app, true);                                      
+      })                                                                         
+      .catch((e) => {                                                            
+        this.#handleError(app, e);                                               
+      });                                                                        
   }
 
   #findApp (port: chrome.runtime.Port): App | undefined {
