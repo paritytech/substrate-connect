@@ -237,46 +237,6 @@ describe('When the manager is shutdown', () => {
   });
 });
 
-describe('Check storage and send notification when adding an app', () => {
-  const manager = new ConnectionManager();
-
-  chrome.storage.sync.get.mockImplementation((keys, callback) => {
-    callback({ notifications: true }) 
-  });
-
-  beforeEach(async () => {
-    chrome.storage.sync.get.mockClear();
-    chrome.notifications.create.mockClear();
-    manager.smoldotLogLevel = 1;
-    await manager.initSmoldot();
-  });
-
-  afterEach( () => {
-    manager.shutdown();
-  })
-
-  test('Checks storage for notifications preferences', () => {
-    const port = new MockPort('test-app-6::westend');
-    manager.addApp(port);
-    expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1);
-  });
-
-  test('Sends a notification', () => {
-    const port = new MockPort('test-app-7::westend');
-    manager.addApp(port);
-
-    const notificationData = {
-      message: "App test-app-7 connected to westend.",
-      title: "Substrate Connect",
-      iconUrl: "./icons/icon-32.png",
-      type: "basic"
-    }
-
-    expect(chrome.notifications.create).toHaveBeenCalledTimes(1);
-    expect(chrome.notifications.create).toHaveBeenCalledWith('test-app-7::westend', notificationData);
-  });
-});
-
 describe('Apps specific tests with actual ConnectionManager', () => {
   let app: App
   beforeEach(() => {

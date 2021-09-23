@@ -176,15 +176,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     try {
       const app = this.createApp(port);
       this.registerApp(app);
-      const appInfo = port.name.split('::');
-      chrome.storage.sync.get('notifications', (s) => {
-        s.notifications && chrome.notifications.create(port.name, {
-          title: 'Substrate Connect',
-          message: `App ${appInfo[0]} connected to ${appInfo[1]}.`,
-          iconUrl: './icons/icon-32.png',
-          type: 'basic'
-        });
-      });
     } catch (error) {
       l.error(`Error while adding chain: ${error}`);
     }
@@ -322,48 +313,56 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         app.port.postMessage({ type: 'rpc', payload: rpcResp })
     }
     
-    let chainPromise: Promise<void>;                                             
-                                                                                 
-    // Means this is a parachain trying to connect                               
-    if (msg.parachainPayload) {                                                  
+    let chainPromise: Promise<void>;
+                                    
+    // Means this is a parachain trying to connect
+    if (msg.parachainPayload) {     
       // Connect the main Chain first and on success the parachain with the chain
-      // that just got connected as the relayChain                               
-      const relayId: string = JSON.parse(msg.parachainPayload).relay_chain;      
-      const parachainSpec: string = msg.parachainPayload;                        
-                                                                                 
-      const relaychainSpec: string | undefined = relayChains.get(                
-        nameIdMapper.get(relayId) || ""                                          
-      );                                                                         
-                                                                                 
-      if (!relaychainSpec) {                                                     
-        throw new Error("Relay chain spec was not found");                       
-      }                                                                          
-                                                                                 
-      chainPromise = this.addChain(chainSpec, undefined, app.tabId)              
-        .then((network) => {                                                     
-          app.chain = network.chain;                                             
-          return this.addChain(parachainSpec, rpcCallback, app.tabId);           
-        })                                                                       
-        .then((network) => {                                                     
-          app.parachain = network.chain;                                         
-          app.chainName = JSON.parse(parachainSpec).name;                        
-        });                                                                      
-    } else {                                                                     
-      // Connect the main Chain only                                             
-      chainPromise = this.addChain(chainSpec, rpcCallback, app.tabId).then(      
-        (network) => {                                                           
-          app.chain = network.chain;                                             
-        }                                                                        
-      );                                                                         
-    }                                                                            
-                                                                                 
-    chainPromise                                                                 
-      .then(() => {                                                              
-        this.#initHealthChecker(app, true);                                      
-      })                                                                         
-      .catch((e) => {                                                            
-        this.#handleError(app, e);                                               
-      });                                                                        
+      // that just got connected as the relayChain
+      const relayId: string = JSON.parse(msg.parachainPayload).relay_chain;
+      const parachainSpec: string = msg.parachainPayload;
+                                    
+      const relaychainSpec: string | undefined = relayChains.get(
+        nameIdMapper.get(relayId) || ""
+      );                            
+                                    
+      if (!relaychainSpec) {        
+        throw new Error("Relay chain spec was not found");
+      }                             
+                                    
+      chainPromise = this.addChain(chainSpec, undefined, app.tabId)
+        .then((network) => {        
+          app.chain = network.chain;
+          return this.addChain(parachainSpec, rpcCallback, app.tabId);
+        })                          
+        .then((network) => {        
+          app.parachain = network.chain;
+          app.chainName = JSON.parse(parachainSpec).name;
+        });                         
+    } else {                        
+      // Connect the main Chain only
+      chainPromise = this.addChain(chainSpec, rpcCallback, app.tabId).then(
+        (network) => {              
+          app.chain = network.chain;
+        }                           
+      );                            
+    }                               
+                                    
+    chainPromise                    
+      .then(() => {                 
+        this.#initHealthChecker(app, !!app.parachain);
+        chrome.storage.sync.get('notifications', (s) => {
+          s.notifications && chrome.notifications.create(app.port.name, {
+            title: 'Substrate Connect',
+            message: `App ${app.appName} connected to ${app.chainName}.`,
+            iconUrl: './icons/icon-32.png',
+            type: 'basic'
+          });
+        });
+      })                            
+      .catch((e) => {               
+        this.#handleError(app, e);  
+      });                           
   }
 
   #findApp (port: chrome.runtime.Port): App | undefined {
