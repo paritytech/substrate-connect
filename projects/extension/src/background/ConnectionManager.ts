@@ -289,6 +289,12 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       app.chain && app.healthChecker?.setSendJsonRpc(app.chain.sendJsonRpc);
     }
     void app.healthChecker?.start((health: SmoldotHealth) => {
+      if (health && (
+        app.healthStatus?.peers !== health.peers ||
+        app.healthStatus.isSyncing !== health.isSyncing
+        )) {
+          this.emit('appsChanged', this.apps);
+      }
       app.healthStatus = health
     });
     // process any RPC requests that came in while waiting for `addChain` to complete
