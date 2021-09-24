@@ -8,6 +8,7 @@
     { "path": "./projects/extension" },
     { "path": "./projects/landing-page" },
     { "path": "./projects/multiple-network-demo" },
-    { "path": "./projects/smoldot-browser-demo" }
+    { "path": "./projects/smoldot-browser-demo" },
+    { "path": "./projects/parachain-demo" }
   ]
 }
