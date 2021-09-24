@@ -326,9 +326,10 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
         nameIdMapper.get(relayId) || ""
       );                            
                                     
-      if (!relaychainSpec) {        
-        throw new Error("Relay chain spec was not found");
-      }                             
+      if (!relaychainSpec) {
+        const error: Error = new Error("Relay chain spec was not found");
+        this.#handleError(app, error);
+      }
                                     
       chainPromise = this.addChain(chainSpec, undefined, app.tabId)
         .then((network) => {        
