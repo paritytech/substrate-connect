@@ -31,7 +31,7 @@ export class MockPort implements chrome.runtime.Port {
 
   triggerMessage(message: MessageFromManager | MessageToManager): void {
     this.#messageListeners.forEach((l: any) => {
-      l(message);
+      l(message, this);
     });
   }
 

@@ -237,6 +237,56 @@ describe('When the manager is shutdown', () => {
   });
 });
 
+describe('Check storage and send notification when adding an app', () => {
+  const port = new MockPort('test-app-7::westend');
+  const manager = new ConnectionManager();
+  const handler = jest.fn();
+  let app: App
+
+  chrome.storage.sync.get.mockImplementation((keys, callback) => {
+    callback({ notifications: true }) 
+  });
+
+    beforeEach(() => {
+    chrome.storage.sync.get.mockClear();
+    chrome.notifications.create.mockClear();
+  });
+
+  beforeAll(async () => {
+    manager.smoldotLogLevel = 1;
+    await manager.initSmoldot();
+    await manager.addChain(JSON.stringify(westend), doNothing);
+    await manager.addChain(JSON.stringify(kusama), doNothing);
+    manager.on('stateChanged', handler);
+
+    manager.addApp(port);
+    await waitForMessageToBePosted();
+  });
+
+  afterAll(() => {
+    manager.shutdown();
+  });
+
+  test('Checks storage for notifications preferences', async () => {
+    port.triggerMessage({ type: 'spec', payload: 'westend'});
+    await waitForMessageToBePosted();
+    expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1);
+  });
+
+  test('Sends a notification', () => {
+    port.triggerMessage({ type: 'spec', payload: 'westend'});
+    const notificationData = {
+      message: "App test-app-7 connected to westend.",
+      title: "Substrate Connect",
+      iconUrl: "./icons/icon-32.png",
+      type: "basic"
+    }
+
+    expect(chrome.notifications.create).toHaveBeenCalledTimes(1);
+    expect(chrome.notifications.create).toHaveBeenCalledWith('test-app-7::westend', notificationData);
+  });
+});
+
 describe('Apps specific tests with actual ConnectionManager', () => {
   let app: App
   beforeEach(() => {
@@ -256,6 +306,7 @@ describe('Apps specific tests with actual ConnectionManager', () => {
     app = manager.createApp(port);
     port.triggerMessage({ type: 'spec', payload: 'westend'});
     port.triggerMessage({ type: 'rpc', payload: '{ "id": 1 }'});
+
     expect(app.state).toBe('connected');
   });
 

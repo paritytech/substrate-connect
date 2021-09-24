@@ -314,56 +314,59 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     }
     
     let chainPromise: Promise<void>;
-                                    
+
     // Means this is a parachain trying to connect
-    if (msg.parachainPayload) {     
+    if (msg.parachainPayload) {
       // Connect the main Chain first and on success the parachain with the chain
       // that just got connected as the relayChain
       const relayId: string = JSON.parse(msg.parachainPayload).relay_chain;
       const parachainSpec: string = msg.parachainPayload;
-                                    
+
       const relaychainSpec: string | undefined = relayChains.get(
         nameIdMapper.get(relayId) || ""
-      );                            
-                                    
+      );
+
       if (!relaychainSpec) {
         const error: Error = new Error("Relay chain spec was not found");
         this.#handleError(app, error);
       }
-                                    
+
       chainPromise = this.addChain(chainSpec, undefined, app.tabId)
-        .then((network) => {        
+        .then((network) => {
           app.chain = network.chain;
           return this.addChain(parachainSpec, rpcCallback, app.tabId);
-        })                          
-        .then((network) => {        
+        })
+        .then((network) => {
           app.parachain = network.chain;
           app.chainName = JSON.parse(parachainSpec).name;
-        });                         
-    } else {                        
+          return
+        });
+    } else {
       // Connect the main Chain only
       chainPromise = this.addChain(chainSpec, rpcCallback, app.tabId).then(
-        (network) => {              
+        (network) => {
           app.chain = network.chain;
-        }                           
-      );                            
-    }                               
-                                    
-    chainPromise                    
-      .then(() => {                 
+          return
+        }
+      );
+    }
+
+    chrome.storage.sync.get('notifications', (s) => {
+      s.notifications && chrome.notifications.create(app.port.name, {
+        title: 'Substrate Connect',
+        message: `App ${app.appName} connected to ${app.chainName}.`,
+        iconUrl: './icons/icon-32.png',
+        type: 'basic'
+      });
+    });
+
+    chainPromise
+      .then(() => {
         this.#initHealthChecker(app, !!app.parachain);
-        chrome.storage.sync.get('notifications', (s) => {
-          s.notifications && chrome.notifications.create(app.port.name, {
-            title: 'Substrate Connect',
-            message: `App ${app.appName} connected to ${app.chainName}.`,
-            iconUrl: './icons/icon-32.png',
-            type: 'basic'
-          });
-        });
-      })                            
-      .catch((e) => {               
+      })
+      .catch((e) => {
         this.#handleError(app, e);  
-      });                           
+      });
   }
 
   #findApp (port: chrome.runtime.Port): App | undefined {
