@@ -150,6 +150,31 @@ test('adding and removing apps changes state', async () => {
   manager.shutdown();
 });
 
+test('Tries to connect to a parachain with unknown Relay Chain', async () => {
+  const port = new MockPort('test-app-7::westend');
+  const manager = new ConnectionManager();
+  const handler = jest.fn();
+
+  manager.smoldotLogLevel = 1;
+  await manager.initSmoldot();
+  await manager.addChain(JSON.stringify(westend), doNothing);
+  manager.on('stateChanged', handler);
+  manager.addApp(port);
+  await waitForMessageToBePosted();
+
+  port.triggerMessage({ type: 'spec', payload: '', parachainPayload: JSON.stringify({ name: 'parachainSpec', relay_chain: 'someRelayChain'})});
+  await waitForMessageToBePosted();
+  const errorMsg = { 
+    type: 'error', 
+    payload: 'Relay chain spec was not found'
+  };
+  expect(port.postMessage).toHaveBeenCalledWith(errorMsg);
+  expect(port.disconnect).toHaveBeenCalled();
+
+
+  manager.shutdown();
+});
+
 describe('Unit tests', () => {
   const manager = new ConnectionManager();
   const handler = jest.fn();
@@ -247,7 +272,7 @@ describe('Check storage and send notification when adding an app', () => {
     callback({ notifications: true }) 
   });
 
-    beforeEach(() => {
+  beforeEach(() => {
     chrome.storage.sync.get.mockClear();
     chrome.notifications.create.mockClear();
   });
@@ -287,7 +312,7 @@ describe('Check storage and send notification when adding an app', () => {
   });
 });
 
-describe('Apps specific tests with actual ConnectionManager', () => {
+describe('Tests with actual ConnectionManager', () => {
   let app: App
   beforeEach(() => {
     port = new MockPort('test-app::westend');

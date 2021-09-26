@@ -314,7 +314,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     }
     
     let chainPromise: Promise<void>;
-
     // Means this is a parachain trying to connect
     if (msg.parachainPayload) {
       // Connect the main Chain first and on success the parachain with the chain
@@ -329,6 +328,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       if (!relaychainSpec) {
         const error: Error = new Error("Relay chain spec was not found");
         this.#handleError(app, error);
+        return
       }
 
       chainPromise = this.addChain(chainSpec, undefined, app.tabId)
