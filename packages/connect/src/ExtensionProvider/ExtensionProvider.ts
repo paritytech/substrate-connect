@@ -333,7 +333,6 @@ export class ExtensionProvider implements ProviderInterface {
     this.#connectionStatePingerId = setInterval(this.#checkClientPeercount, 
       this.healthPingerInterval);
 
-    // this.#isConnected = true;
     return Promise.resolve();
   }
 
