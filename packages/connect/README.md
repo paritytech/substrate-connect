@@ -7,7 +7,6 @@ passing chainspecs or using the extension by predefined chains (e.g. westend, ku
 Detector check existence of substrate extension. If it is installed and activated then
 smoldot clients of extension will be used. If not, a new smoldot client will start and
 sync with given chainspecs.
-
 ## Usage
 Provide a known Chain Name ('kusama', 'polkadot', 'westend', 'rococo'):
 ```js
@@ -27,9 +26,24 @@ import mySubstrateChainSpec from './mySubstrateChainSpec.json';
 const chainSpec =  JSON.stringify(mySubstrateChainSpec);
 const detect = new Detector('my cool unstoppable app');
 
-const api = await detect.connect('mySubstrateChainName', chainSpec);
+const api = await detect.connect({ name: 'mySubstrateChainName', spec: chainSpec });
 ```
 
+
+### Parachain support
+
+For parachain support, you can providethe parachain's specs
+```js
+import { Detector } from '@substrate/connect';
+import myParaChainSpec from './myParaChainSpec.json';
+
+const parachainSpec =  JSON.stringify(myParaChainSpec);
+
+const detect = new Detector('my cool unstoppable app');
+const api = await detect.connect('westend',  parachainSpec);
+```
+
+### Options
 In addition besides substrate chain's name and/or chainspec, a list of options can be passed
 to Detector, same way as in  as passed in [@polkadot/api](https://polkadot.js.org/docs/api/start).
 Without chainspec:
@@ -49,7 +63,7 @@ const chainSpec =  JSON.stringify(mySubstrateChainSpec);
 const detect = new Detector('my cool unstoppable app');
 
 const options = { /* the options as per polkadot/api */ } as ApiOptions;
-const api = await detect.connect('mySubstrateChainName', chainSpec, options);
+const api = await detect.connect({ name: 'mySubstrateChainName', spec: chainSpec }, undefined options);
 ```
 
 ## Scripts

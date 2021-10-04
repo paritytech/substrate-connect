@@ -7,6 +7,7 @@ import { CardNetwork, CardProject } from './components/Cards';
 
 import BrowserDemo from 'url:../public/assets/images/BrowserDemo.png';
 import NetworksDemo from 'url:../public/assets/images/NetworksDemo.png';
+import ParachainDemo from 'url:../public/assets/images/ParachainDemo.png';
 import Burnr from 'url:../public/assets/images/Burnr.png';
 import Extension from 'url:../public/assets/images/Extension.png';
 import YourProject from 'url:../public/assets/images/YourProject.png';
@@ -155,6 +156,12 @@ const App: React.FunctionComponent = () => {
               subtitle='One uApp - multiple networks implementation'
               imageProps={{path:NetworksDemo, position: 'center top'}}
               linkProps={{href:'./multiple-network-demo/'}}
+            />
+            <CardProject
+              title='Parachain Demo'
+              subtitle='Parachain connectivity implementation'
+              imageProps={{path:ParachainDemo, position: 'center top'}}
+              linkProps={{href:'./parachain-demo/'}}
             />
             <CardProject
               title='Next Project'
