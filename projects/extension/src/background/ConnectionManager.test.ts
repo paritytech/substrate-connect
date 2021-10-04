@@ -36,8 +36,8 @@ test('adding and removing apps changes state', async () => {
   const manager = new ConnectionManager();
   manager.smoldotLogLevel = 1;
   await manager.initSmoldot();
-  await manager.addChain('westend', JSON.stringify(westend), doNothing);
-  await manager.addChain('kusama', JSON.stringify(kusama), doNothing);
+  await manager.addChain(JSON.stringify(westend), doNothing);
+  await manager.addChain(JSON.stringify(kusama), doNothing);
 
   const handler = jest.fn();
   manager.on('stateChanged', handler);
@@ -150,6 +150,31 @@ test('adding and removing apps changes state', async () => {
   manager.shutdown();
 });
 
+test('Tries to connect to a parachain with unknown Relay Chain', async () => {
+  const port = new MockPort('test-app-7::westend');
+  const manager = new ConnectionManager();
+  const handler = jest.fn();
+
+  manager.smoldotLogLevel = 1;
+  await manager.initSmoldot();
+  await manager.addChain(JSON.stringify(westend), doNothing);
+  manager.on('stateChanged', handler);
+  manager.addApp(port);
+  await waitForMessageToBePosted();
+
+  port.triggerMessage({ type: 'spec', payload: '', parachainPayload: JSON.stringify({ name: 'parachainSpec', relay_chain: 'someRelayChain'})});
+  await waitForMessageToBePosted();
+  const errorMsg = { 
+    type: 'error', 
+    payload: 'Relay chain spec was not found'
+  };
+  expect(port.postMessage).toHaveBeenCalledWith(errorMsg);
+  expect(port.disconnect).toHaveBeenCalled();
+
+
+  manager.shutdown();
+});
+
 describe('Unit tests', () => {
   const manager = new ConnectionManager();
   const handler = jest.fn();
@@ -158,8 +183,8 @@ describe('Unit tests', () => {
     manager.smoldotLogLevel = 1;
     //setup connection manager with 2 networks
     await manager.initSmoldot();
-    await manager.addChain('westend', JSON.stringify(westend), doNothing);
-    await manager.addChain('kusama', JSON.stringify(kusama), doNothing);
+    await manager.addChain(JSON.stringify(westend), doNothing);
+    await manager.addChain(JSON.stringify(kusama), doNothing);
     manager.on('stateChanged', handler);
 
     //add 4 apps in clients
@@ -184,8 +209,8 @@ describe('Unit tests', () => {
 
   test('Get registered clients', () => {
     expect(manager.registeredNetworks).toEqual([
-      { name: 'westend', status: "connected" },
-      { name: 'kusama', status: "connected" }
+      { name: 'westend', status: "connected", id: "westend2" },
+      { name: 'kusama', status: "connected", id: "ksmcc3" }
     ]);
   });
 
@@ -238,33 +263,43 @@ describe('When the manager is shutdown', () => {
 });
 
 describe('Check storage and send notification when adding an app', () => {
+  const port = new MockPort('test-app-7::westend');
   const manager = new ConnectionManager();
+  const handler = jest.fn();
+  let app: App
 
   chrome.storage.sync.get.mockImplementation((keys, callback) => {
     callback({ notifications: true }) 
   });
 
-  beforeEach(async () => {
+  beforeEach(() => {
     chrome.storage.sync.get.mockClear();
     chrome.notifications.create.mockClear();
-    manager.smoldotLogLevel = 1;
-    await manager.initSmoldot();
   });
 
-  afterEach( () => {
-    manager.shutdown();
-  })
+  beforeAll(async () => {
+    manager.smoldotLogLevel = 1;
+    await manager.initSmoldot();
+    await manager.addChain(JSON.stringify(westend), doNothing);
+    await manager.addChain(JSON.stringify(kusama), doNothing);
+    manager.on('stateChanged', handler);
 
-  test('Checks storage for notifications preferences', () => {
-    const port = new MockPort('test-app-6::westend');
     manager.addApp(port);
+    await waitForMessageToBePosted();
+  });
+
+  afterAll(() => {
+    manager.shutdown();
+  });
+
+  test('Checks storage for notifications preferences', async () => {
+    port.triggerMessage({ type: 'spec', payload: 'westend'});
+    await waitForMessageToBePosted();
     expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1);
   });
 
   test('Sends a notification', () => {
-    const port = new MockPort('test-app-7::westend');
-    manager.addApp(port);
-
+    port.triggerMessage({ type: 'spec', payload: 'westend'});
     const notificationData = {
       message: "App test-app-7 connected to westend.",
       title: "Substrate Connect",
@@ -277,7 +312,7 @@ describe('Check storage and send notification when adding an app', () => {
   });
 });
 
-describe('Apps specific tests with actual ConnectionManager', () => {
+describe('Tests with actual ConnectionManager', () => {
   let app: App
   beforeEach(() => {
     port = new MockPort('test-app::westend');
@@ -296,6 +331,7 @@ describe('Apps specific tests with actual ConnectionManager', () => {
     app = manager.createApp(port);
     port.triggerMessage({ type: 'spec', payload: 'westend'});
     port.triggerMessage({ type: 'rpc', payload: '{ "id": 1 }'});
+
     expect(app.state).toBe('connected');
   });
 
@@ -329,7 +365,7 @@ describe('Apps specific tests with actual ConnectionManager', () => {
 
   test('Smoldot throws error when it does not exist', async () => {
     try {
-      await manager.addChain('kusama', JSON.stringify(kusama), doNothing);
+      await manager.addChain(JSON.stringify(kusama), doNothing);
     } catch (err: any) {
       expect(err.message).toBe('Smoldot client does not exist.')
     }

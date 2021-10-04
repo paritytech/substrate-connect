@@ -17,11 +17,11 @@ const useStyles = makeStyles<Theme, Props>({
   },
 });
 
-const hasGlyph = (string: string) => ['kusama', 'polkadot', 'kulupu', 'rococo', 'westend'].indexOf(string) > -1
+const hasGlyph = (string: string) => ['kusama', 'polkadot', 'kulupu', 'rococo', 'westend'].indexOf(string.toLowerCase()) > -1
 
 const IconWeb3: FunctionComponent<Props> = ({ size, color, children }) => {
   const classes = useStyles({size, color});
-  return <span className={classes.iconRoot}>{children && hasGlyph(children) ? children : '?'}</span>
+  return <span className={classes.iconRoot}>{children && hasGlyph(children) ? children.toLowerCase() : '?'}</span>
 };
 
 export default IconWeb3;

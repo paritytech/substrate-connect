@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 // hack to make poladot-js work without bringing in webpack and babel
 import "regenerator-runtime/runtime"
 import { Detector }  from '@substrate/connect';
+import westmint from './assets/westend-westmint.json';
 import UI, { emojis } from './view';
 
 window.onload = () => {
@@ -13,19 +15,23 @@ window.onload = () => {
 
   (async () => {
     try {
-      const detect = new Detector('Smoldot Browser Demo');
-      const api = await detect.connect('westend');
-
-      // const api = await ApiPromise.create({ provider })
+      const detect = new Detector('Parachain Demo');
+      const api = await detect.connect('westend', JSON.stringify(westmint));
+      
+      const [chain, nodeName, nodeVersion, properties] = await Promise.all([
+        api.rpc.system.chain(),
+        api.rpc.system.name(),
+        api.rpc.system.version(),
+        api.rpc.system.properties()
+      ]);
       const header = await api.rpc.chain.getHeader()
       const chainName = await api.rpc.system.chain()
 
       // Show chain constants - from chain spec
-      ui.log(`${emojis.seedling} Light client ready`, true);
+      ui.log(`${emojis.seedling} Light client ready - Using ${chain} - ${nodeName}: ${nodeVersion}`, true);
       ui.log(`${emojis.info} Connected to ${chainName}: syncing will start at block #${header.number}`);
+      ui.log(`${emojis.chequeredFlag} Token decimals: ${properties['tokenDecimals']} - symbol: ${properties['tokenSymbol']}`);
       ui.log(`${emojis.chequeredFlag} Genesis hash is ${api.genesisHash.toHex()}`);
-      ui.log(`${emojis.clock} Epoch duration is ${api.consts.babe.epochDuration.toNumber()} blocks`);
-      ui.log(`${emojis.banknote} ExistentialDeposit is ${api.consts.balances.existentialDeposit.toHuman()}`);
 
       // Show how many peers we are syncing with
       const health = await api.rpc.system.health();
@@ -50,10 +56,19 @@ window.onload = () => {
       }
 
       await waitForChainToSync();
-      ui.log(`${emojis.newspaper} Subscribing to new block headers`);
-      await api.rpc.chain.subscribeNewHeads((lastHeader) => {
-        ui.log(`${emojis.brick} New block #${lastHeader.number} has hash ${lastHeader.hash}`);
-      });
+      ui.log(`${emojis.newspaper} Receiving first 10 tokens:`);
+      for (let i=0; i <= 9; i++) {
+        await api.query.assets.asset(i).then(asset => {
+          if (asset.isNone) return
+          ui.log(`${emojis.banknote} ------------------- Asset No.${i+1}:`);
+          const { owner, issuer, admin, supply, isFrozen } = JSON.parse(asset as unknown as string);
+          ui.log(`${emojis.info} Owner: ${owner}`);
+          ui.log(`${emojis.info} Issuer: ${issuer}`);
+          ui.log(`${emojis.info} Admin: ${admin}`);
+          ui.log(`${emojis.info} Supply:${supply}`);
+          ui.log(`${emojis.info} Asset is ${!isFrozen && `not `} Frozen`);
+        });
+      }
     } catch (error) {
         ui.error(error);
     }

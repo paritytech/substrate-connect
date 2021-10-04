@@ -19,7 +19,14 @@ const l = logger('Extension Connection Manager');
 
 type RelayType = Map<string, string>;
 
-export const relayChains: RelayType = new Map<string, string>([
+const nameIdMapper = new Map<string, string>([
+  ['polkadot', 'polkadot'],
+  ['ksmcc3', 'kusama'],
+  ['rococo_v1_8', 'rococo'],
+  ['westend2', 'westend']
+]);
+
+const relayChains: RelayType = new Map<string, string>([
   ['polkadot', JSON.stringify(polkadot)],
   ['kusama', JSON.stringify(kusama)],
   ['rococo', JSON.stringify(rococo)],
@@ -36,7 +43,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   #client: smoldot.SmoldotClient | undefined = undefined;
   #networks: Network[] = [];
   smoldotLogLevel = 3;
-  #pendingRequests: string[] = [];
 
   /** registeredApps
    *
@@ -51,7 +57,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @returns a list of the networks that are currently connected
    */
   get registeredNetworks(): NetworkMainInfo[] {
-    return this.#networks.map((s: Network) => ({name: s.name, status: s.status}));
+    return this.#networks.map((s: Network) => ({name: s.name, id: s.id, status: s.status}));
   }
 
   /**
@@ -64,6 +70,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       appName: a.appName,
       chainName: a.chainName,
       healthStatus: a.healthStatus,
+      pendingRequests: a.pendingRequests,
       state: a.state,
       url: a.url,
       tabId: a.tabId
@@ -128,6 +135,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     const url: string | undefined = sender?.url;
     const port: chrome.runtime.Port = incPort;
     const state = 'connected';
+    const pendingRequests: string[] = [];
 
     const healthChecker = (smoldot as any).healthChecker();
     const app: App = {
@@ -138,7 +146,8 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       url,
       port,
       state,
-      healthChecker
+      healthChecker,
+      pendingRequests
     }
     port.onMessage.addListener(this.#handleMessage);
     port.onDisconnect.addListener(() => { this.#handleDisconnect(app) });
@@ -167,15 +176,6 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     try {
       const app = this.createApp(port);
       this.registerApp(app);
-      const appInfo = port.name.split('::');
-      chrome.storage.sync.get('notifications', (s) => {
-        s.notifications && chrome.notifications.create(port.name, {
-          title: 'Substrate Connect',
-          message: `App ${appInfo[0]} connected to ${appInfo[1]}.`,
-          iconUrl: './icons/icon-32.png',
-          type: 'basic'
-        });
-      });
     } catch (error) {
       l.error(`Error while adding chain: ${error}`);
     }
@@ -229,78 +229,143 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   /**
    * addChain adds the Chain in the smoldot client
    *
-   * @param name - Name of the chain
    * @param spec - ChainSpec of chain to be added
    * @param jsonRpcCallback - The jsonRpcCallback function that should be triggered
+   * @param relayChain - optional SmoldotChain for relay chain
    * 
    * @returns addedChain - An the newly added chain info
    */
   async addChain(
-    name: string,
     chainSpec: string,
-    jsonRpcCallback: SmoldotJsonRpcCallback,
+    jsonRpcCallback?: SmoldotJsonRpcCallback,
     tabId?: number): Promise<Network> {
     if (!this.#client) {
       throw new Error('Smoldot client does not exist.');
     }
-    const existingNetwork = this.#networks.find(n => n.name === name && n.tabId === tabId)
-    if (existingNetwork)
-      return existingNetwork
+    const { name, id, relay_chain } = JSON.parse(chainSpec);
+
+    // identify all relay_chains init'ed from same app with tabId identifier
+    const potentialNetworks: Network[] = relay_chain ?
+      this.#networks.filter(n => n.tabId === tabId) :
+      this.#networks;
 
     const addedChain = await this.#client.addChain({
       chainSpec,
       jsonRpcCallback,
-      potentialRelayChains: this.#networks.map(net => net.chain),
+      potentialRelayChains: potentialNetworks.map(r => r.chain)
     });
 
+    // This covers cases of refreshing browser in order to avoid
+    // pilling up on this.#networks, the ones that were created from same tab
+    const existingNetwork = this.#networks.find(n =>
+      n.name.toLowerCase() === name.toLowerCase() && n.tabId === tabId
+    );
     const network: Network = {
       tabId: tabId || 0,
-      name,
+      id,
+      name: name.toLowerCase(),
       chain: addedChain,
       status: 'connected'
     }
+    !existingNetwork && this.#networks.push(network);
+    return existingNetwork || network;
+  }
 
-    this.#networks.push(network);
+  #initHealthChecker = (app: App, isParachain?: boolean): void => {
+    if (isParachain) {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      app.parachain && app.healthChecker?.setSendJsonRpc(app.parachain.sendJsonRpc);
+    } else {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      app.chain && app.healthChecker?.setSendJsonRpc(app.chain.sendJsonRpc);
+    }
+    void app.healthChecker?.start((health: SmoldotHealth) => {
+      if (health && (
+        app.healthStatus?.peers !== health.peers ||
+        app.healthStatus.isSyncing !== health.isSyncing
+        )) {
+          this.emit('appsChanged', this.apps);
+      }
+      app.healthStatus = health
+    });
+    // process any RPC requests that came in while waiting for `addChain` to complete
+    if (app.pendingRequests.length > 0) {
+      app.pendingRequests.forEach(req => app.healthChecker?.sendJsonRpc(req));
+      app.pendingRequests = [];
+    }
+  }
 
-    return network;
+  #handleError = (app: App, e: Error): void => {
+    const error: MessageFromManager = { type: 'error', payload: e.message };
+    app.port.postMessage(error);
+    app.port.disconnect();
+    this.unregisterApp(app);
   }
 
   /** Handles the incoming message that contains Spec. */
   #handleSpecMessage = (msg: MessageToManager, app: App): void => {
-    const chainSpec: string = relayChains.has(app.chainName) ?
-      (relayChains.get(app.chainName) || '') : msg.payload;
+    const chainSpec: string = relayChains.has(app.chainName.toLowerCase()) ?
+      (relayChains.get(app.chainName.toLowerCase()) || '') : msg.payload;
 
     const rpcCallback = (rpc: string) => {
-      const rpcResp = app.healthChecker?.responsePassThrough(rpc);
+      const rpcResp: string | null | undefined = app.healthChecker?.responsePassThrough(rpc);
       if (rpcResp)
         app.port.postMessage({ type: 'rpc', payload: rpcResp })
     }
+    
+    let chainPromise: Promise<void>;
+    // Means this is a parachain trying to connect
+    if (msg.parachainPayload) {
+      // Connect the main Chain first and on success the parachain with the chain
+      // that just got connected as the relayChain
+      const relayId: string = JSON.parse(msg.parachainPayload).relay_chain;
+      const parachainSpec: string = msg.parachainPayload;
 
-    this.addChain(app.chainName, chainSpec, rpcCallback, app.tabId)
-      .then(network => {
-        app.chain = network.chain;
-        // eslint-disable-next-line @typescript-eslint/unbound-method
-        app.healthChecker?.setSendJsonRpc(app.chain.sendJsonRpc);
-        app.healthChecker?.start((health: SmoldotHealth) => {
-          if (app.healthStatus && (
-            app.healthStatus.isSyncing !== health.isSyncing ||
-            app.healthStatus.peers !== health.peers ||
-            app.healthStatus.shouldHavePeers !== health.shouldHavePeers))
-            this.emit('appsChanged', this.apps);
-          app.healthStatus = health;
+      const relaychainSpec: string | undefined = relayChains.get(
+        nameIdMapper.get(relayId) || ""
+      );
+
+      if (!relaychainSpec) {
+        const error: Error = new Error("Relay chain spec was not found");
+        this.#handleError(app, error);
+        return
+      }
+
+      chainPromise = this.addChain(chainSpec, undefined, app.tabId)
+        .then((network) => {
+          app.chain = network.chain;
+          return this.addChain(parachainSpec, rpcCallback, app.tabId);
+        })
+        .then((network) => {
+          app.parachain = network.chain;
+          app.chainName = JSON.parse(parachainSpec).name;
+          return
         });
-        // process any RPC requests that came in while waiting for `addChain`
-        // to complete
-        if (this.#pendingRequests.length > 0) {
-          this.#pendingRequests.forEach(req => app.healthChecker?.sendJsonRpc(req));
-          this.#pendingRequests = [];
+    } else {
+      // Connect the main Chain only
+      chainPromise = this.addChain(chainSpec, rpcCallback, app.tabId).then(
+        (network) => {
+          app.chain = network.chain;
+          return
         }
+      );
+    }
+
+    chrome.storage.sync.get('notifications', (s) => {
+      s.notifications && chrome.notifications.create(app.port.name, {
+        title: 'Substrate Connect',
+        message: `App ${app.appName} connected to ${app.chainName}.`,
+        iconUrl: './icons/icon-32.png',
+        type: 'basic'
+      });
+    });
+
+    chainPromise
+      .then(() => {
+        this.#initHealthChecker(app, !!app.parachain);
       })
-      .catch(e => {
-        const error: MessageFromManager = { type: 'error', payload: e.message };
-        app.port.postMessage(error);
-        app.port.disconnect();
-        this.unregisterApp(app);
+      .catch((e) => {
+        this.#handleError(app, e);  
       });
   }
 
@@ -310,6 +375,10 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
   }
 
   #handleMessage = (msg: MessageToManager, port: chrome.runtime.Port): void => {
+    if (msg.type !== 'rpc' && msg.type !== 'spec') {
+      console.warn(`Unrecognised message type ${msg.type} received from content script`);
+      return;
+    }
     const app = this.#findApp(port);
     if (app) {
       if (msg.type === 'spec' && app.chainName) {
@@ -319,7 +388,7 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       if (app.chain === undefined) {
         // `addChain` hasn't resolved yet after the spec message so buffer the
         // messages to be sent when it does resolve
-        this.#pendingRequests.push(msg.payload);
+        app.pendingRequests.push(msg.payload);
         return;
       }
 
@@ -339,13 +408,10 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     if (app.state === 'disconnected') {
       throw new Error('Cannot disconnect - already disconnected');
     }
-    if (app.chain) {
-      app.chain.remove();
-    }
-    const networkIdx = this.#networks.findIndex(n => n.tabId === app.tabId);
-    if (networkIdx !== -1) {
-      this.#networks.splice(networkIdx, 1);
-    }
+    // call remove() for both relaychain and parachain
+    app.chain && app.chain.remove();
+    app.parachain && app.parachain.remove();
+    this.#networks = this.#networks.filter(n => n.tabId !== app.tabId);
 
     this.unregisterApp(app);
     

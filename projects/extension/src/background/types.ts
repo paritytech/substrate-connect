@@ -10,11 +10,13 @@ export interface ExposedAppInfo {
   tabId: number;
   url?: string;
   healthStatus?: SmoldotHealth;
+  pendingRequests: string[];
   state: AppState;
 }
 
 export interface App extends ExposedAppInfo {
   chain?: SmoldotChain;
+  parachain?: SmoldotChain;
   name: string;
   port: chrome.runtime.Port;
   healthChecker?: HealthChecker;
@@ -47,9 +49,8 @@ export interface ConnectionManagerInterface {
   registerApp: (app: App) => void;
   unregisterApp: (app: App) => void;
   addChain: (
-    name: string,
     spec: string,
-    jsonRpcCallback: smoldot.SmoldotJsonRpcCallback,
+    jsonRpcCallback?: smoldot.SmoldotJsonRpcCallback,
     tabId?: number) => Promise<Network>;
 }
 

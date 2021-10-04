@@ -37,7 +37,7 @@ const init = async () => {
       const rpcCallback = (rpc: string) => {
         console.warn(`Got RPC from ${key} dummy chain: ${rpc}`);
       };
-      await manager.addChain(key, value, rpcCallback)
+      await manager.addChain(value, rpcCallback)
         .catch(err => l.error('Error', err));
     }
   } catch (e) {

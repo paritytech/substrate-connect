@@ -106,6 +106,7 @@ export interface MessageToManager {
   type: 'rpc' | 'spec';
   /** Payload of the message -  a JSON encoded RPC request **/
   payload: string;
+  parachainPayload?: string;
 }
 
 /**
