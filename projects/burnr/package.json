@@ -33,7 +33,7 @@
     "@polkadot/react-identicon": "^0.68.1",
     "@polkadot/util": "^5.5.2",
     "@polkadot/util-crypto": "^5.5.2",
-    "@substrate/connect": "^0.3.19",
+    "@substrate/connect": "^0.4.0",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
