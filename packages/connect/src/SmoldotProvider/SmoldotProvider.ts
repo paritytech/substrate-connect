@@ -94,6 +94,7 @@ export class SmoldotProvider implements ProviderInterface {
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
   #chain: smoldot.SmoldotChain | undefined = undefined;
+  #parachainSpecs: string | undefined = undefined;;
   // reference to the smoldot module so we can defer loading the wasm client
   // until connect is called
   #smoldot: smoldot.Smoldot;
@@ -108,11 +109,14 @@ export class SmoldotProvider implements ProviderInterface {
    * @param sm - (only used for testing) defaults to the actual smoldot module
    */
   //eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
-  public constructor(chainSpec: string, sm?: any) {
+  public constructor(chainSpec: string, parachain?: string, sm?: any) {
     this.#chainSpec = chainSpec;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.#smoldot = sm || smoldot;
     this.#connectionStatePingerId = null;
+    if (parachain) {
+      this.#parachainSpecs = parachain;
+    }
   }
 
   /**
@@ -263,12 +267,25 @@ export class SmoldotProvider implements ProviderInterface {
         forbidWs: false,
         maxLogLevel: 3, /* no debug/trace messages */
       });
-      this.#chain = await this.#client.addChain({
-        chainSpec: this.#chainSpec,
-        jsonRpcCallback: (response: string) => {
-          this.#handleRpcReponse(response);
-        }
-      });
+      if (this.#parachainSpecs) {
+        const relay = await this.#client.addChain({
+          chainSpec: this.#chainSpec,
+        });
+        this.#chain = await this.#client.addChain({
+          chainSpec: this.#parachainSpecs,
+          jsonRpcCallback: (response: string) => {
+            this.#handleRpcReponse(response);
+          },
+          potentialRelayChains: [relay]
+        });
+      } else {
+        this.#chain = await this.#client.addChain({
+          chainSpec: this.#chainSpec,
+          jsonRpcCallback: (response: string) => {
+            this.#handleRpcReponse(response);
+          }
+        });
+      }
       this.#connectionStatePingerId = setInterval(
       this.#checkClientPeercount, this.healthPingerInterval);
     } catch(error: unknown) {
