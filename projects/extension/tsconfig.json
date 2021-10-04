@@ -16,7 +16,7 @@
     "allowSyntheticDefaultImports" : true,
     "esModuleInterop": true
   },
-  "include": [ "src/**/*", "public/assets/*.json" ],
+  "include": [ "src/**/*", "public/assets/*.json", "src/background/settings.json"],
   "exclude": ["*node_modules*", "../../node_modules*"],
   "references": [
     { "path": "../../packages/connect-extension-protocol" },

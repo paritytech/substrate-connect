@@ -5,12 +5,12 @@ import { theme, dark, Loader, Logo, Sidebar, UIContainer, Section, SectionHeadin
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { CardNetwork, CardProject } from './components/Cards';
 
-import BrowserDemo from 'url:../public/assets/images/BrowserDemo.png';
-import NetworksDemo from 'url:../public/assets/images/NetworksDemo.png';
-import ParachainDemo from 'url:../public/assets/images/ParachainDemo.png';
-import Burnr from 'url:../public/assets/images/Burnr.png';
-import Extension from 'url:../public/assets/images/Extension.png';
-import YourProject from 'url:../public/assets/images/YourProject.png';
+import BrowserDemo from 'url:./assets/images/BrowserDemo.png';
+import NetworksDemo from 'url:./assets/images/NetworksDemo.png';
+import ParachainDemo from 'url:./assets/images/ParachainDemo.png';
+import Burnr from 'url:./assets/images/Burnr.png';
+import Extension from 'url:./assets/images/Extension.png';
+import YourProject from 'url:./assets/images/YourProject.png';
 
 const Alert = (props: AlertProps) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
