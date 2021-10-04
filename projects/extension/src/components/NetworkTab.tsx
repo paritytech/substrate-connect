@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import { NetworkTabProps, App, OptionsNetworkTabHealthContent } from '../types';
+import { Grid } from '@material-ui/core';
 
 export const emojis = {
   chain: '🔗',
@@ -17,6 +18,7 @@ export const emojis = {
   chequeredFlag: '🏁',
   star: '✨',
   clock: '🕒',
+  apps: '📺',
   seedling: '🌱'
 };
 
@@ -111,9 +113,11 @@ const useStyles = makeStyles((theme: Theme) =>
 interface NetworkContentProps {
   health: OptionsNetworkTabHealthContent;
   apps: App[];
+  network: string;
 }
 
 const NetworkContent = ({
+  network,
   health,
   apps
 }: NetworkContentProps) => {
@@ -123,22 +127,27 @@ const NetworkContent = ({
   const isSyncing = health && health.isSyncing;
   return (
     <div className={classes.info}>
-      {!isSyncing ? (
-        <>
-          <p>{emojis.chain} Chain is {status}.</p>
-          {peers ? (<p>{emojis.star} Communicating with {peers} peer{peers === 1 ? '' : 's'}.</p>) : null}
-        </>
-      ) : !peers ?
-        <div>No peers</div> :
-        <div>Chain is synching...</div>
-      }
-      <h4>Apps</h4>
-      <ul>
-        {apps.map(app => (
-            <li key={app.name}>{`${app.name} - (${app.url})`}</li>
-          )
-        )}
-      </ul>
+      <Grid container>
+        <Grid item xs={3}>{emojis.seedling} Light Client</Grid>
+        <Grid item xs={9}>{isSyncing ? 'Synching' : 'Synched'}</Grid>
+        <Grid item xs={3}>{emojis.star} Network</Grid>
+        <Grid item xs={9}>{network}<br /> Chain is {status}</Grid>
+        <Grid item xs={3}>{emojis.deal} Peers</Grid>
+        <Grid item xs={9}>{peers}</Grid>
+        <Grid item xs={3}>{emojis.apps} Apps</Grid>
+        <Grid item xs={9}>{apps.length}:</Grid>
+        <Grid item xs={3}></Grid>
+        <Grid item xs={9}>
+          {apps.map(app => (
+              <Grid key={app.name} container>
+                 <Grid item xs={6}>{app.name}</Grid>
+                 <Grid item xs={1}>-</Grid>
+                 <Grid item xs={5}>{app.url}</Grid>
+              </Grid>
+            )
+          )}
+        </Grid>
+      </Grid>
     </div>
   );
 }
@@ -179,7 +188,7 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
           </div>
         </AccordionSummary>
         <AccordionDetails className={classes.content}>
-          <NetworkContent health={health} apps={apps} />
+          <NetworkContent health={health} apps={apps} network={name}/>
         </AccordionDetails>
       </Accordion>
     </div>
