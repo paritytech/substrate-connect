@@ -94,7 +94,7 @@ export class SmoldotProvider implements ProviderInterface {
   #isConnected = false;
   #client: smoldot.SmoldotClient | undefined = undefined;
   #chain: smoldot.SmoldotChain | undefined = undefined;
-  #parachainSpecs: string | undefined = undefined;;
+  #parachainSpecs: string | undefined = undefined;
   // reference to the smoldot module so we can defer loading the wasm client
   // until connect is called
   #smoldot: smoldot.Smoldot;
