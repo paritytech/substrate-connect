@@ -17,6 +17,8 @@ import { jest } from '@jest/globals';
 
 const EMPTY_CHAIN_SPEC = '{}';
 
+const EMPTY_PARACHAIN_SPEC = '{}';
+
 describe('Test Development chain', () => {
   let provider: SmoldotProvider;
 
@@ -31,7 +33,7 @@ describe('Test Development chain', () => {
       { isSyncing: false, peerCount: 1, shouldHavePeers: true }
     ];
     const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
-    provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+    provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ms);
   
     // we don't want the test to be slow
     provider.healthPingerInterval = 1;
@@ -51,7 +53,7 @@ describe('Test Development chain', () => {
 
   test('emits connect and never emits disconnect for development chain', async () => {  
     const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
-    provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+    provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ms);
   
     // we don't want the test to be slow
     provider.healthPingerInterval = 1;
@@ -77,7 +79,7 @@ test('connect propagates errors', async () => {
       return Promise.reject(new Error('boom!'));
     }
   };
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, badSmoldot);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, badSmoldot);
   let errored = false;
 
   provider.on('error', () => { errored = true; });
@@ -93,7 +95,7 @@ test('connect propagates errors', async () => {
 test('awaiting send returns message result', async () => {
   const mockResponses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
   const ms = mockSmoldot(respondWith(mockResponses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ms);
 
   await provider.connect();
   const reply = await provider.send('hello', [ 'world' ]);
@@ -103,7 +105,7 @@ test('awaiting send returns message result', async () => {
 
 test('emits error when system_health responds with error', async () => {
   const ms = mockSmoldot(respondWith([]), erroringResponder);
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ms);
 
   // we don't want the test to be slow
   provider.healthPingerInterval = 1;
@@ -122,7 +124,7 @@ test('emits events when it connects then disconnects', async () => {
     { isSyncing: false, peerCount: 0, shouldHavePeers: true }
   ];
   const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ms);
 
   // we don't want the test to be slow
   provider.healthPingerInterval = 1;
@@ -143,7 +145,145 @@ test('emits events when Grandpa finishes sync and then connects', async () => {
     { isSyncing: false, peerCount: 1, shouldHavePeers: true }
   ];
   const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ms);
+
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
+  return new Promise<void>((resolve) => {
+    provider.on('connected', () => {
+      provider.disconnect().then(() => resolve());
+    })
+  });
+});
+
+describe('Test Development parachain', () => {
+  let provider: SmoldotProvider;
+
+  afterEach(async () => {
+    await provider.disconnect();
+  });
+
+  test('emits events when it connects / disconnects / reconnects', async () => {
+    const healthResponses = [
+      { isSyncing: false, peerCount: 1, shouldHavePeers: true },
+      { isSyncing: false, peerCount: 0, shouldHavePeers: true },
+      { isSyncing: false, peerCount: 1, shouldHavePeers: true }
+    ];
+    const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
+    provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, EMPTY_PARACHAIN_SPEC, ms);
+  
+    // we don't want the test to be slow
+    provider.healthPingerInterval = 1;
+    await provider.connect();
+  
+    return new Promise<void>((resolve) => {
+      provider.on('connected', () => {
+        const off = provider.on('disconnected', () => {
+          off(); // stop listening
+          provider.on('connected', () => {
+            provider.disconnect().then(() => resolve());
+          });
+        });
+      });
+    });
+  });
+
+  test('emits connect and never emits disconnect for development chain', async () => {  
+    const ms = mockSmoldot(respondWith([]), devChainHealthResponder);
+    provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, EMPTY_PARACHAIN_SPEC, ms);
+  
+    // we don't want the test to be slow
+    provider.healthPingerInterval = 1;
+    await provider.connect();
+    
+    return new Promise<void>((resolve, reject) => {
+      provider.on('connected', () => {
+        setTimeout(() => {
+          resolve();
+        }, 20);
+  
+        provider.on('disconnected', () => {
+          reject('should never disconnect');
+        });
+      });
+    });
+  }, 10000);
+});
+
+test('connect propagates errors', async () => {
+  const badSmoldot = {
+    start: async (): Promise<SmoldotClient> => {
+      return Promise.reject(new Error('boom!'));
+    }
+  };
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, EMPTY_PARACHAIN_SPEC, badSmoldot);
+  let errored = false;
+
+  provider.on('error', () => { errored = true; });
+  try {
+    await provider.connect();
+  } catch (_) {
+    expect(errored).toBe(true);
+    await provider.disconnect();
+  }
+});
+
+// non-subscription send
+test('awaiting send returns message result', async () => {
+  const mockResponses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
+  const ms = mockSmoldot(respondWith(mockResponses));
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, EMPTY_PARACHAIN_SPEC, ms);
+
+  await provider.connect();
+  const reply = await provider.send('hello', [ 'world' ]);
+  expect(reply).toBe('success');
+  await provider.disconnect();
+});
+
+test('emits error when system_health responds with error', async () => {
+  const ms = mockSmoldot(respondWith([]), erroringResponder);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, EMPTY_PARACHAIN_SPEC, ms);
+
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
+  return new Promise<void>((resolve) => {
+    provider.on('error', error => {
+      expect(error.message).toBe('Got error response asking for system health');
+      return provider.disconnect().then(() => resolve());
+    });
+  });
+});
+
+test('emits events when it connects then disconnects', async () => {
+  const healthResponses = [
+    { isSyncing: false, peerCount: 1, shouldHavePeers: true },
+    { isSyncing: false, peerCount: 0, shouldHavePeers: true }
+  ];
+  const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, EMPTY_PARACHAIN_SPEC, ms);
+
+  // we don't want the test to be slow
+  provider.healthPingerInterval = 1;
+  await provider.connect();
+  return new Promise<void>((resolve) => {
+    provider.on('connected', () => {
+      const off = provider.on('disconnected', () => {
+        off(); // stop listening
+        provider.disconnect().then(() => resolve());
+      });
+    });
+  });
+});
+
+test('emits events when Grandpa finishes sync and then connects', async () => {
+  const healthResponses = [
+    { isSyncing: true, peerCount: 1, shouldHavePeers: true },
+    { isSyncing: false, peerCount: 1, shouldHavePeers: true }
+  ];
+  const ms = mockSmoldot(respondWith([]), customHealthResponder(healthResponses));
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, EMPTY_PARACHAIN_SPEC, ms);
 
   // we don't want the test to be slow
   provider.healthPingerInterval = 1;
@@ -160,7 +300,7 @@ test('send formats JSON RPC request correctly', async () => {
   const responses =  ['{ "id": 1, "jsonrpc": "2.0", "result": "success" }'];
   const rpcSend = jest.fn() as jest.MockedFunction<(rpc: string) => void>;
   const ss = smoldotSpy(respondWith(responses), rpcSend);
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ss);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ss);
 
   await provider.connect();
   await provider.send('hello', [ 'world' ]);
@@ -175,7 +315,7 @@ test('sending twice uses new id', async () => {
   ];
   const rpcSend = jest.fn() as jest.MockedFunction<(rpc: string) => void>;
   const ss = smoldotSpy(respondWith(responses), rpcSend);
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ss);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ss);
 
   await provider.connect();
   await provider.send('hello', [ 'world' ]);
@@ -192,7 +332,7 @@ test('sending twice uses new id', async () => {
 
 test('throws when got error JSON response', async () => {
   const ms = mockSmoldot(erroringResponder);
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ms);
 
   await provider.connect();
 
@@ -209,7 +349,7 @@ test('send can also add subscriptions and returns an id', async () => {
     '{"jsonrpc":"2.0","method":"state_test","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
   ];
   const ms = mockSmoldot(respondWith(responses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ms);
 
   await provider.connect();
   const reply = await provider.send('test_subscribe', []);
@@ -223,7 +363,7 @@ test('subscribe', async () => {
     '{"jsonrpc":"2.0","method":"state_test","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
   ];
   const ms = mockSmoldot(respondWith(responses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ms);
 
   await provider.connect();
 
@@ -248,7 +388,7 @@ test('subscribe copes with out of order responses', async () => {
     '{"jsonrpc":"2.0","result":"SUBSCRIPTIONID","id":1}'
   ];
   const ms = mockSmoldot(respondWith(responses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ms);
 
   await provider.connect();
 
@@ -275,7 +415,7 @@ test('converts british english method spelling to US', async () => {
     '{"jsonrpc":"2.0","method":"chain_finalisedHead","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
   ];
   const ms = mockSmoldot(respondWith(responses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ms);
 
   await provider.connect();
 
@@ -300,7 +440,7 @@ test('unsubscribe fails when sub not found', async () => {
     '{"jsonrpc":"2.0","method":"chain_finalisedHead","params":{"result":{"dummy":"state"},"subscription":"SUBSCRIPTIONID"}}'
   ];
   const ms = mockSmoldot(respondWith(responses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ms);
 
   await provider.connect();
   await provider.subscribe('test', 'test_subscribe', [], () => { return });
@@ -317,7 +457,7 @@ test('unsubscribe removes subscriptions', async () => {
     '{ "id": 2, "jsonrpc": "2.0", "result": true }'
   ];
   const ms = mockSmoldot(respondWith(responses));
-  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, ms);
+  const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, ms);
 
   await provider.connect();
   const id = await provider.subscribe('test', 'test_subscribe', [], () => { return });

@@ -166,7 +166,7 @@ export class Detector {
       provider = new ExtensionProvider(this.#name, chain, parachainSpec) as ProviderInterface;
     } else if (!this.#isExtension) {
       const spec = JSON.stringify(this.#chainSpecs[chain.name]);
-      provider = new SmoldotProvider(spec);
+      provider = new SmoldotProvider(spec, parachainSpec);
     }
     return provider;
   }
