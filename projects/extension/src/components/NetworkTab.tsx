@@ -129,7 +129,7 @@ const NetworkContent = ({
     <div className={classes.info}>
       <Grid container>
         <Grid item xs={3}>{emojis.seedling} Light Client</Grid>
-        <Grid item xs={9}>{isSyncing ? 'Synching' : 'Synched'}</Grid>
+        <Grid item xs={9}>{isSyncing ? 'Synchronizing' : 'Synchronized'}</Grid>
         <Grid item xs={3}>{emojis.star} Network</Grid>
         <Grid item xs={9}>{network}<br /> Chain is {status}</Grid>
         <Grid item xs={3}>{emojis.deal} Peers</Grid>
