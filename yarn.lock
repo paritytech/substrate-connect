@@ -2926,10 +2926,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@substrate/smoldot-light@^0.4.17":
-  version "0.4.17"
-  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.4.17.tgz#0041e647495d5f8a9939c9ebdee60304a591543d"
-  integrity sha512-sfhFearq0/RXoBw1kDSqrBqp2spPRYAaCSOLE1JVCevYaj0OTIwLYX19fROHXIm9ulClAGDJo9D/NKWjReH1mg==
+"@substrate/smoldot-light@0.4.18":
+  version "0.4.18"
+  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.4.18.tgz#acfea8a959260350e75c7fbacfb96c43b0fcf265"
+  integrity sha512-q6+/rnd28bWzxBWjWiALyM6qFekrbtG2fOeK8IYcB7erByp9sYBFAhXYDtupfWlXq/yDJ37Z69RNZVJI8PQcuw==
   dependencies:
     buffer "^6.0.1"
     performance-now "^2.1.0"
