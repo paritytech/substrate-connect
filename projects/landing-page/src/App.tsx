@@ -133,9 +133,7 @@ const App: React.FunctionComponent = () => {
             >
             </CardProject>
             <SectionRef href='https://github.com/paritytech/substrate-connect/tree/master/projects/extension'>Learn more</SectionRef>
-            {/* Deactivate straight download for now 
-              <SectionRef href='./extension/substrate-connect.zip'>Download</SectionRef> 
-            */}
+            <SectionRef href='./extension/substrate-connect.zip'>Download</SectionRef> 
           </Section>
           <Section>
             <SectionHeading id='projects' prefix='7'>Projects</SectionHeading>
