@@ -34,7 +34,7 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@substrate/connect": "^0.4.4",
+    "@substrate/connect": "^0.4.5",
     "regenerator-runtime": "^0.13.7"
   }
 }
