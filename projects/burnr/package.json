@@ -11,10 +11,10 @@
   "license": "Apache-2.0",
   "scripts": {
     "prebuild": "yarn clean",
-    "build": "parcel build ./src/index.html --public-url ./",
+    "build": "webpack",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "dev": "yarn run clean && tsc -b & parcel ./public/index.html",
+    "dev": "yarn run clean && tsc -b & webpack serve --config webpack.config.js",
     "test": "exit 0; #No tests",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx",
     "predeploy": "yarn run build"
@@ -24,6 +24,9 @@
     "url": "https://github.com/paritytech/substrate-connect.git"
   },
   "dependencies": {
+    "@babel/core": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "@babel/preset-react": "^7.14.5",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
@@ -34,14 +37,23 @@
     "@polkadot/util": "^5.5.2",
     "@polkadot/util-crypto": "^5.5.2",
     "@substrate/connect": "^0.4.5",
+    "babel-loader": "^8.2.2",
+    "crypto-browserify": "^3.12.0",
+    "html-webpack-plugin": "^5.4.0",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-is": "^17.0.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
+    "stream-browserify": "^3.0.0",
+    "style-loader": "^3.3.0",
     "styled-components": "^5.2.1",
-    "unique-names-generator": "^4.3.1"
+    "ts-loader": "^9.2.6",
+    "unique-names-generator": "^4.3.1",
+    "webpack": "^5.58.2",
+    "webpack-cli": "^4.9.0",
+    "webpack-dev-server": "^4.3.1"
   },
   "devDependencies": {
     "@material-ui/types": "^5.1.0",
