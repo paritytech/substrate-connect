@@ -264,7 +264,7 @@ export class SmoldotProvider implements ProviderInterface {
     assert(!this.#client && !this.#isConnected, 'Client is already connected');
     try {
       this.#client = await this.#smoldot.start({
-        forbidWs: false,
+        forbidWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
         maxLogLevel: 3, /* no debug/trace messages */
       });
       if (this.#parachainSpecs) {
