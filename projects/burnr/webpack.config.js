@@ -4,6 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const webpack = require("webpack");
+const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
@@ -44,9 +45,15 @@ module.exports = {
       stream: require.resolve("stream-browserify"),
     },
   },
-  plugins: [
+  plugins: [new CopyPlugin({
+      patterns: [{ from: "src/assets", to: "./assets" }],
+    }),
     new webpack.DefinePlugin({
-      "process": JSON.stringify(undefined),
+      "process": {
+        "env": {
+          "WS_URL": JSON.stringify(undefined)
+        }
+      }
     }),
     new HtmlWebpackPlugin({
       template: "./src/index.html",
