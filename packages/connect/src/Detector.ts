@@ -1,8 +1,6 @@
-import { ApiPromise } from "@polkadot/api"
+import type { ApiPromise } from "@polkadot/api"
 import { ApiOptions } from "@polkadot/api/types"
 import { ProviderInterface } from "@polkadot/rpc-provider/types"
-import { SmoldotProvider } from "./SmoldotProvider/SmoldotProvider.js"
-import { ExtensionProvider } from "./ExtensionProvider/ExtensionProvider.js"
 import westend from "./specs/westend.json"
 import kusama from "./specs/kusama.json"
 import polkadot from "./specs/polkadot.json"
@@ -125,9 +123,10 @@ export class Detector {
       const { name, spec } = relay
       chain = { name, spec }
     }
-    const provider: ProviderInterface = !parachainSpec
-      ? this.provider(chain, undefined)
-      : this.provider(chain, parachainSpec)
+    const [provider, { ApiPromise }] = await Promise.all([
+      this.provider(chain, parachainSpec),
+      import("@polkadot/api"),
+    ])
 
     provider.connect().catch(console.error)
 
@@ -159,12 +158,10 @@ export class Detector {
    * @remarks
    * This is used internally for advanced PolkadotJS use cases and is not supported.  Use {@link connect} instead.
    */
-  public provider = (
+  public provider = async (
     chain: ChainInfo,
     parachainSpec?: string,
-  ): ProviderInterface => {
-    let provider: ProviderInterface = {} as ProviderInterface
-
+  ): Promise<ProviderInterface> => {
     if (!chain.name && !Object.keys(this.#chainSpecs).includes(chain.name)) {
       throw new Error(
         `No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(
@@ -174,16 +171,21 @@ export class Detector {
     }
 
     if (this.#isExtension) {
-      provider = new ExtensionProvider(
+      const { ExtensionProvider } = await import(
+        "./ExtensionProvider/ExtensionProvider.js"
+      )
+      return new ExtensionProvider(
         this.#name,
         chain,
         parachainSpec,
       ) as ProviderInterface
-    } else if (!this.#isExtension) {
+    } else {
+      const { SmoldotProvider } = await import(
+        "./SmoldotProvider/SmoldotProvider.js"
+      )
       const spec = JSON.stringify(this.#chainSpecs[chain.name])
-      provider = new SmoldotProvider(spec, parachainSpec)
+      return new SmoldotProvider(spec, parachainSpec)
     }
-    return provider
   }
 
   /**
