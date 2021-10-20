@@ -6,8 +6,5 @@
   "excludeExternals": false,
   "excludePrivate": true,
   "includeVersion": true,
-  "packages": [
-    "packages/*",
-    "projects/extension"
-  ]
+  "packages": ["packages/*", "projects/extension"]
 }

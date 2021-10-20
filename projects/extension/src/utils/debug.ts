@@ -6,11 +6,11 @@
  * @param ctx     - an optional object to log out to the console
  */
 export function debug(message: string, ctx?: unknown): void {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     if (ctx) {
-      console.debug(message, ctx);
+      console.debug(message, ctx)
     } else {
-      console.debug(message);
+      console.debug(message)
     }
   }
 }

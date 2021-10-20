@@ -1,3 +1,3 @@
-import { chrome } from 'jest-chrome';
+import { chrome } from "jest-chrome"
 
-Object.assign(window, { chrome });
+Object.assign(window, { chrome })

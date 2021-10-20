@@ -1,6 +1,6 @@
-import { createContext } from 'react';
-import { NetworkCtx } from '../types';
+import { createContext } from "react"
+import { NetworkCtx } from "../types"
 
-const NetworkContext = createContext<NetworkCtx>({} as NetworkCtx);
+const NetworkContext = createContext<NetworkCtx>({} as NetworkCtx)
 
-export { NetworkContext };
+export { NetworkContext }

@@ -1,7 +1,7 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components"
 
-import Web3Regular from './Web3-Regular.woff';
-import Web3Regular2 from './Web3-Regular.woff2';
+import Web3Regular from "./Web3-Regular.woff"
+import Web3Regular2 from "./Web3-Regular.woff2"
 
 export default createGlobalStyle`
     @font-face {
@@ -24,4 +24,4 @@ export default createGlobalStyle`
             margin: 16px 32px 0 !important;
         }
     }
-`;
+`

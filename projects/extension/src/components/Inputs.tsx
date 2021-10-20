@@ -1,6 +1,6 @@
-import { InputBase, ButtonBase, Box, Button, Input } from '@material-ui/core';
-import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { grey } from '@material-ui/core/colors';
+import { InputBase, ButtonBase, Box, Button, Input } from "@material-ui/core"
+import { withStyles, createStyles, Theme } from "@material-ui/core/styles"
+import { grey } from "@material-ui/core/colors"
 
 /**
  * `InputWrap` is used to wrap `InputText` and `InputButton`
@@ -8,21 +8,20 @@ import { grey } from '@material-ui/core/colors';
  * API:
  *
  * - [Box](https://material-ui.com/components/box/)
- * 
+ *
  */
 export const InputWrap = withStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex',
-      flexWrap: 'nowrap',
+      display: "flex",
+      flexWrap: "nowrap",
       marginLeft: -2,
       backgroundColor: grey[100],
       borderRadius: theme.spacing(0.5),
       border: `1px solid ${grey[200]}`,
     },
-  })
-)(Box);
-
+  }),
+)(Box)
 
 /**
  * `InputText` is used inside `InputWrap` next to `InputButton`
@@ -30,18 +29,18 @@ export const InputWrap = withStyles((theme: Theme) =>
  * API:
  *
  * - [InputBase API](https://material-ui.com/api/input-base/)
- * 
+ *
  */
 export const InputText = withStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',
-      '& input': {
+      width: "100%",
+      "& input": {
         padding: theme.spacing(1),
       },
     },
-  })
-)(InputBase);
+  }),
+)(InputBase)
 
 /**
  * TODO: make select
@@ -50,19 +49,19 @@ export const InputText = withStyles((theme: Theme) =>
  * API:
  *
  * - [InputBase API](https://material-ui.com/api/input-base/)
- * 
+ *
  */
 export const InputSelect = withStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',
-      background: 'white',
-      '& input': {
+      width: "100%",
+      background: "white",
+      "& input": {
         padding: theme.spacing(1),
       },
     },
-  })
-)(InputBase);
+  }),
+)(InputBase)
 
 /**
  * `InputButton` is used inside `InputWrap` next to `InputText`
@@ -70,7 +69,7 @@ export const InputSelect = withStyles((theme: Theme) =>
  * API:
  *
  * - [ButtonBase API](https://material-ui.com/api/button-base/)
- * 
+ *
  */
 export const InputButton = withStyles((theme: Theme) =>
   createStyles({
@@ -81,8 +80,8 @@ export const InputButton = withStyles((theme: Theme) =>
       paddingLeft: theme.spacing(1.2),
       paddingRight: theme.spacing(1.2),
     },
-  })
-)(ButtonBase);
+  }),
+)(ButtonBase)
 
 /**
  * `MenuButton` is used in menus with multiple text buttons
@@ -90,7 +89,7 @@ export const InputButton = withStyles((theme: Theme) =>
  * API:
  *
  * - [Button API](https://material-ui.com/api/button-base/)
- * 
+ *
  */
 export const MenuButton = withStyles((theme: Theme) =>
   createStyles({
@@ -99,25 +98,25 @@ export const MenuButton = withStyles((theme: Theme) =>
       borderRadius: 0,
       transition: `backgrund-color 0s !important`,
       ...theme.typography.body1,
-      '&.danger': {
+      "&.danger": {
         color: theme.palette.error.main,
       },
-      '& .MuiButton-label': {
-        justifyContent: 'space-between',
+      "& .MuiButton-label": {
+        justifyContent: "space-between",
       },
-      '& svg': {
+      "& svg": {
         color: theme.palette.text.secondary,
       },
     },
-  })
-)(Button);
+  }),
+)(Button)
 
 export const MenuInputText = withStyles((theme: Theme) =>
   createStyles({
     root: {
-      '&:before': {
-        borderBottomColor: theme.palette.divider
-      }
+      "&:before": {
+        borderBottomColor: theme.palette.divider,
+      },
     },
-  })
-)(Input);
+  }),
+)(Input)

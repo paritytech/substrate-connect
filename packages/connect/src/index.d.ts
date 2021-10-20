@@ -1,4 +1,4 @@
 export interface Detector {
-    chainName: string;
-    chainSpec?: string;
+  chainName: string
+  chainSpec?: string
 }

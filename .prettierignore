@@ -72,3 +72,8 @@ DEPLOY-RELEASE*
 LICENSE*
 README*
 *coverage*
+polkadot.json*
+kusama.json*
+westend.json*
+*westmint*.json*
+rococo.json*

@@ -1,12 +1,12 @@
-import { ApiPromise } from '@polkadot/api';
-import { ApiOptions } from '@polkadot/api/types';
-import { ProviderInterface } from '@polkadot/rpc-provider/types';
-import { SmoldotProvider }  from './SmoldotProvider/SmoldotProvider.js';
-import { ExtensionProvider } from './ExtensionProvider/ExtensionProvider.js';
-import westend from './specs/westend.json';
-import kusama from './specs/kusama.json';
-import polkadot from './specs/polkadot.json';
-import rococo from './specs/rococo.json';
+import { ApiPromise } from "@polkadot/api"
+import { ApiOptions } from "@polkadot/api/types"
+import { ProviderInterface } from "@polkadot/rpc-provider/types"
+import { SmoldotProvider } from "./SmoldotProvider/SmoldotProvider.js"
+import { ExtensionProvider } from "./ExtensionProvider/ExtensionProvider.js"
+import westend from "./specs/westend.json"
+import kusama from "./specs/kusama.json"
+import polkadot from "./specs/polkadot.json"
+import rococo from "./specs/rococo.json"
 
 interface ChainInfo {
   name: string
@@ -15,7 +15,7 @@ interface ChainInfo {
 /**
  * Detector is an API for providing an instance of the PolkadotJS API configured
  * to use a WASM-based light client.  It takes care of detecting whether the
- * user has the substrate connect browser extension installed or not and 
+ * user has the substrate connect browser extension installed or not and
  * configures the PolkadotJS API appropriately; falling back to a provider
  * which instantiates the WASM light client in the page when the extension is
  * not available.
@@ -45,21 +45,21 @@ interface ChainInfo {
  */
 export class Detector {
   #chainSpecs: Record<string, unknown> = {
-    'polkadot': polkadot,
-    'kusama': kusama,
-    'rococo': rococo,
-    'westend': westend
+    polkadot: polkadot,
+    kusama: kusama,
+    rococo: rococo,
+    westend: westend,
   }
-  #name: string;
-  #isExtension: boolean;
-  #providers: Record<string, ProviderInterface> = {};
+  #name: string
+  #isExtension: boolean
+  #providers: Record<string, ProviderInterface> = {}
 
-  /** 
+  /**
    * name is the name of the app. This is used by the extension to identify
    * your app in the user interface
    */
   get name(): string {
-    return this.#name;
+    return this.#name
   }
 
   /**
@@ -67,8 +67,8 @@ export class Detector {
    * @remarks
    * You should check this if you wish to show UI to encourage users to download and install the extension or if you wish your app only to work with the extension installed.
    */
-  public hasExtension (): boolean {
-    return this.#isExtension;
+  public hasExtension(): boolean {
+    return this.#isExtension
   }
 
   /**
@@ -79,13 +79,13 @@ export class Detector {
    * You should make a best effort to make your app name unique to avoid
    * confusion for users in the extension user interface
    */
-  public constructor (name: string) {
-    this.#isExtension = !!document.getElementById('substrateExtension');
-    this.#name = name;
+  public constructor(name: string) {
+    this.#isExtension = !!document.getElementById("substrateExtension")
+    this.#name = name
   }
 
   /**
-   * connect attempts to detect the extension and configures the PolkadotJS 
+   * connect attempts to detect the extension and configures the PolkadotJS
    * API instance to return appropriately.
    *
    * There are 4 bundled networks: "polkadot", "kusama", "rococo" and
@@ -113,62 +113,77 @@ export class Detector {
    *
    * {@link https://polkadot.js.org/docs/}
    */
-  public connect = async (relay: ChainInfo | string, parachainSpec?: string, options?: ApiOptions): Promise<ApiPromise> => {
-    let chain: ChainInfo = {} as ChainInfo;
-    if (typeof relay === 'string') {
-      chain.name = relay;
+  public connect = async (
+    relay: ChainInfo | string,
+    parachainSpec?: string,
+    options?: ApiOptions,
+  ): Promise<ApiPromise> => {
+    let chain: ChainInfo = {} as ChainInfo
+    if (typeof relay === "string") {
+      chain.name = relay
     } else {
-      const { name, spec } = relay;
+      const { name, spec } = relay
       chain = { name, spec }
     }
-    const provider: ProviderInterface = !parachainSpec ?
-      this.provider(chain, undefined) :
-      this.provider(chain, parachainSpec);
+    const provider: ProviderInterface = !parachainSpec
+      ? this.provider(chain, undefined)
+      : this.provider(chain, parachainSpec)
 
-    provider.connect().catch(console.error);
+    provider.connect().catch(console.error)
 
-    this.#providers[this.getChainName(chain)] = provider;
-    return await ApiPromise.create(Object.assign(options ?? {}, {provider}));
+    this.#providers[this.getChainName(chain)] = provider
+    return await ApiPromise.create(Object.assign(options ?? {}, { provider }))
   }
 
   /**
-   * 
+   *
    * @param relay - Param of ChainInfo or string. In case of ChainInfo,
    * name (string - the name of the blockchain network to connect to) and
    * spec(string - a chainSpec to connect to a different network)
    * @returns a string of the name of the chain
-   * 
+   *
    * @internal
    */
   private getChainName = (chain: ChainInfo | string): string =>
-    typeof chain === 'string' ? chain : chain.name;
+    typeof chain === "string" ? chain : chain.name
 
-  /** 
+  /**
    * Detects and returns an appropriate PolkadotJS provider depending on whether the user has the substrate connect extension installed
-   * 
+   *
    * @param chainName - the name and spec ({@link ChainInfo} of the blockchain network to connect to
    * @param parachainSpec - optional param of the parachain chainSpecs to connect to
    * @returns a provider will be used in a ApiPromise create for PolkadotJS API
    *
    * @internal
-   * 
-   * @remarks 
+   *
+   * @remarks
    * This is used internally for advanced PolkadotJS use cases and is not supported.  Use {@link connect} instead.
    */
-  public provider = (chain: ChainInfo, parachainSpec?: string): ProviderInterface => {
-    let provider: ProviderInterface = {} as ProviderInterface;
+  public provider = (
+    chain: ChainInfo,
+    parachainSpec?: string,
+  ): ProviderInterface => {
+    let provider: ProviderInterface = {} as ProviderInterface
 
     if (!chain.name && !Object.keys(this.#chainSpecs).includes(chain.name)) {
-      throw new Error(`No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(this.#chainSpecs).join('\', \'')}') or provide valid chainSpecs.`)
+      throw new Error(
+        `No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(
+          this.#chainSpecs,
+        ).join("', '")}') or provide valid chainSpecs.`,
+      )
     }
-    
+
     if (this.#isExtension) {
-      provider = new ExtensionProvider(this.#name, chain, parachainSpec) as ProviderInterface;
+      provider = new ExtensionProvider(
+        this.#name,
+        chain,
+        parachainSpec,
+      ) as ProviderInterface
     } else if (!this.#isExtension) {
-      const spec = JSON.stringify(this.#chainSpecs[chain.name]);
-      provider = new SmoldotProvider(spec, parachainSpec);
+      const spec = JSON.stringify(this.#chainSpecs[chain.name])
+      provider = new SmoldotProvider(spec, parachainSpec)
     }
-    return provider;
+    return provider
   }
 
   /**
@@ -177,7 +192,7 @@ export class Detector {
    * @param chainName - the name of the blockchain network to disconnect from
    */
   public disconnect = (chainName: string): void => {
-    void this.#providers[chainName].disconnect();
-    delete this.#providers[chainName];
-  };
+    void this.#providers[chainName].disconnect()
+    delete this.#providers[chainName]
+  }
 }

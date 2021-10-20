@@ -1,14 +1,14 @@
-import { ThemeOptions } from '@material-ui/core/styles';
-import colors from './colors';
-import typography from './typography';
-import shadows from './shadows';
-import { grey } from '@material-ui/core/colors';
+import { ThemeOptions } from "@material-ui/core/styles"
+import colors from "./colors"
+import typography from "./typography"
+import shadows from "./shadows"
+import { grey } from "@material-ui/core/colors"
 
 const light: ThemeOptions = {
   typography: typography.typography,
   shadows: shadows.shadows,
   palette: {
-    type: 'light',
+    type: "light",
     common: {
       black: colors.black,
       white: colors.white,
@@ -24,15 +24,15 @@ const light: ThemeOptions = {
       contrastText: colors.black,
     },
     secondary: {
-      light: '#89a7ce',
+      light: "#89a7ce",
       main: colors.black,
-      dark: '#534c5d',
+      dark: "#534c5d",
       contrastText: colors.white,
     },
     error: {
-      light: 'rgba(247, 4, 7, 1)',
-      main: 'rgba(235, 4, 7, 1)',
-      dark: 'rgba(197, 5, 8, 1)',
+      light: "rgba(247, 4, 7, 1)",
+      main: "rgba(235, 4, 7, 1)",
+      dark: "rgba(197, 5, 8, 1)",
       contrastText: colors.paper,
     },
     text: {
@@ -46,6 +46,6 @@ const light: ThemeOptions = {
     },
     divider: grey[300],
   },
-};
+}
 
-export default light;
+export default light
