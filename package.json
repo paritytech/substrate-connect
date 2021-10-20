@@ -45,10 +45,10 @@
     "connect-tester": "yarn workspace @substrate/extension-provider run build && yarn workspace @substrate/connect run build && yarn run dev:smoldot-browser-demo"
   },
   "devDependencies": {
-    "@parcel/transformer-image": "2.0.0-rc.0",
+    "@parcel/transformer-image": "2.0.0",
     "copyfiles": "^2.3.0",
     "husky": "^5.0.8",
-    "parcel": "2.0.0-rc.0",
+    "parcel": "2.0.0",
     "typedoc": "^0.21.0",
     "typescript": "^4.3.2"
   },
