@@ -6,11 +6,7 @@
   "short_name": "substrate-connect",
   "version": "0.1.1",
   "manifest_version": 2,
-  "permissions": [
-    "notifications",
-    "storage",
-    "tabs"
-  ],
+  "permissions": ["notifications", "storage", "tabs"],
   "background": {
     "scripts": ["background.js"]
   },
@@ -22,11 +18,13 @@
     "page": "options.html",
     "open_in_tab": true
   },
-  "content_scripts": [{
-    "js": ["content.js"],
-    "matches": ["http://*/*", "https://*/*"],
-    "run_at": "document_start"
-  }],
+  "content_scripts": [
+    {
+      "js": ["content.js"],
+      "matches": ["http://*/*", "https://*/*"],
+      "run_at": "document_start"
+    }
+  ],
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png"

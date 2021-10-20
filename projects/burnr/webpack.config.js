@@ -3,9 +3,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-var-requires */
-const webpack = require("webpack");
-const CopyPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack")
+const CopyPlugin = require("copy-webpack-plugin")
+const HtmlWebpackPlugin = require("html-webpack-plugin")
 
 module.exports = {
   mode: "development",
@@ -45,15 +45,16 @@ module.exports = {
       stream: require.resolve("stream-browserify"),
     },
   },
-  plugins: [new CopyPlugin({
+  plugins: [
+    new CopyPlugin({
       patterns: [{ from: "src/assets", to: "./assets" }],
     }),
     new webpack.DefinePlugin({
-      "process": {
-        "env": {
-          "WS_URL": JSON.stringify(undefined)
-        }
-      }
+      process: {
+        env: {
+          WS_URL: JSON.stringify(undefined),
+        },
+      },
     }),
     new HtmlWebpackPlugin({
       template: "./src/index.html",
@@ -63,4 +64,4 @@ module.exports = {
     }),
     new webpack.HotModuleReplacementPlugin(),
   ],
-};
+}

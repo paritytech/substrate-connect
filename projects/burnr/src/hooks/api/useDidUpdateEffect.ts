@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DependencyList, EffectCallback, useEffect, useRef } from 'react';
+import { DependencyList, EffectCallback, useEffect, useRef } from "react"
 
 /**
  * Exactly like React's `useEffect`, but skips initial render. Tries to
@@ -12,12 +12,12 @@ import { DependencyList, EffectCallback, useEffect, useRef } from 'react';
  */
 export function useDidUpdateEffect(
   fn: EffectCallback,
-  inputs?: DependencyList
+  inputs?: DependencyList,
 ): void {
-  const didMountRef = useRef(false);
+  const didMountRef = useRef(false)
 
   return useEffect(() => {
-    if (didMountRef.current) fn();
-    else didMountRef.current = true;
-  }, [inputs, fn]);
+    if (didMountRef.current) fn()
+    else didMountRef.current = true
+  }, [inputs, fn])
 }

@@ -4,9 +4,9 @@
 // connect-extension-protocol.
 //
 // Project references are not officially supported yet:
-// https://github.com/typescript-eslint/typescript-eslint/issues/2094 
+// https://github.com/typescript-eslint/typescript-eslint/issues/2094
 //
-// Adding the tsconfigs for dependent projects into parserOptions.project is 
+// Adding the tsconfigs for dependent projects into parserOptions.project is
 // *supposed* to work but doesn't.
 //
 // Someone from the community found a way to make it work (with a performance
@@ -18,9 +18,6 @@
 module.exports = {
   parserOptions: {
     EXPERIMENTAL_useSourceOfProjectReferenceRedirect: true,
-    project: [
-      "../connect-extension-protocol/tsconfig.json",
-      "./tsconfig.json"
-    ]
-  }
-};
+    project: ["../connect-extension-protocol/tsconfig.json", "./tsconfig.json"],
+  },
+}

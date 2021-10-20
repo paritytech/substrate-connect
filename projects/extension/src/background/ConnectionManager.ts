@@ -1,55 +1,62 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as smoldot from '@substrate/smoldot-light';
-import { SmoldotJsonRpcCallback, SmoldotHealth } from '@substrate/smoldot-light';
-import { ExposedAppInfo, App, ConnectionManagerInterface } from './types';
-import EventEmitter from 'eventemitter3';
-import { StateEmitter, State } from './types';
-import { NetworkMainInfo, Network } from '../types';
-import { logger } from '@polkadot/util';
-import { MessageFromManager, MessageToManager } from '@substrate/connect-extension-protocol';
-import westend from '../../public/assets/westend.json';
-import kusama from '../../public/assets/kusama.json';
-import polkadot from '../../public/assets/polkadot.json';
-import rococo from '../../public/assets/rococo.json';
+import * as smoldot from "@substrate/smoldot-light"
+import { SmoldotJsonRpcCallback, SmoldotHealth } from "@substrate/smoldot-light"
+import { ExposedAppInfo, App, ConnectionManagerInterface } from "./types"
+import EventEmitter from "eventemitter3"
+import { StateEmitter, State } from "./types"
+import { NetworkMainInfo, Network } from "../types"
+import { logger } from "@polkadot/util"
+import {
+  MessageFromManager,
+  MessageToManager,
+} from "@substrate/connect-extension-protocol"
+import westend from "../../public/assets/westend.json"
+import kusama from "../../public/assets/kusama.json"
+import polkadot from "../../public/assets/polkadot.json"
+import rococo from "../../public/assets/rococo.json"
 
-const l = logger('Extension Connection Manager');
+const l = logger("Extension Connection Manager")
 
-type RelayType = Map<string, string>;
+type RelayType = Map<string, string>
 
 const nameIdMapper = new Map<string, string>([
-  ['polkadot', 'polkadot'],
-  ['ksmcc3', 'kusama'],
-  ['rococo_v1_8', 'rococo'],
-  ['westend2', 'westend']
-]);
+  ["polkadot", "polkadot"],
+  ["ksmcc3", "kusama"],
+  ["rococo_v1_8", "rococo"],
+  ["westend2", "westend"],
+])
 
 const relayChains: RelayType = new Map<string, string>([
-  ['polkadot', JSON.stringify(polkadot)],
-  ['kusama', JSON.stringify(kusama)],
-  ['rococo', JSON.stringify(rococo)],
-  ['westend', JSON.stringify(westend)]
+  ["polkadot", JSON.stringify(polkadot)],
+  ["kusama", JSON.stringify(kusama)],
+  ["rococo", JSON.stringify(rococo)],
+  ["westend", JSON.stringify(westend)],
 ])
 
 /**
  * ConnectionManager is the main class involved in managing connections from
- * apps.  It keeps track of apps and it is also responsible for triggering 
- * events when the state changes for the UI to update accordingly. 
+ * apps.  It keeps track of apps and it is also responsible for triggering
+ * events when the state changes for the UI to update accordingly.
  */
-export class ConnectionManager extends (EventEmitter as { new(): StateEmitter }) implements ConnectionManagerInterface {
-  readonly #apps: App[] = [];
-  #client: smoldot.SmoldotClient | undefined = undefined;
-  #networks: Network[] = [];
-  smoldotLogLevel = 3;
+export class ConnectionManager
+  extends (EventEmitter as { new (): StateEmitter })
+  implements ConnectionManagerInterface
+{
+  readonly #apps: App[] = []
+  #client: smoldot.SmoldotClient | undefined = undefined
+  #networks: Network[] = []
+  smoldotLogLevel = 3
 
   /** registeredApps
    *
    * @returns a list of the names of apps that are currently connected
    */
   get registeredApps(): string[] {
-    return this.#apps.map(a => a.name);
+    return this.#apps.map((a) => a.name)
   }
 
   /** registeredClients
@@ -57,7 +64,11 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @returns a list of the networks that are currently connected
    */
   get registeredNetworks(): NetworkMainInfo[] {
-    return this.#networks.map((s: Network) => ({name: s.name, id: s.id, status: s.status}));
+    return this.#networks.map((s: Network) => ({
+      name: s.name,
+      id: s.id,
+      status: s.status,
+    }))
   }
 
   /**
@@ -73,10 +84,9 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       pendingRequests: a.pendingRequests,
       state: a.state,
       url: a.url,
-      tabId: a.tabId
-    }));
+      tabId: a.tabId,
+    }))
   }
-
 
   /**
    * getState
@@ -84,20 +94,22 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @returns a view of the current state of the connection manager
    */
   getState(): State {
-    const state: State = { apps: [] };
+    const state: State = { apps: [] }
     return this.#apps.reduce((result, app) => {
-      let a = result.apps.find(a => a.name === app.appName && a.tabId === app.tabId);
+      let a = result.apps.find(
+        (a) => a.name === app.appName && a.tabId === app.tabId,
+      )
       if (a === undefined) {
         a = {
           name: app.appName,
           tabId: app.tabId,
-          networks: []
-        };
-        result.apps.push(a);
+          networks: [],
+        }
+        result.apps.push(a)
       }
-      a.networks.push({ name: app.chainName });
-      return result;
-    }, state);
+      a.networks.push({ name: app.chainName })
+      return result
+    }, state)
   }
 
   /**
@@ -107,37 +119,39 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param tabId - the id of the tab to disconnect
    */
   disconnectTab(tabId: number): void {
-    this.#apps.filter(a => a.tabId && a.tabId === tabId).forEach(a => {
-      this.disconnect(a)
-    });
+    this.#apps
+      .filter((a) => a.tabId && a.tabId === tabId)
+      .forEach((a) => {
+        this.disconnect(a)
+      })
   }
 
   /**
    * disconnectAll disconnects all apps connected for all tabs
    */
   disconnectAll(): void {
-    this.#apps.filter(a => a).forEach(a => this.disconnect(a));
+    this.#apps.filter((a) => a).forEach((a) => this.disconnect(a))
   }
 
   createApp(incPort: chrome.runtime.Port): App {
-    const splitIdx = incPort.name.indexOf('::');
+    const splitIdx = incPort.name.indexOf("::")
     if (splitIdx === -1) {
-      const payload = `Invalid port name ${incPort.name} expected <app_name>::<chain_name>`;
-      const error: MessageFromManager = { type: 'error', payload };
-      incPort.postMessage(error);
-      incPort.disconnect();
-      throw new Error(payload);
+      const payload = `Invalid port name ${incPort.name} expected <app_name>::<chain_name>`
+      const error: MessageFromManager = { type: "error", payload }
+      incPort.postMessage(error)
+      incPort.disconnect()
+      throw new Error(payload)
     }
     const { name, sender } = incPort
-    const appName: string = name.substr(0, splitIdx);
-    const chainName: string = name.substr(splitIdx + 2, name.length);
-    const tabId: number = sender?.tab?.id || -1;
-    const url: string | undefined = sender?.url;
-    const port: chrome.runtime.Port = incPort;
-    const state = 'connected';
-    const pendingRequests: string[] = [];
+    const appName: string = name.substr(0, splitIdx)
+    const chainName: string = name.substr(splitIdx + 2, name.length)
+    const tabId: number = sender?.tab?.id || -1
+    const url: string | undefined = sender?.url
+    const port: chrome.runtime.Port = incPort
+    const state = "connected"
+    const pendingRequests: string[] = []
 
-    const healthChecker = (smoldot as any).healthChecker();
+    const healthChecker = (smoldot as any).healthChecker()
     const app: App = {
       appName,
       chainName,
@@ -147,10 +161,12 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
       port,
       state,
       healthChecker,
-      pendingRequests
+      pendingRequests,
     }
-    port.onMessage.addListener(this.#handleMessage);
-    port.onDisconnect.addListener(() => { this.#handleDisconnect(app) });
+    port.onMessage.addListener(this.#handleMessage)
+    port.onDisconnect.addListener(() => {
+      this.#handleDisconnect(app)
+    })
     return app
   }
 
@@ -162,22 +178,25 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    */
   addApp(port: chrome.runtime.Port): void {
     if (!this.#client) {
-      throw new Error('Smoldot client does not exist.');
+      throw new Error("Smoldot client does not exist.")
     }
 
     if (this.#findApp(port)) {
-      port.postMessage({ type: 'error', payload: `App ${port.name} already exists.` });
-      port.disconnect();
-      return;
+      port.postMessage({
+        type: "error",
+        payload: `App ${port.name} already exists.`,
+      })
+      port.disconnect()
+      return
     }
 
     // if create an `AppMediator` throws, it has sent an error down the
     // port and disconnected it, so we should just ignore
     try {
-      const app = this.createApp(port);
-      this.registerApp(app);
+      const app = this.createApp(port)
+      this.registerApp(app)
     } catch (error) {
-      l.error(`Error while adding chain: ${error}`);
+      l.error(`Error while adding chain: ${error}`)
     }
   }
 
@@ -186,30 +205,30 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    *
    * @param app - The app
    */
-   registerApp(app: App): void {
-    this.#apps.push(app);
-    this.emit('stateChanged', this.getState());
-    this.emit('appsChanged', this.apps);
+  registerApp(app: App): void {
+    this.#apps.push(app)
+    this.emit("stateChanged", this.getState())
+    this.emit("appsChanged", this.apps)
   }
 
   /**
    * unregisterApp is used after an app has finished processing any unsubscribe
    * messages and disconnected to fully unregister itself.
    * It also retrieves the chain that app was connected to and calls smoldot for removal
-   * 
+   *
    * @param app - The app
    */
-   unregisterApp(app: App): void {
-    const idx = this.#apps.findIndex(a => a.name === app.name);
-    this.#apps.splice(idx, 1);
-    this.emit('stateChanged', this.getState());
-    this.emit('appsChanged', this.apps);
+  unregisterApp(app: App): void {
+    const idx = this.#apps.findIndex((a) => a.name === app.name)
+    this.#apps.splice(idx, 1)
+    this.emit("stateChanged", this.getState())
+    this.emit("appsChanged", this.apps)
   }
 
   /** shutdown shuts down the connected smoldot client. */
   shutdown(): void {
-    this.#client?.terminate();
-    this.#client = undefined;
+    this.#client?.terminate()
+    this.#client = undefined
   }
 
   /**
@@ -219,10 +238,10 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
     try {
       this.#client = await (smoldot as any).start({
         forbidWs: false,
-        maxLogLevel: this.smoldotLogLevel
-      });
+        maxLogLevel: this.smoldotLogLevel,
+      })
     } catch (err) {
-      l.error(`Error while initializing smoldot: ${err}`);
+      l.error(`Error while initializing smoldot: ${err}`)
     }
   }
 
@@ -232,189 +251,195 @@ export class ConnectionManager extends (EventEmitter as { new(): StateEmitter })
    * @param spec - ChainSpec of chain to be added
    * @param jsonRpcCallback - The jsonRpcCallback function that should be triggered
    * @param relayChain - optional SmoldotChain for relay chain
-   * 
+   *
    * @returns addedChain - An the newly added chain info
    */
   async addChain(
     chainSpec: string,
     jsonRpcCallback?: SmoldotJsonRpcCallback,
-    tabId?: number): Promise<Network> {
+    tabId?: number,
+  ): Promise<Network> {
     if (!this.#client) {
-      throw new Error('Smoldot client does not exist.');
+      throw new Error("Smoldot client does not exist.")
     }
-    const { name, id, relay_chain } = JSON.parse(chainSpec);
+    const { name, id, relay_chain } = JSON.parse(chainSpec)
 
     // identify all relay_chains init'ed from same app with tabId identifier
-    const potentialNetworks: Network[] = relay_chain ?
-      this.#networks.filter(n => n.tabId === tabId) :
-      this.#networks;
+    const potentialNetworks: Network[] = relay_chain
+      ? this.#networks.filter((n) => n.tabId === tabId)
+      : this.#networks
 
     const addedChain = await this.#client.addChain({
       chainSpec,
       jsonRpcCallback,
-      potentialRelayChains: potentialNetworks.map(r => r.chain)
-    });
+      potentialRelayChains: potentialNetworks.map((r) => r.chain),
+    })
 
     // This covers cases of refreshing browser in order to avoid
     // pilling up on this.#networks, the ones that were created from same tab
-    const existingNetwork = this.#networks.find(n =>
-      n.name.toLowerCase() === name.toLowerCase() && n.tabId === tabId
-    );
+    const existingNetwork = this.#networks.find(
+      (n) => n.name.toLowerCase() === name.toLowerCase() && n.tabId === tabId,
+    )
     const network: Network = {
       tabId: tabId || 0,
       id,
       name: name.toLowerCase(),
       chain: addedChain,
-      status: 'connected'
+      status: "connected",
     }
-    !existingNetwork && this.#networks.push(network);
-    return existingNetwork || network;
+    !existingNetwork && this.#networks.push(network)
+    return existingNetwork || network
   }
 
   #initHealthChecker = (app: App, isParachain?: boolean): void => {
     if (isParachain) {
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      app.parachain && app.healthChecker?.setSendJsonRpc(app.parachain.sendJsonRpc);
+      app.parachain &&
+        app.healthChecker?.setSendJsonRpc(app.parachain.sendJsonRpc)
     } else {
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      app.chain && app.healthChecker?.setSendJsonRpc(app.chain.sendJsonRpc);
+      app.chain && app.healthChecker?.setSendJsonRpc(app.chain.sendJsonRpc)
     }
     void app.healthChecker?.start((health: SmoldotHealth) => {
-      if (health && (
-        app.healthStatus?.peers !== health.peers ||
-        app.healthStatus.isSyncing !== health.isSyncing
-        )) {
-          this.emit('appsChanged', this.apps);
+      if (
+        health &&
+        (app.healthStatus?.peers !== health.peers ||
+          app.healthStatus.isSyncing !== health.isSyncing)
+      ) {
+        this.emit("appsChanged", this.apps)
       }
       app.healthStatus = health
-    });
+    })
     // process any RPC requests that came in while waiting for `addChain` to complete
     if (app.pendingRequests.length > 0) {
-      app.pendingRequests.forEach(req => app.healthChecker?.sendJsonRpc(req));
-      app.pendingRequests = [];
+      app.pendingRequests.forEach((req) => app.healthChecker?.sendJsonRpc(req))
+      app.pendingRequests = []
     }
   }
 
   #handleError = (app: App, e: Error): void => {
-    const error: MessageFromManager = { type: 'error', payload: e.message };
-    app.port.postMessage(error);
-    app.port.disconnect();
-    this.unregisterApp(app);
+    const error: MessageFromManager = { type: "error", payload: e.message }
+    app.port.postMessage(error)
+    app.port.disconnect()
+    this.unregisterApp(app)
   }
 
   /** Handles the incoming message that contains Spec. */
   #handleSpecMessage = (msg: MessageToManager, app: App): void => {
-    const chainSpec: string = relayChains.has(app.chainName.toLowerCase()) ?
-      (relayChains.get(app.chainName.toLowerCase()) || '') : msg.payload;
+    const chainSpec: string = relayChains.has(app.chainName.toLowerCase())
+      ? relayChains.get(app.chainName.toLowerCase()) || ""
+      : msg.payload
 
     const rpcCallback = (rpc: string) => {
-      const rpcResp: string | null | undefined = app.healthChecker?.responsePassThrough(rpc);
-      if (rpcResp)
-        app.port.postMessage({ type: 'rpc', payload: rpcResp })
+      const rpcResp: string | null | undefined =
+        app.healthChecker?.responsePassThrough(rpc)
+      if (rpcResp) app.port.postMessage({ type: "rpc", payload: rpcResp })
     }
-    
-    let chainPromise: Promise<void>;
+
+    let chainPromise: Promise<void>
     // Means this is a parachain trying to connect
     if (msg.parachainPayload) {
       // Connect the main Chain first and on success the parachain with the chain
       // that just got connected as the relayChain
-      const relayId: string = JSON.parse(msg.parachainPayload).relay_chain;
-      const parachainSpec: string = msg.parachainPayload;
+      const relayId: string = JSON.parse(msg.parachainPayload).relay_chain
+      const parachainSpec: string = msg.parachainPayload
 
       const relaychainSpec: string | undefined = relayChains.get(
-        nameIdMapper.get(relayId) || ""
-      );
+        nameIdMapper.get(relayId) || "",
+      )
 
       if (!relaychainSpec) {
-        const error: Error = new Error("Relay chain spec was not found");
-        this.#handleError(app, error);
+        const error: Error = new Error("Relay chain spec was not found")
+        this.#handleError(app, error)
         return
       }
 
       chainPromise = this.addChain(chainSpec, undefined, app.tabId)
         .then((network) => {
-          app.chain = network.chain;
-          return this.addChain(parachainSpec, rpcCallback, app.tabId);
+          app.chain = network.chain
+          return this.addChain(parachainSpec, rpcCallback, app.tabId)
         })
         .then((network) => {
-          app.parachain = network.chain;
-          app.chainName = JSON.parse(parachainSpec).name;
+          app.parachain = network.chain
+          app.chainName = JSON.parse(parachainSpec).name
           return
-        });
+        })
     } else {
       // Connect the main Chain only
       chainPromise = this.addChain(chainSpec, rpcCallback, app.tabId).then(
         (network) => {
-          app.chain = network.chain;
+          app.chain = network.chain
           return
-        }
-      );
+        },
+      )
     }
 
-    chrome.storage.sync.get('notifications', (s) => {
-      s.notifications && chrome.notifications.create(app.port.name, {
-        title: 'Substrate Connect',
-        message: `App ${app.appName} connected to ${app.chainName}.`,
-        iconUrl: './icons/icon-32.png',
-        type: 'basic'
-      });
-    });
+    chrome.storage.sync.get("notifications", (s) => {
+      s.notifications &&
+        chrome.notifications.create(app.port.name, {
+          title: "Substrate Connect",
+          message: `App ${app.appName} connected to ${app.chainName}.`,
+          iconUrl: "./icons/icon-32.png",
+          type: "basic",
+        })
+    })
 
     chainPromise
       .then(() => {
-        this.#initHealthChecker(app, !!app.parachain);
+        this.#initHealthChecker(app, !!app.parachain)
       })
       .catch((e) => {
-        this.#handleError(app, e);  
-      });
+        this.#handleError(app, e)
+      })
   }
 
-  #findApp (port: chrome.runtime.Port): App | undefined {
+  #findApp(port: chrome.runtime.Port): App | undefined {
     return this.#apps.find(
-      a => a.name === port.name && a.tabId === port.sender?.tab?.id);
+      (a) => a.name === port.name && a.tabId === port.sender?.tab?.id,
+    )
   }
 
   #handleMessage = (msg: MessageToManager, port: chrome.runtime.Port): void => {
-    if (msg.type !== 'rpc' && msg.type !== 'spec') {
-      console.warn(`Unrecognised message type ${msg.type} received from content script`);
-      return;
+    if (msg.type !== "rpc" && msg.type !== "spec") {
+      console.warn(
+        `Unrecognised message type ${msg.type} received from content script`,
+      )
+      return
     }
-    const app = this.#findApp(port);
+    const app = this.#findApp(port)
     if (app) {
-      if (msg.type === 'spec' && app.chainName) {
-        return this.#handleSpecMessage(msg, app);
+      if (msg.type === "spec" && app.chainName) {
+        return this.#handleSpecMessage(msg, app)
       }
 
       if (app.chain === undefined) {
         // `addChain` hasn't resolved yet after the spec message so buffer the
         // messages to be sent when it does resolve
-        app.pendingRequests.push(msg.payload);
-        return;
+        app.pendingRequests.push(msg.payload)
+        return
       }
 
-      return app.healthChecker?.sendJsonRpc(msg.payload);
+      return app.healthChecker?.sendJsonRpc(msg.payload)
     }
   }
 
-  /** 
+  /**
    * disconnect tells the app to clean up its state and unsubscribe from any
-  * active subscriptions and ultimately disconnects the communication port.
-  */
+   * active subscriptions and ultimately disconnects the communication port.
+   */
   disconnect(app: App): void {
-    this.#handleDisconnect(app);
+    this.#handleDisconnect(app)
   }
 
   #handleDisconnect = (app: App): void => {
-    if (app.state === 'disconnected') {
-      throw new Error('Cannot disconnect - already disconnected');
+    if (app.state === "disconnected") {
+      throw new Error("Cannot disconnect - already disconnected")
     }
     // call remove() for both relaychain and parachain
-    app.chain && app.chain.remove();
-    app.parachain && app.parachain.remove();
-    this.#networks = this.#networks.filter(n => n.tabId !== app.tabId);
+    app.chain && app.chain.remove()
+    app.parachain && app.parachain.remove()
+    this.#networks = this.#networks.filter((n) => n.tabId !== app.tabId)
 
-    this.unregisterApp(app);
-    
-    app.state = 'disconnected';
+    this.unregisterApp(app)
+
+    app.state = "disconnected"
   }
 }

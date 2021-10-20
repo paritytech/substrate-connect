@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: Apache-2
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react"
 
-export type MountedRef = React.MutableRefObject<boolean>;
+export type MountedRef = React.MutableRefObject<boolean>
 
-export default function useIsMountedRef (): MountedRef {
-  const isMounted = useRef(false);
+export default function useIsMountedRef(): MountedRef {
+  const isMounted = useRef(false)
 
-  useEffect((): () => void => {
-    isMounted.current = true;
+  useEffect((): (() => void) => {
+    isMounted.current = true
 
     return (): void => {
-      isMounted.current = false;
-    };
-  }, []);
+      isMounted.current = false
+    }
+  }, [])
 
-  return isMounted;
+  return isMounted
 }

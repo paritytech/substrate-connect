@@ -1,33 +1,28 @@
 module.exports = {
   root: true,
   rules: {
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      { "argsIgnorePattern": "^_" }
-    ],
+    "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
     "@typescript-eslint/restrict-plus-operands": [
       "error",
-      { "checkCompoundAssignments": false }
+      { checkCompoundAssignments: false },
     ],
     "@typescript-eslint/restrict-template-expressions": "off",
-    "tsdoc/syntax": "error"
+    "tsdoc/syntax": "error",
   },
   parser: "@typescript-eslint/parser",
   settings: { react: { version: "detect" } },
-  plugins: [
-    "@typescript-eslint",
-    "eslint-plugin-tsdoc"
-  ],
+  plugins: ["@typescript-eslint", "eslint-plugin-tsdoc"],
   parserOptions: {
     project: "./tsconfig.json",
-    createDefaultProgram: true
+    createDefaultProgram: true,
   },
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "prettier",
   ],
   env: {
-    browser: true
-  }
-};
+    browser: true,
+  },
+}
