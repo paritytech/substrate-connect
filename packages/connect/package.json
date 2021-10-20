@@ -28,7 +28,7 @@
     "test:integration": "../../bin/node-esm $(yarn bin)/jest --colors --silent --coverage --config=jest.config.integration.ts",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "build": "tsc -b",
+    "build": "tsc -b && node ./src/specs/generate-specs.js",
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "dependencies": {

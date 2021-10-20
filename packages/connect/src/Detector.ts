@@ -1,15 +1,13 @@
 import type { ApiPromise } from "@polkadot/api"
 import { ApiOptions } from "@polkadot/api/types"
 import { ProviderInterface } from "@polkadot/rpc-provider/types"
-import westend from "./specs/westend.json"
-import kusama from "./specs/kusama.json"
-import polkadot from "./specs/polkadot.json"
-import rococo from "./specs/rococo.json"
+import { SupportedChains, getSpec } from "./specs/index.js"
 
 interface ChainInfo {
   name: string
   spec: string
 }
+
 /**
  * Detector is an API for providing an instance of the PolkadotJS API configured
  * to use a WASM-based light client.  It takes care of detecting whether the
@@ -42,12 +40,6 @@ interface ChainInfo {
  * ```
  */
 export class Detector {
-  #chainSpecs: Record<string, unknown> = {
-    polkadot: polkadot,
-    kusama: kusama,
-    rococo: rococo,
-    westend: westend,
-  }
   #name: string
   #isExtension: boolean
   #providers: Record<string, ProviderInterface> = {}
@@ -116,13 +108,9 @@ export class Detector {
     parachainSpec?: string,
     options?: ApiOptions,
   ): Promise<ApiPromise> => {
-    let chain: ChainInfo = {} as ChainInfo
-    if (typeof relay === "string") {
-      chain.name = relay
-    } else {
-      const { name, spec } = relay
-      chain = { name, spec }
-    }
+    const chain: ChainInfo =
+      typeof relay === "string" ? { name: relay, spec: "" } : relay
+
     const [provider, { ApiPromise }] = await Promise.all([
       this.provider(chain, parachainSpec),
       import("@polkadot/api"),
@@ -130,21 +118,9 @@ export class Detector {
 
     provider.connect().catch(console.error)
 
-    this.#providers[this.getChainName(chain)] = provider
+    this.#providers[chain.name] = provider
     return await ApiPromise.create(Object.assign(options ?? {}, { provider }))
   }
-
-  /**
-   *
-   * @param relay - Param of ChainInfo or string. In case of ChainInfo,
-   * name (string - the name of the blockchain network to connect to) and
-   * spec(string - a chainSpec to connect to a different network)
-   * @returns a string of the name of the chain
-   *
-   * @internal
-   */
-  private getChainName = (chain: ChainInfo | string): string =>
-    typeof chain === "string" ? chain : chain.name
 
   /**
    * Detects and returns an appropriate PolkadotJS provider depending on whether the user has the substrate connect extension installed
@@ -162,10 +138,10 @@ export class Detector {
     chain: ChainInfo,
     parachainSpec?: string,
   ): Promise<ProviderInterface> => {
-    if (!chain.name && !Object.keys(this.#chainSpecs).includes(chain.name)) {
+    if (!chain.name && !SupportedChains[chain.name as SupportedChains]) {
       throw new Error(
         `No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(
-          this.#chainSpecs,
+          SupportedChains,
         ).join("', '")}') or provide valid chainSpecs.`,
       )
     }
@@ -179,13 +155,13 @@ export class Detector {
         chain,
         parachainSpec,
       ) as ProviderInterface
-    } else {
-      const { SmoldotProvider } = await import(
-        "./SmoldotProvider/SmoldotProvider.js"
-      )
-      const spec = JSON.stringify(this.#chainSpecs[chain.name])
-      return new SmoldotProvider(spec, parachainSpec)
     }
+
+    const [{ SmoldotProvider }, spec] = await Promise.all([
+      import("./SmoldotProvider/SmoldotProvider.js"),
+      getSpec(chain.name as SupportedChains),
+    ])
+    return new SmoldotProvider(spec, parachainSpec)
   }
 
   /**
