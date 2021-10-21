@@ -79,7 +79,7 @@ export class Detector {
    * "westend" which require no further configuration.
    *
    * Alternatively you may supply a chain spec and options to connect to a
-   * custom chain with a light client (in-page only).
+   * custom chain with a light client .
    *
    * @param chainSpec - string of the chainSpec to connect to a network
    * @param parachainSpec - an optional param. This param is the parachain spec to connect to a different network)
@@ -88,9 +88,6 @@ export class Detector {
    * @returns a promise that resolves to an instance of the PolkadotJS API
    *
    * @remarks
-   *
-   * When providing a custom chain spec, detect will always configure and return
-   * an in-page light client and not use the extension
    *
    * Typically options is used to pass custom types to PolkadotJS API.
    *
@@ -112,7 +109,7 @@ export class Detector {
    * "westend" which require no further configuration.
    *
    * Alternatively you may supply a chain spec and options to connect to a
-   * custom chain with a light client (in-page only).
+   * custom chain with a light client.
    *
    * @param knownChain - {@link SupportedChains} one of the predefined chainSpecs
    * @param parachainSpec - an optional param. This param is the parachain spec to connect to a different network)
@@ -121,9 +118,6 @@ export class Detector {
    * @returns a promise that resolves to an instance of the PolkadotJS API
    *
    * @remarks
-   *
-   * When providing a custom chain spec, detect will always configure and return
-   * an in-page light client and not use the extension
    *
    * Typically options is used to pass custom types to PolkadotJS API.
    *
