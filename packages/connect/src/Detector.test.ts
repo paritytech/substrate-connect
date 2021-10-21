@@ -16,7 +16,7 @@ describe("Initialize Detector without extension", () => {
       const detect = new Detector("test-uapp")
       const api = await detect.connect("westend")
       expect(api).toBeTruthy()
-      detect.disconnect("westend")
+      await api.disconnect()
     },
     timeout,
   )
@@ -27,7 +27,7 @@ describe("Initialize Detector without extension", () => {
       const detect = new Detector("test-uapp")
       const api = await detect.connect("polkadot")
       expect(api).toBeTruthy()
-      detect.disconnect("polkadot")
+      await api.disconnect()
     },
     extTimeout,
   )
@@ -40,7 +40,7 @@ describe("Initialize Detector without extension", () => {
       const options = {} as ApiOptions
       const api = await detect.connect(chainName, undefined, options)
       expect(api).toBeTruthy()
-      detect.disconnect("westend")
+      await api.disconnect()
     },
     extTimeout,
   )
@@ -51,7 +51,7 @@ describe("Initialize Detector without extension", () => {
       const detect = new Detector("test-uapp")
       const api = await detect.connect("kusama")
       expect(api).toBeTruthy()
-      detect.disconnect("kusama")
+      await api.disconnect()
     },
     extTimeout,
   )
@@ -60,11 +60,10 @@ describe("Initialize Detector without extension", () => {
     "Should connect with unknown chain westend2 and chainSpecs.",
     async () => {
       const chainSpec = JSON.stringify(westend2)
-      const chainName = "westend"
       const detect = new Detector("test-uapp")
-      const api = await detect.connect({ name: chainName, spec: chainSpec })
+      const api = await detect.connect(chainSpec)
       expect(api).toBeTruthy()
-      detect.disconnect(chainName)
+      await api.disconnect()
     },
     extTimeout,
   )
@@ -87,7 +86,7 @@ describe("Initialize Detector without extension", () => {
       const detect = new Detector("test-uapp")
       const api = await detect.connect("westend", JSON.stringify(westmint))
       expect(api).toBeTruthy()
-      detect.disconnect("westmint")
+      await api.disconnect()
     },
     timeout,
   )

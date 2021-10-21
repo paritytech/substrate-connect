@@ -3,11 +3,6 @@ import { ApiOptions } from "@polkadot/api/types"
 import { ProviderInterface } from "@polkadot/rpc-provider/types"
 import { SupportedChains, getSpec } from "./specs/index.js"
 
-interface ChainInfo {
-  name: string
-  spec: string
-}
-
 /**
  * Detector is an API for providing an instance of the PolkadotJS API configured
  * to use a WASM-based light client.  It takes care of detecting whether the
@@ -43,6 +38,7 @@ export class Detector {
   #name: string
   #isExtension: boolean
   #providers: Record<string, ProviderInterface> = {}
+  #nextProviderId: number
 
   /**
    * name is the name of the app. This is used by the extension to identify
@@ -72,6 +68,7 @@ export class Detector {
   public constructor(name: string) {
     this.#isExtension = !!document.getElementById("substrateExtension")
     this.#name = name
+    this.#nextProviderId = 1
   }
 
   /**
@@ -84,9 +81,7 @@ export class Detector {
    * Alternatively you may supply a chain spec and options to connect to a
    * custom chain with a light client (in-page only).
    *
-   * @param relay - param of {@link ChainInfo} or string type. In case of {@link ChainInfo},
-   * name (string - the name of the blockchain network to connect to) and
-   * spec(string - a chainSpec to connect to a different network)
+   * @param chainSpec - string of the chainSpec to connect to a network
    * @param parachainSpec - an optional param. This param is the parachain spec to connect to a different network)
    * @param options - an optional param for any extra API options to passed to
    * PolkadotJS when constructing it.
@@ -103,29 +98,73 @@ export class Detector {
    *
    * {@link https://polkadot.js.org/docs/}
    */
-  public connect = async (
-    relay: ChainInfo | string,
+  public async connect(
+    chainSpec: string,
     parachainSpec?: string,
     options?: ApiOptions,
-  ): Promise<ApiPromise> => {
-    const chain: ChainInfo =
-      typeof relay === "string" ? { name: relay, spec: "" } : relay
+  ): Promise<ApiPromise>
+
+  /**
+   * connect attempts to detect the extension and configures the PolkadotJS
+   * API instance to return appropriately.
+   *
+   * There are 4 bundled networks: "polkadot", "kusama", "rococo" and
+   * "westend" which require no further configuration.
+   *
+   * Alternatively you may supply a chain spec and options to connect to a
+   * custom chain with a light client (in-page only).
+   *
+   * @param knownChain - {@link SupportedChains} one of the predefined chainSpecs
+   * @param parachainSpec - an optional param. This param is the parachain spec to connect to a different network)
+   * @param options - an optional param for any extra API options to passed to
+   * PolkadotJS when constructing it.
+   * @returns a promise that resolves to an instance of the PolkadotJS API
+   *
+   * @remarks
+   *
+   * When providing a custom chain spec, detect will always configure and return
+   * an in-page light client and not use the extension
+   *
+   * Typically options is used to pass custom types to PolkadotJS API.
+   *
+   * See the PolkadotJS docs for documentation on using PolkadotJS.
+   *
+   * {@link https://polkadot.js.org/docs/}
+   */
+  public async connect(
+    knownChain: SupportedChains,
+    parachainSpec?: string,
+    options?: ApiOptions,
+  ): Promise<ApiPromise>
+  public async connect(
+    chain: string | SupportedChains,
+    parachainSpec?: string,
+    options?: ApiOptions,
+  ): Promise<ApiPromise> {
+    const id = this.#nextProviderId++
+    const spec = SupportedChains[chain as SupportedChains] ?? chain
 
     const [provider, { ApiPromise }] = await Promise.all([
-      this.provider(chain, parachainSpec),
+      this.internalProvider(id, spec, parachainSpec),
       import("@polkadot/api"),
     ])
+    this.#providers[id] = provider
+
+    const originalDisconnect = provider.disconnect.bind(provider)
+    provider.disconnect = () => {
+      delete this.#providers[id]
+      return originalDisconnect()
+    }
 
     provider.connect().catch(console.error)
-
-    this.#providers[chain.name] = provider
     return await ApiPromise.create(Object.assign(options ?? {}, { provider }))
   }
 
   /**
    * Detects and returns an appropriate PolkadotJS provider depending on whether the user has the substrate connect extension installed
    *
-   * @param chainName - the name and spec ({@link ChainInfo} of the blockchain network to connect to
+   * @param providerId - anId that uniquely identifies the provider in the context of this instance of the Detector
+   * @param chain - either a string with the spec of the chain or the name of a supported chain ({@link SupportedChains})
    * @param parachainSpec - optional param of the parachain chainSpecs to connect to
    * @returns a provider will be used in a ApiPromise create for PolkadotJS API
    *
@@ -134,11 +173,12 @@ export class Detector {
    * @remarks
    * This is used internally for advanced PolkadotJS use cases and is not supported.  Use {@link connect} instead.
    */
-  public provider = async (
-    chain: ChainInfo,
+  private internalProvider = async (
+    providerId: number,
+    chain: string | SupportedChains,
     parachainSpec?: string,
   ): Promise<ProviderInterface> => {
-    if (!chain.name && !SupportedChains[chain.name as SupportedChains]) {
+    if (chain.length === 0) {
       throw new Error(
         `No known Chain was detected and no chainSpec was provided. Either give a known chain name ('${Object.keys(
           SupportedChains,
@@ -146,31 +186,67 @@ export class Detector {
       )
     }
 
+    const chainSpecPromise = SupportedChains[chain as SupportedChains]
+      ? getSpec(chain as SupportedChains)
+      : Promise.resolve(chain)
+
     if (this.#isExtension) {
-      const { ExtensionProvider } = await import(
-        "./ExtensionProvider/ExtensionProvider.js"
-      )
+      const [{ ExtensionProvider }, chainSpec] = await Promise.all([
+        import("./ExtensionProvider/ExtensionProvider.js"),
+        chainSpecPromise,
+      ])
+
       return new ExtensionProvider(
         this.#name,
-        chain,
+        providerId,
+        chainSpec,
         parachainSpec,
       ) as ProviderInterface
     }
 
-    const [{ SmoldotProvider }, spec] = await Promise.all([
+    const [{ SmoldotProvider }, chainSpec] = await Promise.all([
       import("./SmoldotProvider/SmoldotProvider.js"),
-      getSpec(chain.name as SupportedChains),
+      chainSpecPromise,
     ])
-    return new SmoldotProvider(spec, parachainSpec)
+    return new SmoldotProvider(chainSpec, parachainSpec)
   }
 
   /**
-   * disconnect disconnects the PolkadotJS API isntance
+   * Detects and returns an appropriate PolkadotJS provider depending on whether the user has the substrate connect extension installed
    *
-   * @param chainName - the name of the blockchain network to disconnect from
+   * @param chainSpec - string of the chainSpec to connect to a network
+   * @param parachainSpec - optional param of the parachain chainSpecs to connect to
+   * @returns a provider will be used in a ApiPromise create for PolkadotJS API
+   *
+   * @internal
+   *
+   * @remarks
+   * This is used internally for advanced PolkadotJS use cases and is not supported.  Use {@link connect} instead.
    */
-  public disconnect = (chainName: string): void => {
-    void this.#providers[chainName].disconnect()
-    delete this.#providers[chainName]
+  public provider(
+    chainSpec: string,
+    parachainSpec?: string,
+  ): Promise<ProviderInterface>
+  /**
+   * Detects and returns an appropriate PolkadotJS provider depending on whether the user has the substrate connect extension installed
+   *
+   * @param knownChain - {@link SupportedChains} one of the predefined chainSpecs
+   * @param parachainSpec - optional param of the parachain chainSpecs to connect to
+   * @returns a provider will be used in a ApiPromise create for PolkadotJS API
+   *
+   * @internal
+   *
+   * @remarks
+   * This is used internally for advanced PolkadotJS use cases and is not supported.  Use {@link connect} instead.
+   */
+  public provider(
+    knownChain: SupportedChains,
+    parachainSpec?: string,
+  ): Promise<ProviderInterface>
+  public provider(
+    chain: string | SupportedChains,
+    parachainSpec?: string,
+  ): Promise<ProviderInterface> {
+    return this.internalProvider(this.#nextProviderId++, chain, parachainSpec)
   }
 }

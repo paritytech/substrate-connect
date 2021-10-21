@@ -61,11 +61,6 @@ const ANGLICISMS: { [index: string]: string } = {
  */
 const CONNECTION_STATE_PINGER_INTERVAL = 2000
 
-interface ChainInfo {
-  name: string
-  spec: string
-}
-
 /**
  * The ExtensionProvider allows interacting with a smoldot-based WASM light
  * client running in a browser extension.  It is not designed to be used
@@ -92,12 +87,19 @@ export class ExtensionProvider implements ProviderInterface {
 
   public constructor(
     appName: string,
-    relayChain: ChainInfo,
+    externalId: number,
+    relayChain: string,
     parachain?: string,
   ) {
     this.#appName = appName
-    this.#chainName = relayChain.name
-    this.#chainSpecs = relayChain.spec || ""
+
+    // TODO: The "chainName" is in fact a unique ID in the context of the
+    // `appName`, that it's used to identify the ownership of the messages.
+    // In the future we should consider renaming it to something more idiomatic.
+    // Another way to explain this is that what the extension uses for uniquely
+    // identifying a provider is the combination of the appName and the chainName
+    this.#chainName = externalId.toString()
+    this.#chainSpecs = relayChain
     this.#connectionStatePingerId = null
     this.#parachainSpecs = ""
     if (parachain) {
@@ -116,15 +118,6 @@ export class ExtensionProvider implements ProviderInterface {
    */
   public get name(): string {
     return this.#appName
-  }
-
-  /**
-   * chainName
-   *
-   * @returns the name of the chain this `ExtensionProvider` is talking to.
-   */
-  public get chainName(): string {
-    return this.#chainName
   }
 
   /**
