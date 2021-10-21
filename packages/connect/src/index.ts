@@ -1,2 +1,2 @@
-import { Detector } from "./Detector.js"
-export { Detector }
+export { Detector } from "./Detector.js"
+export { SupportedChains } from "./specs/index.js"

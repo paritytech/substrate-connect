@@ -28,13 +28,12 @@ afterEach(() => {
 })
 
 test("constructor sets properties", () => {
-  const ep = new ExtensionProvider("test", { name: "kusama", spec: "" })
+  const ep = new ExtensionProvider("test", 1, "westend")
   expect(ep.name).toBe("test")
-  expect(ep.chainName).toBe("kusama")
 })
 
 test("connected and sends correct spec message", async () => {
-  const ep = new ExtensionProvider("test", { name: "westend", spec: "" })
+  const ep = new ExtensionProvider("test", 1, "westend")
   const emitted = jest.fn()
   ep.on("connected", emitted)
   await ep.connect()
@@ -42,11 +41,11 @@ test("connected and sends correct spec message", async () => {
 
   const expectedMessage: ProviderMessageData = {
     appName: "test",
-    chainName: "westend",
+    chainName: "1",
     action: "forward",
     origin: "extension-provider",
     message: {
-      payload: "",
+      payload: "westend",
       type: "spec",
     },
   }
@@ -56,21 +55,13 @@ test("connected and sends correct spec message", async () => {
 })
 
 test("constructor sets properties for parachain", () => {
-  const ep = new ExtensionProvider("test", {
-    name: "westmint",
-    spec: "westmint-specs",
-  })
+  const ep = new ExtensionProvider("test", 1, "westmint-specs")
   expect(ep.name).toBe("test")
-  expect(ep.chainName).toBe("westmint")
   expect(ep.chainSpecs).toBe("westmint-specs")
-  expect(ep.chainName).toBe("westmint")
 })
 
 test("connected parachain sends correct spec message", async () => {
-  const ep = new ExtensionProvider("test", {
-    name: "westmint",
-    spec: "westmint-specs",
-  })
+  const ep = new ExtensionProvider("test", 1, "westmint-specs")
   const emitted = jest.fn()
   ep.on("connected", emitted)
   await ep.connect()
@@ -78,7 +69,7 @@ test("connected parachain sends correct spec message", async () => {
 
   const expectedMessage: ProviderMessageData = {
     appName: "test",
-    chainName: "westmint",
+    chainName: "1",
     action: "forward",
     origin: "extension-provider",
     message: {
@@ -92,13 +83,13 @@ test("connected parachain sends correct spec message", async () => {
 })
 
 test("connect sends connect message and emits connected", async () => {
-  const ep = new ExtensionProvider("test", { name: "test-chain", spec: "" })
+  const ep = new ExtensionProvider("test", 1, "westmint-specs")
   await ep.connect()
   await waitForMessageToBePosted()
 
   const expectedMessage: ProviderMessageData = {
     appName: "test",
-    chainName: "test-chain",
+    chainName: "1",
     action: "connect",
     origin: "extension-provider",
   }
@@ -108,7 +99,7 @@ test("connect sends connect message and emits connected", async () => {
 })
 
 test("disconnect sends disconnect message and emits disconnected", async () => {
-  const ep = new ExtensionProvider("test", { name: "test-chain", spec: "" })
+  const ep = new ExtensionProvider("test", 1, "test-chain")
   const emitted = jest.fn()
   await ep.connect()
 
@@ -118,7 +109,7 @@ test("disconnect sends disconnect message and emits disconnected", async () => {
 
   const expectedMessage: ProviderMessageData = {
     appName: "test",
-    chainName: "test-chain",
+    chainName: "1",
     action: "disconnect",
     origin: "extension-provider",
   }
@@ -130,7 +121,7 @@ test("disconnect sends disconnect message and emits disconnected", async () => {
 })
 
 test("disconnects and emits disconnected when it receives a disconnect message", async () => {
-  const ep = new ExtensionProvider("test", { name: "test-chain", spec: "" })
+  const ep = new ExtensionProvider("test", 1, "test-chain")
   const emitted = jest.fn()
   await ep.connect()
 
@@ -146,7 +137,7 @@ test("disconnects and emits disconnected when it receives a disconnect message",
 })
 
 test("emits error when it receives an error message", async () => {
-  const ep = new ExtensionProvider("test", { name: "test-chain", spec: "" })
+  const ep = new ExtensionProvider("test", 1, "test-chain")
   await ep.connect()
   await waitForMessageToBePosted()
   const errorMessage: ExtensionMessageData = {
