@@ -144,7 +144,7 @@ const App: React.FunctionComponent = () => {
             </SectionHeading>
             <ThemeProvider theme={createTheme(dark)}>
               <Code>yarn add @substrate/substrate-connect</Code>
-              <Code heading="index.ts">
+              <Code heading="Simple usage (suported chain)">
                 <Box>{`import { Detector } from '@substrate/connect';`}</Box>
 
                 <Box mt={2}>{`// Create a new UApp with a unique name`}</Box>
@@ -168,6 +168,71 @@ const App: React.FunctionComponent = () => {
 
                 <Box mt={2}>{`await westend.disconnect();`}</Box>
                 <Box>{`await kusama.disconnect();`}</Box>
+              </Code>
+
+              <Code heading="Simple usage (custom chain)">
+                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
+                <Box>{`import customSpecs from './customSpecs.json';`}</Box>
+
+                <Box mt={2}>{`const app = new Detector('my app');`}</Box>
+                <Box>{`const myChain = await app.connect({ chain: 'chainName', spec: JSON.stringify(customSpecs)});`}</Box>
+
+                <Box
+                  mt={2}
+                >{`await myChain.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
+                <Box>{`);`}</Box>
+
+                <Box mt={2}>{`await myChain.disconnect();`}</Box>
+              </Code>
+
+              <Code heading="Simple usage with options">
+                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
+
+                <Box mt={2}>{`const app = new Detector('my app');`}</Box>
+                <Box>{`const apiOptions = {types: customTypes}`}</Box>
+                <Box>{`const wstnd = await app.connect('westend', null, apiOptions);`}</Box>
+
+                <Box
+                  mt={2}
+                >{`await wstnd.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
+                <Box>{`);`}</Box>
+
+                <Box mt={2}>{`await wstnd.disconnect();`}</Box>
+              </Code>
+
+              <Code heading="Parachains usage">
+                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
+                <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
+
+                <Box mt={2}>{`const app = new Detector('my app');`}</Box>
+                <Box>{`const rococoApi = await app.connect('rococo', JSON.stringify(parachainSpecs));`}</Box>
+
+                <Box
+                  mt={2}
+                >{`await rococoApi.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
+                <Box>{`);`}</Box>
+
+                <Box mt={2}>{`await rococoApi.disconnect();`}</Box>
+              </Code>
+
+              <Code heading="Parachains usage with options">
+                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
+                <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
+
+                <Box mt={2}>{`const app = new Detector('my app');`}</Box>
+                <Box>{`const apiOptions = {types: customTypes}`}</Box>
+                <Box>{`const rococoApi = await app.connect('rococo', JSON.stringify(parachainSpecs), apiOptions);`}</Box>
+
+                <Box
+                  mt={2}
+                >{`await rococoApi.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
+                <Box>{`);`}</Box>
+
+                <Box mt={2}>{`await rococoApi.disconnect();`}</Box>
               </Code>
             </ThemeProvider>
           </Section>
