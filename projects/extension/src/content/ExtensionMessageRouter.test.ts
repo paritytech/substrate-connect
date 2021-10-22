@@ -35,6 +35,7 @@ describe("Disconnect and incorrect cases", () => {
     const connect = chrome.runtime.connect
     connect.mockImplementation(() => port)
     provider.send({
+      chainId: 1,
       appName: "test-app",
       chainName: "westend",
       action: "connect",
@@ -72,6 +73,7 @@ describe("Disconnect and incorrect cases", () => {
 
   test("disconnect disconnects established connection", async () => {
     provider.send({
+      chainId: 1,
       appName: "test-app",
       chainName: "westend",
       action: "connect",
@@ -80,6 +82,7 @@ describe("Disconnect and incorrect cases", () => {
     await waitForMessageToBePosted()
 
     provider.send({
+      chainId: 1,
       appName: "test-app",
       chainName: "westend",
       action: "disconnect",
@@ -107,6 +110,7 @@ describe("Connection and forward cases", () => {
 
   test("connect establishes a port", async () => {
     provider.send({
+      chainId: 1,
       appName: "test-app",
       chainName: "westend",
       action: "connect",
@@ -116,7 +120,7 @@ describe("Connection and forward cases", () => {
     await waitForMessageToBePosted()
     expect(chrome.runtime.connect).toHaveBeenCalledTimes(1)
     expect(router.connections.length).toBe(1)
-    expect(router.connections[0]).toBe("westend")
+    expect(router.connections[0]).toBe("1")
   })
 
   test("forwards rpc message from app -> extension", async () => {
@@ -124,6 +128,7 @@ describe("Connection and forward cases", () => {
     chrome.runtime.connect.mockImplementation(() => port)
     // connect
     provider.send({
+      chainId: 1,
       appName: "test-app",
       chainName: "westend",
       action: "connect",
@@ -133,6 +138,7 @@ describe("Connection and forward cases", () => {
 
     // rpc
     const rpcMessage: ProviderMessageData = {
+      chainId: 1,
       appName: "test-app",
       chainName: "westend",
       action: "forward",
@@ -155,6 +161,7 @@ describe("Connection and forward cases", () => {
     chrome.runtime.connect.mockImplementation(() => port)
     // connect
     provider.send({
+      chainId: 1,
       appName: "test-app",
       chainName: "westend",
       action: "connect",
