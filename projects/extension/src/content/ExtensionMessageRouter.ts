@@ -45,13 +45,12 @@ export class ExtensionMessageRouter {
     window.removeEventListener("message", this.#handleMessage)
   }
 
-  #establishNewConnection = (message: ProviderMessage): void => {
-    const data = message.data
+  #establishNewConnection = ({ data }: ProviderMessage): void => {
+    const { chainName, chainId, appName, message } = data
     const port = chrome.runtime.connect({
-      name: `${data.appName}::${data.chainName}`,
+      name: `${appName}::${chainName}`,
     })
-    debug(`CONNECTED ${data.chainName} PORT`, port)
-    const chainName = data.chainName
+    debug(`CONNECTED ${chainName} PORT`, port)
 
     // forward any messages: extension -> page
     port.onMessage.addListener((data): void => {
@@ -62,68 +61,67 @@ export class ExtensionMessageRouter {
     // tell the page when the port disconnects
     port.onDisconnect.addListener(() => {
       extension.send({ origin: "content-script", disconnect: true })
-      delete this.#ports[data.chainName]
+      delete this.#ports[chainId]
     })
 
-    this.#ports[data.chainName] = port
-    debug(`CONNECTED TO ${data.chainName} PORT`, data.message)
+    this.#ports[chainId] = port
+    debug(`CONNECTED TO ${chainName} PORT`, message)
   }
 
-  #forwardRpcMessage = (message: ProviderMessage): void => {
-    const data = message.data
-    const port = this.#ports[data.chainName]
+  #forwardRpcMessage = ({ data }: ProviderMessage): void => {
+    const { chainName, chainId, message } = data
+    const port = this.#ports[chainId]
     if (!port) {
       // this is probably someone trying to abuse the extension.
       console.warn(
-        `App requested to send message to ${data.chainName} - no port found`,
+        `App requested to send message to ${chainName} - no port found`,
       )
       return
     }
 
-    debug(`SENDING RPC MESSAGE TO ${data.chainName} PORT`, data.message)
-    port.postMessage(data.message)
+    debug(`SENDING RPC MESSAGE TO ${chainName} PORT`, message)
+    port.postMessage(message)
   }
 
-  #disconnectPort = (message: ProviderMessage): void => {
-    const data = message.data
-    const port = this.#ports[data.chainName]
+  #disconnectPort = ({ data }: ProviderMessage): void => {
+    const { chainName, chainId } = data
+    const port = this.#ports[chainId]
 
     if (!port) {
       // probably someone trying to abuse the extension.
-      console.warn(
-        `App requested to disconnect ${data.chainName} - no port found`,
-      )
+      console.warn(`App requested to disconnect ${chainName} - no port found`)
       return
     }
 
     port.disconnect()
-    debug(`DISCONNECTED ${data.chainName} PORT`, port)
-    delete this.#ports[data.chainName]
+    debug(`DISCONNECTED ${chainName} PORT`, port)
+    delete this.#ports[chainId]
     return
   }
 
-  #handleMessage = (message: ProviderMessage): void => {
-    const data = message.data
+  #handleMessage = (msg: ProviderMessage): void => {
+    const data = msg.data
+    const { origin, action, message } = data
     if (!data.origin || data.origin !== EXTENSION_PROVIDER_ORIGIN) {
       return
     }
 
     debug(`RECEIVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data)
 
-    if (!data.action) {
-      return console.warn("Malformed message - missing action", message)
+    if (!action) {
+      return console.warn("Malformed message - missing action", msg)
     }
 
-    if (data.action === "connect") {
-      return this.#establishNewConnection(message)
+    if (action === "connect") {
+      return this.#establishNewConnection(msg)
     }
 
-    if (data.action === "disconnect") {
-      return this.#disconnectPort(message)
+    if (action === "disconnect") {
+      return this.#disconnectPort(msg)
     }
 
-    if (data.action === "forward") {
-      const innerMessage = data.message as MessageToManager
+    if (action === "forward") {
+      const innerMessage = message as MessageToManager
       if (!innerMessage.type) {
         // probably someone abusing the extension
         console.warn("Malformed message - missing message.type", data)
@@ -131,7 +129,7 @@ export class ExtensionMessageRouter {
       }
 
       if (innerMessage.type === "rpc" || innerMessage.type === "spec") {
-        return this.#forwardRpcMessage(message)
+        return this.#forwardRpcMessage(msg)
       }
 
       // probably someone abusing the extension

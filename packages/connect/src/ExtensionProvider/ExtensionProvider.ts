@@ -14,6 +14,7 @@ import { HealthCheckError } from "../errors.js"
 import {
   MessageFromManager,
   ProviderMessageData,
+  CommonProviderMessageData,
   ExtensionMessage,
   ExtensionMessageData,
   provider,
@@ -77,6 +78,7 @@ export class ExtensionProvider implements ProviderInterface {
 
   #appName: string
   #chainName: string
+  #chainId: number
   #chainSpecs: string
   #parachainSpecs: string
 
@@ -87,7 +89,7 @@ export class ExtensionProvider implements ProviderInterface {
 
   public constructor(
     appName: string,
-    externalId: number,
+    uniqueExternalId: number,
     relayChain: string,
     parachain?: string,
   ) {
@@ -98,7 +100,8 @@ export class ExtensionProvider implements ProviderInterface {
     // In the future we should consider renaming it to something more idiomatic.
     // Another way to explain this is that what the extension uses for uniquely
     // identifying a provider is the combination of the appName and the chainName
-    this.#chainName = externalId.toString()
+    this.#chainName = JSON.parse(relayChain)?.name
+    this.#chainId = uniqueExternalId
     this.#chainSpecs = relayChain
     this.#connectionStatePingerId = null
     this.#parachainSpecs = ""
@@ -148,6 +151,13 @@ export class ExtensionProvider implements ProviderInterface {
   public clone(): ProviderInterface {
     throw new Error("clone() is not supported.")
   }
+
+  #commonMessageData = (): CommonProviderMessageData => ({
+    appName: this.#appName,
+    chainId: this.#chainId,
+    chainName: this.#chainName,
+    origin: EXTENSION_PROVIDER_ORIGIN,
+  })
 
   #handleMessage = (data: ExtensionMessageData): void => {
     if (data.disconnect && data.disconnect === true) {
@@ -303,20 +313,16 @@ export class ExtensionProvider implements ProviderInterface {
    */
   public connect(): Promise<void> {
     const connectMsg: ProviderMessageData = {
-      appName: this.#appName,
-      chainName: this.#chainName,
+      ...this.#commonMessageData(),
       action: "connect",
-      origin: EXTENSION_PROVIDER_ORIGIN,
     }
     provider.send(connectMsg)
 
     // Once connect is sent - send rpc to extension that will contain the chainSpecs
     // for the extension to call addChain on smoldot
     const specMsg: ProviderMessageData = {
-      appName: this.#appName,
-      chainName: this.#chainName,
+      ...this.#commonMessageData(),
       action: "forward",
-      origin: EXTENSION_PROVIDER_ORIGIN,
       message: {
         type: "spec",
         payload: this.#chainSpecs || "",
@@ -346,10 +352,8 @@ export class ExtensionProvider implements ProviderInterface {
    */
   public disconnect(): Promise<void> {
     const disconnectMsg: ProviderMessageData = {
-      appName: this.#appName,
-      chainName: this.#chainName,
+      ...this.#commonMessageData(),
       action: "disconnect",
-      origin: EXTENSION_PROVIDER_ORIGIN,
     }
 
     provider.send(disconnectMsg)
@@ -417,14 +421,12 @@ export class ExtensionProvider implements ProviderInterface {
       }
 
       const rpcMsg: ProviderMessageData = {
-        appName: this.#appName,
-        chainName: this.#chainName,
+        ...this.#commonMessageData(),
         action: "forward",
         message: {
           type: "rpc",
           payload: json,
         },
-        origin: EXTENSION_PROVIDER_ORIGIN,
       }
       provider.send(rpcMsg)
     })
