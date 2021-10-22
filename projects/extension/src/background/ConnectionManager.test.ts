@@ -275,6 +275,7 @@ describe("When the manager is shutdown", () => {
 })
 
 describe("Check storage and send notification when adding an app", () => {
+  const westendPayload = JSON.stringify({ name: "Westend", id: "westend2" })
   const port = new MockPort("test-app-7::westend")
   const manager = new ConnectionManager()
   const handler = jest.fn()
@@ -305,26 +306,26 @@ describe("Check storage and send notification when adding an app", () => {
   })
 
   test("Checks storage for notifications preferences", async () => {
-    port.triggerMessage({ type: "spec", payload: "westend" })
+    port.triggerMessage({ type: "spec", payload: westendPayload })
     await waitForMessageToBePosted()
     expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1)
   })
 
-  // test("Sends a notification", () => {
-  //   port.triggerMessage({ type: "spec", payload: "westend" })
-  //   const notificationData = {
-  //     message: "App test-app-7 connected to westend.",
-  //     title: "Substrate Connect",
-  //     iconUrl: "./icons/icon-32.png",
-  //     type: "basic",
-  //   }
+  test("Sends a notification", () => {
+    port.triggerMessage({ type: "spec", payload: westendPayload })
+    const notificationData = {
+      message: "App test-app-7 connected to westend.",
+      title: "Substrate Connect",
+      iconUrl: "./icons/icon-32.png",
+      type: "basic",
+    }
 
-  //   expect(chrome.notifications.create).toHaveBeenCalledTimes(1)
-  //   expect(chrome.notifications.create).toHaveBeenCalledWith(
-  //     "test-app-7::westend",
-  //     notificationData,
-  //   )
-  // })
+    expect(chrome.notifications.create).toHaveBeenCalledTimes(1)
+    expect(chrome.notifications.create).toHaveBeenCalledWith(
+      "test-app-7::westend",
+      notificationData,
+    )
+  })
 })
 
 describe("Tests with actual ConnectionManager", () => {
