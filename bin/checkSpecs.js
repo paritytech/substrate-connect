@@ -1,5 +1,10 @@
+const promisify = require("util").promisify
 const fs = require("fs")
 const path = require("path")
+
+const readFile = promisify(fs.readFile)
+const copyFile = promisify(fs.copyFile)
+
 const networks = [
   "polkadot",
   "kusama",
@@ -22,27 +27,35 @@ const pathExist = fs.existsSync(workspacePath)
 // check if path exist. If not create it
 if (!pathExist) fs.mkdirSync(workspacePath)
 
-networks.forEach((network) => {
-  const wsPathFile = `${workspacePath}/${network}.json`
-  const chainDirFile = `${chainDir}/${network}.json`
-  if (!fs.existsSync(wsPathFile)) {
-    console.log(`File ${wsPathFile} does not exist. Copying...`)
-    fs.copyFile(`${chainDir}/${network}.json`, wsPathFile, (err) => {
-      if (err) throw err
-    })
-  } else {
-    // file exists - we should check if IDs are same
-    fs.readFile(wsPathFile, function (err, data) {
-      if (err) console.log(err)
-      const dirFile = JSON.parse(data).id
-      fs.readFile(chainDirFile, function (err, data) {
-        if (err) console.log(err)
-        if (JSON.parse(data).id !== dirFile) {
-          fs.copyFile(chainDirFile, wsPathFile, (err) => {
-            if (err) throw err
-          })
-        }
-      })
-    })
+async function getIdFromFile(fileName) {
+  const data = await readFile(fileName, "utf-8")
+  return JSON.parse(data).id
+}
+
+async function ensureLatest(newest, current) {
+  const name = current.split("/").pop()
+  if (!fs.existsSync(current)) {
+    console.log(`File ${name} does not exist. Copying...`)
+    await copyFile(newest, current)
   }
-})
+
+  const [newId, currentId] = await Promise.all(
+    [newest, current].map(getIdFromFile),
+  )
+
+  if (newId !== currentId) {
+    console.log(`Newer version found for ${name}. Replacing...`)
+    await copyFile(newest, current)
+  }
+}
+
+void Promise.all(
+  networks.map((network) => {
+    const wsPathFile = `${workspacePath}/${network}.json`
+    const chainDirFile = `${chainDir}/${network}.json`
+    return ensureLatest(chainDirFile, wsPathFile).catch((err) => {
+      console.log("There was an error ensuring the latest version")
+      console.error(err)
+    })
+  }),
+)
