@@ -6,7 +6,7 @@ module.exports = {
   entry: "./src/index.ts",
   devtool: "inline-source-map",
   devServer: {
-    port: 3000,
+    port: 3003,
     open: true,
     hot: true,
   },
