@@ -14,28 +14,8 @@ import {
   MessageFromManager,
   MessageToManager,
 } from "@substrate/connect-extension-protocol"
-import westend from "../../public/assets/westend.json"
-import kusama from "../../public/assets/kusama.json"
-import polkadot from "../../public/assets/polkadot.json"
-import rococo from "../../public/assets/rococo.json"
 
 const l = logger("Extension Connection Manager")
-
-type RelayType = Map<string, string>
-
-const nameIdMapper = new Map<string, string>([
-  ["polkadot", "polkadot"],
-  ["ksmcc3", "kusama"],
-  ["rococo_v1_8", "rococo"],
-  ["westend2", "westend"],
-])
-
-const relayChains: RelayType = new Map<string, string>([
-  ["polkadot", JSON.stringify(polkadot)],
-  ["kusama", JSON.stringify(kusama)],
-  ["rococo", JSON.stringify(rococo)],
-  ["westend", JSON.stringify(westend)],
-])
 
 /**
  * ConnectionManager is the main class involved in managing connections from
@@ -324,9 +304,13 @@ export class ConnectionManager
 
   /** Handles the incoming message that contains Spec. */
   #handleSpecMessage = (msg: MessageToManager, app: App): void => {
-    const chainSpec: string = relayChains.has(app.chainName.toLowerCase())
-      ? relayChains.get(app.chainName.toLowerCase()) || ""
-      : msg.payload
+    if (!msg.payload) {
+      const error: Error = new Error("Relay chain spec was not found")
+      this.#handleError(app, error)
+      return
+    }
+
+    const chainSpec: string = msg.payload
 
     const rpcCallback = (rpc: string) => {
       const rpcResp: string | null | undefined =
@@ -339,18 +323,7 @@ export class ConnectionManager
     if (msg.parachainPayload) {
       // Connect the main Chain first and on success the parachain with the chain
       // that just got connected as the relayChain
-      const relayId: string = JSON.parse(msg.parachainPayload).relay_chain
       const parachainSpec: string = msg.parachainPayload
-
-      const relaychainSpec: string | undefined = relayChains.get(
-        nameIdMapper.get(relayId) || "",
-      )
-
-      if (!relaychainSpec) {
-        const error: Error = new Error("Relay chain spec was not found")
-        this.#handleError(app, error)
-        return
-      }
 
       chainPromise = this.addChain(chainSpec, undefined, app.tabId)
         .then((network) => {

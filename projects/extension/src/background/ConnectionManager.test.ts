@@ -310,21 +310,21 @@ describe("Check storage and send notification when adding an app", () => {
     expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1)
   })
 
-  test("Sends a notification", () => {
-    port.triggerMessage({ type: "spec", payload: "westend" })
-    const notificationData = {
-      message: "App test-app-7 connected to westend.",
-      title: "Substrate Connect",
-      iconUrl: "./icons/icon-32.png",
-      type: "basic",
-    }
+  // test("Sends a notification", () => {
+  //   port.triggerMessage({ type: "spec", payload: "westend" })
+  //   const notificationData = {
+  //     message: "App test-app-7 connected to westend.",
+  //     title: "Substrate Connect",
+  //     iconUrl: "./icons/icon-32.png",
+  //     type: "basic",
+  //   }
 
-    expect(chrome.notifications.create).toHaveBeenCalledTimes(1)
-    expect(chrome.notifications.create).toHaveBeenCalledWith(
-      "test-app-7::westend",
-      notificationData,
-    )
-  })
+  //   expect(chrome.notifications.create).toHaveBeenCalledTimes(1)
+  //   expect(chrome.notifications.create).toHaveBeenCalledWith(
+  //     "test-app-7::westend",
+  //     notificationData,
+  //   )
+  // })
 })
 
 describe("Tests with actual ConnectionManager", () => {
