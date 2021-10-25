@@ -102,7 +102,7 @@ export class ExtensionMessageRouter {
   #handleMessage = (msg: ProviderMessage): void => {
     const data = msg.data
     const { origin, action, message } = data
-    if (!data.origin || data.origin !== EXTENSION_PROVIDER_ORIGIN) {
+    if (!origin || origin !== EXTENSION_PROVIDER_ORIGIN) {
       return
     }
 

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RpcCoder } from "@polkadot/rpc-provider/coder"
 import {
@@ -100,7 +102,7 @@ export class ExtensionProvider implements ProviderInterface {
     // In the future we should consider renaming it to something more idiomatic.
     // Another way to explain this is that what the extension uses for uniquely
     // identifying a provider is the combination of the appName and the chainName
-    this.#chainName = JSON.parse(relayChain)?.name
+    this.#chainName = JSON.parse(relayChain).name
     this.#chainId = uniqueExternalId
     this.#chainSpecs = relayChain
     this.#connectionStatePingerId = null
