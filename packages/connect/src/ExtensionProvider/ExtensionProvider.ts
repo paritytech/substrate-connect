@@ -97,11 +97,12 @@ export class ExtensionProvider implements ProviderInterface {
   ) {
     this.#appName = appName
 
-    // TODO: The "chainName" is in fact a unique ID in the context of the
-    // `appName`, that it's used to identify the ownership of the messages.
-    // In the future we should consider renaming it to something more idiomatic.
-    // Another way to explain this is that what the extension uses for uniquely
-    // identifying a provider is the combination of the appName and the chainName
+    /**
+     * TODO: we should remove the chainName from the payload of the messages,
+     * since this is information that doesn't have to be sent on every message and
+     * the Extension can extract it from the chainSpecs, also that way we avoid
+     * parsing a large JSON on the main thread.
+     */
     this.#chainName = JSON.parse(relayChain).name
     this.#chainId = uniqueExternalId
     this.#chainSpecs = relayChain
