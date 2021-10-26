@@ -88,13 +88,18 @@ export const extension = {
 export interface ProviderMessage {
   data: ProviderMessageData
 }
-export interface ProviderMessageData {
+
+export interface CommonProviderMessageData {
   /** origin is used to determine which side sent the message **/
   origin: "extension-provider"
   /** The name of the app to be used for display purposes in the extension UI **/
   appName: string
+  /** The uniqueId for extension multiplexing **/
+  chainId: number
   /** The name of the blockchain network the app is talking to **/
   chainName: string
+}
+export interface ProviderMessageData extends CommonProviderMessageData {
   /** What action the `ExtensionMessageRouter` should take **/
   action: "forward" | "connect" | "disconnect"
   /** The message the `ExtensionMessageRouter` should forward to the background **/
