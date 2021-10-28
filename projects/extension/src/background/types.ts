@@ -1,11 +1,7 @@
 import * as smoldot from "@substrate/smoldot-light"
 import EventEmitter from "eventemitter3"
 import StrictEventEmitter from "strict-event-emitter-types"
-import {
-  HealthChecker,
-  SmoldotChain,
-  SmoldotHealth,
-} from "@substrate/smoldot-light"
+import { HealthChecker, Chain, SmoldotHealth } from "@substrate/smoldot-light"
 import { Network } from "../types"
 
 export interface ExposedAppInfo {
@@ -19,8 +15,8 @@ export interface ExposedAppInfo {
 }
 
 export interface App extends ExposedAppInfo {
-  chain?: SmoldotChain
-  parachain?: SmoldotChain
+  chain?: Chain
+  parachain?: Chain
   name: string
   port: chrome.runtime.Port
   healthChecker?: HealthChecker
@@ -54,7 +50,7 @@ export interface ConnectionManagerInterface {
   unregisterApp: (app: App) => void
   addChain: (
     spec: string,
-    jsonRpcCallback?: smoldot.SmoldotJsonRpcCallback,
+    jsonRpcCallback?: smoldot.JsonRpcCallback,
     tabId?: number,
   ) => Promise<Network>
 }

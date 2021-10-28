@@ -1,10 +1,10 @@
 import {
   HealthChecker,
   Smoldot,
-  SmoldotAddChainOptions,
-  SmoldotChain,
-  SmoldotClient,
-  SmoldotJsonRpcCallback,
+  AddChainOptions,
+  Chain,
+  Client,
+  JsonRpcCallback,
 } from "@substrate/smoldot-light"
 import { JsonRpcObject } from "@polkadot/rpc-provider/types"
 import { jest } from "@jest/globals"
@@ -178,7 +178,7 @@ export const respondWith = (jsonResponses: string[]) => {
  * subscription.
  */
 const createRequestProcessor = (
-  options: SmoldotAddChainOptions,
+  options: AddChainOptions,
   responder: RpcResponder,
   healthResponder: RpcResponder,
 ) => {
@@ -223,10 +223,10 @@ export const mockSmoldot = (
   healthResponder = healthyResponder,
 ): Smoldot => {
   return {
-    start: async (): Promise<SmoldotClient> => {
-      return Promise.resolve({
+    start: (): Client => {
+      return {
         terminate: doNothing,
-        addChain: async (options): Promise<SmoldotChain> =>
+        addChain: async (options): Promise<Chain> =>
           createAddChain({
             chainSpec: options.chainSpec,
             jsonRpcCallback: createRequestProcessor(
@@ -235,7 +235,7 @@ export const mockSmoldot = (
               healthResponder,
             ),
           }),
-      })
+      }
     },
     healthChecker: (): HealthChecker => {
       return {
@@ -250,9 +250,9 @@ export const mockSmoldot = (
 }
 
 export const createAddChain = (opts: {
-  jsonRpcCallback: SmoldotJsonRpcCallback
+  jsonRpcCallback: JsonRpcCallback
   chainSpec?: string
-}): Promise<SmoldotChain> => {
+}): Promise<Chain> => {
   return Promise.resolve({
     sendJsonRpc: opts.jsonRpcCallback,
     remove: doNothing,
@@ -277,12 +277,10 @@ export const smoldotSpy = (
   healthResponder = healthyResponder,
 ): Smoldot => {
   return {
-    start: async (): Promise<SmoldotClient> => {
-      return Promise.resolve({
+    start: (): Client => {
+      return {
         terminate: doNothing,
-        addChain: async (
-          options: SmoldotAddChainOptions,
-        ): Promise<SmoldotChain> => {
+        addChain: async (options: AddChainOptions): Promise<Chain> => {
           const processRequest = createRequestProcessor(
             options,
             responder,
@@ -296,7 +294,7 @@ export const smoldotSpy = (
             },
           })
         },
-      })
+      }
     },
     healthChecker: (): HealthChecker => {
       return {

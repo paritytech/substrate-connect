@@ -8,7 +8,7 @@ import {
   MessageToManager,
   MessageFromManager,
 } from "@substrate/connect-extension-protocol"
-import { SmoldotChain } from "@substrate/smoldot-light"
+import { Chain } from "@substrate/smoldot-light"
 import { Network } from "./types"
 
 export class MockPort implements chrome.runtime.Port {
@@ -56,7 +56,7 @@ export class MockPort implements chrome.runtime.Port {
 export class MockConnectionManager implements ConnectionManagerInterface {
   addChain(): Promise<Network> {
     return Promise.resolve({
-      chain: {} as SmoldotChain,
+      chain: {} as Chain,
       tabId: 0,
     } as Network)
   }
