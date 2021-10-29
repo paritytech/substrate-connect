@@ -9,7 +9,7 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=15 <=16.13.0"
+    "node": ">=14 <=16.13.0"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
