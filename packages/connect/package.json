@@ -8,6 +8,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "engines": {
+    "node": ">=14 <=16.13.0"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
