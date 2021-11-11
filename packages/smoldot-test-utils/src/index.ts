@@ -226,7 +226,7 @@ export const mockSmoldot = (
     start: (): Client => {
       return {
         terminate: doNothing,
-        addChain: async (options): Promise<Chain> =>
+        addChain: (options: { chainSpec: string }): Promise<Chain> =>
           createAddChain({
             chainSpec: options.chainSpec,
             jsonRpcCallback: createRequestProcessor(
@@ -280,7 +280,7 @@ export const smoldotSpy = (
     start: (): Client => {
       return {
         terminate: doNothing,
-        addChain: async (options: AddChainOptions): Promise<Chain> => {
+        addChain: (options: AddChainOptions): Promise<Chain> => {
           const processRequest = createRequestProcessor(
             options,
             responder,
