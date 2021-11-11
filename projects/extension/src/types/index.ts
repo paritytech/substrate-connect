@@ -24,7 +24,7 @@ export interface NetworkMainInfo {
   status: NetworkStatus
 }
 export interface Network extends NetworkMainInfo {
-  chain: smoldot.SmoldotChain
+  chain: smoldot.Chain
   tabId: number
   parachains?: Parachain[]
 }

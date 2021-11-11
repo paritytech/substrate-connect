@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as smoldot from "@substrate/smoldot-light"
-import { SmoldotJsonRpcCallback, SmoldotHealth } from "@substrate/smoldot-light"
+import { JsonRpcCallback, SmoldotHealth } from "@substrate/smoldot-light"
 import { ExposedAppInfo, App, ConnectionManagerInterface } from "./types"
 import EventEmitter from "eventemitter3"
 import { StateEmitter, State } from "./types"
@@ -27,7 +27,7 @@ export class ConnectionManager
   implements ConnectionManagerInterface
 {
   readonly #apps: App[] = []
-  #client: smoldot.SmoldotClient | undefined = undefined
+  #client: smoldot.Client | undefined = undefined
   #networks: Network[] = []
   smoldotLogLevel = 3
 
@@ -230,13 +230,13 @@ export class ConnectionManager
    *
    * @param spec - ChainSpec of chain to be added
    * @param jsonRpcCallback - The jsonRpcCallback function that should be triggered
-   * @param relayChain - optional SmoldotChain for relay chain
+   * @param relayChain - optional Smoldot's Chain for relay chain
    *
    * @returns addedChain - An the newly added chain info
    */
   async addChain(
     chainSpec: string,
-    jsonRpcCallback?: SmoldotJsonRpcCallback,
+    jsonRpcCallback?: JsonRpcCallback,
     tabId?: number,
   ): Promise<Network> {
     if (!this.#client) {

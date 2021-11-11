@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { SmoldotProvider } from "./SmoldotProvider"
-import { SmoldotClient } from "@substrate/smoldot-light"
+import { Client } from "@substrate/smoldot-light"
 import {
   erroringResponder,
   customHealthResponder,
@@ -78,8 +78,8 @@ describe("Test Development chain", () => {
 
 test("connect propagates errors", async () => {
   const badSmoldot = {
-    start: async (): Promise<SmoldotClient> => {
-      return Promise.reject(new Error("boom!"))
+    start: (): Client => {
+      throw new Error("boom!")
     },
   }
   const provider = new SmoldotProvider(EMPTY_CHAIN_SPEC, undefined, badSmoldot)
@@ -227,8 +227,8 @@ describe("Test Development parachain", () => {
 
 test("connect propagates errors", async () => {
   const badSmoldot = {
-    start: async (): Promise<SmoldotClient> => {
-      return Promise.reject(new Error("boom!"))
+    start: (): Client => {
+      throw new Error("boom!")
     },
   }
   const provider = new SmoldotProvider(

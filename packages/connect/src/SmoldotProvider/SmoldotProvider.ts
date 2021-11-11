@@ -92,8 +92,8 @@ export class SmoldotProvider implements ProviderInterface {
   readonly #waitingForId: Record<string, JsonRpcResponse> = {}
   #connectionStatePingerId: ReturnType<typeof setInterval> | null
   #isConnected = false
-  #client: smoldot.SmoldotClient | undefined = undefined
-  #chain: smoldot.SmoldotChain | undefined = undefined
+  #client: smoldot.Client | undefined = undefined
+  #chain: smoldot.Chain | undefined = undefined
   #parachainSpecs: string | undefined = undefined
   // reference to the smoldot module so we can defer loading the wasm client
   // until connect is called
@@ -269,7 +269,7 @@ export class SmoldotProvider implements ProviderInterface {
   public connect = async (): Promise<void> => {
     assert(!this.#client && !this.#isConnected, "Client is already connected")
     try {
-      this.#client = await this.#smoldot.start({
+      this.#client = this.#smoldot.start({
         forbidWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
         maxLogLevel: 3 /* no debug/trace messages */,
       })
