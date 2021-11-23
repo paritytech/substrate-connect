@@ -80,7 +80,6 @@ export class ExtensionProvider implements ProviderInterface {
 
   #appName: string
   #chainName: string
-  #chainId: number
   #chainSpecs: string
   #parachainSpecs: string
 
@@ -90,12 +89,11 @@ export class ExtensionProvider implements ProviderInterface {
   healthPingerInterval = CONNECTION_STATE_PINGER_INTERVAL
 
   public constructor(
-    appName: string,
-    uniqueExternalId: number,
+    displayName: string,
     relayChain: string,
     parachain?: string,
   ) {
-    this.#appName = appName
+    this.#appName = displayName
 
     /**
      * TODO: we should remove the chainName from the payload of the messages,
@@ -104,7 +102,6 @@ export class ExtensionProvider implements ProviderInterface {
      * parsing a large JSON on the main thread.
      */
     this.#chainName = JSON.parse(relayChain).name
-    this.#chainId = uniqueExternalId
     this.#chainSpecs = relayChain
     this.#connectionStatePingerId = null
     this.#parachainSpecs = ""
@@ -157,7 +154,7 @@ export class ExtensionProvider implements ProviderInterface {
 
   #commonMessageData = (): CommonProviderMessageData => ({
     appName: this.#appName,
-    chainId: this.#chainId,
+    chainId: 1,
     chainName: this.#chainName,
     origin: EXTENSION_PROVIDER_ORIGIN,
   })

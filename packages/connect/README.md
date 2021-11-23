@@ -4,29 +4,32 @@ This is a prototype for using [@polkadot/api](https://polkadot.js.org/docs/api/s
 with the [smoldot](https://npmjs.com/package/smoldot) WASM light client either by 
 passing chainspecs or using the extension by predefined chains (e.g. westend, kusama).
 
-Detector check existence of substrate extension. If it is installed and activated then
+ScProvider check existence of substrate extension. If it is installed and activated then
 smoldot clients of extension will be used. If not, a new smoldot client will start and
 sync with given chainspecs.
 ## Usage
 Provide a known Chain Name ('kusama', 'polkadot', 'westend', 'rococo'):
 ```js
-import { Detector } from '@substrate/connect';
+import { ApiPromise } from '@polkadot/api';
+import { ScProvider, SupportedChains } from '@substrate/connect';
 
-const detect = new Detector('my cool unstoppable app');
-
-const api = await detect.connect('westend');
+const provider = new ScProvider('my cool unstoppable app', SupportedChains.westend);
+const api = await ApiPromise.create({ provider });
 ```
 
 or provide your custom substrate chain's name and chainspec:
 
 ```js
-import { Detector }  from '@substrate/connect';
+import { ApiPromise } from '@polkadot/api';
+import { ScProvider } from '@substrate/connect';
 import mySubstrateChainSpec from './mySubstrateChainSpec.json';
 
 const chainSpec =  JSON.stringify(mySubstrateChainSpec);
-const detect = new Detector('my cool unstoppable app');
-
-const api = await detect.connect({ name: 'mySubstrateChainName', spec: chainSpec });
+const provider = new ScProvider(
+  'my cool unstoppable app',
+  { name: 'mySubstrateChainName', spec: chainSpec }
+);
+const api = await ApiPromise.create({ provider });
 ```
 
 
@@ -34,36 +37,18 @@ const api = await detect.connect({ name: 'mySubstrateChainName', spec: chainSpec
 
 For parachain support, you can providethe parachain's specs
 ```js
-import { Detector } from '@substrate/connect';
+import { ApiPromise } from '@polkadot/api';
+import { ScProvider, SupportedChains } from '@substrate/connect';
 import myParaChainSpec from './myParaChainSpec.json';
 
 const parachainSpec =  JSON.stringify(myParaChainSpec);
 
-const detect = new Detector('my cool unstoppable app');
-const api = await detect.connect('westend',  parachainSpec);
-```
-
-### Options
-In addition besides substrate chain's name and/or chainspec, a list of options can be passed
-to Detector, same way as in  as passed in [@polkadot/api](https://polkadot.js.org/docs/api/start).
-Without chainspec:
-```js
-import { Detector }  from '@substrate/connect';
-
-const detect = new Detector('my cool unstoppable app');
-const options = { /* the options as per polkadot/api */ } as ApiOptions;
-const api = await detect.connect('mySubstrateChainName', undefined, options);
-```
-or with:
-```js
-import { Detector }  from '@substrate/connect';
-import mySubstrateChainSpec from './mySubstrateChainSpec.json';
-
-const chainSpec =  JSON.stringify(mySubstrateChainSpec);
-const detect = new Detector('my cool unstoppable app');
-
-const options = { /* the options as per polkadot/api */ } as ApiOptions;
-const api = await detect.connect({ name: 'mySubstrateChainName', spec: chainSpec }, undefined options);
+const provider = new ScProvider(
+  'my cool unstoppable app',
+  SupportedChains.westend,
+  parachainSpec,
+);
+const api = await ApiPromise.create({ provider });
 ```
 
 ## Scripts

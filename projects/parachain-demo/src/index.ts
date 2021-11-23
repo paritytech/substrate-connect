@@ -4,7 +4,8 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 // hack to make poladot-js work without bringing in webpack and babel
 import "regenerator-runtime/runtime"
-import { Detector } from "@substrate/connect"
+import { ScProvider, SupportedChains } from "@substrate/connect"
+import { ApiPromise } from "@polkadot/api"
 import westmint from "./assets/westend-westmint.json"
 import UI, { emojis } from "./view"
 
@@ -14,8 +15,12 @@ window.onload = () => {
   ui.showSyncing()
   ;(async () => {
     try {
-      const detect = new Detector("Parachain Demo")
-      const api = await detect.connect("westend", JSON.stringify(westmint))
+      const provider = new ScProvider(
+        "Parachain Demo",
+        SupportedChains.westend,
+        JSON.stringify(westmint),
+      )
+      const api = await ApiPromise.create({ provider })
 
       const [chain, nodeName, nodeVersion, properties] = await Promise.all([
         api.rpc.system.chain(),

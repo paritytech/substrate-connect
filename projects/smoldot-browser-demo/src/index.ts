@@ -3,7 +3,8 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 // hack to make poladot-js work without bringing in webpack and babel
 import "regenerator-runtime/runtime"
-import { Detector } from "@substrate/connect"
+import { ScProvider, SupportedChains } from "@substrate/connect"
+import { ApiPromise } from "@polkadot/api"
 import UI, { emojis } from "./view"
 
 window.onload = () => {
@@ -12,8 +13,11 @@ window.onload = () => {
   ui.showSyncing()
   ;(async () => {
     try {
-      const detect = new Detector("Smoldot Browser Demo")
-      const api = await detect.connect("westend")
+      const provider = new ScProvider(
+        "Smoldot Browser Demo",
+        SupportedChains.westend,
+      )
+      const api = await ApiPromise.create({ provider })
 
       // const api = await ApiPromise.create({ provider })
       const header = await api.rpc.chain.getHeader()
