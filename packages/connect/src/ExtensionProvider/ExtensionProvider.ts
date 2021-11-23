@@ -223,7 +223,7 @@ export class ExtensionProvider implements ProviderInterface {
         }
       }
     } catch (error) {
-      handler.callback(error, undefined)
+      handler.callback(<Error>error, undefined)
     }
 
     delete this.#handlers[response.id]
@@ -252,7 +252,7 @@ export class ExtensionProvider implements ProviderInterface {
 
       handler.callback(null, result)
     } catch (error) {
-      handler.callback(error, undefined)
+      handler.callback(<Error>error, undefined)
     }
   }
 
