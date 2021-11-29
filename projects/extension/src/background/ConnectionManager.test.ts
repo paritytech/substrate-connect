@@ -311,7 +311,7 @@ describe("Check storage and send notification when adding an app", () => {
     expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1)
   })
 
-  test("Sends a notification", () => {
+  test("Sends a notification", async () => {
     port.triggerMessage({ type: "spec", payload: westendPayload })
     const notificationData = {
       message: "App test-app-7 connected to westend.",
@@ -319,6 +319,8 @@ describe("Check storage and send notification when adding an app", () => {
       iconUrl: "./icons/icon-32.png",
       type: "basic",
     }
+
+    await waitForMessageToBePosted()
     expect(chrome.notifications.create).toHaveBeenCalledTimes(1)
     expect(chrome.notifications.create).toHaveBeenCalledWith(
       "test-app-7::westend",
