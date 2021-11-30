@@ -40,7 +40,7 @@ test("adding and removing apps changes state", async () => {
   //setup connection manager with 2 chains
   const manager = new ConnectionManager()
   manager.smoldotLogLevel = 1
-  await manager.initSmoldot()
+  manager.initSmoldot()
   await manager.addChain(JSON.stringify(westend), doNothing)
   await manager.addChain(JSON.stringify(kusama), doNothing)
 
@@ -152,7 +152,7 @@ test("adding and removing apps changes state", async () => {
   manager.disconnectAll()
   expect(handler).toHaveBeenCalledTimes(3)
   expect(manager.getState()).toEqual({ apps: [] })
-  manager.shutdown()
+  await manager.shutdown()
 })
 
 test("Tries to connect to a parachain with unknown Relay Chain", async () => {
@@ -161,7 +161,7 @@ test("Tries to connect to a parachain with unknown Relay Chain", async () => {
   const handler = jest.fn()
 
   manager.smoldotLogLevel = 1
-  await manager.initSmoldot()
+  manager.initSmoldot()
   await manager.addChain(JSON.stringify(westend), doNothing)
   manager.on("stateChanged", handler)
   manager.addApp(port)
@@ -183,7 +183,7 @@ test("Tries to connect to a parachain with unknown Relay Chain", async () => {
   expect(port.postMessage).toHaveBeenCalledWith(errorMsg)
   expect(port.disconnect).toHaveBeenCalled()
 
-  manager.shutdown()
+  await manager.shutdown()
 })
 
 describe("Unit tests", () => {
@@ -193,7 +193,7 @@ describe("Unit tests", () => {
   beforeAll(async () => {
     manager.smoldotLogLevel = 1
     //setup connection manager with 2 networks
-    await manager.initSmoldot()
+    manager.initSmoldot()
     await manager.addChain(JSON.stringify(westend), doNothing)
     await manager.addChain(JSON.stringify(kusama), doNothing)
     manager.on("stateChanged", handler)
@@ -205,8 +205,8 @@ describe("Unit tests", () => {
     connectApp(manager, 14, "test-app-4", "kusama")
   })
 
-  afterAll(() => {
-    manager.shutdown()
+  afterAll(async () => {
+    await manager.shutdown()
   })
 
   test("Get registered apps", () => {
@@ -259,18 +259,18 @@ describe("Unit tests", () => {
 describe("When the manager is shutdown", () => {
   const manager = new ConnectionManager()
 
-  beforeEach(async () => {
+  beforeEach(() => {
     manager.smoldotLogLevel = 1
-    await manager.initSmoldot()
+    manager.initSmoldot()
   })
 
-  test("adding an app after the manager is shutdown throws an error", () => {
+  test("adding an app after the manager is shutdown throws an error", async () => {
     const port = new MockPort("test-app-5::westend")
     port.setTabId(15)
-    expect(() => {
-      manager.shutdown()
+    await expect(async () => {
+      await manager.shutdown()
       manager.addApp(port)
-    }).toThrowError("Smoldot client does not exist.")
+    }).rejects.toThrowError("Smoldot client does not exist.")
   })
 })
 
@@ -292,7 +292,7 @@ describe("Check storage and send notification when adding an app", () => {
 
   beforeAll(async () => {
     manager.smoldotLogLevel = 1
-    await manager.initSmoldot()
+    manager.initSmoldot()
     await manager.addChain(JSON.stringify(westend), doNothing)
     await manager.addChain(JSON.stringify(kusama), doNothing)
     manager.on("stateChanged", handler)
@@ -301,17 +301,16 @@ describe("Check storage and send notification when adding an app", () => {
     await waitForMessageToBePosted()
   })
 
-  afterAll(() => {
-    manager.shutdown()
+  afterAll(async () => {
+    await manager.shutdown()
   })
 
-  test("Checks storage for notifications preferences", async () => {
+  test("Checks storage for notifications preferences", () => {
     port.triggerMessage({ type: "spec", payload: westendPayload })
-    await waitForMessageToBePosted()
     expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1)
   })
 
-  test("Sends a notification", async () => {
+  test("Sends a notification", () => {
     port.triggerMessage({ type: "spec", payload: westendPayload })
     const notificationData = {
       message: "App test-app-7 connected to westend.",
@@ -320,7 +319,6 @@ describe("Check storage and send notification when adding an app", () => {
       type: "basic",
     }
 
-    await waitForMessageToBePosted()
     expect(chrome.notifications.create).toHaveBeenCalledTimes(1)
     expect(chrome.notifications.create).toHaveBeenCalledWith(
       "test-app-7::westend",

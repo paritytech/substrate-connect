@@ -3,7 +3,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as smoldot from "@substrate/smoldot-light"
+import {
+  Client,
+  start,
+  healthChecker as smHealthChecker,
+} from "@substrate/smoldot-light"
 import { JsonRpcCallback, SmoldotHealth } from "@substrate/smoldot-light"
 import { ExposedAppInfo, App, ConnectionManagerInterface } from "./types"
 import EventEmitter from "eventemitter3"
@@ -27,7 +31,7 @@ export class ConnectionManager
   implements ConnectionManagerInterface
 {
   readonly #apps: App[] = []
-  #client: smoldot.Client | undefined = undefined
+  #client: Client | undefined = undefined
   #networks: Network[] = []
   smoldotLogLevel = 3
 
@@ -131,7 +135,7 @@ export class ConnectionManager
     const state = "connected"
     const pendingRequests: string[] = []
 
-    const healthChecker = (smoldot as any).healthChecker()
+    const healthChecker = smHealthChecker()
     const app: App = {
       appName,
       chainName,
@@ -206,17 +210,17 @@ export class ConnectionManager
   }
 
   /** shutdown shuts down the connected smoldot client. */
-  shutdown(): void {
-    this.#client?.terminate()
+  async shutdown(): Promise<void> {
+    await this.#client?.terminate()
     this.#client = undefined
   }
 
   /**
    * initSmoldot initializes the smoldot client.
    */
-  async initSmoldot(): Promise<void> {
+  initSmoldot(): void {
     try {
-      this.#client = await (smoldot as any).start({
+      this.#client = start({
         forbidWs: false,
         maxLogLevel: this.smoldotLogLevel,
       })
