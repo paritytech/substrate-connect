@@ -5,6 +5,8 @@ import { ApiPromise } from "@polkadot/api"
 
 import { ApiContext } from "../../utils/contexts"
 
-export default function useApi(): ApiPromise {
-  return useContext(ApiContext)
+const useApi = (): ApiPromise => {
+  return useContext<ApiPromise>(ApiContext)
 }
+
+export default useApi

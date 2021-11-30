@@ -39,6 +39,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     "&:hover": {
       color: theme.palette.getContrastText(theme.palette.secondary.dark),
     },
+    display: "block",
+    margin: "10px auto",
   },
   transferInfoMessage: {
     overflowWrap: "break-word",

@@ -1,7 +1,14 @@
-import React, { ChangeEvent, MouseEvent, SetStateAction, Dispatch } from "react"
+import React, {
+  useState,
+  ChangeEvent,
+  MouseEvent,
+  SetStateAction,
+  Dispatch,
+} from "react"
 import { Button, Grid, TextField, Box, InputAdornment } from "@material-ui/core"
 import { useApi } from "../hooks"
 import BN from "bn.js"
+import { ApiPromise } from "@polkadot/api"
 
 interface Props {
   total: BN
@@ -16,8 +23,8 @@ const InputFunds: React.FunctionComponent<Props> = ({
   currency,
   hidePercentages = false,
 }: Props) => {
-  const api = useApi()
-  const [showValue, setShowValue] = React.useState<string>("")
+  const api = useApi() as ApiPromise
+  const [showValue, setShowValue] = useState<string>("")
 
   const handleChange = (e: ChangeEvent | MouseEvent, fromButtons = false) => {
     if ((e.currentTarget as HTMLButtonElement).value?.length > 6) return
@@ -43,7 +50,7 @@ const InputFunds: React.FunctionComponent<Props> = ({
   }
 
   // @TODO focus/blur TextField and %Buttons at the same time in a React way
-  const [focus, setFocus] = React.useState<boolean>(false)
+  const [focus, setFocus] = useState<boolean>(false)
   const handleFocus = () => {
     setFocus(!focus)
   }
@@ -57,13 +64,14 @@ const InputFunds: React.FunctionComponent<Props> = ({
           label="Amount"
           fullWidth
           type="number"
+          placeholder="0"
           variant="outlined"
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleFocus}
           InputProps={{
             fullWidth: true,
-            endAdornment: (
+            startAdornment: (
               <InputAdornment position="start">{currency}</InputAdornment>
             ),
           }}
