@@ -8,7 +8,6 @@ import React, {
 import { Button, Grid, TextField, Box, InputAdornment } from "@material-ui/core"
 import { useApi } from "../hooks"
 import BN from "bn.js"
-import { ApiPromise } from "@polkadot/api"
 
 interface Props {
   total: BN
@@ -23,7 +22,7 @@ const InputFunds: React.FunctionComponent<Props> = ({
   currency,
   hidePercentages = false,
 }: Props) => {
-  const api = useApi() as ApiPromise
+  const api = useApi()
   const [showValue, setShowValue] = useState<string>("")
 
   const handleChange = (e: ChangeEvent | MouseEvent, fromButtons = false) => {
