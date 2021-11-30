@@ -20,6 +20,7 @@ window.onload = () => {
         SupportedChains.westend,
         JSON.stringify(westmint),
       )
+      await provider.connect()
       const api = await ApiPromise.create({ provider })
 
       const [chain, nodeName, nodeVersion, properties] = await Promise.all([

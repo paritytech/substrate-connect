@@ -13,6 +13,7 @@ window.onload = () => {
           "Multiple Network Demo",
           SupportedChains.westend,
         )
+        await provider.connect()
         const westend = await ApiPromise.create({ provider })
         const westendUI = document.getElementById("westend")
         const westendHead = await westend.rpc.chain.getHeader()
@@ -29,6 +30,7 @@ window.onload = () => {
           "Multiple Network Demo",
           SupportedChains.kusama,
         )
+        await provider.connect()
         const kusama = await ApiPromise.create({ provider })
         const kusamaUI = document.getElementById("kusama")
         const kusamaHead = await kusama.rpc.chain.getHeader()
@@ -45,6 +47,7 @@ window.onload = () => {
           "Multiple Network Demo",
           SupportedChains.polkadot,
         )
+        await provider.connect()
         const polkadot = await ApiPromise.create({ provider })
         const polkadotUI = document.getElementById("polkadot")
         const polkadotHead = await polkadot.rpc.chain.getHeader()
@@ -61,6 +64,7 @@ window.onload = () => {
           "Multiple Network Demo",
           SupportedChains.rococo,
         )
+        await provider.connect()
         const rococo = await ApiPromise.create({ provider })
         const rococoUI = document.getElementById("rococo")
         const rococoHead = await rococo.rpc.chain.getHeader()
