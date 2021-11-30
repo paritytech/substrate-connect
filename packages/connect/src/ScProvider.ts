@@ -95,7 +95,10 @@ export class ScProvider implements ProviderInterface {
       isExtension,
       chainSpec,
       parachainSpec,
-    ).then((provider) => (this.#provider = provider))
+    ).then(async (provider) => {
+      await provider.connect()
+      return (this.#provider = provider)
+    })
   }
 
   /**
