@@ -57,6 +57,7 @@ export class ScProvider implements ProviderInterface {
    * @param displayName - a display name that will be used from the dev-tools of the Extension (if installed)
    * @param knownChain - the name of a supported chain ({@link SupportedChains})
    * @param parachainSpec - optional param of the parachain chainSpecs to connect to
+   * @param autoConnect - optional param that defaults to True,
    *
    * @remarks
    *
@@ -67,6 +68,7 @@ export class ScProvider implements ProviderInterface {
     displayName: string,
     knownChain: SupportedChains,
     parachainSpec?: string,
+    autoConnect?: boolean,
   )
   /**
    * @param displayName - a display name that will be used from the dev-tools of the Extension (if installed)
@@ -82,11 +84,13 @@ export class ScProvider implements ProviderInterface {
     displayName: string,
     chainSpec: string,
     parachainSpec?: string,
+    autoConnect?: boolean,
   )
   public constructor(
     displayName: string,
     chainSpec: string,
     parachainSpec?: string,
+    autoConnect: boolean = true,
   ) {
     const isExtension = !!document.getElementById("substrateExtension")
 
@@ -95,10 +99,9 @@ export class ScProvider implements ProviderInterface {
       isExtension,
       chainSpec,
       parachainSpec,
-    ).then(async (provider) => {
-      await provider.connect()
-      return (this.#provider = provider)
-    })
+    ).then((provider) => (this.#provider = provider))
+
+    if (autoConnect) this.#providerP.then((provider) => provider.connect())
   }
 
   /**
