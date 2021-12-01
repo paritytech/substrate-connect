@@ -220,7 +220,7 @@ export class ExtensionProvider implements ProviderInterface {
         }
       }
     } catch (error) {
-      handler.callback(error, undefined)
+      handler.callback(<Error>error, undefined)
     }
 
     delete this.#handlers[response.id]
@@ -249,7 +249,7 @@ export class ExtensionProvider implements ProviderInterface {
 
       handler.callback(null, result)
     } catch (error) {
-      handler.callback(error, undefined)
+      handler.callback(<Error>error, undefined)
     }
   }
 
@@ -399,17 +399,18 @@ export class ExtensionProvider implements ProviderInterface {
    * @param params - Encoded paramaters as applicable for the method
    * @param subscription - Subscription details (internally used by `subscribe`)
    */
-  public async send(
+  public async send<T = any>(
     method: string,
-    params: any[],
+    params: unknown[],
+    isCacheable?: boolean,
     subscription?: SubscriptionHandler,
-  ): Promise<any> {
+  ): Promise<T> {
     return new Promise((resolve, reject): void => {
       const json = this.#coder.encodeJson(method, params)
       const id = this.#coder.getId()
 
       const callback = (error?: Error | null, result?: unknown): void => {
-        error ? reject(error) : resolve(result)
+        error ? reject(error) : resolve(<T>result)
       }
 
       l.debug(() => ["calling", method, json])
@@ -460,14 +461,13 @@ export class ExtensionProvider implements ProviderInterface {
     type: string,
     // the "method" property of the JSON request to register the subscription
     method: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: any[],
     callback: ProviderInterfaceCallback,
   ): Promise<number | string> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return (await this.send(method, params, { callback, type })) as Promise<
-      number | string
-    >
+    return (await this.send(method, params, false, {
+      callback,
+      type,
+    })) as unknown as Promise<number | string>
   }
 
   /**
@@ -493,7 +493,7 @@ export class ExtensionProvider implements ProviderInterface {
 
     delete this.#subscriptions[subscription]
 
-    return (await this.send(method, [id])) as Promise<boolean>
+    return (await this.send(method, [id])) as unknown as Promise<boolean>
   }
 
   private emit(type: ProviderInterfaceEmitted, ...args: unknown[]): void {

@@ -358,7 +358,8 @@ export class SmoldotProvider implements ProviderInterface {
   public async send(
     method: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    params: any[],
+    params: unknown[],
+    isCacheable?: boolean,
     subscription?: SubscriptionHandler,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
@@ -416,7 +417,7 @@ export class SmoldotProvider implements ProviderInterface {
     callback: ProviderInterfaceCallback,
   ): Promise<number | string> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return await this.send(method, params, { callback, type })
+    return await this.send(method, params, false, { callback, type })
   }
 
   /**
