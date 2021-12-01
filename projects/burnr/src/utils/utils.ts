@@ -128,7 +128,7 @@ export const validateLocalstorage = (): void => {
       return
     }
 
-    if (!expectedValues[key].includes(localStorage[key])) {
+    if (!expectedValues[key].includes(localStorage[key] as string)) {
       localStorage.removeItem(key)
     }
   })

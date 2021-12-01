@@ -442,7 +442,7 @@ export class SmoldotProvider implements ProviderInterface {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private emit(type: ProviderInterfaceEmitted, ...args: any[]): void {
+  private emit(type: ProviderInterfaceEmitted, ...args: unknown[]): void {
     this.#eventemitter.emit(type, ...args)
   }
 }

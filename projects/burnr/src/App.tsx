@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { SetStateAction, useEffect, useState } from "react"
 import { BrowserRouter } from "react-router-dom" // Pages
 import { makeStyles } from "@material-ui/core/styles"
 import { ApiContext, AccountContext } from "./utils/contexts"
@@ -62,7 +62,11 @@ const App: React.FunctionComponent<Props> = ({ className = "" }: Props) => {
           setLocalStorageAccount(JSON.stringify(userTmp))
           setCurrentAccount(userTmp)
         } else {
-          setCurrentAccount(JSON.parse(localStorageAccount))
+          setCurrentAccount(
+            JSON.parse(
+              localStorageAccount,
+            ) as SetStateAction<LocalStorageAccountCtx>,
+          )
         }
         setLoader(false)
       }

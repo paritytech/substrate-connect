@@ -359,7 +359,7 @@ export class ConnectionManager
       .then(() => {
         this.#initHealthChecker(app, !!app.parachain)
       })
-      .catch((e) => {
+      .catch((e: Error) => {
         this.#handleError(app, e)
       })
   }

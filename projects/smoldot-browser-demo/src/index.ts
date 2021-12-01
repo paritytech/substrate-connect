@@ -70,13 +70,15 @@ window.onload = () => {
 
       await waitForChainToSync()
       ui.log(`${emojis.newspaper} Subscribing to new block headers`)
-      await api.rpc.chain.subscribeNewHeads((lastHeader) => {
-        ui.log(
-          `${emojis.brick} New block #${lastHeader.number} has hash ${lastHeader.hash}`,
-        )
-      })
+      await api.rpc.chain.subscribeNewHeads(
+        (lastHeader: { number: any; hash: any }) => {
+          ui.log(
+            `${emojis.brick} New block #${lastHeader.number} has hash ${lastHeader.hash}`,
+          )
+        },
+      )
     } catch (error) {
-      ui.error(error)
+      ui.error(<Error>error)
     }
   })()
 }
