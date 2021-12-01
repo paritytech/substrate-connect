@@ -35,7 +35,7 @@
   "dependencies": {
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
-    "@polkadot/api": "^6.3.1",
+    "@polkadot/api": "^6.10.3",
     "@substrate/connect": "^0.4.7",
     "babel-loader": "^8.2.2",
     "crypto-browserify": "^3.12.0",
