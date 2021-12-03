@@ -49,6 +49,7 @@ describe("Disconnect and incorrect cases", () => {
     await waitForMessageToBePosted()
 
     const expectedMessage: ExtensionMessageData = {
+      uniqueId: 1,
       origin: "content-script",
       disconnect: true,
     }
@@ -183,6 +184,7 @@ describe("Connection and forward cases", () => {
     expect(handler).toHaveBeenCalled()
     const forwarded = handler.mock.calls[0][0] as ExtensionMessage
     expect(forwarded.data).toEqual({
+      uniqueId: 1,
       origin: "content-script",
       message: message,
     })
@@ -212,6 +214,7 @@ describe("Connection and forward cases", () => {
     expect(handler).toHaveBeenCalled()
     const forwarded = handler.mock.calls[0][0] as ExtensionMessage
     expect(forwarded.data).toEqual({
+      uniqueId: undefined,
       origin: "content-script",
       message: errorMessage,
     })

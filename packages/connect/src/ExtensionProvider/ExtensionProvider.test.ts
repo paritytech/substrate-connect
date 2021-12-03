@@ -74,6 +74,7 @@ test("it routes incoming messages to the correct Provider", async () => {
   ).id
 
   extension.send({
+    uniqueId: 2,
     origin: "content-script" as const,
     message: {
       type: "rpc" as const,
@@ -238,6 +239,7 @@ test("disconnects and emits disconnected when it receives a disconnect message",
   ep.on("disconnected", emitted)
   await waitForMessageToBePosted()
   extension.send({
+    uniqueId: 1,
     origin: "content-script",
     disconnect: true,
   })
@@ -251,6 +253,7 @@ test("emits error when it receives an error message", async () => {
   await ep.connect()
   await waitForMessageToBePosted()
   const errorMessage: ExtensionMessageData = {
+    uniqueId: 1,
     origin: "content-script",
     message: {
       type: "error",
