@@ -1,14 +1,19 @@
 import {
   HealthChecker,
-  Smoldot,
   AddChainOptions,
   Chain,
   Client,
   JsonRpcCallback,
+  ClientOptions,
 } from "@substrate/smoldot-light"
 import { JsonRpcObject } from "@polkadot/rpc-provider/types"
 import { jest } from "@jest/globals"
 import asap from "asap"
+
+interface Smoldot {
+  start(options?: ClientOptions): Client
+  healthChecker(): HealthChecker
+}
 
 /**
  * SystemHealth is the type of the object in the `result` field of the JSON
@@ -225,7 +230,7 @@ export const mockSmoldot = (
   return {
     start: (): Client => {
       return {
-        terminate: doNothing,
+        terminate: () => Promise.resolve(),
         addChain: (options: { chainSpec: string }): Promise<Chain> =>
           createAddChain({
             chainSpec: options.chainSpec,
@@ -279,7 +284,7 @@ export const smoldotSpy = (
   return {
     start: (): Client => {
       return {
-        terminate: doNothing,
+        terminate: () => Promise.resolve(),
         addChain: (options: AddChainOptions): Promise<Chain> => {
           const processRequest = createRequestProcessor(
             options,

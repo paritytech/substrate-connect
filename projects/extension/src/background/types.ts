@@ -1,4 +1,4 @@
-import * as smoldot from "@substrate/smoldot-light"
+import type { JsonRpcCallback } from "@substrate/smoldot-light"
 import EventEmitter from "eventemitter3"
 import StrictEventEmitter from "strict-event-emitter-types"
 import { HealthChecker, Chain, SmoldotHealth } from "@substrate/smoldot-light"
@@ -50,7 +50,7 @@ export interface ConnectionManagerInterface {
   unregisterApp: (app: App) => void
   addChain: (
     spec: string,
-    jsonRpcCallback?: smoldot.JsonRpcCallback,
+    jsonRpcCallback?: JsonRpcCallback,
     tabId?: number,
   ) => Promise<Network>
 }

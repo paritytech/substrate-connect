@@ -12,6 +12,11 @@ import * as smoldot from "@substrate/smoldot-light"
 import { HealthCheckError } from "../errors.js"
 import { isUndefined } from "../utils/index.js"
 
+interface Smoldot {
+  start(options?: smoldot.ClientOptions): smoldot.Client
+  healthChecker(): smoldot.HealthChecker
+}
+
 const l = logger("smoldot-provider")
 
 interface RpcStateAwaiting {
@@ -97,7 +102,7 @@ export class SmoldotProvider implements ProviderInterface {
   #parachainSpecs: string | undefined = undefined
   // reference to the smoldot module so we can defer loading the wasm client
   // until connect is called
-  #smoldot: smoldot.Smoldot
+  #smoldot: Smoldot
 
   /*
    * How frequently to see if we have any peers
@@ -309,7 +314,7 @@ export class SmoldotProvider implements ProviderInterface {
     try {
       if (this.#client) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        this.#client.terminate()
+        await this.#client.terminate()
       }
     } catch (error: unknown) {
       this.emit("error", error)

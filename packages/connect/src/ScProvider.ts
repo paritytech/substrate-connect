@@ -176,7 +176,7 @@ export class ScProvider implements ProviderInterface {
    */
   public async disconnect(): Promise<void> {
     const provider = await this.#providerP
-    return provider.connect()
+    return provider.disconnect()
   }
 
   /**
