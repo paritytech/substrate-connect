@@ -2,15 +2,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import "regenerator-runtime/runtime"
-import { Detector } from "@substrate/connect"
+import { ScProvider, SupportedChains } from "@substrate/connect"
+import { ApiPromise } from "@polkadot/api"
 
 window.onload = () => {
   void (async () => {
     try {
-      const detect = new Detector("Multiple Network Demo")
-
       const westend = async () => {
-        const westend = await detect.connect("westend")
+        const provider = new ScProvider(
+          "Multiple Network Demo",
+          SupportedChains.westend,
+        )
+        const westend = await ApiPromise.create({ provider })
         const westendUI = document.getElementById("westend")
         const westendHead = await westend.rpc.chain.getHeader()
         if (westendUI) {
@@ -22,7 +25,11 @@ window.onload = () => {
       }
 
       const kusama = async () => {
-        const kusama = await detect.connect("kusama")
+        const provider = new ScProvider(
+          "Multiple Network Demo",
+          SupportedChains.kusama,
+        )
+        const kusama = await ApiPromise.create({ provider })
         const kusamaUI = document.getElementById("kusama")
         const kusamaHead = await kusama.rpc.chain.getHeader()
         if (kusamaUI) {
@@ -34,7 +41,11 @@ window.onload = () => {
       }
 
       const polkadot = async () => {
-        const polkadot = await detect.connect("polkadot")
+        const provider = new ScProvider(
+          "Multiple Network Demo",
+          SupportedChains.polkadot,
+        )
+        const polkadot = await ApiPromise.create({ provider })
         const polkadotUI = document.getElementById("polkadot")
         const polkadotHead = await polkadot.rpc.chain.getHeader()
         if (polkadotUI) {
@@ -46,7 +57,11 @@ window.onload = () => {
       }
 
       const rococo = async () => {
-        const rococo = await detect.connect("rococo")
+        const provider = new ScProvider(
+          "Multiple Network Demo",
+          SupportedChains.rococo,
+        )
+        const rococo = await ApiPromise.create({ provider })
         const rococoUI = document.getElementById("rococo")
         const rococoHead = await rococo.rpc.chain.getHeader()
         if (rococoUI) {

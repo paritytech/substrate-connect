@@ -6,7 +6,7 @@
 import { useEffect, useState } from "react"
 import { ApiPromise } from "@polkadot/api"
 import { logger } from "@polkadot/util"
-import { Detector } from "@substrate/connect"
+import { ScProvider } from "@substrate/connect"
 import { ALL_PROVIDERS, BURNR_WALLET } from "../../utils/constants"
 import { useIsMountedRef } from ".."
 
@@ -21,8 +21,8 @@ export default function useApiCreate(): ApiPromise {
   useEffect((): void => {
     const choseSmoldot = async (endpoint: string): Promise<void> => {
       try {
-        const detect = new Detector("burnr wallet")
-        const api = await detect.connect(endpoint)
+        const provider = new ScProvider("burnr wallet", endpoint)
+        const api = await ApiPromise.create({ provider })
         l.log(`Burnr is now connected to ${endpoint}`)
         mountedRef.current && setApi(api)
       } catch (err) {

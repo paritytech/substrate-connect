@@ -32,11 +32,12 @@ const InputAddress: React.FunctionComponent<Props> = ({ setAddress }) => {
       <Box marginY={1}>
         <FormControl required fullWidth>
           <TextField
-            label="Recepient Address"
+            label="Receiver"
             onChange={handleChangeButton}
             onFocus={handleChangeButton}
             onBlur={handleChangeButton}
             value={value}
+            placeholder="Westend Address"
             variant="outlined"
             fullWidth
             InputProps={{

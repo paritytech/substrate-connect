@@ -39,10 +39,42 @@ const useStyles = makeStyles((theme: Theme) => ({
     "&:hover": {
       color: theme.palette.getContrastText(theme.palette.secondary.dark),
     },
+    display: "block",
+    margin: "10px auto",
   },
   transferInfoMessage: {
     overflowWrap: "break-word",
     padding: "30px",
+  },
+  infoRow: {
+    margin: "30px 0",
+  },
+  feePriceAndBalance: {
+    height: "55px",
+    display: "flex",
+    margin: "0 auto",
+    justifyContent: "center",
+    alignItems: "baseline",
+  },
+  title: {
+    paddingRight: "30px",
+    opacity: 1,
+  },
+  priceBalance: {
+    backgroundColor: "#E7FAEC",
+  },
+  priceFee: {
+    backgroundColor: "#FFE0DC",
+  },
+  price: {
+    padding: "0 10px",
+    borderRadius: "2px",
+    color: "#1E1E1E",
+    fontWeight: 90,
+    opacity: 1,
+  },
+  opacityNone: {
+    opacity: 0,
   },
 }))
 
@@ -52,6 +84,40 @@ const columns: Column[] = [
   { id: "value", label: "Value", minWidth: 170, align: "right" },
   { id: "status", label: "Status", width: 40, align: "right" },
 ]
+
+interface StructureProps {
+  name: string
+  rest: string
+  fee: Balance | undefined
+}
+
+const Structure = ({ name, rest, fee }: StructureProps) => {
+  const {
+    feePriceAndBalance,
+    opacityNone,
+    title,
+    price,
+    priceBalance,
+    priceFee,
+  } = useStyles()
+
+  return (
+    <div className={feePriceAndBalance}>
+      <div className={!fee ? opacityNone : title}>{name}</div>
+      <div
+        className={
+          !fee
+            ? opacityNone
+            : name === "Fees"
+            ? `${price} ${priceFee}`
+            : `${price} ${priceBalance}`
+        }
+      >
+        <Typography variant="subtitle1">{rest}</Typography>
+      </div>
+    </div>
+  )
+}
 
 const SendFundsForm: FunctionComponent = () => {
   const classes = useStyles()
@@ -188,18 +254,23 @@ const SendFundsForm: FunctionComponent = () => {
         currency={unit}
         setAmount={setAmount}
       />
-      <Grid item xs={12}>
-        <Typography variant="subtitle1">
-          {fee
-            ? `Balance after transaction: ${prettyBalance(
-                new BN(maxAmountFull).sub(new BN(amount)).sub(fee),
-              )} ${unit}`
-            : ""}
-        </Typography>
-        <Typography variant="subtitle1">
-          {fee ? `Fees: ${prettyBalance(fee)} ${unit}` : ""}
-        </Typography>
-        <Typography variant="subtitle1"></Typography>
+      <Grid item xs={12} className={classes.infoRow}>
+        <Structure
+          fee={fee}
+          name="Fees"
+          rest={fee ? `${prettyBalance(fee)} ${unit}` : ""}
+        />
+        <Structure
+          fee={fee}
+          name="Balance after transaction"
+          rest={
+            fee
+              ? `${prettyBalance(
+                  new BN(maxAmountFull).sub(new BN(amount)).sub(fee),
+                )} ${unit}`
+              : ""
+          }
+        />
       </Grid>
       <Button
         type="submit"

@@ -32,7 +32,7 @@ export interface RequestRpcSend {
 
 const init = async () => {
   try {
-    await manager.initSmoldot()
+    manager.initSmoldot()
     for (const [key, value] of relayChains.entries()) {
       const rpcCallback = (rpc: string) => {
         console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)

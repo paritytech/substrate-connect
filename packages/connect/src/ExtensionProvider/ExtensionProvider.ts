@@ -80,9 +80,9 @@ export class ExtensionProvider implements ProviderInterface {
 
   #appName: string
   #chainName: string
-  #chainId: number
   #chainSpecs: string
   #parachainSpecs: string
+  #chainId: number
 
   /*
    * How frequently to see if we have any peers
@@ -90,12 +90,12 @@ export class ExtensionProvider implements ProviderInterface {
   healthPingerInterval = CONNECTION_STATE_PINGER_INTERVAL
 
   public constructor(
-    appName: string,
+    displayName: string,
     uniqueExternalId: number,
     relayChain: string,
     parachain?: string,
   ) {
-    this.#appName = appName
+    this.#appName = displayName
 
     /**
      * TODO: we should remove the chainName from the payload of the messages,

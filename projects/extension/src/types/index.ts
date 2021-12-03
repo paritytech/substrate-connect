@@ -1,4 +1,4 @@
-import * as smoldot from "@substrate/smoldot-light"
+import type { Chain } from "@substrate/smoldot-light"
 
 export type NetworkTypes = "kusama" | "polkadot" | "westend" | "rococo"
 
@@ -24,7 +24,7 @@ export interface NetworkMainInfo {
   status: NetworkStatus
 }
 export interface Network extends NetworkMainInfo {
-  chain: smoldot.Chain
+  chain: Chain
   tabId: number
   parachains?: Parachain[]
 }

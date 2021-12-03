@@ -122,7 +122,7 @@ test("connected and sends correct spec message", async () => {
 
 test("connected multiple chains and sends correct spec message", async () => {
   const ep1 = new ExtensionProvider("test", 1, westendSpec)
-  const ep2 = new ExtensionProvider("test2", 2, rococoSpec)
+  const ep2 = new ExtensionProvider("test2", 1, rococoSpec)
   const emitted1 = jest.fn()
   const emitted2 = jest.fn()
   ep1.on("connected", emitted1)
@@ -146,7 +146,7 @@ test("connected multiple chains and sends correct spec message", async () => {
   const expectedMessage2: ProviderMessageData = {
     appName: "test2",
     chainName: "Rococo",
-    chainId: 2,
+    chainId: 1,
     action: "forward",
     origin: "extension-provider",
     message: {
