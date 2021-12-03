@@ -135,7 +135,11 @@ export class Detector {
     parachainSpec?: string,
     options?: ApiOptions,
   ): Promise<ApiPromise> {
-    const id = this.#nextProviderId++
+    const rand = (
+      this.#nextProviderId++ +
+      Math.random() * 1000000000
+    ).toString()
+    const id = parseInt(rand, 0)
     const spec = SupportedChains[chain as SupportedChains] ?? chain
 
     const [provider, { ApiPromise }] = await Promise.all([

@@ -55,12 +55,20 @@ export class ExtensionMessageRouter {
     // forward any messages: extension -> page
     port.onMessage.addListener((data): void => {
       debug(`RECEIVED MESSAGE FROM ${chainName} PORT`, data)
-      extension.send({ message: data, origin: CONTENT_SCRIPT_ORIGIN })
+      extension.send({
+        uniqueId: chainId,
+        message: data,
+        origin: CONTENT_SCRIPT_ORIGIN,
+      })
     })
 
     // tell the page when the port disconnects
     port.onDisconnect.addListener(() => {
-      extension.send({ origin: "content-script", disconnect: true })
+      extension.send({
+        uniqueId: chainId,
+        origin: "content-script",
+        disconnect: true,
+      })
       delete this.#ports[chainId]
     })
 

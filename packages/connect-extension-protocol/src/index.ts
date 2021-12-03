@@ -45,6 +45,8 @@ export interface ExtensionMessage {
   data: ExtensionMessageData
 }
 export interface ExtensionMessageData {
+  /** uniqueId of message */
+  uniqueId: number
   /** origin is used to determine which side sent the message **/
   origin: "content-script"
   /** message is telling the `ExtensionProvider` the port has been closed **/

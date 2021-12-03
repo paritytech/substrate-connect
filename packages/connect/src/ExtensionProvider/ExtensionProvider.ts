@@ -163,6 +163,8 @@ export class ExtensionProvider implements ProviderInterface {
   })
 
   #handleMessage = (data: ExtensionMessageData): void => {
+    if (data.uniqueId !== this.#chainId) return
+
     if (data.disconnect && data.disconnect === true) {
       this.#isConnected = false
       this.emit("disconnected")
