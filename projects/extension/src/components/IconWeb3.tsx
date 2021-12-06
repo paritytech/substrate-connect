@@ -9,6 +9,7 @@ interface Props {
 const useStyles = makeStyles<Theme, Props>({
   iconRoot: {
     display: "inline-block",
+    width: "1.8em",
     fontFamily: "Web3-Regular !important",
     letterSpacing: "0 !important",
     textAlign: "center",

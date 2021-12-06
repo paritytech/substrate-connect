@@ -79,10 +79,10 @@ const Tab: FunctionComponent<TabProps> = ({
 
   return (
     <Box
-      pt={current ? 2 : 1}
-      pb={1}
+      pt={current ? 1.25 : 0.5}
+      pb={current ? 1.25 : 0.5}
       pr={1}
-      pl={0.8}
+      pl={1}
       style={!tab ? { height: "10px" } : {}}
     >
       <Box display="flex" alignItems="center" justifyContent="space-between">
