@@ -13,7 +13,7 @@ import Typography from "@material-ui/core/Typography"
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown"
 
 import { NetworkTabProps, App, OptionsNetworkTabHealthContent } from "../types"
-import { Grid } from "@material-ui/core"
+import { Box, Grid } from "@material-ui/core"
 
 export const emojis = {
   chain: "🔗",
@@ -27,9 +27,10 @@ export const emojis = {
   seedling: "🌱",
 }
 
-const Accordion = withStyles({
+const Accordion = withStyles((theme) => ({
   root: {
-    border: "1px solid rgba(0, 0, 0, .125)",
+    border: "1px solid",
+    borderColor: theme.palette.divider,
     boxShadow: "none",
     "&:not(:last-child)": {
       borderBottom: 0,
@@ -42,11 +43,10 @@ const Accordion = withStyles({
     },
   },
   expanded: {},
-})(MuiAccordion)
+}))(MuiAccordion)
 
 const AccordionSummary = withStyles({
   root: {
-    justifyContent: "space-between",
     minHeight: 48,
     "&$expanded": {
       minHeight: 48,
@@ -54,6 +54,7 @@ const AccordionSummary = withStyles({
   },
   content: {
     justifyContent: "space-between",
+    alignItems: "center",
     "&$expanded": {
       margin: "12px 0",
     },
@@ -64,6 +65,10 @@ const AccordionSummary = withStyles({
 const AccordionDetails = withStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
+    borderBottomLeftRadius: theme.spacing(),
+    borderBottomRightRadius: theme.spacing(),
+    backgroundColor: theme.palette.text.primary,
+    color: theme.palette.divider,
   },
 }))(MuiAccordionDetails)
 
@@ -71,46 +76,22 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: "100%",
-      marginBottom: theme.spacing(1),
+      maxWidth: 640,
+      marginBottom: theme.spacing(),
       display: "flex",
     },
-    onlineIcon: {
-      width: theme.spacing(3),
-      position: "relative",
-      top: theme.spacing(2),
+    onlineIconBox: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: 48,
+      height: 48,
     },
     accordion: {
       width: "100%",
-      border: "1px solid #ccc",
-      borderTopLeftRadius: theme.spacing(0.3),
-      borderTopRightRadius: theme.spacing(0.3),
-    },
-    summary: {
-      display: "flex",
-      alignItems: "center",
-      flexBasis: "66.66%",
-    },
-    icon: {
-      width: theme.spacing(3),
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(20),
-      lineHeight: "24px",
-      marginLeft: theme.spacing(0.5),
-      flexShrink: 0,
-    },
-    secondaryHeading: {
-      fontSize: theme.typography.pxToRem(15),
-      color: theme.palette.text.secondary,
-    },
-    content: {
-      backgroundColor: "#21262A",
-      color: "#fff",
-      borderBottomLeftRadius: theme.spacing(0.3),
-      borderBottomRightRadius: theme.spacing(0.3),
-    },
-    info: {
-      fontSize: theme.typography.pxToRem(15),
+      border: "1px solid",
+      borderColor: theme.palette.divider,
+      borderRadius: theme.spacing(),
     },
   }),
 )
@@ -122,12 +103,11 @@ interface NetworkContentProps {
 }
 
 const NetworkContent = ({ network, health, apps }: NetworkContentProps) => {
-  const classes = useStyles()
   const peers = health && health.peers
   const status = health && health.status
   const isSyncing = health && health.isSyncing
   return (
-    <div className={classes.info}>
+    <Typography variant="subtitle2" component="div">
       <Grid container>
         <Grid item xs={3}>
           {emojis.seedling} Light Client
@@ -171,7 +151,7 @@ const NetworkContent = ({ network, health, apps }: NetworkContentProps) => {
           ))}
         </Grid>
       </Grid>
-    </div>
+    </Typography>
   )
 }
 
@@ -185,10 +165,9 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
 
   return (
     <div className={classes.root}>
-      <div className={classes.onlineIcon}>
+      <div className={classes.onlineIconBox}>
         <StatusCircle
           size="medium"
-          borderColor="#16DB9A"
           color={
             health && health.status === "connected" ? "#16DB9A" : "transparent"
           }
@@ -201,23 +180,17 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
         onChange={() => setExpanded(!expanded)}
         expanded={expanded}
       >
-        <AccordionSummary
-          expandIcon={<ArrowDropDownIcon style={{ color: "#ABB8BF" }} />}
-        >
-          <div className={classes.summary}>
-            <div className={classes.icon}>
-              <IconWeb3 size={"20px"}>{name}</IconWeb3>
-            </div>
-            <Typography className={classes.heading}>{name}</Typography>
-          </div>
-          <div>
-            <Typography className={classes.secondaryHeading}>
-              Peer{health && health.peers === 1 ? "" : "s"}:{" "}
-              {(health && health.peers) ?? ".."}
-            </Typography>
-          </div>
+        <AccordionSummary expandIcon={<ArrowDropDownIcon color="secondary" />}>
+          <Box display="flex">
+            <IconWeb3 size={"20px"}>{name}</IconWeb3>
+            <Typography variant="h2">{name}</Typography>
+          </Box>
+          <Typography variant="body2">
+            Peer{health && health.peers === 1 ? "" : "s"}:{" "}
+            {(health && health.peers) ?? ".."}
+          </Typography>
         </AccordionSummary>
-        <AccordionDetails className={classes.content}>
+        <AccordionDetails>
           <NetworkContent health={health} apps={apps} network={name} />
         </AccordionDetails>
       </Accordion>

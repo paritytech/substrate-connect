@@ -150,7 +150,9 @@ const Options: React.FunctionComponent = () => {
   return (
     <ThemeProvider theme={appliedTheme}>
       <GlobalFonts />
-      <Logo />
+      <Box pb={7}>
+        <Logo />
+      </Box>
       <MenuTabs
         value={value}
         onChange={handleChange}

@@ -4,7 +4,6 @@ import { substrateGreen } from "./theme"
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginBottom: theme.spacing(7),
     fontWeight: 600,
     lineHeight: 1,
     "& .green": {

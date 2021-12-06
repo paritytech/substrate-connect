@@ -17,7 +17,6 @@ window.onload = () => {
         "Smoldot Browser Demo",
         SupportedChains.westend,
       )
-      await provider.connect()
       const api = await ApiPromise.create({ provider })
 
       // const api = await ApiPromise.create({ provider })

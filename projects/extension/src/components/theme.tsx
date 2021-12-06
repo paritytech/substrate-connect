@@ -53,9 +53,6 @@ const palette: PaletteOptions = {
 
 const light: ThemeOptions = {
   typography: {
-    allVariants: {
-      color: palette.text && palette.text.primary,
-    },
     fontFamily:
       'Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, Segoe UI, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Web3-Regular"',
     h1: {
@@ -64,10 +61,11 @@ const light: ThemeOptions = {
       lineHeight: "120%",
     },
     h2: {
-      fontWeight: 400,
-      fontSize: 22,
+      fontWeight: 500,
+      fontSize: 20,
       lineHeight: "120%",
-      letterSpacing: 0.25,
+      letterSpacing: -0.02,
+      textTransform: "capitalize",
     },
     h3: {
       fontWeight: 600,
@@ -88,9 +86,8 @@ const light: ThemeOptions = {
     },
     body2: {
       fontWeight: 400,
-      fontSize: 12,
+      fontSize: 11,
       lineHeight: "135%",
-      letterSpacing: 0.25,
     },
     button: {
       fontWeight: 500,
@@ -110,7 +107,7 @@ const light: ThemeOptions = {
       fontFamily:
         "SFMono-Regular, Consolas , Liberation Mono, Menlo, monospace",
       fontWeight: 400,
-      fontSize: 13,
+      fontSize: 12,
       lineHeight: "135%",
       letterSpacing: 0.1,
     },

@@ -94,8 +94,10 @@ export const InputButton = withStyles((theme: Theme) =>
 export const MenuButton = withStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: `${theme.spacing(2)}px ${theme.spacing(0.8)}px`,
-      borderRadius: 0,
+      marginTop: theme.spacing(),
+      marginBottom: theme.spacing(),
+      padding: theme.spacing(),
+      borderRadius: theme.spacing(),
       transition: `backgrund-color 0s !important`,
       ...theme.typography.body1,
       "&.danger": {

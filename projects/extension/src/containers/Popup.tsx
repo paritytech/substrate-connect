@@ -88,17 +88,12 @@ const Popup: FunctionComponent = () => {
 
   return (
     <ThemeProvider theme={appliedTheme}>
-      <Box width={"320px"} mb={0.1} pl={1.6} pr={0.8}>
+      <Box width={"320px"} pl={1.5} pr={1.5}>
         <GlobalFonts />
-        <Box pt={2} pb={1} pr={1} pl={0.8} style={{ height: "10px" }}>
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Logo />
-          </Box>
+        <Box pt={2} pb={1} pl={1} pr={1}>
+          <Logo />
         </Box>
+
         {activeTab && (
           <Tab
             manager={manager}
@@ -107,12 +102,17 @@ const Popup: FunctionComponent = () => {
             setActiveTab={setActiveTab}
           />
         )}
-        <Box marginY={1}>
-          {apps.map((t) => (
-            <Tab manager={manager} key={t.tabId} tab={t} />
-          ))}
-        </Box>
-        <Divider />
+
+        {apps.length > 0 && (
+          <Box marginY={1}>
+            {apps.map((t) => (
+              <>
+                <Tab manager={manager} key={t.tabId} tab={t} />
+                <Divider />
+              </>
+            ))}
+          </Box>
+        )}
         <MenuButton fullWidth onClick={goToOptions}>
           Options
         </MenuButton>
