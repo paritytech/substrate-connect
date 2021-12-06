@@ -29,8 +29,7 @@ export const emojis = {
 
 const Accordion = withStyles((theme) => ({
   root: {
-    border: "1px solid",
-    borderColor: theme.palette.divider,
+    border: `1px solid ${theme.palette.divider}`,
     boxShadow: "none",
     "&:not(:last-child)": {
       borderBottom: 0,
@@ -42,7 +41,6 @@ const Accordion = withStyles((theme) => ({
       margin: "auto",
     },
   },
-  expanded: {},
 }))(MuiAccordion)
 
 const AccordionSummary = withStyles({
@@ -89,8 +87,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     accordion: {
       width: "100%",
-      border: "1px solid",
-      borderColor: theme.palette.divider,
+      border: `1px solid ${theme.palette.divider}`,
       borderRadius: theme.spacing(),
     },
   }),
