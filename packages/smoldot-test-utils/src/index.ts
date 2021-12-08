@@ -260,6 +260,7 @@ export const createAddChain = (opts: {
 }): Promise<Chain> => {
   return Promise.resolve({
     sendJsonRpc: opts.jsonRpcCallback,
+    // eslint-disable-next-line @typescript-eslint/require-await
     databaseContent: async () => "",
     remove: doNothing,
   })
