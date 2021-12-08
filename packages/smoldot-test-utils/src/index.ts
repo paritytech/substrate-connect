@@ -260,6 +260,7 @@ export const createAddChain = (opts: {
 }): Promise<Chain> => {
   return Promise.resolve({
     sendJsonRpc: opts.jsonRpcCallback,
+    databaseContent: async () => "",
     remove: doNothing,
   })
 }
