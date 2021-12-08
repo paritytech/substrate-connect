@@ -19,7 +19,6 @@ window.onload = () => {
       )
       const api = await ApiPromise.create({ provider })
 
-      // const api = await ApiPromise.create({ provider })
       const header = await api.rpc.chain.getHeader()
       const chainName = await api.rpc.system.chain()
 
