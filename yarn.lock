@@ -3142,10 +3142,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@substrate/smoldot-light@0.5.6":
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.5.6.tgz#d7beca1c30e0a9e5b167037828163a21e863db0f"
-  integrity sha512-KDLCsjAshBXvFtJkuAb11HCZUisKYwmh/mD/UfYYzYBNkFwSlMCtHlXzQJ95gF9eS/TybJKqwNI6OEPn80sS3Q==
+"@substrate/smoldot-light@0.5.7":
+  version "0.5.7"
+  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.5.7.tgz#6095a23a65d8e8091eb5479e6283dbb5446239ea"
+  integrity sha512-ecv7c3kPIAZ/3JJ/CUCELJlZsvrNpuwMBpIl2becOSNGSPk0hBHQJNFGSnF641fT4i+ugEeOATiNvCeoycfylg==
   dependencies:
     buffer "^6.0.1"
     performance-now "^2.1.0"

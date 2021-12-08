@@ -221,7 +221,6 @@ export class ConnectionManager
   initSmoldot(): void {
     try {
       this.#client = start({
-        forbidWs: false,
         maxLogLevel: this.smoldotLogLevel,
       })
     } catch (err) {
