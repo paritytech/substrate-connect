@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { SetStateAction, useEffect, useState } from "react"
 import { createTheme, ThemeProvider } from "@material-ui/core"
 import Box from "@material-ui/core/Box"
 import Switch from "@material-ui/core/Switch"
@@ -82,7 +82,7 @@ const Options: React.FunctionComponent = () => {
 
   useEffect((): void => {
     chrome.storage.sync.get(["notifications"], (res) => {
-      setNotifications(res.notifications)
+      setNotifications(res.notifications as SetStateAction<boolean>)
     })
 
     chrome.runtime.getBackgroundPage((backgroundPage) => {

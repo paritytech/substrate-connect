@@ -89,7 +89,7 @@ window.onload = () => {
         })
       }
     } catch (error) {
-      ui.error(error)
+      ui.error(<Error>error)
     }
   })()
 }

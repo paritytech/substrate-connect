@@ -21,18 +21,18 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
-    "@typescript-eslint/eslint-plugin": "^4.27.0",
-    "@typescript-eslint/parser": "^4.27.0",
+    "@typescript-eslint/eslint-plugin": "^5.5.0",
+    "@typescript-eslint/parser": "^5.5.0",
     "concurrently": "^6.0.1",
-    "eslint": "^7.20.0",
+    "eslint": "^8.3.0",
     "jest": "^27.0.5",
     "ts-jest": "^27.0.3",
-    "typescript": "^4.3.2"
+    "typescript": "^4.5.2"
   },
   "dependencies": {
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
-    "@polkadot/api": "^6.3.1",
+    "@polkadot/api": "^6.10.3",
     "@substrate/connect": "^0.4.7",
     "babel-loader": "^8.2.2",
     "crypto-browserify": "^3.12.0",
