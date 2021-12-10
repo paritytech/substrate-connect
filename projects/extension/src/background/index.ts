@@ -41,10 +41,21 @@ const init = async () => {
         .addChain(value, rpcCallback)
         .catch((err) => l.error("Error", err))
     }
+    // Once the chains starts create the Database Content alarm
+    chrome.alarms.create("DatabaseContentAlarm", {
+      periodInMinutes: 10,
+    })
+    // run init call for getting latest update once all chains are connected
+    manager.runAlarm()
   } catch (e) {
     l.error(`Error creating smoldot: ${e}`)
   }
 }
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  // ensure that the alarm needed is the one set for databaseContent retrieval
+  if (alarm.name === "DatabaseContentAlarm") manager.runAlarm()
+})
 
 chrome.runtime.onInstalled.addListener(() => {
   init().catch(console.error)

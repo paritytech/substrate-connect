@@ -19,6 +19,8 @@ import {
   MessageToManager,
 } from "@substrate/connect-extension-protocol"
 
+import { relayChains } from "."
+
 const l = logger("Extension Connection Manager")
 
 /**
@@ -215,6 +217,18 @@ export class ConnectionManager
     this.#client = undefined
   }
 
+  runAlarm(): void {
+    for (const [key] of relayChains.entries()) {
+      const network = this.#networks.filter((n) => n.name === key)
+      network[0] &&
+        network[0].chain.databaseContent().then((db) => {
+          chrome.storage.local
+            .set({ [key]: db })
+            .catch((e: Error) => console.error(e))
+        })
+    }
+  }
+
   /**
    * initSmoldot initializes the smoldot client.
    */
@@ -226,6 +240,18 @@ export class ConnectionManager
     } catch (err) {
       l.error(`Error while initializing smoldot: ${err}`)
     }
+  }
+
+  getObjectFromLocalStorage = async (key: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      try {
+        chrome.storage.local.get(key, (value) => {
+          resolve(value[key] as string)
+        })
+      } catch (ex) {
+        reject(ex)
+      }
+    })
   }
 
   /**
@@ -252,11 +278,24 @@ export class ConnectionManager
       ? this.#networks.filter((n) => n.tabId === tabId)
       : this.#networks
 
-    const addedChain = await this.#client.addChain({
-      chainSpec,
-      jsonRpcCallback,
-      potentialRelayChains: potentialNetworks.map((r) => r.chain),
-    })
+    const databaseContent = await this.getObjectFromLocalStorage(
+      (name as string).toLowerCase(),
+    )
+
+    const options = databaseContent
+      ? {
+          chainSpec,
+          jsonRpcCallback,
+          databaseContent,
+          potentialRelayChains: potentialNetworks.map((r) => r.chain),
+        }
+      : {
+          chainSpec,
+          jsonRpcCallback,
+          potentialRelayChains: potentialNetworks.map((r) => r.chain),
+        }
+
+    const addedChain = await this.#client.addChain(options)
 
     // This covers cases of refreshing browser in order to avoid
     // pilling up on this.#networks, the ones that were created from same tab
