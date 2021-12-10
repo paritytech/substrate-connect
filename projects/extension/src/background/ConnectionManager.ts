@@ -247,7 +247,7 @@ export class ConnectionManager
   getObjectFromLocalStorage = (key: string): Promise<string | undefined> => {
     return new Promise((resolve, reject) => {
       try {
-        chrome.storage.local.get(key, (value) => {
+        chrome.storage.local.get([key], (value) => {
           resolve(value[key] as string)
         })
       } catch (ex) {
