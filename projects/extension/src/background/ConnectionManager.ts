@@ -7,6 +7,7 @@ import {
   Client,
   start,
   healthChecker as smHealthChecker,
+  AddChainOptions,
 } from "@substrate/smoldot-light"
 import { JsonRpcCallback, SmoldotHealth } from "@substrate/smoldot-light"
 import { ExposedAppInfo, App, ConnectionManagerInterface } from "./types"
@@ -218,15 +219,16 @@ export class ConnectionManager
   }
 
   runAlarm(): void {
-    for (const [key] of relayChains.entries()) {
-      const network = this.#networks.filter((n) => n.name === key)
-      network[0] &&
-        network[0].chain.databaseContent().then((db) => {
-          chrome.storage.local
-            .set({ [key]: db })
-            .catch((e: Error) => console.error(e))
-        })
-    }
+    this.#networks
+      .filter((n) => relayChains.has(n.name))
+      .forEach(async (network) => {
+        try {
+          const db = await network.chain.databaseContent()
+          await chrome.storage.local.set({ [network.name]: db })
+        } catch (e) {
+          console.error(e)
+        }
+      })
   }
 
   /**
@@ -242,7 +244,7 @@ export class ConnectionManager
     }
   }
 
-  getObjectFromLocalStorage = async (key: string): Promise<string> => {
+  getObjectFromLocalStorage = (key: string): Promise<string | undefined> => {
     return new Promise((resolve, reject) => {
       try {
         chrome.storage.local.get(key, (value) => {
@@ -282,18 +284,12 @@ export class ConnectionManager
       (name as string).toLowerCase(),
     )
 
-    const options = databaseContent
-      ? {
-          chainSpec,
-          jsonRpcCallback,
-          databaseContent,
-          potentialRelayChains: potentialNetworks.map((r) => r.chain),
-        }
-      : {
-          chainSpec,
-          jsonRpcCallback,
-          potentialRelayChains: potentialNetworks.map((r) => r.chain),
-        }
+    const options: AddChainOptions = {
+      chainSpec,
+      jsonRpcCallback,
+      databaseContent,
+      potentialRelayChains: potentialNetworks.map((r) => r.chain),
+    }
 
     const addedChain = await this.#client.addChain(options)
 
