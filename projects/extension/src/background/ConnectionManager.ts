@@ -221,13 +221,11 @@ export class ConnectionManager
   runAlarm(): void {
     this.#networks
       .filter((n) => relayChains.has(n.name))
-      .forEach(async (network) => {
-        try {
-          const db = await network.chain.databaseContent()
-          await chrome.storage.local.set({ [network.name]: db })
-        } catch (e) {
-          console.error(e)
-        }
+      .forEach((network) => {
+        void network.chain
+          .databaseContent()
+          .then((db) => chrome.storage.local.set({ [network.name]: db }))
+          .catch((e) => console.log(e))
       })
   }
 
