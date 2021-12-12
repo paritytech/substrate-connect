@@ -236,23 +236,26 @@ export class ConnectionManager
    * init Runs on onStartup and onInstalled of extension and
    * connects the default relayChains to smoldot
    */
-  init = async () => {
-    try {
-      this.initSmoldot()
-      for (const [key, value] of relayChains.entries()) {
-        const jsonRpcCallback = (rpc: string) => {
-          console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
-        }
-        await this.#client
-          ?.addChain({
-            chainSpec: value,
-            jsonRpcCallback,
-          })
-          .catch((err) => console.error("Error", err))
+  init = () => {
+    this.initSmoldot()
+    const promises = []
+    for (const [key, value] of relayChains.entries()) {
+      const jsonRpcCallback = (rpc: string) => {
+        console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
       }
-    } catch (e) {
-      console.error(`Error creating smoldot: ${e}`)
+      const promise = this.#client
+        ?.addChain({
+          chainSpec: value,
+          jsonRpcCallback,
+        })
+        .catch((err) => {
+          console.error("Error", err)
+        })
+      promises.push(promise)
     }
+    Promise.all(promises)
+      .then(() => console.log("all run"))
+      .catch((err) => console.log("Error creating smoldot:", err))
   }
 
   /**
