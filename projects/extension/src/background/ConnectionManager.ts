@@ -1,8 +1,4 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Client,
   start,
@@ -34,6 +30,11 @@ const relayChains: RelayType = new Map<string, string>([
 
 const l = logger("Extension Connection Manager")
 
+interface SpecInterface {
+  name: string
+  id: string
+  relay_chain: string
+}
 /**
  * ConnectionManager is the main class involved in managing connections from
  * apps.  It keeps track of apps and it is also responsible for triggering
@@ -130,6 +131,9 @@ export class ConnectionManager
     this.#apps.filter((a) => a).forEach((a) => this.disconnect(a))
   }
 
+  /**
+   * createApp maps the needed info and creates a new app
+   */
   createApp(incPort: chrome.runtime.Port): App {
     const splitIdx = incPort.name.indexOf("::")
     if (splitIdx === -1) {
@@ -140,8 +144,8 @@ export class ConnectionManager
       throw new Error(payload)
     }
     const { name, sender } = incPort
-    const appName: string = name.substr(0, splitIdx)
-    const chainName: string = name.substr(splitIdx + 2, name.length)
+    const appName: string = name.slice(0, splitIdx)
+    const chainName: string = name.slice(splitIdx + 2, name.length)
     const tabId: number = sender?.tab?.id || -1
     const url: string | undefined = sender?.url
     const port: chrome.runtime.Port = incPort
@@ -265,7 +269,9 @@ export class ConnectionManager
   }
 
   /**
-   * addChain adds the Chain in the smoldot client
+   * addChain: adds the Chain in the smoldot client. This is called only on new chains
+   * added and not on default pnes - as the default ones do not need the extra checks
+   * that take place here or be added to the Networks.
    *
    * @param spec - ChainSpec of chain to be added
    * @param jsonRpcCallback - The jsonRpcCallback function that should be triggered
@@ -281,7 +287,9 @@ export class ConnectionManager
     if (!this.#client) {
       throw new Error("Smoldot client does not exist.")
     }
-    const { name, id, relay_chain } = JSON.parse(chainSpec)
+    const { name, id, relay_chain }: SpecInterface = JSON.parse(
+      chainSpec,
+    ) as SpecInterface
 
     // identify all relay_chains init'ed from same app with tabId identifier
     const potentialNetworks: Network[] = relay_chain
@@ -311,11 +319,10 @@ export class ConnectionManager
   }
 
   #initHealthChecker = (app: App, isParachain?: boolean): void => {
-    if (isParachain) {
-      app.parachain &&
-        app.healthChecker?.setSendJsonRpc(app.parachain.sendJsonRpc)
-    } else {
-      app.chain && app.healthChecker?.setSendJsonRpc(app.chain.sendJsonRpc)
+    if (isParachain && app.parachain) {
+      app.healthChecker?.setSendJsonRpc(app.parachain.sendJsonRpc)
+    } else if (app.chain) {
+      app.healthChecker?.setSendJsonRpc(app.chain.sendJsonRpc)
     }
     void app.healthChecker?.start((health: SmoldotHealth) => {
       if (
@@ -336,8 +343,9 @@ export class ConnectionManager
 
   #handleError = (app: App, e: Error): void => {
     const error: MessageFromManager = { type: "error", payload: e.message }
-    app.port.postMessage(error)
-    app.port.disconnect()
+    const { port } = app
+    port.postMessage(error)
+    port.disconnect()
     this.unregisterApp(app)
   }
 
@@ -371,7 +379,7 @@ export class ConnectionManager
         })
         .then((network) => {
           app.parachain = network.chain
-          app.chainName = JSON.parse(parachainSpec).name
+          app.chainName = (JSON.parse(parachainSpec) as SpecInterface).name
           return
         })
     } else {
@@ -417,20 +425,19 @@ export class ConnectionManager
       return
     }
     const app = this.#findApp(port)
-    if (app) {
-      if (msg.type === "spec" && app.chainName) {
-        return this.#handleSpecMessage(msg, app)
-      }
-
-      if (app.chain === undefined) {
-        // `addChain` hasn't resolved yet after the spec message so buffer the
-        // messages to be sent when it does resolve
-        app.pendingRequests.push(msg.payload)
-        return
-      }
-
-      return app.healthChecker?.sendJsonRpc(msg.payload)
+    if (!app) return
+    if (msg.type === "spec" && app.chainName) {
+      return this.#handleSpecMessage(msg, app)
     }
+
+    if (app.chain === undefined) {
+      // `addChain` hasn't resolved yet after the spec message so buffer the
+      // messages to be sent when it does resolve
+      app.pendingRequests.push(msg.payload)
+      return
+    }
+
+    return app.healthChecker?.sendJsonRpc(msg.payload)
   }
 
   /**
@@ -446,8 +453,8 @@ export class ConnectionManager
       throw new Error("Cannot disconnect - already disconnected")
     }
     // call remove() for both relaychain and parachain
-    app.chain && app.chain.remove()
-    app.parachain && app.parachain.remove()
+    app.chain?.remove()
+    app.parachain?.remove()
     this.#networks = this.#networks.filter((n) => n.tabId !== app.tabId)
 
     this.unregisterApp(app)
