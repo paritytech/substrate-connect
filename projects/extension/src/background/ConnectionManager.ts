@@ -18,6 +18,19 @@ import {
   MessageFromManager,
   MessageToManager,
 } from "@substrate/connect-extension-protocol"
+import westend from "../../public/assets/westend.json"
+import kusama from "../../public/assets/kusama.json"
+import polkadot from "../../public/assets/polkadot.json"
+import rococo from "../../public/assets/rococo.json"
+
+type RelayType = Map<string, string>
+
+const relayChains: RelayType = new Map<string, string>([
+  ["polkadot", JSON.stringify(polkadot)],
+  ["ksmcc3", JSON.stringify(kusama)],
+  ["rococo_v1_13", JSON.stringify(rococo)],
+  ["westend2", JSON.stringify(westend)],
+])
 
 const l = logger("Extension Connection Manager")
 
@@ -213,6 +226,29 @@ export class ConnectionManager
   async shutdown(): Promise<void> {
     await this.#client?.terminate()
     this.#client = undefined
+  }
+
+  /**
+   * init Runs on onStartup and onInstalled of extension and
+   * connects the default relayChains to smoldot
+   */
+  init = async () => {
+    try {
+      this.initSmoldot()
+      for (const [key, value] of relayChains.entries()) {
+        const jsonRpcCallback = (rpc: string) => {
+          console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
+        }
+        await this.#client
+          ?.addChain({
+            chainSpec: value,
+            jsonRpcCallback,
+          })
+          .catch((err) => console.error("Error", err))
+      }
+    } catch (e) {
+      console.error(`Error creating smoldot: ${e}`)
+    }
   }
 
   /**

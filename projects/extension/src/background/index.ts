@@ -1,9 +1,4 @@
 import { ConnectionManager } from "./ConnectionManager"
-import westend from "../../public/assets/westend.json"
-import kusama from "../../public/assets/kusama.json"
-import polkadot from "../../public/assets/polkadot.json"
-import rococo from "../../public/assets/rococo.json"
-import { logger } from "@polkadot/util"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 
@@ -15,43 +10,12 @@ declare let window: Background
 
 const manager = (window.manager = new ConnectionManager())
 
-type RelayType = Map<string, string>
-
-export const relayChains: RelayType = new Map<string, string>([
-  ["polkadot", JSON.stringify(polkadot)],
-  ["kusama", JSON.stringify(kusama)],
-  ["rococo", JSON.stringify(rococo)],
-  ["westend", JSON.stringify(westend)],
-])
-
-const l = logger("Extension")
-export interface RequestRpcSend {
-  method: string
-  params: unknown[]
-}
-
-const init = async () => {
-  try {
-    manager.initSmoldot()
-    for (const [key, value] of relayChains.entries()) {
-      const rpcCallback = (rpc: string) => {
-        console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
-      }
-      await manager
-        .addChain(value, rpcCallback)
-        .catch((err) => l.error("Error", err))
-    }
-  } catch (e) {
-    l.error(`Error creating smoldot: ${e}`)
-  }
-}
-
 chrome.runtime.onInstalled.addListener(() => {
-  init().catch(console.error)
+  manager.init().catch(console.error)
 })
 
 chrome.runtime.onStartup.addListener(() => {
-  init().catch(console.error)
+  manager.init().catch(console.error)
 })
 
 chrome.runtime.onConnect.addListener((port) => {
