@@ -36,7 +36,7 @@
     "@polkadot/keyring": "^5.5.2",
     "@polkadot/react-identicon": "^0.68.1",
     "@polkadot/util": "^5.5.2",
-    "@polkadot/util-crypto": "^5.5.2",
+    "@polkadot/util-crypto": "^8.1.2",
     "@substrate/connect": "^0.4.7",
     "babel-loader": "^8.2.2",
     "crypto-browserify": "^3.12.0",
