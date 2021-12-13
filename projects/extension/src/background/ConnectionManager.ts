@@ -49,6 +49,29 @@ export class ConnectionManager
   #networks: Network[] = []
   smoldotLogLevel = 3
 
+  constructor() {
+    super()
+    this.initSmoldot()
+    const promises = []
+    for (const [key, value] of relayChains.entries()) {
+      const jsonRpcCallback = (rpc: string) => {
+        console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
+      }
+      const promise = this.#client
+        ?.addChain({
+          chainSpec: value,
+          jsonRpcCallback,
+        })
+        .catch((err) => {
+          console.error("Error", err)
+        })
+      promises.push(promise)
+    }
+    Promise.all(promises).catch((err) =>
+      console.log("Error creating smoldot:", err),
+    )
+  }
+
   /** registeredApps
    *
    * @returns a list of the names of apps that are currently connected
@@ -230,32 +253,6 @@ export class ConnectionManager
   async shutdown(): Promise<void> {
     await this.#client?.terminate()
     this.#client = undefined
-  }
-
-  /**
-   * init Runs on onStartup and onInstalled of extension and
-   * connects the default relayChains to smoldot
-   */
-  init = () => {
-    this.initSmoldot()
-    const promises = []
-    for (const [key, value] of relayChains.entries()) {
-      const jsonRpcCallback = (rpc: string) => {
-        console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
-      }
-      const promise = this.#client
-        ?.addChain({
-          chainSpec: value,
-          jsonRpcCallback,
-        })
-        .catch((err) => {
-          console.error("Error", err)
-        })
-      promises.push(promise)
-    }
-    Promise.all(promises)
-      .then(() => console.log("all run"))
-      .catch((err) => console.log("Error creating smoldot:", err))
   }
 
   /**

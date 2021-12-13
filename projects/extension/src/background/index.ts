@@ -10,14 +10,6 @@ declare let window: Background
 
 const manager = (window.manager = new ConnectionManager())
 
-chrome.runtime.onInstalled.addListener(() => {
-  manager.init()
-})
-
-chrome.runtime.onStartup.addListener(() => {
-  manager.init()
-})
-
 chrome.runtime.onConnect.addListener((port) => {
   manager.addApp(port)
 })

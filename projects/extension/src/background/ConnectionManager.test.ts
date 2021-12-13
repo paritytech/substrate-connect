@@ -380,6 +380,7 @@ describe("Tests with actual ConnectionManager", () => {
 
   test("Smoldot throws error when it does not exist", async () => {
     try {
+      await manager.shutdown()
       await manager.addChain(JSON.stringify(kusama), doNothing)
     } catch (err: any) {
       expect(err.message).toBe("Smoldot client does not exist.")
