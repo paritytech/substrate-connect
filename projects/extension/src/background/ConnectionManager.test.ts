@@ -39,8 +39,6 @@ const doNothing = () => {
 test("adding and removing apps changes state", async () => {
   //setup connection manager with 2 chains
   const manager = new ConnectionManager()
-  manager.smoldotLogLevel = 1
-  manager.initSmoldot()
   await manager.addChain(JSON.stringify(westend), doNothing)
   await manager.addChain(JSON.stringify(kusama), doNothing)
 
@@ -153,15 +151,12 @@ test("adding and removing apps changes state", async () => {
   expect(handler).toHaveBeenCalledTimes(3)
   expect(manager.getState()).toEqual({ apps: [] })
   await manager.shutdown()
-})
+}, 30000)
 
 test("Tries to connect to a parachain with unknown Relay Chain", async () => {
   const port = new MockPort("test-app-7::westend")
   const manager = new ConnectionManager()
   const handler = jest.fn()
-
-  manager.smoldotLogLevel = 1
-  manager.initSmoldot()
   await manager.addChain(JSON.stringify(westend), doNothing)
   manager.on("stateChanged", handler)
   manager.addApp(port)
@@ -187,13 +182,12 @@ test("Tries to connect to a parachain with unknown Relay Chain", async () => {
 })
 
 describe("Unit tests", () => {
-  const manager = new ConnectionManager()
+  let manager: ConnectionManager
   const handler = jest.fn()
 
   beforeAll(async () => {
-    manager.smoldotLogLevel = 1
+    manager = new ConnectionManager()
     //setup connection manager with 2 networks
-    manager.initSmoldot()
     await manager.addChain(JSON.stringify(westend), doNothing)
     await manager.addChain(JSON.stringify(kusama), doNothing)
     manager.on("stateChanged", handler)
@@ -256,24 +250,6 @@ describe("Unit tests", () => {
   })
 })
 
-describe("When the manager is shutdown", () => {
-  const manager = new ConnectionManager()
-
-  beforeEach(() => {
-    manager.smoldotLogLevel = 1
-    manager.initSmoldot()
-  })
-
-  test("adding an app after the manager is shutdown throws an error", async () => {
-    const port = new MockPort("test-app-5::westend")
-    port.setTabId(15)
-    await expect(async () => {
-      await manager.shutdown()
-      manager.addApp(port)
-    }).rejects.toThrowError("Smoldot client does not exist.")
-  })
-})
-
 describe("Check storage and send notification when adding an app", () => {
   const westendPayload = JSON.stringify({ name: "Westend", id: "westend2" })
   const port = new MockPort("test-app-7::westend")
@@ -291,15 +267,13 @@ describe("Check storage and send notification when adding an app", () => {
   })
 
   beforeAll(async () => {
-    manager.smoldotLogLevel = 1
-    manager.initSmoldot()
     await manager.addChain(JSON.stringify(westend), doNothing)
     await manager.addChain(JSON.stringify(kusama), doNothing)
     manager.on("stateChanged", handler)
 
     manager.addApp(port)
     await waitForMessageToBePosted()
-  })
+  }, 30000)
 
   afterAll(async () => {
     await manager.shutdown()
@@ -329,10 +303,14 @@ describe("Check storage and send notification when adding an app", () => {
 
 describe("Tests with actual ConnectionManager", () => {
   let app: App
+  const manager = new ConnectionManager()
   beforeEach(() => {
     port = new MockPort("test-app::westend")
-    manager = new ConnectionManager()
     app = manager.createApp(port)
+  })
+
+  afterAll(() => {
+    void manager.shutdown()
   })
 
   test("Construction parses the port name and gets port information", () => {
@@ -376,15 +354,6 @@ describe("Tests with actual ConnectionManager", () => {
     port.triggerMessage({ type: "spec", payload: "westend" })
     port.triggerMessage({ type: "rpc", payload: '{ "id": 1 }' })
     expect(app.state).toBe("connected")
-  })
-
-  test("Smoldot throws error when it does not exist", async () => {
-    try {
-      await manager.shutdown()
-      await manager.addChain(JSON.stringify(kusama), doNothing)
-    } catch (err: any) {
-      expect(err.message).toBe("Smoldot client does not exist.")
-    }
   })
 
   test("Spec message adds a chain", async () => {

@@ -31,9 +31,9 @@ const relayChains: RelayType = new Map<string, string>([
 const l = logger("Extension Connection Manager")
 
 interface SpecInterface {
-  name: string
+  name?: string
   id: string
-  relay_chain: string
+  relay_chain?: string
 }
 /**
  * ConnectionManager is the main class involved in managing connections from
@@ -45,13 +45,14 @@ export class ConnectionManager
   implements ConnectionManagerInterface
 {
   readonly #apps: App[] = []
-  #client: Client | undefined = undefined
-  #networks: Network[] = []
   smoldotLogLevel = 3
+  #client: Client = start({
+    maxLogLevel: this.smoldotLogLevel,
+  })
+  #networks: Network[] = []
 
   constructor() {
     super()
-    this.initSmoldot()
     const promises = []
     for (const [key, value] of relayChains.entries()) {
       const jsonRpcCallback = (rpc: string) => {
@@ -201,10 +202,6 @@ export class ConnectionManager
    * by a content script.
    */
   addApp(port: chrome.runtime.Port): void {
-    if (!this.#client) {
-      throw new Error("Smoldot client does not exist.")
-    }
-
     if (this.#findApp(port)) {
       port.postMessage({
         type: "error",
@@ -252,20 +249,6 @@ export class ConnectionManager
   /** shutdown shuts down the connected smoldot client. */
   async shutdown(): Promise<void> {
     await this.#client?.terminate()
-    this.#client = undefined
-  }
-
-  /**
-   * initSmoldot initializes the smoldot client.
-   */
-  initSmoldot(): void {
-    try {
-      this.#client = start({
-        maxLogLevel: this.smoldotLogLevel,
-      })
-    } catch (err) {
-      l.error(`Error while initializing smoldot: ${err}`)
-    }
   }
 
   /**
@@ -284,9 +267,6 @@ export class ConnectionManager
     jsonRpcCallback?: JsonRpcCallback,
     tabId?: number,
   ): Promise<Network> {
-    if (!this.#client) {
-      throw new Error("Smoldot client does not exist.")
-    }
     const { name, id, relay_chain }: SpecInterface = JSON.parse(
       chainSpec,
     ) as SpecInterface
@@ -305,12 +285,14 @@ export class ConnectionManager
     // This covers cases of refreshing browser in order to avoid
     // pilling up on this.#networks, the ones that were created from same tab
     const existingNetwork = this.#networks.find(
-      (n) => n.name.toLowerCase() === name.toLowerCase() && n.tabId === tabId,
+      (n) =>
+        n.name.toLowerCase() === (name?.toLowerCase() || id) &&
+        n.tabId === tabId,
     )
     const network: Network = {
       tabId: tabId || 0,
       id,
-      name: name.toLowerCase(),
+      name: name?.toLowerCase() || id,
       chain: addedChain,
       status: "connected",
     }
@@ -378,8 +360,9 @@ export class ConnectionManager
           return this.addChain(parachainSpec, rpcCallback, app.tabId)
         })
         .then((network) => {
+          const { name, id } = JSON.parse(parachainSpec) as SpecInterface
           app.parachain = network.chain
-          app.chainName = (JSON.parse(parachainSpec) as SpecInterface).name
+          app.chainName = name || id
           return
         })
     } else {
