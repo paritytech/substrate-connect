@@ -43,10 +43,9 @@ test("connected and sends correct spec message", async () => {
   await ep.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: ProviderMessageData = {
+  const expectedMessage: Partial<ProviderMessageData> = {
     appName: "test",
     chainName: "Westend",
-    chainId: 1,
     action: "forward",
     origin: "extension-provider",
     message: {
@@ -56,7 +55,7 @@ test("connected and sends correct spec message", async () => {
   }
   expect(handler).toHaveBeenCalledTimes(2)
   const { data } = handler.mock.calls[1][0] as ProviderMessage
-  expect(data).toEqual(expectedMessage)
+  expect(data).toMatchObject(expectedMessage)
 })
 
 test("connected multiple chains and sends correct spec message", async () => {
@@ -71,10 +70,9 @@ test("connected multiple chains and sends correct spec message", async () => {
   await ep2.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage1: ProviderMessageData = {
+  const expectedMessage1: Partial<ProviderMessageData> = {
     appName: "test",
     chainName: "Westend",
-    chainId: 1,
     action: "forward",
     origin: "extension-provider",
     message: {
@@ -82,10 +80,9 @@ test("connected multiple chains and sends correct spec message", async () => {
       type: "spec",
     },
   }
-  const expectedMessage2: ProviderMessageData = {
+  const expectedMessage2: Partial<ProviderMessageData> = {
     appName: "test2",
     chainName: "Rococo",
-    chainId: 1,
     action: "forward",
     origin: "extension-provider",
     message: {
@@ -97,8 +94,8 @@ test("connected multiple chains and sends correct spec message", async () => {
   expect(handler).toHaveBeenCalledTimes(4)
   const data1 = handler.mock.calls[1][0] as ProviderMessage
   const data2 = handler.mock.calls[3][0] as ProviderMessage
-  expect(data1.data).toEqual(expectedMessage1)
-  expect(data2.data).toEqual(expectedMessage2)
+  expect(data1.data).toMatchObject(expectedMessage1)
+  expect(data2.data).toMatchObject(expectedMessage2)
 })
 
 test("constructor sets properties for parachain", () => {
@@ -114,10 +111,9 @@ test("connected parachain sends correct spec message", async () => {
   await ep.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: ProviderMessageData = {
+  const expectedMessage: Partial<ProviderMessageData> = {
     appName: "test",
     chainName: "Westend",
-    chainId: 1,
     action: "forward",
     origin: "extension-provider",
     message: {
@@ -127,7 +123,7 @@ test("connected parachain sends correct spec message", async () => {
   }
   expect(handler).toHaveBeenCalledTimes(2)
   const { data } = handler.mock.calls[1][0] as ProviderMessage
-  expect(data).toEqual(expectedMessage)
+  expect(data).toMatchObject(expectedMessage)
 })
 
 test("connect sends connect message and emits connected", async () => {
@@ -135,16 +131,15 @@ test("connect sends connect message and emits connected", async () => {
   await ep.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: ProviderMessageData = {
+  const expectedMessage: Partial<ProviderMessageData> = {
     appName: "test",
     chainName: "Westend",
-    chainId: 1,
     action: "connect",
     origin: "extension-provider",
   }
   expect(handler).toHaveBeenCalledTimes(2)
   const { data } = handler.mock.calls[0][0] as ProviderMessage
-  expect(data).toEqual(expectedMessage)
+  expect(data).toMatchObject(expectedMessage)
 })
 
 test("disconnect sends disconnect message and emits disconnected", async () => {
@@ -156,16 +151,15 @@ test("disconnect sends disconnect message and emits disconnected", async () => {
   void ep.disconnect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: ProviderMessageData = {
+  const expectedMessage: Partial<ProviderMessageData> = {
     appName: "test",
     chainName: "Westend",
-    chainId: 1,
     action: "disconnect",
     origin: "extension-provider",
   }
   expect(handler).toHaveBeenCalledTimes(3)
   const { data } = handler.mock.calls[2][0] as ProviderMessage
-  expect(data).toEqual(expectedMessage)
+  expect(data).toMatchObject(expectedMessage)
   expect(ep.isConnected).toBe(false)
   expect(emitted).toHaveBeenCalledTimes(1)
 })

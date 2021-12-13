@@ -63,6 +63,7 @@ const ANGLICISMS: { [index: string]: string } = {
  * connected peers in the smoldot client
  */
 const CONNECTION_STATE_PINGER_INTERVAL = 2000
+let nextChainId = 1
 
 /**
  * The ExtensionProvider allows interacting with a smoldot-based WASM light
@@ -78,6 +79,7 @@ export class ExtensionProvider implements ProviderInterface {
   #connectionStatePingerId: ReturnType<typeof setInterval> | null
   #isConnected = false
 
+  #chainId: number
   #appName: string
   #chainName: string
   #chainSpecs: string
@@ -93,6 +95,7 @@ export class ExtensionProvider implements ProviderInterface {
     relayChain: string,
     parachain?: string,
   ) {
+    this.#chainId = nextChainId++
     this.#appName = displayName
 
     /**
@@ -154,7 +157,7 @@ export class ExtensionProvider implements ProviderInterface {
 
   #commonMessageData = (): CommonProviderMessageData => ({
     appName: this.#appName,
-    chainId: 1,
+    chainId: this.#chainId,
     chainName: this.#chainName,
     origin: EXTENSION_PROVIDER_ORIGIN,
   })
