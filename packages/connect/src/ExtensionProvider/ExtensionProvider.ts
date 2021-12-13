@@ -14,11 +14,12 @@ import EventEmitter from "eventemitter3"
 import { isUndefined, eraseRecord } from "../utils/index.js"
 import { HealthCheckError } from "../errors.js"
 import {
-  MessageFromManager,
-  ProviderMessageData,
-  ExtensionMessage,
-  ExtensionMessageData,
+  ToExtension,
   provider,
+  ToExtensionMessageType,
+  ToWebpageMessageType,
+  ToWebpageBody,
+  ToExtensionHeader,
 } from "@substrate/connect-extension-protocol"
 
 const CONTENT_SCRIPT_ORIGIN = "content-script"
@@ -62,7 +63,13 @@ const ANGLICISMS: { [index: string]: string } = {
  * connected peers in the smoldot client
  */
 const CONNECTION_STATE_PINGER_INTERVAL = 2000
-let nextChainId = 1
+
+const getProviderId = () => {
+  const arr = new Uint16Array(3)
+  // It can only be used from the browser, so this is fine.
+  crypto.getRandomValues(arr)
+  return arr[0] * 2 ** 32 + arr[1] * 2 ** 16 + arr[2]
+}
 
 /**
  * The ExtensionProvider allows interacting with a smoldot-based WASM light
@@ -79,11 +86,10 @@ export class ExtensionProvider implements ProviderInterface {
   #isConnected = false
 
   #chainSpecs: string
-  #parachainSpecs: string
-  #commonMessageData: Pick<
-    ProviderMessageData,
-    "appName" | "chainId" | "chainName" | "origin"
-  >
+  #displayName: string
+  #parachainSpecs?: string
+  #providerId: number
+  #toExtensionHeader: ToExtensionHeader
 
   /*
    * How frequently to see if we have any peers
@@ -95,22 +101,13 @@ export class ExtensionProvider implements ProviderInterface {
     relayChain: string,
     parachain?: string,
   ) {
-    /**
-     * TODO: we should remove the chainName from the payload of the messages,
-     * since this is information that doesn't have to be sent on every message and
-     * the Extension can extract it from the chainSpecs, also that way we avoid
-     * parsing a large JSON on the main thread.
-     */
+    this.#displayName = displayName
     this.#chainSpecs = relayChain
     this.#connectionStatePingerId = null
-    this.#parachainSpecs = ""
-    if (parachain) {
-      this.#parachainSpecs = parachain
-    }
-    this.#commonMessageData = {
-      appName: displayName,
-      chainId: nextChainId++,
-      chainName: JSON.parse(relayChain).name,
+    this.#parachainSpecs = parachain
+    this.#providerId = getProviderId()
+    this.#toExtensionHeader = {
+      providerId: this.#providerId,
       origin: EXTENSION_PROVIDER_ORIGIN,
     }
   }
@@ -135,8 +132,12 @@ export class ExtensionProvider implements ProviderInterface {
     throw new Error("clone() is not supported.")
   }
 
-  #handleMessage = (data: ExtensionMessageData): void => {
-    if (data.disconnect && data.disconnect === true) {
+  public get providerId(): number {
+    return this.#providerId
+  }
+
+  #handleMessage = (message: ToWebpageBody): void => {
+    if (message.type === ToWebpageMessageType.Disconnect) {
       this.#isConnected = false
       this.emit("disconnected")
       const error = new Error("Disconnected from the extension")
@@ -146,12 +147,11 @@ export class ExtensionProvider implements ProviderInterface {
       return
     }
 
-    const message = data.message as MessageFromManager
-    if (message.type === "error") {
+    if (message.type === ToWebpageMessageType.Error) {
       return this.emit("error", new Error(message.payload))
     }
 
-    if (message.type === "rpc") {
+    if (message.type === ToWebpageMessageType.Rpc) {
       const rpcString = message.payload
       l.debug(() => ["received", rpcString])
       const response = JSON.parse(rpcString) as JsonRpcResponse
@@ -161,7 +161,7 @@ export class ExtensionProvider implements ProviderInterface {
         : this.#onMessageSubscribe(response)
     }
 
-    const errorMessage = `Unrecognised message type from extension ${message.type}`
+    const errorMessage = `Unrecognised message from extension ${message}`
     return this.emit("error", new Error(errorMessage))
   }
 
@@ -288,30 +288,37 @@ export class ExtensionProvider implements ProviderInterface {
    * @remarks this is async to fulfill the interface with PolkadotJS
    */
   public connect(): Promise<void> {
-    const connectMsg: ProviderMessageData = {
-      ...this.#commonMessageData,
-      action: "connect",
+    const connectMsg: ToExtension = {
+      header: this.#toExtensionHeader,
+      body: {
+        type: ToExtensionMessageType.Connect,
+        payload: {
+          displayName: this.#displayName,
+        },
+      },
     }
     provider.send(connectMsg)
 
     // Once connect is sent - send rpc to extension that will contain the chainSpecs
     // for the extension to call addChain on smoldot
-    const specMsg: ProviderMessageData = {
-      ...this.#commonMessageData,
-      action: "forward",
-      message: {
-        type: "spec",
-        payload: this.#chainSpecs || "",
+    const specMsg: ToExtension = {
+      header: this.#toExtensionHeader,
+      body: {
+        type: ToExtensionMessageType.Spec,
+        payload: {
+          relaychain: this.#chainSpecs,
+          parachain: this.#parachainSpecs,
+        },
       },
-    }
-    if (this.#parachainSpecs && specMsg.message) {
-      specMsg.message.parachainPayload = this.#parachainSpecs
     }
     provider.send(specMsg)
 
-    provider.listen(({ data }: ExtensionMessage) => {
-      if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
-        this.#handleMessage(data)
+    provider.listen(({ data: message }) => {
+      if (
+        message?.header?.origin === CONTENT_SCRIPT_ORIGIN &&
+        message?.header?.providerId === this.#providerId
+      ) {
+        this.#handleMessage(message.body)
       }
     })
     this.#connectionStatePingerId = setInterval(
@@ -327,9 +334,11 @@ export class ExtensionProvider implements ProviderInterface {
    * telling it to disconnect the port with the background manager.
    */
   public disconnect(): Promise<void> {
-    const disconnectMsg: ProviderMessageData = {
-      ...this.#commonMessageData,
-      action: "disconnect",
+    const disconnectMsg: ToExtension = {
+      header: this.#toExtensionHeader,
+      body: {
+        type: ToExtensionMessageType.Disconnect,
+      },
     }
 
     provider.send(disconnectMsg)
@@ -397,11 +406,10 @@ export class ExtensionProvider implements ProviderInterface {
         subscription,
       }
 
-      const rpcMsg: ProviderMessageData = {
-        ...this.#commonMessageData,
-        action: "forward",
-        message: {
-          type: "rpc",
+      const rpcMsg: ToExtension = {
+        header: this.#toExtensionHeader,
+        body: {
+          type: ToExtensionMessageType.Rpc,
           payload: json,
         },
       }

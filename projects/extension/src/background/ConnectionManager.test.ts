@@ -9,7 +9,10 @@ import kusama from "../../public/assets/kusama.json"
 import { MockPort } from "../mocks"
 import { chrome } from "jest-chrome"
 import { App } from "./types"
-import { NetworkMainInfo } from "../types"
+import {
+  ToExtensionMessageType,
+  ToWebpageMessageType,
+} from "@substrate/connect-extension-protocol"
 
 let port: MockPort
 let manager: ConnectionManager
@@ -24,9 +27,8 @@ const connectApp = (
   manager: ConnectionManager,
   tabId: number,
   name: string,
-  network: string,
 ): MockPort => {
-  const port = new MockPort(`${name}::${network}`)
+  const port = new MockPort(name)
   port.setTabId(tabId)
   manager.addApp(port)
   return port
@@ -47,48 +49,34 @@ test("adding and removing apps changes state", async () => {
   const handler = jest.fn()
   manager.on("stateChanged", handler)
 
-  // app connects to first network
-  connectApp(manager, 42, "test-app", "westend")
+  // app connects
+  connectApp(manager, 42, "test-app")
   expect(handler).toHaveBeenCalledTimes(1)
   expect(manager.getState()).toEqual({
     apps: [
       {
         name: "test-app",
         tabId: 42,
-        networks: [{ name: "westend" }],
-      },
-    ],
-  })
-
-  // app connects to second network
-  handler.mockClear()
-  connectApp(manager, 42, "test-app", "kusama")
-  expect(handler).toHaveBeenCalledTimes(1)
-  expect(manager.getState()).toEqual({
-    apps: [
-      {
-        name: "test-app",
-        tabId: 42,
-        networks: [{ name: "westend" }, { name: "kusama" }],
+        networks: [],
       },
     ],
   })
 
   // different app connects to second network
   handler.mockClear()
-  const port = connectApp(manager, 43, "another-app", "kusama")
+  const port = connectApp(manager, 43, "another-app")
   expect(handler).toHaveBeenCalledTimes(1)
   expect(manager.getState()).toEqual({
     apps: [
       {
         name: "test-app",
         tabId: 42,
-        networks: [{ name: "westend" }, { name: "kusama" }],
+        networks: [],
       },
       {
         name: "another-app",
         tabId: 43,
-        networks: [{ name: "kusama" }],
+        networks: [],
       },
     ],
   })
@@ -102,61 +90,60 @@ test("adding and removing apps changes state", async () => {
       {
         name: "test-app",
         tabId: 42,
-        networks: [{ name: "westend" }, { name: "kusama" }],
+        networks: [],
       },
     ],
   })
 
   handler.mockClear()
   manager.disconnectTab(42)
-  expect(handler).toHaveBeenCalledTimes(2)
+  expect(handler).toHaveBeenCalledTimes(1)
   expect(manager.getState()).toEqual({ apps: [] })
 
   // Connect 2 apps on the same network and 2nd one on another network
   // in order to test disconnectAll functionality
   handler.mockClear()
   // first app connects to network
-  connectApp(manager, 1, "test-app-1", "westend")
+  connectApp(manager, 1, "test-app-1")
   expect(handler).toHaveBeenCalledTimes(1)
   expect(manager.getState()).toEqual({
     apps: [
       {
         name: "test-app-1",
         tabId: 1,
-        networks: [{ name: "westend" }],
+        networks: [],
       },
     ],
   })
 
   // second app connects to same network
   handler.mockClear()
-  connectApp(manager, 2, "test-app-2", "westend")
-  connectApp(manager, 2, "test-app-2", "kusama")
-  expect(handler).toHaveBeenCalledTimes(2)
+  connectApp(manager, 2, "test-app-2")
+  expect(handler).toHaveBeenCalledTimes(1)
   expect(manager.getState()).toEqual({
     apps: [
       {
         name: "test-app-1",
         tabId: 1,
-        networks: [{ name: "westend" }],
+        networks: [],
       },
       {
         name: "test-app-2",
         tabId: 2,
-        networks: [{ name: "westend" }, { name: "kusama" }],
+        networks: [],
       },
     ],
   })
   handler.mockClear()
   // disconnect all apps;
   manager.disconnectAll()
-  expect(handler).toHaveBeenCalledTimes(3)
+  expect(handler).toHaveBeenCalledTimes(2)
   expect(manager.getState()).toEqual({ apps: [] })
   await manager.shutdown()
 })
 
 test("Tries to connect to a parachain with unknown Relay Chain", async () => {
-  const port = new MockPort("test-app-7::westend")
+  const port = new MockPort("test-app-7")
   const manager = new ConnectionManager()
   const handler = jest.fn()
 
@@ -168,19 +155,20 @@ test("Tries to connect to a parachain with unknown Relay Chain", async () => {
   await waitForMessageToBePosted()
 
   port.triggerMessage({
-    type: "spec",
-    payload: "",
-    parachainPayload: JSON.stringify({
-      name: "parachainSpec",
-      relay_chain: "someRelayChain",
-    }),
+    type: ToExtensionMessageType.Spec,
+    payload: {
+      relaychain: JSON.stringify(null),
+      parachain: JSON.stringify({
+        name: "parachainSpec",
+        relay_chain: "someRelayChain",
+      }),
+    },
   })
   await waitForMessageToBePosted()
-  const errorMsg = {
-    type: "error",
-    payload: "Relay chain spec was not found",
-  }
-  expect(port.postMessage).toHaveBeenCalledWith(errorMsg)
+  expect(port.postMessage).toHaveBeenCalledTimes(1)
+  expect((port.postMessage as any).mock.calls[0][0]).toMatchObject({
+    type: ToWebpageMessageType.Error,
+  })
   expect(port.disconnect).toHaveBeenCalled()
 
   await manager.shutdown()
@@ -199,10 +187,10 @@ describe("Unit tests", () => {
     manager.on("stateChanged", handler)
 
     //add 4 apps in clients
-    connectApp(manager, 11, "test-app-1", "westend")
-    connectApp(manager, 12, "test-app-2", "kusama")
-    connectApp(manager, 13, "test-app-3", "westend")
-    connectApp(manager, 14, "test-app-4", "kusama")
+    connectApp(manager, 11, "test-app-1")
+    connectApp(manager, 12, "test-app-2")
+    connectApp(manager, 13, "test-app-3")
+    connectApp(manager, 14, "test-app-4")
   })
 
   afterAll(async () => {
@@ -211,17 +199,10 @@ describe("Unit tests", () => {
 
   test("Get registered apps", () => {
     expect(manager.registeredApps).toEqual([
-      "test-app-1::westend",
-      "test-app-2::kusama",
-      "test-app-3::westend",
-      "test-app-4::kusama",
-    ])
-  })
-
-  test("Get registered clients", () => {
-    expect(manager.registeredNetworks).toEqual([
-      { name: "westend", status: "connected", id: "westend2" },
-      { name: "kusama", status: "connected", id: "ksmcc3" },
+      "test-app-1",
+      "test-app-2",
+      "test-app-3",
+      "test-app-4",
     ])
   })
 
@@ -229,28 +210,12 @@ describe("Unit tests", () => {
     expect(manager.apps).toHaveLength(4)
   })
 
-  test("Get networks/chains", () => {
-    // With this look the "chain" is removed intentionally as "chain"
-    // object cannot be compared with jest
-    const tmpChains = manager.registeredNetworks.map((n: NetworkMainInfo) => ({
-      name: n.name,
-      status: n.status,
-    }))
-
-    expect(tmpChains).toEqual([
-      { name: "westend", status: "connected" },
-      { name: "kusama", status: "connected" },
-    ])
-
-    expect(manager.registeredNetworks).toHaveLength(2)
-  })
-
   test("Adding an app that already exists sends an error and disconnects", () => {
-    const port = connectApp(manager, 13, "test-app-3", "westend")
+    const port = connectApp(manager, 13, "test-app-3")
     expect(port.postMessage).toHaveBeenCalledTimes(1)
     expect(port.postMessage).toHaveBeenLastCalledWith({
-      type: "error",
-      payload: "App test-app-3::westend already exists.",
+      type: ToWebpageMessageType.Error,
+      payload: "App test-app-3 already exists.",
     })
     expect(port.disconnect).toHaveBeenCalled()
   })
@@ -265,7 +230,7 @@ describe("When the manager is shutdown", () => {
   })
 
   test("adding an app after the manager is shutdown throws an error", async () => {
-    const port = new MockPort("test-app-5::westend")
+    const port = new MockPort("test-app-5")
     port.setTabId(15)
     await expect(async () => {
       await manager.shutdown()
@@ -276,7 +241,7 @@ describe("When the manager is shutdown", () => {
 
 describe("Check storage and send notification when adding an app", () => {
   const westendPayload = JSON.stringify({ name: "Westend", id: "westend2" })
-  const port = new MockPort("test-app-7::westend")
+  const port = new MockPort("test-app-7")
   const manager = new ConnectionManager()
   const handler = jest.fn()
   let app: App
@@ -306,14 +271,20 @@ describe("Check storage and send notification when adding an app", () => {
   })
 
   test("Checks storage for notifications preferences", () => {
-    port.triggerMessage({ type: "spec", payload: westendPayload })
+    port.triggerMessage({
+      type: ToExtensionMessageType.Spec,
+      payload: { relaychain: westendPayload },
+    })
     expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1)
   })
 
   test("Sends a notification", () => {
-    port.triggerMessage({ type: "spec", payload: westendPayload })
+    port.triggerMessage({
+      type: ToExtensionMessageType.Spec,
+      payload: { relaychain: westendPayload },
+    })
     const notificationData = {
-      message: "App test-app-7 connected to westend.",
+      message: "App test-app-7 connected to Westend.",
       title: "Substrate Connect",
       iconUrl: "./icons/icon-32.png",
       type: "basic",
@@ -321,7 +292,7 @@ describe("Check storage and send notification when adding an app", () => {
 
     expect(chrome.notifications.create).toHaveBeenCalledTimes(1)
     expect(chrome.notifications.create).toHaveBeenCalledWith(
-      "test-app-7::westend",
+      "test-app-7",
       notificationData,
     )
   })
@@ -330,13 +301,13 @@ describe("Check storage and send notification when adding an app", () => {
 describe("Tests with actual ConnectionManager", () => {
   let app: App
   beforeEach(() => {
-    port = new MockPort("test-app::westend")
+    port = new MockPort("test-app")
     manager = new ConnectionManager()
     app = manager.createApp(port)
   })
 
   test("Construction parses the port name and gets port information", () => {
-    expect(app.name).toBe("test-app::westend")
+    expect(app.name).toBe("test-app")
     expect(app.appName).toBe("test-app")
     expect(app.url).toBe(port.sender.url)
     expect(app.tabId).toBe(port.sender.tab.id)
@@ -344,37 +315,39 @@ describe("Tests with actual ConnectionManager", () => {
 
   test("Connected state", () => {
     app = manager.createApp(port)
-    port.triggerMessage({ type: "spec", payload: "westend" })
-    port.triggerMessage({ type: "rpc", payload: '{ "id": 1 }' })
+    port.triggerMessage({
+      type: ToExtensionMessageType.Spec,
+      payload: { relaychain: "westend" },
+    })
+    port.triggerMessage({
+      type: ToExtensionMessageType.Rpc,
+      payload: '{ "id": 1 }',
+    })
 
     expect(app.state).toBe("connected")
   })
 
   test("Disconnect cleans up properly", async () => {
     app = manager.createApp(port)
-    port.triggerMessage({ type: "spec", payload: "westend" })
+    port.triggerMessage({
+      type: ToExtensionMessageType.Spec,
+      payload: { relaychain: "westend" },
+    })
     await waitForMessageToBePosted()
     manager.disconnect(app)
     await waitForMessageToBePosted()
     expect(app.state).toBe("disconnected")
   })
 
-  test("Invalid port name sends an error and disconnects", () => {
-    port = new MockPort("invalid")
-    const errorMsg = {
-      type: "error",
-      payload: "Invalid port name invalid expected <app_name>::<chain_name>",
-    }
-    expect(() => {
-      manager.createApp(port)
-    }).toThrow(errorMsg.payload)
-    expect(port.postMessage).toHaveBeenCalledWith(errorMsg)
-    expect(port.disconnect).toHaveBeenCalled()
-  })
-
   test("Connected state", () => {
-    port.triggerMessage({ type: "spec", payload: "westend" })
-    port.triggerMessage({ type: "rpc", payload: '{ "id": 1 }' })
+    port.triggerMessage({
+      type: ToExtensionMessageType.Spec,
+      payload: { relaychain: "westend" },
+    })
+    port.triggerMessage({
+      type: ToExtensionMessageType.Rpc,
+      payload: '{ "id": 1 }',
+    })
     expect(app.state).toBe("connected")
   })
 
@@ -387,32 +360,44 @@ describe("Tests with actual ConnectionManager", () => {
   })
 
   test("Spec message adds a chain", async () => {
-    port.triggerMessage({ type: "spec", payload: "westend" })
+    port.triggerMessage({
+      type: ToExtensionMessageType.Spec,
+      payload: { relaychain: "westend" },
+    })
     await waitForMessageToBePosted()
     expect(app.healthChecker).toBeDefined()
   })
 
   test("Buffers RPC messages before spec message", async () => {
     const message1 = JSON.stringify({ id: 1, jsonrpc: "2.0", result: {} })
-    port.triggerMessage({ type: "rpc", payload: message1 })
+    port.triggerMessage({ type: ToExtensionMessageType.Rpc, payload: message1 })
     const message2 = JSON.stringify({ id: 2, jsonrpc: "2.0", result: {} })
-    port.triggerMessage({ type: "rpc", payload: message2 })
-    port.triggerMessage({ type: "spec", payload: "westend" })
+    port.triggerMessage({ type: ToExtensionMessageType.Rpc, payload: message2 })
+    port.triggerMessage({
+      type: ToExtensionMessageType.Spec,
+      payload: { relaychain: "westend" },
+    })
     await waitForMessageToBePosted()
     expect(app.healthChecker).toBeDefined()
   })
 
   test("RPC port message sends the message to the chain", async () => {
-    port.triggerMessage({ type: "spec", payload: "westend" })
+    port.triggerMessage({
+      type: ToExtensionMessageType.Spec,
+      payload: { relaychain: "westend" },
+    })
     await waitForMessageToBePosted()
     const message = JSON.stringify({ id: 1, jsonrpc: "2.0", result: {} })
-    port.triggerMessage({ type: "rpc", payload: message })
+    port.triggerMessage({ type: ToExtensionMessageType.Rpc, payload: message })
     await waitForMessageToBePosted()
   })
 
   test("App already disconnected", async () => {
     app = manager.createApp(port)
-    port.triggerMessage({ type: "spec", payload: "westend" })
+    port.triggerMessage({
+      type: ToExtensionMessageType.Spec,
+      payload: { relaychain: "westend" },
+    })
     await waitForMessageToBePosted()
     manager.disconnect(app)
     await waitForMessageToBePosted()

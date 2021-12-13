@@ -1,15 +1,25 @@
 /*
  * @jest-environment jsdom
  */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { jest } from "@jest/globals"
 import { ExtensionProvider } from "./ExtensionProvider"
 import {
-  MessageFromManager,
-  ProviderMessage,
-  ProviderMessageData,
-  ExtensionMessageData,
+  ToExtension,
+  ToExtensionMessageType,
+  ToWebpageMessageType,
   extension,
 } from "@substrate/connect-extension-protocol"
+;(globalThis as any).crypto = {}
+globalThis.crypto.getRandomValues = <T extends ArrayBufferView | null>(
+  input: T,
+): T => {
+  ;(input as any)[2] = Math.floor(Math.random() * 2 ** 16)
+  return input
+}
 
 const waitForMessageToBePosted = (): Promise<null> => {
   // window.postMessge is async so we must do a short setTimeout to yield to
@@ -37,19 +47,22 @@ test("connected and sends correct spec message", async () => {
   await ep.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: Partial<ProviderMessageData> = {
-    appName: "test",
-    chainName: "Westend",
-    action: "forward",
-    origin: "extension-provider",
-    message: {
-      payload: '{"name":"Westend","id":"westend2"}',
-      type: "spec",
+  const expectedMessage: ToExtension = {
+    header: {
+      origin: "extension-provider",
+      providerId: ep.providerId,
+    },
+    body: {
+      type: ToExtensionMessageType.Spec,
+      payload: {
+        relaychain: westendSpec,
+      },
     },
   }
+
   expect(handler).toHaveBeenCalledTimes(2)
-  const { data } = handler.mock.calls[1][0] as ProviderMessage
-  expect(data).toMatchObject(expectedMessage)
+  const { data } = handler.mock.calls[1][0] as MessageEvent<ToExtension>
+  expect(data).toEqual(expectedMessage)
 })
 
 test("connected multiple chains and sends correct spec message", async () => {
@@ -64,32 +77,38 @@ test("connected multiple chains and sends correct spec message", async () => {
   await ep2.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage1: Partial<ProviderMessageData> = {
-    appName: "test",
-    chainName: "Westend",
-    action: "forward",
-    origin: "extension-provider",
-    message: {
-      payload: '{"name":"Westend","id":"westend2"}',
-      type: "spec",
+  const expectedMessage1: ToExtension = {
+    header: {
+      origin: "extension-provider",
+      providerId: ep1.providerId,
+    },
+    body: {
+      type: ToExtensionMessageType.Spec,
+      payload: {
+        relaychain: westendSpec,
+      },
     },
   }
-  const expectedMessage2: Partial<ProviderMessageData> = {
-    appName: "test2",
-    chainName: "Rococo",
-    action: "forward",
-    origin: "extension-provider",
-    message: {
-      payload: '{"name":"Rococo","id":"rococo"}',
-      type: "spec",
+
+  const expectedMessage2: ToExtension = {
+    header: {
+      origin: "extension-provider",
+      providerId: ep2.providerId,
+    },
+    body: {
+      type: ToExtensionMessageType.Spec,
+      payload: {
+        relaychain: rococoSpec,
+      },
     },
   }
 
   expect(handler).toHaveBeenCalledTimes(4)
-  const data1 = handler.mock.calls[1][0] as ProviderMessage
-  const data2 = handler.mock.calls[3][0] as ProviderMessage
-  expect(data1.data).toMatchObject(expectedMessage1)
-  expect(data2.data).toMatchObject(expectedMessage2)
+  const { data: data1 } = handler.mock.calls[1][0] as MessageEvent<ToExtension>
+  const { data: data2 } = handler.mock.calls[3][0] as MessageEvent<ToExtension>
+
+  expect(data1).toEqual(expectedMessage1)
+  expect(data2).toEqual(expectedMessage2)
 })
 
 test("connected parachain sends correct spec message", async () => {
@@ -99,19 +118,23 @@ test("connected parachain sends correct spec message", async () => {
   await ep.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: Partial<ProviderMessageData> = {
-    appName: "test",
-    chainName: "Westend",
-    action: "forward",
-    origin: "extension-provider",
-    message: {
-      payload: '{"name":"Westend","id":"westend2"}',
-      type: "spec",
+  const expectedMessage: ToExtension = {
+    header: {
+      origin: "extension-provider",
+      providerId: ep.providerId,
+    },
+    body: {
+      type: ToExtensionMessageType.Spec,
+      payload: {
+        relaychain: westendSpec,
+      },
     },
   }
+
   expect(handler).toHaveBeenCalledTimes(2)
-  const { data } = handler.mock.calls[1][0] as ProviderMessage
-  expect(data).toMatchObject(expectedMessage)
+  const { data } = handler.mock.calls[1][0] as MessageEvent<ToExtension>
+
+  expect(data).toEqual(expectedMessage)
 })
 
 test("connect sends connect message and emits connected", async () => {
@@ -119,15 +142,22 @@ test("connect sends connect message and emits connected", async () => {
   await ep.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: Partial<ProviderMessageData> = {
-    appName: "test",
-    chainName: "Westend",
-    action: "connect",
-    origin: "extension-provider",
+  const expectedMessage: ToExtension = {
+    header: {
+      origin: "extension-provider",
+      providerId: ep.providerId,
+    },
+    body: {
+      type: ToExtensionMessageType.Connect,
+      payload: {
+        displayName: "test",
+      },
+    },
   }
   expect(handler).toHaveBeenCalledTimes(2)
-  const { data } = handler.mock.calls[0][0] as ProviderMessage
-  expect(data).toMatchObject(expectedMessage)
+  const { data } = handler.mock.calls[0][0] as MessageEvent<ToExtension>
+
+  expect(data).toEqual(expectedMessage)
 })
 
 test("disconnect sends disconnect message and emits disconnected", async () => {
@@ -139,15 +169,17 @@ test("disconnect sends disconnect message and emits disconnected", async () => {
   void ep.disconnect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: Partial<ProviderMessageData> = {
-    appName: "test",
-    chainName: "Westend",
-    action: "disconnect",
-    origin: "extension-provider",
+  const expectedMessage: ToExtension = {
+    header: {
+      origin: "extension-provider",
+      providerId: ep.providerId,
+    },
+    body: { type: ToExtensionMessageType.Disconnect },
   }
+
   expect(handler).toHaveBeenCalledTimes(3)
-  const { data } = handler.mock.calls[2][0] as ProviderMessage
-  expect(data).toMatchObject(expectedMessage)
+  const { data } = handler.mock.calls[2][0] as MessageEvent<ToExtension>
+  expect(data).toEqual(expectedMessage)
   expect(ep.isConnected).toBe(false)
   expect(emitted).toHaveBeenCalledTimes(1)
 })
@@ -160,8 +192,8 @@ test("disconnects and emits disconnected when it receives a disconnect message",
   ep.on("disconnected", emitted)
   await waitForMessageToBePosted()
   extension.send({
-    origin: "content-script",
-    disconnect: true,
+    header: { origin: "content-script", providerId: ep.providerId },
+    body: { type: ToWebpageMessageType.Disconnect },
   })
   await waitForMessageToBePosted()
   expect(emitted).toHaveBeenCalled()
@@ -172,10 +204,10 @@ test("emits error when it receives an error message", async () => {
   const ep = new ExtensionProvider("test", westendSpec)
   await ep.connect()
   await waitForMessageToBePosted()
-  const errorMessage: ExtensionMessageData = {
-    origin: "content-script",
-    message: {
-      type: "error",
+  const errorMessage = {
+    header: { origin: "content-script", providerId: ep.providerId },
+    body: {
+      type: ToWebpageMessageType.Error,
       payload: "Boom!",
     },
   }
@@ -186,6 +218,6 @@ test("emits error when it receives an error message", async () => {
 
   expect(errorHandler).toHaveBeenCalled()
   const error = errorHandler.mock.calls[0][0] as Error
-  const innerMessage = errorMessage.message as MessageFromManager
-  expect(error.message).toEqual(innerMessage.payload)
+  const innerMessage = errorMessage.body.payload
+  expect(error.message).toEqual(innerMessage)
 })

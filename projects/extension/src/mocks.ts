@@ -5,8 +5,8 @@
 import { jest } from "@jest/globals"
 import { App, ConnectionManagerInterface } from "./background/types"
 import {
-  MessageToManager,
-  MessageFromManager,
+  ToExtensionBody,
+  ToWebpageBody,
 } from "@substrate/connect-extension-protocol"
 import { Chain } from "@substrate/smoldot-light"
 import { Network } from "./types"
@@ -29,7 +29,7 @@ export class MockPort implements chrome.runtime.Port {
     this.sender.tab.id = id
   }
 
-  triggerMessage(message: MessageFromManager | MessageToManager): void {
+  triggerMessage(message: ToExtensionBody | ToWebpageBody): void {
     this.#messageListeners.forEach((l: any) => {
       l(message, this)
     })

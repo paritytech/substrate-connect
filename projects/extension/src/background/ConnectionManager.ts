@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 import {
   Client,
   start,
@@ -15,8 +16,10 @@ import { StateEmitter, State } from "./types"
 import { NetworkMainInfo, Network } from "../types"
 import { logger } from "@polkadot/util"
 import {
-  MessageFromManager,
-  MessageToManager,
+  ToExtensionBody,
+  ToExtensionMessageType,
+  ToWebpageBody,
+  ToWebpageMessageType,
 } from "@substrate/connect-extension-protocol"
 
 const l = logger("Extension Connection Manager")
@@ -91,7 +94,7 @@ export class ConnectionManager
         }
         result.apps.push(a)
       }
-      a.networks.push({ name: app.chainName })
+      if (app.chainName) a.networks.push({ name: app.chainName })
       return result
     }, state)
   }
@@ -118,17 +121,9 @@ export class ConnectionManager
   }
 
   createApp(incPort: chrome.runtime.Port): App {
-    const splitIdx = incPort.name.indexOf("::")
-    if (splitIdx === -1) {
-      const payload = `Invalid port name ${incPort.name} expected <app_name>::<chain_name>`
-      const error: MessageFromManager = { type: "error", payload }
-      incPort.postMessage(error)
-      incPort.disconnect()
-      throw new Error(payload)
-    }
     const { name, sender } = incPort
-    const appName: string = name.substr(0, splitIdx)
-    const chainName: string = name.substr(splitIdx + 2, name.length)
+    const appName: string = name
+    const chainName: string = "" // it's being set when the spec message comes in which happens immediately after
     const tabId: number = sender?.tab?.id || -1
     const url: string | undefined = sender?.url
     const port: chrome.runtime.Port = incPort
@@ -166,10 +161,11 @@ export class ConnectionManager
     }
 
     if (this.#findApp(port)) {
-      port.postMessage({
-        type: "error",
+      const errorMessage: ToWebpageBody = {
+        type: ToWebpageMessageType.Error,
         payload: `App ${port.name} already exists.`,
-      })
+      }
+      port.postMessage(errorMessage)
       port.disconnect()
       return
     }
@@ -299,48 +295,54 @@ export class ConnectionManager
   }
 
   #handleError = (app: App, e: Error): void => {
-    const error: MessageFromManager = { type: "error", payload: e.message }
+    const error: ToWebpageBody = {
+      type: ToWebpageMessageType.Error,
+      payload: e.message,
+    }
     app.port.postMessage(error)
     app.port.disconnect()
     this.unregisterApp(app)
   }
 
   /** Handles the incoming message that contains Spec. */
-  #handleSpecMessage = (msg: MessageToManager, app: App): void => {
-    if (!msg.payload) {
-      const error: Error = new Error("Relay chain spec was not found")
-      this.#handleError(app, error)
-      return
-    }
-
-    const chainSpec: string = msg.payload
+  #handleSpecMessage = (
+    payload: { relaychain: string; parachain?: string },
+    app: App,
+  ): void => {
+    const { relaychain, parachain } = payload
 
     const rpcCallback = (rpc: string) => {
       const rpcResp: string | null | undefined =
         app.healthChecker?.responsePassThrough(rpc)
-      if (rpcResp) app.port.postMessage({ type: "rpc", payload: rpcResp })
+      if (rpcResp)
+        app.port.postMessage({
+          type: ToWebpageMessageType.Rpc,
+          payload: rpcResp,
+        })
     }
 
     let chainPromise: Promise<void>
     // Means this is a parachain trying to connect
-    if (msg.parachainPayload) {
+    if (parachain) {
+      app.chainName = JSON.parse(parachain).name
+
       // Connect the main Chain first and on success the parachain with the chain
       // that just got connected as the relayChain
-      const parachainSpec: string = msg.parachainPayload
 
-      chainPromise = this.addChain(chainSpec, undefined, app.tabId)
+      chainPromise = this.addChain(relaychain, undefined, app.tabId)
         .then((network) => {
           app.chain = network.chain
-          return this.addChain(parachainSpec, rpcCallback, app.tabId)
+          return this.addChain(parachain, rpcCallback, app.tabId)
         })
         .then((network) => {
           app.parachain = network.chain
-          app.chainName = JSON.parse(parachainSpec).name
           return
         })
     } else {
+      app.chainName = JSON.parse(relaychain).name
+
       // Connect the main Chain only
-      chainPromise = this.addChain(chainSpec, rpcCallback, app.tabId).then(
+      chainPromise = this.addChain(relaychain, rpcCallback, app.tabId).then(
         (network) => {
           app.chain = network.chain
           return
@@ -373,28 +375,28 @@ export class ConnectionManager
     )
   }
 
-  #handleMessage = (msg: MessageToManager, port: chrome.runtime.Port): void => {
-    if (msg.type !== "rpc" && msg.type !== "spec") {
+  #handleMessage = (msg: ToExtensionBody, port: chrome.runtime.Port): void => {
+    if (
+      msg.type !== ToExtensionMessageType.Rpc &&
+      msg.type !== ToExtensionMessageType.Spec
+    ) {
       console.warn(
         `Unrecognised message type ${msg.type} received from content script`,
       )
       return
     }
+
     const app = this.#findApp(port)
-    if (app) {
-      if (msg.type === "spec" && app.chainName) {
-        return this.#handleSpecMessage(msg, app)
-      }
+    if (!app) return
 
-      if (app.chain === undefined) {
-        // `addChain` hasn't resolved yet after the spec message so buffer the
-        // messages to be sent when it does resolve
-        app.pendingRequests.push(msg.payload)
-        return
-      }
+    if (msg.type === ToExtensionMessageType.Spec)
+      return this.#handleSpecMessage(msg.payload, app)
 
-      return app.healthChecker?.sendJsonRpc(msg.payload)
-    }
+    if (app.chain) return app.healthChecker?.sendJsonRpc(msg.payload)
+
+    // `addChain` hasn't resolved yet after the spec message so buffer the
+    // messages to be sent when it does resolve
+    app.pendingRequests.push(msg.payload)
   }
 
   /**
