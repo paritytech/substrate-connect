@@ -19,7 +19,6 @@ const waitForMessageToBePosted = (): Promise<null> => {
 
 const westendSpec = JSON.stringify({ name: "Westend", id: "westend2" })
 const rococoSpec = JSON.stringify({ name: "Rococo", id: "rococo" })
-const westmintSpec = JSON.stringify({ name: "Westmint", id: "westmint" })
 
 let handler = jest.fn()
 beforeEach(() => {
@@ -29,11 +28,6 @@ beforeEach(() => {
 
 afterEach(() => {
   window.removeEventListener("message", handler)
-})
-
-test("constructor sets properties", () => {
-  const ep = new ExtensionProvider("test", westendSpec)
-  expect(ep.name).toBe("test")
 })
 
 test("connected and sends correct spec message", async () => {
@@ -96,12 +90,6 @@ test("connected multiple chains and sends correct spec message", async () => {
   const data2 = handler.mock.calls[3][0] as ProviderMessage
   expect(data1.data).toMatchObject(expectedMessage1)
   expect(data2.data).toMatchObject(expectedMessage2)
-})
-
-test("constructor sets properties for parachain", () => {
-  const ep = new ExtensionProvider("test", westmintSpec)
-  expect(ep.name).toBe("test")
-  expect(ep.chainSpecs).toBe(westmintSpec)
 })
 
 test("connected parachain sends correct spec message", async () => {
