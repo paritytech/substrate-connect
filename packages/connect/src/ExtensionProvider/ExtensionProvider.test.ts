@@ -221,3 +221,65 @@ test("emits error when it receives an error message", async () => {
   const innerMessage = errorMessage.body.payload
   expect(error.message).toEqual(innerMessage)
 })
+
+test("it routes incoming messages to the correct Provider", async () => {
+  const ep1 = new ExtensionProvider("ExtensionProvider1", westendSpec)
+  await ep1.connect()
+
+  const ep2 = new ExtensionProvider("ExtensionProvider2", westendSpec)
+  await ep2.connect()
+  await waitForMessageToBePosted()
+
+  let extensionProvider1Response: string | undefined = undefined
+  let extensionProvider2Response: string | undefined = undefined
+
+  ep1
+    .send("requestSomeData", [])
+    .then((response: string) => {
+      extensionProvider1Response = response
+    })
+    .catch(() => {
+      extensionProvider1Response = "Error"
+    })
+  await waitForMessageToBePosted()
+
+  ep2
+    .send("requestOtherData", [])
+    .then((response: string) => {
+      extensionProvider2Response = response
+    })
+    .catch(() => {
+      extensionProvider2Response = "Error"
+    })
+  await waitForMessageToBePosted()
+
+  const latestRequest = handler.mock.calls[
+    handler.mock.calls.length - 1
+  ][0] as any
+
+  const latestRequestRpcId = (
+    JSON.parse(latestRequest.data.body?.payload ?? "{}") as {
+      id: number
+    }
+  ).id
+
+  extension.send({
+    header: {
+      origin: "content-script" as const,
+      providerId: ep2.providerId,
+    },
+    body: {
+      type: ToWebpageMessageType.Rpc,
+      payload: JSON.stringify({
+        id: latestRequestRpcId,
+        jsonrpc: "2.0",
+        result: "hi ExtensionProvider2!",
+      }),
+    },
+  })
+
+  await waitForMessageToBePosted()
+
+  expect(extensionProvider2Response).toBe("hi ExtensionProvider2!")
+  expect(extensionProvider1Response).toBe(undefined)
+})
