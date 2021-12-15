@@ -54,7 +54,7 @@
     "lint-staged": ">=10",
     "parcel": "2.0.0",
     "prettier": "^2.4.1",
-    "typedoc": "^0.21.0",
+    "typedoc": "^0.22.10",
     "typescript": "^4.5.2"
   },
   "dependencies": {
