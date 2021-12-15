@@ -48,7 +48,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "stream-browserify": "^3.0.0",
-    "style-loader": "^3.3.0",
+    "style-loader": "^3.3.1",
     "styled-components": "^5.2.1",
     "ts-loader": "^9.2.6",
     "unique-names-generator": "^4.3.1",
