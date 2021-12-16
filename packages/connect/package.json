@@ -43,7 +43,7 @@
     "@types/jest": "^27.0.3",
     "@types/jsdom": "^16.2.13",
     "@typescript-eslint/parser": "^5.5.0",
-    "eslint": "^8.3.0",
+    "eslint": "^8.4.1",
     "eslint-plugin-tsdoc": "^0.2.14",
     "jest": "^27.4.3",
     "jest-silent-reporter": "^0.5.0",
