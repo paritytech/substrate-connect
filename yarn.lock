@@ -2288,12 +2288,12 @@
     eventemitter3 "^4.0.7"
     rxjs "^7.4.0"
 
-"@polkadot/extension-inject@^0.36.1":
-  version "0.36.1"
-  resolved "https://registry.yarnpkg.com/@polkadot/extension-inject/-/extension-inject-0.36.1.tgz#33a9484a39eb5ed4ed019e9df69f7523a8469a44"
-  integrity sha512-4jmnOgHrNeOkJ//GEXkmutzqzK4Rw123qhVC0tbuT39S4cVhjtpiuNQIJ2JcgtuhdUfWJtiHFokFJKortgy2Kg==
+"@polkadot/extension-inject@^0.42.2":
+  version "0.42.2"
+  resolved "https://registry.yarnpkg.com/@polkadot/extension-inject/-/extension-inject-0.42.2.tgz#43c8533d75e85fa894eb2c73527077f7e7df12cd"
+  integrity sha512-vRr/xeOr+D4d5ON7LqG1z6AGaDAeib7ymDpDQrOy3EQ+i4UGjDBx9ciI4C6fdP0Qh9irU/6us5ggRbG3zBjkog==
   dependencies:
-    "@babel/runtime" "^7.12.5"
+    "@babel/runtime" "^7.16.3"
 
 "@polkadot/keyring@^5.5.1":
   version "5.9.2"
