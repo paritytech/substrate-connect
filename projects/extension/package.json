@@ -26,7 +26,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.17",
     "@babel/preset-env": "^7.12.17",
-    "@babel/preset-react": "^7.12.13",
+    "@babel/preset-react": "^7.16.5",
     "@hot-loader/react-dom": "^17.0.1",
     "@material-ui/types": "^5.1.0",
     "@testing-library/jest-dom": "^5.11.9",
@@ -45,7 +45,7 @@
     "buffer": "^6.0.3",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.2",
-    "eslint": "^8.3.0",
+    "eslint": "^8.5.0",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-tsdoc": "^0.2.14",
