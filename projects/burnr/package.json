@@ -52,7 +52,7 @@
     "styled-components": "^5.2.1",
     "ts-loader": "^9.2.6",
     "unique-names-generator": "^4.3.1",
-    "webpack": "^5.23.0",
+    "webpack": "^5.65.0",
     "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^3.11.2"
   },
