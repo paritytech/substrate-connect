@@ -1,11 +1,9 @@
 import path from "path"
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 import HtmlMinimizerPlugin from "html-minimizer-webpack-plugin"
 import CopyPlugin from "copy-webpack-plugin"
 import webpack from "webpack"
 
 const config = {
-  devtool: "inline-source-map",
   entry: {
     popup: path.resolve("src/popup.tsx"),
     options: path.resolve("src/options.tsx"),
@@ -16,6 +14,13 @@ const config = {
     path: path.resolve("dist"),
     filename: "[name].js",
     sourceMapFilename: "[name].js.map",
+  },
+  optimization: {
+    runtimeChunk: "single",
+    splitChunks: {
+      mangleWasmImports: true,
+      chunks: "all",
+    },
   },
   module: {
     rules: [
@@ -88,16 +93,12 @@ const config = {
     }),
     new webpack.EnvironmentPlugin({
       PKG_NAME: "@substrate/extension",
-      PKG_VERSION: "0.0.1",
+      PKG_VERSION: "0.0.4",
     }),
   ],
   optimization: {
     minimize: true,
-    minimizer: [
-      `...`,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      new HtmlMinimizerPlugin(),
-    ],
+    minimizer: [`...`, new HtmlMinimizerPlugin()],
   },
 }
 
