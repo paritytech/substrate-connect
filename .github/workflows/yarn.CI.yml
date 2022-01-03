@@ -24,7 +24,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: yarn install --frozen-lockfile
+    - run: yarn install
+    - # Check whether the `yarn install` step (or any step before, but it's `yarn install` that
+      # we're targeting) modifies any file such as `yarn.lock`. If any file is modified, this
+      # exits with non-zero.
+      run: git diff-index --exit-code --ignore-submodules HEAD
     - run: yarn lint
     - run: yarn build
     - run: yarn test
