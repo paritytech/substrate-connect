@@ -270,7 +270,9 @@ const App: React.FunctionComponent = () => {
             <SectionRef href="https://github.com/paritytech/substrate-connect/tree/master/projects/extension">
               Learn more
             </SectionRef>
-            <SectionRef href="#">Download for Chrome</SectionRef>
+            <SectionRef href="https://chrome.google.com/webstore/detail/khccbhhbocaaklceanjginbdheafklai">
+              Download for Chrome
+            </SectionRef>
             <SectionRef href="https://addons.mozilla.org/en-US/firefox/addon/substrate-connect/">
               Download for Firefox
             </SectionRef>
