@@ -41,16 +41,13 @@
     "deploy:gh-pages:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run deploy:gh-pages",
     "deploy:ipfs:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run deploy:ipfs",
     "deploy": "./deploy.sh",
-    "postinstall": "husky install",
     "connect-tester": "yarn workspace @substrate/extension-provider run build && yarn workspace @substrate/connect run build && yarn run dev:smoldot-browser-demo",
-    "format": "prettier --write .",
-    "prepare": "husky install"
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "@parcel/transformer-image": "2.0.0",
     "copyfiles": "^2.3.0",
     "eslint-config-prettier": "^8.3.0",
-    "husky": "^6.0.0",
     "lint-staged": ">=10",
     "parcel": "2.0.0",
     "prettier": "^2.4.1",
