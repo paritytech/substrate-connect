@@ -11,7 +11,7 @@
  * You can think of the protocol types like layers of an onion. The innermost
  * layer is the original JSON RPC request/responses. Then we wrap extra layers
  * (types) for the other 2 hops which then get peeled off at each hop.
- * The {@link ProviderMessageToExtension} and {@link ToApplication} represents
+ * The {@link ToExtension} and {@link ToApplication} represents
  * communication between the PolkadotJS provider in the app and the extension
  * (content and background scripts).
  *
@@ -74,10 +74,10 @@ export const extension = {
  * @remarks The browser wraps the message putting it in {@link data}
  */
 export interface ProviderMessage {
-  data: ProviderMessageToExtension
+  data: ToExtension
 }
 
-export interface ProviderMessageToExtension {
+export interface ToExtension {
   /** origin is used to determine which side sent the message **/
   origin: "extension-provider"
   /** The name of the app to be used for display purposes in the extension UI **/
@@ -110,7 +110,7 @@ export type ProviderListenHandler = (message: ExtensionMessage) => void
  */
 export const provider = {
   /** send a message from the app to the extension **/
-  send: (message: ProviderMessageToExtension): void => {
+  send: (message: ToExtension): void => {
     window.postMessage(message, "*")
   },
   /**

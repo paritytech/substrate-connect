@@ -5,7 +5,7 @@ import { jest } from "@jest/globals"
 import { ExtensionProvider } from "./ExtensionProvider"
 import {
   ProviderMessage,
-  ProviderMessageToExtension,
+  ToExtension,
   ToApplication,
   extension,
 } from "@substrate/connect-extension-protocol"
@@ -36,7 +36,7 @@ test("connected and sends correct spec message", async () => {
   await ep.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: Partial<ProviderMessageToExtension> = {
+  const expectedMessage: Partial<ToExtension> = {
     appName: "test",
     chainName: "Westend",
     action: "forward",
@@ -61,7 +61,7 @@ test("connected multiple chains and sends correct spec message", async () => {
   await ep2.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage1: Partial<ProviderMessageToExtension> = {
+  const expectedMessage1: Partial<ToExtension> = {
     appName: "test",
     chainName: "Westend",
     action: "forward",
@@ -69,7 +69,7 @@ test("connected multiple chains and sends correct spec message", async () => {
     payload: '{"name":"Westend","id":"westend2"}',
     type: "spec",
   }
-  const expectedMessage2: Partial<ProviderMessageToExtension> = {
+  const expectedMessage2: Partial<ToExtension> = {
     appName: "test2",
     chainName: "Rococo",
     action: "forward",
@@ -92,7 +92,7 @@ test("connected parachain sends correct spec message", async () => {
   await ep.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: Partial<ProviderMessageToExtension> = {
+  const expectedMessage: Partial<ToExtension> = {
     appName: "test",
     chainName: "Westend",
     action: "forward",
@@ -110,7 +110,7 @@ test("connect sends connect message and emits connected", async () => {
   await ep.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: Partial<ProviderMessageToExtension> = {
+  const expectedMessage: Partial<ToExtension> = {
     appName: "test",
     chainName: "Westend",
     action: "connect",
@@ -130,7 +130,7 @@ test("disconnect sends disconnect message and emits disconnected", async () => {
   void ep.disconnect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: Partial<ProviderMessageToExtension> = {
+  const expectedMessage: Partial<ToExtension> = {
     appName: "test",
     chainName: "Westend",
     action: "disconnect",

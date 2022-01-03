@@ -14,7 +14,7 @@ import EventEmitter from "eventemitter3"
 import { StateEmitter, State } from "./types"
 import { NetworkMainInfo, Network } from "../types"
 import { logger } from "@polkadot/util"
-import { ProviderMessageToExtension } from "@substrate/connect-extension-protocol"
+import { ToExtension } from "@substrate/connect-extension-protocol"
 
 const l = logger("Extension Connection Manager")
 
@@ -368,10 +368,7 @@ export class ConnectionManager
     )
   }
 
-  #handleMessage = (
-    msg: ProviderMessageToExtension,
-    port: chrome.runtime.Port,
-  ): void => {
+  #handleMessage = (msg: ToExtension, port: chrome.runtime.Port): void => {
     if (msg.type !== "rpc" && msg.type !== "spec") {
       console.warn(
         `Unrecognised message type ${msg.type} received from content script`,

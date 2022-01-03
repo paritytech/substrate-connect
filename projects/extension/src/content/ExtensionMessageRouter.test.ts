@@ -1,7 +1,7 @@
 import { jest } from "@jest/globals"
 import { ExtensionMessageRouter } from "./ExtensionMessageRouter"
 import {
-  ProviderMessageToExtension,
+  ToExtension,
   ExtensionMessage,
   ToApplication,
   provider,
@@ -136,7 +136,7 @@ describe("Connection and forward cases", () => {
     await waitForMessageToBePosted()
 
     // rpc
-    const rpcMessage: ProviderMessageToExtension = {
+    const rpcMessage: ToExtension = {
       chainId: 1,
       appName: "test-app",
       chainName: "westend",

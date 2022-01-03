@@ -14,7 +14,7 @@ import EventEmitter from "eventemitter3"
 import { isUndefined, eraseRecord } from "../utils/index.js"
 import { HealthCheckError } from "../errors.js"
 import {
-  ProviderMessageToExtension,
+  ToExtension,
   ExtensionMessage,
   ToApplication,
   provider,
@@ -80,7 +80,7 @@ export class ExtensionProvider implements ProviderInterface {
   #chainSpecs: string
   #parachainSpecs: string
   #commonMessageData: Pick<
-    ProviderMessageToExtension,
+    ToExtension,
     "appName" | "chainId" | "chainName" | "origin"
   >
 
@@ -286,7 +286,7 @@ export class ExtensionProvider implements ProviderInterface {
    * @remarks this is async to fulfill the interface with PolkadotJS
    */
   public connect(): Promise<void> {
-    const connectMsg: ProviderMessageToExtension = {
+    const connectMsg: ToExtension = {
       ...this.#commonMessageData,
       action: "connect",
     }
@@ -294,7 +294,7 @@ export class ExtensionProvider implements ProviderInterface {
 
     // Once connect is sent - send rpc to extension that will contain the chainSpecs
     // for the extension to call addChain on smoldot
-    const specMsg: ProviderMessageToExtension = {
+    const specMsg: ToExtension = {
       ...this.#commonMessageData,
       action: "forward",
       type: "spec",
@@ -323,7 +323,7 @@ export class ExtensionProvider implements ProviderInterface {
    * telling it to disconnect the port with the background manager.
    */
   public disconnect(): Promise<void> {
-    const disconnectMsg: ProviderMessageToExtension = {
+    const disconnectMsg: ToExtension = {
       ...this.#commonMessageData,
       action: "disconnect",
     }
@@ -393,7 +393,7 @@ export class ExtensionProvider implements ProviderInterface {
         subscription,
       }
 
-      const rpcMsg: ProviderMessageToExtension = {
+      const rpcMsg: ToExtension = {
         ...this.#commonMessageData,
         action: "forward",
         type: "rpc",
