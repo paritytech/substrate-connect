@@ -16,7 +16,7 @@ import { NetworkMainInfo, Network } from "../types"
 import { logger } from "@polkadot/util"
 import {
   MessageFromManager,
-  MessageToManager,
+  ProviderMessageToExtension,
 } from "@substrate/connect-extension-protocol"
 
 const l = logger("Extension Connection Manager")
@@ -306,7 +306,7 @@ export class ConnectionManager
   }
 
   /** Handles the incoming message that contains Spec. */
-  #handleSpecMessage = (msg: MessageToManager, app: App): void => {
+  #handleSpecMessage = (msg: any, app: App): void => {
     if (!msg.payload) {
       const error: Error = new Error("Relay chain spec was not found")
       this.#handleError(app, error)
@@ -373,7 +373,10 @@ export class ConnectionManager
     )
   }
 
-  #handleMessage = (msg: MessageToManager, port: chrome.runtime.Port): void => {
+  #handleMessage = (
+    msg: ProviderMessageToExtension,
+    port: chrome.runtime.Port,
+  ): void => {
     if (msg.type !== "rpc" && msg.type !== "spec") {
       console.warn(
         `Unrecognised message type ${msg.type} received from content script`,
@@ -384,6 +387,10 @@ export class ConnectionManager
     if (app) {
       if (msg.type === "spec" && app.chainName) {
         return this.#handleSpecMessage(msg, app)
+      }
+
+      if (!msg.payload) {
+        return
       }
 
       if (app.chain === undefined) {

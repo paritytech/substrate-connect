@@ -86,10 +86,10 @@ export const extension = {
  * @remarks The browser wraps the message putting it in {@link data}
  */
 export interface ProviderMessage {
-  data: ProviderMessageData
+  data: ProviderMessageToExtension
 }
 
-export interface ProviderMessageData {
+export interface ProviderMessageToExtension {
   /** origin is used to determine which side sent the message **/
   origin: "extension-provider"
   /** The name of the app to be used for display purposes in the extension UI **/
@@ -101,18 +101,10 @@ export interface ProviderMessageData {
   /** What action the `ExtensionMessageRouter` should take **/
   action: "forward" | "connect" | "disconnect"
   /** The message the `ExtensionMessageRouter` should forward to the background **/
-  message?: MessageToManager
-}
-
-/**
- * The message from the `ExtensionProvider` in the app that is intended to be
- * sent on to the manager in the extension background.
- */
-export interface MessageToManager {
   /** Type of the message. Defines how to interpret the {@link payload} */
-  type: "rpc" | "spec"
+  type?: "rpc" | "spec"
   /** Payload of the message -  a JSON encoded RPC request **/
-  payload: string
+  payload?: string
   parachainPayload?: string
 }
 
@@ -130,7 +122,7 @@ export type ProviderListenHandler = (message: ExtensionMessage) => void
  */
 export const provider = {
   /** send a message from the app to the extension **/
-  send: (message: ProviderMessageData): void => {
+  send: (message: ProviderMessageToExtension): void => {
     window.postMessage(message, "*")
   },
   /**
