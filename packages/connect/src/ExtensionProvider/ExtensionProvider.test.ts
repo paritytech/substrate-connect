@@ -4,10 +4,9 @@
 import { jest } from "@jest/globals"
 import { ExtensionProvider } from "./ExtensionProvider"
 import {
-  MessageFromManager,
   ProviderMessage,
   ProviderMessageToExtension,
-  ExtensionMessageData,
+  ToApplication,
   extension,
 } from "@substrate/connect-extension-protocol"
 
@@ -164,12 +163,10 @@ test("emits error when it receives an error message", async () => {
   const ep = new ExtensionProvider("test", westendSpec)
   await ep.connect()
   await waitForMessageToBePosted()
-  const errorMessage: ExtensionMessageData = {
+  const errorMessage: ToApplication = {
     origin: "content-script",
-    message: {
-      type: "error",
-      payload: "Boom!",
-    },
+    type: "error",
+    payload: "Boom!",
   }
   const errorHandler = jest.fn()
   ep.on("error", errorHandler)
@@ -178,6 +175,5 @@ test("emits error when it receives an error message", async () => {
 
   expect(errorHandler).toHaveBeenCalled()
   const error = errorHandler.mock.calls[0][0] as Error
-  const innerMessage = errorMessage.message as MessageFromManager
-  expect(error.message).toEqual(innerMessage.payload)
+  expect(error.message).toEqual(errorMessage.payload)
 })

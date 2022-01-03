@@ -4,7 +4,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { jest } from "@jest/globals"
 import { App, ConnectionManagerInterface } from "./background/types"
-import { MessageFromManager } from "@substrate/connect-extension-protocol"
 import { Chain } from "@substrate/smoldot-light"
 import { Network } from "./types"
 

@@ -53,8 +53,13 @@ export class ExtensionMessageRouter {
 
     // forward any messages: extension -> page
     port.onMessage.addListener((data): void => {
+      const { type, payload } = data
       debug(`RECEIVED MESSAGE FROM ${chainName} PORT`, data)
-      extension.send({ message: data, origin: CONTENT_SCRIPT_ORIGIN })
+      extension.send({
+        type,
+        payload,
+        origin: CONTENT_SCRIPT_ORIGIN,
+      })
     })
 
     // tell the page when the port disconnects
