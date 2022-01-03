@@ -28,6 +28,9 @@ jobs:
     - # Check whether the `yarn install` step (or any step before, but it's `yarn install` that
       # we're targeting) modifies any file such as `yarn.lock`. If any file is modified, this
       # exits with non-zero.
+      # Note that `yarn install --frozen-lockfile` is supposed to do this, but as of the writing
+      # of this comment this flag simply ignored problems and installed dependencies anyway,
+      # without returning an error code or writing the lock file.
       run: git diff-index --exit-code --ignore-submodules HEAD
     - run: yarn lint
     - run: yarn build
