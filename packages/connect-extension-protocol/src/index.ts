@@ -10,29 +10,15 @@
  *
  * You can think of the protocol types like layers of an onion. The innermost
  * layer is the original JSON RPC request/responses. Then we wrap extra layers
- * (types) for the other 2 hops which then get peeled off at each hop. The
- * {@link MessageToManager} / {@link MessageFromManager} representing the
- * extension communication content script \<\> background. Then the outermost
- * {@link ExtensionMessage} / {@link ProviderMessage} representing the
- * communication between the PolkadotJS provider in the app and the content
- * script.
+ * (types) for the other 2 hops which then get peeled off at each hop.
+ * The {@link ProviderMessageToExtension} and {@link ToApplication} represents
+ * communication between the PolkadotJS provider in the app and the extension
+ * (content and background scripts).
  *
  * The {@link ExtensionProvider} is the class in the app.
  * The {@link ExtensionMessageRouter} is the class in the content script.
  * The {@link ConnectionManager} is the class in the extension background.
  */
-
-/**
- * `MessageFromManager` represents messages from the manager in the extension
- * background that are intended to be sent on to the `ExtensionProvider` in the
- * app.
- */
-export interface MessageFromManager {
-  /** Type of the message. Defines how to interpret the {@link payload} */
-  type: "error" | "rpc"
-  /** Payload of the message. Either a JSON encoded RPC response or an error message **/
-  payload: string
-}
 
 /**
  * ExtensionMessage represents messages sent via
@@ -42,15 +28,17 @@ export interface MessageFromManager {
  * @remarks The browser wraps the message putting it in {@link data}
  */
 export interface ExtensionMessage {
-  data: ExtensionMessageData
+  data: ToApplication
 }
-export interface ExtensionMessageData {
+export interface ToApplication {
   /** origin is used to determine which side sent the message **/
   origin: "content-script"
   /** message is telling the `ExtensionProvider` the port has been closed **/
   disconnect?: boolean
-  /** message is the message from the manager to be forwarded to the app **/
-  message?: MessageFromManager
+  /** Type of the message. Defines how to interpret the {@link payload} */
+  type?: "error" | "rpc"
+  /** Payload of the message. Either a JSON encoded RPC response or an error message **/
+  payload?: string
 }
 
 /**
@@ -67,7 +55,7 @@ export type ExtensionListenHandler = (message: ProviderMessage) => void
  */
 export const extension = {
   /** send a message from the extension to the app **/
-  send: (message: ExtensionMessageData): void => {
+  send: (message: ToApplication): void => {
     window.postMessage(message, "*")
   },
   /**

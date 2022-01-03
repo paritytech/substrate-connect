@@ -14,10 +14,7 @@ import EventEmitter from "eventemitter3"
 import { StateEmitter, State } from "./types"
 import { NetworkMainInfo, Network } from "../types"
 import { logger } from "@polkadot/util"
-import {
-  MessageFromManager,
-  ProviderMessageToExtension,
-} from "@substrate/connect-extension-protocol"
+import { ProviderMessageToExtension } from "@substrate/connect-extension-protocol"
 
 const l = logger("Extension Connection Manager")
 
@@ -121,8 +118,7 @@ export class ConnectionManager
     const splitIdx = incPort.name.indexOf("::")
     if (splitIdx === -1) {
       const payload = `Invalid port name ${incPort.name} expected <app_name>::<chain_name>`
-      const error: MessageFromManager = { type: "error", payload }
-      incPort.postMessage(error)
+      incPort.postMessage({ type: "error", payload })
       incPort.disconnect()
       throw new Error(payload)
     }
@@ -299,8 +295,7 @@ export class ConnectionManager
   }
 
   #handleError = (app: App, e: Error): void => {
-    const error: MessageFromManager = { type: "error", payload: e.message }
-    app.port.postMessage(error)
+    app.port.postMessage({ type: "error", payload: e.message })
     app.port.disconnect()
     this.unregisterApp(app)
   }

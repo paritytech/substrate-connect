@@ -15,9 +15,8 @@ import { isUndefined, eraseRecord } from "../utils/index.js"
 import { HealthCheckError } from "../errors.js"
 import {
   ProviderMessageToExtension,
-  MessageFromManager,
   ExtensionMessage,
-  ExtensionMessageData,
+  ToApplication,
   provider,
 } from "@substrate/connect-extension-protocol"
 
@@ -135,7 +134,7 @@ export class ExtensionProvider implements ProviderInterface {
     throw new Error("clone() is not supported.")
   }
 
-  #handleMessage = (data: ExtensionMessageData): void => {
+  #handleMessage = (data: ToApplication): void => {
     if (data.disconnect && data.disconnect === true) {
       this.#isConnected = false
       this.emit("disconnected")
@@ -146,22 +145,21 @@ export class ExtensionProvider implements ProviderInterface {
       return
     }
 
-    const message = data.message as MessageFromManager
-    if (message.type === "error") {
-      return this.emit("error", new Error(message.payload))
+    const { type, payload } = data
+    if (type === "error") {
+      return this.emit("error", new Error(payload))
     }
 
-    if (message.type === "rpc") {
-      const rpcString = message.payload
-      l.debug(() => ["received", rpcString])
-      const response = JSON.parse(rpcString) as JsonRpcResponse
+    if (type === "rpc" && payload) {
+      l.debug(() => ["received", payload])
+      const response = JSON.parse(payload) as JsonRpcResponse
 
       return isUndefined(response.method)
         ? this.#onMessageResult(response)
         : this.#onMessageSubscribe(response)
     }
 
-    const errorMessage = `Unrecognised message type from extension ${message.type}`
+    const errorMessage = `Unrecognised message type from extension ${type}`
     return this.emit("error", new Error(errorMessage))
   }
 
