@@ -1,7 +1,7 @@
 import { jest } from "@jest/globals"
 import { ExtensionMessageRouter } from "./ExtensionMessageRouter"
 import {
-  ProviderMessageData,
+  ProviderMessageToExtension,
   MessageFromManager,
   ExtensionMessage,
   ExtensionMessageData,
@@ -137,23 +137,25 @@ describe("Connection and forward cases", () => {
     await waitForMessageToBePosted()
 
     // rpc
-    const rpcMessage: ProviderMessageData = {
+    const rpcMessage: ProviderMessageToExtension = {
       chainId: 1,
       appName: "test-app",
       chainName: "westend",
       action: "forward",
-      message: {
-        type: "rpc",
-        payload:
-          '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}',
-      },
+      type: "rpc",
+      payload:
+        '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}',
       origin: "extension-provider",
     }
     provider.send(rpcMessage)
     await waitForMessageToBePosted()
     expect(chrome.runtime.connect).toHaveBeenCalledTimes(1)
     expect(router.connections.length).toBe(1)
-    expect(port.postMessage).toHaveBeenCalledWith(rpcMessage.message)
+    const sample = {
+      type: rpcMessage.type,
+      payload: rpcMessage.payload,
+    }
+    expect(port.postMessage).toHaveBeenCalledWith(sample)
   })
 
   test("forwards rpc message from extension -> app", async () => {

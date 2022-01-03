@@ -6,7 +6,7 @@ import { ExtensionProvider } from "./ExtensionProvider"
 import {
   MessageFromManager,
   ProviderMessage,
-  ProviderMessageData,
+  ProviderMessageToExtension,
   ExtensionMessageData,
   extension,
 } from "@substrate/connect-extension-protocol"
@@ -37,15 +37,13 @@ test("connected and sends correct spec message", async () => {
   await ep.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: Partial<ProviderMessageData> = {
+  const expectedMessage: Partial<ProviderMessageToExtension> = {
     appName: "test",
     chainName: "Westend",
     action: "forward",
     origin: "extension-provider",
-    message: {
-      payload: '{"name":"Westend","id":"westend2"}',
-      type: "spec",
-    },
+    payload: '{"name":"Westend","id":"westend2"}',
+    type: "spec",
   }
   expect(handler).toHaveBeenCalledTimes(2)
   const { data } = handler.mock.calls[1][0] as ProviderMessage
@@ -64,25 +62,21 @@ test("connected multiple chains and sends correct spec message", async () => {
   await ep2.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage1: Partial<ProviderMessageData> = {
+  const expectedMessage1: Partial<ProviderMessageToExtension> = {
     appName: "test",
     chainName: "Westend",
     action: "forward",
     origin: "extension-provider",
-    message: {
-      payload: '{"name":"Westend","id":"westend2"}',
-      type: "spec",
-    },
+    payload: '{"name":"Westend","id":"westend2"}',
+    type: "spec",
   }
-  const expectedMessage2: Partial<ProviderMessageData> = {
+  const expectedMessage2: Partial<ProviderMessageToExtension> = {
     appName: "test2",
     chainName: "Rococo",
     action: "forward",
     origin: "extension-provider",
-    message: {
-      payload: '{"name":"Rococo","id":"rococo"}',
-      type: "spec",
-    },
+    payload: '{"name":"Rococo","id":"rococo"}',
+    type: "spec",
   }
 
   expect(handler).toHaveBeenCalledTimes(4)
@@ -99,15 +93,13 @@ test("connected parachain sends correct spec message", async () => {
   await ep.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: Partial<ProviderMessageData> = {
+  const expectedMessage: Partial<ProviderMessageToExtension> = {
     appName: "test",
     chainName: "Westend",
     action: "forward",
     origin: "extension-provider",
-    message: {
-      payload: '{"name":"Westend","id":"westend2"}',
-      type: "spec",
-    },
+    payload: '{"name":"Westend","id":"westend2"}',
+    type: "spec",
   }
   expect(handler).toHaveBeenCalledTimes(2)
   const { data } = handler.mock.calls[1][0] as ProviderMessage
@@ -119,7 +111,7 @@ test("connect sends connect message and emits connected", async () => {
   await ep.connect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: Partial<ProviderMessageData> = {
+  const expectedMessage: Partial<ProviderMessageToExtension> = {
     appName: "test",
     chainName: "Westend",
     action: "connect",
@@ -139,7 +131,7 @@ test("disconnect sends disconnect message and emits disconnected", async () => {
   void ep.disconnect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: Partial<ProviderMessageData> = {
+  const expectedMessage: Partial<ProviderMessageToExtension> = {
     appName: "test",
     chainName: "Westend",
     action: "disconnect",
