@@ -33,7 +33,7 @@
     "@material-ui/styles": "^4.11.3",
     "@polkadot/api": "^6.3.1",
     "@polkadot/extension-inject": "^0.36.1",
-    "@polkadot/keyring": "^8.1.2",
+    "@polkadot/keyring": "^8.2.2",
     "@polkadot/react-identicon": "^0.68.1",
     "@polkadot/util": "^5.5.2",
     "@polkadot/util-crypto": "^8.1.2",
