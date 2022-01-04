@@ -369,9 +369,9 @@ export class ConnectionManager
   }
 
   #handleMessage = (msg: ToExtension, port: chrome.runtime.Port): void => {
-    if (msg.type !== "rpc" && msg.type !== "spec") {
+    if ((msg.type !== "rpc" && msg.type !== "spec") || !msg.payload) {
       console.warn(
-        `Unrecognised message type ${msg.type} received from content script`,
+        `Unrecognised message type '${msg.type}' or payload '${msg.payload}' received from content script`,
       )
       return
     }
@@ -379,10 +379,6 @@ export class ConnectionManager
     if (app) {
       if (msg.type === "spec" && app.chainName) {
         return this.#handleSpecMessage(msg, app)
-      }
-
-      if (!msg.payload) {
-        return
       }
 
       if (app.chain === undefined) {

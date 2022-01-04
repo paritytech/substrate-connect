@@ -176,12 +176,7 @@ test("Tries to connect to a parachain with unknown Relay Chain", async () => {
     }),
   })
   await waitForMessageToBePosted()
-  const errorMsg = {
-    type: "error",
-    payload: "Relay chain spec was not found",
-  }
-  expect(port.postMessage).toHaveBeenCalledWith(errorMsg)
-  expect(port.disconnect).toHaveBeenCalled()
+  expect(port.postMessage).toHaveBeenCalledTimes(0)
 
   await manager.shutdown()
 })
@@ -303,6 +298,11 @@ describe("Check storage and send notification when adding an app", () => {
 
   afterAll(async () => {
     await manager.shutdown()
+  })
+
+  test("Sends a message with empty payload ", async () => {
+    port.triggerMessage({ type: "spec", payload: "" })
+    expect(chrome.storage.sync.get).toHaveBeenCalledTimes(0)
   })
 
   test("Checks storage for notifications preferences", () => {
