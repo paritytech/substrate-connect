@@ -83,22 +83,3 @@ export interface ToExtension {
  * `ExtensionProvider`.
  */
 export type ProviderListenHandler = (message: ExtensionMessage) => void
-
-/**
- * provider provides properly typed convenience wrappers around the
- * `window.postMessage` and `window.addEventListener` APIs used for message
- * passing on the \@substrate/connect `ExtensionProvider` end of communication.
- */
-export const provider = {
-  /** send a message from the app to the extension **/
-  send: (message: ToExtension): void => {
-    window.postMessage(message, "*")
-  },
-  /**
-   * Listen to messages from the `ExtensionMessageRouter` in the extension sent
-   * to the app.
-   */
-  listen: (handler: ProviderListenHandler): void => {
-    window.addEventListener("message", handler)
-  },
-}
