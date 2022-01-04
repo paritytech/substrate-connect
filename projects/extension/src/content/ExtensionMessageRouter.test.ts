@@ -1,10 +1,9 @@
 import { jest } from "@jest/globals"
 import { ExtensionMessageRouter } from "./ExtensionMessageRouter"
 import {
-  ProviderMessageData,
-  MessageFromManager,
+  ToExtension,
   ExtensionMessage,
-  ExtensionMessageData,
+  ToApplication,
   provider,
 } from "@substrate/connect-extension-protocol"
 import { MockPort } from "../mocks"
@@ -48,7 +47,7 @@ describe("Disconnect and incorrect cases", () => {
     port.triggerDisconnect()
     await waitForMessageToBePosted()
 
-    const expectedMessage: ExtensionMessageData = {
+    const expectedMessage: ToApplication = {
       origin: "content-script",
       disconnect: true,
     }
@@ -137,23 +136,25 @@ describe("Connection and forward cases", () => {
     await waitForMessageToBePosted()
 
     // rpc
-    const rpcMessage: ProviderMessageData = {
+    const rpcMessage: ToExtension = {
       chainId: 1,
       appName: "test-app",
       chainName: "westend",
       action: "forward",
-      message: {
-        type: "rpc",
-        payload:
-          '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}',
-      },
+      type: "rpc",
+      payload:
+        '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}',
       origin: "extension-provider",
     }
     provider.send(rpcMessage)
     await waitForMessageToBePosted()
     expect(chrome.runtime.connect).toHaveBeenCalledTimes(1)
     expect(router.connections.length).toBe(1)
-    expect(port.postMessage).toHaveBeenCalledWith(rpcMessage.message)
+    const sample = {
+      type: rpcMessage.type,
+      payload: rpcMessage.payload,
+    }
+    expect(port.postMessage).toHaveBeenCalledWith(sample)
   })
 
   test("forwards rpc message from extension -> app", async () => {
@@ -171,11 +172,10 @@ describe("Connection and forward cases", () => {
 
     const handler = jest.fn()
     window.addEventListener("message", handler)
-    const message: MessageFromManager = {
+    port.triggerMessage({
       type: "rpc",
       payload: '{"id:":1,"jsonrpc:"2.0","result":666}',
-    }
-    port.triggerMessage(message)
+    })
     await waitForMessageToBePosted()
 
     expect(chrome.runtime.connect).toHaveBeenCalledTimes(1)
@@ -184,7 +184,8 @@ describe("Connection and forward cases", () => {
     const forwarded = handler.mock.calls[0][0] as ExtensionMessage
     expect(forwarded.data).toEqual({
       origin: "content-script",
-      message: message,
+      type: "rpc",
+      payload: '{"id:":1,"jsonrpc:"2.0","result":666}',
     })
   })
 
@@ -205,15 +206,15 @@ describe("Connection and forward cases", () => {
 
     const handler = jest.fn()
     window.addEventListener("message", handler)
-    const errorMessage: MessageFromManager = { type: "error", payload: "Boom!" }
-    port.triggerMessage(errorMessage)
+    port.triggerMessage({ type: "error", payload: "Boom!" })
     await waitForMessageToBePosted()
 
     expect(handler).toHaveBeenCalled()
     const forwarded = handler.mock.calls[0][0] as ExtensionMessage
     expect(forwarded.data).toEqual({
       origin: "content-script",
-      message: errorMessage,
+      type: "error",
+      payload: "Boom!",
     })
   })
 })

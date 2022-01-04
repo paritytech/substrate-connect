@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
-  MessageToManager,
   ProviderMessage,
   extension,
 } from "@substrate/connect-extension-protocol"
@@ -46,7 +45,7 @@ export class ExtensionMessageRouter {
   }
 
   #establishNewConnection = ({ data }: ProviderMessage): void => {
-    const { chainName, chainId, appName, message } = data
+    const { chainName, chainId, appName } = data
     const port = chrome.runtime.connect({
       name: `${appName}::${chainName}`,
     })
@@ -54,8 +53,13 @@ export class ExtensionMessageRouter {
 
     // forward any messages: extension -> page
     port.onMessage.addListener((data): void => {
+      const { type, payload } = data
       debug(`RECEIVED MESSAGE FROM ${chainName} PORT`, data)
-      extension.send({ message: data, origin: CONTENT_SCRIPT_ORIGIN })
+      extension.send({
+        type,
+        payload,
+        origin: CONTENT_SCRIPT_ORIGIN,
+      })
     })
 
     // tell the page when the port disconnects
@@ -65,11 +69,11 @@ export class ExtensionMessageRouter {
     })
 
     this.#ports[chainId] = port
-    debug(`CONNECTED TO ${chainName} PORT`, message)
+    debug(`CONNECTED TO ${chainName} PORT`)
   }
 
   #forwardRpcMessage = ({ data }: ProviderMessage): void => {
-    const { chainName, chainId, message } = data
+    const { chainName, chainId, type, payload, parachainPayload } = data
     const port = this.#ports[chainId]
     if (!port) {
       // this is probably someone trying to abuse the extension.
@@ -79,8 +83,10 @@ export class ExtensionMessageRouter {
       return
     }
 
-    debug(`SENDING RPC MESSAGE TO ${chainName} PORT`, message)
-    port.postMessage(message)
+    const msg = { type, payload, parachainPayload }
+
+    debug(`SENDING RPC MESSAGE TO ${chainName} PORT`, msg)
+    port.postMessage(msg)
   }
 
   #disconnectPort = ({ data }: ProviderMessage): void => {
@@ -101,7 +107,7 @@ export class ExtensionMessageRouter {
 
   #handleMessage = (msg: ProviderMessage): void => {
     const data = msg.data
-    const { origin, action, message } = data
+    const { origin, action, type } = data
     if (!origin || origin !== EXTENSION_PROVIDER_ORIGIN) {
       return
     }
@@ -121,14 +127,13 @@ export class ExtensionMessageRouter {
     }
 
     if (action === "forward") {
-      const innerMessage = message as MessageToManager
-      if (!innerMessage.type) {
+      if (!type) {
         // probably someone abusing the extension
         console.warn("Malformed message - missing message.type", data)
         return
       }
 
-      if (innerMessage.type === "rpc" || innerMessage.type === "spec") {
+      if (type === "rpc" || type === "spec") {
         return this.#forwardRpcMessage(msg)
       }
 
