@@ -14,10 +14,7 @@ import EventEmitter from "eventemitter3"
 import { StateEmitter, State } from "./types"
 import { NetworkMainInfo, Network } from "../types"
 import { logger } from "@polkadot/util"
-import {
-  MessageFromManager,
-  MessageToManager,
-} from "@substrate/connect-extension-protocol"
+import { ToExtension } from "@substrate/connect-extension-protocol"
 
 const l = logger("Extension Connection Manager")
 
@@ -121,8 +118,7 @@ export class ConnectionManager
     const splitIdx = incPort.name.indexOf("::")
     if (splitIdx === -1) {
       const payload = `Invalid port name ${incPort.name} expected <app_name>::<chain_name>`
-      const error: MessageFromManager = { type: "error", payload }
-      incPort.postMessage(error)
+      incPort.postMessage({ type: "error", payload })
       incPort.disconnect()
       throw new Error(payload)
     }
@@ -299,14 +295,13 @@ export class ConnectionManager
   }
 
   #handleError = (app: App, e: Error): void => {
-    const error: MessageFromManager = { type: "error", payload: e.message }
-    app.port.postMessage(error)
+    app.port.postMessage({ type: "error", payload: e.message })
     app.port.disconnect()
     this.unregisterApp(app)
   }
 
   /** Handles the incoming message that contains Spec. */
-  #handleSpecMessage = (msg: MessageToManager, app: App): void => {
+  #handleSpecMessage = (msg: any, app: App): void => {
     if (!msg.payload) {
       const error: Error = new Error("Relay chain spec was not found")
       this.#handleError(app, error)
@@ -373,10 +368,10 @@ export class ConnectionManager
     )
   }
 
-  #handleMessage = (msg: MessageToManager, port: chrome.runtime.Port): void => {
-    if (msg.type !== "rpc" && msg.type !== "spec") {
+  #handleMessage = (msg: ToExtension, port: chrome.runtime.Port): void => {
+    if ((msg.type !== "rpc" && msg.type !== "spec") || !msg.payload) {
       console.warn(
-        `Unrecognised message type ${msg.type} received from content script`,
+        `Unrecognised message type '${msg.type}' or payload '${msg.payload}' received from content script`,
       )
       return
     }

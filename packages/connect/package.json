@@ -8,9 +8,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "engines": {
-    "node": ">=14 <=16.13.0"
-  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
@@ -25,7 +22,7 @@
     "checkSpecs": "node ../../bin/checkSpecs.js",
     "prebuild": "yarn clean && yarn checkSpecs",
     "pretest": "yarn build",
-    "test": "../../bin/node-esm $(yarn bin)/jest --colors --coverage",
+    "test": "node --no-warnings --experimental-vm-modules $(yarn bin)/jest --colors --coverage",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "build": "tsc -b && node ./src/specs/generate-specs.js",
