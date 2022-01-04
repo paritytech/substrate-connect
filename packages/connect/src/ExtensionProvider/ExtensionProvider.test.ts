@@ -1,10 +1,11 @@
 /*
  * @jest-environment jsdom
  */
+
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { jest } from "@jest/globals"
 import { ExtensionProvider } from "./ExtensionProvider"
 import {
-  ProviderMessage,
   ToExtension,
   ToApplication,
 } from "@substrate/connect-extension-protocol"
@@ -48,7 +49,7 @@ test("connected and sends correct spec message", async () => {
     type: "spec",
   }
   expect(handler).toHaveBeenCalledTimes(2)
-  const { data } = handler.mock.calls[1][0] as ProviderMessage
+  const { data } = handler.mock.calls[1][0] as MessageEvent
   expect(data).toMatchObject(expectedMessage)
 })
 
@@ -82,8 +83,8 @@ test("connected multiple chains and sends correct spec message", async () => {
   }
 
   expect(handler).toHaveBeenCalledTimes(4)
-  const data1 = handler.mock.calls[1][0] as ProviderMessage
-  const data2 = handler.mock.calls[3][0] as ProviderMessage
+  const data1 = handler.mock.calls[1][0] as MessageEvent
+  const data2 = handler.mock.calls[3][0] as MessageEvent
   expect(data1.data).toMatchObject(expectedMessage1)
   expect(data2.data).toMatchObject(expectedMessage2)
 })
@@ -104,7 +105,7 @@ test("connected parachain sends correct spec message", async () => {
     type: "spec",
   }
   expect(handler).toHaveBeenCalledTimes(2)
-  const { data } = handler.mock.calls[1][0] as ProviderMessage
+  const { data } = handler.mock.calls[1][0] as MessageEvent
   expect(data).toMatchObject(expectedMessage)
 })
 
@@ -120,7 +121,7 @@ test("connect sends connect message and emits connected", async () => {
     origin: "extension-provider",
   }
   expect(handler).toHaveBeenCalledTimes(2)
-  const { data } = handler.mock.calls[0][0] as ProviderMessage
+  const { data } = handler.mock.calls[0][0] as MessageEvent
   expect(data).toMatchObject(expectedMessage)
 })
 
@@ -140,7 +141,7 @@ test("disconnect sends disconnect message and emits disconnected", async () => {
     origin: "extension-provider",
   }
   expect(handler).toHaveBeenCalledTimes(3)
-  const { data } = handler.mock.calls[2][0] as ProviderMessage
+  const { data } = handler.mock.calls[2][0] as MessageEvent
   expect(data).toMatchObject(expectedMessage)
   expect(ep.isConnected).toBe(false)
   expect(emitted).toHaveBeenCalledTimes(1)

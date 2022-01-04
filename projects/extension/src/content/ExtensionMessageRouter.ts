@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
-  ProviderMessage,
+  ToExtension,
   ToApplication,
 } from "@substrate/connect-extension-protocol"
 import { debug } from "../utils/debug"
@@ -48,8 +48,11 @@ export class ExtensionMessageRouter {
     window.removeEventListener("message", this.#handleMessage)
   }
 
-  #establishNewConnection = ({ data }: ProviderMessage): void => {
-    const { chainName, chainId, appName } = data
+  #establishNewConnection = ({
+    chainName,
+    chainId,
+    appName,
+  }: ToExtension): void => {
     const port = chrome.runtime.connect({
       name: `${appName}::${chainName}`,
     })
@@ -76,8 +79,13 @@ export class ExtensionMessageRouter {
     debug(`CONNECTED TO ${chainName} PORT`)
   }
 
-  #forwardRpcMessage = ({ data }: ProviderMessage): void => {
-    const { chainName, chainId, type, payload, parachainPayload } = data
+  #forwardRpcMessage = ({
+    chainName,
+    chainId,
+    type,
+    payload,
+    parachainPayload,
+  }: ToExtension): void => {
     const port = this.#ports[chainId]
     if (!port) {
       // this is probably someone trying to abuse the extension.
@@ -93,8 +101,7 @@ export class ExtensionMessageRouter {
     port.postMessage(msg)
   }
 
-  #disconnectPort = ({ data }: ProviderMessage): void => {
-    const { chainName, chainId } = data
+  #disconnectPort = ({ chainName, chainId }: ToExtension): void => {
     const port = this.#ports[chainId]
 
     if (!port) {
@@ -109,7 +116,7 @@ export class ExtensionMessageRouter {
     return
   }
 
-  #handleMessage = (msg: ProviderMessage): void => {
+  #handleMessage = (msg: MessageEvent<ToExtension>): void => {
     const data = msg.data
     const { origin, action, type } = data
     if (!origin || origin !== EXTENSION_PROVIDER_ORIGIN) {
@@ -123,11 +130,11 @@ export class ExtensionMessageRouter {
     }
 
     if (action === "connect") {
-      return this.#establishNewConnection(msg)
+      return this.#establishNewConnection(data)
     }
 
     if (action === "disconnect") {
-      return this.#disconnectPort(msg)
+      return this.#disconnectPort(data)
     }
 
     if (action === "forward") {
@@ -138,7 +145,7 @@ export class ExtensionMessageRouter {
       }
 
       if (type === "rpc" || type === "spec") {
-        return this.#forwardRpcMessage(msg)
+        return this.#forwardRpcMessage(data)
       }
 
       // probably someone abusing the extension

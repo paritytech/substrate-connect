@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { jest } from "@jest/globals"
 import { ExtensionMessageRouter } from "./ExtensionMessageRouter"
 import {
   ToExtension,
-  ExtensionMessage,
   ToApplication,
 } from "@substrate/connect-extension-protocol"
 import { MockPort } from "../mocks"
@@ -56,7 +56,7 @@ describe("Disconnect and incorrect cases", () => {
     }
 
     expect(router.connections.length).toBe(0)
-    const { data } = handler.mock.calls[0][0] as ExtensionMessage
+    const { data } = handler.mock.calls[0][0] as MessageEvent
     expect(data).toEqual(expectedMessage)
   })
 
@@ -181,7 +181,7 @@ describe("Connection and forward cases", () => {
     expect(chrome.runtime.connect).toHaveBeenCalledTimes(1)
     expect(port.disconnect).not.toHaveBeenCalled()
     expect(handler).toHaveBeenCalled()
-    const forwarded = handler.mock.calls[0][0] as ExtensionMessage
+    const forwarded = handler.mock.calls[0][0] as MessageEvent
     expect(forwarded.data).toEqual({
       origin: "content-script",
       type: "rpc",
@@ -208,7 +208,7 @@ describe("Connection and forward cases", () => {
     await waitForMessageToBePosted()
 
     expect(handler).toHaveBeenCalled()
-    const forwarded = handler.mock.calls[0][0] as ExtensionMessage
+    const forwarded = handler.mock.calls[0][0] as MessageEvent
     expect(forwarded.data).toEqual({
       origin: "content-script",
       type: "error",
