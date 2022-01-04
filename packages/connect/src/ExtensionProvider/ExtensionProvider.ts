@@ -14,10 +14,9 @@ import EventEmitter from "eventemitter3"
 import { isUndefined, eraseRecord } from "../utils/index.js"
 import { HealthCheckError } from "../errors.js"
 import {
-  MessageFromManager,
-  ProviderMessageData,
+  ToExtension,
   ExtensionMessage,
-  ExtensionMessageData,
+  ToApplication,
   provider,
 } from "@substrate/connect-extension-protocol"
 
@@ -81,7 +80,7 @@ export class ExtensionProvider implements ProviderInterface {
   #chainSpecs: string
   #parachainSpecs: string
   #commonMessageData: Pick<
-    ProviderMessageData,
+    ToExtension,
     "appName" | "chainId" | "chainName" | "origin"
   >
 
@@ -135,7 +134,7 @@ export class ExtensionProvider implements ProviderInterface {
     throw new Error("clone() is not supported.")
   }
 
-  #handleMessage = (data: ExtensionMessageData): void => {
+  #handleMessage = (data: ToApplication): void => {
     if (data.disconnect && data.disconnect === true) {
       this.#isConnected = false
       this.emit("disconnected")
@@ -146,22 +145,21 @@ export class ExtensionProvider implements ProviderInterface {
       return
     }
 
-    const message = data.message as MessageFromManager
-    if (message.type === "error") {
-      return this.emit("error", new Error(message.payload))
+    const { type, payload } = data
+    if (type === "error") {
+      return this.emit("error", new Error(payload))
     }
 
-    if (message.type === "rpc") {
-      const rpcString = message.payload
-      l.debug(() => ["received", rpcString])
-      const response = JSON.parse(rpcString) as JsonRpcResponse
+    if (type === "rpc" && payload) {
+      l.debug(() => ["received", payload])
+      const response = JSON.parse(payload) as JsonRpcResponse
 
       return isUndefined(response.method)
         ? this.#onMessageResult(response)
         : this.#onMessageSubscribe(response)
     }
 
-    const errorMessage = `Unrecognised message type from extension ${message.type}`
+    const errorMessage = `Unrecognised message type from extension ${type}`
     return this.emit("error", new Error(errorMessage))
   }
 
@@ -288,7 +286,7 @@ export class ExtensionProvider implements ProviderInterface {
    * @remarks this is async to fulfill the interface with PolkadotJS
    */
   public connect(): Promise<void> {
-    const connectMsg: ProviderMessageData = {
+    const connectMsg: ToExtension = {
       ...this.#commonMessageData,
       action: "connect",
     }
@@ -296,16 +294,14 @@ export class ExtensionProvider implements ProviderInterface {
 
     // Once connect is sent - send rpc to extension that will contain the chainSpecs
     // for the extension to call addChain on smoldot
-    const specMsg: ProviderMessageData = {
+    const specMsg: ToExtension = {
       ...this.#commonMessageData,
       action: "forward",
-      message: {
-        type: "spec",
-        payload: this.#chainSpecs || "",
-      },
+      type: "spec",
+      payload: this.#chainSpecs || "",
     }
-    if (this.#parachainSpecs && specMsg.message) {
-      specMsg.message.parachainPayload = this.#parachainSpecs
+    if (this.#parachainSpecs) {
+      specMsg.parachainPayload = this.#parachainSpecs
     }
     provider.send(specMsg)
 
@@ -327,7 +323,7 @@ export class ExtensionProvider implements ProviderInterface {
    * telling it to disconnect the port with the background manager.
    */
   public disconnect(): Promise<void> {
-    const disconnectMsg: ProviderMessageData = {
+    const disconnectMsg: ToExtension = {
       ...this.#commonMessageData,
       action: "disconnect",
     }
@@ -397,13 +393,11 @@ export class ExtensionProvider implements ProviderInterface {
         subscription,
       }
 
-      const rpcMsg: ProviderMessageData = {
+      const rpcMsg: ToExtension = {
         ...this.#commonMessageData,
         action: "forward",
-        message: {
-          type: "rpc",
-          payload: json,
-        },
+        type: "rpc",
+        payload: json,
       }
       provider.send(rpcMsg)
     })
