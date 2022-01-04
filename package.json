@@ -48,7 +48,6 @@
   },
   "devDependencies": {
     "@parcel/transformer-image": "2.0.0",
-    "copyfiles": "^2.3.0",
     "eslint-config-prettier": "^8.3.0",
     "husky": "^6.0.0",
     "lint-staged": ">=10",
