@@ -300,7 +300,7 @@ describe("Check storage and send notification when adding an app", () => {
     await manager.shutdown()
   })
 
-  test("Sends a message with empty payload ", async () => {
+  test("Sends a message with empty payload ", () => {
     port.triggerMessage({ type: "spec", payload: "" })
     expect(chrome.storage.sync.get).toHaveBeenCalledTimes(0)
   })
