@@ -49,25 +49,6 @@ export interface ToApplication {
 export type ExtensionListenHandler = (message: ProviderMessage) => void
 
 /**
- * extension provides strongly typed convenience wrappers around
- * the `window.postMessage` and `window.addEventListener` APIs used for
- * message passing on the extension side of communication.
- */
-export const extension = {
-  /** send a message from the extension to the app **/
-  send: (message: ToApplication): void => {
-    window.postMessage(message, "*")
-  },
-  /**
-   * Listen to messages from the `ExtensionProvider` in the app sent to
-   * the extension.
-   */
-  listen: (handler: ExtensionListenHandler): void => {
-    window.addEventListener("message", handler)
-  },
-}
-
-/**
  * ProviderMessage represents messages sent via `window.postMessage` from
  * `ExtensionProvider` to `ExtensionMessageRouter` as received by the extension.
  *
