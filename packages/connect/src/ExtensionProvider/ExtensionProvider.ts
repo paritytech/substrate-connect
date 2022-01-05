@@ -15,7 +15,6 @@ import { isUndefined, eraseRecord } from "../utils/index.js"
 import { HealthCheckError } from "../errors.js"
 import {
   ToExtension,
-  ExtensionMessage,
   ToApplication,
 } from "@substrate/connect-extension-protocol"
 
@@ -307,11 +306,14 @@ export class ExtensionProvider implements ProviderInterface {
       specMsg.parachainPayload = this.#parachainSpecs
     }
     sendMessage(specMsg)
-    window.addEventListener("message", ({ data }: ExtensionMessage) => {
-      if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
-        this.#handleMessage(data)
-      }
-    })
+    window.addEventListener(
+      "message",
+      ({ data }: MessageEvent<ToApplication>) => {
+        if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
+          this.#handleMessage(data)
+        }
+      },
+    )
     this.#connectionStatePingerId = setInterval(
       this.#checkClientPeercount,
       this.healthPingerInterval,
