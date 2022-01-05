@@ -17,7 +17,6 @@ import {
   ToExtension,
   ExtensionMessage,
   ToApplication,
-  provider,
 } from "@substrate/connect-extension-protocol"
 
 const CONTENT_SCRIPT_ORIGIN = "content-script"
@@ -62,6 +61,10 @@ const ANGLICISMS: { [index: string]: string } = {
  */
 const CONNECTION_STATE_PINGER_INTERVAL = 2000
 let nextChainId = 1
+
+const sendMessage = (msg: ToExtension): void => {
+  window.postMessage(msg, "*")
+}
 
 /**
  * The ExtensionProvider allows interacting with a smoldot-based WASM light
@@ -290,7 +293,7 @@ export class ExtensionProvider implements ProviderInterface {
       ...this.#commonMessageData,
       action: "connect",
     }
-    provider.send(connectMsg)
+    sendMessage(connectMsg)
 
     // Once connect is sent - send rpc to extension that will contain the chainSpecs
     // for the extension to call addChain on smoldot
@@ -303,9 +306,8 @@ export class ExtensionProvider implements ProviderInterface {
     if (this.#parachainSpecs) {
       specMsg.parachainPayload = this.#parachainSpecs
     }
-    provider.send(specMsg)
-
-    provider.listen(({ data }: ExtensionMessage) => {
+    sendMessage(specMsg)
+    window.addEventListener("message", ({ data }: ExtensionMessage) => {
       if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
         this.#handleMessage(data)
       }
@@ -328,7 +330,7 @@ export class ExtensionProvider implements ProviderInterface {
       action: "disconnect",
     }
 
-    provider.send(disconnectMsg)
+    sendMessage(disconnectMsg)
     if (this.#connectionStatePingerId !== null) {
       clearInterval(this.#connectionStatePingerId)
     }
@@ -399,7 +401,7 @@ export class ExtensionProvider implements ProviderInterface {
         type: "rpc",
         payload: json,
       }
-      provider.send(rpcMsg)
+      sendMessage(rpcMsg)
     })
   }
 

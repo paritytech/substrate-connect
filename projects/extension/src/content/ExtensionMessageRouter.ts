@@ -2,12 +2,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   ProviderMessage,
-  extension,
+  ToApplication,
 } from "@substrate/connect-extension-protocol"
 import { debug } from "../utils/debug"
 
 const CONTENT_SCRIPT_ORIGIN = "content-script"
 const EXTENSION_PROVIDER_ORIGIN = "extension-provider"
+
+const sendMessage = (msg: ToApplication): void => {
+  window.postMessage(msg, "*")
+}
 
 /* ExtensionMessageRouter is the part of the content script that listens for
  * messages that the ExtensionProvider in an app sends using `window.postMessage`.
@@ -36,7 +40,7 @@ export class ExtensionMessageRouter {
 
   /** listen starts listening for messages sent by an app.  */
   listen(): void {
-    extension.listen(this.#handleMessage)
+    window.addEventListener("message", this.#handleMessage)
   }
 
   /** stop stops listening for messages sent by apps.  */
@@ -55,7 +59,7 @@ export class ExtensionMessageRouter {
     port.onMessage.addListener((data): void => {
       const { type, payload } = data
       debug(`RECEIVED MESSAGE FROM ${chainName} PORT`, data)
-      extension.send({
+      sendMessage({
         type,
         payload,
         origin: CONTENT_SCRIPT_ORIGIN,
@@ -64,7 +68,7 @@ export class ExtensionMessageRouter {
 
     // tell the page when the port disconnects
     port.onDisconnect.addListener(() => {
-      extension.send({ origin: "content-script", disconnect: true })
+      sendMessage({ origin: "content-script", disconnect: true })
       delete this.#ports[chainId]
     })
 

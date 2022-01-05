@@ -7,7 +7,6 @@ import {
   ProviderMessage,
   ToExtension,
   ToApplication,
-  extension,
 } from "@substrate/connect-extension-protocol"
 
 const waitForMessageToBePosted = (): Promise<null> => {
@@ -16,13 +15,17 @@ const waitForMessageToBePosted = (): Promise<null> => {
   return new Promise((resolve) => setTimeout(resolve, 10, null))
 }
 
+const sendMessage = (msg: ToApplication): void => {
+  window.postMessage(msg, "*")
+}
+
 const westendSpec = JSON.stringify({ name: "Westend", id: "westend2" })
 const rococoSpec = JSON.stringify({ name: "Rococo", id: "rococo" })
 
 let handler = jest.fn()
 beforeEach(() => {
   handler = jest.fn()
-  extension.listen(handler)
+  window.addEventListener("message", handler)
 })
 
 afterEach(() => {
@@ -150,7 +153,7 @@ test("disconnects and emits disconnected when it receives a disconnect message",
 
   ep.on("disconnected", emitted)
   await waitForMessageToBePosted()
-  extension.send({
+  sendMessage({
     origin: "content-script",
     disconnect: true,
   })
@@ -170,7 +173,7 @@ test("emits error when it receives an error message", async () => {
   }
   const errorHandler = jest.fn()
   ep.on("error", errorHandler)
-  window.postMessage(errorMessage, "*")
+  sendMessage(errorMessage)
   await waitForMessageToBePosted()
 
   expect(errorHandler).toHaveBeenCalled()

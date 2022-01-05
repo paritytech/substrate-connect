@@ -4,7 +4,6 @@ import {
   ToExtension,
   ExtensionMessage,
   ToApplication,
-  provider,
 } from "@substrate/connect-extension-protocol"
 import { MockPort } from "../mocks"
 import { chrome } from "jest-chrome"
@@ -16,6 +15,10 @@ const waitForMessageToBePosted = (): Promise<null> => {
   // window.postMessge is async so we must do a short setTimeout to yield to
   // the event loop
   return new Promise((resolve) => setTimeout(resolve, 10, null))
+}
+
+const sendMessage = (msg: ToExtension): void => {
+  window.postMessage(msg, "*")
 }
 
 describe("Disconnect and incorrect cases", () => {
@@ -33,7 +36,7 @@ describe("Disconnect and incorrect cases", () => {
     const port = new MockPort("test-app::westend")
     const connect = chrome.runtime.connect
     connect.mockImplementation(() => port)
-    provider.send({
+    sendMessage({
       chainId: 1,
       appName: "test-app",
       chainName: "westend",
@@ -43,7 +46,7 @@ describe("Disconnect and incorrect cases", () => {
     await waitForMessageToBePosted()
 
     const handler = jest.fn()
-    provider.listen(handler)
+    window.addEventListener("message", handler)
     port.triggerDisconnect()
     await waitForMessageToBePosted()
 
@@ -58,12 +61,9 @@ describe("Disconnect and incorrect cases", () => {
   })
 
   test("incorrect origin does nothing to connections", async () => {
-    window.postMessage(
-      {
-        origin: "something-else",
-      },
-      "*",
-    )
+    sendMessage({
+      origin: "something-else",
+    } as unknown as ToExtension)
 
     await waitForMessageToBePosted()
     expect(chrome.runtime.connect).not.toHaveBeenCalled()
@@ -71,7 +71,7 @@ describe("Disconnect and incorrect cases", () => {
   })
 
   test("disconnect disconnects established connection", async () => {
-    provider.send({
+    sendMessage({
       chainId: 1,
       appName: "test-app",
       chainName: "westend",
@@ -80,7 +80,7 @@ describe("Disconnect and incorrect cases", () => {
     })
     await waitForMessageToBePosted()
 
-    provider.send({
+    sendMessage({
       chainId: 1,
       appName: "test-app",
       chainName: "westend",
@@ -108,7 +108,7 @@ describe("Connection and forward cases", () => {
   })
 
   test("connect establishes a port", async () => {
-    provider.send({
+    sendMessage({
       chainId: 1,
       appName: "test-app",
       chainName: "westend",
@@ -126,7 +126,7 @@ describe("Connection and forward cases", () => {
     const port = new MockPort("test-app::westend")
     chrome.runtime.connect.mockImplementation(() => port)
     // connect
-    provider.send({
+    sendMessage({
       chainId: 1,
       appName: "test-app",
       chainName: "westend",
@@ -146,7 +146,7 @@ describe("Connection and forward cases", () => {
         '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}',
       origin: "extension-provider",
     }
-    provider.send(rpcMessage)
+    sendMessage(rpcMessage)
     await waitForMessageToBePosted()
     expect(chrome.runtime.connect).toHaveBeenCalledTimes(1)
     expect(router.connections.length).toBe(1)
@@ -161,7 +161,7 @@ describe("Connection and forward cases", () => {
     const port = new MockPort("test-app::westend")
     chrome.runtime.connect.mockImplementation(() => port)
     // connect
-    provider.send({
+    sendMessage({
       chainId: 1,
       appName: "test-app",
       chainName: "westend",
@@ -193,15 +193,13 @@ describe("Connection and forward cases", () => {
     const port = new MockPort("test-app::westend")
     chrome.runtime.connect.mockImplementation(() => port)
     // connect
-    window.postMessage(
-      {
-        appName: "test-app",
-        chainName: "westend",
-        action: "connect",
-        origin: "extension-provider",
-      },
-      "*",
-    )
+    sendMessage({
+      chainId: 1,
+      appName: "test-app",
+      chainName: "westend",
+      action: "connect",
+      origin: "extension-provider",
+    })
     await waitForMessageToBePosted()
 
     const handler = jest.fn()
