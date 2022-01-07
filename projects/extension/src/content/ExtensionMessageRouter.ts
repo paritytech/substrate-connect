@@ -71,7 +71,11 @@ export class ExtensionMessageRouter {
 
     // tell the page when the port disconnects
     port.onDisconnect.addListener(() => {
-      sendMessage({ origin: "content-script", disconnect: true })
+      sendMessage({
+        origin: "content-script",
+        type: "error",
+        payload: "Lost communication with substrate-connect extension",
+      })
       delete this.#ports[chainId]
     })
 
