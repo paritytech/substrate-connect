@@ -32,7 +32,7 @@ describe("Disconnect and incorrect cases", () => {
     router.stop()
   })
 
-  test("port disconnecting sends disconnect message and removes port", async () => {
+  test("port disconnecting sends an error message and removes port", async () => {
     const port = new MockPort("test-app::westend")
     const connect = chrome.runtime.connect
     connect.mockImplementation(() => port)
@@ -52,12 +52,12 @@ describe("Disconnect and incorrect cases", () => {
 
     const expectedMessage: ToApplication = {
       origin: "content-script",
-      disconnect: true,
+      type: "error",
     }
 
     expect(router.connections.length).toBe(0)
     const { data } = handler.mock.calls[0][0] as MessageEvent
-    expect(data).toEqual(expectedMessage)
+    expect(data).toMatchObject(expectedMessage)
   })
 
   test("incorrect origin does nothing to connections", async () => {

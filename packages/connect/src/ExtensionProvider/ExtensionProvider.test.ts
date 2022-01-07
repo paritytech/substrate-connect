@@ -147,16 +147,17 @@ test("disconnect sends disconnect message and emits disconnected", async () => {
   expect(emitted).toHaveBeenCalledTimes(1)
 })
 
-test("disconnects and emits disconnected when it receives a disconnect message", async () => {
+test("disconnects and emits an error when it receives an error message", async () => {
   const ep = new ExtensionProvider("test", westendSpec)
   const emitted = jest.fn()
   await ep.connect()
 
-  ep.on("disconnected", emitted)
+  ep.on("error", emitted)
   await waitForMessageToBePosted()
   sendMessage({
     origin: "content-script",
-    disconnect: true,
+    type: "error",
+    payload: "disconnected",
   })
   await waitForMessageToBePosted()
   expect(emitted).toHaveBeenCalled()

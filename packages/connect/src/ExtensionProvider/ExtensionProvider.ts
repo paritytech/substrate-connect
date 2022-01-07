@@ -137,19 +137,15 @@ export class ExtensionProvider implements ProviderInterface {
   }
 
   #handleMessage = (data: ToApplication): void => {
-    if (data.disconnect && data.disconnect === true) {
+    const { type, payload } = data
+    if (type === "error") {
       this.#isConnected = false
-      this.emit("disconnected")
-      const error = new Error("Disconnected from the extension")
+      const error = new Error(payload)
+      this.emit("error", error)
       // reject all hanging requests
       eraseRecord(this.#handlers, (h) => h.callback(error, undefined))
       eraseRecord(this.#waitingForId)
       return
-    }
-
-    const { type, payload } = data
-    if (type === "error") {
-      return this.emit("error", new Error(payload))
     }
 
     if (type === "rpc" && payload) {

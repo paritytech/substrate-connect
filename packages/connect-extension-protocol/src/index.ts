@@ -23,8 +23,6 @@
 export interface ToApplication {
   /** origin is used to determine which side sent the message **/
   origin: "content-script"
-  /** message is telling the `ExtensionProvider` the port has been closed **/
-  disconnect?: boolean
   /** Type of the message. Defines how to interpret the {@link payload} */
   type?: "error" | "rpc"
   /** Payload of the message. Either a JSON encoded RPC response or an error message **/
