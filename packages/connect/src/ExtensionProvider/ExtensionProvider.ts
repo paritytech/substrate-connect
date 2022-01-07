@@ -280,7 +280,6 @@ export class ExtensionProvider implements ProviderInterface {
     // for the extension to call addChain on smoldot
     const specMsg: ToExtension = {
       ...this.#commonMessageData,
-      action: "forward",
       type: "spec",
       payload: this.#chainSpecs || "",
     }
@@ -309,12 +308,6 @@ export class ExtensionProvider implements ProviderInterface {
    * telling it to disconnect the port with the background manager.
    */
   public disconnect(): Promise<void> {
-    const disconnectMsg: ToExtension = {
-      ...this.#commonMessageData,
-      action: "disconnect",
-    }
-
-    sendMessage(disconnectMsg)
     if (this.#connectionStatePingerId !== null) {
       clearInterval(this.#connectionStatePingerId)
     }
@@ -381,7 +374,6 @@ export class ExtensionProvider implements ProviderInterface {
 
       const rpcMsg: ToExtension = {
         ...this.#commonMessageData,
-        action: "forward",
         type: "rpc",
         payload: json,
       }

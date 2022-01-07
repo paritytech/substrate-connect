@@ -36,12 +36,10 @@ export interface ToExtension {
   chainId: number
   /** The name of the blockchain network the app is talking to **/
   chainName: string
-  /** What action the `ExtensionMessageRouter` should take **/
-  action: "forward" | "disconnect"
   /** The message the `ExtensionMessageRouter` should forward to the background **/
   /** Type of the message. Defines how to interpret the {@link payload} */
-  type?: "rpc" | "spec"
+  type: "rpc" | "spec"
   /** Payload of the message -  a JSON encoded RPC request **/
-  payload?: string
+  payload: string
   parachainPayload?: string
 }

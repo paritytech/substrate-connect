@@ -40,7 +40,6 @@ describe("Disconnect and incorrect cases", () => {
       chainId: 1,
       chainName: "westend",
       type: "spec",
-      action: "forward",
       payload: "westend",
       origin: "extension-provider",
     })
@@ -70,29 +69,6 @@ describe("Disconnect and incorrect cases", () => {
     expect(chrome.runtime.connect).not.toHaveBeenCalled()
     expect(router.connections.length).toBe(0)
   })
-
-  test("disconnect disconnects established connection", async () => {
-    sendMessage({
-      chainId: 1,
-      chainName: "westend",
-      type: "spec",
-      action: "forward",
-      payload: "westend",
-      origin: "extension-provider",
-    })
-    await waitForMessageToBePosted()
-
-    sendMessage({
-      chainId: 1,
-      chainName: "westend",
-      action: "disconnect",
-      origin: "extension-provider",
-    })
-    await waitForMessageToBePosted()
-
-    expect(chrome.runtime.connect).toHaveBeenCalledTimes(1)
-    expect(router.connections.length).toBe(0)
-  })
 })
 
 describe("Connection and forward cases", () => {
@@ -113,7 +89,6 @@ describe("Connection and forward cases", () => {
       chainId: 1,
       chainName: "westend",
       type: "spec",
-      action: "forward",
       payload: "westend",
       origin: "extension-provider",
     })
@@ -132,7 +107,6 @@ describe("Connection and forward cases", () => {
       chainId: 1,
       chainName: "westend",
       type: "spec",
-      action: "forward",
       payload: "westend",
       origin: "extension-provider",
     })
@@ -142,7 +116,6 @@ describe("Connection and forward cases", () => {
     const rpcMessage: ToExtension = {
       chainId: 1,
       chainName: "westend",
-      action: "forward",
       type: "rpc",
       payload:
         '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}',
@@ -167,7 +140,6 @@ describe("Connection and forward cases", () => {
       chainId: 1,
       chainName: "westend",
       type: "spec",
-      action: "forward",
       payload: "westend",
       origin: "extension-provider",
     })
@@ -200,7 +172,6 @@ describe("Connection and forward cases", () => {
       chainId: 1,
       chainName: "westend",
       type: "spec",
-      action: "forward",
       payload: "westend",
       origin: "extension-provider",
     })

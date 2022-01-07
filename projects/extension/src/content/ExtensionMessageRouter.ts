@@ -52,6 +52,7 @@ export class ExtensionMessageRouter {
     const port = chrome.runtime.connect({
       name: `${window.location.href}::${chainName}`,
     })
+
     debug(`CONNECTED ${chainName} PORT`, port)
 
     // forward any messages: extension -> page
@@ -101,56 +102,28 @@ export class ExtensionMessageRouter {
     port.postMessage(msg)
   }
 
-  #disconnectPort = ({ chainName, chainId }: ToExtension): void => {
-    const port = this.#ports[chainId]
-
-    if (!port) {
-      // probably someone trying to abuse the extension.
-      console.warn(`App requested to disconnect ${chainName} - no port found`)
-      return
-    }
-
-    port.disconnect()
-    debug(`DISCONNECTED ${chainName} PORT`, port)
-    delete this.#ports[chainId]
-    return
-  }
-
   #handleMessage = (msg: MessageEvent<ToExtension>): void => {
     const data = msg.data
-    const { origin, action, type } = data
+    const { origin, type } = data
     if (!origin || origin !== EXTENSION_PROVIDER_ORIGIN) {
       return
     }
 
     debug(`RECEIVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data)
 
-    if (!action) {
-      return console.warn("Malformed message - missing action", msg)
-    }
-
-    if (action === "disconnect") {
-      return this.#disconnectPort(data)
-    }
-
-    if (action === "forward") {
-      if (!type) {
-        // probably someone abusing the extension
-        console.warn("Malformed message - missing message.type", data)
-        return
-      }
-
-      if (type === "spec") this.#establishNewConnection(data)
-
-      if (type === "rpc" || type === "spec") {
-        return this.#forwardRpcMessage(data)
-      }
-
+    if (!type) {
       // probably someone abusing the extension
-      return console.warn("Malformed message - unrecognised message.type", data)
+      console.warn("Malformed message - missing message.type", data)
+      return
+    }
+
+    if (type === "spec") this.#establishNewConnection(data)
+
+    if (type === "rpc" || type === "spec") {
+      return this.#forwardRpcMessage(data)
     }
 
     // probably someone abusing the extension
-    return console.warn("Malformed message - unrecognised action", data)
+    return console.warn("Malformed message - unrecognised message.type", data)
   }
 }
