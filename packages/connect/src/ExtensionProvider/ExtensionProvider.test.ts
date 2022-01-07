@@ -42,7 +42,6 @@ test("connected and sends correct spec message", async () => {
 
   const expectedMessage: Partial<ToExtension> = {
     chainName: "Westend",
-    action: "forward",
     origin: "extension-provider",
     payload: '{"name":"Westend","id":"westend2"}',
     type: "spec",
@@ -66,14 +65,12 @@ test("connected multiple chains and sends correct spec message", async () => {
 
   const expectedMessage1: Partial<ToExtension> = {
     chainName: "Westend",
-    action: "forward",
     origin: "extension-provider",
     payload: '{"name":"Westend","id":"westend2"}',
     type: "spec",
   }
   const expectedMessage2: Partial<ToExtension> = {
     chainName: "Rococo",
-    action: "forward",
     origin: "extension-provider",
     payload: '{"name":"Rococo","id":"rococo"}',
     type: "spec",
@@ -95,7 +92,6 @@ test("connected parachain sends correct spec message", async () => {
 
   const expectedMessage: Partial<ToExtension> = {
     chainName: "Westend",
-    action: "forward",
     origin: "extension-provider",
     payload: '{"name":"Westend","id":"westend2"}',
     type: "spec",
@@ -114,14 +110,6 @@ test("disconnect sends disconnect message and emits disconnected", async () => {
   void ep.disconnect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: Partial<ToExtension> = {
-    chainName: "Westend",
-    action: "disconnect",
-    origin: "extension-provider",
-  }
-  expect(handler).toHaveBeenCalledTimes(2)
-  const { data } = handler.mock.calls[1][0] as MessageEvent
-  expect(data).toMatchObject(expectedMessage)
   expect(ep.isConnected).toBe(false)
   expect(emitted).toHaveBeenCalledTimes(1)
 })
