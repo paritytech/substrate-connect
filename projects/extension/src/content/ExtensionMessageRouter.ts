@@ -129,10 +129,6 @@ export class ExtensionMessageRouter {
       return console.warn("Malformed message - missing action", msg)
     }
 
-    if (action === "connect") {
-      return this.#establishNewConnection(data)
-    }
-
     if (action === "disconnect") {
       return this.#disconnectPort(data)
     }
@@ -143,6 +139,8 @@ export class ExtensionMessageRouter {
         console.warn("Malformed message - missing message.type", data)
         return
       }
+
+      if (type === "spec") this.#establishNewConnection(data)
 
       if (type === "rpc" || type === "spec") {
         return this.#forwardRpcMessage(data)

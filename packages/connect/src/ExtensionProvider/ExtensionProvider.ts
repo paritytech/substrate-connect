@@ -276,12 +276,6 @@ export class ExtensionProvider implements ProviderInterface {
    * @remarks this is async to fulfill the interface with PolkadotJS
    */
   public connect(): Promise<void> {
-    const connectMsg: ToExtension = {
-      ...this.#commonMessageData,
-      action: "connect",
-    }
-    sendMessage(connectMsg)
-
     // Once connect is sent - send rpc to extension that will contain the chainSpecs
     // for the extension to call addChain on smoldot
     const specMsg: ToExtension = {
