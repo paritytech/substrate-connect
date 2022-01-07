@@ -13,10 +13,7 @@ window.onload = () => {
   ui.showSyncing()
   ;(async () => {
     try {
-      const provider = new ScProvider(
-        "Smoldot Browser Demo",
-        SupportedChains.westend,
-      )
+      const provider = new ScProvider(SupportedChains.westend)
       const api = await ApiPromise.create({ provider })
 
       const header = await api.rpc.chain.getHeader()

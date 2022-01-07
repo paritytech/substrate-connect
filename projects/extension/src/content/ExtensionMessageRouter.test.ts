@@ -38,7 +38,6 @@ describe("Disconnect and incorrect cases", () => {
     connect.mockImplementation(() => port)
     sendMessage({
       chainId: 1,
-      appName: "test-app",
       chainName: "westend",
       action: "connect",
       origin: "extension-provider",
@@ -73,7 +72,6 @@ describe("Disconnect and incorrect cases", () => {
   test("disconnect disconnects established connection", async () => {
     sendMessage({
       chainId: 1,
-      appName: "test-app",
       chainName: "westend",
       action: "connect",
       origin: "extension-provider",
@@ -82,7 +80,6 @@ describe("Disconnect and incorrect cases", () => {
 
     sendMessage({
       chainId: 1,
-      appName: "test-app",
       chainName: "westend",
       action: "disconnect",
       origin: "extension-provider",
@@ -110,7 +107,6 @@ describe("Connection and forward cases", () => {
   test("connect establishes a port", async () => {
     sendMessage({
       chainId: 1,
-      appName: "test-app",
       chainName: "westend",
       action: "connect",
       origin: "extension-provider",
@@ -128,7 +124,6 @@ describe("Connection and forward cases", () => {
     // connect
     sendMessage({
       chainId: 1,
-      appName: "test-app",
       chainName: "westend",
       action: "connect",
       origin: "extension-provider",
@@ -138,7 +133,6 @@ describe("Connection and forward cases", () => {
     // rpc
     const rpcMessage: ToExtension = {
       chainId: 1,
-      appName: "test-app",
       chainName: "westend",
       action: "forward",
       type: "rpc",
@@ -163,7 +157,6 @@ describe("Connection and forward cases", () => {
     // connect
     sendMessage({
       chainId: 1,
-      appName: "test-app",
       chainName: "westend",
       action: "connect",
       origin: "extension-provider",
@@ -195,7 +188,6 @@ describe("Connection and forward cases", () => {
     // connect
     sendMessage({
       chainId: 1,
-      appName: "test-app",
       chainName: "westend",
       action: "connect",
       origin: "extension-provider",

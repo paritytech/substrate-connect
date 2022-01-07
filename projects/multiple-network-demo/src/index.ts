@@ -9,10 +9,7 @@ window.onload = () => {
   void (async () => {
     try {
       const westend = async () => {
-        const provider = new ScProvider(
-          "Multiple Network Demo",
-          SupportedChains.westend,
-        )
+        const provider = new ScProvider(SupportedChains.westend)
         const westend = await ApiPromise.create({ provider })
         const westendUI = document.getElementById("westend")
         const westendHead = await westend.rpc.chain.getHeader()
@@ -25,10 +22,7 @@ window.onload = () => {
       }
 
       const kusama = async () => {
-        const provider = new ScProvider(
-          "Multiple Network Demo",
-          SupportedChains.kusama,
-        )
+        const provider = new ScProvider(SupportedChains.kusama)
         const kusama = await ApiPromise.create({ provider })
         const kusamaUI = document.getElementById("kusama")
         const kusamaHead = await kusama.rpc.chain.getHeader()
@@ -41,10 +35,7 @@ window.onload = () => {
       }
 
       const polkadot = async () => {
-        const provider = new ScProvider(
-          "Multiple Network Demo",
-          SupportedChains.polkadot,
-        )
+        const provider = new ScProvider(SupportedChains.polkadot)
         const polkadot = await ApiPromise.create({ provider })
         const polkadotUI = document.getElementById("polkadot")
         const polkadotHead = await polkadot.rpc.chain.getHeader()
@@ -57,10 +48,7 @@ window.onload = () => {
       }
 
       const rococo = async () => {
-        const provider = new ScProvider(
-          "Multiple Network Demo",
-          SupportedChains.rococo,
-        )
+        const provider = new ScProvider(SupportedChains.rococo)
         const rococo = await ApiPromise.create({ provider })
         const rococoUI = document.getElementById("rococo")
         const rococoHead = await rococo.rpc.chain.getHeader()

@@ -32,8 +32,6 @@ export interface ToApplication {
 export interface ToExtension {
   /** origin is used to determine which side sent the message **/
   origin: "extension-provider"
-  /** The name of the app to be used for display purposes in the extension UI **/
-  appName: string
   /** The uniqueId for extension multiplexing **/
   chainId: number
   /** The name of the blockchain network the app is talking to **/
