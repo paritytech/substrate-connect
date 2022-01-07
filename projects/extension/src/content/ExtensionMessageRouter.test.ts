@@ -50,7 +50,7 @@ describe("Disconnect and incorrect cases", () => {
     port.triggerDisconnect()
     await waitForMessageToBePosted()
 
-    const expectedMessage: ToApplication = {
+    const expectedMessage: Partial<ToApplication> = {
       origin: "content-script",
       type: "error",
     }

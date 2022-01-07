@@ -24,9 +24,9 @@ export interface ToApplication {
   /** origin is used to determine which side sent the message **/
   origin: "content-script"
   /** Type of the message. Defines how to interpret the {@link payload} */
-  type?: "error" | "rpc"
+  type: "error" | "rpc"
   /** Payload of the message. Either a JSON encoded RPC response or an error message **/
-  payload?: string
+  payload: string
 }
 
 export interface ToExtension {
