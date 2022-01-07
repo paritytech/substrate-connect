@@ -48,13 +48,9 @@ export class ExtensionMessageRouter {
     window.removeEventListener("message", this.#handleMessage)
   }
 
-  #establishNewConnection = ({
-    chainName,
-    chainId,
-    appName,
-  }: ToExtension): void => {
+  #establishNewConnection = ({ chainName, chainId }: ToExtension): void => {
     const port = chrome.runtime.connect({
-      name: `${appName}::${chainName}`,
+      name: `${window.location.href}::${chainName}`,
     })
     debug(`CONNECTED ${chainName} PORT`, port)
 

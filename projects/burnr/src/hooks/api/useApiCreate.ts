@@ -21,7 +21,7 @@ export default function useApiCreate(): ApiPromise {
   useEffect((): void => {
     const choseSmoldot = async (endpoint: string): Promise<void> => {
       try {
-        const provider = new ScProvider("burnr wallet", endpoint)
+        const provider = new ScProvider(endpoint)
         const api = await ApiPromise.create({ provider })
         l.log(`Burnr is now connected to ${endpoint}`)
         mountedRef.current && setApi(api)

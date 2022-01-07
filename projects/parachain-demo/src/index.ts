@@ -16,7 +16,6 @@ window.onload = () => {
   ;(async () => {
     try {
       const provider = new ScProvider(
-        "Parachain Demo",
         SupportedChains.westend,
         JSON.stringify(westmint),
       )
