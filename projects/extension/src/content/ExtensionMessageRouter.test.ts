@@ -39,7 +39,9 @@ describe("Disconnect and incorrect cases", () => {
     sendMessage({
       chainId: 1,
       chainName: "westend",
-      action: "connect",
+      type: "spec",
+      action: "forward",
+      payload: "westend",
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -73,7 +75,9 @@ describe("Disconnect and incorrect cases", () => {
     sendMessage({
       chainId: 1,
       chainName: "westend",
-      action: "connect",
+      type: "spec",
+      action: "forward",
+      payload: "westend",
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -108,7 +112,9 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: 1,
       chainName: "westend",
-      action: "connect",
+      type: "spec",
+      action: "forward",
+      payload: "westend",
       origin: "extension-provider",
     })
 
@@ -125,7 +131,9 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: 1,
       chainName: "westend",
-      action: "connect",
+      type: "spec",
+      action: "forward",
+      payload: "westend",
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -158,7 +166,9 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: 1,
       chainName: "westend",
-      action: "connect",
+      type: "spec",
+      action: "forward",
+      payload: "westend",
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -189,7 +199,9 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: 1,
       chainName: "westend",
-      action: "connect",
+      type: "spec",
+      action: "forward",
+      payload: "westend",
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()

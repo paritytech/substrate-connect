@@ -47,8 +47,8 @@ test("connected and sends correct spec message", async () => {
     payload: '{"name":"Westend","id":"westend2"}',
     type: "spec",
   }
-  expect(handler).toHaveBeenCalledTimes(2)
-  const { data } = handler.mock.calls[1][0] as MessageEvent
+  expect(handler).toHaveBeenCalledTimes(1)
+  const { data } = handler.mock.calls[0][0] as MessageEvent
   expect(data).toMatchObject(expectedMessage)
 })
 
@@ -79,9 +79,9 @@ test("connected multiple chains and sends correct spec message", async () => {
     type: "spec",
   }
 
-  expect(handler).toHaveBeenCalledTimes(4)
-  const data1 = handler.mock.calls[1][0] as MessageEvent
-  const data2 = handler.mock.calls[3][0] as MessageEvent
+  expect(handler).toHaveBeenCalledTimes(2)
+  const data1 = handler.mock.calls[0][0] as MessageEvent
+  const data2 = handler.mock.calls[1][0] as MessageEvent
   expect(data1.data).toMatchObject(expectedMessage1)
   expect(data2.data).toMatchObject(expectedMessage2)
 })
@@ -100,22 +100,7 @@ test("connected parachain sends correct spec message", async () => {
     payload: '{"name":"Westend","id":"westend2"}',
     type: "spec",
   }
-  expect(handler).toHaveBeenCalledTimes(2)
-  const { data } = handler.mock.calls[1][0] as MessageEvent
-  expect(data).toMatchObject(expectedMessage)
-})
-
-test("connect sends connect message and emits connected", async () => {
-  const ep = new ExtensionProvider(westendSpec)
-  await ep.connect()
-  await waitForMessageToBePosted()
-
-  const expectedMessage: Partial<ToExtension> = {
-    chainName: "Westend",
-    action: "connect",
-    origin: "extension-provider",
-  }
-  expect(handler).toHaveBeenCalledTimes(2)
+  expect(handler).toHaveBeenCalledTimes(1)
   const { data } = handler.mock.calls[0][0] as MessageEvent
   expect(data).toMatchObject(expectedMessage)
 })
@@ -134,8 +119,8 @@ test("disconnect sends disconnect message and emits disconnected", async () => {
     action: "disconnect",
     origin: "extension-provider",
   }
-  expect(handler).toHaveBeenCalledTimes(3)
-  const { data } = handler.mock.calls[2][0] as MessageEvent
+  expect(handler).toHaveBeenCalledTimes(2)
+  const { data } = handler.mock.calls[1][0] as MessageEvent
   expect(data).toMatchObject(expectedMessage)
   expect(ep.isConnected).toBe(false)
   expect(emitted).toHaveBeenCalledTimes(1)

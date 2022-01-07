@@ -37,7 +37,7 @@ export interface ToExtension {
   /** The name of the blockchain network the app is talking to **/
   chainName: string
   /** What action the `ExtensionMessageRouter` should take **/
-  action: "forward" | "connect" | "disconnect"
+  action: "forward" | "disconnect"
   /** The message the `ExtensionMessageRouter` should forward to the background **/
   /** Type of the message. Defines how to interpret the {@link payload} */
   type?: "rpc" | "spec"
