@@ -38,8 +38,8 @@ describe("Disconnect and incorrect cases", () => {
     connect.mockImplementation(() => port)
     sendMessage({
       chainId: 1,
-      type: "spec",
-      payload: '{"name:":"westend"}',
+      type: "add-well-known-chain",
+      payload: "westend",
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -86,8 +86,8 @@ describe("Connection and forward cases", () => {
   test("connect establishes a port", async () => {
     sendMessage({
       chainId: 1,
-      type: "spec",
-      payload: '{"name:":"westend"}',
+      type: "add-well-known-chain",
+      payload: "westend",
       origin: "extension-provider",
     })
 
@@ -103,8 +103,8 @@ describe("Connection and forward cases", () => {
     // connect
     sendMessage({
       chainId: 1,
-      type: "spec",
-      payload: '{"name:":"westend"}',
+      type: "add-well-known-chain",
+      payload: "westend",
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -134,8 +134,8 @@ describe("Connection and forward cases", () => {
     // connect
     sendMessage({
       chainId: 1,
-      type: "spec",
-      payload: '{"name:":"westend"}',
+      type: "add-well-known-chain",
+      payload: "westend",
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -165,8 +165,8 @@ describe("Connection and forward cases", () => {
     // connect
     sendMessage({
       chainId: 1,
-      type: "spec",
-      payload: '{"name:":"westend"}',
+      type: "add-well-known-chain",
+      payload: "westend",
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
