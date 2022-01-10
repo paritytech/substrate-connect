@@ -43,7 +43,7 @@ test("connected and sends correct spec message", async () => {
   const expectedMessage: Partial<ToExtension> = {
     origin: "extension-provider",
     payload: '{"name":"Westend","id":"westend2"}',
-    type: "spec",
+    type: "add-chain",
   }
   expect(handler).toHaveBeenCalledTimes(1)
   const { data } = handler.mock.calls[0][0] as MessageEvent
@@ -65,12 +65,12 @@ test("connected multiple chains and sends correct spec message", async () => {
   const expectedMessage1: Partial<ToExtension> = {
     origin: "extension-provider",
     payload: '{"name":"Westend","id":"westend2"}',
-    type: "spec",
+    type: "add-chain",
   }
   const expectedMessage2: Partial<ToExtension> = {
     origin: "extension-provider",
     payload: '{"name":"Rococo","id":"rococo"}',
-    type: "spec",
+    type: "add-chain",
   }
 
   expect(handler).toHaveBeenCalledTimes(2)
@@ -90,7 +90,7 @@ test("connected parachain sends correct spec message", async () => {
   const expectedMessage: Partial<ToExtension> = {
     origin: "extension-provider",
     payload: '{"name":"Westend","id":"westend2"}',
-    type: "spec",
+    type: "add-chain",
   }
   expect(handler).toHaveBeenCalledTimes(1)
   const { data } = handler.mock.calls[0][0] as MessageEvent

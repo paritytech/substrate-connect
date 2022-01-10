@@ -17,6 +17,7 @@ import {
   ToExtension,
   ToApplication,
 } from "@substrate/connect-extension-protocol"
+import { SupportedChains } from "../specs/index.js"
 
 const CONTENT_SCRIPT_ORIGIN = "content-script"
 const EXTENSION_PROVIDER_ORIGIN = "extension-provider"
@@ -273,8 +274,10 @@ export class ExtensionProvider implements ProviderInterface {
     // for the extension to call addChain on smoldot
     const specMsg: ToExtension = {
       ...this.#commonMessageData,
-      type: "spec",
-      payload: this.#chainSpecs || "",
+      type: SupportedChains[this.#chainSpecs as SupportedChains]
+        ? "add-well-known-chain"
+        : "add-chain",
+      payload: this.#chainSpecs,
     }
     if (this.#parachainSpecs) {
       specMsg.parachainPayload = this.#parachainSpecs
