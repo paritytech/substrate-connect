@@ -34,8 +34,6 @@ export interface ToExtension {
   origin: "extension-provider"
   /** The uniqueId for extension multiplexing **/
   chainId: number
-  /** The name of the blockchain network the app is talking to **/
-  chainName: string
   /** The message the `ExtensionMessageRouter` should forward to the background **/
   /** Type of the message. Defines how to interpret the {@link payload} */
   type: "rpc" | "spec"
