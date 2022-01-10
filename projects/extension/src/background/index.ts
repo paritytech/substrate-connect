@@ -1,4 +1,4 @@
-import { relayChains, ConnectionManager } from "./ConnectionManager"
+import { wellKnownChains, ConnectionManager } from "./ConnectionManager"
 import { logger } from "@polkadot/util"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
@@ -20,7 +20,7 @@ export interface RequestRpcSend {
 const init = async () => {
   try {
     manager.initSmoldot()
-    for (const [key, value] of relayChains.entries()) {
+    for (const [key, value] of wellKnownChains.entries()) {
       const rpcCallback = (rpc: string) => {
         console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
       }

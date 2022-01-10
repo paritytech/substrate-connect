@@ -20,7 +20,7 @@ import kusama from "../../public/assets/kusama.json"
 import polkadot from "../../public/assets/polkadot.json"
 import rococo from "../../public/assets/rococo.json"
 
-export const relayChains: Map<string, string> = new Map<string, string>([
+export const wellKnownChains: Map<string, string> = new Map<string, string>([
   ["polkadot", JSON.stringify(polkadot)],
   ["kusama", JSON.stringify(kusama)],
   ["rococo", JSON.stringify(rococo)],
@@ -406,12 +406,12 @@ export class ConnectionManager
       return app.healthChecker?.sendJsonRpc(msg.payload)
     }
 
-    const relayChain =
+    const chainSpec =
       msg.type === "add-chain"
         ? msg.payload
-        : relayChains.get(msg.payload) ?? ""
+        : wellKnownChains.get(msg.payload) ?? ""
 
-    return this.#handleSpecMessage(app, relayChain, msg.parachainPayload)
+    return this.#handleSpecMessage(app, chainSpec, msg.parachainPayload)
   }
 
   /**
