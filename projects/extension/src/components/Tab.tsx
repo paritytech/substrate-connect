@@ -89,7 +89,7 @@ const Tab: FunctionComponent<TabProps> = ({
         {tab && (
           <>
             <Typography noWrap variant={current ? "h3" : "h4"}>
-              {tab.uApp.name}
+              {tab.url}
             </Typography>
             <Box display="flex" alignItems="center">
               {tab?.uApp.networks.map((n) => (
@@ -119,12 +119,6 @@ const Tab: FunctionComponent<TabProps> = ({
           </>
         )}
       </Box>
-
-      {!current && (
-        <Typography variant="body2" color="secondary">
-          {tab?.url}
-        </Typography>
-      )}
     </Box>
   )
 }
