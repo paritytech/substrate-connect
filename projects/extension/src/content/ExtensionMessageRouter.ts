@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable no-empty */
 import {
   ToExtension,
   ToApplication,
@@ -48,7 +49,7 @@ export class ExtensionMessageRouter {
     window.removeEventListener("message", this.#handleMessage)
   }
 
-  #establishNewConnection = ({ chainName, chainId }: ToExtension): void => {
+  #establishNewConnection = (chainId: number, chainName: string): void => {
     const port = chrome.runtime.connect({
       name: `${window.location.href}::${chainName}`,
     })
@@ -81,7 +82,6 @@ export class ExtensionMessageRouter {
   }
 
   #forwardRpcMessage = ({
-    chainName,
     chainId,
     type,
     payload,
@@ -91,14 +91,14 @@ export class ExtensionMessageRouter {
     if (!port) {
       // this is probably someone trying to abuse the extension.
       console.warn(
-        `App requested to send message to ${chainName} - no port found`,
+        `App requested to send message to ${chainId} - no port found`,
       )
       return
     }
 
     const msg = { type, payload, parachainPayload }
 
-    debug(`SENDING RPC MESSAGE TO ${chainName} PORT`, msg)
+    debug(`SENDING RPC MESSAGE TO ${chainId} PORT`, msg)
     port.postMessage(msg)
   }
 
@@ -117,7 +117,13 @@ export class ExtensionMessageRouter {
       return
     }
 
-    if (type === "spec") this.#establishNewConnection(data)
+    if (type === "spec") {
+      let name = "unknown name"
+      try {
+        name = JSON.parse(data.payload).name || name
+      } catch (_) {}
+      this.#establishNewConnection(data.chainId, name)
+    }
 
     if (type === "rpc" || type === "spec") {
       return this.#forwardRpcMessage(data)

@@ -41,7 +41,6 @@ test("connected and sends correct spec message", async () => {
   await waitForMessageToBePosted()
 
   const expectedMessage: Partial<ToExtension> = {
-    chainName: "Westend",
     origin: "extension-provider",
     payload: '{"name":"Westend","id":"westend2"}',
     type: "spec",
@@ -64,13 +63,11 @@ test("connected multiple chains and sends correct spec message", async () => {
   await waitForMessageToBePosted()
 
   const expectedMessage1: Partial<ToExtension> = {
-    chainName: "Westend",
     origin: "extension-provider",
     payload: '{"name":"Westend","id":"westend2"}',
     type: "spec",
   }
   const expectedMessage2: Partial<ToExtension> = {
-    chainName: "Rococo",
     origin: "extension-provider",
     payload: '{"name":"Rococo","id":"rococo"}',
     type: "spec",
@@ -91,7 +88,6 @@ test("connected parachain sends correct spec message", async () => {
   await waitForMessageToBePosted()
 
   const expectedMessage: Partial<ToExtension> = {
-    chainName: "Westend",
     origin: "extension-provider",
     payload: '{"name":"Westend","id":"westend2"}',
     type: "spec",

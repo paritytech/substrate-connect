@@ -38,9 +38,8 @@ describe("Disconnect and incorrect cases", () => {
     connect.mockImplementation(() => port)
     sendMessage({
       chainId: 1,
-      chainName: "westend",
       type: "spec",
-      payload: "westend",
+      payload: '{"name:":"westend"}',
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -87,9 +86,8 @@ describe("Connection and forward cases", () => {
   test("connect establishes a port", async () => {
     sendMessage({
       chainId: 1,
-      chainName: "westend",
       type: "spec",
-      payload: "westend",
+      payload: '{"name:":"westend"}',
       origin: "extension-provider",
     })
 
@@ -105,9 +103,8 @@ describe("Connection and forward cases", () => {
     // connect
     sendMessage({
       chainId: 1,
-      chainName: "westend",
       type: "spec",
-      payload: "westend",
+      payload: '{"name:":"westend"}',
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -115,7 +112,6 @@ describe("Connection and forward cases", () => {
     // rpc
     const rpcMessage: ToExtension = {
       chainId: 1,
-      chainName: "westend",
       type: "rpc",
       payload:
         '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}',
@@ -138,9 +134,8 @@ describe("Connection and forward cases", () => {
     // connect
     sendMessage({
       chainId: 1,
-      chainName: "westend",
       type: "spec",
-      payload: "westend",
+      payload: '{"name:":"westend"}',
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -170,9 +165,8 @@ describe("Connection and forward cases", () => {
     // connect
     sendMessage({
       chainId: 1,
-      chainName: "westend",
       type: "spec",
-      payload: "westend",
+      payload: '{"name:":"westend"}',
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
