@@ -54,41 +54,28 @@ export class ScProvider implements ProviderInterface {
   }
 
   /**
-   * @param displayName - a display name that will be used from the dev-tools of the Extension (if installed)
    * @param knownChain - the name of a supported chain ({@link SupportedChains})
    * @param parachainSpec - optional param of the parachain chainSpecs to connect to
    * @param autoConnect - whether the ScProvider should eagerly connect while its being instantiated. Defaults to `true`
    *
-   * @remarks
-   *
-   * You should make a best effort to make the displayName of your app name unique to avoid
-   * confusion for users in the extension user interface
    */
   public constructor(
-    displayName: string,
     knownChain: SupportedChains,
     parachainSpec?: string,
     autoConnect?: boolean,
   )
   /**
-   * @param displayName - a display name that will be used from the dev-tools of the Extension (if installed)
    * @param chainSpec - a string with the spec of the chain
    * @param parachainSpec - optional param of the parachain chainSpecs to connect to
    * @param autoConnect - whether the ScProvider should eagerly connect while its being instantiated. Defaults to `true`
    *
-   * @remarks
-   *
-   * You should make a best effort to make the displayName of your app name unique to avoid
-   * confusion for users in the extension user interface
    */
   public constructor(
-    displayName: string,
     chainSpec: string,
     parachainSpec?: string,
     autoConnect?: boolean,
   )
   public constructor(
-    displayName: string,
     chainSpec: string,
     parachainSpec?: string,
     autoConnect = true,
@@ -96,7 +83,6 @@ export class ScProvider implements ProviderInterface {
     const isExtension = !!document.getElementById("substrateExtension")
 
     this.#providerP = this.internalProvider(
-      displayName,
       isExtension,
       chainSpec,
       parachainSpec,
@@ -111,7 +97,6 @@ export class ScProvider implements ProviderInterface {
   /**
    * Detects and returns an appropriate PolkadotJS provider depending on whether the user has the substrate connect extension installed
    *
-   * @param displayName - a display name used by the dev-tools of the extension
    * @param isExtension - whether the extension is installed
    * @param chain - either a string with the spec of the chain or the name of a supported chain ({@link SupportedChains})
    * @param parachainSpec - optional param of the parachain chainSpecs to connect to
@@ -123,7 +108,6 @@ export class ScProvider implements ProviderInterface {
    * This is used internally for advanced PolkadotJS use cases and is not supported.  Use {@link connect} instead.
    */
   private internalProvider = async (
-    displayName: string,
     isExtension: boolean,
     chain: string | SupportedChains,
     parachainSpec?: string,
@@ -147,7 +131,6 @@ export class ScProvider implements ProviderInterface {
       ])
 
       return new ExtensionProvider(
-        displayName,
         chainSpec,
         parachainSpec,
       ) as ProviderInterface

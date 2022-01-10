@@ -1,13 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable no-empty */
 import {
-  ProviderMessage,
-  extension,
+  ToExtension,
+  ToApplication,
 } from "@substrate/connect-extension-protocol"
 import { debug } from "../utils/debug"
 
 const CONTENT_SCRIPT_ORIGIN = "content-script"
 const EXTENSION_PROVIDER_ORIGIN = "extension-provider"
+
+const sendMessage = (msg: ToApplication): void => {
+  window.postMessage(msg, "*")
+}
 
 /* ExtensionMessageRouter is the part of the content script that listens for
  * messages that the ExtensionProvider in an app sends using `window.postMessage`.
@@ -36,7 +41,7 @@ export class ExtensionMessageRouter {
 
   /** listen starts listening for messages sent by an app.  */
   listen(): void {
-    extension.listen(this.#handleMessage)
+    window.addEventListener("message", this.#handleMessage)
   }
 
   /** stop stops listening for messages sent by apps.  */
@@ -44,18 +49,18 @@ export class ExtensionMessageRouter {
     window.removeEventListener("message", this.#handleMessage)
   }
 
-  #establishNewConnection = ({ data }: ProviderMessage): void => {
-    const { chainName, chainId, appName } = data
+  #establishNewConnection = (chainId: number, chainName: string): void => {
     const port = chrome.runtime.connect({
-      name: `${appName}::${chainName}`,
+      name: `${window.location.href}::${chainName}`,
     })
+
     debug(`CONNECTED ${chainName} PORT`, port)
 
     // forward any messages: extension -> page
     port.onMessage.addListener((data): void => {
       const { type, payload } = data
       debug(`RECEIVED MESSAGE FROM ${chainName} PORT`, data)
-      extension.send({
+      sendMessage({
         type,
         payload,
         origin: CONTENT_SCRIPT_ORIGIN,
@@ -64,7 +69,11 @@ export class ExtensionMessageRouter {
 
     // tell the page when the port disconnects
     port.onDisconnect.addListener(() => {
-      extension.send({ origin: "content-script", disconnect: true })
+      sendMessage({
+        origin: "content-script",
+        type: "error",
+        payload: "Lost communication with substrate-connect extension",
+      })
       delete this.#ports[chainId]
     })
 
@@ -72,76 +81,55 @@ export class ExtensionMessageRouter {
     debug(`CONNECTED TO ${chainName} PORT`)
   }
 
-  #forwardRpcMessage = ({ data }: ProviderMessage): void => {
-    const { chainName, chainId, type, payload, parachainPayload } = data
+  #forwardRpcMessage = ({
+    chainId,
+    type,
+    payload,
+    parachainPayload,
+  }: ToExtension): void => {
     const port = this.#ports[chainId]
     if (!port) {
       // this is probably someone trying to abuse the extension.
       console.warn(
-        `App requested to send message to ${chainName} - no port found`,
+        `App requested to send message to ${chainId} - no port found`,
       )
       return
     }
 
     const msg = { type, payload, parachainPayload }
 
-    debug(`SENDING RPC MESSAGE TO ${chainName} PORT`, msg)
+    debug(`SENDING RPC MESSAGE TO ${chainId} PORT`, msg)
     port.postMessage(msg)
   }
 
-  #disconnectPort = ({ data }: ProviderMessage): void => {
-    const { chainName, chainId } = data
-    const port = this.#ports[chainId]
-
-    if (!port) {
-      // probably someone trying to abuse the extension.
-      console.warn(`App requested to disconnect ${chainName} - no port found`)
-      return
-    }
-
-    port.disconnect()
-    debug(`DISCONNECTED ${chainName} PORT`, port)
-    delete this.#ports[chainId]
-    return
-  }
-
-  #handleMessage = (msg: ProviderMessage): void => {
+  #handleMessage = (msg: MessageEvent<ToExtension>): void => {
     const data = msg.data
-    const { origin, action, type } = data
+    const { origin, type } = data
     if (!origin || origin !== EXTENSION_PROVIDER_ORIGIN) {
       return
     }
 
     debug(`RECEIVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data)
 
-    if (!action) {
-      return console.warn("Malformed message - missing action", msg)
-    }
-
-    if (action === "connect") {
-      return this.#establishNewConnection(msg)
-    }
-
-    if (action === "disconnect") {
-      return this.#disconnectPort(msg)
-    }
-
-    if (action === "forward") {
-      if (!type) {
-        // probably someone abusing the extension
-        console.warn("Malformed message - missing message.type", data)
-        return
-      }
-
-      if (type === "rpc" || type === "spec") {
-        return this.#forwardRpcMessage(msg)
-      }
-
+    if (!type) {
       // probably someone abusing the extension
-      return console.warn("Malformed message - unrecognised message.type", data)
+      console.warn("Malformed message - missing message.type", data)
+      return
+    }
+
+    if (type === "spec") {
+      let name = "unknown name"
+      try {
+        name = JSON.parse(data.payload).name || name
+      } catch (_) {}
+      this.#establishNewConnection(data.chainId, name)
+    }
+
+    if (type === "rpc" || type === "spec") {
+      return this.#forwardRpcMessage(data)
     }
 
     // probably someone abusing the extension
-    return console.warn("Malformed message - unrecognised action", data)
+    return console.warn("Malformed message - unrecognised message.type", data)
   }
 }
