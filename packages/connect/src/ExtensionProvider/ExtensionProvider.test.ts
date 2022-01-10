@@ -1,13 +1,13 @@
 /*
  * @jest-environment jsdom
  */
+
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { jest } from "@jest/globals"
 import { ExtensionProvider } from "./ExtensionProvider"
 import {
-  ProviderMessage,
   ToExtension,
   ToApplication,
-  extension,
 } from "@substrate/connect-extension-protocol"
 
 const waitForMessageToBePosted = (): Promise<null> => {
@@ -16,13 +16,17 @@ const waitForMessageToBePosted = (): Promise<null> => {
   return new Promise((resolve) => setTimeout(resolve, 10, null))
 }
 
+const sendMessage = (msg: ToApplication): void => {
+  window.postMessage(msg, "*")
+}
+
 const westendSpec = JSON.stringify({ name: "Westend", id: "westend2" })
 const rococoSpec = JSON.stringify({ name: "Rococo", id: "rococo" })
 
 let handler = jest.fn()
 beforeEach(() => {
   handler = jest.fn()
-  extension.listen(handler)
+  window.addEventListener("message", handler)
 })
 
 afterEach(() => {
@@ -30,28 +34,26 @@ afterEach(() => {
 })
 
 test("connected and sends correct spec message", async () => {
-  const ep = new ExtensionProvider("test", westendSpec)
+  const ep = new ExtensionProvider(westendSpec)
   const emitted = jest.fn()
   ep.on("connected", emitted)
   await ep.connect()
   await waitForMessageToBePosted()
 
   const expectedMessage: Partial<ToExtension> = {
-    appName: "test",
     chainName: "Westend",
-    action: "forward",
     origin: "extension-provider",
     payload: '{"name":"Westend","id":"westend2"}',
     type: "spec",
   }
-  expect(handler).toHaveBeenCalledTimes(2)
-  const { data } = handler.mock.calls[1][0] as ProviderMessage
+  expect(handler).toHaveBeenCalledTimes(1)
+  const { data } = handler.mock.calls[0][0] as MessageEvent
   expect(data).toMatchObject(expectedMessage)
 })
 
 test("connected multiple chains and sends correct spec message", async () => {
-  const ep1 = new ExtensionProvider("test", westendSpec)
-  const ep2 = new ExtensionProvider("test2", rococoSpec)
+  const ep1 = new ExtensionProvider(westendSpec)
+  const ep2 = new ExtensionProvider(rococoSpec)
   const emitted1 = jest.fn()
   const emitted2 = jest.fn()
   ep1.on("connected", emitted1)
@@ -62,67 +64,45 @@ test("connected multiple chains and sends correct spec message", async () => {
   await waitForMessageToBePosted()
 
   const expectedMessage1: Partial<ToExtension> = {
-    appName: "test",
     chainName: "Westend",
-    action: "forward",
     origin: "extension-provider",
     payload: '{"name":"Westend","id":"westend2"}',
     type: "spec",
   }
   const expectedMessage2: Partial<ToExtension> = {
-    appName: "test2",
     chainName: "Rococo",
-    action: "forward",
     origin: "extension-provider",
     payload: '{"name":"Rococo","id":"rococo"}',
     type: "spec",
   }
 
-  expect(handler).toHaveBeenCalledTimes(4)
-  const data1 = handler.mock.calls[1][0] as ProviderMessage
-  const data2 = handler.mock.calls[3][0] as ProviderMessage
+  expect(handler).toHaveBeenCalledTimes(2)
+  const data1 = handler.mock.calls[0][0] as MessageEvent
+  const data2 = handler.mock.calls[1][0] as MessageEvent
   expect(data1.data).toMatchObject(expectedMessage1)
   expect(data2.data).toMatchObject(expectedMessage2)
 })
 
 test("connected parachain sends correct spec message", async () => {
-  const ep = new ExtensionProvider("test", westendSpec)
+  const ep = new ExtensionProvider(westendSpec)
   const emitted = jest.fn()
   ep.on("connected", emitted)
   await ep.connect()
   await waitForMessageToBePosted()
 
   const expectedMessage: Partial<ToExtension> = {
-    appName: "test",
     chainName: "Westend",
-    action: "forward",
     origin: "extension-provider",
     payload: '{"name":"Westend","id":"westend2"}',
     type: "spec",
   }
-  expect(handler).toHaveBeenCalledTimes(2)
-  const { data } = handler.mock.calls[1][0] as ProviderMessage
-  expect(data).toMatchObject(expectedMessage)
-})
-
-test("connect sends connect message and emits connected", async () => {
-  const ep = new ExtensionProvider("test", westendSpec)
-  await ep.connect()
-  await waitForMessageToBePosted()
-
-  const expectedMessage: Partial<ToExtension> = {
-    appName: "test",
-    chainName: "Westend",
-    action: "connect",
-    origin: "extension-provider",
-  }
-  expect(handler).toHaveBeenCalledTimes(2)
-  const { data } = handler.mock.calls[0][0] as ProviderMessage
+  expect(handler).toHaveBeenCalledTimes(1)
+  const { data } = handler.mock.calls[0][0] as MessageEvent
   expect(data).toMatchObject(expectedMessage)
 })
 
 test("disconnect sends disconnect message and emits disconnected", async () => {
-  const ep = new ExtensionProvider("test", westendSpec)
+  const ep = new ExtensionProvider(westendSpec)
   const emitted = jest.fn()
   await ep.connect()
 
@@ -130,29 +110,21 @@ test("disconnect sends disconnect message and emits disconnected", async () => {
   void ep.disconnect()
   await waitForMessageToBePosted()
 
-  const expectedMessage: Partial<ToExtension> = {
-    appName: "test",
-    chainName: "Westend",
-    action: "disconnect",
-    origin: "extension-provider",
-  }
-  expect(handler).toHaveBeenCalledTimes(3)
-  const { data } = handler.mock.calls[2][0] as ProviderMessage
-  expect(data).toMatchObject(expectedMessage)
   expect(ep.isConnected).toBe(false)
   expect(emitted).toHaveBeenCalledTimes(1)
 })
 
-test("disconnects and emits disconnected when it receives a disconnect message", async () => {
-  const ep = new ExtensionProvider("test", westendSpec)
+test("disconnects and emits an error when it receives an error message", async () => {
+  const ep = new ExtensionProvider(westendSpec)
   const emitted = jest.fn()
   await ep.connect()
 
-  ep.on("disconnected", emitted)
+  ep.on("error", emitted)
   await waitForMessageToBePosted()
-  extension.send({
+  sendMessage({
     origin: "content-script",
-    disconnect: true,
+    type: "error",
+    payload: "disconnected",
   })
   await waitForMessageToBePosted()
   expect(emitted).toHaveBeenCalled()
@@ -160,7 +132,7 @@ test("disconnects and emits disconnected when it receives a disconnect message",
 })
 
 test("emits error when it receives an error message", async () => {
-  const ep = new ExtensionProvider("test", westendSpec)
+  const ep = new ExtensionProvider(westendSpec)
   await ep.connect()
   await waitForMessageToBePosted()
   const errorMessage: ToApplication = {
@@ -170,7 +142,7 @@ test("emits error when it receives an error message", async () => {
   }
   const errorHandler = jest.fn()
   ep.on("error", errorHandler)
-  window.postMessage(errorMessage, "*")
+  sendMessage(errorMessage)
   await waitForMessageToBePosted()
 
   expect(errorHandler).toHaveBeenCalled()
