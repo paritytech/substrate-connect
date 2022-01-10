@@ -63,6 +63,7 @@ export class ExtensionMessageRouter {
       sendMessage({
         type,
         payload,
+        chainId,
         origin: CONTENT_SCRIPT_ORIGIN,
       })
     })
@@ -71,6 +72,7 @@ export class ExtensionMessageRouter {
     port.onDisconnect.addListener(() => {
       sendMessage({
         origin: "content-script",
+        chainId,
         type: "error",
         payload: "Lost communication with substrate-connect extension",
       })
@@ -132,6 +134,7 @@ export class ExtensionMessageRouter {
       } catch (_) {
         sendMessage({
           origin: "content-script",
+          chainId: data.chainId,
           type: "error",
           payload: "Error parsing relayChain spec",
         })
