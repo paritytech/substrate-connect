@@ -168,7 +168,7 @@ test("Tries to connect to a parachain with unknown Relay Chain", async () => {
   await waitForMessageToBePosted()
 
   port.triggerMessage({
-    type: "spec",
+    type: "add-chain",
     payload: "",
     parachainPayload: JSON.stringify({
       name: "parachainSpec",
@@ -301,17 +301,17 @@ describe("Check storage and send notification when adding an app", () => {
   })
 
   test("Sends a message with empty payload ", () => {
-    port.triggerMessage({ type: "spec", payload: "" })
+    port.triggerMessage({ type: "add-chain", payload: "" })
     expect(chrome.storage.sync.get).toHaveBeenCalledTimes(0)
   })
 
   test("Checks storage for notifications preferences", () => {
-    port.triggerMessage({ type: "spec", payload: westendPayload })
+    port.triggerMessage({ type: "add-chain", payload: westendPayload })
     expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1)
   })
 
   test("Sends a notification", () => {
-    port.triggerMessage({ type: "spec", payload: westendPayload })
+    port.triggerMessage({ type: "add-chain", payload: westendPayload })
     const notificationData = {
       message: "App test-app-7 connected to westend.",
       title: "Substrate Connect",
@@ -344,7 +344,7 @@ describe("Tests with actual ConnectionManager", () => {
 
   test("Connected state", () => {
     app = manager.createApp(port)
-    port.triggerMessage({ type: "spec", payload: "westend" })
+    port.triggerMessage({ type: "add-well-known-chain", payload: "westend" })
     port.triggerMessage({ type: "rpc", payload: '{ "id": 1 }' })
 
     expect(app.state).toBe("connected")
@@ -352,7 +352,7 @@ describe("Tests with actual ConnectionManager", () => {
 
   test("Disconnect cleans up properly", async () => {
     app = manager.createApp(port)
-    port.triggerMessage({ type: "spec", payload: "westend" })
+    port.triggerMessage({ type: "add-well-known-chain", payload: "westend" })
     await waitForMessageToBePosted()
     manager.disconnect(app)
     await waitForMessageToBePosted()
@@ -373,7 +373,7 @@ describe("Tests with actual ConnectionManager", () => {
   })
 
   test("Connected state", () => {
-    port.triggerMessage({ type: "spec", payload: "westend" })
+    port.triggerMessage({ type: "add-well-known-chain", payload: "westend" })
     port.triggerMessage({ type: "rpc", payload: '{ "id": 1 }' })
     expect(app.state).toBe("connected")
   })
@@ -387,7 +387,7 @@ describe("Tests with actual ConnectionManager", () => {
   })
 
   test("Spec message adds a chain", async () => {
-    port.triggerMessage({ type: "spec", payload: "westend" })
+    port.triggerMessage({ type: "add-well-known-chain", payload: "westend" })
     await waitForMessageToBePosted()
     expect(app.healthChecker).toBeDefined()
   })
@@ -397,13 +397,13 @@ describe("Tests with actual ConnectionManager", () => {
     port.triggerMessage({ type: "rpc", payload: message1 })
     const message2 = JSON.stringify({ id: 2, jsonrpc: "2.0", result: {} })
     port.triggerMessage({ type: "rpc", payload: message2 })
-    port.triggerMessage({ type: "spec", payload: "westend" })
+    port.triggerMessage({ type: "add-well-known-chain", payload: "westend" })
     await waitForMessageToBePosted()
     expect(app.healthChecker).toBeDefined()
   })
 
   test("RPC port message sends the message to the chain", async () => {
-    port.triggerMessage({ type: "spec", payload: "westend" })
+    port.triggerMessage({ type: "add-well-known-chain", payload: "westend" })
     await waitForMessageToBePosted()
     const message = JSON.stringify({ id: 1, jsonrpc: "2.0", result: {} })
     port.triggerMessage({ type: "rpc", payload: message })
@@ -412,7 +412,7 @@ describe("Tests with actual ConnectionManager", () => {
 
   test("App already disconnected", async () => {
     app = manager.createApp(port)
-    port.triggerMessage({ type: "spec", payload: "westend" })
+    port.triggerMessage({ type: "add-well-known-chain", payload: "westend" })
     await waitForMessageToBePosted()
     manager.disconnect(app)
     await waitForMessageToBePosted()
