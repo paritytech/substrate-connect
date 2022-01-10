@@ -120,21 +120,17 @@ export class ScProvider implements ProviderInterface {
       )
     }
 
+    if (isExtension) {
+      const { ExtensionProvider } = await import(
+        "./ExtensionProvider/ExtensionProvider.js"
+      )
+
+      return new ExtensionProvider(chain, parachainSpec) as ProviderInterface
+    }
+
     const chainSpecPromise = SupportedChains[chain as SupportedChains]
       ? getSpec(chain as SupportedChains)
       : Promise.resolve(chain)
-
-    if (isExtension) {
-      const [{ ExtensionProvider }, chainSpec] = await Promise.all([
-        import("./ExtensionProvider/ExtensionProvider.js"),
-        chainSpecPromise,
-      ])
-
-      return new ExtensionProvider(
-        chainSpec,
-        parachainSpec,
-      ) as ProviderInterface
-    }
 
     const [{ SmoldotProvider }, chainSpec] = await Promise.all([
       import("./SmoldotProvider/SmoldotProvider.js"),

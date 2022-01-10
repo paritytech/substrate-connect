@@ -23,6 +23,8 @@
 export interface ToApplication {
   /** origin is used to determine which side sent the message **/
   origin: "content-script"
+  /** Which chain this message applies to **/
+  chainId: number
   /** Type of the message. Defines how to interpret the {@link payload} */
   type: "error" | "rpc"
   /** Payload of the message. Either a JSON encoded RPC response or an error message **/
@@ -36,7 +38,7 @@ export interface ToExtension {
   chainId: number
   /** The message the `ExtensionMessageRouter` should forward to the background **/
   /** Type of the message. Defines how to interpret the {@link payload} */
-  type: "rpc" | "spec"
+  type: "rpc" | "add-chain" | "add-well-known-chain"
   /** Payload of the message -  a JSON encoded RPC request **/
   payload: string
   parachainPayload?: string

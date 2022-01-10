@@ -38,8 +38,8 @@ describe("Disconnect and incorrect cases", () => {
     connect.mockImplementation(() => port)
     sendMessage({
       chainId: 1,
-      type: "spec",
-      payload: '{"name:":"westend"}',
+      type: "add-well-known-chain",
+      payload: "westend",
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -86,8 +86,8 @@ describe("Connection and forward cases", () => {
   test("connect establishes a port", async () => {
     sendMessage({
       chainId: 1,
-      type: "spec",
-      payload: '{"name:":"westend"}',
+      type: "add-well-known-chain",
+      payload: "westend",
       origin: "extension-provider",
     })
 
@@ -103,8 +103,8 @@ describe("Connection and forward cases", () => {
     // connect
     sendMessage({
       chainId: 1,
-      type: "spec",
-      payload: '{"name:":"westend"}',
+      type: "add-well-known-chain",
+      payload: "westend",
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -134,8 +134,8 @@ describe("Connection and forward cases", () => {
     // connect
     sendMessage({
       chainId: 1,
-      type: "spec",
-      payload: '{"name:":"westend"}',
+      type: "add-well-known-chain",
+      payload: "westend",
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -153,6 +153,7 @@ describe("Connection and forward cases", () => {
     expect(handler).toHaveBeenCalled()
     const forwarded = handler.mock.calls[0][0] as MessageEvent
     expect(forwarded.data).toEqual({
+      chainId: 1,
       origin: "content-script",
       type: "rpc",
       payload: '{"id:":1,"jsonrpc:"2.0","result":666}',
@@ -165,8 +166,8 @@ describe("Connection and forward cases", () => {
     // connect
     sendMessage({
       chainId: 1,
-      type: "spec",
-      payload: '{"name:":"westend"}',
+      type: "add-well-known-chain",
+      payload: "westend",
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -180,6 +181,7 @@ describe("Connection and forward cases", () => {
     const forwarded = handler.mock.calls[0][0] as MessageEvent
     expect(forwarded.data).toEqual({
       origin: "content-script",
+      chainId: 1,
       type: "error",
       payload: "Boom!",
     })

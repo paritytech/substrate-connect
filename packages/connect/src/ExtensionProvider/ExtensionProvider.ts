@@ -17,6 +17,7 @@ import {
   ToExtension,
   ToApplication,
 } from "@substrate/connect-extension-protocol"
+import { SupportedChains } from "../specs/index.js"
 
 const CONTENT_SCRIPT_ORIGIN = "content-script"
 const EXTENSION_PROVIDER_ORIGIN = "extension-provider"
@@ -76,12 +77,12 @@ export class ExtensionProvider implements ProviderInterface {
   readonly #handlers: Record<string, RpcStateAwaiting> = {}
   readonly #subscriptions: Record<string, StateSubscription> = {}
   readonly #waitingForId: Record<string, JsonRpcResponse> = {}
+  readonly #chainId: number
   #connectionStatePingerId: ReturnType<typeof setInterval> | null
   #isConnected = false
 
   #chainSpecs: string
   #parachainSpecs: string
-  #commonMessageData: Pick<ToExtension, "chainId" | "origin">
 
   /*
    * How frequently to see if we have any peers
@@ -95,10 +96,11 @@ export class ExtensionProvider implements ProviderInterface {
     if (parachain) {
       this.#parachainSpecs = parachain
     }
-    this.#commonMessageData = {
-      chainId: nextChainId++,
-      origin: EXTENSION_PROVIDER_ORIGIN,
-    }
+    this.#chainId = nextChainId++
+  }
+
+  public get chainId(): number {
+    return this.#chainId
   }
 
   /**
@@ -272,9 +274,12 @@ export class ExtensionProvider implements ProviderInterface {
     // Once connect is sent - send rpc to extension that will contain the chainSpecs
     // for the extension to call addChain on smoldot
     const specMsg: ToExtension = {
-      ...this.#commonMessageData,
-      type: "spec",
-      payload: this.#chainSpecs || "",
+      origin: EXTENSION_PROVIDER_ORIGIN,
+      chainId: this.#chainId,
+      type: SupportedChains[this.#chainSpecs as SupportedChains]
+        ? "add-well-known-chain"
+        : "add-chain",
+      payload: this.#chainSpecs,
     }
     if (this.#parachainSpecs) {
       specMsg.parachainPayload = this.#parachainSpecs
@@ -283,7 +288,10 @@ export class ExtensionProvider implements ProviderInterface {
     window.addEventListener(
       "message",
       ({ data }: MessageEvent<ToApplication>) => {
-        if (data.origin && data.origin === CONTENT_SCRIPT_ORIGIN) {
+        if (
+          data.origin === CONTENT_SCRIPT_ORIGIN &&
+          data.chainId === this.#chainId
+        ) {
           this.#handleMessage(data)
         }
       },
@@ -366,7 +374,8 @@ export class ExtensionProvider implements ProviderInterface {
       }
 
       const rpcMsg: ToExtension = {
-        ...this.#commonMessageData,
+        origin: EXTENSION_PROVIDER_ORIGIN,
+        chainId: this.#chainId,
         type: "rpc",
         payload: json,
       }

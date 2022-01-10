@@ -63,6 +63,7 @@ export class ExtensionMessageRouter {
       sendMessage({
         type,
         payload,
+        chainId,
         origin: CONTENT_SCRIPT_ORIGIN,
       })
     })
@@ -71,6 +72,7 @@ export class ExtensionMessageRouter {
     port.onDisconnect.addListener(() => {
       sendMessage({
         origin: "content-script",
+        chainId,
         type: "error",
         payload: "Lost communication with substrate-connect extension",
       })
@@ -111,25 +113,37 @@ export class ExtensionMessageRouter {
 
     debug(`RECEIVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data)
 
-    if (!type) {
+    if (
+      type !== "rpc" &&
+      type !== "add-chain" &&
+      type !== "add-well-known-chain"
+    ) {
       // probably someone abusing the extension
-      console.warn("Malformed message - missing message.type", data)
+      console.warn("Malformed message - unrecognised message.type", data)
       return
     }
 
-    if (type === "spec") {
+    if (type === "add-well-known-chain") {
+      this.#establishNewConnection(data.chainId, data.payload)
+    }
+
+    if (type === "add-chain") {
       let name = "unknown name"
       try {
         name = JSON.parse(data.payload).name || name
-      } catch (_) {}
+      } catch (_) {
+        sendMessage({
+          origin: "content-script",
+          chainId: data.chainId,
+          type: "error",
+          payload: "Error parsing relayChain spec",
+        })
+        console.warn("Error parsing relayChain spec", data)
+        return
+      }
       this.#establishNewConnection(data.chainId, name)
     }
 
-    if (type === "rpc" || type === "spec") {
-      return this.#forwardRpcMessage(data)
-    }
-
-    // probably someone abusing the extension
-    return console.warn("Malformed message - unrecognised message.type", data)
+    return this.#forwardRpcMessage(data)
   }
 }
