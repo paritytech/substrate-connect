@@ -81,7 +81,7 @@ export class ExtensionProvider implements ProviderInterface {
 
   #chainSpecs: string
   #parachainSpecs: string
-  #commonMessageData: Pick<ToExtension, "chainId" | "chainName" | "origin">
+  #commonMessageData: Pick<ToExtension, "chainId" | "origin">
 
   /*
    * How frequently to see if we have any peers
@@ -89,12 +89,6 @@ export class ExtensionProvider implements ProviderInterface {
   healthPingerInterval = CONNECTION_STATE_PINGER_INTERVAL
 
   public constructor(relayChain: string, parachain?: string) {
-    /**
-     * TODO: we should remove the chainName from the payload of the messages,
-     * since this is information that doesn't have to be sent on every message and
-     * the Extension can extract it from the chainSpecs, also that way we avoid
-     * parsing a large JSON on the main thread.
-     */
     this.#chainSpecs = relayChain
     this.#connectionStatePingerId = null
     this.#parachainSpecs = ""
@@ -103,7 +97,6 @@ export class ExtensionProvider implements ProviderInterface {
     }
     this.#commonMessageData = {
       chainId: nextChainId++,
-      chainName: JSON.parse(relayChain).name,
       origin: EXTENSION_PROVIDER_ORIGIN,
     }
   }
