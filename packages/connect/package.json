@@ -8,9 +8,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "engines": {
-    "node": ">=14 <=16.13.0"
-  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
@@ -25,7 +22,7 @@
     "checkSpecs": "node ../../bin/checkSpecs.js",
     "prebuild": "yarn clean && yarn checkSpecs",
     "pretest": "yarn build",
-    "test": "../../bin/node-esm $(yarn bin)/jest --colors --coverage",
+    "test": "node --no-warnings --experimental-vm-modules $(yarn bin)/jest --colors --coverage",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "build": "tsc -b && node ./src/specs/generate-specs.js",
@@ -33,8 +30,8 @@
   },
   "dependencies": {
     "@polkadot/rpc-provider": "^6.10.3",
-    "@substrate/connect-extension-protocol": "^0.3.0",
-    "@substrate/smoldot-light": "0.5.7",
+    "@substrate/connect-extension-protocol": "^0.4.0",
+    "@substrate/smoldot-light": "0.5.12",
     "eventemitter3": "^4.0.7"
   },
   "devDependencies": {
@@ -43,7 +40,7 @@
     "@types/jest": "^27.0.3",
     "@types/jsdom": "^16.2.13",
     "@typescript-eslint/parser": "^5.5.0",
-    "eslint": "^8.3.0",
+    "eslint": "^8.5.0",
     "eslint-plugin-tsdoc": "^0.2.14",
     "jest": "^27.4.3",
     "jest-silent-reporter": "^0.5.0",

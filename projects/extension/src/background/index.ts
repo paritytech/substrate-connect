@@ -1,8 +1,4 @@
-import { ConnectionManager } from "./ConnectionManager"
-import westend from "../../public/assets/westend.json"
-import kusama from "../../public/assets/kusama.json"
-import polkadot from "../../public/assets/polkadot.json"
-import rococo from "../../public/assets/rococo.json"
+import { wellKnownChains, ConnectionManager } from "./ConnectionManager"
 import { logger } from "@polkadot/util"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
@@ -15,15 +11,6 @@ declare let window: Background
 
 const manager = (window.manager = new ConnectionManager())
 
-type RelayType = Map<string, string>
-
-export const relayChains: RelayType = new Map<string, string>([
-  ["polkadot", JSON.stringify(polkadot)],
-  ["kusama", JSON.stringify(kusama)],
-  ["rococo", JSON.stringify(rococo)],
-  ["westend", JSON.stringify(westend)],
-])
-
 const l = logger("Extension")
 export interface RequestRpcSend {
   method: string
@@ -33,7 +20,7 @@ export interface RequestRpcSend {
 const init = async () => {
   try {
     manager.initSmoldot()
-    for (const [key, value] of relayChains.entries()) {
+    for (const [key, value] of wellKnownChains.entries()) {
       const rpcCallback = (rpc: string) => {
         console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
       }

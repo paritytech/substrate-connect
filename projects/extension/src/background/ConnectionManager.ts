@@ -15,10 +15,18 @@ import EventEmitter from "eventemitter3"
 import { StateEmitter, State } from "./types"
 import { NetworkMainInfo, Network } from "../types"
 import { logger } from "@polkadot/util"
-import {
-  MessageFromManager,
-  MessageToManager,
-} from "@substrate/connect-extension-protocol"
+import { ToExtension } from "@substrate/connect-extension-protocol"
+import westend from "../../public/assets/westend.json"
+import kusama from "../../public/assets/kusama.json"
+import polkadot from "../../public/assets/polkadot.json"
+import rococo from "../../public/assets/rococo.json"
+
+export const wellKnownChains: Map<string, string> = new Map<string, string>([
+  ["polkadot", JSON.stringify(polkadot)],
+  ["kusama", JSON.stringify(kusama)],
+  ["rococo", JSON.stringify(rococo)],
+  ["westend", JSON.stringify(westend)],
+])
 
 import { relayChains } from "."
 
@@ -124,8 +132,7 @@ export class ConnectionManager
     const splitIdx = incPort.name.indexOf("::")
     if (splitIdx === -1) {
       const payload = `Invalid port name ${incPort.name} expected <app_name>::<chain_name>`
-      const error: MessageFromManager = { type: "error", payload }
-      incPort.postMessage(error)
+      incPort.postMessage({ type: "error", payload })
       incPort.disconnect()
       throw new Error(payload)
     }
@@ -332,21 +339,22 @@ export class ConnectionManager
   }
 
   #handleError = (app: App, e: Error): void => {
-    const error: MessageFromManager = { type: "error", payload: e.message }
-    app.port.postMessage(error)
+    app.port.postMessage({ type: "error", payload: e.message })
     app.port.disconnect()
     this.unregisterApp(app)
   }
 
   /** Handles the incoming message that contains Spec. */
-  #handleSpecMessage = (msg: MessageToManager, app: App): void => {
-    if (!msg.payload) {
+  #handleSpecMessage = (
+    app: App,
+    relayChainSpec: string,
+    parachainSpec?: string,
+  ): void => {
+    if (!relayChainSpec) {
       const error: Error = new Error("Relay chain spec was not found")
       this.#handleError(app, error)
       return
     }
-
-    const chainSpec: string = msg.payload
 
     const rpcCallback = (rpc: string) => {
       const rpcResp: string | null | undefined =
@@ -356,12 +364,11 @@ export class ConnectionManager
 
     let chainPromise: Promise<void>
     // Means this is a parachain trying to connect
-    if (msg.parachainPayload) {
+    if (parachainSpec) {
       // Connect the main Chain first and on success the parachain with the chain
       // that just got connected as the relayChain
-      const parachainSpec: string = msg.parachainPayload
 
-      chainPromise = this.addChain(chainSpec, undefined, app.tabId)
+      chainPromise = this.addChain(relayChainSpec, undefined, app.tabId)
         .then((network) => {
           app.chain = network.chain
           return this.addChain(parachainSpec, rpcCallback, app.tabId)
@@ -373,7 +380,7 @@ export class ConnectionManager
         })
     } else {
       // Connect the main Chain only
-      chainPromise = this.addChain(chainSpec, rpcCallback, app.tabId).then(
+      chainPromise = this.addChain(relayChainSpec, rpcCallback, app.tabId).then(
         (network) => {
           app.chain = network.chain
           return
@@ -406,19 +413,22 @@ export class ConnectionManager
     )
   }
 
-  #handleMessage = (msg: MessageToManager, port: chrome.runtime.Port): void => {
-    if (msg.type !== "rpc" && msg.type !== "spec") {
+  #handleMessage = (msg: ToExtension, port: chrome.runtime.Port): void => {
+    if (
+      (msg.type !== "rpc" &&
+        msg.type !== "add-chain" &&
+        msg.type !== "add-well-known-chain") ||
+      !msg.payload
+    ) {
       console.warn(
-        `Unrecognised message type ${msg.type} received from content script`,
+        `Unrecognised message type '${msg.type}' or payload '${msg.payload}' received from content script`,
       )
       return
     }
     const app = this.#findApp(port)
-    if (app) {
-      if (msg.type === "spec" && app.chainName) {
-        return this.#handleSpecMessage(msg, app)
-      }
+    if (!app) return
 
+    if (msg.type === "rpc") {
       if (app.chain === undefined) {
         // `addChain` hasn't resolved yet after the spec message so buffer the
         // messages to be sent when it does resolve
@@ -428,6 +438,13 @@ export class ConnectionManager
 
       return app.healthChecker?.sendJsonRpc(msg.payload)
     }
+
+    const chainSpec =
+      msg.type === "add-chain"
+        ? msg.payload
+        : wellKnownChains.get(msg.payload) ?? ""
+
+    return this.#handleSpecMessage(app, chainSpec, msg.parachainPayload)
   }
 
   /**
