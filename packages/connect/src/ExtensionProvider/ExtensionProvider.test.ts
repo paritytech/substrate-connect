@@ -4,7 +4,27 @@
 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { jest } from "@jest/globals"
-import { ExtensionProvider } from "./ExtensionProvider"
+import type { ExtensionProviderClass } from "./ExtensionProvider"
+
+jest.unstable_mockModule("./getRandomChainId.js", () => {
+  let nextChainId = "test"
+  return {
+    _setNextChainId(chainId: string) {
+      nextChainId = chainId
+    },
+    getRandomChainId: () => nextChainId,
+  }
+})
+
+let ExtensionProvider: ExtensionProviderClass
+let mockedGetRandomChainId: { _setNextChainId: (chainId: string) => void }
+beforeAll(async () => {
+  ;({ ExtensionProvider } = await import("./ExtensionProvider"))
+  mockedGetRandomChainId = (await import(
+    "./getRandomChainId.js"
+  )) as unknown as typeof mockedGetRandomChainId
+})
+
 import {
   ToExtension,
   ToApplication,
@@ -111,6 +131,7 @@ test("disconnect sends disconnect message and emits disconnected", async () => {
 })
 
 test("disconnects and emits an error when it receives an error message", async () => {
+  mockedGetRandomChainId._setNextChainId("foo")
   const ep = new ExtensionProvider(westendSpec)
   const emitted = jest.fn()
   await ep.connect()
@@ -119,7 +140,7 @@ test("disconnects and emits an error when it receives an error message", async (
   await waitForMessageToBePosted()
   sendMessage({
     origin: "content-script",
-    chainId: ep.chainId,
+    chainId: "foo",
     type: "error",
     payload: "disconnected",
   })
@@ -129,12 +150,13 @@ test("disconnects and emits an error when it receives an error message", async (
 })
 
 test("emits error when it receives an error message", async () => {
+  mockedGetRandomChainId._setNextChainId("foo")
   const ep = new ExtensionProvider(westendSpec)
   await ep.connect()
   await waitForMessageToBePosted()
   const errorMessage: ToApplication = {
     origin: "content-script",
-    chainId: ep.chainId,
+    chainId: "foo",
     type: "error",
     payload: "Boom!",
   }
@@ -149,9 +171,10 @@ test("emits error when it receives an error message", async () => {
 })
 
 test("it routes incoming messages to the correct Provider", async () => {
+  mockedGetRandomChainId._setNextChainId("foo1")
   const ep1 = new ExtensionProvider("ExtensionProvider1", westendSpec)
   await ep1.connect()
-
+  mockedGetRandomChainId._setNextChainId("foo2")
   const ep2 = new ExtensionProvider("ExtensionProvider2", westendSpec)
   await ep2.connect()
   await waitForMessageToBePosted()
@@ -181,17 +204,18 @@ test("it routes incoming messages to the correct Provider", async () => {
 
   const latestRequest = handler.mock.calls[
     handler.mock.calls.length - 1
-  ][0] as MessageEvent<{ payload: string }>
+  ][0] as MessageEvent<{ payload: string; chainId: string }>
 
   const latestRequestRpcId = (
     JSON.parse(latestRequest?.data.payload ?? "{}") as {
       id: number
     }
   ).id
+  const latestChainId = latestRequest?.data.chainId
 
   sendMessage({
     origin: "content-script",
-    chainId: ep2.chainId,
+    chainId: latestChainId,
     type: "rpc",
     payload: JSON.stringify({
       id: latestRequestRpcId,

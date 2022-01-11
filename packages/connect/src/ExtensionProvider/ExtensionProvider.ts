@@ -18,6 +18,7 @@ import {
   ToApplication,
 } from "@substrate/connect-extension-protocol"
 import { SupportedChains } from "../specs/index.js"
+import { getRandomChainId } from "./getRandomChainId.js"
 
 const CONTENT_SCRIPT_ORIGIN = "content-script"
 const EXTENSION_PROVIDER_ORIGIN = "extension-provider"
@@ -60,7 +61,6 @@ const ANGLICISMS: { [index: string]: string } = {
  * connected peers in the smoldot client
  */
 const CONNECTION_STATE_PINGER_INTERVAL = 2000
-let nextChainId = 1
 
 const sendMessage = (msg: ToExtension): void => {
   window.postMessage(msg, "*")
@@ -77,7 +77,7 @@ export class ExtensionProvider implements ProviderInterface {
   readonly #handlers: Record<string, RpcStateAwaiting> = {}
   readonly #subscriptions: Record<string, StateSubscription> = {}
   readonly #waitingForId: Record<string, JsonRpcResponse> = {}
-  readonly #chainId: number
+  readonly #chainId: string
   #connectionStatePingerId: ReturnType<typeof setInterval> | null
   #isConnected = false
 
@@ -96,11 +96,7 @@ export class ExtensionProvider implements ProviderInterface {
     if (parachain) {
       this.#parachainSpecs = parachain
     }
-    this.#chainId = nextChainId++
-  }
-
-  public get chainId(): number {
-    return this.#chainId
+    this.#chainId = getRandomChainId()
   }
 
   /**
@@ -450,3 +446,5 @@ export class ExtensionProvider implements ProviderInterface {
     this.#eventemitter.emit(type, ...args)
   }
 }
+
+export type ExtensionProviderClass = typeof ExtensionProvider
