@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: Apache-2
-
 import BN from "bn.js"
 import { useEffect, useState } from "react"
 import { formatBalance, logger } from "@polkadot/util"

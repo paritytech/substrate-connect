@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: Apache-2
 import { useEffect, useState } from "react"
 import { logger } from "@polkadot/util"
 import useApi from "./api/useApi"

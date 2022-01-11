@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: Apache-2
-
 import {
   LocalStorageAccountCtx,
   AdminCtx,
