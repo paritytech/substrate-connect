@@ -327,7 +327,7 @@ const App: React.FunctionComponent = () => {
               {/* TODO: Playground */}
               <Box>
                 <FooterLink href="https://parity.io/">
-                  © 2021 Parity Technologies
+                  © {new Date().getFullYear()} Parity Technologies
                 </FooterLink>
                 <FooterLink href="https://substrate.dev/terms">
                   Terms & conditions
