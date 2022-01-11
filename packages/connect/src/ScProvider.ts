@@ -17,27 +17,27 @@ import { SupportedChains, getSpec } from "./specs/index.js"
  * @example
  *
  * ```
- * import { ScProvider } from '@substrate/connect';
+ * import { ScProvider, SupportedChains } from '@substrate/connect';
  * import { ApiPromise } from '@polkadot/api';
  *
  * // Create a new UApp with a unique name
- * const westendProvider = ScProvider('westendApp', 'westend')
+ * const westendProvider = ScProvider(SupportedChains.westend)
  * const westend = await ApiPromise.create({ provider: westendProvider })
  *
- * const kusamaProvider = ScProvider('kusamaApp', 'kusama')
+ * const kusamaProvider = ScProvider(SupportedChains.kusama)
  * const kusama = await ApiPromise.create({ provider: kusamaProvider })
  *
- * await westend.rpc.chain.subscribeNewHeads((lastHeader) => {
+ * await westendProvider.rpc.chain.subscribeNewHeads((lastHeader) => {
  *   console.log(lastHeader.hash);
  * );
- * await kusama.rpc.chain.subscribeNewHeads((lastHeader) => {
+ * await kusamaProvider.rpc.chain.subscribeNewHeads((lastHeader) => {
  *   console.log(lastHeader.hash);
  * });
  *
  * // Interact with westend and kusama APIs ...
  *
- * await westend.disconnect();
- * await kusama.disconnect();
+ * await westendProvider.disconnect();
+ * await kusamaProvider.disconnect();
  * ```
  */
 
