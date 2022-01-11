@@ -37,7 +37,7 @@ describe("Disconnect and incorrect cases", () => {
     const connect = chrome.runtime.connect
     connect.mockImplementation(() => port)
     sendMessage({
-      chainId: 1,
+      chainId: "test",
       type: "add-well-known-chain",
       payload: "westend",
       origin: "extension-provider",
@@ -84,8 +84,9 @@ describe("Connection and forward cases", () => {
   })
 
   test("connect establishes a port", async () => {
+    const chainId = "test"
     sendMessage({
-      chainId: 1,
+      chainId,
       type: "add-well-known-chain",
       payload: "westend",
       origin: "extension-provider",
@@ -94,7 +95,7 @@ describe("Connection and forward cases", () => {
     await waitForMessageToBePosted()
     expect(chrome.runtime.connect).toHaveBeenCalledTimes(1)
     expect(router.connections.length).toBe(1)
-    expect(router.connections[0]).toBe("1")
+    expect(router.connections[0]).toBe(chainId)
   })
 
   test("forwards rpc message from app -> extension", async () => {
@@ -102,7 +103,7 @@ describe("Connection and forward cases", () => {
     chrome.runtime.connect.mockImplementation(() => port)
     // connect
     sendMessage({
-      chainId: 1,
+      chainId: "test",
       type: "add-well-known-chain",
       payload: "westend",
       origin: "extension-provider",
@@ -111,7 +112,7 @@ describe("Connection and forward cases", () => {
 
     // rpc
     const rpcMessage: ToExtension = {
-      chainId: 1,
+      chainId: "test",
       type: "rpc",
       payload:
         '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}',
@@ -133,7 +134,7 @@ describe("Connection and forward cases", () => {
     chrome.runtime.connect.mockImplementation(() => port)
     // connect
     sendMessage({
-      chainId: 1,
+      chainId: "test",
       type: "add-well-known-chain",
       payload: "westend",
       origin: "extension-provider",
@@ -153,7 +154,7 @@ describe("Connection and forward cases", () => {
     expect(handler).toHaveBeenCalled()
     const forwarded = handler.mock.calls[0][0] as MessageEvent
     expect(forwarded.data).toEqual({
-      chainId: 1,
+      chainId: "test",
       origin: "content-script",
       type: "rpc",
       payload: '{"id:":1,"jsonrpc:"2.0","result":666}',
@@ -165,7 +166,7 @@ describe("Connection and forward cases", () => {
     chrome.runtime.connect.mockImplementation(() => port)
     // connect
     sendMessage({
-      chainId: 1,
+      chainId: "test",
       type: "add-well-known-chain",
       payload: "westend",
       origin: "extension-provider",
@@ -181,7 +182,7 @@ describe("Connection and forward cases", () => {
     const forwarded = handler.mock.calls[0][0] as MessageEvent
     expect(forwarded.data).toEqual({
       origin: "content-script",
-      chainId: 1,
+      chainId: "test",
       type: "error",
       payload: "Boom!",
     })
