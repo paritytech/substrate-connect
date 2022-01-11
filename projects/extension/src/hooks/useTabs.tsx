@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-// SPDX-License-Identifier: Apache-2
 import { useState, useEffect } from "react"
 import { NetworkCtx } from "../types"
 
