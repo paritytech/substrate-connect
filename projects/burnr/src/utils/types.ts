@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: Apache-2
 import { Balance, Index, RefCount } from "@polkadot/types/interfaces"
 import { u32 } from "@polkadot/types"
 import { Codec } from "@polkadot/types/types"

@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: Apache-2
-
 import { useContext } from "react"
 import { ApiPromise } from "@polkadot/api"
 
