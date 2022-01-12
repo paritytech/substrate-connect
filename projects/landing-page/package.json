@@ -13,7 +13,7 @@
     "build": "parcel build ./src/index.html --public-url ./",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "dev": "yarn run clean && tsc -b & parcel ./public/index.html",
+    "dev": "tsc -b & parcel ./public/index.html",
     "test": "exit 0; #No tests",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx",
     "predeploy": "yarn run build"
