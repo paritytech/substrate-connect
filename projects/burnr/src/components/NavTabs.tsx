@@ -24,6 +24,7 @@ import {
 import { useApi, useBalance, useLocalStorage } from "../hooks"
 import { AccountContext } from "../utils/contexts"
 import { createLocalStorageAccount } from "../utils/utils"
+import { CreateAccountCtx } from "../utils/types"
 interface TabPanelProps {
   children?: React.ReactNode
   index: number
@@ -78,7 +79,8 @@ const NavTabs: React.FunctionComponent = () => {
   const api = useApi()
   const [endpoint] = useLocalStorage("endpoint")
   const minEndpoint = endpoint?.split("-")[0]?.toLowerCase()
-  const { account, setCurrentAccount } = useContext(AccountContext)
+  const { account, setCurrentAccount } =
+    useContext<CreateAccountCtx>(AccountContext)
   const balance = useBalance(account.userAddress)
 
   const handleChange = (
