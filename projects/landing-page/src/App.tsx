@@ -145,94 +145,99 @@ const App: React.FunctionComponent = () => {
             <ThemeProvider theme={createTheme(dark)}>
               <Code>yarn add @substrate/substrate-connect</Code>
               <Code heading="Simple usage (suported chain)">
-                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
+                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
 
                 <Box mt={2}>{`// Create a new UApp with a unique name`}</Box>
-                <Box>{`const app = new Detector('burnr-wallet');`}</Box>
-                <Box>{`const westend = await app.connect('westend');`}</Box>
-                <Box>{`const kusama = await app.connect('kusama');`}</Box>
+                <Box>{`const westendProvider = new ScProvider(SupportedChains.westend);`}</Box>
+                <Box>{`await ApiPromise.create({ provider: westendProvider });`}</Box>
+                <Box>{`const kusamaProvider = new ScProvider(SupportedChains.kusama);`}</Box>
+                <Box>{`await ApiPromise.create({ provider: kusamaProvider });`}</Box>
 
                 <Box
                   mt={2}
-                >{`await westend.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`await westendProvider.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
 
                 <Box
                   mt={2}
-                >{`await kusama.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`await kusamaProvider.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`});`}</Box>
 
                 <Box mt={2}>{`// etc ...`}</Box>
 
-                <Box mt={2}>{`await westend.disconnect();`}</Box>
-                <Box>{`await kusama.disconnect();`}</Box>
+                <Box mt={2}>{`await westendProvider.disconnect();`}</Box>
+                <Box>{`await kusamaProvider.disconnect();`}</Box>
               </Code>
 
               <Code heading="Simple usage (custom chain)">
-                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
+                <Box>{`import { ScProvider } from '@substrate/connect';`}</Box>
                 <Box>{`import customSpecs from './customSpecs.json';`}</Box>
 
-                <Box mt={2}>{`const app = new Detector('my app');`}</Box>
-                <Box>{`const myChain = await app.connect({ chain: 'chainName', spec: JSON.stringify(customSpecs)});`}</Box>
+                <Box
+                  mt={2}
+                >{`const myChain = new ScProvider(JSON.stringify(customSpecs));`}</Box>
+                <Box>{`await ApiPromise.create({ provider: myChain });`}</Box>
 
                 <Box
                   mt={2}
                 >{`await myChain.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
-
                 <Box mt={2}>{`await myChain.disconnect();`}</Box>
               </Code>
 
               <Code heading="Simple usage with options">
-                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
-
-                <Box mt={2}>{`const app = new Detector('my app');`}</Box>
-                <Box>{`const apiOptions = {types: customTypes}`}</Box>
-                <Box>{`const wstnd = await app.connect('westend', null, apiOptions);`}</Box>
-
+                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
                 <Box
                   mt={2}
-                >{`await wstnd.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`const provider = new ScProvider(SupportedChains.westend);`}</Box>
+                <Box>{`const apiOptions = {types: customTypes}`}</Box>
+                <Box>{`await ApiPromise.create({ provider, options: apiOptions });`}</Box>
+                <Box
+                  mt={2}
+                >{`await provider.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
-
-                <Box mt={2}>{`await wstnd.disconnect();`}</Box>
+                <Box mt={2}>{`await provider.disconnect();`}</Box>
               </Code>
 
               <Code heading="Parachains usage">
-                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
+                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
                 <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
-
-                <Box mt={2}>{`const app = new Detector('my app');`}</Box>
-                <Box>{`const rococoApi = await app.connect('rococo', JSON.stringify(parachainSpecs));`}</Box>
 
                 <Box
                   mt={2}
-                >{`await rococoApi.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`const provider = new ScProvider(SupportedChains.westend, JSON.stringify(parachainSpecs));`}</Box>
+                <Box>{`await ApiPromise.create({ provider });`}</Box>
+
+                <Box
+                  mt={2}
+                >{`await provider.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
 
-                <Box mt={2}>{`await rococoApi.disconnect();`}</Box>
+                <Box mt={2}>{`await provider.disconnect();`}</Box>
               </Code>
 
               <Code heading="Parachains usage with options">
-                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
+                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
                 <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
-
-                <Box mt={2}>{`const app = new Detector('my app');`}</Box>
-                <Box>{`const apiOptions = {types: customTypes}`}</Box>
-                <Box>{`const rococoApi = await app.connect('rococo', JSON.stringify(parachainSpecs), apiOptions);`}</Box>
 
                 <Box
                   mt={2}
-                >{`await rococoApi.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`const provider = new ScProvider(SupportedChains.westend, JSON.stringify(parachainSpecs));`}</Box>
+                <Box>{`const apiOptions = {types: customTypes}`}</Box>
+                <Box>{`await ApiPromise.create({ provider, options: apiOptions });`}</Box>
+
+                <Box
+                  mt={2}
+                >{`await provider.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
 
-                <Box mt={2}>{`await rococoApi.disconnect();`}</Box>
+                <Box mt={2}>{`await provider.disconnect();`}</Box>
               </Code>
             </ThemeProvider>
           </Section>
