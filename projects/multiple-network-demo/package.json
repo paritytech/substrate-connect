@@ -17,32 +17,29 @@
     "build": "yarn clean && yarn typecheck && webpack",
     "dev": "yarn clean && concurrently \"yarn typecheck:watch\" \"webpack serve --config webpack.config.js\"",
     "test": "exit 0; #No tests",
-    "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "yarn eslint . --ext .ts,.tsx"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.23",
-    "@typescript-eslint/eslint-plugin": "^5.5.0",
-    "@typescript-eslint/parser": "^5.5.0",
-    "concurrently": "^6.0.1",
-    "eslint": "^8.5.0",
-    "jest": "^27.0.5",
-    "ts-jest": "^27.0.3",
-    "typescript": "^4.5.2"
-  },
-  "dependencies": {
-    "@babel/core": "^7.15.8",
-    "@babel/preset-env": "^7.15.8",
-    "@polkadot/api": "^6.10.3",
-    "@substrate/connect": "^0.4.7",
-    "babel-loader": "^8.2.2",
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.16.8",
+    "@typescript-eslint/eslint-plugin": "^5.9.1",
+    "@typescript-eslint/parser": "^5.9.1",
+    "babel-loader": "^8.2.3",
+    "concurrently": "^7.0.0",
     "crypto-browserify": "^3.12.0",
-    "html-webpack-plugin": "^5.4.0",
+    "eslint": "^8.6.0",
+    "html-webpack-plugin": "^5.5.0",
     "regenerator-runtime": "^0.13.7",
     "stream-browserify": "^3.0.0",
     "style-loader": "^3.3.1",
     "ts-loader": "^9.2.6",
+    "typescript": "^4.5.4",
     "webpack": "^5.65.0",
-    "webpack-cli": "^4.5.0",
-    "webpack-dev-server": "^4.7.2"
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.7.3"
+  },
+  "dependencies": {
+    "@polkadot/api": "^6.10.3",
+    "@substrate/connect": "^0.4.7"
   }
 }
