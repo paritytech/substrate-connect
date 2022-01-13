@@ -1,4 +1,4 @@
-import React from "react"
+import { FunctionComponent } from "react"
 
 import { IconButton, IconButtonProps, makeStyles } from "@material-ui/core"
 
@@ -15,10 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const ThemeButton: React.FunctionComponent<Props> = ({
-  theme,
-  ...props
-}: Props) => {
+const ThemeButton: FunctionComponent<Props> = ({ theme, ...props }: Props) => {
   const classes = useStyles()
   return (
     <IconButton {...props} className={classes.root}>

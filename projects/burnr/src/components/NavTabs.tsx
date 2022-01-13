@@ -1,5 +1,10 @@
-import React, { useContext } from "react"
-
+import {
+  FunctionComponent,
+  useContext,
+  useState,
+  ChangeEvent,
+  ReactNode,
+} from "react"
 import {
   Tabs,
   Tab,
@@ -24,8 +29,9 @@ import {
 import { useApi, useBalance, useLocalStorage } from "../hooks"
 import { AccountContext } from "../utils/contexts"
 import { createLocalStorageAccount } from "../utils/utils"
+import { CreateAccountCtx } from "../utils/types"
 interface TabPanelProps {
-  children?: React.ReactNode
+  children?: ReactNode
   index: number
   value: number
 }
@@ -58,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-const TabPanel: React.FunctionComponent<TabPanelProps> = ({
+const TabPanel: FunctionComponent<TabPanelProps> = ({
   children,
   value,
   index,
@@ -71,20 +77,18 @@ const TabPanel: React.FunctionComponent<TabPanelProps> = ({
   )
 }
 
-const NavTabs: React.FunctionComponent = () => {
+const NavTabs: FunctionComponent = () => {
   const classes = useStyles()
-  const [value, setValue] = React.useState(1)
+  const [value, setValue] = useState(1)
 
   const api = useApi()
   const [endpoint] = useLocalStorage("endpoint")
   const minEndpoint = endpoint?.split("-")[0]?.toLowerCase()
-  const { account, setCurrentAccount } = useContext(AccountContext)
+  const { account, setCurrentAccount } =
+    useContext<CreateAccountCtx>(AccountContext)
   const balance = useBalance(account.userAddress)
 
-  const handleChange = (
-    event: React.ChangeEvent<unknown>,
-    newValue: number,
-  ) => {
+  const handleChange = (event: ChangeEvent<unknown>, newValue: number) => {
     if (newValue === 0) {
       if (
         !balance[2] &&

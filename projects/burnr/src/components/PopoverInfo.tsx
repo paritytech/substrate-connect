@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react"
+import { FunctionComponent, ReactNode, useState } from "react"
 
 import { makeStyles, Theme } from "@material-ui/core/styles"
 import { Typography, Popover } from "@material-ui/core"
@@ -25,9 +25,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-const PopoverInfo: React.FunctionComponent<Props> = ({ children }: Props) => {
+const PopoverInfo: FunctionComponent<Props> = ({ children }: Props) => {
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 
   const handlePopoverOpen = (
     event: React.MouseEvent<HTMLElement, MouseEvent>,

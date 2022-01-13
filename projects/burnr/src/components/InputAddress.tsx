@@ -1,9 +1,11 @@
-import React, {
+import {
+  FunctionComponent,
   ChangeEvent,
   useEffect,
   useState,
   SetStateAction,
   Dispatch,
+  memo,
 } from "react"
 
 import { FormControl, TextField, Box } from "@material-ui/core"
@@ -15,7 +17,7 @@ interface Props {
   setAddress: Dispatch<SetStateAction<string>>
 }
 
-const InputAddress: React.FunctionComponent<Props> = ({ setAddress }) => {
+const InputAddress: FunctionComponent<Props> = ({ setAddress }) => {
   const [value, setValue] = useState<string>("")
 
   useEffect((): void => {
@@ -59,4 +61,4 @@ const InputAddress: React.FunctionComponent<Props> = ({ setAddress }) => {
   )
 }
 
-export default React.memo(InputAddress)
+export default memo(InputAddress)

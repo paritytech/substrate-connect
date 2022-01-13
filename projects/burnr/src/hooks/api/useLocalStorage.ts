@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, Dispatch, SetStateAction } from "react"
 
-const useLocalStorage = (
+export const useLocalStorage = (
   localStorageKey: string,
-): [string, React.Dispatch<React.SetStateAction<string>>] => {
+): [string, Dispatch<SetStateAction<string>>] => {
   const [localValue, setLocalValue] = useState<string>(
     localStorage.getItem(localStorageKey) || "",
   )
@@ -13,5 +13,3 @@ const useLocalStorage = (
 
   return [localValue, setLocalValue]
 }
-
-export default useLocalStorage
