@@ -13,7 +13,7 @@
     "build": "parcel build ./src/index.html --public-url ./",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "dev": "yarn run clean && tsc -b & parcel ./public/index.html",
+    "dev": "tsc -b & parcel ./public/index.html",
     "test": "exit 0; #No tests",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx",
     "predeploy": "yarn run build"
@@ -25,36 +25,18 @@
   "dependencies": {
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
-    "@material-ui/lab": "^4.0.0-alpha.57",
-    "@material-ui/styles": "^4.11.3",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-is": "^17.0.1",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0"
+    "@material-ui/lab": "^4.0.0-alpha.60",
+    "@material-ui/styles": "^4.11.4",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@material-ui/types": "^5.1.0",
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.5",
-    "@types/jest": "^26.0.23",
-    "@types/node": "^17.0.2",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "@types/react-router-dom": "^5.1.7",
-    "@types/react-test-renderer": "^17.0.1",
-    "@typescript-eslint/eslint-plugin": "^5.5.0",
-    "@typescript-eslint/parser": "^5.5.0",
-    "eslint": "^8.5.0",
-    "eslint-plugin-react": "^7.22.0",
-    "jest": "^27.0.5",
+    "@types/node": "^17.0.8",
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
+    "eslint": "^8.6.0",
     "parcel": "2.0.0",
-    "react-dom": "^17.0.1",
-    "react-router": "^5.2.0",
-    "react-test-renderer": "^17.0.1",
-    "rimraf": "^3.0.2",
-    "ts-jest": "^27.0.3",
-    "tsc-watch": "^4.2.9",
-    "typescript": "^4.5.2"
+    "react-dom": "^17.0.2",
+    "typescript": "^4.5.4"
   }
 }
