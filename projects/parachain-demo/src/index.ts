@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-// hack to make poladot-js work without bringing in webpack and babel
-import "regenerator-runtime/runtime"
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { ScProvider, SupportedChains } from "@substrate/connect"
 import { ApiPromise } from "@polkadot/api"
 import westmint from "./assets/westend-westmint.json"
