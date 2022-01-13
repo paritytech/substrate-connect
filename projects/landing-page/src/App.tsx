@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from "react"
 import {
   CssBaseline,
@@ -267,7 +266,7 @@ const App: React.FunctionComponent = () => {
             </SectionText>
             <CardProject
               imageProps={{
-                path: Extension,
+                path: Extension as string,
                 position: "center center",
                 fullWidth: true,
               }}
@@ -292,30 +291,36 @@ const App: React.FunctionComponent = () => {
             <CardProject
               title="Browser Demo"
               subtitle="Minimal implementation"
-              imageProps={{ path: BrowserDemo, position: "left top" }}
+              imageProps={{ path: BrowserDemo as string, position: "left top" }}
               linkProps={{ href: "./smoldot-browser-demo/" }}
             />
             <CardProject
               title="Burnr"
               subtitle="Insecure redeemable wallet"
-              imageProps={{ path: Burnr, position: "center top" }}
+              imageProps={{ path: Burnr as string, position: "center top" }}
               linkProps={{ href: "./burnr/" }}
             />
             <CardProject
               title="Multi Network Demo"
               subtitle="One uApp - multiple networks implementation"
-              imageProps={{ path: NetworksDemo, position: "center top" }}
+              imageProps={{
+                path: NetworksDemo as string,
+                position: "center top",
+              }}
               linkProps={{ href: "./multiple-network-demo/" }}
             />
             <CardProject
               title="Parachain Demo"
               subtitle="Parachain connectivity implementation"
-              imageProps={{ path: ParachainDemo, position: "center top" }}
+              imageProps={{
+                path: ParachainDemo as string,
+                position: "center top",
+              }}
               linkProps={{ href: "./parachain-demo/" }}
             />
             <CardProject
               title="Next Project"
-              imageProps={{ path: YourProject }}
+              imageProps={{ path: YourProject as string }}
             >
               <SectionRef href="https://github.com/paritytech/substrate-connect/blob/master/CONTRIBUTING.md">
                 Contributor’s guide
