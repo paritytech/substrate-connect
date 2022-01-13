@@ -6,5 +6,5 @@ module.exports = {
     "react-hooks/exhaustive-deps": "warn",
   },
   plugins: ["react-hooks"],
-  extends: ["eslint:recommended", "plugin:react/recommended"],
+  extends: ["plugin:react/recommended"],
 }
