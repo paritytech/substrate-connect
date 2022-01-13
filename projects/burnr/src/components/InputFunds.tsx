@@ -1,4 +1,5 @@
-import React, {
+import {
+  FunctionComponent,
   useState,
   ChangeEvent,
   MouseEvent,
@@ -16,7 +17,7 @@ interface Props {
   setAmount: Dispatch<SetStateAction<string>>
 }
 
-const InputFunds: React.FunctionComponent<Props> = ({
+const InputFunds: FunctionComponent<Props> = ({
   total,
   setAmount,
   currency,

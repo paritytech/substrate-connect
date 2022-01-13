@@ -1,4 +1,4 @@
-import React from "react"
+import { FunctionComponent } from "react"
 
 import { makeStyles, createStyles, Theme, Divider } from "@material-ui/core"
 
@@ -21,11 +21,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-export const BurnrBG: React.FunctionComponent = () => {
+export const BurnrBG: FunctionComponent = () => {
   const classes = useStyles()
   return <div className={classes.root} />
 }
 
-export const BurnrDivider: React.FunctionComponent = () => (
+export const BurnrDivider: FunctionComponent = () => (
   <Divider style={{ backgroundColor: "transparent", height: 0.5 }} />
 )
