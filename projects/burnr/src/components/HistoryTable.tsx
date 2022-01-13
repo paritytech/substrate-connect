@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { FunctionComponent, useContext } from "react"
 
 import {
   Table,
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-const HistoryTable: React.FunctionComponent = () => {
+const HistoryTable: FunctionComponent = () => {
   const classes = useStyles()
   const { account } = useContext(AccountContext)
   const rows: Data[] = account.userHistory

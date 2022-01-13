@@ -12,7 +12,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "jsx": "react"
+    "jsx": "react-jsx"
   },
   "include": ["src/**/*"],
   "references": [{ "path": "../../packages/connect" }]

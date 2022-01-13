@@ -1,4 +1,4 @@
-import React from "react"
+import { FunctionComponent, memo } from "react"
 
 import { makeStyles, Theme } from "@material-ui/core/styles"
 import { Box, Typography } from "@material-ui/core"
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-const BalanceValue: React.FunctionComponent<Props> = ({
+const BalanceValue: FunctionComponent<Props> = ({
   value,
   isVisible,
   unit = "",
@@ -61,4 +61,4 @@ const BalanceValue: React.FunctionComponent<Props> = ({
   )
 }
 
-export default React.memo(BalanceValue)
+export default memo(BalanceValue)

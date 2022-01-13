@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { FunctionComponent, useState } from "react"
 import {
   ThemeProvider,
   createTheme,
@@ -27,9 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-// @TODO rewrite in a React way?
-
-const ThemeToggleProvider: React.FunctionComponent = ({ children }) => {
+const ThemeToggleProvider: FunctionComponent = ({ children }) => {
   const classes = useStyles()
   const [localTheme, setLocalTheme] = useLocalStorage("theme")
   const [theme, setTheme] = useState(localTheme === "false" ? false : true)

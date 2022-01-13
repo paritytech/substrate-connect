@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { FunctionComponent, useContext } from "react"
 
 import {
   Grid,
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const AccountBurn: React.FunctionComponent = () => {
+const AccountBurn: FunctionComponent = () => {
   const classes = useStyles()
 
   const api = useApi()

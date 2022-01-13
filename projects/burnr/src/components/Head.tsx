@@ -1,4 +1,4 @@
-import React from "react"
+import { FunctionComponent } from "react"
 
 import { Box, Grid, makeStyles, Theme, Typography } from "@material-ui/core"
 import { NodeConnected } from "../components"
@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-const Head: React.FunctionComponent = () => {
+const Head: FunctionComponent = () => {
   const classes = useStyles()
 
   return (

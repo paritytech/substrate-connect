@@ -1,4 +1,4 @@
-import React from "react"
+import { FunctionComponent, useState } from "react"
 
 import { IconButton, Typography, CircularProgress } from "@material-ui/core"
 import { makeStyles, Theme } from "@material-ui/core/styles"
@@ -21,13 +21,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-// @TODO blockexplorer links
-
-const PopoverExtrinsic: React.FunctionComponent<ExtrinsicInfo> = ({
+const PopoverExtrinsic: FunctionComponent<ExtrinsicInfo> = ({
   status,
 }: ExtrinsicInfo) => {
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 
   const handlePopoverOpen = (
     event: React.MouseEvent<HTMLElement, MouseEvent>,

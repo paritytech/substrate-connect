@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from "react"
+import { Component, ErrorInfo, ReactNode } from "react"
 import { logger } from "@polkadot/util"
 import { BURNR_WALLET } from "../utils/constants"
 
