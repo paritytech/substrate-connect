@@ -33,7 +33,7 @@
     "@polkadot/api": "^6.3.1",
     "@polkadot/keyring": "^8.3.1",
     "@polkadot/react-identicon": "^0.89.1",
-    "@polkadot/util": "^5.5.2",
+    "@polkadot/util": "^8.3.1",
     "@polkadot/util-crypto": "^8.3.1",
     "@substrate/connect": "^0.4.7",
     "babel-loader": "^8.2.3",
@@ -50,8 +50,8 @@
     "ts-loader": "^9.2.6",
     "unique-names-generator": "^4.6.0",
     "webpack": "^5.65.0",
-    "webpack-cli": "^4.5.0",
-    "webpack-dev-server": "^4.7.2"
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.7.3"
   },
   "devDependencies": {
     "@material-ui/types": "^5.1.0",
