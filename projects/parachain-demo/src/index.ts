@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-// hack to make poladot-js work without bringing in webpack and babel
-import "regenerator-runtime/runtime"
 import { ScProvider, SupportedChains } from "@substrate/connect"
 import { ApiPromise } from "@polkadot/api"
 import westmint from "./assets/westend-westmint.json"
@@ -13,7 +12,7 @@ window.onload = () => {
   const loadTime = performance.now()
   const ui = new UI({ containerId: "messages" }, { loadTime })
   ui.showSyncing()
-  ;(async () => {
+  void (async () => {
     try {
       const provider = new ScProvider(
         SupportedChains.westend,
