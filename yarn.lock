@@ -2259,19 +2259,12 @@
     "@parcel/utils" "^2.0.1"
     posthtml "^0.16.4"
 
-"@parcel/plugin@^2.0.0":
+"@parcel/plugin@^2.0.1", "@parcel/plugin@^2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@parcel/plugin/-/plugin-2.2.0.tgz#dfd80fd5c8e9663b2a08b1235297ab7abdadcca4"
   integrity sha512-etIxpizU14aZELSV/qEeuufoC5fLgopQ9I0j/Y9ExSmlU3NH79NeQo0JPP1TU49ZOL8Si9o/D6tlhojle6GbzA==
   dependencies:
     "@parcel/types" "^2.2.0"
-
-"@parcel/plugin@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@parcel/plugin/-/plugin-2.0.1.tgz#de6dad81a98e135dad724b581c209332480c70fc"
-  integrity sha512-zg9LdUk1fh8UApo9q79ZbG+QCwMioSlBP0+LKYLQqcNketzmjPuhe3rCialR0s2/6QsM1EQbuMUpCmZLSQZ4tA==
-  dependencies:
-    "@parcel/types" "^2.0.1"
 
 "@parcel/reporter-cli@^2.0.0":
   version "2.0.1"
@@ -2402,22 +2395,13 @@
     posthtml-render "^3.0.0"
     semver "^5.4.1"
 
-"@parcel/transformer-image@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@parcel/transformer-image/-/transformer-image-2.0.0.tgz#e1387f2983bcb0fdb2838b535b3b8e89ba3508c2"
-  integrity sha512-1QXllyEDpITACi+1WY67SEAgmNKp4zohffvJoEkF3scjSX6fRIlOEXe8cSEiGVklWzik/iQN7UqHOTAqSZ3Yng==
+"@parcel/transformer-image@2.2.0", "@parcel/transformer-image@^2.0.1":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@parcel/transformer-image/-/transformer-image-2.2.0.tgz#8348f426cadb3cae1d7a7adbca3a3d9bc9ef3d11"
+  integrity sha512-9MRmgNRi8Dg+GMA1378smh0m/xfzPpTljR23jKvwviNsz54Tf67pC328DGaI6+5eNIw4fYFZxJTXcOSAVVKk2Q==
   dependencies:
-    "@parcel/plugin" "^2.0.0"
-    "@parcel/workers" "^2.0.0"
-    nullthrows "^1.1.1"
-
-"@parcel/transformer-image@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@parcel/transformer-image/-/transformer-image-2.0.1.tgz#b13eb2a54546059a7ab260153e4009a3df5808f9"
-  integrity sha512-1xHPdE4W8jzsI0AWi4XWYioG2sDZvxJHprlTYNGK8GE+A2U7bOi7T2aoa44fEfK1pRa+N5GTkoNVTYiv4hza0g==
-  dependencies:
-    "@parcel/plugin" "^2.0.1"
-    "@parcel/workers" "^2.0.1"
+    "@parcel/plugin" "^2.2.0"
+    "@parcel/workers" "^2.2.0"
     nullthrows "^1.1.1"
 
 "@parcel/transformer-js@^2.0.1":
@@ -2590,7 +2574,7 @@
     node-addon-api "^3.2.1"
     node-gyp-build "^4.3.0"
 
-"@parcel/workers@^2.0.0", "@parcel/workers@^2.2.0":
+"@parcel/workers@^2.0.1", "@parcel/workers@^2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@parcel/workers/-/workers-2.2.0.tgz#12f9774c9dc3c4e6a8427e9c7b79ee59dc20f2b6"
   integrity sha512-qJTC+61LMz5eBHvT0lT+auoTKDzh/FemQrWzCdcQZjgECQyLYdD6GtMeCZP745pDfXcYZpflbSGZChIUnt1yDg==
@@ -2599,18 +2583,6 @@
     "@parcel/logger" "^2.2.0"
     "@parcel/types" "^2.2.0"
     "@parcel/utils" "^2.2.0"
-    chrome-trace-event "^1.0.2"
-    nullthrows "^1.1.1"
-
-"@parcel/workers@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@parcel/workers/-/workers-2.0.1.tgz#55e540556b201677591519b26f84c6ec955b9a6c"
-  integrity sha512-nBBK5QeoWM0l8khyStDiEd432UXaF6mkUa8n2D4Ee6XOFgUCiXWV7VROqA4nhf6OJr5K+trtNaNVGq9oHRuPHw==
-  dependencies:
-    "@parcel/diagnostic" "^2.0.1"
-    "@parcel/logger" "^2.0.1"
-    "@parcel/types" "^2.0.1"
-    "@parcel/utils" "^2.0.1"
     chrome-trace-event "^1.0.2"
     nullthrows "^1.1.1"
 
