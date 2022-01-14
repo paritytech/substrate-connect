@@ -13273,13 +13273,6 @@ select-hose@^2.0.0:
   resolved "https://registry.yarnpkg.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"
   integrity sha1-Yl2GWPhlr0Psliv8N2o3NZpJlMo=
 
-selfsigned@^1.10.11:
-  version "1.10.13"
-  resolved "https://registry.yarnpkg.com/selfsigned/-/selfsigned-1.10.13.tgz#763e091c684cbcbe98aa40b15b01da3716d68a12"
-  integrity sha512-UmLwTKZwNmXYDAlRFhaEdgEg0dp9k5gfJXuO7uKvSqioN1M0+Mgf4V39IlVZMSuqGoCi6h5legkhNXvWy0rFSg==
-  dependencies:
-    node-forge "^1.2.0"
-
 selfsigned@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/selfsigned/-/selfsigned-2.0.0.tgz#e927cd5377cbb0a1075302cff8df1042cc2bce5b"
@@ -14871,41 +14864,6 @@ webpack-dev-middleware@^5.3.0:
     mime-types "^2.1.31"
     range-parser "^1.2.1"
     schema-utils "^4.0.0"
-
-webpack-dev-server@^4.7.2:
-  version "4.7.2"
-  resolved "https://registry.yarnpkg.com/webpack-dev-server/-/webpack-dev-server-4.7.2.tgz#324b79046491f2cf0b9d9e275381198c8246b380"
-  integrity sha512-s6yEOSfPpB6g1T2+C5ZOUt5cQOMhjI98IVmmvMNb5cdiqHoxSUfACISHqU/wZy+q4ar/A9jW0pbNj7sa50XRVA==
-  dependencies:
-    "@types/bonjour" "^3.5.9"
-    "@types/connect-history-api-fallback" "^1.3.5"
-    "@types/serve-index" "^1.9.1"
-    "@types/sockjs" "^0.3.33"
-    "@types/ws" "^8.2.2"
-    ansi-html-community "^0.0.8"
-    bonjour "^3.5.0"
-    chokidar "^3.5.2"
-    colorette "^2.0.10"
-    compression "^1.7.4"
-    connect-history-api-fallback "^1.6.0"
-    default-gateway "^6.0.3"
-    del "^6.0.0"
-    express "^4.17.1"
-    graceful-fs "^4.2.6"
-    html-entities "^2.3.2"
-    http-proxy-middleware "^2.0.0"
-    ipaddr.js "^2.0.1"
-    open "^8.0.9"
-    p-retry "^4.5.0"
-    portfinder "^1.0.28"
-    schema-utils "^4.0.0"
-    selfsigned "^1.10.11"
-    serve-index "^1.9.1"
-    sockjs "^0.3.21"
-    spdy "^4.0.2"
-    strip-ansi "^7.0.0"
-    webpack-dev-middleware "^5.3.0"
-    ws "^8.1.0"
 
 webpack-dev-server@^4.7.3:
   version "4.7.3"
