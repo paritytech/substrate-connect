@@ -46,7 +46,7 @@
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.2",
     "eslint": "^8.5.0",
-    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-tsdoc": "^0.2.14",
     "file-loader": "^6.2.0",
