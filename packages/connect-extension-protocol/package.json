@@ -13,8 +13,5 @@
   },
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
-  "devDependencies": {
-    "eslint": "^8.6.0",
-    "typescript": "^4.5.4"
-  }
+  "devDependencies": {}
 }
