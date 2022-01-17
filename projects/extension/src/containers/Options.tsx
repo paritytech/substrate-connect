@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { SetStateAction, useEffect, useState } from "react"
 import { createTheme, ThemeProvider } from "@material-ui/core"
 import Box from "@material-ui/core/Box"
@@ -16,8 +18,6 @@ import {
   //  Parachain,
   NetworkTabProps,
 } from "../types"
-import { ConnectionManager } from "../background/ConnectionManager"
-import { ExposedAppInfo } from "../background/types"
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -78,59 +78,38 @@ const Options: React.FunctionComponent = () => {
   const [value, setValue] = useState<number>(0)
   const [networks, setNetworks] = useState<NetworkTabProps[]>([])
   const [notifications, setNotifications] = useState<boolean>(false)
-  const [manager, setManager] = useState<ConnectionManager | undefined>()
 
-  useEffect((): void => {
+  useEffect(() => {
     chrome.storage.sync.get(["notifications"], (res) => {
       setNotifications(res.notifications as SetStateAction<boolean>)
     })
 
+    let cb: () => void = () => {}
     chrome.runtime.getBackgroundPage((backgroundPage) => {
       const bg = backgroundPage as Background
-      setManager(bg.manager)
-    })
-  }, [])
-
-  useEffect(() => {
-    const reduceApps = (apps: ExposedAppInfo[]) => {
-      const tmpNetworks: React.SetStateAction<NetworkTabProps[]> = []
-      apps.forEach((app: ExposedAppInfo) => {
-        const network = tmpNetworks.find((n: NetworkTabProps) => {
-          return app.chainName === n.name
-        })
-        if (network) {
-          network.apps.push({
-            name: app.appName,
-            url: app.url,
-          })
-        } else {
-          const tmp = {
-            name: app.chainName,
-            health: {
-              status: app.state,
-              isSyncing: app?.healthStatus?.isSyncing,
-              peers: app?.healthStatus?.peers,
-              shouldHavePeers: app?.healthStatus?.shouldHavePeers,
-            },
-            apps: [
-              {
-                name: app.appName,
-                url: app.url,
-                tabId: app.tabId,
+      cb = bg.manager.onManagerStateChanged((apps) => {
+        const networks = new Map<string, NetworkTabProps>()
+        apps.forEach((app) => {
+          const network = networks.get(app.chainName)
+          if (!network) {
+            return networks.set(app.chainName, {
+              name: app.chainName,
+              health: {
+                ...(app.healthStatus ?? {}),
+                status: "connected",
               },
-            ],
+              apps: [{ name: app.url, url: app.url }],
+            })
           }
-          tmpNetworks.push(tmp)
-        }
-      })
-      setNetworks(() => [...tmpNetworks])
-    }
 
-    manager?.on("appsChanged", (apps) => {
-      reduceApps(apps)
+          network.apps.push({ name: app.url, url: app.url })
+        })
+        setNetworks([...networks.values()])
+      })
     })
-    manager && reduceApps(manager.apps)
-  }, [manager])
+
+    return () => cb()
+  }, [])
 
   useEffect(() => {
     chrome.storage.sync.set({ notifications: notifications }, () => {
