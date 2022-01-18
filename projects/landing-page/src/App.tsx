@@ -146,28 +146,28 @@ const App: React.FunctionComponent = () => {
               <Code heading="Simple usage (suported chain)">
                 <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
 
-                <Box mt={2}>{`// Create a new UApp with a unique name`}</Box>
+                <Box mt={2}>{`// Create providers for known chains`}</Box>
                 <Box>{`const westendProvider = new ScProvider(SupportedChains.westend);`}</Box>
-                <Box>{`await ApiPromise.create({ provider: westendProvider });`}</Box>
+                <Box>{`const api1 = await ApiPromise.create({ provider: westendProvider });`}</Box>
                 <Box>{`const kusamaProvider = new ScProvider(SupportedChains.kusama);`}</Box>
-                <Box>{`await ApiPromise.create({ provider: kusamaProvider });`}</Box>
+                <Box>{`const api2 = await ApiPromise.create({ provider: kusamaProvider });`}</Box>
 
                 <Box
                   mt={2}
-                >{`await westendProvider.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`await api1.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
 
                 <Box
                   mt={2}
-                >{`await kusamaProvider.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`await api2.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`});`}</Box>
 
                 <Box mt={2}>{`// etc ...`}</Box>
 
-                <Box mt={2}>{`await westendProvider.disconnect();`}</Box>
-                <Box>{`await kusamaProvider.disconnect();`}</Box>
+                <Box mt={2}>{`await api1.disconnect();`}</Box>
+                <Box>{`await api2.disconnect();`}</Box>
               </Code>
 
               <Code heading="Simple usage (custom chain)">
@@ -177,11 +177,11 @@ const App: React.FunctionComponent = () => {
                 <Box
                   mt={2}
                 >{`const myChain = new ScProvider(JSON.stringify(customSpecs));`}</Box>
-                <Box>{`await ApiPromise.create({ provider: myChain });`}</Box>
+                <Box>{`const api = await ApiPromise.create({ provider: myChain });`}</Box>
 
                 <Box
                   mt={2}
-                >{`await myChain.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
                 <Box mt={2}>{`await myChain.disconnect();`}</Box>
@@ -193,13 +193,13 @@ const App: React.FunctionComponent = () => {
                   mt={2}
                 >{`const provider = new ScProvider(SupportedChains.westend);`}</Box>
                 <Box>{`const apiOptions = {types: customTypes}`}</Box>
-                <Box>{`await ApiPromise.create({ provider, options: apiOptions });`}</Box>
+                <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>
                 <Box
                   mt={2}
-                >{`await provider.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
-                <Box mt={2}>{`await provider.disconnect();`}</Box>
+                <Box mt={2}>{`await api.disconnect();`}</Box>
               </Code>
 
               <Code heading="Parachains usage">
@@ -209,15 +209,15 @@ const App: React.FunctionComponent = () => {
                 <Box
                   mt={2}
                 >{`const provider = new ScProvider(SupportedChains.westend, JSON.stringify(parachainSpecs));`}</Box>
-                <Box>{`await ApiPromise.create({ provider });`}</Box>
+                <Box>{`const api = await ApiPromise.create({ provider });`}</Box>
 
                 <Box
                   mt={2}
-                >{`await provider.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
 
-                <Box mt={2}>{`await provider.disconnect();`}</Box>
+                <Box mt={2}>{`await api.disconnect();`}</Box>
               </Code>
 
               <Code heading="Parachains usage with options">
@@ -228,15 +228,15 @@ const App: React.FunctionComponent = () => {
                   mt={2}
                 >{`const provider = new ScProvider(SupportedChains.westend, JSON.stringify(parachainSpecs));`}</Box>
                 <Box>{`const apiOptions = {types: customTypes}`}</Box>
-                <Box>{`await ApiPromise.create({ provider, options: apiOptions });`}</Box>
+                <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>
 
                 <Box
                   mt={2}
-                >{`await provider.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
 
-                <Box mt={2}>{`await provider.disconnect();`}</Box>
+                <Box mt={2}>{`await api.disconnect();`}</Box>
               </Code>
             </ThemeProvider>
           </Section>
