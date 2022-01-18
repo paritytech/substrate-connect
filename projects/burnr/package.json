@@ -48,33 +48,26 @@
     "stream-browserify": "^3.0.0",
     "style-loader": "^3.3.1",
     "ts-loader": "^9.2.6",
-    "unique-names-generator": "^4.6.0",
-    "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.7.3"
+    "unique-names-generator": "^4.6.0"
   },
   "devDependencies": {
     "@material-ui/types": "^5.1.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@types/copy-webpack-plugin": "^6.4.3",
-    "@types/jest": "^27.4.0",
     "@types/node": "^17.0.8",
     "@types/qrcode.react": "^1.0.2",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
     "@types/react-router-dom": "^5.3.2",
-    "@typescript-eslint/parser": "^5.9.1",
     "bn.js": "^5.2.0",
     "copy-webpack-plugin": "^10.2.0",
-    "eslint": "^8.6.0",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^27.4.7",
     "react-dom": "^17.0.2",
     "react-router": "^6.2.1",
     "rimraf": "^3.0.2",
-    "ts-jest": "^27.1.2",
-    "typescript": "^4.5.4"
+    "ts-jest": "^27.1.2"
   }
 }
