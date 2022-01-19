@@ -7,14 +7,8 @@ export type NetworkStatus = "connected" | "disconnecting" | "disconnected"
 export interface TabInterface {
   tabId: number | undefined
   url: string | undefined
-  uApp: uApp
-  isActive?: boolean
-}
-export type uApp = {
   networks: string[] // TODO: for now pass strings in order to make the v0 prototype
-  // networks: Network[]; // This should be activated for parachains and v1
-  name: string
-  enabled: boolean
+  isActive?: boolean
 }
 
 export interface NetworkMainInfo {

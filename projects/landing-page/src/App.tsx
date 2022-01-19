@@ -25,9 +25,6 @@ import {
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert"
 import { CardNetwork, CardProject } from "./components/Cards"
 
-import BrowserDemo from "url:./assets/images/BrowserDemo.png"
-import NetworksDemo from "url:./assets/images/NetworksDemo.png"
-import ParachainDemo from "url:./assets/images/ParachainDemo.png"
 import Burnr from "url:./assets/images/Burnr.png"
 import Extension from "url:./assets/images/Extension.png"
 import YourProject from "url:./assets/images/YourProject.png"
@@ -289,34 +286,10 @@ const App: React.FunctionComponent = () => {
               Projects
             </SectionHeading>
             <CardProject
-              title="Browser Demo"
-              subtitle="Minimal implementation"
-              imageProps={{ path: BrowserDemo as string, position: "left top" }}
-              linkProps={{ href: "./smoldot-browser-demo/" }}
-            />
-            <CardProject
               title="Burnr"
               subtitle="Insecure redeemable wallet"
               imageProps={{ path: Burnr as string, position: "center top" }}
               linkProps={{ href: "./burnr/" }}
-            />
-            <CardProject
-              title="Multi Network Demo"
-              subtitle="One uApp - multiple networks implementation"
-              imageProps={{
-                path: NetworksDemo as string,
-                position: "center top",
-              }}
-              linkProps={{ href: "./multiple-network-demo/" }}
-            />
-            <CardProject
-              title="Parachain Demo"
-              subtitle="Parachain connectivity implementation"
-              imageProps={{
-                path: ParachainDemo as string,
-                position: "center top",
-              }}
-              linkProps={{ href: "./parachain-demo/" }}
             />
             <CardProject
               title="Next Project"

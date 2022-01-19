@@ -17,9 +17,6 @@
     "packages/connect-extension-protocol",
     "packages/connect",
     "projects/extension",
-    "projects/smoldot-browser-demo",
-    "projects/multiple-network-demo",
-    "projects/parachain-demo",
     "projects/burnr",
     "projects/landing-page"
   ],
@@ -34,14 +31,8 @@
     "test": "yarn workspaces -s run test",
     "dev:burnr": "yarn workspace @substrate/burnr run dev",
     "dev:landing-page": "yarn workspace @substrate/landing-page run dev",
-    "dev:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run dev",
-    "dev:multiple-network-demo": "yarn workspace @substrate/multiple-network-demo run dev",
-    "dev:parachain-demo": "yarn workspace @substrate/parachain-demo run dev",
     "dev:extension": "yarn workspace @substrate/extension run dev",
-    "deploy:gh-pages:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run deploy:gh-pages",
-    "deploy:ipfs:smoldot-browser-demo": "yarn workspace @substrate/smoldot-browser-demo run deploy:ipfs",
     "deploy": "./deploy.sh",
-    "connect-tester": "yarn workspace @substrate/extension-provider run build && yarn workspace @substrate/connect run build && yarn run dev:smoldot-browser-demo",
     "format": "prettier --write ."
   },
   "devDependencies": {
