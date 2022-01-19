@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import "regenerator-runtime/runtime"
-
 import { ScProvider, SupportedChains } from "@substrate/connect"
 import { ApiPromise } from "@polkadot/api"
 
