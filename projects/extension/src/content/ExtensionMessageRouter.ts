@@ -49,17 +49,15 @@ export class ExtensionMessageRouter {
     window.removeEventListener("message", this.#handleMessage)
   }
 
-  #establishNewConnection = (chainId: string, chainName: string): void => {
-    const port = chrome.runtime.connect({
-      name: `${window.location.href}::${chainName}`,
-    })
+  #establishNewConnection = (chainId: string): void => {
+    const port = chrome.runtime.connect(chainId)
 
-    debug(`CONNECTED ${chainName} PORT`, port)
+    debug(`CONNECTED ${chainId} PORT`, port)
 
     // forward any messages: extension -> page
     port.onMessage.addListener((data): void => {
       const { type, payload } = data
-      debug(`RECEIVED MESSAGE FROM ${chainName} PORT`, data)
+      debug(`RECEIVED MESSAGE FROM ${chainId} PORT`, data)
       sendMessage({
         type,
         payload,
@@ -80,7 +78,7 @@ export class ExtensionMessageRouter {
     })
 
     this.#ports[chainId] = port
-    debug(`CONNECTED TO ${chainName} PORT`)
+    debug(`CONNECTED TO ${chainId} PORT`)
   }
 
   #forwardRpcMessage = ({
@@ -123,25 +121,8 @@ export class ExtensionMessageRouter {
       return
     }
 
-    if (type === "add-well-known-chain") {
-      this.#establishNewConnection(data.chainId, data.payload)
-    }
-
-    if (type === "add-chain") {
-      let name = "unknown name"
-      try {
-        name = JSON.parse(data.payload).name || name
-      } catch (_) {
-        sendMessage({
-          origin: "content-script",
-          chainId: data.chainId,
-          type: "error",
-          payload: "Error parsing relayChain spec",
-        })
-        console.warn("Error parsing relayChain spec", data)
-        return
-      }
-      this.#establishNewConnection(data.chainId, name)
+    if (type === "add-well-known-chain" || type === "add-chain") {
+      this.#establishNewConnection(data.chainId)
     }
 
     return this.#forwardRpcMessage(data)

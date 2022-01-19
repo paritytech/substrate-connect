@@ -11,7 +11,7 @@
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "compile": "tsc -b",
-    "test": "node --no-warnings --experimental-vm-modules $(yarn bin)/jest --colors --silent --coverage",
+    "test": "node --no-warnings --experimental-vm-modules $(yarn bin)/jest --colors --coverage",
     "prebuild": "yarn clean && yarn checkSpecs",
     "build": "webpack --config webpack.prod.js && zip -r ./dist/substrate-connect.zip ./dist/*",
     "dev": "yarn run prebuild && webpack --node-env development --config webpack.dev.js",
