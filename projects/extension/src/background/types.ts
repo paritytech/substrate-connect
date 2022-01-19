@@ -1,56 +1,26 @@
-import type { JsonRpcCallback } from "@substrate/smoldot-light"
 import EventEmitter from "eventemitter3"
 import StrictEventEmitter from "strict-event-emitter-types"
 import { HealthChecker, Chain, SmoldotHealth } from "@substrate/smoldot-light"
-import { Network } from "../types"
 
-export interface ExposedAppInfo {
-  appName: string
+export interface ExposedChainConnection {
+  chainId: string
   chainName: string
   tabId: number
-  url?: string
+  url: string
   healthStatus?: SmoldotHealth
-  pendingRequests: string[]
-  state: AppState
 }
 
-export interface App extends ExposedAppInfo {
+export interface ChainConnection extends ExposedChainConnection {
+  id: string
+  pendingRequests: string[]
   chain?: Chain
   parachain?: Chain
-  name: string
   port: chrome.runtime.Port
-  healthChecker?: HealthChecker
-}
-
-export type AppState = "connected" | "disconnected"
-
-export interface PopupAppInfo {
-  name: string
-  tabId: number
-  networks: NetworkState[]
-}
-
-export interface State {
-  apps: PopupAppInfo[]
-}
-
-export interface NetworkState {
-  name: string
+  healthChecker: HealthChecker
 }
 
 export interface StateEvents {
-  stateChanged: State
-  appsChanged: ExposedAppInfo[]
+  stateChanged: ExposedChainConnection[]
 }
 
 export type StateEmitter = StrictEventEmitter<EventEmitter, StateEvents>
-
-export interface ConnectionManagerInterface {
-  registerApp: (app: App) => void
-  unregisterApp: (app: App) => void
-  addChain: (
-    spec: string,
-    jsonRpcCallback?: JsonRpcCallback,
-    tabId?: number,
-  ) => Promise<Network>
-}
