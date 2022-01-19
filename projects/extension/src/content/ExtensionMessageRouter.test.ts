@@ -33,7 +33,7 @@ describe("Disconnect and incorrect cases", () => {
   })
 
   test("port disconnecting sends an error message and removes port", async () => {
-    const port = new MockPort("test-app::westend")
+    const port = new MockPort("test", 0)
     const connect = chrome.runtime.connect
     connect.mockImplementation(() => port)
     sendMessage({
@@ -46,7 +46,7 @@ describe("Disconnect and incorrect cases", () => {
 
     const handler = jest.fn()
     window.addEventListener("message", handler)
-    port.triggerDisconnect()
+    port.disconnect()
     await waitForMessageToBePosted()
 
     const expectedMessage: Partial<ToApplication> = {
@@ -75,7 +75,7 @@ describe("Connection and forward cases", () => {
     chrome.runtime.connect.mockClear()
     router = new ExtensionMessageRouter()
     router.listen()
-    port = new MockPort("test-app::westend")
+    port = new MockPort("test", 0)
     chrome.runtime.connect.mockImplementation(() => port)
   })
 
@@ -99,7 +99,7 @@ describe("Connection and forward cases", () => {
   })
 
   test("forwards rpc message from app -> extension", async () => {
-    const port = new MockPort("test-app::westend")
+    const port = new MockPort("test", 0)
     chrome.runtime.connect.mockImplementation(() => port)
     // connect
     sendMessage({
@@ -126,11 +126,11 @@ describe("Connection and forward cases", () => {
       type: rpcMessage.type,
       payload: rpcMessage.payload,
     }
-    expect(port.postMessage).toHaveBeenCalledWith(sample)
+    expect(port.postedMessages[port.postedMessages.length - 1]).toEqual(sample)
   })
 
   test("forwards rpc message from extension -> app", async () => {
-    const port = new MockPort("test-app::westend")
+    const port = new MockPort("test", 0)
     chrome.runtime.connect.mockImplementation(() => port)
     // connect
     sendMessage({
@@ -143,14 +143,14 @@ describe("Connection and forward cases", () => {
 
     const handler = jest.fn()
     window.addEventListener("message", handler)
-    port.triggerMessage({
+    port._sendAppMessage({
       type: "rpc",
       payload: '{"id:":1,"jsonrpc:"2.0","result":666}',
     })
     await waitForMessageToBePosted()
 
     expect(chrome.runtime.connect).toHaveBeenCalledTimes(1)
-    expect(port.disconnect).not.toHaveBeenCalled()
+    expect(port.connected).toBe(true)
     expect(handler).toHaveBeenCalled()
     const forwarded = handler.mock.calls[0][0] as MessageEvent
     expect(forwarded.data).toEqual({
@@ -162,7 +162,7 @@ describe("Connection and forward cases", () => {
   })
 
   test("forwards error message from extension -> app", async () => {
-    const port = new MockPort("test-app::westend")
+    const port = new MockPort("test", 0)
     chrome.runtime.connect.mockImplementation(() => port)
     // connect
     sendMessage({
@@ -175,7 +175,7 @@ describe("Connection and forward cases", () => {
 
     const handler = jest.fn()
     window.addEventListener("message", handler)
-    port.triggerMessage({ type: "error", payload: "Boom!" })
+    port._sendAppMessage({ type: "error", payload: "Boom!" })
     await waitForMessageToBePosted()
 
     expect(handler).toHaveBeenCalled()

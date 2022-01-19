@@ -1,15 +1,36 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+
 import { wellKnownChains, ConnectionManager } from "./ConnectionManager"
 import { logger } from "@polkadot/util"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
+import { ExposedChainConnection } from "./types"
+import { start } from "@substrate/smoldot-light"
 
 export interface Background extends Window {
-  manager: ConnectionManager
+  manager: {
+    onManagerStateChanged: (
+      listener: (state: ExposedChainConnection[]) => void,
+    ) => () => void
+    disconnectTab: (tabId: number) => void
+  }
+}
+
+let manager: ConnectionManager
+
+const publicManager: Background["manager"] = {
+  onManagerStateChanged(listener) {
+    listener(manager.connections)
+    manager.on("stateChanged", listener)
+    return () => {
+      manager.removeListener("stateChanged", listener)
+    }
+  },
+  disconnectTab: (tabId: number) => manager.disconnectTab(tabId),
 }
 
 declare let window: Background
-
-const manager = (window.manager = new ConnectionManager())
+window.manager = publicManager
 
 const l = logger("Extension")
 export interface RequestRpcSend {
@@ -19,7 +40,7 @@ export interface RequestRpcSend {
 
 const init = async () => {
   try {
-    manager.initSmoldot()
+    manager = new ConnectionManager(start({ maxLogLevel: 3 }))
     for (const [key, value] of wellKnownChains.entries()) {
       const rpcCallback = (rpc: string) => {
         console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
@@ -30,19 +51,20 @@ const init = async () => {
     }
   } catch (e) {
     l.error(`Error creating smoldot: ${e}`)
+    manager?.shutdown()
   }
 }
 
 chrome.runtime.onInstalled.addListener(() => {
-  init().catch(console.error)
+  init()
 })
 
 chrome.runtime.onStartup.addListener(() => {
-  init().catch(console.error)
+  init()
 })
 
 chrome.runtime.onConnect.addListener((port) => {
-  manager.addApp(port)
+  manager.addChainConnection(port)
 })
 
 chrome.storage.sync.get(["notifications"], (result) => {
