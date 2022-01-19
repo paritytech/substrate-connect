@@ -301,15 +301,6 @@ const App: React.FunctionComponent = () => {
               linkProps={{ href: "./burnr/" }}
             />
             <CardProject
-              title="Multi Network Demo"
-              subtitle="One uApp - multiple networks implementation"
-              imageProps={{
-                path: NetworksDemo as string,
-                position: "center top",
-              }}
-              linkProps={{ href: "./multiple-network-demo/" }}
-            />
-            <CardProject
               title="Parachain Demo"
               subtitle="Parachain connectivity implementation"
               imageProps={{

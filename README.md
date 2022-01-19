@@ -82,22 +82,12 @@ yarn dev:smoldot-browser-demo
 
 (Make sure to run `$ yarn install` before.)
 
-## Run the Multiple Network browser demo
-The Multiple Network functionality enables connecting to multiple networks from a single web-page.
-Running the following command will build all necessary dependencies and run the Multiple Network browser demo. It will be served on https://localhost:1234/
-
-```bash
-yarn dev:parachain-demo
-```
-
-(Make sure to run `$ yarn install` before.)
-
 ## Run the Parachain Network browser demo
 The Parachain demo showcases the connection of a uApp to the 'Westend' chain and 'Westmint' parachain and retrieves a list of the tokens from Westmint.
 Running the following command will build all necessary dependencies and run the Parachain demo. It will be served on https://localhost:1234/
 
 ```bash
-yarn dev:multiple-network-demo 
+yarn dev:parachain-demo
 ```
 
 (Make sure to run `$ yarn install` before.)

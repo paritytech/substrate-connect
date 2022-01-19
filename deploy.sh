@@ -18,7 +18,6 @@ initDirs() {
   rm -rf ./$directory/*
   mkdir -p ./$directory/burnr
   mkdir -p ./$directory/smoldot-browser-demo
-  mkdir -p ./$directory/multiple-network-demo
   mkdir -p ./$directory/parachain-demo
   mkdir -p ./$directory/extension
   touch ./$directory/.nojekyll
@@ -31,8 +30,6 @@ deployGhPages() {
   cp -r ./projects/burnr/dist/* ./$directory/burnr/.
   echo "Place Smoldot browser demo's files."
   cp -r ./projects/smoldot-browser-demo/dist/* ./$directory/smoldot-browser-demo/.
-  echo "Place Multiple network demo's files."
-  cp -r ./projects/multiple-network-demo/dist/* ./$directory/multiple-network-demo/.
   echo "Place Parachain demo's files."
   cp -r ./projects/parachain-demo/dist/* ./$directory/parachain-demo/.
   echo "Place Substrate-connect extension's zip."
