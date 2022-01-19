@@ -289,12 +289,6 @@ const App: React.FunctionComponent = () => {
               Projects
             </SectionHeading>
             <CardProject
-              title="Browser Demo"
-              subtitle="Minimal implementation"
-              imageProps={{ path: BrowserDemo as string, position: "left top" }}
-              linkProps={{ href: "./smoldot-browser-demo/" }}
-            />
-            <CardProject
               title="Burnr"
               subtitle="Insecure redeemable wallet"
               imageProps={{ path: Burnr as string, position: "center top" }}
