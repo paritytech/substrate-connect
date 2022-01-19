@@ -378,4 +378,87 @@ describe("ConnectionManager", () => {
     )
     expect(() => manager.addChain("")).toThrow("Smoldot client does not exist.")
   })
+
+  it("handles two different tabs using the same chainId", async () => {
+    const { connectPort } = helper
+    const chainId = "same"
+
+    const { chain: tab1Chain, port: tab1Port } = connectPort(chainId, 1, {
+      type: "add-well-known-chain",
+      payload: "polkadot",
+    })
+
+    const { chain: tab2Chain, port: tab2Port } = connectPort(chainId, 2, {
+      type: "add-well-known-chain",
+      payload: "polkadot",
+    })
+
+    await wait(0)
+
+    expect(tab1Chain).not.toBe(tab2Chain)
+    expect(tab1Chain!.receivedMessages.length).toBe(1)
+    expect(tab2Chain!.receivedMessages.length).toBe(1)
+
+    // let's make sure that each chain receives *only* their own messages
+    tab1Port._sendExtensionMessage({
+      type: "rpc",
+      payload: JSON.stringify({ jsonrpc: "2.0", id: "ping1" }),
+    })
+
+    tab2Port._sendExtensionMessage({
+      type: "rpc",
+      payload: JSON.stringify({ jsonrpc: "2.0", id: "ping2" }),
+    })
+
+    await wait(0)
+    expect(tab1Chain!.receivedMessages.length).toBe(2)
+    expect(tab2Chain!.receivedMessages.length).toBe(2)
+
+    let [lastMessage] = tab1Chain!.receivedMessages.slice(-1)
+    expect(lastMessage).toBe('{"jsonrpc":"2.0","id":"extern:\\"ping1\\""}')
+    ;[lastMessage] = tab2Chain!.receivedMessages.slice(-1)
+    expect(lastMessage).toBe('{"jsonrpc":"2.0","id":"extern:\\"ping2\\""}')
+
+    // let's make sure that each port receives *only* their own messages
+    expect(tab1Port.postedMessages.length).toBe(0)
+    expect(tab2Port.postedMessages.length).toBe(0)
+
+    tab1Chain!._sendResponse(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        id: 'extern:"ping1"',
+        result: '"pong1"',
+      }),
+    )
+    tab2Chain!._sendResponse(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        id: 'extern:"ping2"',
+        result: '"pong2"',
+      }),
+    )
+
+    await wait(0)
+
+    expect(tab1Port.postedMessages).toEqual([
+      {
+        type: "rpc",
+        payload: JSON.stringify({
+          jsonrpc: "2.0",
+          id: "ping1",
+          result: '"pong1"',
+        }),
+      },
+    ])
+    expect(tab2Port.postedMessages).toEqual([
+      {
+        type: "rpc",
+        payload: JSON.stringify({
+          jsonrpc: "2.0",
+          id: "ping2",
+          result: '"pong2"',
+        }),
+      },
+    ])
+  })
 })
