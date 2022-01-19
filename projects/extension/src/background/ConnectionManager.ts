@@ -107,7 +107,9 @@ export class ConnectionManager extends (EventEmitter as {
       const pendingRequests: string[] = []
 
       const healthChecker = smHealthChecker()
+      const id = JSON.stringify([chainId, tabId])
       const connection: ChainConnection = {
+        id,
         chainName: "",
         chainId,
         tabId,
@@ -129,14 +131,13 @@ export class ConnectionManager extends (EventEmitter as {
         port.onMessage.removeListener(onMessageHandler)
         port.onDisconnect.removeListener(onDisconnect)
 
-        if (this.#chainConnections.get(chainId)?.chainName)
-          this.#emitStateChanged()
+        if (this.#chainConnections.get(id)?.chainName) this.#emitStateChanged()
 
-        this.#chainConnections.delete(chainId)
+        this.#chainConnections.delete(id)
       }
       port.onDisconnect.addListener(onDisconnect)
 
-      this.#chainConnections.set(chainId, connection)
+      this.#chainConnections.set(id, connection)
     } catch (e) {
       const msg = `Error while connecting to the port ${e}`
       l.error(msg)
