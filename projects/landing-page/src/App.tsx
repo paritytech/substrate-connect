@@ -25,9 +25,6 @@ import {
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert"
 import { CardNetwork, CardProject } from "./components/Cards"
 
-import BrowserDemo from "url:./assets/images/BrowserDemo.png"
-import NetworksDemo from "url:./assets/images/NetworksDemo.png"
-import ParachainDemo from "url:./assets/images/ParachainDemo.png"
 import Burnr from "url:./assets/images/Burnr.png"
 import Extension from "url:./assets/images/Extension.png"
 import YourProject from "url:./assets/images/YourProject.png"
@@ -293,15 +290,6 @@ const App: React.FunctionComponent = () => {
               subtitle="Insecure redeemable wallet"
               imageProps={{ path: Burnr as string, position: "center top" }}
               linkProps={{ href: "./burnr/" }}
-            />
-            <CardProject
-              title="Parachain Demo"
-              subtitle="Parachain connectivity implementation"
-              imageProps={{
-                path: ParachainDemo as string,
-                position: "center top",
-              }}
-              linkProps={{ href: "./parachain-demo/" }}
             />
             <CardProject
               title="Next Project"

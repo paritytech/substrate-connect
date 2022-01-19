@@ -6,7 +6,6 @@
     { "path": "./packages/connect" },
     { "path": "./projects/burnr" },
     { "path": "./projects/extension" },
-    { "path": "./projects/landing-page" },
-    { "path": "./projects/parachain-demo" }
+    { "path": "./projects/landing-page" }
   ]
 }

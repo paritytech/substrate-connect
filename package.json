@@ -17,7 +17,6 @@
     "packages/connect-extension-protocol",
     "packages/connect",
     "projects/extension",
-    "projects/parachain-demo",
     "projects/burnr",
     "projects/landing-page"
   ],
@@ -32,7 +31,6 @@
     "test": "yarn workspaces -s run test",
     "dev:burnr": "yarn workspace @substrate/burnr run dev",
     "dev:landing-page": "yarn workspace @substrate/landing-page run dev",
-    "dev:parachain-demo": "yarn workspace @substrate/parachain-demo run dev",
     "dev:extension": "yarn workspace @substrate/extension run dev",
     "deploy": "./deploy.sh",
     "format": "prettier --write ."
