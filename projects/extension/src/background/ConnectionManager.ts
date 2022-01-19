@@ -107,7 +107,7 @@ export class ConnectionManager extends (EventEmitter as {
       const pendingRequests: string[] = []
 
       const healthChecker = smHealthChecker()
-      const id = JSON.stringify([chainId, tabId])
+      const id = `${chainId}::${tabId}`
       const connection: ChainConnection = {
         id,
         chainName: "",
