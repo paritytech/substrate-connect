@@ -259,6 +259,38 @@ export class ExtensionProvider implements ProviderInterface {
       .catch((error) => this.emit("error", new HealthCheckError(error)))
   }
 
+  #addChain(
+    specMsg: ToExtension & { type: "add-well-known-chain" | "add-chain" },
+  ): Promise<void> {
+    return new Promise<void>((res, rej) => {
+      const waitForChainCb = ({ data }: MessageEvent<ToApplication>) => {
+        if (
+          data.origin !== CONTENT_SCRIPT_ORIGIN ||
+          data.chainId !== this.#chainId
+        ) {
+          return
+        }
+
+        window.removeEventListener("message", waitForChainCb)
+
+        if (data.type === "add-chain-ok") return res()
+
+        const error = new Error(
+          data.type === "error"
+            ? data.payload
+            : "Unexpected message received from the extension while waiting for 'add-chain-ok' message",
+        )
+        rej(error)
+        this.emit("error", error)
+        eraseRecord(this.#handlers, (h) => h.callback(error, undefined))
+        eraseRecord(this.#waitingForId)
+      }
+
+      window.addEventListener("message", waitForChainCb)
+      sendMessage(specMsg)
+    })
+  }
+
   /**
    * "Connect" to the extension - sends a message to the `ExtensionMessageRouter`
    * asking it to connect to the extension background.
@@ -266,21 +298,20 @@ export class ExtensionProvider implements ProviderInterface {
    * @returns a resolved Promise
    * @remarks this is async to fulfill the interface with PolkadotJS
    */
-  public connect(): Promise<void> {
+  public async connect(): Promise<void> {
     // Once connect is sent - send rpc to extension that will contain the chainSpecs
     // for the extension to call addChain on smoldot
-    const specMsg: ToExtension = {
+
+    await this.#addChain({
       origin: EXTENSION_PROVIDER_ORIGIN,
       chainId: this.#chainId,
       type: SupportedChains[this.#chainSpecs as SupportedChains]
         ? "add-well-known-chain"
         : "add-chain",
       payload: this.#chainSpecs,
-    }
-    if (this.#parachainSpecs) {
-      specMsg.parachainPayload = this.#parachainSpecs
-    }
-    sendMessage(specMsg)
+      parachainPayload: this.#parachainSpecs || undefined,
+    })
+
     window.addEventListener(
       "message",
       ({ data }: MessageEvent<ToApplication>) => {
@@ -296,8 +327,6 @@ export class ExtensionProvider implements ProviderInterface {
       this.#checkClientPeercount,
       this.healthPingerInterval,
     )
-
-    return Promise.resolve()
   }
 
   /**
