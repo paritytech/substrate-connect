@@ -18,11 +18,5 @@
   "dependencies": {
     "@substrate/smoldot-light": "0.5.13",
     "asap": "^2.0.6"
-  },
-  "devDependencies": {
-    "@types/asap": "^2.0.0",
-    "@types/jest": "^27.4.0",
-    "jest": "^27.4.7",
-    "typescript": "^4.5.4"
   }
 }
