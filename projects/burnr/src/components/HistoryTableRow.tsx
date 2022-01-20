@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { FunctionComponent, useContext } from "react"
 
 import BN from "bn.js"
 import { BalanceVisibleContext } from "../utils/contexts"
@@ -21,7 +21,7 @@ interface Props {
   showStatus?: boolean
 }
 
-const HistoryTableRow: React.FunctionComponent<Props> = ({
+const HistoryTableRow: FunctionComponent<Props> = ({
   columns,
   row,
   unit = "Unit",

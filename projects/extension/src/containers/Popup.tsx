@@ -1,86 +1,67 @@
-import React, { FunctionComponent, useEffect, useState } from "react"
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import React, { FunctionComponent, useEffect, useRef, useState } from "react"
 import * as material from "@material-ui/core"
 import GlobalFonts from "../fonts/fonts"
 import { light, MenuButton, Tab, Logo } from "../components"
 import CallMadeIcon from "@material-ui/icons/CallMade"
 import { Background } from "../background/"
-import { debug } from "../utils/debug"
 import { TabInterface } from "../types"
-import { State, PopupAppInfo } from "../background/types"
-import { ConnectionManager } from "../background/ConnectionManager"
 
 const { createTheme, ThemeProvider, Box, Divider } = material
 
-const createTab = (a: PopupAppInfo, url: string | undefined): TabInterface => {
-  return {
-    tabId: a.tabId,
-    url: url,
-    uApp: {
-      networks: a.networks.map((b) => b.name),
-      name: a.name,
-      enabled: true,
-    },
-  }
-}
-
 const Popup: FunctionComponent = () => {
+  const disconnectTabRef = useRef<(tapId: number) => void>((_: number) => {})
   const [activeTab, setActiveTab] = useState<TabInterface | undefined>()
-  const [apps, setApps] = useState<TabInterface[]>([])
+  const [otherTabs, setOtherTabs] = useState<TabInterface[]>([])
   const appliedTheme = createTheme(light)
-  const [manager, setManager] = useState<ConnectionManager | undefined>()
-  const [browserTabs, setBrowserTabs] = useState<chrome.tabs.Tab[]>()
-  const [appsInitState, setAppsInitState] = useState<State>()
 
-  // We gather all needed information (from manager[apps] and browserTabs)
-  useEffect((): void => {
-    // retrieve all information from background page and assign to local state
-    chrome.runtime.getBackgroundPage((backgroundPage) => {
-      const bg = backgroundPage as Background
-      if (bg.manager) {
-        setManager(bg.manager)
-        setAppsInitState(bg.manager.getState())
-      }
-    })
-    // retrieve open tabs and assign to local state
-    chrome.tabs.query({ currentWindow: true }, (tabs) => {
-      setBrowserTabs(tabs)
-    })
-  }, [])
+  useEffect(() => {
+    let isActive = true
+    let unsubscribe = () => {}
 
-  useEffect((): void => {
-    /**
-     * Iterates through the tabs in order to identify uApps and set them with all info needed
-     * in local state. In addition identify which App is active for showing them in respectful
-     * position in the extension
-     * @param browserTabs - The tabs that are open when extension popup windows open (set on previous useEffect)
-     * @param appState - The apps that are retrieved from background through getState()
-     **/
-    const setExtensionApps = (
-      browserTabs: chrome.tabs.Tab[] | undefined,
-      appState: State | undefined,
-    ) => {
-      const ti: TabInterface[] = [] as TabInterface[]
-      browserTabs?.forEach((t: chrome.tabs.Tab) => {
-        appState?.apps.find((a) => {
-          if (t.id === a.tabId) {
-            if (t.active) {
-              setActiveTab(createTab(a, t.url))
-            } else {
-              ti.push(createTab(a, t.url))
+    ;(async () => {
+      // retrieve open tabs and assign to local state
+      const browserTabs = await chrome.tabs.query({ currentWindow: true })
+      if (!isActive) return
+
+      chrome.runtime.getBackgroundPage((backgroundPage) => {
+        if (!isActive) return
+
+        const bg = backgroundPage as Background
+        disconnectTabRef.current = bg.manager.disconnectTab
+
+        unsubscribe = bg.manager.onManagerStateChanged((apps) => {
+          const networksByTab: Map<number, Set<string>> = new Map()
+          apps.forEach((app) => {
+            if (!networksByTab.has(app.tabId))
+              networksByTab.set(app.tabId, new Set())
+            networksByTab.get(app.tabId)!.add(app.chainName)
+          })
+
+          const nextTabs: TabInterface[] = []
+          browserTabs.forEach((tab) => {
+            if (!networksByTab.has(tab.id!)) return
+            const result = {
+              tabId: tab.id!,
+              url: tab.url,
+              networks: [...networksByTab.get(tab.id!)!],
             }
-          }
+            if (tab.active) setActiveTab(result)
+            else nextTabs.push(result)
+          })
+
+          setOtherTabs(nextTabs)
         })
       })
-      setApps(ti)
+    })()
+
+    return () => {
+      isActive = false
+      unsubscribe()
     }
-
-    setExtensionApps(browserTabs, appsInitState)
-
-    manager?.on("stateChanged", (state) => {
-      debug("CONNECTION MANAGER APP STATE CHANGED")
-      setExtensionApps(browserTabs, state)
-    })
-  }, [appsInitState, browserTabs, manager])
+  }, [])
 
   const goToOptions = (): void => {
     chrome.runtime.openOptionsPage()
@@ -96,18 +77,22 @@ const Popup: FunctionComponent = () => {
 
         {activeTab && (
           <Tab
-            manager={manager}
+            disconnectTab={disconnectTabRef.current}
             current
             tab={activeTab}
             setActiveTab={setActiveTab}
           />
         )}
 
-        {apps.length > 0 && (
+        {otherTabs.length > 0 && (
           <Box marginY={1}>
-            {apps.map((t) => (
+            {otherTabs.map((t) => (
               <>
-                <Tab manager={manager} key={t.tabId} tab={t} />
+                <Tab
+                  disconnectTab={disconnectTabRef.current}
+                  key={t.tabId}
+                  tab={t}
+                />
                 <Divider />
               </>
             ))}

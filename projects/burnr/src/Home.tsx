@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect, FunctionComponent } from "react"
 import {
   Paper,
   IconButton,
@@ -39,7 +39,7 @@ interface Props {
   loader?: boolean
 }
 
-const Home: React.FunctionComponent<Props> = ({ account, loader }: Props) => {
+const Home: FunctionComponent<Props> = ({ account, loader }: Props) => {
   const [localBalance, setLocalBalance] = useLocalStorage("balanceVisibility")
   const [balanceVisibility, setBalanceVisibility] = useState<boolean>(
     localBalance !== "false",

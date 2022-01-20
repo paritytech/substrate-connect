@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { FunctionComponent, useState } from "react"
 import Identicon from "@polkadot/react-identicon"
 import { Typography, Snackbar, Box } from "@material-ui/core"
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert"
@@ -14,7 +14,7 @@ const Alert = (props: AlertProps) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
-const AccountCard: React.FunctionComponent<Props> = ({
+const AccountCard: FunctionComponent<Props> = ({
   account,
   addressFormat,
 }: Props) => {

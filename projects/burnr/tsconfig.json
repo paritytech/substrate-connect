@@ -3,8 +3,8 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "outDir": "./dist",
-    "lib": ["ES2015", "DOM", "DOM.Iterable", "ScriptHost"],
-    "module": "ES2015",
+    "lib": ["es6", "dom"],
+    "module": "es6",
     "target": "ES2015",
     "types": [],
     "esModuleInterop": true,
@@ -12,7 +12,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "jsx": "react"
+    "jsx": "react-jsx"
   },
   "include": ["src/**/*"],
   "references": [{ "path": "../../packages/connect" }]

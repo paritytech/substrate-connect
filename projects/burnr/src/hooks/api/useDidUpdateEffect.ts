@@ -6,10 +6,10 @@ import { DependencyList, EffectCallback, useEffect, useRef } from "react"
  *
  * @see https://stackoverflow.com/questions/53179075/with-useeffect-how-can-i-skip-applying-an-effect-upon-the-initial-render/53180013#53180013
  */
-export function useDidUpdateEffect(
+export const useDidUpdateEffect = (
   fn: EffectCallback,
   inputs?: DependencyList,
-): void {
+): void => {
   const didMountRef = useRef(false)
 
   return useEffect(() => {

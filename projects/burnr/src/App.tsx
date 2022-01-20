@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useState } from "react"
+import { SetStateAction, useEffect, useState } from "react"
 import { BrowserRouter } from "react-router-dom" // Pages
 import { makeStyles } from "@material-ui/core/styles"
 import { ApiContext, AccountContext } from "./utils/contexts"

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import { FunctionComponent, useState, useContext, MouseEvent } from "react"
 
 import { grey } from "@material-ui/core/colors"
 import {
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const { polkastats, polkascan } = POLKA_ACCOUNT_ENDPOINTS
 
-const AccountMenu: React.FunctionComponent = () => {
+const AccountMenu: FunctionComponent = () => {
   const classes = useStyles()
   const [endpoint] = useLocalStorage("endpoint")
   const minEndpoint = endpoint?.split("-")[0]?.toLowerCase()
@@ -45,8 +45,8 @@ const AccountMenu: React.FunctionComponent = () => {
   const [polkascanUri] = useState(`https://${polkascan}/${minEndpoint}`)
   const { account } = useContext(AccountContext)
   const { userAddress, userJson, userSeed } = account
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
 

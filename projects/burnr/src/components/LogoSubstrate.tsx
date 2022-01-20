@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React from "react"
+import { FunctionComponent } from "react"
 import { Link, makeStyles } from "@material-ui/core"
 
 interface Props {
@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   },
 })
 
-const LogoSubstrate: React.FunctionComponent<Props> = ({ theme }: Props) => {
+const LogoSubstrate: FunctionComponent<Props> = ({ theme }: Props) => {
   const classes = useStyles()
   return (
     <Link href="http://substrate.io/" target="_blank" className={classes.root}>

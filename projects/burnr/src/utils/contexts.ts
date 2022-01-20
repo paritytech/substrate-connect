@@ -1,3 +1,4 @@
+import { createContext } from "react"
 import {
   LocalStorageAccountCtx,
   AdminCtx,
@@ -7,21 +8,20 @@ import {
   CreateAccountCtx,
 } from "./types"
 
-import React from "react"
 import { ApiPromise } from "@polkadot/api"
 
-const BalanceVisibleContext = React.createContext<BalanceVisibilityCtx>({
+const BalanceVisibleContext = createContext<BalanceVisibilityCtx>({
   balanceVisibility: true,
   setBalanceVisibility: () => console.log(),
 })
-const AccountContext = React.createContext<CreateAccountCtx>({
+const AccountContext = createContext<CreateAccountCtx>({
   account: {} as LocalStorageAccountCtx,
-  setCurrentAccount: () => console.log(),
+  setCurrentAccount: (t: LocalStorageAccountCtx) => console.log(t),
 })
-const AdminContext = React.createContext<AdminCtx>({} as AdminCtx)
-const ApiContext = React.createContext<ApiPromise>({} as ApiPromise)
-const EvtMgrContext = React.createContext<EvtMgrCtx>([])
-const EvtTxContext = React.createContext<EvtTxCtx>([])
+const AdminContext = createContext<AdminCtx>({} as AdminCtx)
+const ApiContext = createContext<ApiPromise>({} as ApiPromise)
+const EvtMgrContext = createContext<EvtMgrCtx>([])
+const EvtTxContext = createContext<EvtTxCtx>([])
 
 export {
   AccountContext,
