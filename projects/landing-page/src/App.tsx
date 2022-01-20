@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from "react"
 import {
   CssBaseline,
@@ -26,9 +25,6 @@ import {
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert"
 import { CardNetwork, CardProject } from "./components/Cards"
 
-import BrowserDemo from "url:./assets/images/BrowserDemo.png"
-import NetworksDemo from "url:./assets/images/NetworksDemo.png"
-import ParachainDemo from "url:./assets/images/ParachainDemo.png"
 import Burnr from "url:./assets/images/Burnr.png"
 import Extension from "url:./assets/images/Extension.png"
 import YourProject from "url:./assets/images/YourProject.png"
@@ -145,94 +141,99 @@ const App: React.FunctionComponent = () => {
             <ThemeProvider theme={createTheme(dark)}>
               <Code>yarn add @substrate/substrate-connect</Code>
               <Code heading="Simple usage (suported chain)">
-                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
+                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
 
-                <Box mt={2}>{`// Create a new UApp with a unique name`}</Box>
-                <Box>{`const app = new Detector('burnr-wallet');`}</Box>
-                <Box>{`const westend = await app.connect('westend');`}</Box>
-                <Box>{`const kusama = await app.connect('kusama');`}</Box>
+                <Box mt={2}>{`// Create providers for known chains`}</Box>
+                <Box>{`const westendProvider = new ScProvider(SupportedChains.westend);`}</Box>
+                <Box>{`const api1 = await ApiPromise.create({ provider: westendProvider });`}</Box>
+                <Box>{`const kusamaProvider = new ScProvider(SupportedChains.kusama);`}</Box>
+                <Box>{`const api2 = await ApiPromise.create({ provider: kusamaProvider });`}</Box>
 
                 <Box
                   mt={2}
-                >{`await westend.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`await api1.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
 
                 <Box
                   mt={2}
-                >{`await kusama.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`await api2.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`});`}</Box>
 
                 <Box mt={2}>{`// etc ...`}</Box>
 
-                <Box mt={2}>{`await westend.disconnect();`}</Box>
-                <Box>{`await kusama.disconnect();`}</Box>
+                <Box mt={2}>{`await api1.disconnect();`}</Box>
+                <Box>{`await api2.disconnect();`}</Box>
               </Code>
 
               <Code heading="Simple usage (custom chain)">
-                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
+                <Box>{`import { ScProvider } from '@substrate/connect';`}</Box>
                 <Box>{`import customSpecs from './customSpecs.json';`}</Box>
-
-                <Box mt={2}>{`const app = new Detector('my app');`}</Box>
-                <Box>{`const myChain = await app.connect({ chain: 'chainName', spec: JSON.stringify(customSpecs)});`}</Box>
 
                 <Box
                   mt={2}
-                >{`await myChain.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`const myChain = new ScProvider(JSON.stringify(customSpecs));`}</Box>
+                <Box>{`const api = await ApiPromise.create({ provider: myChain });`}</Box>
+
+                <Box
+                  mt={2}
+                >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
-
                 <Box mt={2}>{`await myChain.disconnect();`}</Box>
               </Code>
 
               <Code heading="Simple usage with options">
-                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
-
-                <Box mt={2}>{`const app = new Detector('my app');`}</Box>
-                <Box>{`const apiOptions = {types: customTypes}`}</Box>
-                <Box>{`const wstnd = await app.connect('westend', null, apiOptions);`}</Box>
-
+                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
                 <Box
                   mt={2}
-                >{`await wstnd.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`const provider = new ScProvider(SupportedChains.westend);`}</Box>
+                <Box>{`const apiOptions = {types: customTypes}`}</Box>
+                <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>
+                <Box
+                  mt={2}
+                >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
-
-                <Box mt={2}>{`await wstnd.disconnect();`}</Box>
+                <Box mt={2}>{`await api.disconnect();`}</Box>
               </Code>
 
               <Code heading="Parachains usage">
-                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
+                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
                 <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
-
-                <Box mt={2}>{`const app = new Detector('my app');`}</Box>
-                <Box>{`const rococoApi = await app.connect('rococo', JSON.stringify(parachainSpecs));`}</Box>
 
                 <Box
                   mt={2}
-                >{`await rococoApi.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`const provider = new ScProvider(SupportedChains.westend, JSON.stringify(parachainSpecs));`}</Box>
+                <Box>{`const api = await ApiPromise.create({ provider });`}</Box>
+
+                <Box
+                  mt={2}
+                >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
 
-                <Box mt={2}>{`await rococoApi.disconnect();`}</Box>
+                <Box mt={2}>{`await api.disconnect();`}</Box>
               </Code>
 
               <Code heading="Parachains usage with options">
-                <Box>{`import { Detector } from '@substrate/connect';`}</Box>
+                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
                 <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
-
-                <Box mt={2}>{`const app = new Detector('my app');`}</Box>
-                <Box>{`const apiOptions = {types: customTypes}`}</Box>
-                <Box>{`const rococoApi = await app.connect('rococo', JSON.stringify(parachainSpecs), apiOptions);`}</Box>
 
                 <Box
                   mt={2}
-                >{`await rococoApi.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                >{`const provider = new ScProvider(SupportedChains.westend, JSON.stringify(parachainSpecs));`}</Box>
+                <Box>{`const apiOptions = {types: customTypes}`}</Box>
+                <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>
+
+                <Box
+                  mt={2}
+                >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`);`}</Box>
 
-                <Box mt={2}>{`await rococoApi.disconnect();`}</Box>
+                <Box mt={2}>{`await api.disconnect();`}</Box>
               </Code>
             </ThemeProvider>
           </Section>
@@ -262,7 +263,7 @@ const App: React.FunctionComponent = () => {
             </SectionText>
             <CardProject
               imageProps={{
-                path: Extension,
+                path: Extension as string,
                 position: "center center",
                 fullWidth: true,
               }}
@@ -270,8 +271,14 @@ const App: React.FunctionComponent = () => {
             <SectionRef href="https://github.com/paritytech/substrate-connect/tree/master/projects/extension">
               Learn more
             </SectionRef>
+            <SectionRef href="https://chrome.google.com/webstore/detail/khccbhhbocaaklceanjginbdheafklai">
+              Download for Chrome
+            </SectionRef>
+            <SectionRef href="https://addons.mozilla.org/en-US/firefox/addon/substrate-connect/">
+              Download for Firefox
+            </SectionRef>
             <SectionRef href="./extension/substrate-connect.zip">
-              Download
+              Download zip
             </SectionRef>
           </Section>
           <Section>
@@ -279,32 +286,14 @@ const App: React.FunctionComponent = () => {
               Projects
             </SectionHeading>
             <CardProject
-              title="Browser Demo"
-              subtitle="Minimal implementation"
-              imageProps={{ path: BrowserDemo, position: "left top" }}
-              linkProps={{ href: "./smoldot-browser-demo/" }}
-            />
-            <CardProject
               title="Burnr"
               subtitle="Insecure redeemable wallet"
-              imageProps={{ path: Burnr, position: "center top" }}
+              imageProps={{ path: Burnr as string, position: "center top" }}
               linkProps={{ href: "./burnr/" }}
             />
             <CardProject
-              title="Multi Network Demo"
-              subtitle="One uApp - multiple networks implementation"
-              imageProps={{ path: NetworksDemo, position: "center top" }}
-              linkProps={{ href: "./multiple-network-demo/" }}
-            />
-            <CardProject
-              title="Parachain Demo"
-              subtitle="Parachain connectivity implementation"
-              imageProps={{ path: ParachainDemo, position: "center top" }}
-              linkProps={{ href: "./parachain-demo/" }}
-            />
-            <CardProject
               title="Next Project"
-              imageProps={{ path: YourProject }}
+              imageProps={{ path: YourProject as string }}
             >
               <SectionRef href="https://github.com/paritytech/substrate-connect/blob/master/CONTRIBUTING.md">
                 Contributor’s guide
@@ -316,7 +305,7 @@ const App: React.FunctionComponent = () => {
               {/* TODO: Playground */}
               <Box>
                 <FooterLink href="https://parity.io/">
-                  © 2021 Parity Technologies
+                  © {new Date().getFullYear()} Parity Technologies
                 </FooterLink>
                 <FooterLink href="https://substrate.dev/terms">
                   Terms & conditions

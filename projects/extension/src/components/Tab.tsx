@@ -13,10 +13,9 @@ import Tooltip, { TooltipProps } from "@material-ui/core/Tooltip"
 import { grey } from "@material-ui/core/colors"
 import { IconWeb3 } from "."
 import { TabInterface } from "../types"
-import { ConnectionManager } from "../background/ConnectionManager"
 
 interface TabProps {
-  manager?: ConnectionManager
+  disconnectTab: (tabId: number) => void
   current?: boolean
   tab?: TabInterface
   setActiveTab?: Dispatch<SetStateAction<TabInterface | undefined>>
@@ -53,7 +52,7 @@ const BootstrapTooltip = (props: TooltipProps) => {
 }
 
 const Tab: FunctionComponent<TabProps> = ({
-  manager,
+  disconnectTab,
   tab,
   current = false,
   setActiveTab,
@@ -70,7 +69,7 @@ const Tab: FunctionComponent<TabProps> = ({
       /* TODO(nik): Fix smoldot definition (see: https://github.com/paritytech/substrate-connect/blob/3350cdff9c4c294393160189816168a93c983f79/projects/extension/src/background/ConnectionManager.ts#L202)
        ** eslint disable below seems to be due to smoldot definition */
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      manager?.disconnectTab(tab.tabId)
+      disconnectTab(tab.tabId)
       if (setActiveTab && current) {
         setActiveTab(undefined)
       }
@@ -89,15 +88,11 @@ const Tab: FunctionComponent<TabProps> = ({
         {tab && (
           <>
             <Typography noWrap variant={current ? "h3" : "h4"}>
-              {tab.uApp.name}
+              {tab.url}
             </Typography>
             <Box display="flex" alignItems="center">
-              {tab?.uApp.networks.map((n) => (
-                <IconWeb3
-                  key={n}
-                  size="14px"
-                  color={tab?.uApp.enabled ? grey[800] : grey[400]}
-                >
+              {tab?.networks.map((n) => (
+                <IconWeb3 key={n} size="14px" color={grey[800]}>
                   {n}
                 </IconWeb3>
               ))}
@@ -119,12 +114,6 @@ const Tab: FunctionComponent<TabProps> = ({
           </>
         )}
       </Box>
-
-      {!current && (
-        <Typography variant="body2" color="secondary">
-          {tab?.url}
-        </Typography>
-      )}
     </Box>
   )
 }

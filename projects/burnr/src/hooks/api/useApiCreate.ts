@@ -1,18 +1,15 @@
-// SPDX-License-Identifier: Apache-2
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
 import { useEffect, useState } from "react"
 import { ApiPromise } from "@polkadot/api"
 import { logger } from "@polkadot/util"
 import { ScProvider } from "@substrate/connect"
 import { ALL_PROVIDERS, BURNR_WALLET } from "../../utils/constants"
-import { useIsMountedRef } from ".."
+import { useIsMountedRef } from "./useIsMountedRef"
 
 const l = logger(BURNR_WALLET)
 
-export default function useApiCreate(): ApiPromise {
+export const useApiCreate = (): ApiPromise => {
   const [api, setApi] = useState<ApiPromise>({} as ApiPromise)
 
   const [network] = useState<string>(ALL_PROVIDERS.network.toLowerCase())
@@ -21,7 +18,7 @@ export default function useApiCreate(): ApiPromise {
   useEffect((): void => {
     const choseSmoldot = async (endpoint: string): Promise<void> => {
       try {
-        const provider = new ScProvider("burnr wallet", endpoint)
+        const provider = new ScProvider(endpoint)
         const api = await ApiPromise.create({ provider })
         l.log(`Burnr is now connected to ${endpoint}`)
         mountedRef.current && setApi(api)

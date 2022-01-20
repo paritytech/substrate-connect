@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useState, useEffect } from "react"
+import { useState, useEffect, ReactElement } from "react"
 
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { Typography, Box } from "@material-ui/core"
@@ -50,7 +50,7 @@ type colorType =
   | "disabled"
   | "error"
 
-export default function NodeConnected(): React.ReactElement {
+export default function NodeConnected(): ReactElement {
   const l = logger(BURNR_WALLET)
   const classes = useStyles()
   const api = useApi()

@@ -1,17 +1,13 @@
-// SPDX-License-Identifier: Apache-2
-
 /**
  * API hooks
  */
-export { default as useApi } from "./api/useApi"
-export { default as useApiCreate } from "./api/useApiCreate"
-export { default as useIsMountedRef } from "./api/useIsMountedRef"
-export { default as useLocalStorage } from "./api/useLocalStorage"
+export { useApi } from "./api/useApi"
+export { useApiCreate } from "./api/useApiCreate"
+export { useIsMountedRef } from "./api/useIsMountedRef"
+export { useLocalStorage } from "./api/useLocalStorage"
 
 /**
  * Component hooks
  */
-export { default as useBalance } from "./useBalance"
-export { default as useChainInfo } from "./useChainInfo"
-export { default as useUserInfo } from "./useUserInfo"
-export { default as useUsers } from "./useUsers"
+export { useBalance } from "./useBalance"
+export { useChainInfo } from "./useChainInfo"

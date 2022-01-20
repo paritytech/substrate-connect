@@ -2,422 +2,463 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import { jest } from "@jest/globals"
 import { ConnectionManager } from "./ConnectionManager"
-import westend from "../../public/assets/westend.json"
-import kusama from "../../public/assets/kusama.json"
-import { MockPort } from "../mocks"
-import { chrome } from "jest-chrome"
-import { App } from "./types"
-import { NetworkMainInfo } from "../types"
+import { ExposedChainConnection } from "./types"
+import { MockedChain, MockPort, MockSmoldotClient, TEST_URL } from "../mocks"
+import { ToExtension } from "@substrate/connect-extension-protocol"
 
-let port: MockPort
-let manager: ConnectionManager
+const wait = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
-const waitForMessageToBePosted = (): Promise<null> => {
-  // window.postMessge is async so we must do a short setTimeout to yield to
-  // the event loop
-  return new Promise((resolve) => setTimeout(resolve, 10, null))
-}
+const createHelper = () => {
+  const client = new MockSmoldotClient()
+  const manager = new ConnectionManager(client)
 
-const connectApp = (
-  manager: ConnectionManager,
-  tabId: number,
-  name: string,
-  network: string,
-): MockPort => {
-  const port = new MockPort(`${name}::${network}`)
-  port.setTabId(tabId)
-  manager.addApp(port)
-  return port
-}
+  return {
+    manager,
+    client,
+    connectPort: (
+      chainId: string,
+      tabId: number,
+      addChainMsg: Omit<ToExtension, "origin" | "chainId"> | null = null,
+      url = TEST_URL,
+    ) => {
+      const port = new MockPort(chainId, tabId)
+      manager.addChainConnection(port)
 
-const doNothing = () => {
-  // Do nothing
-}
+      let chain: MockedChain | null = null
+      if (addChainMsg) {
+        port._sendExtensionMessage(addChainMsg)
+        const chains = [...client.chains]
+        chain = chains[chains.length - 1]
+      }
 
-test("adding and removing apps changes state", async () => {
-  //setup connection manager with 2 chains
-  const manager = new ConnectionManager()
-  manager.smoldotLogLevel = 1
-  manager.initSmoldot()
-  await manager.addChain(JSON.stringify(westend), doNothing)
-  await manager.addChain(JSON.stringify(kusama), doNothing)
-
-  const handler = jest.fn()
-  manager.on("stateChanged", handler)
-
-  // app connects to first network
-  connectApp(manager, 42, "test-app", "westend")
-  expect(handler).toHaveBeenCalledTimes(1)
-  expect(manager.getState()).toEqual({
-    apps: [
-      {
-        name: "test-app",
-        tabId: 42,
-        networks: [{ name: "westend" }],
-      },
-    ],
-  })
-
-  // app connects to second network
-  handler.mockClear()
-  connectApp(manager, 42, "test-app", "kusama")
-  expect(handler).toHaveBeenCalledTimes(1)
-  expect(manager.getState()).toEqual({
-    apps: [
-      {
-        name: "test-app",
-        tabId: 42,
-        networks: [{ name: "westend" }, { name: "kusama" }],
-      },
-    ],
-  })
-
-  // different app connects to second network
-  handler.mockClear()
-  const port = connectApp(manager, 43, "another-app", "kusama")
-  expect(handler).toHaveBeenCalledTimes(1)
-  expect(manager.getState()).toEqual({
-    apps: [
-      {
-        name: "test-app",
-        tabId: 42,
-        networks: [{ name: "westend" }, { name: "kusama" }],
-      },
-      {
-        name: "another-app",
-        tabId: 43,
-        networks: [{ name: "kusama" }],
-      },
-    ],
-  })
-
-  // disconnect second app
-  handler.mockClear()
-  port.triggerDisconnect()
-  expect(handler).toHaveBeenCalled()
-  expect(manager.getState()).toEqual({
-    apps: [
-      {
-        name: "test-app",
-        tabId: 42,
-        networks: [{ name: "westend" }, { name: "kusama" }],
-      },
-    ],
-  })
-
-  handler.mockClear()
-  manager.disconnectTab(42)
-  expect(handler).toHaveBeenCalledTimes(2)
-  expect(manager.getState()).toEqual({ apps: [] })
-
-  // Connect 2 apps on the same network and 2nd one on another network
-  // in order to test disconnectAll functionality
-  handler.mockClear()
-  // first app connects to network
-  connectApp(manager, 1, "test-app-1", "westend")
-  expect(handler).toHaveBeenCalledTimes(1)
-  expect(manager.getState()).toEqual({
-    apps: [
-      {
-        name: "test-app-1",
-        tabId: 1,
-        networks: [{ name: "westend" }],
-      },
-    ],
-  })
-
-  // second app connects to same network
-  handler.mockClear()
-  connectApp(manager, 2, "test-app-2", "westend")
-  connectApp(manager, 2, "test-app-2", "kusama")
-  expect(handler).toHaveBeenCalledTimes(2)
-  expect(manager.getState()).toEqual({
-    apps: [
-      {
-        name: "test-app-1",
-        tabId: 1,
-        networks: [{ name: "westend" }],
-      },
-      {
-        name: "test-app-2",
-        tabId: 2,
-        networks: [{ name: "westend" }, { name: "kusama" }],
-      },
-    ],
-  })
-  handler.mockClear()
-  // disconnect all apps;
-  manager.disconnectAll()
-  expect(handler).toHaveBeenCalledTimes(3)
-  expect(manager.getState()).toEqual({ apps: [] })
-  await manager.shutdown()
-})
-
-test("Tries to connect to a parachain with unknown Relay Chain", async () => {
-  const port = new MockPort("test-app-7::westend")
-  const manager = new ConnectionManager()
-  const handler = jest.fn()
-
-  manager.smoldotLogLevel = 1
-  manager.initSmoldot()
-  await manager.addChain(JSON.stringify(westend), doNothing)
-  manager.on("stateChanged", handler)
-  manager.addApp(port)
-  await waitForMessageToBePosted()
-
-  port.triggerMessage({
-    type: "spec",
-    payload: "",
-    parachainPayload: JSON.stringify({
-      name: "parachainSpec",
-      relay_chain: "someRelayChain",
-    }),
-  })
-  await waitForMessageToBePosted()
-  const errorMsg = {
-    type: "error",
-    payload: "Relay chain spec was not found",
+      return {
+        chainId,
+        tabId,
+        url,
+        port,
+        chain,
+      }
+    },
   }
-  expect(port.postMessage).toHaveBeenCalledWith(errorMsg)
-  expect(port.disconnect).toHaveBeenCalled()
+}
 
-  await manager.shutdown()
-})
-
-describe("Unit tests", () => {
-  const manager = new ConnectionManager()
-  const handler = jest.fn()
-
-  beforeAll(async () => {
-    manager.smoldotLogLevel = 1
-    //setup connection manager with 2 networks
-    manager.initSmoldot()
-    await manager.addChain(JSON.stringify(westend), doNothing)
-    await manager.addChain(JSON.stringify(kusama), doNothing)
-    manager.on("stateChanged", handler)
-
-    //add 4 apps in clients
-    connectApp(manager, 11, "test-app-1", "westend")
-    connectApp(manager, 12, "test-app-2", "kusama")
-    connectApp(manager, 13, "test-app-3", "westend")
-    connectApp(manager, 14, "test-app-4", "kusama")
+describe("ConnectionManager", () => {
+  let helper: ReturnType<typeof createHelper>
+  const originalError = console.error
+  beforeEach(() => {
+    helper = createHelper()
+    console.error = jest.fn()
+  })
+  afterEach(() => {
+    console.error = originalError
+    helper.manager.shutdown()
   })
 
-  afterAll(async () => {
-    await manager.shutdown()
-  })
+  it("it emits after the add-chain message has been posted", async () => {
+    const { client, manager, connectPort } = helper
+    const onStateChanged = jest.fn()
+    manager.on("stateChanged", onStateChanged)
 
-  test("Get registered apps", () => {
-    expect(manager.registeredApps).toEqual([
-      "test-app-1::westend",
-      "test-app-2::kusama",
-      "test-app-3::westend",
-      "test-app-4::kusama",
-    ])
-  })
+    const { chainId, tabId, port, url } = connectPort("chainId", 1)
 
-  test("Get registered clients", () => {
-    expect(manager.registeredNetworks).toEqual([
-      { name: "westend", status: "connected", id: "westend2" },
-      { name: "kusama", status: "connected", id: "ksmcc3" },
-    ])
-  })
+    expect(client.chains.size).toBe(0)
+    expect(manager.connections.length).toBe(0)
+    expect(onStateChanged).not.toHaveBeenCalled()
 
-  test("Get apps", () => {
-    expect(manager.apps).toHaveLength(4)
-  })
-
-  test("Get networks/chains", () => {
-    // With this look the "chain" is removed intentionally as "chain"
-    // object cannot be compared with jest
-    const tmpChains = manager.registeredNetworks.map((n: NetworkMainInfo) => ({
-      name: n.name,
-      status: n.status,
-    }))
-
-    expect(tmpChains).toEqual([
-      { name: "westend", status: "connected" },
-      { name: "kusama", status: "connected" },
-    ])
-
-    expect(manager.registeredNetworks).toHaveLength(2)
-  })
-
-  test("Adding an app that already exists sends an error and disconnects", () => {
-    const port = connectApp(manager, 13, "test-app-3", "westend")
-    expect(port.postMessage).toHaveBeenCalledTimes(1)
-    expect(port.postMessage).toHaveBeenLastCalledWith({
-      type: "error",
-      payload: "App test-app-3::westend already exists.",
+    port._sendExtensionMessage({
+      type: "add-well-known-chain",
+      payload: "polkadot",
     })
-    expect(port.disconnect).toHaveBeenCalled()
-  })
-})
 
-describe("When the manager is shutdown", () => {
-  const manager = new ConnectionManager()
+    await wait(0)
 
-  beforeEach(() => {
-    manager.smoldotLogLevel = 1
-    manager.initSmoldot()
-  })
-
-  test("adding an app after the manager is shutdown throws an error", async () => {
-    const port = new MockPort("test-app-5::westend")
-    port.setTabId(15)
-    await expect(async () => {
-      await manager.shutdown()
-      manager.addApp(port)
-    }).rejects.toThrowError("Smoldot client does not exist.")
-  })
-})
-
-describe("Check storage and send notification when adding an app", () => {
-  const westendPayload = JSON.stringify({ name: "Westend", id: "westend2" })
-  const port = new MockPort("test-app-7::westend")
-  const manager = new ConnectionManager()
-  const handler = jest.fn()
-  let app: App
-
-  chrome.storage.sync.get.mockImplementation((keys, callback) => {
-    callback({ notifications: true })
-  })
-
-  beforeEach(() => {
-    chrome.storage.sync.get.mockClear()
-    chrome.notifications.create.mockClear()
-  })
-
-  beforeAll(async () => {
-    manager.smoldotLogLevel = 1
-    manager.initSmoldot()
-    await manager.addChain(JSON.stringify(westend), doNothing)
-    await manager.addChain(JSON.stringify(kusama), doNothing)
-    manager.on("stateChanged", handler)
-
-    manager.addApp(port)
-    await waitForMessageToBePosted()
-  })
-
-  afterAll(async () => {
-    await manager.shutdown()
-  })
-
-  test("Checks storage for notifications preferences", () => {
-    port.triggerMessage({ type: "spec", payload: westendPayload })
-    expect(chrome.storage.sync.get).toHaveBeenCalledTimes(1)
-  })
-
-  test("Sends a notification", () => {
-    port.triggerMessage({ type: "spec", payload: westendPayload })
-    const notificationData = {
-      message: "App test-app-7 connected to westend.",
-      title: "Substrate Connect",
-      iconUrl: "./icons/icon-32.png",
-      type: "basic",
+    const expectedConnection: ExposedChainConnection = {
+      chainId,
+      tabId,
+      chainName: "polkadot",
+      url,
+      healthStatus: undefined,
     }
 
-    expect(chrome.notifications.create).toHaveBeenCalledTimes(1)
-    expect(chrome.notifications.create).toHaveBeenCalledWith(
-      "test-app-7::westend",
-      notificationData,
+    expect(onStateChanged).toHaveBeenCalledWith([expectedConnection])
+    expect(manager.connections).toEqual([expectedConnection])
+    expect(client.chains.size).toBe(1)
+    expect(port.postedMessages.length).toBe(0)
+  })
+
+  it("does not emit if the port gets disconnected before the chain has been instantiated", async () => {
+    const { client, manager, connectPort } = helper
+    const onStateChanged = jest.fn()
+    manager.on("stateChanged", onStateChanged)
+
+    const { port } = connectPort("chainId", 1)
+
+    expect(client.chains.size).toBe(0)
+    expect(manager.connections.length).toBe(0)
+    expect(onStateChanged).not.toHaveBeenCalled()
+    expect(port.connected).toBe(true)
+
+    port.disconnect()
+    await wait(0)
+
+    expect(onStateChanged).not.toHaveBeenCalled()
+    expect(manager.connections).toEqual([])
+    expect(client.chains.size).toBe(0)
+    expect(port.postedMessages.length).toBe(0)
+  })
+
+  it("receives a system_health request from the health-checker immediately after the chain is instantiated", async () => {
+    const { connectPort, client } = helper
+
+    const { port } = connectPort("chainId", 1)
+
+    expect(client.chains.size).toBe(0)
+
+    port._sendExtensionMessage({
+      type: "add-well-known-chain",
+      payload: "polkadot",
+    })
+    await wait(0)
+
+    expect(client.chains.size).toBe(1)
+
+    const [chain] = [...client.chains]
+
+    expect(chain.receivedMessages).toEqual([
+      '{"jsonrpc":"2.0","id":"health-checker:0","method":"system_health","params":[]}',
+    ])
+  })
+
+  it("the 'rpc' messages received before 'add-chain' get processed as soon as the chain is instantiated", async () => {
+    const { connectPort, client } = helper
+
+    const { port } = connectPort("chainId", 1)
+
+    expect(client.chains.size).toBe(0)
+
+    port._sendExtensionMessage({
+      type: "rpc",
+      payload: JSON.stringify({ jsonrpc: "2.0", id: "1" }),
+    })
+
+    port._sendExtensionMessage({
+      type: "rpc",
+      payload: JSON.stringify({ jsonrpc: "2.0", id: "2" }),
+    })
+
+    port._sendExtensionMessage({
+      type: "add-well-known-chain",
+      payload: "polkadot",
+    })
+    await wait(0)
+
+    const [chain] = [...client.chains]
+    expect(chain.receivedMessages).toEqual([
+      '{"jsonrpc":"2.0","id":"health-checker:0","method":"system_health","params":[]}',
+      '{"jsonrpc":"2.0","id":"extern:\\"1\\""}',
+      '{"jsonrpc":"2.0","id":"extern:\\"2\\""}',
+    ])
+  })
+
+  it("passes the messages from the chain to the port", async () => {
+    const { connectPort } = helper
+
+    const { port, chain } = connectPort("chainId", 1, {
+      type: "add-well-known-chain",
+      payload: "polkadot",
+    })
+
+    await wait(0)
+
+    port._sendExtensionMessage({
+      type: "rpc",
+      payload: JSON.stringify({ jsonrpc: "2.0", id: "1" }),
+    })
+
+    await wait(0)
+
+    expect(chain!.receivedMessages).toEqual([
+      '{"jsonrpc":"2.0","id":"health-checker:0","method":"system_health","params":[]}',
+      '{"jsonrpc":"2.0","id":"extern:\\"1\\""}',
+    ])
+    expect(port.postedMessages).toEqual([])
+
+    chain!._sendResponse(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        id: 'extern:"1"',
+        result: "{}",
+      }),
     )
-  })
-})
 
-describe("Tests with actual ConnectionManager", () => {
-  let app: App
-  beforeEach(() => {
-    port = new MockPort("test-app::westend")
-    manager = new ConnectionManager()
-    app = manager.createApp(port)
-  })
+    await wait(0)
 
-  test("Construction parses the port name and gets port information", () => {
-    expect(app.name).toBe("test-app::westend")
-    expect(app.appName).toBe("test-app")
-    expect(app.url).toBe(port.sender.url)
-    expect(app.tabId).toBe(port.sender.tab.id)
+    expect(port.postedMessages).toEqual([
+      {
+        type: "rpc",
+        payload: JSON.stringify({
+          jsonrpc: "2.0",
+          id: "1",
+          result: "{}",
+        }),
+      },
+    ])
   })
 
-  test("Connected state", () => {
-    app = manager.createApp(port)
-    port.triggerMessage({ type: "spec", payload: "westend" })
-    port.triggerMessage({ type: "rpc", payload: '{ "id": 1 }' })
+  it("correctly errors when passed a malformed message", () => {
+    const { connectPort } = helper
+    const { port } = connectPort("chainId", 1)
 
-    expect(app.state).toBe("connected")
+    port._sendExtensionMessage({
+      type: "foo" as "rpc",
+      payload: "",
+    })
+
+    expect(port.postedMessages).toEqual([
+      {
+        type: "error",
+        payload: `Unrecognised message type 'foo' or payload '' received from content script`,
+      },
+    ])
   })
 
-  test("Disconnect cleans up properly", async () => {
-    app = manager.createApp(port)
-    port.triggerMessage({ type: "spec", payload: "westend" })
-    await waitForMessageToBePosted()
-    manager.disconnect(app)
-    await waitForMessageToBePosted()
-    expect(app.state).toBe("disconnected")
+  it("correctly errors when passed a wrong well-known-chain", async () => {
+    const { connectPort } = helper
+    const { port } = connectPort("chainId", 1, {
+      type: "add-well-known-chain",
+      payload: "nonexisting",
+    })
+
+    await wait(0)
+
+    expect(port.postedMessages).toEqual([
+      {
+        type: "error",
+        payload: "Relay chain spec was not found",
+      },
+    ])
   })
 
-  test("Invalid port name sends an error and disconnects", () => {
-    port = new MockPort("invalid")
-    const errorMsg = {
-      type: "error",
-      payload: "Invalid port name invalid expected <app_name>::<chain_name>",
+  it("emits the correct state when it receives a health update", async () => {
+    const { manager, connectPort } = helper
+    const onStateChanged = jest.fn()
+    manager.on("stateChanged", onStateChanged)
+
+    const { chain, chainId, tabId, url } = connectPort("chainId", 1, {
+      type: "add-well-known-chain",
+      payload: "polkadot",
+    })
+
+    await wait(0)
+
+    const expectedConnection: ExposedChainConnection = {
+      chainId,
+      tabId,
+      chainName: "polkadot",
+      url,
+      healthStatus: undefined,
     }
-    expect(() => {
-      manager.createApp(port)
-    }).toThrow(errorMsg.payload)
-    expect(port.postMessage).toHaveBeenCalledWith(errorMsg)
-    expect(port.disconnect).toHaveBeenCalled()
-  })
 
-  test("Connected state", () => {
-    port.triggerMessage({ type: "spec", payload: "westend" })
-    port.triggerMessage({ type: "rpc", payload: '{ "id": 1 }' })
-    expect(app.state).toBe("connected")
-  })
+    expect(onStateChanged).toHaveBeenCalledWith([expectedConnection])
+    onStateChanged.mockReset()
 
-  test("Smoldot throws error when it does not exist", async () => {
-    try {
-      await manager.addChain(JSON.stringify(kusama), doNothing)
-    } catch (err: any) {
-      expect(err.message).toBe("Smoldot client does not exist.")
+    const healthStatus = {
+      isSyncing: false,
+      peers: 1,
+      shouldHavePeers: true,
     }
+
+    chain!._sendResponse(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        id: "health-checker:0",
+        result: healthStatus,
+      }),
+    )
+
+    await wait(0)
+
+    expect(onStateChanged).toHaveBeenCalledWith([
+      { ...expectedConnection, healthStatus },
+    ])
   })
 
-  test("Spec message adds a chain", async () => {
-    port.triggerMessage({ type: "spec", payload: "westend" })
-    await waitForMessageToBePosted()
-    expect(app.healthChecker).toBeDefined()
+  it("disconnecting a tab disconnects the ports of the tab and emits the new state", async () => {
+    const { connectPort, manager } = helper
+    const onStateChanged = jest.fn()
+    manager.on("stateChanged", onStateChanged)
+
+    // This emulates 3 active tabs, with 3 connections each
+    const connections = Array(9)
+      .fill(null)
+      .map((_, idx) => idx)
+      .map((idx) => {
+        const tabId = Math.floor(idx / 3)
+        return connectPort(idx.toString(), tabId, {
+          type: "add-well-known-chain",
+          payload: "polkadot",
+        })
+      })
+    await wait(0)
+
+    const expectedChainConnections: ExposedChainConnection[] = connections.map(
+      (data) => ({
+        chainId: data.chainId,
+        tabId: data.tabId,
+        url: data.url,
+        chainName: "polkadot",
+        healthStatus: undefined,
+      }),
+    )
+
+    expect(onStateChanged).toHaveBeenCalledTimes(1)
+    expect(onStateChanged).toHaveBeenCalledWith(expectedChainConnections)
+    expect(connections.every((data) => data.port.connected === true)).toBe(true)
+
+    onStateChanged.mockReset()
+    manager.disconnectTab(0)
+    await wait(0)
+
+    expect(onStateChanged).toHaveBeenCalledTimes(1)
+    expect(onStateChanged).toHaveBeenCalledWith(
+      expectedChainConnections.filter((c) => c.tabId !== 0),
+    )
+    expect(
+      connections.every((data) => data.port.connected === data.tabId > 0),
+    ).toBe(true)
   })
 
-  test("Buffers RPC messages before spec message", async () => {
-    const message1 = JSON.stringify({ id: 1, jsonrpc: "2.0", result: {} })
-    port.triggerMessage({ type: "rpc", payload: message1 })
-    const message2 = JSON.stringify({ id: 2, jsonrpc: "2.0", result: {} })
-    port.triggerMessage({ type: "rpc", payload: message2 })
-    port.triggerMessage({ type: "spec", payload: "westend" })
-    await waitForMessageToBePosted()
-    expect(app.healthChecker).toBeDefined()
+  it("passes the relay-chains of its tab as the potentialRelayChains when instantiating a new chain", async () => {
+    const { connectPort } = helper
+
+    // This emulates 3 active tabs, where the 2 first chains of each tab
+    // are relayChains anre the 3rd one of that tab is a para-chain
+    const activeChains = Array(9)
+      .fill(null)
+      .map((_, idx) => idx)
+      .map((idx) => {
+        const tabId = Math.floor(idx / 3)
+        const { chain } = connectPort(idx.toString(), tabId, {
+          type: "add-well-known-chain",
+          payload: "polkadot",
+          parachainPayload:
+            idx % 3 === 2
+              ? JSON.stringify({ name: `parachain${idx}` })
+              : undefined,
+        })
+        return chain
+      })
+
+    await wait(0)
+
+    const { chain: newChain } = connectPort("lastOne", 0, {
+      type: "add-well-known-chain",
+      payload: "polkadot",
+    })
+
+    await wait(0)
+
+    expect(newChain!.options.potentialRelayChains).toEqual([
+      activeChains[0],
+      activeChains[1],
+    ])
   })
 
-  test("RPC port message sends the message to the chain", async () => {
-    port.triggerMessage({ type: "spec", payload: "westend" })
-    await waitForMessageToBePosted()
-    const message = JSON.stringify({ id: 1, jsonrpc: "2.0", result: {} })
-    port.triggerMessage({ type: "rpc", payload: message })
-    await waitForMessageToBePosted()
+  it("disconnects and removes the smoldot instance on shutdown", async () => {
+    const { manager, connectPort } = helper
+    await manager.shutdown()
+
+    expect(() => connectPort("boom", 0)).toThrow(
+      "Smoldot client does not exist.",
+    )
+    expect(() => manager.addChain("")).toThrow("Smoldot client does not exist.")
   })
 
-  test("App already disconnected", async () => {
-    app = manager.createApp(port)
-    port.triggerMessage({ type: "spec", payload: "westend" })
-    await waitForMessageToBePosted()
-    manager.disconnect(app)
-    await waitForMessageToBePosted()
-    expect(() => {
-      manager.disconnect(app)
-    }).toThrowError("Cannot disconnect - already disconnected")
+  it("handles two different tabs using the same chainId", async () => {
+    const { connectPort } = helper
+    const chainId = "same"
+
+    const { chain: tab1Chain, port: tab1Port } = connectPort(chainId, 1, {
+      type: "add-well-known-chain",
+      payload: "polkadot",
+    })
+
+    const { chain: tab2Chain, port: tab2Port } = connectPort(chainId, 2, {
+      type: "add-well-known-chain",
+      payload: "polkadot",
+    })
+
+    await wait(0)
+
+    expect(tab1Chain).not.toBe(tab2Chain)
+    expect(tab1Chain!.receivedMessages.length).toBe(1)
+    expect(tab2Chain!.receivedMessages.length).toBe(1)
+
+    // let's make sure that each chain receives *only* their own messages
+    tab1Port._sendExtensionMessage({
+      type: "rpc",
+      payload: JSON.stringify({ jsonrpc: "2.0", id: "ping1" }),
+    })
+
+    tab2Port._sendExtensionMessage({
+      type: "rpc",
+      payload: JSON.stringify({ jsonrpc: "2.0", id: "ping2" }),
+    })
+
+    await wait(0)
+    expect(tab1Chain!.receivedMessages.length).toBe(2)
+    expect(tab2Chain!.receivedMessages.length).toBe(2)
+
+    let [lastMessage] = tab1Chain!.receivedMessages.slice(-1)
+    expect(lastMessage).toBe('{"jsonrpc":"2.0","id":"extern:\\"ping1\\""}')
+    ;[lastMessage] = tab2Chain!.receivedMessages.slice(-1)
+    expect(lastMessage).toBe('{"jsonrpc":"2.0","id":"extern:\\"ping2\\""}')
+
+    // let's make sure that each port receives *only* their own messages
+    expect(tab1Port.postedMessages.length).toBe(0)
+    expect(tab2Port.postedMessages.length).toBe(0)
+
+    tab1Chain!._sendResponse(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        id: 'extern:"ping1"',
+        result: '"pong1"',
+      }),
+    )
+    tab2Chain!._sendResponse(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        id: 'extern:"ping2"',
+        result: '"pong2"',
+      }),
+    )
+
+    await wait(0)
+
+    expect(tab1Port.postedMessages).toEqual([
+      {
+        type: "rpc",
+        payload: JSON.stringify({
+          jsonrpc: "2.0",
+          id: "ping1",
+          result: '"pong1"',
+        }),
+      },
+    ])
+    expect(tab2Port.postedMessages).toEqual([
+      {
+        type: "rpc",
+        payload: JSON.stringify({
+          jsonrpc: "2.0",
+          id: "ping2",
+          result: '"pong2"',
+        }),
+      },
+    ])
   })
 })

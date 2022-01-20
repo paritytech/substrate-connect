@@ -1,8 +1,7 @@
-// SPDX-License-Identifier: Apache-2
+/* eslint-disable no-unused-vars */
 import { Balance, Index, RefCount } from "@polkadot/types/interfaces"
 import { u32 } from "@polkadot/types"
 import { Codec } from "@polkadot/types/types"
-
 import { ApiPromise } from "@polkadot/api"
 import { KeyringPair, KeyringPair$Json } from "@polkadot/keyring/types"
 
@@ -21,11 +20,8 @@ export interface Account {
   address: string
   name: string
 }
-export interface DeriveCtx {
-  deriveAddress?: (userName: string) => string
-}
 
-export interface AccountCtx extends DeriveCtx {
+export interface AccountCtx {
   userAddress: string
   userPair?: KeyringPair
   userName: string
@@ -42,7 +38,7 @@ export interface CreateAccountCtx {
   setCurrentAccount: (account: LocalStorageAccountCtx) => void
 }
 
-export interface AdminCtx extends DeriveCtx {
+export interface AdminCtx {
   adminAddress: string
   adminPair: KeyringPair
   deriveAdmin: (userName: string) => string
@@ -77,13 +73,6 @@ export interface TxEvent {
   extrinsic: string
   value: string | number
   status: string | number
-  // amount: Balance;
-  // key: string;
-  // from: string;
-  // to: string;
-  // wasSent: boolean;
-  // when: Date;
-  // method: string;
 }
 
 export type EvtTxCtx = TxEvent[]
