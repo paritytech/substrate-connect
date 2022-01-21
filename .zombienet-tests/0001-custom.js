@@ -13,7 +13,7 @@ async function run(nodeName, networkInfo) {
     const customChainSpec = require(networkInfo.chainSpecPath);
     console.log("bootnodes");
     customChainSpec.bootNodes = customChainSpec.bootNodes.map(addr => {
-        return addr.replace("localhost", "127.0.0.1").replace("p2p","ws")
+        return addr.replace("localhost", "127.0.0.1").replace("p2p","ws/p2p")
     });
     console.log(customChainSpec.bootNodes);
     const api = await connect(JSON.stringify(customChainSpec), userDefinedTypes);
