@@ -9,8 +9,11 @@ async function connect(customChainSpec, types) {
 async function run(nodeName, networkInfo) {
     const {userDefinedTypes} = networkInfo.nodesByName[nodeName];
     const customChainSpec = require(networkInfo.chainSpecPath);
+    console.log("bootnodes");
+    console.log(customChainSpec.bootNodes);
     const api = await connect(JSON.stringify(customChainSpec), userDefinedTypes);
     const validator = await api.query.session.validators();
+    console.log("validators",validators);
     return validator.length;
 }
 
