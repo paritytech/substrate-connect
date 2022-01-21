@@ -1,3 +1,5 @@
+const polkadotApi = require("@polkadot/api");
+
 async function connect(customChainSpec, types) {
     const substrateConnect = await import("@substrate/connect");
     const provider = new substrateConnect.ScProvider(customChainSpec)
