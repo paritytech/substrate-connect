@@ -21,7 +21,7 @@ jobs:
 
       - name: Get zombienet
         run: |
-          curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.2.8/zombienet-linux
+          curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.2.9/zombienet-linux
           chmod +x zombienet-linux
 
       - name: Get polkadot

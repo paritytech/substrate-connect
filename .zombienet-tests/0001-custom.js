@@ -1,6 +1,3 @@
-const jsdom = require('jsdom');
-const { document } = (new jsdom.JSDOM("<html>")).window;
-
 async function connect(customChainSpec, types) {
     const substrateConnect = await import("@substrate/connect");
     const provider = new substrateConnect.ScProvider(customChainSpec)
