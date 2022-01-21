@@ -1,15 +1,15 @@
-const polkadotApi = require("@polkadot/api");
-
-async function connect(apiUrl, types) {
-    const provider = new polkadotApi.WsProvider(apiUrl);
+async function connect(customChainSpec, types) {
+    const substrateConnect = await import("@substrate/connect");
+    const provider = substrateConnect.ScProvider(customChainSpec)
     const api = new polkadotApi.ApiPromise({ provider, types });
     await api.isReady;
     return api;
 }
 
-async function run(nodeName, networkInfo, args) {
-    const {wsUri, userDefinedTypes} = networkInfo.nodesByName[nodeName];
-    const api = await connect(wsUri, userDefinedTypes);
+async function run(nodeName, networkInfo) {
+    const {userDefinedTypes} = networkInfo.nodesByName[nodeName];
+    const customChainSpec = require(networkInfo.chainSpecPath);
+    const api = await connect(JSON.stringify(customChainSpec), userDefinedTypes);
     const validator = await api.query.session.validators();
     return validator.length;
 }

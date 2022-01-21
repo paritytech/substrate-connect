@@ -14,10 +14,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: build
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
 
       - name: Get zombienet
         run: |
-          curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.2.7/zombienet-linux
+          curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.2.8/zombienet-linux
           chmod +x zombienet-linux
 
       - name: Get polkadot
