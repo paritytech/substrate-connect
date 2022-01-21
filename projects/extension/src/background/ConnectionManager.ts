@@ -243,8 +243,6 @@ export class ConnectionManager extends (EventEmitter as {
     })
 
     const { chain, parachain } = await chainPromise
-    chainConnection.chain = chain
-    chainConnection.parachain = parachain
 
     // it has to be taken into account the fact that it's technically possible
     // -although, quite unlikey- that the port gets closed while we are waiting
@@ -252,9 +250,13 @@ export class ConnectionManager extends (EventEmitter as {
     // whether this `chainConnection` is still present insinde `#chainConnections`.
     // If it isn't, that means that the port got disconnected, so we should stop.
     if (!this.#chainConnections.has(chainConnection.id)) {
+      chain.remove()
+      parachain?.remove()
       return
     }
 
+    chainConnection.chain = chain
+    chainConnection.parachain = parachain
     chainConnection.port.postMessage({ type: "chain-ready" })
 
     // Initialize healthChecker
