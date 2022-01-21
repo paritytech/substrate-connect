@@ -184,7 +184,7 @@ describe("ConnectionManager", () => {
     ])
     expect(port.postedMessages).toEqual([
       {
-        type: "add-chain-ok",
+        type: "chain-ready",
       },
     ])
 
@@ -200,7 +200,7 @@ describe("ConnectionManager", () => {
 
     expect(port.postedMessages).toEqual([
       {
-        type: "add-chain-ok",
+        type: "chain-ready",
       },
       {
         type: "rpc",
@@ -445,7 +445,7 @@ describe("ConnectionManager", () => {
 
     expect(tab1Port.postedMessages).toEqual([
       {
-        type: "add-chain-ok",
+        type: "chain-ready",
       },
       {
         type: "rpc",
@@ -458,7 +458,7 @@ describe("ConnectionManager", () => {
     ])
     expect(tab2Port.postedMessages).toEqual([
       {
-        type: "add-chain-ok",
+        type: "chain-ready",
       },
       {
         type: "rpc",

@@ -255,7 +255,7 @@ export class ConnectionManager extends (EventEmitter as {
       return
     }
 
-    chainConnection.port.postMessage({ type: "add-chain-ok" })
+    chainConnection.port.postMessage({ type: "chain-ready" })
 
     // Initialize healthChecker
     const sender = chainConnection.parachain

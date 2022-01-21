@@ -26,7 +26,7 @@ export interface ToApplication {
   /** Which chain this message applies to **/
   chainId: string
   /** Type of the message. Defines how to interpret the {@link payload} */
-  type: "error" | "rpc" | "add-chain-ok"
+  type: "error" | "rpc" | "chain-ready"
   /** Payload of the message. Either a JSON encoded RPC response or an error message **/
   payload: string
 }

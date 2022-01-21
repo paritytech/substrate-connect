@@ -273,12 +273,12 @@ export class ExtensionProvider implements ProviderInterface {
 
         window.removeEventListener("message", waitForChainCb)
 
-        if (data.type === "add-chain-ok") return res()
+        if (data.type === "chain-ready") return res()
 
         const error = new Error(
           data.type === "error"
             ? data.payload
-            : "Unexpected message received from the extension while waiting for 'add-chain-ok' message",
+            : "Unexpected message received from the extension while waiting for 'chain-ready' message",
         )
         rej(error)
         this.emit("error", error)

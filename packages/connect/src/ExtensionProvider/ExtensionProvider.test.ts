@@ -54,7 +54,7 @@ const emulateConnect = (
   sendMessage({
     origin: "content-script",
     chainId,
-    type: "add-chain-ok",
+    type: "chain-ready",
     payload: "",
   })
   return p
