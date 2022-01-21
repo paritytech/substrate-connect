@@ -1,0 +1,30 @@
+[settings]
+timeout = 1000
+#provider = "Podman"
+
+[relaychain]
+default_image = "parity/polkadot:latest"
+chain = "rococo-local"
+default_command = "polkadot"
+
+  [[relaychain.nodes]]
+  name = "alice"
+  extra_args = [ "--alice" ]
+
+  [[relaychain.nodes]]
+  name = "bob"
+  extra_args = [ "--bob" ]
+
+# [[parachains]]
+# id = 100
+# addToGenesis = true
+
+#   [parachains.collator]
+#   name = "collator01"
+#   image = "parity/colander:latest"
+#   command = "adder-collator"
+
+[types.Header]
+number = "u64"
+parent_hash = "Hash"
+post_state = "Hash"
