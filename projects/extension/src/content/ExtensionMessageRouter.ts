@@ -50,7 +50,7 @@ export class ExtensionMessageRouter {
   }
 
   #establishNewConnection = (chainId: string): void => {
-    const port = chrome.runtime.connect(chainId)
+    const port = chrome.runtime.connect({ name: chainId })
 
     debug(`CONNECTED ${chainId} PORT`, port)
 
