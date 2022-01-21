@@ -1,4 +1,6 @@
-const jsdom = require('mocha-jsdom')
+const jsdom = require('jsdom');
+const { document } = (new jsdom.JSDOM("<html>")).window;
+
 async function connect(customChainSpec, types) {
     const substrateConnect = await import("@substrate/connect");
     const provider = new substrateConnect.ScProvider(customChainSpec)
@@ -8,8 +10,6 @@ async function connect(customChainSpec, types) {
 }
 
 async function run(nodeName, networkInfo) {
-    jsdom();
-
     const {userDefinedTypes} = networkInfo.nodesByName[nodeName];
     const customChainSpec = require(networkInfo.chainSpecPath);
     const api = await connect(JSON.stringify(customChainSpec), userDefinedTypes);
