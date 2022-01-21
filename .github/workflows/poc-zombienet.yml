@@ -25,12 +25,6 @@ jobs:
           curl -L -O https://github.com/paritytech/polkadot/releases/download/v0.9.15-1/polkadot
           chmod +x polkadot
 
-      # TODO: podman just `hungs` running `podman play kube`
-      # - name: check podman
-      #   run: |
-      #     echo "podman version $(podman --version)"
-      #     podman info
-
       - name: Run test
         run: |
           export PATH=$(pwd):$PATH
