@@ -104,7 +104,6 @@ export class ConnectionManager extends (EventEmitter as {
       const { name: chainId, sender } = port
       const tabId: number = sender!.tab!.id!
       const url: string = sender!.url!
-      const pendingRequests: string[] = []
 
       const healthChecker = smHealthChecker()
       const id = `${chainId}::${tabId}`
@@ -116,7 +115,6 @@ export class ConnectionManager extends (EventEmitter as {
         url,
         port,
         healthChecker,
-        pendingRequests,
       }
 
       const onMessageHandler = (msg: ToExtension) => {
@@ -245,8 +243,21 @@ export class ConnectionManager extends (EventEmitter as {
     })
 
     const { chain, parachain } = await chainPromise
+
+    // it has to be taken into account the fact that it's technically possible
+    // -although, quite unlikey- that the port gets closed while we are waiting
+    // for smoldot to return the chain. The way to know this is by checking
+    // whether this `chainConnection` is still present insinde `#chainConnections`.
+    // If it isn't, that means that the port got disconnected, so we should stop.
+    if (!this.#chainConnections.has(chainConnection.id)) {
+      chain.remove()
+      parachain?.remove()
+      return
+    }
+
     chainConnection.chain = chain
     chainConnection.parachain = parachain
+    chainConnection.port.postMessage({ type: "chain-ready" })
 
     // Initialize healthChecker
     const sender = chainConnection.parachain
@@ -265,12 +276,6 @@ export class ConnectionManager extends (EventEmitter as {
       chainConnection.healthStatus = health
       if (hasChanged) this.emit("stateChanged", this.connections)
     })
-
-    // process any RPC requests that came in while waiting for `addChain` to complete
-    chainConnection.pendingRequests.forEach((req) =>
-      chainConnection.healthChecker.sendJsonRpc(req),
-    )
-    chainConnection.pendingRequests = []
   }
 
   #handleMessage(msg: ToExtension, chainConnection: ChainConnection): void {
@@ -286,11 +291,13 @@ export class ConnectionManager extends (EventEmitter as {
     }
 
     if (msg.type === "rpc") {
-      chainConnection.chain
-        ? chainConnection.healthChecker.sendJsonRpc(msg.payload)
-        : // `addChain` hasn't resolved yet after the spec message so buffer the
-          // messages to be sent when it does resolve
-          chainConnection.pendingRequests.push(msg.payload)
+      if (chainConnection.chain)
+        return chainConnection.healthChecker.sendJsonRpc(msg.payload)
+
+      const errorMsg =
+        "RPC request received befor the chain was successfully added"
+      l.error(errorMsg)
+      this.#handleError(chainConnection.port, new Error(errorMsg))
       return
     }
 

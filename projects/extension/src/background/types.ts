@@ -12,7 +12,6 @@ export interface ExposedChainConnection {
 
 export interface ChainConnection extends ExposedChainConnection {
   id: string
-  pendingRequests: string[]
   chain?: Chain
   parachain?: Chain
   port: chrome.runtime.Port
