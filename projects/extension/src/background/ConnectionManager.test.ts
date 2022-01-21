@@ -491,4 +491,30 @@ describe("ConnectionManager", () => {
 
     expect(client.chains.size).toBe(0)
   })
+
+  it("disconnects and cleans up upon receiving a `remove-chain` message", async () => {
+    const { connectPort, client } = helper
+
+    const { port } = connectPort("chainId", 1, {
+      type: "add-well-known-chain",
+      payload: "polkadot",
+    })
+
+    await wait(0)
+
+    expect(client.chains.size).toBe(1)
+
+    port._sendExtensionMessage({
+      type: "remove-chain",
+      payload: "",
+    })
+
+    expect(port.postedMessages).toEqual([
+      {
+        type: "chain-ready",
+      },
+    ])
+    expect(client.chains.size).toBe(0)
+    expect(port.connected).toBe(false)
+  })
 })
