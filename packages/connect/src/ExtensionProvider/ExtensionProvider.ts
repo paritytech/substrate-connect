@@ -337,6 +337,12 @@ export class ExtensionProvider implements ProviderInterface {
     if (this.#connectionStatePingerId !== null) {
       clearInterval(this.#connectionStatePingerId)
     }
+    sendMessage({
+      origin: EXTENSION_PROVIDER_ORIGIN,
+      chainId: this.#chainId,
+      type: "remove-chain",
+      payload: "",
+    })
     this.#isConnected = false
     this.emit("disconnected")
     return Promise.resolve()
