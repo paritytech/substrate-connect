@@ -470,4 +470,25 @@ describe("ConnectionManager", () => {
       },
     ])
   })
+
+  it("immediately removes the chain after receiving it, if the port got disconnected while waiting for the chain", async () => {
+    const { connectPort, client } = helper
+
+    const { port } = connectPort("chainId", 1, {
+      type: "add-well-known-chain",
+      payload: "polkadot",
+    })
+
+    expect(client.chains.size).toBe(1)
+    port.disconnect()
+
+    // it's still 1 because the `addChain` Promise has not resolved yet
+    // so the `ConnectionManager` has not received the chain and therefore
+    // cannot yet remove it
+    expect(client.chains.size).toBe(1)
+
+    await wait(0)
+
+    expect(client.chains.size).toBe(0)
+  })
 })
