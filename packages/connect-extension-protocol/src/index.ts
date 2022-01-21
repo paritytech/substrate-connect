@@ -38,7 +38,7 @@ export interface ToExtension {
   chainId: string
   /** The message the `ExtensionMessageRouter` should forward to the background **/
   /** Type of the message. Defines how to interpret the {@link payload} */
-  type: "rpc" | "add-chain" | "add-well-known-chain"
+  type: "rpc" | "add-chain" | "add-well-known-chain" | "remove-chain"
   /** Payload of the message -  a JSON encoded RPC request **/
   payload: string
   parachainPayload?: string
