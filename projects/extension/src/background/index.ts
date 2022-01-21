@@ -33,6 +33,12 @@ declare let window: Background
 window.manager = publicManager
 
 const l = logger("Extension")
+/**
+ * The amount of minutes that the DatabaseContentAlarm
+ * will rerun
+ */
+const periodInMinutes = 1
+
 export interface RequestRpcSend {
   method: string
   params: unknown[]
@@ -45,10 +51,24 @@ const init = async () => {
       const rpcCallback = (rpc: string) => {
         console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
       }
-      await manager
-        .addChain(value, rpcCallback)
+      const chain = await manager
+        .addChain(value, rpcCallback, undefined, key)
         .catch((err) => l.error("Error", err))
+      if (chain) {
+        const db = await chain.databaseContent(
+          chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
+        )
+        const keyLow: string = key.toLowerCase()
+        chrome.storage.local.set({ keyLow: db })
+      }
     }
+    /**
+     * the alarm will repeat every periodInMinutes minutes after
+     * the initial event for DatabaseContentAlarm
+     **/
+    chrome.alarms.create("DatabaseContentAlarm", {
+      periodInMinutes,
+    })
   } catch (e) {
     l.error(`Error creating smoldot: ${e}`)
     manager?.shutdown()
@@ -61,6 +81,11 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.runtime.onStartup.addListener(() => {
   init()
+})
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  // ensure that the alarm needed is the one set for databaseContent retrieval
+  if (alarm.name === "DatabaseContentAlarm") manager.flushDatabases()
 })
 
 chrome.runtime.onConnect.addListener((port) => {

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
@@ -153,6 +155,23 @@ export class ConnectionManager extends (EventEmitter as {
     return client.terminate()
   }
 
+  flushDatabases(): void {
+    this.#chainConnections.forEach(async (ch) => {
+      if (Array.from(wellKnownChains.keys()).includes(ch.chainName)) {
+        const db = await ch.chain?.databaseContent(
+          /**
+           * QUOTA_BYTES: 5242880 is the maximum amount (in bytes) of data that can be
+           * stored in local storage, as measured by the JSON stringification of every
+           * value plus every key's length.
+           * (see https://developer.chrome.com/docs/extensions/reference/storage/#property-local)
+           */
+          chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
+        )
+        chrome.storage.local.set({ [ch.chainName]: db })
+      }
+    })
+  }
+
   /**
    * addChain adds the Chain in the smoldot client
    *
@@ -162,10 +181,11 @@ export class ConnectionManager extends (EventEmitter as {
    *
    * @returns addedChain - An the newly added chain info
    */
-  addChain(
+  async addChain(
     chainSpec: string,
     jsonRpcCallback?: JsonRpcCallback,
     tabId?: number,
+    knownChainName?: string,
   ): Promise<Chain> {
     if (!this.#client) {
       throw new Error("Smoldot client does not exist.")
@@ -175,8 +195,18 @@ export class ConnectionManager extends (EventEmitter as {
       .filter((c) => c.tabId === tabId && !c.parachain && c.chain)
       .map((c) => c.chain!)
 
+    const chainName = knownChainName?.toLowerCase()
+    const databaseContent =
+      chainName &&
+      (await new Promise<string>((res) =>
+        chrome.storage.local.get([chainName], (val) => {
+          return res(val[chainName])
+        }),
+      ))
+    console.log("databaseContent", databaseContent)
     return this.#client.addChain({
       chainSpec,
+      databaseContent,
       jsonRpcCallback,
       potentialRelayChains,
     })
@@ -212,7 +242,8 @@ export class ConnectionManager extends (EventEmitter as {
       chainPromise = this.addChain(
         relayChainSpec,
         undefined,
-        chainConnection.tabId,
+        undefined,
+        chainConnection.chainName,
       ).then((chain) =>
         this.addChain(parachainSpec, rpcCallback, chainConnection.tabId).then(
           (parachain) => ({ chain, parachain }),
@@ -225,6 +256,7 @@ export class ConnectionManager extends (EventEmitter as {
         relayChainSpec,
         rpcCallback,
         chainConnection.tabId,
+        chainConnection.chainName,
       ).then((chain) => ({ chain }))
     }
 
