@@ -59,7 +59,7 @@ const init = async () => {
           chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
         )
         const keyLow: string = key.toLowerCase()
-        chrome.storage.local.set({ keyLow: db })
+        chrome.storage.local.set({ [keyLow]: db })
       }
     }
     /**

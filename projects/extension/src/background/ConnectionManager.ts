@@ -6,6 +6,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   Client,
   healthChecker as smHealthChecker,
@@ -198,12 +199,15 @@ export class ConnectionManager extends (EventEmitter as {
     const chainName = knownChainName?.toLowerCase()
     const databaseContent =
       chainName &&
-      (await new Promise<string>((res) =>
-        chrome.storage.local.get([chainName], (val) => {
-          return res(val[chainName])
-        }),
-      ))
-    console.log("databaseContent", databaseContent)
+      (await new Promise<string>((resolve, reject) => {
+        chrome.storage.local.get([chainName], (result) => {
+          if (result[chainName] === undefined) {
+            reject()
+          }
+          resolve(result[chainName])
+        })
+      }))
+
     return this.#client.addChain({
       chainSpec,
       databaseContent,
