@@ -16,9 +16,17 @@ async function run(nodeName, networkInfo) {
   delete customChainSpec.forkId
 
   const api = await connect(JSON.stringify(customChainSpec), userDefinedTypes)
-  const validator = await api.query.session.validators()
-  console.log("validators", validator)
-  return validator.length
+  let count = 0
+  const unsub = await api.rpc.chain.subscribeNewHeads((header) => {
+    console.log(`#${header.number}:`, header)
+
+    if (++count === 2) {
+      console.log("2 headers retrieved, unsubscribing")
+      unsub()
+    }
+  })
+
+  return count
 }
 
 module.exports = { run }
