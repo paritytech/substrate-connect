@@ -11,11 +11,10 @@ async function connect(customChainSpec, types) {
 async function run(nodeName, networkInfo) {
     const {userDefinedTypes} = networkInfo.nodesByName[nodeName];
     const customChainSpec = require(networkInfo.chainSpecPath);
-    console.log("bootnodes");
-    customChainSpec.bootNodes = customChainSpec.bootNodes.map(addr => {
-        return addr.replace("localhost", "127.0.0.1").replace("p2p","ws/p2p").replace("dns","ip4")
-    });
-    console.log(customChainSpec.bootNodes);
+
+    // TODO: forkId generate an error in smoldot-light
+    delete customChainSpec.forkId;
+
     const api = await connect(JSON.stringify(customChainSpec), userDefinedTypes);
     const validator = await api.query.session.validators();
     console.log("validators",validator);
