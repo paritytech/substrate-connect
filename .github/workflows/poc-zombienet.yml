@@ -1,8 +1,6 @@
 name: PoC zombienet CI
 
 on:
-  push:
-    branches: [ poc-add-zombienet ]
   pull_request:
     branches: [ master ]
   workflow_dispatch:
