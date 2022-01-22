@@ -16,6 +16,9 @@ async function run(nodeName, networkInfo) {
   delete customChainSpec.forkId
 
   const api = await connect(JSON.stringify(customChainSpec), userDefinedTypes)
+  // add 30s sleep to give time to sync
+  await new Promise((resolve) => setTimeout(resolve, 30000))
+
   let count = 0
   const unsub = await api.rpc.chain.subscribeNewHeads((header) => {
     console.log(`#${header.number}:`, header)
