@@ -20,13 +20,16 @@ async function run(nodeName, networkInfo) {
   await new Promise((resolve) => setTimeout(resolve, 30000))
 
   let count = 0
-  const unsub = await api.rpc.chain.subscribeNewHeads((header) => {
-    console.log(`#${header.number}:`, header)
+  await new Promise(async (resolve, reject) => {
+    const unsub = await api.rpc.chain.subscribeNewHeads((header) => {
+      console.log(`#${header.number}:`, header)
 
-    if (++count === 2) {
-      console.log("2 headers retrieved, unsubscribing")
-      unsub()
-    }
+      if (++count === 2) {
+        console.log("2 headers retrieved, unsubscribing")
+        unsub()
+        resolve()
+      }
+    })
   })
 
   return count
