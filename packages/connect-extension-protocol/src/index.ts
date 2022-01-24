@@ -22,6 +22,9 @@
 
 interface ToApplicationHeader {
   origin: "content-script"
+}
+
+type ToApplicationChainHeader = ToApplicationHeader & {
   chainId: string
 }
 
@@ -39,11 +42,14 @@ interface ToApplicationRpc {
   payload: string
 }
 
-export type ToApplication = ToApplicationHeader &
+export type ToApplication = ToApplicationChainHeader &
   (ToApplicationError | ToApplicationChainReady | ToApplicationRpc)
 
 interface ToExtensionHeader {
   origin: "extension-provider"
+}
+
+type ToExtensionChainHeader = ToExtensionHeader & {
   chainId: string
 }
 
@@ -66,7 +72,7 @@ interface ToExtensionRemoveChain {
   type: "remove-chain"
 }
 
-export type ToExtension = ToExtensionHeader &
+export type ToExtension = ToExtensionChainHeader &
   (
     | ToExtensionAddChain
     | ToExtensionAddWellKnownChain
