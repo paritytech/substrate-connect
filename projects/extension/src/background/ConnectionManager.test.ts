@@ -8,7 +8,13 @@
 import { jest } from "@jest/globals"
 import { ConnectionManager } from "./ConnectionManager"
 import { ExposedChainConnection } from "./types"
-import { MockedChain, MockPort, MockSmoldotClient, TEST_URL } from "../mocks"
+import {
+  MockedChain,
+  MockPort,
+  MockSmoldotClient,
+  TEST_URL,
+  HeaderlessToExtension,
+} from "../mocks"
 import { ToExtension } from "@substrate/connect-extension-protocol"
 
 const wait = (ms: number) => new Promise((res) => setTimeout(res, ms))
@@ -23,7 +29,7 @@ const createHelper = () => {
     connectPort: (
       chainId: string,
       tabId: number,
-      addChainMsg: Omit<ToExtension, "origin" | "chainId"> | null = null,
+      addChainMsg?: HeaderlessToExtension<ToExtension>,
       url = TEST_URL,
     ) => {
       const port = new MockPort(chainId, tabId)
@@ -72,7 +78,7 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "add-well-known-chain",
-      payload: "polkadot",
+      payload: { name: "polkadot" },
     })
 
     await wait(0)
@@ -121,7 +127,7 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "add-well-known-chain",
-      payload: "polkadot",
+      payload: { name: "polkadot" },
     })
     await wait(0)
 
@@ -143,7 +149,7 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "add-well-known-chain",
-      payload: "polkadot",
+      payload: { name: "polkadot" },
     })
 
     port._sendExtensionMessage({
@@ -166,7 +172,7 @@ describe("ConnectionManager", () => {
 
     const { port, chain } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      payload: { name: "polkadot" },
     })
 
     await wait(0)
@@ -234,7 +240,7 @@ describe("ConnectionManager", () => {
     const { connectPort } = helper
     const { port } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "nonexisting",
+      payload: { name: "nonexisting" },
     })
 
     await wait(0)
@@ -254,7 +260,7 @@ describe("ConnectionManager", () => {
 
     const { chain, chainId, tabId, url } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      payload: { name: "polkadot" },
     })
 
     await wait(0)
@@ -304,7 +310,7 @@ describe("ConnectionManager", () => {
         const tabId = Math.floor(idx / 3)
         return connectPort(idx.toString(), tabId, {
           type: "add-well-known-chain",
-          payload: "polkadot",
+          payload: { name: "polkadot" },
         })
       })
     await wait(0)
@@ -348,11 +354,13 @@ describe("ConnectionManager", () => {
         const tabId = Math.floor(idx / 3)
         const { chain } = connectPort(idx.toString(), tabId, {
           type: "add-well-known-chain",
-          payload: "polkadot",
-          parachainPayload:
-            idx % 3 === 2
-              ? JSON.stringify({ name: `parachain${idx}` })
-              : undefined,
+          payload: {
+            name: "polkadot",
+            parachainSpec:
+              idx % 3 === 2
+                ? JSON.stringify({ name: `parachain${idx}` })
+                : undefined,
+          },
         })
         return chain
       })
@@ -361,7 +369,7 @@ describe("ConnectionManager", () => {
 
     const { chain: newChain } = connectPort("lastOne", 0, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      payload: { name: "polkadot" },
     })
 
     await wait(0)
@@ -388,12 +396,12 @@ describe("ConnectionManager", () => {
 
     const { chain: tab1Chain, port: tab1Port } = connectPort(chainId, 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      payload: { name: "polkadot" },
     })
 
     const { chain: tab2Chain, port: tab2Port } = connectPort(chainId, 2, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      payload: { name: "polkadot" },
     })
 
     await wait(0)
@@ -476,7 +484,7 @@ describe("ConnectionManager", () => {
 
     const { port } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      payload: { name: "polkadot" },
     })
 
     expect(client.chains.size).toBe(1)
@@ -497,7 +505,7 @@ describe("ConnectionManager", () => {
 
     const { port } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      payload: { name: "polkadot" },
     })
 
     await wait(0)
@@ -506,7 +514,6 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "remove-chain",
-      payload: "",
     })
 
     expect(port.postedMessages).toEqual([
