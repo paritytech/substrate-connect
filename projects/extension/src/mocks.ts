@@ -16,16 +16,14 @@ export const TEST_URL = "https://test.com"
 
 export type HeaderlessToExtension<T extends ToExtension> = T extends {
   origin: "extension-provider"
-  chainId: string
 } & infer V
-  ? V
+  ? Omit<V, "chainId">
   : unknown
 
 export type HeaderlessToApplication<T extends ToApplication> = T extends {
   origin: "content-script"
-  chainId: string
 } & infer V
-  ? V
+  ? Omit<V, "chainId">
   : unknown
 
 export class MockPort implements chrome.runtime.Port {

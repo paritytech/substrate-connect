@@ -24,55 +24,54 @@ interface ToApplicationHeader {
   origin: "content-script"
 }
 
-type ToApplicationChainHeader = ToApplicationHeader & {
-  chainId: string
-}
-
 interface ToApplicationError {
   type: "error"
+  chainId: string
   payload: string
 }
 
 interface ToApplicationChainReady {
   type: "chain-ready"
+  chainId: string
 }
 
 interface ToApplicationRpc {
   type: "rpc"
+  chainId: string
   payload: string
 }
 
-export type ToApplication = ToApplicationChainHeader &
+export type ToApplication = ToApplicationHeader &
   (ToApplicationError | ToApplicationChainReady | ToApplicationRpc)
 
 interface ToExtensionHeader {
   origin: "extension-provider"
 }
 
-type ToExtensionChainHeader = ToExtensionHeader & {
-  chainId: string
-}
-
 interface ToExtensionAddChain {
   type: "add-chain"
+  chainId: string
   payload: { chainSpec: string; parachainSpec?: string }
 }
 
 interface ToExtensionAddWellKnownChain {
   type: "add-well-known-chain"
+  chainId: string
   payload: { name: string; parachainSpec?: string }
 }
 
 interface ToExtensionRpc {
   type: "rpc"
+  chainId: string
   payload: string
 }
 
 interface ToExtensionRemoveChain {
   type: "remove-chain"
+  chainId: string
 }
 
-export type ToExtension = ToExtensionChainHeader &
+export type ToExtension = ToExtensionHeader &
   (
     | ToExtensionAddChain
     | ToExtensionAddWellKnownChain
