@@ -120,10 +120,10 @@ export class ExtensionProvider implements ProviderInterface {
   }
 
   #handleMessage = (data: ToApplication): void => {
-    const { type, payload } = data
+    const { type } = data
     if (type === "error") {
       this.#isConnected = false
-      const error = new Error(payload)
+      const error = new Error(data.payload)
       this.emit("error", error)
       // reject all hanging requests
       eraseRecord(this.#handlers, (h) => h.callback(error, undefined))
@@ -131,9 +131,9 @@ export class ExtensionProvider implements ProviderInterface {
       return
     }
 
-    if (type === "rpc" && payload) {
-      l.debug(() => ["received", payload])
-      const response = JSON.parse(payload) as JsonRpcResponse
+    if (type === "rpc" && data.payload) {
+      l.debug(() => ["received", data.payload])
+      const response = JSON.parse(data.payload) as JsonRpcResponse
 
       return isUndefined(response.method)
         ? this.#onMessageResult(response)
@@ -302,15 +302,22 @@ export class ExtensionProvider implements ProviderInterface {
     // Once connect is sent - send rpc to extension that will contain the chainSpecs
     // for the extension to call addChain on smoldot
 
-    await this.#addChain({
+    const msg: ToExtension & { type: "add-well-known-chain" | "add-chain" } = {
       origin: EXTENSION_PROVIDER_ORIGIN,
       chainId: this.#chainId,
-      type: SupportedChains[this.#chainSpecs as SupportedChains]
-        ? "add-well-known-chain"
-        : "add-chain",
-      payload: this.#chainSpecs,
-      parachainPayload: this.#parachainSpecs || undefined,
-    })
+      ...(SupportedChains[this.#chainSpecs as SupportedChains]
+        ? {
+            type: "add-well-known-chain" as const,
+            payload: { name: this.#chainSpecs },
+          }
+        : {
+            type: "add-chain" as const,
+            payload: { chainSpec: this.#chainSpecs },
+          }),
+    }
+    msg.payload.parachainSpec = this.#parachainSpecs
+
+    await this.#addChain(msg)
 
     window.addEventListener(
       "message",
@@ -341,7 +348,6 @@ export class ExtensionProvider implements ProviderInterface {
       origin: EXTENSION_PROVIDER_ORIGIN,
       chainId: this.#chainId,
       type: "remove-chain",
-      payload: "",
     })
     this.#isConnected = false
     this.emit("disconnected")

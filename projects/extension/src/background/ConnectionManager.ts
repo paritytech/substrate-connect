@@ -303,13 +303,13 @@ export class ConnectionManager extends (EventEmitter as {
 
     const chainSpec =
       msg.type === "add-chain"
-        ? msg.payload
-        : wellKnownChains.get(msg.payload) ?? ""
+        ? msg.payload.chainSpec
+        : wellKnownChains.get(msg.payload.name)!
 
     this.#handleSpecMessage(
       chainConnection,
       chainSpec,
-      msg.parachainPayload,
+      msg.payload.parachainSpec,
     ).catch((e) => {
       const errorMsg = `An error happened while adding the chain ${e}`
       l.error(errorMsg)

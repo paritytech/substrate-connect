@@ -39,7 +39,7 @@ describe("Disconnect and incorrect cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      payload: "westend",
+      payload: { name: "westend" },
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -88,7 +88,7 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId,
       type: "add-well-known-chain",
-      payload: "westend",
+      payload: { name: "westend" },
       origin: "extension-provider",
     })
 
@@ -105,7 +105,7 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      payload: "westend",
+      payload: { name: "westend" },
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -113,10 +113,10 @@ describe("Connection and forward cases", () => {
     // rpc
     const rpcMessage: ToExtension = {
       chainId: "test",
+      origin: "extension-provider",
       type: "rpc",
       payload:
         '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}',
-      origin: "extension-provider",
     }
     sendMessage(rpcMessage)
     await waitForMessageToBePosted()
@@ -136,7 +136,7 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      payload: "westend",
+      payload: { name: "westend" },
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
@@ -168,7 +168,7 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      payload: "westend",
+      payload: { name: "westend" },
       origin: "extension-provider",
     })
     await waitForMessageToBePosted()
