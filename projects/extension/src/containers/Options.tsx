@@ -80,7 +80,7 @@ const Options: React.FunctionComponent = () => {
   const [notifications, setNotifications] = useState<boolean>(false)
 
   useEffect(() => {
-    chrome.storage.sync.get(["notifications"], (res) => {
+    chrome.storage.local.get(["notifications"], (res) => {
       setNotifications(res.notifications as SetStateAction<boolean>)
     })
 
@@ -112,7 +112,7 @@ const Options: React.FunctionComponent = () => {
   }, [])
 
   useEffect(() => {
-    chrome.storage.sync.set({ notifications: notifications }, () => {
+    chrome.storage.local.set({ notifications: notifications }, () => {
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError)
       }
