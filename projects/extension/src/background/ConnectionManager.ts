@@ -166,6 +166,7 @@ export class ConnectionManager extends (EventEmitter as {
     chainSpec: string,
     jsonRpcCallback?: JsonRpcCallback,
     tabId?: number,
+    databaseContent?: string,
   ): Promise<Chain> {
     if (!this.#client) {
       throw new Error("Smoldot client does not exist.")
@@ -177,6 +178,7 @@ export class ConnectionManager extends (EventEmitter as {
 
     return this.#client.addChain({
       chainSpec,
+      databaseContent,
       jsonRpcCallback,
       potentialRelayChains,
     })
@@ -232,7 +234,7 @@ export class ConnectionManager extends (EventEmitter as {
 
     this.#emitStateChanged()
 
-    chrome.storage.sync.get("notifications", (s) => {
+    chrome.storage.local.get("notifications", (s) => {
       s.notifications &&
         chrome.notifications.create(chainConnection.port.name, {
           title: "Substrate Connect",
@@ -303,13 +305,13 @@ export class ConnectionManager extends (EventEmitter as {
 
     const chainSpec =
       msg.type === "add-chain"
-        ? msg.payload
-        : wellKnownChains.get(msg.payload) ?? ""
+        ? msg.payload.chainSpec
+        : wellKnownChains.get(msg.payload.name)!
 
     this.#handleSpecMessage(
       chainConnection,
       chainSpec,
-      msg.parachainPayload,
+      msg.payload.parachainSpec,
     ).catch((e) => {
       const errorMsg = `An error happened while adding the chain ${e}`
       l.error(errorMsg)

@@ -5,7 +5,7 @@ import { logger } from "@polkadot/util"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
-import { start } from "@substrate/smoldot-light"
+import { Chain, start } from "@substrate/smoldot-light"
 
 export interface Background extends Window {
   manager: {
@@ -17,6 +17,8 @@ export interface Background extends Window {
 }
 
 let manager: ConnectionManager
+
+const wellKnownConnections: Map<string, Chain> = new Map()
 
 const publicManager: Background["manager"] = {
   onManagerStateChanged(listener) {
@@ -33,10 +35,27 @@ declare let window: Background
 window.manager = publicManager
 
 const l = logger("Extension")
+
 export interface RequestRpcSend {
   method: string
   params: unknown[]
 }
+
+const saveChainDbContent = async (key: string, chain: Chain) => {
+  const db = await chain.databaseContent(
+    chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
+  )
+  chrome.storage.local.set({ [key]: db })
+}
+
+const flushDatabases = (): void => {
+  for (const [key, chain] of wellKnownConnections)
+    saveChainDbContent(key, chain)
+}
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === "DatabaseContentAlarm") flushDatabases()
+})
 
 const init = async () => {
   try {
@@ -45,10 +64,24 @@ const init = async () => {
       const rpcCallback = (rpc: string) => {
         console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
       }
-      await manager
-        .addChain(value, rpcCallback)
-        .catch((err) => l.error("Error", err))
+
+      const dbContent = await new Promise<string | undefined>((res) =>
+        chrome.storage.local.get([key], (val) => res(val[key] as string)),
+      )
+
+      const chain = await manager.addChain(
+        value,
+        rpcCallback,
+        undefined,
+        dbContent,
+      )
+      wellKnownConnections.set(key, chain)
+      if (!dbContent) saveChainDbContent(key, chain)
     }
+
+    chrome.alarms.create("DatabaseContentAlarm", {
+      periodInMinutes: 5,
+    })
   } catch (e) {
     l.error(`Error creating smoldot: ${e}`)
     manager?.shutdown()
@@ -67,10 +100,10 @@ chrome.runtime.onConnect.addListener((port) => {
   manager.addChainConnection(port)
 })
 
-chrome.storage.sync.get(["notifications"], (result) => {
+chrome.storage.local.get(["notifications"], (result) => {
   if (isEmpty(result)) {
     // Setup default settings
-    chrome.storage.sync.set({ notifications: settings.notifications }, () => {
+    chrome.storage.local.set({ notifications: settings.notifications }, () => {
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError)
       }
