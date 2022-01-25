@@ -156,23 +156,6 @@ export class ConnectionManager extends (EventEmitter as {
     return client.terminate()
   }
 
-  flushDatabases(): void {
-    this.#chainConnections.forEach(async (ch) => {
-      if (Array.from(wellKnownChains.keys()).includes(ch.chainName)) {
-        const db = await ch.chain?.databaseContent(
-          /**
-           * QUOTA_BYTES: 5242880 is the maximum amount (in bytes) of data that can be
-           * stored in local storage, as measured by the JSON stringification of every
-           * value plus every key's length.
-           * (see https://developer.chrome.com/docs/extensions/reference/storage/#property-local)
-           */
-          chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
-        )
-        chrome.storage.local.set({ [ch.chainName]: db })
-      }
-    })
-  }
-
   /**
    * addChain adds the Chain in the smoldot client
    *
@@ -182,11 +165,11 @@ export class ConnectionManager extends (EventEmitter as {
    *
    * @returns addedChain - An the newly added chain info
    */
-  async addChain(
+  addChain(
     chainSpec: string,
     jsonRpcCallback?: JsonRpcCallback,
     tabId?: number,
-    knownChainName?: string,
+    databaseContent?: string,
   ): Promise<Chain> {
     if (!this.#client) {
       throw new Error("Smoldot client does not exist.")
@@ -195,18 +178,6 @@ export class ConnectionManager extends (EventEmitter as {
     const potentialRelayChains = [...this.#chainConnections.values()]
       .filter((c) => c.tabId === tabId && !c.parachain && c.chain)
       .map((c) => c.chain!)
-
-    const chainName = knownChainName?.toLowerCase()
-    const databaseContent =
-      chainName &&
-      (await new Promise<string>((resolve, reject) => {
-        chrome.storage.local.get([chainName], (result) => {
-          if (result[chainName] === undefined) {
-            reject()
-          }
-          resolve(result[chainName])
-        })
-      }))
 
     return this.#client.addChain({
       chainSpec,
@@ -246,8 +217,7 @@ export class ConnectionManager extends (EventEmitter as {
       chainPromise = this.addChain(
         relayChainSpec,
         undefined,
-        undefined,
-        chainConnection.chainName,
+        chainConnection.tabId,
       ).then((chain) =>
         this.addChain(parachainSpec, rpcCallback, chainConnection.tabId).then(
           (parachain) => ({ chain, parachain }),
@@ -260,7 +230,6 @@ export class ConnectionManager extends (EventEmitter as {
         relayChainSpec,
         rpcCallback,
         chainConnection.tabId,
-        chainConnection.chainName,
       ).then((chain) => ({ chain }))
     }
 
@@ -339,13 +308,13 @@ export class ConnectionManager extends (EventEmitter as {
 
     const chainSpec =
       msg.type === "add-chain"
-        ? msg.payload
-        : wellKnownChains.get(msg.payload) ?? ""
+        ? msg.payload.chainSpec
+        : wellKnownChains.get(msg.payload.name)!
 
     this.#handleSpecMessage(
       chainConnection,
       chainSpec,
-      msg.parachainPayload,
+      msg.payload.parachainSpec,
     ).catch((e) => {
       const errorMsg = `An error happened while adding the chain ${e}`
       l.error(errorMsg)

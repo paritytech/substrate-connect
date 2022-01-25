@@ -5,7 +5,7 @@ import { logger } from "@polkadot/util"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
-import { start } from "@substrate/smoldot-light"
+import { Chain, start } from "@substrate/smoldot-light"
 
 export interface Background extends Window {
   manager: {
@@ -17,6 +17,8 @@ export interface Background extends Window {
 }
 
 let manager: ConnectionManager
+
+const wellKnownConnections: Map<string, Chain> = new Map()
 
 const publicManager: Background["manager"] = {
   onManagerStateChanged(listener) {
@@ -44,6 +46,19 @@ export interface RequestRpcSend {
   params: unknown[]
 }
 
+const setLocalStorage = async (key: string, chain: Chain) => {
+  const db = await chain.databaseContent(
+    chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
+  )
+  chrome.storage.local.set({ [key]: db })
+}
+
+const flushDatabases = (): void => {
+  for (const [key, chain] of wellKnownConnections) {
+    setLocalStorage(key, chain)
+  }
+}
+
 const init = async () => {
   try {
     manager = new ConnectionManager(start({ maxLogLevel: 3 }))
@@ -51,17 +66,23 @@ const init = async () => {
       const rpcCallback = (rpc: string) => {
         console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
       }
-      const chain = await manager
-        .addChain(value, rpcCallback, undefined, key)
-        .catch((err) => l.error("Error", err))
-      if (chain) {
-        const db = await chain.databaseContent(
-          chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
-        )
-        const keyLow: string = key.toLowerCase()
-        chrome.storage.local.set({ [keyLow]: db })
-      }
+
+      const dbContent = await new Promise<string>((res) =>
+        chrome.storage.local.get([key], (val) => {
+          return res(val[key] as string)
+        }),
+      )
+
+      const chain = await manager.addChain(
+        value,
+        rpcCallback,
+        undefined,
+        dbContent,
+      )
+      wellKnownConnections.set(key, chain)
+      !dbContent && setLocalStorage(key, chain)
     }
+
     /**
      * the alarm will repeat every periodInMinutes minutes after
      * the initial event for DatabaseContentAlarm
@@ -85,7 +106,7 @@ chrome.runtime.onStartup.addListener(() => {
 
 chrome.alarms.onAlarm.addListener((alarm) => {
   // ensure that the alarm needed is the one set for databaseContent retrieval
-  if (alarm.name === "DatabaseContentAlarm") manager.flushDatabases()
+  if (alarm.name === "DatabaseContentAlarm") flushDatabases()
 })
 
 chrome.runtime.onConnect.addListener((port) => {
