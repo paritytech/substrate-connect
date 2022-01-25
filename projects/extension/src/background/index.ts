@@ -35,18 +35,13 @@ declare let window: Background
 window.manager = publicManager
 
 const l = logger("Extension")
-/**
- * The amount of minutes that the DatabaseContentAlarm
- * will rerun
- */
-const periodInMinutes = 5
 
 export interface RequestRpcSend {
   method: string
   params: unknown[]
 }
 
-const setLocalStorage = async (key: string, chain: Chain) => {
+const saveChainDbContent = async (key: string, chain: Chain) => {
   const db = await chain.databaseContent(
     chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
   )
@@ -54,10 +49,13 @@ const setLocalStorage = async (key: string, chain: Chain) => {
 }
 
 const flushDatabases = (): void => {
-  for (const [key, chain] of wellKnownConnections) {
-    setLocalStorage(key, chain)
-  }
+  for (const [key, chain] of wellKnownConnections)
+    saveChainDbContent(key, chain)
 }
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === "DatabaseContentAlarm") flushDatabases()
+})
 
 const init = async () => {
   try {
@@ -67,10 +65,8 @@ const init = async () => {
         console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
       }
 
-      const dbContent = await new Promise<string>((res) =>
-        chrome.storage.local.get([key], (val) => {
-          return res(val[key] as string)
-        }),
+      const dbContent = await new Promise<string | undefined>((res) =>
+        chrome.storage.local.get([key], (val) => res(val[key] as string)),
       )
 
       const chain = await manager.addChain(
@@ -80,15 +76,11 @@ const init = async () => {
         dbContent,
       )
       wellKnownConnections.set(key, chain)
-      !dbContent && setLocalStorage(key, chain)
+      !dbContent && saveChainDbContent(key, chain)
     }
 
-    /**
-     * the alarm will repeat every periodInMinutes minutes after
-     * the initial event for DatabaseContentAlarm
-     **/
     chrome.alarms.create("DatabaseContentAlarm", {
-      periodInMinutes,
+      periodInMinutes: 5,
     })
   } catch (e) {
     l.error(`Error creating smoldot: ${e}`)
@@ -102,11 +94,6 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.runtime.onStartup.addListener(() => {
   init()
-})
-
-chrome.alarms.onAlarm.addListener((alarm) => {
-  // make sure that the alarm needed is the one set for databaseContent retrieval
-  if (alarm.name === "DatabaseContentAlarm") flushDatabases()
 })
 
 chrome.runtime.onConnect.addListener((port) => {
