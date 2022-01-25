@@ -166,6 +166,7 @@ export class ConnectionManager extends (EventEmitter as {
     chainSpec: string,
     jsonRpcCallback?: JsonRpcCallback,
     tabId?: number,
+    databaseContent?: string,
   ): Promise<Chain> {
     if (!this.#client) {
       throw new Error("Smoldot client does not exist.")
@@ -177,6 +178,7 @@ export class ConnectionManager extends (EventEmitter as {
 
     return this.#client.addChain({
       chainSpec,
+      databaseContent,
       jsonRpcCallback,
       potentialRelayChains,
     })
