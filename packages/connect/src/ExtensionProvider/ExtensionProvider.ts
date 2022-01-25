@@ -120,10 +120,10 @@ export class ExtensionProvider implements ProviderInterface {
   }
 
   #handleMessage = (data: ToApplication): void => {
-    const { type, payload } = data
+    const { type } = data
     if (type === "error") {
       this.#isConnected = false
-      const error = new Error(payload)
+      const error = new Error(data.payload)
       this.emit("error", error)
       // reject all hanging requests
       eraseRecord(this.#handlers, (h) => h.callback(error, undefined))
@@ -131,9 +131,9 @@ export class ExtensionProvider implements ProviderInterface {
       return
     }
 
-    if (type === "rpc" && payload) {
-      l.debug(() => ["received", payload])
-      const response = JSON.parse(payload) as JsonRpcResponse
+    if (type === "rpc" && data.payload) {
+      l.debug(() => ["received", data.payload])
+      const response = JSON.parse(data.payload) as JsonRpcResponse
 
       return isUndefined(response.method)
         ? this.#onMessageResult(response)
@@ -259,6 +259,38 @@ export class ExtensionProvider implements ProviderInterface {
       .catch((error) => this.emit("error", new HealthCheckError(error)))
   }
 
+  #addChain(
+    specMsg: ToExtension & { type: "add-well-known-chain" | "add-chain" },
+  ): Promise<void> {
+    return new Promise<void>((res, rej) => {
+      const waitForChainCb = ({ data }: MessageEvent<ToApplication>) => {
+        if (
+          data.origin !== CONTENT_SCRIPT_ORIGIN ||
+          data.chainId !== this.#chainId
+        ) {
+          return
+        }
+
+        window.removeEventListener("message", waitForChainCb)
+
+        if (data.type === "chain-ready") return res()
+
+        const error = new Error(
+          data.type === "error"
+            ? data.payload
+            : "Unexpected message received from the extension while waiting for 'chain-ready' message",
+        )
+        rej(error)
+        this.emit("error", error)
+        eraseRecord(this.#handlers, (h) => h.callback(error, undefined))
+        eraseRecord(this.#waitingForId)
+      }
+
+      window.addEventListener("message", waitForChainCb)
+      sendMessage(specMsg)
+    })
+  }
+
   /**
    * "Connect" to the extension - sends a message to the `ExtensionMessageRouter`
    * asking it to connect to the extension background.
@@ -266,21 +298,27 @@ export class ExtensionProvider implements ProviderInterface {
    * @returns a resolved Promise
    * @remarks this is async to fulfill the interface with PolkadotJS
    */
-  public connect(): Promise<void> {
+  public async connect(): Promise<void> {
     // Once connect is sent - send rpc to extension that will contain the chainSpecs
     // for the extension to call addChain on smoldot
-    const specMsg: ToExtension = {
+
+    const msg: ToExtension & { type: "add-well-known-chain" | "add-chain" } = {
       origin: EXTENSION_PROVIDER_ORIGIN,
       chainId: this.#chainId,
-      type: SupportedChains[this.#chainSpecs as SupportedChains]
-        ? "add-well-known-chain"
-        : "add-chain",
-      payload: this.#chainSpecs,
+      ...(SupportedChains[this.#chainSpecs as SupportedChains]
+        ? {
+            type: "add-well-known-chain" as const,
+            payload: { name: this.#chainSpecs },
+          }
+        : {
+            type: "add-chain" as const,
+            payload: { chainSpec: this.#chainSpecs },
+          }),
     }
-    if (this.#parachainSpecs) {
-      specMsg.parachainPayload = this.#parachainSpecs
-    }
-    sendMessage(specMsg)
+    msg.payload.parachainSpec = this.#parachainSpecs
+
+    await this.#addChain(msg)
+
     window.addEventListener(
       "message",
       ({ data }: MessageEvent<ToApplication>) => {
@@ -296,8 +334,6 @@ export class ExtensionProvider implements ProviderInterface {
       this.#checkClientPeercount,
       this.healthPingerInterval,
     )
-
-    return Promise.resolve()
   }
 
   /**
@@ -308,6 +344,11 @@ export class ExtensionProvider implements ProviderInterface {
     if (this.#connectionStatePingerId !== null) {
       clearInterval(this.#connectionStatePingerId)
     }
+    sendMessage({
+      origin: EXTENSION_PROVIDER_ORIGIN,
+      chainId: this.#chainId,
+      type: "remove-chain",
+    })
     this.#isConnected = false
     this.emit("disconnected")
     return Promise.resolve()
