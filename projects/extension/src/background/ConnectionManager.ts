@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   Client,
   healthChecker as smHealthChecker,
@@ -166,6 +169,7 @@ export class ConnectionManager extends (EventEmitter as {
     chainSpec: string,
     jsonRpcCallback?: JsonRpcCallback,
     tabId?: number,
+    databaseContent?: string,
   ): Promise<Chain> {
     if (!this.#client) {
       throw new Error("Smoldot client does not exist.")
@@ -177,6 +181,7 @@ export class ConnectionManager extends (EventEmitter as {
 
     return this.#client.addChain({
       chainSpec,
+      databaseContent,
       jsonRpcCallback,
       potentialRelayChains,
     })
