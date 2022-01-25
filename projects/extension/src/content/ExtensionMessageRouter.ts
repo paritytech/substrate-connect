@@ -81,27 +81,6 @@ export class ExtensionMessageRouter {
     debug(`CONNECTED TO ${chainId} PORT`)
   }
 
-  #forwardRpcMessage = ({
-    chainId,
-    type,
-    payload,
-    parachainPayload,
-  }: ToExtension): void => {
-    const port = this.#ports[chainId]
-    if (!port) {
-      // this is probably someone trying to abuse the extension.
-      console.warn(
-        `App requested to send message to ${chainId} - no port found`,
-      )
-      return
-    }
-
-    const msg = { type, payload, parachainPayload }
-
-    debug(`SENDING RPC MESSAGE TO ${chainId} PORT`, msg)
-    port.postMessage(msg)
-  }
-
   #handleMessage = (msg: MessageEvent<ToExtension>): void => {
     const data = msg.data
     const { origin, type } = data
@@ -121,10 +100,22 @@ export class ExtensionMessageRouter {
       return
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { chainId, origin: _, ...forwardMsg } = data
     if (type === "add-well-known-chain" || type === "add-chain") {
-      this.#establishNewConnection(data.chainId)
+      this.#establishNewConnection(chainId)
     }
 
-    return this.#forwardRpcMessage(data)
+    const port = this.#ports[chainId]
+    if (!port) {
+      // this is probably someone trying to abuse the extension.
+      console.warn(
+        `App requested to send message to ${chainId} - no port found`,
+      )
+      return
+    }
+
+    debug(`SENDING RPC MESSAGE TO ${chainId} PORT`, msg)
+    port.postMessage(forwardMsg)
   }
 }

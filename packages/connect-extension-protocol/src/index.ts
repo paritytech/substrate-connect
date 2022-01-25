@@ -20,26 +20,61 @@
  * The {@link ConnectionManager} is the class in the extension background.
  */
 
-export interface ToApplication {
-  /** origin is used to determine which side sent the message **/
+interface ToApplicationHeader {
   origin: "content-script"
-  /** Which chain this message applies to **/
+}
+
+interface ToApplicationError {
+  type: "error"
   chainId: string
-  /** Type of the message. Defines how to interpret the {@link payload} */
-  type: "error" | "rpc" | "chain-ready"
-  /** Payload of the message. Either a JSON encoded RPC response or an error message **/
   payload: string
 }
 
-export interface ToExtension {
-  /** origin is used to determine which side sent the message **/
-  origin: "extension-provider"
-  /** The uniqueId for extension multiplexing **/
+interface ToApplicationChainReady {
+  type: "chain-ready"
   chainId: string
-  /** The message the `ExtensionMessageRouter` should forward to the background **/
-  /** Type of the message. Defines how to interpret the {@link payload} */
-  type: "rpc" | "add-chain" | "add-well-known-chain" | "remove-chain"
-  /** Payload of the message -  a JSON encoded RPC request **/
-  payload: string
-  parachainPayload?: string
 }
+
+interface ToApplicationRpc {
+  type: "rpc"
+  chainId: string
+  payload: string
+}
+
+export type ToApplication = ToApplicationHeader &
+  (ToApplicationError | ToApplicationChainReady | ToApplicationRpc)
+
+interface ToExtensionHeader {
+  origin: "extension-provider"
+}
+
+interface ToExtensionAddChain {
+  type: "add-chain"
+  chainId: string
+  payload: { chainSpec: string; parachainSpec?: string }
+}
+
+interface ToExtensionAddWellKnownChain {
+  type: "add-well-known-chain"
+  chainId: string
+  payload: { name: string; parachainSpec?: string }
+}
+
+interface ToExtensionRpc {
+  type: "rpc"
+  chainId: string
+  payload: string
+}
+
+interface ToExtensionRemoveChain {
+  type: "remove-chain"
+  chainId: string
+}
+
+export type ToExtension = ToExtensionHeader &
+  (
+    | ToExtensionAddChain
+    | ToExtensionAddWellKnownChain
+    | ToExtensionRpc
+    | ToExtensionRemoveChain
+  )

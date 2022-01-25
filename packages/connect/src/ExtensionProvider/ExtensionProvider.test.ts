@@ -55,7 +55,6 @@ const emulateConnect = (
     origin: "content-script",
     chainId,
     type: "chain-ready",
-    payload: "",
   })
   return p
 }
@@ -79,8 +78,8 @@ test("connected and sends correct spec message", async () => {
 
   const expectedMessage: Partial<ToExtension> = {
     origin: "extension-provider",
-    payload: '{"name":"Westend","id":"westend2"}',
     type: "add-chain",
+    payload: { chainSpec: '{"name":"Westend","id":"westend2"}' },
   }
   expect(handler).toHaveBeenCalledTimes(2)
   const { data } = handler.mock.calls[0][0] as MessageEvent
@@ -101,13 +100,13 @@ test("connected multiple chains and sends correct spec message", async () => {
 
   const expectedMessage1: Partial<ToExtension> = {
     origin: "extension-provider",
-    payload: '{"name":"Westend","id":"westend2"}',
     type: "add-chain",
+    payload: { chainSpec: '{"name":"Westend","id":"westend2"}' },
   }
   const expectedMessage2: Partial<ToExtension> = {
     origin: "extension-provider",
-    payload: '{"name":"Rococo","id":"rococo"}',
     type: "add-chain",
+    payload: { chainSpec: '{"name":"Rococo","id":"rococo"}' },
   }
 
   expect(handler).toHaveBeenCalledTimes(4)
@@ -126,8 +125,8 @@ test("connected parachain sends correct spec message", async () => {
 
   const expectedMessage: Partial<ToExtension> = {
     origin: "extension-provider",
-    payload: '{"name":"Westend","id":"westend2"}',
     type: "add-chain",
+    payload: { chainSpec: '{"name":"Westend","id":"westend2"}' },
   }
   expect(handler).toHaveBeenCalledTimes(2)
   const { data } = handler.mock.calls[0][0] as MessageEvent
