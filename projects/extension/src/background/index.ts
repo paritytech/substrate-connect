@@ -100,10 +100,10 @@ chrome.runtime.onConnect.addListener((port) => {
   manager.addChainConnection(port)
 })
 
-chrome.storage.sync.get(["notifications"], (result) => {
+chrome.storage.local.get(["notifications"], (result) => {
   if (isEmpty(result)) {
     // Setup default settings
-    chrome.storage.sync.set({ notifications: settings.notifications }, () => {
+    chrome.storage.local.set({ notifications: settings.notifications }, () => {
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError)
       }

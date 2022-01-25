@@ -234,7 +234,7 @@ export class ConnectionManager extends (EventEmitter as {
 
     this.#emitStateChanged()
 
-    chrome.storage.sync.get("notifications", (s) => {
+    chrome.storage.local.get("notifications", (s) => {
       s.notifications &&
         chrome.notifications.create(chainConnection.port.name, {
           title: "Substrate Connect",
