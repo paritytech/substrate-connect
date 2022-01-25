@@ -76,7 +76,7 @@ const init = async () => {
         dbContent,
       )
       wellKnownConnections.set(key, chain)
-      !dbContent && saveChainDbContent(key, chain)
+      if (!dbContent) saveChainDbContent(key, chain)
     }
 
     chrome.alarms.create("DatabaseContentAlarm", {
