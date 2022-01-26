@@ -1,5 +1,5 @@
 [settings]
-timeout = 120000
+timeout = 240000
 
 [relaychain]
 default_image = "parity/polkadot:latest"

@@ -16,10 +16,22 @@ async function run(nodeName, networkInfo) {
 
   const api = await connect(JSON.stringify(customChainSpec), userDefinedTypes)
   // add 30s sleep to give time to sync
-  await new Promise((resolve) => setTimeout(resolve, 30000))
-  const decimals = api.registry.chainDecimals
+  await new Promise((resolve) => setTimeout(resolve, 20000))
 
-  return decimals[0]
+  let count = 0
+  await new Promise(async (resolve, reject) => {
+    const unsub = await api.rpc.chain.subscribeNewHeads((header) => {
+      console.log(`#${header.number}:`, header.number)
+      console.log("count", count)
+      if (++count === 2) {
+        console.log("2 headers retrieved, unsubscribing")
+        unsub()
+        resolve()
+      }
+    })
+  })
+
+  return count
 }
 
 module.exports = { run }
