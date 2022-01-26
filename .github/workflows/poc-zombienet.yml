@@ -1,10 +1,11 @@
 name: PoC zombienet CI
 
 on:
+  // THIS "PUSH" SHOULD BE DELETED
   push:
-    branches: [ nik-zombienet ]
+    branches: [ zombienet-configuration-and-tests ]
   pull_request:
-    branches: [ nik-zombienet ]
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
