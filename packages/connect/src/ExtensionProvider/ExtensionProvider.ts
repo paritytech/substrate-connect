@@ -66,6 +66,37 @@ const sendMessage = (msg: ToExtension): void => {
   window.postMessage(msg, "*")
 }
 
+const createChain = (
+  specMsg: ToExtension & {
+    type: "add-well-known-chain" | "add-chain"
+  },
+) =>
+  new Promise<void>((res, rej) => {
+    const waitForChainCb = ({ data }: MessageEvent<ToApplication>) => {
+      if (
+        data.origin !== CONTENT_SCRIPT_ORIGIN ||
+        data.chainId !== specMsg.chainId
+      ) {
+        return
+      }
+
+      window.removeEventListener("message", waitForChainCb)
+
+      if (data.type === "chain-ready") return res()
+
+      rej(
+        new Error(
+          data.type === "error"
+            ? data.payload
+            : "Unexpected message received from the extension while waiting for 'chain-ready' message",
+        ),
+      )
+    }
+
+    window.addEventListener("message", waitForChainCb)
+    sendMessage(specMsg)
+  })
+
 /**
  * The ExtensionProvider allows interacting with a smoldot-based WASM light
  * client running in a browser extension.  It is not designed to be used
@@ -120,10 +151,10 @@ export class ExtensionProvider implements ProviderInterface {
   }
 
   #handleMessage = (data: ToApplication): void => {
-    const { type, payload } = data
+    const { type } = data
     if (type === "error") {
       this.#isConnected = false
-      const error = new Error(payload)
+      const error = new Error(data.payload)
       this.emit("error", error)
       // reject all hanging requests
       eraseRecord(this.#handlers, (h) => h.callback(error, undefined))
@@ -131,9 +162,9 @@ export class ExtensionProvider implements ProviderInterface {
       return
     }
 
-    if (type === "rpc" && payload) {
-      l.debug(() => ["received", payload])
-      const response = JSON.parse(payload) as JsonRpcResponse
+    if (type === "rpc" && data.payload) {
+      l.debug(() => ["received", data.payload])
+      const response = JSON.parse(data.payload) as JsonRpcResponse
 
       return isUndefined(response.method)
         ? this.#onMessageResult(response)
@@ -259,35 +290,37 @@ export class ExtensionProvider implements ProviderInterface {
       .catch((error) => this.emit("error", new HealthCheckError(error)))
   }
 
-  #addChain(
-    specMsg: ToExtension & { type: "add-well-known-chain" | "add-chain" },
-  ): Promise<void> {
-    return new Promise<void>((res, rej) => {
-      const waitForChainCb = ({ data }: MessageEvent<ToApplication>) => {
-        if (
-          data.origin !== CONTENT_SCRIPT_ORIGIN ||
-          data.chainId !== this.#chainId
-        ) {
-          return
-        }
+  async #addChain(): Promise<void> {
+    const specMsg: ToExtension & {
+      type: "add-well-known-chain" | "add-chain"
+    } = {
+      origin: EXTENSION_PROVIDER_ORIGIN,
+      chainId: this.#parachainSpecs ? getRandomChainId() : this.#chainId,
+      ...(SupportedChains[this.#chainSpecs as SupportedChains]
+        ? {
+            type: "add-well-known-chain" as const,
+            payload: this.#chainSpecs,
+          }
+        : {
+            type: "add-chain" as const,
+            payload: {
+              chainSpec: this.#chainSpecs,
+              potentialRelayChainIds: [],
+            },
+          }),
+    }
+    await createChain(specMsg)
 
-        window.removeEventListener("message", waitForChainCb)
+    if (!this.#parachainSpecs) return
 
-        if (data.type === "chain-ready") return res()
-
-        const error = new Error(
-          data.type === "error"
-            ? data.payload
-            : "Unexpected message received from the extension while waiting for 'chain-ready' message",
-        )
-        rej(error)
-        this.emit("error", error)
-        eraseRecord(this.#handlers, (h) => h.callback(error, undefined))
-        eraseRecord(this.#waitingForId)
-      }
-
-      window.addEventListener("message", waitForChainCb)
-      sendMessage(specMsg)
+    await createChain({
+      origin: EXTENSION_PROVIDER_ORIGIN,
+      chainId: this.#chainId,
+      type: "add-chain" as const,
+      payload: {
+        chainSpec: this.#chainSpecs,
+        potentialRelayChainIds: [specMsg.chainId],
+      },
     })
   }
 
@@ -299,18 +332,19 @@ export class ExtensionProvider implements ProviderInterface {
    * @remarks this is async to fulfill the interface with PolkadotJS
    */
   public async connect(): Promise<void> {
-    // Once connect is sent - send rpc to extension that will contain the chainSpecs
-    // for the extension to call addChain on smoldot
-
-    await this.#addChain({
-      origin: EXTENSION_PROVIDER_ORIGIN,
-      chainId: this.#chainId,
-      type: SupportedChains[this.#chainSpecs as SupportedChains]
-        ? "add-well-known-chain"
-        : "add-chain",
-      payload: this.#chainSpecs,
-      parachainPayload: this.#parachainSpecs || undefined,
-    })
+    try {
+      await this.#addChain()
+    } catch (e) {
+      const error =
+        e instanceof Error
+          ? e
+          : new Error(
+              `An unnexpected error happened while trying to connect. ${e}`,
+            )
+      this.emit("error", error)
+      eraseRecord(this.#handlers, (h) => h.callback(error, undefined))
+      return
+    }
 
     window.addEventListener(
       "message",
@@ -341,7 +375,6 @@ export class ExtensionProvider implements ProviderInterface {
       origin: EXTENSION_PROVIDER_ORIGIN,
       chainId: this.#chainId,
       type: "remove-chain",
-      payload: "",
     })
     this.#isConnected = false
     this.emit("disconnected")

@@ -13,7 +13,6 @@ export interface ExposedChainConnection {
 export interface ChainConnection extends ExposedChainConnection {
   id: string
   chain?: Chain
-  parachain?: Chain
   port: chrome.runtime.Port
   healthChecker: HealthChecker
 }
