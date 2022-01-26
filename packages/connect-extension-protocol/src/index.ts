@@ -51,13 +51,13 @@ interface ToExtensionHeader {
 interface ToExtensionAddChain {
   type: "add-chain"
   chainId: string
-  payload: { chainSpec: string; parachainSpec?: string }
+  payload: { chainSpec: string; potentialRelayChainIds: Array<string> }
 }
 
 interface ToExtensionAddWellKnownChain {
   type: "add-well-known-chain"
   chainId: string
-  payload: { name: string; parachainSpec?: string }
+  payload: string
 }
 
 interface ToExtensionRpc {
