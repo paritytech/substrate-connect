@@ -198,13 +198,15 @@ test("emits error when it receives an error message", async () => {
   expect(error.message).toEqual(errorMessage.payload)
 })
 
-test.skip("it routes incoming messages to the correct Provider", async () => {
+test("it routes incoming messages to the correct Provider", async () => {
   mockedGetRandomChainId._setNextChainId("foo1")
-  const ep1 = new ExtensionProvider("ExtensionProvider1", westendSpec)
+  const ep1 = new ExtensionProvider(westendSpec)
   await emulateConnect(ep1, "foo1")
+
   mockedGetRandomChainId._setNextChainId("foo2")
-  const ep2 = new ExtensionProvider("ExtensionProvider2", westendSpec)
+  const ep2 = new ExtensionProvider(westendSpec)
   await emulateConnect(ep2, "foo2")
+
   await waitForMessageToBePosted()
 
   let extensionProvider1Response: string | undefined = undefined
