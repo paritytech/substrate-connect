@@ -318,7 +318,7 @@ export class ExtensionProvider implements ProviderInterface {
       chainId: this.#chainId,
       type: "add-chain" as const,
       payload: {
-        chainSpec: this.#chainSpecs,
+        chainSpec: this.#parachainSpecs,
         potentialRelayChainIds: [specMsg.chainId],
       },
     })
