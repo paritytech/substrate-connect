@@ -71,6 +71,7 @@ const init = async () => {
 
       const chain = await manager.addChain(
         value,
+        [],
         rpcCallback,
         undefined,
         dbContent,

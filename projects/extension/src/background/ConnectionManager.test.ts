@@ -78,7 +78,7 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "add-well-known-chain",
-      payload: { name: "polkadot" },
+      payload: "polkadot",
     })
 
     await wait(0)
@@ -127,7 +127,7 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "add-well-known-chain",
-      payload: { name: "polkadot" },
+      payload: "polkadot",
     })
     await wait(0)
 
@@ -149,7 +149,7 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "add-well-known-chain",
-      payload: { name: "polkadot" },
+      payload: "polkadot",
     })
 
     port._sendExtensionMessage({
@@ -172,7 +172,7 @@ describe("ConnectionManager", () => {
 
     const { port, chain } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: { name: "polkadot" },
+      payload: "polkadot",
     })
 
     await wait(0)
@@ -240,7 +240,7 @@ describe("ConnectionManager", () => {
     const { connectPort } = helper
     const { port } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: { name: "nonexisting" },
+      payload: "nonexisting",
     })
 
     await wait(0)
@@ -260,7 +260,7 @@ describe("ConnectionManager", () => {
 
     const { chain, chainId, tabId, url } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: { name: "polkadot" },
+      payload: "polkadot",
     })
 
     await wait(0)
@@ -310,7 +310,7 @@ describe("ConnectionManager", () => {
         const tabId = Math.floor(idx / 3)
         return connectPort(idx.toString(), tabId, {
           type: "add-well-known-chain",
-          payload: { name: "polkadot" },
+          payload: "polkadot",
         })
       })
     await wait(0)
@@ -342,41 +342,43 @@ describe("ConnectionManager", () => {
     ).toBe(true)
   })
 
-  it("passes the relay-chains of its tab as the potentialRelayChains when instantiating a new chain", async () => {
+  it("passes the correct relay-chains of its tab as the potentialRelayChains when instantiating a new chain", async () => {
     const { connectPort } = helper
 
-    // This emulates 3 active tabs, where the 2 first chains of each tab
-    // are relayChains anre the 3rd one of that tab is a para-chain
-    const activeChains = Array(9)
+    // This emulates 3 active tabs with 3 well-known-chains in each
+    const allIds = Array(9)
       .fill(null)
       .map((_, idx) => idx)
-      .map((idx) => {
-        const tabId = Math.floor(idx / 3)
-        const { chain } = connectPort(idx.toString(), tabId, {
-          type: "add-well-known-chain",
-          payload: {
-            name: "polkadot",
-            parachainSpec:
-              idx % 3 === 2
-                ? JSON.stringify({ name: `parachain${idx}` })
-                : undefined,
-          },
-        })
-        return chain
+
+    const activeChains = allIds.map((idx) => {
+      const tabId = Math.floor(idx / 3)
+      const { chain } = connectPort(idx.toString(), tabId, {
+        type: "add-well-known-chain",
+        payload: "polkadot",
       })
-
-    await wait(0)
-
-    const { chain: newChain } = connectPort("lastOne", 0, {
-      type: "add-well-known-chain",
-      payload: { name: "polkadot" },
+      return chain
     })
 
     await wait(0)
 
+    // we will try to pass all the ids as potentialRelayChainIds, including
+    // the ones that are not in our tab
+    const { chain: newChain } = connectPort("lastOne", 0, {
+      type: "add-chain",
+      payload: {
+        chainSpec: JSON.stringify({ name: "parachain" }),
+        potentialRelayChainIds: allIds.map((id) => id.toString()),
+      },
+    })
+
+    await wait(0)
+
+    // now we make usre that the only potentialRelayChains that are passed to
+    // smoldot are the ones for the chains of our tab
     expect(newChain!.options.potentialRelayChains).toEqual([
       activeChains[0],
       activeChains[1],
+      activeChains[2],
     ])
   })
 
@@ -387,7 +389,9 @@ describe("ConnectionManager", () => {
     expect(() => connectPort("boom", 0)).toThrow(
       "Smoldot client does not exist.",
     )
-    expect(() => manager.addChain("")).toThrow("Smoldot client does not exist.")
+    expect(() => manager.addChain("", [])).toThrow(
+      "Smoldot client does not exist.",
+    )
   })
 
   it("handles two different tabs using the same chainId", async () => {
@@ -396,12 +400,12 @@ describe("ConnectionManager", () => {
 
     const { chain: tab1Chain, port: tab1Port } = connectPort(chainId, 1, {
       type: "add-well-known-chain",
-      payload: { name: "polkadot" },
+      payload: "polkadot",
     })
 
     const { chain: tab2Chain, port: tab2Port } = connectPort(chainId, 2, {
       type: "add-well-known-chain",
-      payload: { name: "polkadot" },
+      payload: "polkadot",
     })
 
     await wait(0)
@@ -484,7 +488,7 @@ describe("ConnectionManager", () => {
 
     const { port } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: { name: "polkadot" },
+      payload: "polkadot",
     })
 
     expect(client.chains.size).toBe(1)
@@ -505,7 +509,7 @@ describe("ConnectionManager", () => {
 
     const { port } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: { name: "polkadot" },
+      payload: "polkadot",
     })
 
     await wait(0)

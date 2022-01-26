@@ -79,7 +79,10 @@ test("connected and sends correct spec message", async () => {
   const expectedMessage: Partial<ToExtension> = {
     origin: "extension-provider",
     type: "add-chain",
-    payload: { chainSpec: '{"name":"Westend","id":"westend2"}' },
+    payload: {
+      chainSpec: '{"name":"Westend","id":"westend2"}',
+      potentialRelayChainIds: [],
+    },
   }
   expect(handler).toHaveBeenCalledTimes(2)
   const { data } = handler.mock.calls[0][0] as MessageEvent
@@ -101,12 +104,18 @@ test("connected multiple chains and sends correct spec message", async () => {
   const expectedMessage1: Partial<ToExtension> = {
     origin: "extension-provider",
     type: "add-chain",
-    payload: { chainSpec: '{"name":"Westend","id":"westend2"}' },
+    payload: {
+      chainSpec: '{"name":"Westend","id":"westend2"}',
+      potentialRelayChainIds: [],
+    },
   }
   const expectedMessage2: Partial<ToExtension> = {
     origin: "extension-provider",
     type: "add-chain",
-    payload: { chainSpec: '{"name":"Rococo","id":"rococo"}' },
+    payload: {
+      chainSpec: '{"name":"Rococo","id":"rococo"}',
+      potentialRelayChainIds: [],
+    },
   }
 
   expect(handler).toHaveBeenCalledTimes(4)
@@ -126,7 +135,10 @@ test("connected parachain sends correct spec message", async () => {
   const expectedMessage: Partial<ToExtension> = {
     origin: "extension-provider",
     type: "add-chain",
-    payload: { chainSpec: '{"name":"Westend","id":"westend2"}' },
+    payload: {
+      chainSpec: '{"name":"Westend","id":"westend2"}',
+      potentialRelayChainIds: [],
+    },
   }
   expect(handler).toHaveBeenCalledTimes(2)
   const { data } = handler.mock.calls[0][0] as MessageEvent
@@ -188,11 +200,13 @@ test("emits error when it receives an error message", async () => {
 
 test("it routes incoming messages to the correct Provider", async () => {
   mockedGetRandomChainId._setNextChainId("foo1")
-  const ep1 = new ExtensionProvider("ExtensionProvider1", westendSpec)
+  const ep1 = new ExtensionProvider(westendSpec)
   await emulateConnect(ep1, "foo1")
+
   mockedGetRandomChainId._setNextChainId("foo2")
-  const ep2 = new ExtensionProvider("ExtensionProvider2", westendSpec)
+  const ep2 = new ExtensionProvider(westendSpec)
   await emulateConnect(ep2, "foo2")
+
   await waitForMessageToBePosted()
 
   let extensionProvider1Response: string | undefined = undefined
