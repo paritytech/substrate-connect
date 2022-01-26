@@ -1,7 +1,6 @@
 name: PoC zombienet CI
 
 on:
-  // THIS "PUSH" SHOULD BE DELETED
   push:
     branches: [ zombienet-configuration-and-tests ]
   pull_request:
