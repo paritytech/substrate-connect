@@ -13,7 +13,7 @@ Provide a known Chain Name ('kusama', 'polkadot', 'westend', 'rococo'):
 import { ApiPromise } from '@polkadot/api';
 import { ScProvider, SupportedChains } from '@substrate/connect';
 
-const provider = new ScProvider('my cool unstoppable app', SupportedChains.westend);
+const provider = new ScProvider(SupportedChains.westend);
 const api = await ApiPromise.create({ provider });
 ```
 
@@ -24,11 +24,8 @@ import { ApiPromise } from '@polkadot/api';
 import { ScProvider } from '@substrate/connect';
 import mySubstrateChainSpec from './mySubstrateChainSpec.json';
 
-const chainSpec =  JSON.stringify(mySubstrateChainSpec);
-const provider = new ScProvider(
-  'my cool unstoppable app',
-  { name: 'mySubstrateChainName', spec: chainSpec }
-);
+const myChainSpec =  JSON.stringify(mySubstrateChainSpec);
+const provider = new ScProvider(myChainSpec);
 const api = await ApiPromise.create({ provider });
 ```
 
@@ -43,11 +40,7 @@ import myParaChainSpec from './myParaChainSpec.json';
 
 const parachainSpec =  JSON.stringify(myParaChainSpec);
 
-const provider = new ScProvider(
-  'my cool unstoppable app',
-  SupportedChains.westend,
-  parachainSpec,
-);
+const provider = new ScProvider(SupportedChains.westend, parachainSpec);
 const api = await ApiPromise.create({ provider });
 ```
 
