@@ -8,8 +8,10 @@ default_command = "polkadot"
 
   [[relaychain.nodes]]
   name = "alice"
+  validator = true
   extra_args = [ "--alice" ]
 
   [[relaychain.nodes]]
   name = "bob"
+  validator = true
   extra_args = [ "--bob" ]
