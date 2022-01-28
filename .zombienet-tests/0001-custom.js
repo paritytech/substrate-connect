@@ -11,9 +11,6 @@ async function run(nodeName, networkInfo) {
   const { userDefinedTypes } = networkInfo.nodesByName[nodeName]
   const customChainSpec = require(networkInfo.chainSpecPath)
 
-  // TODO: forkId generate an error in smoldot-light
-  delete customChainSpec.forkId
-
   const api = await connect(JSON.stringify(customChainSpec), userDefinedTypes)
   // add 30s sleep to give time to sync
   await new Promise((resolve) => setTimeout(resolve, 30000))
