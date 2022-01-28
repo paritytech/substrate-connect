@@ -1,11 +1,6 @@
 name: PoC zombienet CI
 
 on:
-<<<<<<< HEAD
-  push:
-    branches: [ zombienet-configuration-and-tests ]
-=======
->>>>>>> eacd974d61a701ca3a23afaaf22e27ab734fda61
   pull_request:
     branches: [ master ]
   workflow_dispatch:
@@ -21,33 +16,17 @@ jobs:
         run: |
           yarn install --frozen-lockfile
           yarn build
-<<<<<<< HEAD
-=======
-
->>>>>>> eacd974d61a701ca3a23afaaf22e27ab734fda61
       - name: Get zombienet
         run: |
           curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.2.9/zombienet-linux
           chmod +x zombienet-linux
-<<<<<<< HEAD
-=======
-
->>>>>>> eacd974d61a701ca3a23afaaf22e27ab734fda61
       - name: Get polkadot
         run: |
           curl -L -O https://github.com/paritytech/polkadot/releases/download/v0.9.15-1/polkadot
           chmod +x polkadot
-<<<<<<< HEAD
-=======
-
->>>>>>> eacd974d61a701ca3a23afaaf22e27ab734fda61
       - name: Run test
         run: |
           export PATH=$(pwd):$PATH
           echo "running on $(pwd)"
           echo $PATH
-<<<<<<< HEAD
           ./zombienet-linux -p native test ./.zombienet-tests/0001-smoke-test.feature
-=======
-          ./zombienet-linux -p native test ./.zombienet-tests/0001-smoke-test.feature
->>>>>>> eacd974d61a701ca3a23afaaf22e27ab734fda61
