@@ -1,5 +1,5 @@
 [settings]
-timeout = 1000
+timeout = 240000
 
 [relaychain]
 default_image = "parity/polkadot:latest"
@@ -8,8 +8,10 @@ default_command = "polkadot"
 
   [[relaychain.nodes]]
   name = "alice"
+  validator = true
   extra_args = [ "--alice" ]
 
   [[relaychain.nodes]]
   name = "bob"
+  validator = true
   extra_args = [ "--bob" ]

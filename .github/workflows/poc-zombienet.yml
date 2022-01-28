@@ -16,17 +16,14 @@ jobs:
         run: |
           yarn install --frozen-lockfile
           yarn build
-
       - name: Get zombienet
         run: |
           curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.2.9/zombienet-linux
           chmod +x zombienet-linux
-
       - name: Get polkadot
         run: |
           curl -L -O https://github.com/paritytech/polkadot/releases/download/v0.9.15-1/polkadot
           chmod +x polkadot
-
       - name: Run test
         run: |
           export PATH=$(pwd):$PATH
