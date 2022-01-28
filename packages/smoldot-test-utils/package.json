@@ -16,7 +16,7 @@
     "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {
-    "@substrate/smoldot-light": "0.5.14",
+    "@substrate/smoldot-light": "0.5.15",
     "asap": "^2.0.6"
   }
 }
