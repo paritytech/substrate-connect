@@ -12,21 +12,26 @@ async function run(nodeName, networkInfo) {
   const customChainSpec = require(networkInfo.chainSpecPath)
 
   const api = await connect(JSON.stringify(customChainSpec), userDefinedTypes)
-  // add 30s sleep to give time to sync
+  // add 20s sleep to give time to sync
   await new Promise((resolve) => setTimeout(resolve, 20000))
 
   let count = 0
-  await new Promise(async (resolve, reject) => {
-    const unsub = await api.rpc.chain.subscribeNewHeads((header) => {
-      console.log(`#${header.number}:`, header.number)
-      console.log("count", count)
-      if (++count === 2) {
-        console.log("2 headers retrieved, unsubscribing")
-        unsub()
-        resolve()
-      }
+  try {
+    await new Promise(async (resolve, reject) => {
+      const unsub = await api.rpc.chain.subscribeNewHeads((header) => {
+        console.log(`#${header.number}:`, header.number)
+        console.log("count", count)
+        if (++count === 2) {
+          console.log("2 headers retrieved, unsubscribing")
+          unsub()
+          resolve()
+        }
+      })
     })
-  })
+  } catch(error) {
+    // DEBUG
+    console.log("error", error);
+  }
 
   return count
 }
