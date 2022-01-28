@@ -10,8 +10,10 @@ default_command = "polkadot"
   name = "alice"
   validator = true
   extra_args = [ "--alice" ]
+  add_to_bootnodes = true
 
   [[relaychain.nodes]]
   name = "bob"
   validator = true
   extra_args = [ "--bob" ]
+  add_to_bootnodes = true
