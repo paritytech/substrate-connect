@@ -24,7 +24,7 @@ import { ApiPromise } from '@polkadot/api';
 import { ScProvider } from '@substrate/connect';
 import mySubstrateChainSpec from './mySubstrateChainSpec.json';
 
-const myChainSpec =  JSON.stringify(mySubstrateChainSpec);
+const myChainSpec = JSON.stringify(mySubstrateChainSpec);
 const provider = new ScProvider(myChainSpec);
 const api = await ApiPromise.create({ provider });
 ```
