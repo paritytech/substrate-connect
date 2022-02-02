@@ -31,7 +31,7 @@
   "dependencies": {
     "@polkadot/rpc-provider": "^6.10.3",
     "@substrate/connect-extension-protocol": "^0.4.0",
-    "@substrate/smoldot-light": "0.5.15",
+    "@substrate/smoldot-light": "0.5.16",
     "eventemitter3": "^4.0.7"
   },
   "devDependencies": {
