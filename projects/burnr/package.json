@@ -30,7 +30,7 @@
     "@polkadot/api": "^7.6.1",
     "@polkadot/keyring": "^8.3.1",
     "@polkadot/react-identicon": "^0.89.1",
-    "@polkadot/util": "^8.3.1",
+    "@polkadot/util": "^8.3.3",
     "@polkadot/util-crypto": "^8.3.1",
     "@substrate/connect": "^0.4.7",
     "qrcode.react": "^1.0.1",
