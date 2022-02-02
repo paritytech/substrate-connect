@@ -104,7 +104,6 @@ export class ConnectionManager extends (EventEmitter as {
       const { name: chainId, sender } = port
       const tabId: number = sender!.tab!.id!
       const url: string = sender!.url!
-      const pendingRequests: string[] = []
 
       const healthChecker = smHealthChecker()
       const id = `${chainId}::${tabId}`
@@ -116,7 +115,6 @@ export class ConnectionManager extends (EventEmitter as {
         url,
         port,
         healthChecker,
-        pendingRequests,
       }
 
       const onMessageHandler = (msg: ToExtension) => {
@@ -126,7 +124,6 @@ export class ConnectionManager extends (EventEmitter as {
 
       const onDisconnect = () => {
         connection.chain && connection.chain.remove()
-        connection.parachain && connection.parachain.remove()
 
         port.onMessage.removeListener(onMessageHandler)
         port.onDisconnect.removeListener(onDisconnect)
@@ -166,19 +163,24 @@ export class ConnectionManager extends (EventEmitter as {
    */
   addChain(
     chainSpec: string,
+    potentialRelayChainIds: string[],
     jsonRpcCallback?: JsonRpcCallback,
     tabId?: number,
+    databaseContent?: string,
   ): Promise<Chain> {
     if (!this.#client) {
       throw new Error("Smoldot client does not exist.")
     }
 
-    const potentialRelayChains = [...this.#chainConnections.values()]
-      .filter((c) => c.tabId === tabId && !c.parachain && c.chain)
-      .map((c) => c.chain!)
+    const potentialRelayChains = potentialRelayChainIds
+      .map(
+        (chainId) => this.#chainConnections.get(`${chainId}::${tabId}`)?.chain,
+      )
+      .filter((chain): chain is Chain => !!chain)
 
     return this.#client.addChain({
       chainSpec,
+      databaseContent,
       jsonRpcCallback,
       potentialRelayChains,
     })
@@ -192,10 +194,10 @@ export class ConnectionManager extends (EventEmitter as {
   /** Handles the incoming message that contains Spec. */
   async #handleSpecMessage(
     chainConnection: ChainConnection,
-    relayChainSpec: string,
-    parachainSpec?: string,
+    chainSpec: string,
+    potentialRelayChainIds: string[],
   ) {
-    if (!relayChainSpec) {
+    if (!chainSpec) {
       throw new Error("Relay chain spec was not found")
     }
 
@@ -205,36 +207,19 @@ export class ConnectionManager extends (EventEmitter as {
         chainConnection.port.postMessage({ type: "rpc", payload: rpcResp })
     }
 
-    let chainPromise: Promise<{ chain: Chain; parachain?: Chain }>
-    // Means this is a parachain trying to connect
-    if (parachainSpec) {
-      chainConnection.chainName = JSON.parse(parachainSpec).name || "unknown"
-      // Connect the main Chain first and on success the parachain with the chain
-      // that just got connected as the relayChain
-      chainPromise = this.addChain(
-        relayChainSpec,
-        undefined,
-        chainConnection.tabId,
-      ).then((chain) =>
-        this.addChain(parachainSpec, rpcCallback, chainConnection.tabId).then(
-          (parachain) => ({ chain, parachain }),
-        ),
-      )
-    } else {
-      chainConnection.chainName = JSON.parse(relayChainSpec).name || "unknown"
-      // Connect the main Chain only
-      chainPromise = this.addChain(
-        relayChainSpec,
-        rpcCallback,
-        chainConnection.tabId,
-      ).then((chain) => ({ chain }))
-    }
+    chainConnection.chainName =
+      JSON.parse(chainSpec).name.toLowerCase() || "unknown"
 
-    chainConnection.chainName = chainConnection.chainName.toLowerCase()
+    const chainPromise: Promise<Chain> = this.addChain(
+      chainSpec,
+      potentialRelayChainIds,
+      rpcCallback,
+      chainConnection.tabId,
+    )
 
     this.#emitStateChanged()
 
-    chrome.storage.sync.get("notifications", (s) => {
+    chrome.storage.local.get("notifications", (s) => {
       s.notifications &&
         chrome.notifications.create(chainConnection.port.name, {
           title: "Substrate Connect",
@@ -244,18 +229,25 @@ export class ConnectionManager extends (EventEmitter as {
         })
     })
 
-    const { chain, parachain } = await chainPromise
+    const chain = await chainPromise
+
+    // it has to be taken into account the fact that it's technically possible
+    // -although, quite unlikey- that the port gets closed while we are waiting
+    // for smoldot to return the chain. The way to know this is by checking
+    // whether this `chainConnection` is still present insinde `#chainConnections`.
+    // If it isn't, that means that the port got disconnected, so we should stop.
+    if (!this.#chainConnections.has(chainConnection.id)) {
+      chain.remove()
+      return
+    }
+
     chainConnection.chain = chain
-    chainConnection.parachain = parachain
+    chainConnection.port.postMessage({ type: "chain-ready" })
 
     // Initialize healthChecker
-    const sender = chainConnection.parachain
-      ? chainConnection.parachain
-      : chainConnection.chain
-
-    chainConnection.healthChecker.setSendJsonRpc(
-      sender.sendJsonRpc.bind(sender),
-    )
+    chainConnection.healthChecker.setSendJsonRpc((rpc: string) => {
+      chain.sendJsonRpc(rpc)
+    })
     chainConnection.healthChecker.start((health: SmoldotHealth) => {
       const hasChanged =
         chainConnection.healthStatus?.peers !== health.peers ||
@@ -265,44 +257,40 @@ export class ConnectionManager extends (EventEmitter as {
       chainConnection.healthStatus = health
       if (hasChanged) this.emit("stateChanged", this.connections)
     })
-
-    // process any RPC requests that came in while waiting for `addChain` to complete
-    chainConnection.pendingRequests.forEach((req) =>
-      chainConnection.healthChecker.sendJsonRpc(req),
-    )
-    chainConnection.pendingRequests = []
   }
 
   #handleMessage(msg: ToExtension, chainConnection: ChainConnection): void {
+    if (msg.type === "remove-chain") return chainConnection.port.disconnect()
+
+    if (msg.type === "rpc" && msg.payload) {
+      if (chainConnection.chain)
+        return chainConnection.healthChecker.sendJsonRpc(msg.payload)
+
+      const errorMsg =
+        "RPC request received befor the chain was successfully added"
+      l.error(errorMsg)
+      this.#handleError(chainConnection.port, new Error(errorMsg))
+      return
+    }
+
     if (
-      (msg.type !== "rpc" &&
-        msg.type !== "add-chain" &&
-        msg.type !== "add-well-known-chain") ||
-      !msg.payload
+      !msg.payload ||
+      (msg.type !== "add-chain" && msg.type !== "add-well-known-chain")
     ) {
       const errorMsg = `Unrecognised message type '${msg.type}' or payload '${msg.payload}' received from content script`
       l.error(errorMsg)
       return this.#handleError(chainConnection.port, new Error(errorMsg))
     }
 
-    if (msg.type === "rpc") {
-      chainConnection.chain
-        ? chainConnection.healthChecker.sendJsonRpc(msg.payload)
-        : // `addChain` hasn't resolved yet after the spec message so buffer the
-          // messages to be sent when it does resolve
-          chainConnection.pendingRequests.push(msg.payload)
-      return
-    }
-
-    const chainSpec =
+    const [chainSpec, potentialRelayChainIds]: [string, string[]] =
       msg.type === "add-chain"
-        ? msg.payload
-        : wellKnownChains.get(msg.payload) ?? ""
+        ? [msg.payload.chainSpec, msg.payload.potentialRelayChainIds]
+        : [wellKnownChains.get(msg.payload)!, [] as string[]]
 
     this.#handleSpecMessage(
       chainConnection,
       chainSpec,
-      msg.parachainPayload,
+      potentialRelayChainIds,
     ).catch((e) => {
       const errorMsg = `An error happened while adding the chain ${e}`
       l.error(errorMsg)

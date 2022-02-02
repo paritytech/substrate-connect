@@ -8,7 +8,13 @@
 import { jest } from "@jest/globals"
 import { ConnectionManager } from "./ConnectionManager"
 import { ExposedChainConnection } from "./types"
-import { MockedChain, MockPort, MockSmoldotClient, TEST_URL } from "../mocks"
+import {
+  MockedChain,
+  MockPort,
+  MockSmoldotClient,
+  TEST_URL,
+  HeaderlessToExtension,
+} from "../mocks"
 import { ToExtension } from "@substrate/connect-extension-protocol"
 
 const wait = (ms: number) => new Promise((res) => setTimeout(res, ms))
@@ -23,7 +29,7 @@ const createHelper = () => {
     connectPort: (
       chainId: string,
       tabId: number,
-      addChainMsg: Omit<ToExtension, "origin" | "chainId"> | null = null,
+      addChainMsg?: HeaderlessToExtension<ToExtension>,
       url = TEST_URL,
     ) => {
       const port = new MockPort(chainId, tabId)
@@ -88,7 +94,7 @@ describe("ConnectionManager", () => {
     expect(onStateChanged).toHaveBeenCalledWith([expectedConnection])
     expect(manager.connections).toEqual([expectedConnection])
     expect(client.chains.size).toBe(1)
-    expect(port.postedMessages.length).toBe(0)
+    expect(port.postedMessages.length).toBe(1)
   })
 
   it("does not emit if the port gets disconnected before the chain has been instantiated", async () => {
@@ -134,7 +140,7 @@ describe("ConnectionManager", () => {
     ])
   })
 
-  it("the 'rpc' messages received before 'add-chain' get processed as soon as the chain is instantiated", async () => {
+  it("sending an 'rpc' message before the chain is added triggers an error", async () => {
     const { connectPort, client } = helper
 
     const { port } = connectPort("chainId", 1)
@@ -142,26 +148,22 @@ describe("ConnectionManager", () => {
     expect(client.chains.size).toBe(0)
 
     port._sendExtensionMessage({
+      type: "add-well-known-chain",
+      payload: "polkadot",
+    })
+
+    port._sendExtensionMessage({
       type: "rpc",
       payload: JSON.stringify({ jsonrpc: "2.0", id: "1" }),
     })
 
-    port._sendExtensionMessage({
-      type: "rpc",
-      payload: JSON.stringify({ jsonrpc: "2.0", id: "2" }),
-    })
-
-    port._sendExtensionMessage({
-      type: "add-well-known-chain",
-      payload: "polkadot",
-    })
     await wait(0)
 
-    const [chain] = [...client.chains]
-    expect(chain.receivedMessages).toEqual([
-      '{"jsonrpc":"2.0","id":"health-checker:0","method":"system_health","params":[]}',
-      '{"jsonrpc":"2.0","id":"extern:\\"1\\""}',
-      '{"jsonrpc":"2.0","id":"extern:\\"2\\""}',
+    expect(port.postedMessages).toEqual([
+      {
+        type: "error",
+        payload: "RPC request received befor the chain was successfully added",
+      },
     ])
   })
 
@@ -186,7 +188,11 @@ describe("ConnectionManager", () => {
       '{"jsonrpc":"2.0","id":"health-checker:0","method":"system_health","params":[]}',
       '{"jsonrpc":"2.0","id":"extern:\\"1\\""}',
     ])
-    expect(port.postedMessages).toEqual([])
+    expect(port.postedMessages).toEqual([
+      {
+        type: "chain-ready",
+      },
+    ])
 
     chain!._sendResponse(
       JSON.stringify({
@@ -199,6 +205,9 @@ describe("ConnectionManager", () => {
     await wait(0)
 
     expect(port.postedMessages).toEqual([
+      {
+        type: "chain-ready",
+      },
       {
         type: "rpc",
         payload: JSON.stringify({
@@ -333,39 +342,43 @@ describe("ConnectionManager", () => {
     ).toBe(true)
   })
 
-  it("passes the relay-chains of its tab as the potentialRelayChains when instantiating a new chain", async () => {
+  it("passes the correct relay-chains of its tab as the potentialRelayChains when instantiating a new chain", async () => {
     const { connectPort } = helper
 
-    // This emulates 3 active tabs, where the 2 first chains of each tab
-    // are relayChains anre the 3rd one of that tab is a para-chain
-    const activeChains = Array(9)
+    // This emulates 3 active tabs with 3 well-known-chains in each
+    const allIds = Array(9)
       .fill(null)
       .map((_, idx) => idx)
-      .map((idx) => {
-        const tabId = Math.floor(idx / 3)
-        const { chain } = connectPort(idx.toString(), tabId, {
-          type: "add-well-known-chain",
-          payload: "polkadot",
-          parachainPayload:
-            idx % 3 === 2
-              ? JSON.stringify({ name: `parachain${idx}` })
-              : undefined,
-        })
-        return chain
+
+    const activeChains = allIds.map((idx) => {
+      const tabId = Math.floor(idx / 3)
+      const { chain } = connectPort(idx.toString(), tabId, {
+        type: "add-well-known-chain",
+        payload: "polkadot",
       })
-
-    await wait(0)
-
-    const { chain: newChain } = connectPort("lastOne", 0, {
-      type: "add-well-known-chain",
-      payload: "polkadot",
+      return chain
     })
 
     await wait(0)
 
+    // we will try to pass all the ids as potentialRelayChainIds, including
+    // the ones that are not in our tab
+    const { chain: newChain } = connectPort("lastOne", 0, {
+      type: "add-chain",
+      payload: {
+        chainSpec: JSON.stringify({ name: "parachain" }),
+        potentialRelayChainIds: allIds.map((id) => id.toString()),
+      },
+    })
+
+    await wait(0)
+
+    // now we make usre that the only potentialRelayChains that are passed to
+    // smoldot are the ones for the chains of our tab
     expect(newChain!.options.potentialRelayChains).toEqual([
       activeChains[0],
       activeChains[1],
+      activeChains[2],
     ])
   })
 
@@ -376,7 +389,9 @@ describe("ConnectionManager", () => {
     expect(() => connectPort("boom", 0)).toThrow(
       "Smoldot client does not exist.",
     )
-    expect(() => manager.addChain("")).toThrow("Smoldot client does not exist.")
+    expect(() => manager.addChain("", [])).toThrow(
+      "Smoldot client does not exist.",
+    )
   })
 
   it("handles two different tabs using the same chainId", async () => {
@@ -420,8 +435,8 @@ describe("ConnectionManager", () => {
     expect(lastMessage).toBe('{"jsonrpc":"2.0","id":"extern:\\"ping2\\""}')
 
     // let's make sure that each port receives *only* their own messages
-    expect(tab1Port.postedMessages.length).toBe(0)
-    expect(tab2Port.postedMessages.length).toBe(0)
+    expect(tab1Port.postedMessages.length).toBe(1)
+    expect(tab2Port.postedMessages.length).toBe(1)
 
     tab1Chain!._sendResponse(
       JSON.stringify({
@@ -442,6 +457,9 @@ describe("ConnectionManager", () => {
 
     expect(tab1Port.postedMessages).toEqual([
       {
+        type: "chain-ready",
+      },
+      {
         type: "rpc",
         payload: JSON.stringify({
           jsonrpc: "2.0",
@@ -452,6 +470,9 @@ describe("ConnectionManager", () => {
     ])
     expect(tab2Port.postedMessages).toEqual([
       {
+        type: "chain-ready",
+      },
+      {
         type: "rpc",
         payload: JSON.stringify({
           jsonrpc: "2.0",
@@ -460,5 +481,51 @@ describe("ConnectionManager", () => {
         }),
       },
     ])
+  })
+
+  it("immediately removes the chain after receiving it, if the port got disconnected while waiting for the chain", async () => {
+    const { connectPort, client } = helper
+
+    const { port } = connectPort("chainId", 1, {
+      type: "add-well-known-chain",
+      payload: "polkadot",
+    })
+
+    expect(client.chains.size).toBe(1)
+    port.disconnect()
+
+    // it's still 1 because the `addChain` Promise has not resolved yet
+    // so the `ConnectionManager` has not received the chain and therefore
+    // cannot yet remove it
+    expect(client.chains.size).toBe(1)
+
+    await wait(0)
+
+    expect(client.chains.size).toBe(0)
+  })
+
+  it("disconnects and cleans up upon receiving a `remove-chain` message", async () => {
+    const { connectPort, client } = helper
+
+    const { port } = connectPort("chainId", 1, {
+      type: "add-well-known-chain",
+      payload: "polkadot",
+    })
+
+    await wait(0)
+
+    expect(client.chains.size).toBe(1)
+
+    port._sendExtensionMessage({
+      type: "remove-chain",
+    })
+
+    expect(port.postedMessages).toEqual([
+      {
+        type: "chain-ready",
+      },
+    ])
+    expect(client.chains.size).toBe(0)
+    expect(port.connected).toBe(false)
   })
 })

@@ -113,10 +113,10 @@ describe("Connection and forward cases", () => {
     // rpc
     const rpcMessage: ToExtension = {
       chainId: "test",
+      origin: "extension-provider",
       type: "rpc",
       payload:
         '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}',
-      origin: "extension-provider",
     }
     sendMessage(rpcMessage)
     await waitForMessageToBePosted()
