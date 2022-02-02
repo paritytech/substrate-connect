@@ -29,7 +29,7 @@
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@polkadot/api": "^7.6.1",
     "@polkadot/keyring": "^8.3.3",
-    "@polkadot/react-identicon": "^0.89.1",
+    "@polkadot/react-identicon": "^1.0.1",
     "@polkadot/util": "^8.3.3",
     "@polkadot/util-crypto": "^8.3.1",
     "@substrate/connect": "^0.4.7",
