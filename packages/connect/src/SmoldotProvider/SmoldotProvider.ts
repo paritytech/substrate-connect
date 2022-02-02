@@ -276,7 +276,7 @@ export class SmoldotProvider implements ProviderInterface {
     try {
       this.#client = this.#smoldot.start({
         forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
-        maxLogLevel: 3 /* no debug/trace messages */,
+        maxLogLevel: 4 /* TODO: set back to 3 */,
       })
       if (this.#parachainSpecs) {
         const relay = await this.#client.addChain({
