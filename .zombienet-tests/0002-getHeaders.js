@@ -28,9 +28,9 @@ async function run(nodeName, networkInfo) {
         }
       })
     })
-  } catch(error) {
+  } catch (error) {
     // DEBUG
-    console.log("error", error);
+    console.log("error", error)
   }
 
   return count
