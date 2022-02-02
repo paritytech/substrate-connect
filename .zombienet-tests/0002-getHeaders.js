@@ -10,6 +10,7 @@ async function connect(customChainSpec, types) {
 async function run(nodeName, networkInfo) {
   const { userDefinedTypes } = networkInfo.nodesByName[nodeName]
   const customChainSpec = require(networkInfo.chainSpecPath)
+  console.log("bootnodes", customChainSpec.bootNodes)
 
   const api = await connect(JSON.stringify(customChainSpec), userDefinedTypes)
   // add 20s sleep to give time to sync
