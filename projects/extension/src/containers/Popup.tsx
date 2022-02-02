@@ -23,7 +23,9 @@ const Popup: FunctionComponent = () => {
 
     ;(async () => {
       // retrieve open tabs and assign to local state
-      const browserTabs = await chrome.tabs.query({ currentWindow: true })
+      const browserTabs = await new Promise<chrome.tabs.Tab[]>((res) =>
+        chrome.tabs.query({ currentWindow: true }, res),
+      )
       if (!isActive) return
 
       chrome.runtime.getBackgroundPage((backgroundPage) => {

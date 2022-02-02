@@ -4,7 +4,10 @@
 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { jest } from "@jest/globals"
-import type { ExtensionProviderClass } from "./ExtensionProvider"
+import type {
+  ExtensionProvider as IExtensionProvider,
+  ExtensionProviderClass,
+} from "./ExtensionProvider"
 
 jest.unstable_mockModule("./getRandomChainId.js", () => {
   let nextChainId = "test"
@@ -43,6 +46,19 @@ const sendMessage = (msg: ToApplication): void => {
 const westendSpec = JSON.stringify({ name: "Westend", id: "westend2" })
 const rococoSpec = JSON.stringify({ name: "Rococo", id: "rococo" })
 
+const emulateConnect = (
+  ep: IExtensionProvider,
+  chainId = "test",
+): Promise<void> => {
+  const p = ep.connect()
+  sendMessage({
+    origin: "content-script",
+    chainId,
+    type: "chain-ready",
+  })
+  return p
+}
+
 let handler = jest.fn()
 beforeEach(() => {
   handler = jest.fn()
@@ -57,15 +73,18 @@ test("connected and sends correct spec message", async () => {
   const ep = new ExtensionProvider(westendSpec)
   const emitted = jest.fn()
   ep.on("connected", emitted)
-  await ep.connect()
+  await emulateConnect(ep)
   await waitForMessageToBePosted()
 
   const expectedMessage: Partial<ToExtension> = {
     origin: "extension-provider",
-    payload: '{"name":"Westend","id":"westend2"}',
     type: "add-chain",
+    payload: {
+      chainSpec: '{"name":"Westend","id":"westend2"}',
+      potentialRelayChainIds: [],
+    },
   }
-  expect(handler).toHaveBeenCalledTimes(1)
+  expect(handler).toHaveBeenCalledTimes(2)
   const { data } = handler.mock.calls[0][0] as MessageEvent
   expect(data).toMatchObject(expectedMessage)
 })
@@ -77,25 +96,31 @@ test("connected multiple chains and sends correct spec message", async () => {
   const emitted2 = jest.fn()
   ep1.on("connected", emitted1)
   ep2.on("connected", emitted2)
-  await ep1.connect()
+  await emulateConnect(ep1)
   await waitForMessageToBePosted()
-  await ep2.connect()
+  await emulateConnect(ep2)
   await waitForMessageToBePosted()
 
   const expectedMessage1: Partial<ToExtension> = {
     origin: "extension-provider",
-    payload: '{"name":"Westend","id":"westend2"}',
     type: "add-chain",
+    payload: {
+      chainSpec: '{"name":"Westend","id":"westend2"}',
+      potentialRelayChainIds: [],
+    },
   }
   const expectedMessage2: Partial<ToExtension> = {
     origin: "extension-provider",
-    payload: '{"name":"Rococo","id":"rococo"}',
     type: "add-chain",
+    payload: {
+      chainSpec: '{"name":"Rococo","id":"rococo"}',
+      potentialRelayChainIds: [],
+    },
   }
 
-  expect(handler).toHaveBeenCalledTimes(2)
+  expect(handler).toHaveBeenCalledTimes(4)
   const data1 = handler.mock.calls[0][0] as MessageEvent
-  const data2 = handler.mock.calls[1][0] as MessageEvent
+  const data2 = handler.mock.calls[2][0] as MessageEvent
   expect(data1.data).toMatchObject(expectedMessage1)
   expect(data2.data).toMatchObject(expectedMessage2)
 })
@@ -104,15 +129,18 @@ test("connected parachain sends correct spec message", async () => {
   const ep = new ExtensionProvider(westendSpec)
   const emitted = jest.fn()
   ep.on("connected", emitted)
-  await ep.connect()
+  await emulateConnect(ep)
   await waitForMessageToBePosted()
 
   const expectedMessage: Partial<ToExtension> = {
     origin: "extension-provider",
-    payload: '{"name":"Westend","id":"westend2"}',
     type: "add-chain",
+    payload: {
+      chainSpec: '{"name":"Westend","id":"westend2"}',
+      potentialRelayChainIds: [],
+    },
   }
-  expect(handler).toHaveBeenCalledTimes(1)
+  expect(handler).toHaveBeenCalledTimes(2)
   const { data } = handler.mock.calls[0][0] as MessageEvent
   expect(data).toMatchObject(expectedMessage)
 })
@@ -120,7 +148,7 @@ test("connected parachain sends correct spec message", async () => {
 test("disconnect sends disconnect message and emits disconnected", async () => {
   const ep = new ExtensionProvider(westendSpec)
   const emitted = jest.fn()
-  await ep.connect()
+  await emulateConnect(ep)
 
   ep.on("disconnected", emitted)
   void ep.disconnect()
@@ -134,7 +162,7 @@ test("disconnects and emits an error when it receives an error message", async (
   mockedGetRandomChainId._setNextChainId("foo")
   const ep = new ExtensionProvider(westendSpec)
   const emitted = jest.fn()
-  await ep.connect()
+  await emulateConnect(ep, "foo")
 
   ep.on("error", emitted)
   await waitForMessageToBePosted()
@@ -152,7 +180,7 @@ test("disconnects and emits an error when it receives an error message", async (
 test("emits error when it receives an error message", async () => {
   mockedGetRandomChainId._setNextChainId("foo")
   const ep = new ExtensionProvider(westendSpec)
-  await ep.connect()
+  await emulateConnect(ep, "foo")
   await waitForMessageToBePosted()
   const errorMessage: ToApplication = {
     origin: "content-script",
@@ -172,11 +200,13 @@ test("emits error when it receives an error message", async () => {
 
 test("it routes incoming messages to the correct Provider", async () => {
   mockedGetRandomChainId._setNextChainId("foo1")
-  const ep1 = new ExtensionProvider("ExtensionProvider1", westendSpec)
-  await ep1.connect()
+  const ep1 = new ExtensionProvider(westendSpec)
+  await emulateConnect(ep1, "foo1")
+
   mockedGetRandomChainId._setNextChainId("foo2")
-  const ep2 = new ExtensionProvider("ExtensionProvider2", westendSpec)
-  await ep2.connect()
+  const ep2 = new ExtensionProvider(westendSpec)
+  await emulateConnect(ep2, "foo2")
+
   await waitForMessageToBePosted()
 
   let extensionProvider1Response: string | undefined = undefined
