@@ -1,20 +1,9 @@
-const polkadotApi = require("@polkadot/api")
-
-async function connect(customChainSpec, types) {
-  const substrateConnect = await import("@substrate/connect")
-  const provider = new substrateConnect.ScProvider(customChainSpec)
-  const api = new polkadotApi.ApiPromise({ provider, types })
-  return api
-}
+const { connect } = require("./utils")
 
 async function run(nodeName, networkInfo) {
-  const { userDefinedTypes } = networkInfo.nodesByName[nodeName]
-  const customChainSpec = require(networkInfo.chainSpecPath)
-  console.log("bootnodes", customChainSpec.bootNodes)
-
-  const api = await connect(JSON.stringify(customChainSpec), userDefinedTypes)
+  const api = await connect(nodeName, networkInfo)
   // add 20s sleep to give time to sync
-  await new Promise((resolve) => setTimeout(resolve, 20000))
+  await new Promise((resolve) => setTimeout(resolve, 10000))
   let count = 0
   try {
     await new Promise(async (resolve, reject) => {
