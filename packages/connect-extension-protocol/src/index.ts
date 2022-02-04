@@ -31,7 +31,7 @@
  * generating the same string multiple times.
  * - Send a {@link ToExtensionAddChain} message (using `Window.postMessage`,
  * as explained in the previous section) containing this `chainid` and the
- * chain specification of the chain to connect to.
+ * specification of the chain to connect to.
  *
  * Instead of a {@link ToExtensionAddChain} message, the web page can
  * alternatively send a {@link ToExtensionAddWellKnownChain} message and pass
@@ -70,9 +70,9 @@
  *
  * At any point in time, the extension can send a {@link ToApplicationError}
  * message to indicate a critical problem with the chain or the extension that
- * prevent execution from continuing. This can include for example the extension
- * being disabled by the user, the underlying client crashing, a lack of
- * memory, etc. If that happens, the web page is encouraged stop using the
+ * prevents execution from continuing. This can include for example the
+ * extension being disabled by the user, the underlying client crashing, a lack
+ * of memory, etc. If that happens, the web page is encouraged stop using the
  * extension altogether.
  *
  * Note that if the extension sends a {@link ToApplicationError} message,
