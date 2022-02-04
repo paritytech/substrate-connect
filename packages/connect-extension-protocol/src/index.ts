@@ -21,7 +21,7 @@
  */
 
 interface ToApplicationHeader {
-  origin: "content-script"
+  origin: "substrate-connect-extension"
 }
 
 interface ToApplicationError {
@@ -45,7 +45,7 @@ export type ToApplication = ToApplicationHeader &
   (ToApplicationError | ToApplicationChainReady | ToApplicationRpc)
 
 interface ToExtensionHeader {
-  origin: "extension-provider"
+  origin: "substrate-connect-client"
 }
 
 interface ToExtensionAddChain {
