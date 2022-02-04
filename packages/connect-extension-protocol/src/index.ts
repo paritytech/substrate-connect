@@ -50,6 +50,13 @@
  * only be sent back after a few seconds or more, and the web page is
  * encouraged to display some kind of loading screen in the meanwhile.
  *
+ * Note that the extension reserves the rights to stop supporting a chain that
+ * used to be recognized by {@link ToExtensionAddWellKnownChain}. If the web
+ * page has sent a {@link ToExtensionAddWellKnownChain} and receives back a
+ * {@link ToApplicationError}, it should autoamtically fall back to
+ * downloading the chain specification and sending a
+ * {@link ToExtensionAddChain} instead.
+ *
  * After a chain has been successfully initialized (i.e. a
  * {@link ToApplicationChainReady} message has been sent to the web page), the
  * web page can submit JSON-RPC requests and notifications to the chain client
