@@ -53,7 +53,7 @@
  * Note that the extension reserves the rights to stop supporting a chain that
  * used to be recognized by {@link ToExtensionAddWellKnownChain}. If the web
  * page has sent a {@link ToExtensionAddWellKnownChain} and receives back a
- * {@link ToApplicationError}, it should autoamtically fall back to
+ * {@link ToApplicationError}, it should automatically fall back to
  * downloading the chain specification and sending a
  * {@link ToExtensionAddChain} instead.
  *
