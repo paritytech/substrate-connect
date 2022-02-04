@@ -20,6 +20,20 @@
  * The {@link ConnectionManager} is the class in the extension background.
  */
 
+// READ THIS BEFORE MODIFYING ANYTHING BELOW
+//
+// This file contains the communication protocol between the web page and
+// extension. If you modify it, existing web pages will still continue to use
+// the previous version until they upgrade, which can take a long time.
+// Similarly, some users will still have versions of the extension installed
+// that use of the previous version of this protocol. If the modifications
+// to this protocol aren't done carefully, web pages might no longer being able
+// to talk to the extension, or worse: try to talk to the extension and
+// throw exceptions because their assumptions are violated. As such, be
+// extremely careful when doing modifications: either the modifications are
+// completely backwards-compatible, or an upgrade path must be carefully
+// planned.
+
 interface ToApplicationHeader {
   origin: "content-script"
 }
