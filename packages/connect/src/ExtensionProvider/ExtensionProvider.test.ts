@@ -52,7 +52,7 @@ const emulateConnect = (
 ): Promise<void> => {
   const p = ep.connect()
   sendMessage({
-    origin: "content-script",
+    origin: "substrate-connect-extension",
     chainId,
     type: "chain-ready",
   })
@@ -77,7 +77,7 @@ test("connected and sends correct spec message", async () => {
   await waitForMessageToBePosted()
 
   const expectedMessage: Partial<ToExtension> = {
-    origin: "extension-provider",
+    origin: "substrate-connect-client",
     type: "add-chain",
     payload: {
       chainSpec: '{"name":"Westend","id":"westend2"}',
@@ -102,7 +102,7 @@ test("connected multiple chains and sends correct spec message", async () => {
   await waitForMessageToBePosted()
 
   const expectedMessage1: Partial<ToExtension> = {
-    origin: "extension-provider",
+    origin: "substrate-connect-client",
     type: "add-chain",
     payload: {
       chainSpec: '{"name":"Westend","id":"westend2"}',
@@ -110,7 +110,7 @@ test("connected multiple chains and sends correct spec message", async () => {
     },
   }
   const expectedMessage2: Partial<ToExtension> = {
-    origin: "extension-provider",
+    origin: "substrate-connect-client",
     type: "add-chain",
     payload: {
       chainSpec: '{"name":"Rococo","id":"rococo"}',
@@ -133,7 +133,7 @@ test("connected parachain sends correct spec message", async () => {
   await waitForMessageToBePosted()
 
   const expectedMessage: Partial<ToExtension> = {
-    origin: "extension-provider",
+    origin: "substrate-connect-client",
     type: "add-chain",
     payload: {
       chainSpec: '{"name":"Westend","id":"westend2"}',
@@ -167,7 +167,7 @@ test("disconnects and emits an error when it receives an error message", async (
   ep.on("error", emitted)
   await waitForMessageToBePosted()
   sendMessage({
-    origin: "content-script",
+    origin: "substrate-connect-extension",
     chainId: "foo",
     type: "error",
     payload: "disconnected",
@@ -183,7 +183,7 @@ test("emits error when it receives an error message", async () => {
   await emulateConnect(ep, "foo")
   await waitForMessageToBePosted()
   const errorMessage: ToApplication = {
-    origin: "content-script",
+    origin: "substrate-connect-extension",
     chainId: "foo",
     type: "error",
     payload: "Boom!",
@@ -244,7 +244,7 @@ test("it routes incoming messages to the correct Provider", async () => {
   const latestChainId = latestRequest?.data.chainId
 
   sendMessage({
-    origin: "content-script",
+    origin: "substrate-connect-extension",
     chainId: latestChainId,
     type: "rpc",
     payload: JSON.stringify({
