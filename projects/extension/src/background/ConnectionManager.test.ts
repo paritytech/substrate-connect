@@ -78,7 +78,7 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     await wait(0)
@@ -127,7 +127,7 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
     await wait(0)
 
@@ -149,12 +149,12 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     port._sendExtensionMessage({
       type: "rpc",
-      payload: JSON.stringify({ jsonrpc: "2.0", id: "1" }),
+      jsonRpcMessage: JSON.stringify({ jsonrpc: "2.0", id: "1" }),
     })
 
     await wait(0)
@@ -172,14 +172,14 @@ describe("ConnectionManager", () => {
 
     const { port, chain } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     await wait(0)
 
     port._sendExtensionMessage({
       type: "rpc",
-      payload: JSON.stringify({ jsonrpc: "2.0", id: "1" }),
+      jsonRpcMessage: JSON.stringify({ jsonrpc: "2.0", id: "1" }),
     })
 
     await wait(0)
@@ -225,7 +225,7 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "foo" as "rpc",
-      payload: "",
+      jsonRpcMessage: "",
     })
 
     expect(port.postedMessages).toEqual([
@@ -240,7 +240,7 @@ describe("ConnectionManager", () => {
     const { connectPort } = helper
     const { port } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "nonexisting",
+      chainName: "nonexisting",
     })
 
     await wait(0)
@@ -260,7 +260,7 @@ describe("ConnectionManager", () => {
 
     const { chain, chainId, tabId, url } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     await wait(0)
@@ -310,7 +310,7 @@ describe("ConnectionManager", () => {
         const tabId = Math.floor(idx / 3)
         return connectPort(idx.toString(), tabId, {
           type: "add-well-known-chain",
-          payload: "polkadot",
+          chainName: "polkadot",
         })
       })
     await wait(0)
@@ -354,7 +354,7 @@ describe("ConnectionManager", () => {
       const tabId = Math.floor(idx / 3)
       const { chain } = connectPort(idx.toString(), tabId, {
         type: "add-well-known-chain",
-        payload: "polkadot",
+        chainName: "polkadot",
       })
       return chain
     })
@@ -365,10 +365,8 @@ describe("ConnectionManager", () => {
     // the ones that are not in our tab
     const { chain: newChain } = connectPort("lastOne", 0, {
       type: "add-chain",
-      payload: {
-        chainSpec: JSON.stringify({ name: "parachain" }),
-        potentialRelayChainIds: allIds.map((id) => id.toString()),
-      },
+      chainSpec: JSON.stringify({ name: "parachain" }),
+      potentialRelayChainIds: allIds.map((id) => id.toString()),
     })
 
     await wait(0)
@@ -400,12 +398,12 @@ describe("ConnectionManager", () => {
 
     const { chain: tab1Chain, port: tab1Port } = connectPort(chainId, 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     const { chain: tab2Chain, port: tab2Port } = connectPort(chainId, 2, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     await wait(0)
@@ -417,12 +415,12 @@ describe("ConnectionManager", () => {
     // let's make sure that each chain receives *only* their own messages
     tab1Port._sendExtensionMessage({
       type: "rpc",
-      payload: JSON.stringify({ jsonrpc: "2.0", id: "ping1" }),
+      jsonRpcMessage: JSON.stringify({ jsonrpc: "2.0", id: "ping1" }),
     })
 
     tab2Port._sendExtensionMessage({
       type: "rpc",
-      payload: JSON.stringify({ jsonrpc: "2.0", id: "ping2" }),
+      jsonRpcMessage: JSON.stringify({ jsonrpc: "2.0", id: "ping2" }),
     })
 
     await wait(0)
@@ -488,7 +486,7 @@ describe("ConnectionManager", () => {
 
     const { port } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     expect(client.chains.size).toBe(1)
@@ -509,7 +507,7 @@ describe("ConnectionManager", () => {
 
     const { port } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     await wait(0)

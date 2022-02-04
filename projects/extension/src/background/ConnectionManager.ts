@@ -262,9 +262,9 @@ export class ConnectionManager extends (EventEmitter as {
   #handleMessage(msg: ToExtension, chainConnection: ChainConnection): void {
     if (msg.type === "remove-chain") return chainConnection.port.disconnect()
 
-    if (msg.type === "rpc" && msg.payload) {
+    if (msg.type === "rpc" && msg.jsonRpcMessage) {
       if (chainConnection.chain)
-        return chainConnection.healthChecker.sendJsonRpc(msg.payload)
+        return chainConnection.healthChecker.sendJsonRpc(msg.jsonRpcMessage)
 
       const errorMsg =
         "RPC request received befor the chain was successfully added"
@@ -274,18 +274,19 @@ export class ConnectionManager extends (EventEmitter as {
     }
 
     if (
-      !msg.payload ||
+      (msg.type === "add-chain" && (!msg.chainSpec || !msg.potentialRelayChainIds)) ||
+      (msg.type === "add-well-known-chain" && !msg.chainName) ||
       (msg.type !== "add-chain" && msg.type !== "add-well-known-chain")
     ) {
-      const errorMsg = `Unrecognised message type '${msg.type}' or payload '${msg.payload}' received from content script`
+      const errorMsg = `Unrecognised message '${msg}' received from content script`
       l.error(errorMsg)
       return this.#handleError(chainConnection.port, new Error(errorMsg))
     }
 
     const [chainSpec, potentialRelayChainIds]: [string, string[]] =
       msg.type === "add-chain"
-        ? [msg.payload.chainSpec, msg.payload.potentialRelayChainIds]
-        : [wellKnownChains.get(msg.payload)!, [] as string[]]
+        ? [msg.chainSpec, msg.potentialRelayChainIds]
+        : [wellKnownChains.get(msg.chainName)!, [] as string[]]
 
     this.#handleSpecMessage(
       chainConnection,

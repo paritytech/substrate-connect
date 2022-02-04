@@ -60,7 +60,7 @@ export class ExtensionMessageRouter {
       debug(`RECEIVED MESSAGE FROM ${chainId} PORT`, data)
       sendMessage({
         type,
-        payload,
+        jsonRpcMessage: payload,
         chainId,
         origin: CONTENT_SCRIPT_ORIGIN,
       })
@@ -72,7 +72,7 @@ export class ExtensionMessageRouter {
         origin: "substrate-connect-extension",
         chainId,
         type: "error",
-        payload: "Lost communication with substrate-connect extension",
+        errorMessage: "Lost communication with substrate-connect extension",
       })
       delete this.#ports[chainId]
     })
