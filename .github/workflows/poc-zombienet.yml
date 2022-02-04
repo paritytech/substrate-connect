@@ -25,6 +25,4 @@ jobs:
       - name: Run test
         run: |
           export PATH=$(pwd):$PATH
-          echo "running on $(pwd)"
-          echo $PATH
           ./zombienet-linux -p native test ./.zombienet-tests/0001-smoke-test.feature
