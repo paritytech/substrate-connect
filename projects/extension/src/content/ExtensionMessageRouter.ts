@@ -7,8 +7,8 @@ import {
 } from "@substrate/connect-extension-protocol"
 import { debug } from "../utils/debug"
 
-const CONTENT_SCRIPT_ORIGIN = "content-script"
-const EXTENSION_PROVIDER_ORIGIN = "extension-provider"
+const CONTENT_SCRIPT_ORIGIN = "substrate-connect-content-script"
+const EXTENSION_PROVIDER_ORIGIN = "substrate-connect-extension-provider"
 
 const sendMessage = (msg: ToApplication): void => {
   window.postMessage(msg, "*")
@@ -69,7 +69,7 @@ export class ExtensionMessageRouter {
     // tell the page when the port disconnects
     port.onDisconnect.addListener(() => {
       sendMessage({
-        origin: "content-script",
+        origin: "substrate-connect-content-script",
         chainId,
         type: "error",
         payload: "Lost communication with substrate-connect extension",

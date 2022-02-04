@@ -40,7 +40,7 @@ describe("Disconnect and incorrect cases", () => {
       chainId: "test",
       type: "add-well-known-chain",
       payload: "westend",
-      origin: "extension-provider",
+      origin: "substrate-connect-extension-provider",
     })
     await waitForMessageToBePosted()
 
@@ -50,7 +50,7 @@ describe("Disconnect and incorrect cases", () => {
     await waitForMessageToBePosted()
 
     const expectedMessage: Partial<ToApplication> = {
-      origin: "content-script",
+      origin: "substrate-connect-content-script",
       type: "error",
     }
 
@@ -89,7 +89,7 @@ describe("Connection and forward cases", () => {
       chainId,
       type: "add-well-known-chain",
       payload: "westend",
-      origin: "extension-provider",
+      origin: "substrate-connect-extension-provider",
     })
 
     await waitForMessageToBePosted()
@@ -106,14 +106,14 @@ describe("Connection and forward cases", () => {
       chainId: "test",
       type: "add-well-known-chain",
       payload: "westend",
-      origin: "extension-provider",
+      origin: "substrate-connect-extension-provider",
     })
     await waitForMessageToBePosted()
 
     // rpc
     const rpcMessage: ToExtension = {
       chainId: "test",
-      origin: "extension-provider",
+      origin: "substrate-connect-extension-provider",
       type: "rpc",
       payload:
         '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}',
@@ -137,7 +137,7 @@ describe("Connection and forward cases", () => {
       chainId: "test",
       type: "add-well-known-chain",
       payload: "westend",
-      origin: "extension-provider",
+      origin: "substrate-connect-extension-provider",
     })
     await waitForMessageToBePosted()
 
@@ -155,7 +155,7 @@ describe("Connection and forward cases", () => {
     const forwarded = handler.mock.calls[0][0] as MessageEvent
     expect(forwarded.data).toEqual({
       chainId: "test",
-      origin: "content-script",
+      origin: "substrate-connect-content-script",
       type: "rpc",
       payload: '{"id:":1,"jsonrpc:"2.0","result":666}',
     })
@@ -169,7 +169,7 @@ describe("Connection and forward cases", () => {
       chainId: "test",
       type: "add-well-known-chain",
       payload: "westend",
-      origin: "extension-provider",
+      origin: "substrate-connect-extension-provider",
     })
     await waitForMessageToBePosted()
 
@@ -181,7 +181,7 @@ describe("Connection and forward cases", () => {
     expect(handler).toHaveBeenCalled()
     const forwarded = handler.mock.calls[0][0] as MessageEvent
     expect(forwarded.data).toEqual({
-      origin: "content-script",
+      origin: "substrate-connect-content-script",
       chainId: "test",
       type: "error",
       payload: "Boom!",

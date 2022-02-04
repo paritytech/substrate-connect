@@ -15,13 +15,13 @@ const noop: any = Function.prototype
 export const TEST_URL = "https://test.com"
 
 export type HeaderlessToExtension<T extends ToExtension> = T extends {
-  origin: "extension-provider"
+  origin: "substrate-connect-extension-provider"
 } & infer V
   ? Omit<V, "chainId">
   : unknown
 
 export type HeaderlessToApplication<T extends ToApplication> = T extends {
-  origin: "content-script"
+  origin: "substrate-connect-content-script"
 } & infer V
   ? Omit<V, "chainId">
   : unknown
@@ -58,7 +58,7 @@ export class MockPort implements chrome.runtime.Port {
     this.#callbacks.onMessageCb({
       ...message,
       chainId: this.name,
-      origin: "extension-provider",
+      origin: "substrate-connect-extension-provider",
     })
   }
 

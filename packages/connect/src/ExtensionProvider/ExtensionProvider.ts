@@ -20,8 +20,8 @@ import {
 import { SupportedChains } from "../specs/index.js"
 import { getRandomChainId } from "./getRandomChainId.js"
 
-const CONTENT_SCRIPT_ORIGIN = "content-script"
-const EXTENSION_PROVIDER_ORIGIN = "extension-provider"
+const CONTENT_SCRIPT_ORIGIN = "substrate-connect-content-script"
+const EXTENSION_PROVIDER_ORIGIN = "substrate-connect-extension-provider"
 
 const l = logger(EXTENSION_PROVIDER_ORIGIN)
 
