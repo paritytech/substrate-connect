@@ -274,7 +274,8 @@ export class ConnectionManager extends (EventEmitter as {
     }
 
     if (
-      (msg.type === "add-chain" && (!msg.chainSpec || !msg.potentialRelayChainIds)) ||
+      (msg.type === "add-chain" &&
+        (!msg.chainSpec || !msg.potentialRelayChainIds)) ||
       (msg.type === "add-well-known-chain" && !msg.chainName) ||
       (msg.type !== "add-chain" && msg.type !== "add-well-known-chain")
     ) {
