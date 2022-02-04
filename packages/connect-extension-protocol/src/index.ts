@@ -77,7 +77,7 @@
  *
  * Note that if the extension sends a {@link ToApplicationError} message,
  * either before of after the chain is ready, the corresponding `chainId` is
- * immeidately considered dead/removed, and the web page doesn't need to send
+ * immediately considered dead/removed, and the web page doesn't need to send
  * a {@link ToExtensionRemoveChain} message.
  */
 
