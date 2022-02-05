@@ -56,11 +56,9 @@ export class ExtensionMessageRouter {
 
     // forward any messages: extension -> page
     port.onMessage.addListener((data): void => {
-      const { type, payload } = data
       debug(`RECEIVED MESSAGE FROM ${chainId} PORT`, data)
       sendMessage({
-        type,
-        jsonRpcMessage: payload,
+        ... data,
         chainId,
         origin: CONTENT_SCRIPT_ORIGIN,
       })
