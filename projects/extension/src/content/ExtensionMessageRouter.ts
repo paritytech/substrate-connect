@@ -58,7 +58,7 @@ export class ExtensionMessageRouter {
     port.onMessage.addListener((data): void => {
       debug(`RECEIVED MESSAGE FROM ${chainId} PORT`, data)
       sendMessage({
-        ... data,
+        ...data,
         chainId,
         origin: CONTENT_SCRIPT_ORIGIN,
       })
