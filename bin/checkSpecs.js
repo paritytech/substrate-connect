@@ -16,6 +16,7 @@ const chainDir = "../../.chains"
 
 const paths = {
   connect: "src/specs",
+  "smoldot-connect": "src/specs",
   extension: "public/assets",
 }
 
