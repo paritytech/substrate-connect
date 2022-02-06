@@ -8,7 +8,7 @@
     "checkSpecs": "node ../../bin/checkSpecs.js",
     "prebuild": "yarn clean && yarn checkSpecs",
     "pretest": "yarn build",
-    "test": "exit 0",
+    "test": "node --no-warnings --experimental-vm-modules $(yarn bin)/jest --colors --coverage",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist/ tsconfig.tsbuildinfo",
     "build": "tsc -b && node ./src/specs/generate-specs.js",
@@ -17,6 +17,9 @@
   "dependencies": {
     "@substrate/connect-extension-protocol": "1.0.0",
     "@substrate/smoldot-light": "0.5.18"
+  },
+  "devDependencies": {
+    "jest": "^27.4.3"
   },
   "author": "Josep M Sobrepere <josep@parity.io>",
   "license": "GPL-3.0-only"
