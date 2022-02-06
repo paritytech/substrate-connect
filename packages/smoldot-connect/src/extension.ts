@@ -97,9 +97,9 @@ const internalAddChain = async (
     }
 
   const chain: Chain = {
-    sendJsonRpc: chainFn((payload) => {
+    sendJsonRpc: chainFn((jsonRpcMessage) => {
       if (!jsonRpcCallback) throw new JsonRpcDisabledError()
-      postMessage({ type: "rpc", payload })
+      postToExtension({ type: "rpc", jsonRpcMessage })
     }),
     remove: chainFn(() => {
       activeChains.delete(chain)
