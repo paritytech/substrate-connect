@@ -39,6 +39,17 @@ const getStart = () => {
 
 const chains = new WeakMap<Chain, SChain>()
 
+const transformErrors = (thunk: () => void) => {
+  try {
+    thunk()
+  } catch (e) {
+    if (e instanceof SdJsonRpcDisabledError) throw new JsonRpcDisabledError()
+    if (e instanceof SdCrashError) throw new CrashError(e.message)
+    if (e instanceof SdAlreadyDestroyedError) throw new AlreadyDestroyedError()
+    throw e
+  }
+}
+
 export const getPublicApi = (options: ClientOptions): SmoldotConnect => {
   let clientPromise: Promise<Client> | null = null
   const getClient = (options: ClientOptions): Promise<Client> => {
@@ -65,16 +76,9 @@ export const getPublicApi = (options: ClientOptions): SmoldotConnect => {
 
     const chain: Chain = {
       sendJsonRpc: (rpc) => {
-        try {
+        transformErrors(() => {
           internalChain.sendJsonRpc(rpc)
-        } catch (e) {
-          if (e instanceof SdJsonRpcDisabledError)
-            throw new JsonRpcDisabledError()
-          if (e instanceof SdCrashError) throw new CrashError(e.message)
-          if (e instanceof SdAlreadyDestroyedError)
-            throw new AlreadyDestroyedError()
-          throw e
-        }
+        })
       },
       remove: () => {
         if (chains.has(chain)) {
@@ -84,14 +88,9 @@ export const getPublicApi = (options: ClientOptions): SmoldotConnect => {
             clientPromise = null
           }
         }
-        try {
+        transformErrors(() => {
           internalChain.remove()
-        } catch (e) {
-          if (e instanceof SdCrashError) throw new CrashError(e.message)
-          if (e instanceof SdAlreadyDestroyedError)
-            throw new AlreadyDestroyedError()
-          throw e
-        }
+        })
       },
     }
 
