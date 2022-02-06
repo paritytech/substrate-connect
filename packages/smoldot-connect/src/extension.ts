@@ -111,7 +111,7 @@ const internalAddChain = async (
 
   let crashError: CrashError | null = null
   const listener = listenToExtension(chainId, (msg) => {
-    if (msg.type !== "rpc") {
+    if (msg.type !== "rpc" || !jsonRpcCallback) {
       chain.remove()
       crashError = new CrashError(
         msg.type === "error"
@@ -120,7 +120,7 @@ const internalAddChain = async (
       )
       return
     }
-    jsonRpcCallback?.(msg.jsonRpcMessage)
+    jsonRpcCallback(msg.jsonRpcMessage)
   })
 
   return chain
