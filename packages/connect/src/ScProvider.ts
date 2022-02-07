@@ -81,7 +81,7 @@ export class ScProvider implements ProviderInterface {
     autoConnect = true,
   ) {
     const isExtension = !!document.getElementById(
-      "substrateConnectionExtensionAvailable",
+      "substrateConnectExtensionAvailable",
     )
 
     this.#providerP = this.internalProvider(

@@ -10,7 +10,7 @@
  * If a web page wants to use the features of the substrate-connect extension,
  * it must first check whether the extension is available by checking whether
  * there exists an element on the DOM whose id is equal to
- * `substrateConnectionExtensionAvailable`. This DOM element is automatically
+ * `substrateConnectExtensionAvailable`. This DOM element is automatically
  * inserted by the extension when the page loads.
  *
  * If so, the web page can make use of the extension so by sending messages on
