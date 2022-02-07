@@ -17,7 +17,7 @@ import {
   ToExtension,
   ToApplication,
 } from "@substrate/connect-extension-protocol"
-import { SupportedChains } from "../specs/index.js"
+import { SupportedChains } from "../SupportedChains.js"
 import { getRandomChainId } from "./getRandomChainId.js"
 
 const EXTENSION_ORIGIN = "substrate-connect-extension"

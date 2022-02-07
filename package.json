@@ -15,7 +15,6 @@
   "workspaces": [
     "packages/smoldot-test-utils",
     "packages/connect-extension-protocol",
-    "packages/smoldot-connect",
     "packages/connect",
     "projects/extension",
     "projects/burnr",

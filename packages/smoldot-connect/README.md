@@ -1,2 +1,0 @@
-# @substrate/smoldot-connect
-

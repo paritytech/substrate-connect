@@ -15,6 +15,7 @@ import {
   CrashError,
   JsonRpcDisabledError,
 } from "./errors.js"
+import { SupportedChains } from "../SupportedChains.js"
 
 export type HeaderlessToExtension<T extends ToExtension> = T extends {
   origin: "substrate-connect-client"
@@ -133,6 +134,6 @@ export const addChain: AddChain = (
 ) => internalAddChain(false, chainSpec, jsonRpcCallback, potentialRelayChains)
 
 export const addWellKnownChain: AddWellKnownChain = (
-  name: string,
+  name: SupportedChains,
   jsonRpcCallback?: JsonRpcCallback,
 ) => internalAddChain(true, name, jsonRpcCallback)

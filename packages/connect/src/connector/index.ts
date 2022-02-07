@@ -1,5 +1,5 @@
 import type { ClientOptions } from "@substrate/smoldot-light"
-import type { SmoldotConnect } from "./types.js"
+import type { SubstrateConnector } from "./types.js"
 import { getPublicApi } from "./smoldot-light.js"
 import * as extension from "./extension.js"
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
@@ -12,9 +12,9 @@ const isExtension =
   typeof document.getElementById === "function" &&
   !!document.getElementById(DOM_ELEMENT_ID)
 
-export const getSmoldotConnect = (
+export const getSubstrateConnector = (
   options: ClientOptions = {
     forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
     maxLogLevel: 3 /* no debug/trace messages */,
   },
-): SmoldotConnect => (isExtension ? extension : getPublicApi(options))
+): SubstrateConnector => (isExtension ? extension : getPublicApi(options))

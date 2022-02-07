@@ -4,8 +4,9 @@ import {
   ProviderInterfaceEmitCb,
   ProviderInterfaceEmitted,
 } from "@polkadot/rpc-provider/types"
-import { SupportedChains, getSpec } from "./specs/index.js"
+import { getSpec } from "./connector/specs/index.js"
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
+import { SupportedChains } from "./SupportedChains.js"
 
 /**
  * ScProvider is an API for providing an instance of a PolkadotJS Provider
