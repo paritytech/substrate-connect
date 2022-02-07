@@ -1,9 +1,21 @@
 import { ExtensionMessageRouter } from "./ExtensionMessageRouter"
-import { ExtensionPageInjector } from "./ExtensionPageInjector"
 import { debug } from "../utils/debug"
 
 debug("EXTENSION CONTENT SCRIPT RUNNING")
 
-new ExtensionPageInjector()
+// inject as soon as possible the DOM element necessary for web pages to know that the extension
+// is available
+window.document.addEventListener("readystatechange", () => {
+  debug("READYSTATE CHANGED")
+  if (window.document.readyState === "interactive") {
+    debug("INJECTING EXTENSION SPAN")
+
+    const s = document.createElement("span")
+    s.id = "substrateConnectExtensionAvailable"
+    s.setAttribute("style", "display:none")
+    document.body.appendChild(s)
+  }
+})
+
 const router = new ExtensionMessageRouter()
 router.listen()
