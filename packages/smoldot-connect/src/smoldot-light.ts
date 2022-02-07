@@ -46,7 +46,9 @@ const transformErrors = (thunk: () => void) => {
     if (e instanceof SdJsonRpcDisabledError) throw new JsonRpcDisabledError()
     if (e instanceof SdCrashError) throw new CrashError(e.message)
     if (e instanceof SdAlreadyDestroyedError) throw new AlreadyDestroyedError()
-    throw e
+    throw new CrashError(
+      e instanceof Error ? e.message : `Unexpected error ${e}`,
+    )
   }
 }
 
@@ -84,8 +86,8 @@ export const getPublicApi = (options: ClientOptions): SmoldotConnect => {
         if (chains.has(chain)) {
           chains.delete(chain)
           if (--refCount === 0) {
-            clientPromise!.then((c) => c.terminate())
             clientPromise = null
+            client.terminate()
           }
         }
         transformErrors(() => {
