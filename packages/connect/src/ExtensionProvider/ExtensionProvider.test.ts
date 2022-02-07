@@ -226,10 +226,10 @@ test("it routes incoming messages to the correct Provider", async () => {
 
   const latestRequest = handler.mock.calls[
     handler.mock.calls.length - 1
-  ][0] as MessageEvent<{ payload: string; chainId: string }>
+  ][0] as MessageEvent<{ jsonRpcMessage: string; chainId: string }>
 
   const latestRequestRpcId = (
-    JSON.parse(latestRequest?.data.payload ?? "{}") as {
+    JSON.parse(latestRequest?.data.jsonRpcMessage ?? "{}") as {
       id: number
     }
   ).id

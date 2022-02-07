@@ -162,7 +162,8 @@ describe("ConnectionManager", () => {
     expect(port.postedMessages).toEqual([
       {
         type: "error",
-        payload: "RPC request received befor the chain was successfully added",
+        errorMessage:
+          "RPC request received befor the chain was successfully added",
       },
     ])
   })
@@ -210,7 +211,7 @@ describe("ConnectionManager", () => {
       },
       {
         type: "rpc",
-        payload: JSON.stringify({
+        jsonRpcMessage: JSON.stringify({
           jsonrpc: "2.0",
           id: "1",
           result: "{}",
@@ -228,12 +229,7 @@ describe("ConnectionManager", () => {
       jsonRpcMessage: "",
     })
 
-    expect(port.postedMessages).toEqual([
-      {
-        type: "error",
-        payload: `Unrecognised message type 'foo' or payload '' received from content script`,
-      },
-    ])
+    expect(port.postedMessages[0].type).toEqual("error")
   })
 
   it("correctly errors when passed a wrong well-known-chain", async () => {
@@ -248,7 +244,7 @@ describe("ConnectionManager", () => {
     expect(port.postedMessages).toEqual([
       {
         type: "error",
-        payload: "Relay chain spec was not found",
+        errorMessage: "Relay chain spec was not found",
       },
     ])
   })
@@ -459,7 +455,7 @@ describe("ConnectionManager", () => {
       },
       {
         type: "rpc",
-        payload: JSON.stringify({
+        jsonRpcMessage: JSON.stringify({
           jsonrpc: "2.0",
           id: "ping1",
           result: '"pong1"',
@@ -472,7 +468,7 @@ describe("ConnectionManager", () => {
       },
       {
         type: "rpc",
-        payload: JSON.stringify({
+        jsonRpcMessage: JSON.stringify({
           jsonrpc: "2.0",
           id: "ping2",
           result: '"pong2"',

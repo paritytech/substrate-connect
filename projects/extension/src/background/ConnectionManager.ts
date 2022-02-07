@@ -204,7 +204,10 @@ export class ConnectionManager extends (EventEmitter as {
     const rpcCallback = (rpc: string) => {
       const rpcResp = chainConnection.healthChecker.responsePassThrough(rpc)
       if (rpcResp)
-        chainConnection.port.postMessage({ type: "rpc", jsonRpcMessage: rpcResp })
+        chainConnection.port.postMessage({
+          type: "rpc",
+          jsonRpcMessage: rpcResp,
+        })
     }
 
     chainConnection.chainName =
@@ -279,7 +282,7 @@ export class ConnectionManager extends (EventEmitter as {
       (msg.type === "add-well-known-chain" && !msg.chainName) ||
       (msg.type !== "add-chain" && msg.type !== "add-well-known-chain")
     ) {
-      const errorMsg = `Unrecognised message '${msg}' received from content script`
+      const errorMsg = `Unrecognized message '${msg}' received from content script`
       l.error(errorMsg)
       return this.#handleError(chainConnection.port, new Error(errorMsg))
     }

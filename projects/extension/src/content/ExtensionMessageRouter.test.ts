@@ -124,7 +124,7 @@ describe("Connection and forward cases", () => {
     expect(router.connections.length).toBe(1)
     const sample = {
       type: rpcMessage.type,
-      payload: rpcMessage.jsonRpcMessage,
+      jsonRpcMessage: rpcMessage.jsonRpcMessage,
     }
     expect(port.postedMessages[port.postedMessages.length - 1]).toEqual(sample)
   })
@@ -157,7 +157,7 @@ describe("Connection and forward cases", () => {
       chainId: "test",
       origin: "substrate-connect-extension",
       type: "rpc",
-      payload: '{"id:":1,"jsonrpc:"2.0","result":666}',
+      jsonRpcMessage: '{"id:":1,"jsonrpc:"2.0","result":666}',
     })
   })
 
@@ -184,7 +184,7 @@ describe("Connection and forward cases", () => {
       origin: "substrate-connect-extension",
       chainId: "test",
       type: "error",
-      payload: "Boom!",
+      errorMessage: "Boom!",
     })
   })
 })
