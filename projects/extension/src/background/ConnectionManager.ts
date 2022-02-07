@@ -187,7 +187,7 @@ export class ConnectionManager extends (EventEmitter as {
   }
 
   #handleError(port: chrome.runtime.Port, e: Error) {
-    port.postMessage({ type: "error", payload: e.message })
+    port.postMessage({ type: "error", errorMessage: e.message })
     port.disconnect()
   }
 
@@ -204,7 +204,7 @@ export class ConnectionManager extends (EventEmitter as {
     const rpcCallback = (rpc: string) => {
       const rpcResp = chainConnection.healthChecker.responsePassThrough(rpc)
       if (rpcResp)
-        chainConnection.port.postMessage({ type: "rpc", payload: rpcResp })
+        chainConnection.port.postMessage({ type: "rpc", jsonRpcMessage: rpcResp })
     }
 
     chainConnection.chainName =
