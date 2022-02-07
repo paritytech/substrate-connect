@@ -6,7 +6,7 @@ import {
   ToApplication,
 } from "@substrate/connect-extension-protocol"
 import { debug } from "../utils/debug"
-import checkMessage from './checkMessage';
+import checkMessage from "./checkMessage"
 
 const CONTENT_SCRIPT_ORIGIN = "substrate-connect-extension"
 const EXTENSION_PROVIDER_ORIGIN = "substrate-connect-client"
