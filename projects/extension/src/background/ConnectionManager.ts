@@ -40,7 +40,11 @@ export class ConnectionManager extends (EventEmitter as {
 }) {
   #client: Client | null
   #emitScheduled = false
-  readonly #chainConnections: Map<string, ChainConnection> = new Map()
+
+  /**
+   * All active chains. Keys are `[tabId, chainId]` tuples.
+   */
+  readonly #chainConnections: Map<[number, string], ChainConnection> = new Map()
 
   constructor(client: Client) {
     super()
@@ -106,9 +110,7 @@ export class ConnectionManager extends (EventEmitter as {
       const url: string = sender!.url!
 
       const healthChecker = smHealthChecker()
-      const id = `${chainId}::${tabId}`
       const connection: ChainConnection = {
-        id,
         chainName: "",
         chainId,
         tabId,
@@ -128,13 +130,14 @@ export class ConnectionManager extends (EventEmitter as {
         port.onMessage.removeListener(onMessageHandler)
         port.onDisconnect.removeListener(onDisconnect)
 
-        if (this.#chainConnections.get(id)?.chainName) this.#emitStateChanged()
+        if (this.#chainConnections.get([tabId, chainId])?.chainName)
+          this.#emitStateChanged()
 
-        this.#chainConnections.delete(id)
+        this.#chainConnections.delete([tabId, chainId])
       }
       port.onDisconnect.addListener(onDisconnect)
 
-      this.#chainConnections.set(id, connection)
+      this.#chainConnections.set([tabId, chainId], connection)
     } catch (e) {
       const msg = `Error while connecting to the port ${e}`
       l.error(msg)
@@ -172,11 +175,11 @@ export class ConnectionManager extends (EventEmitter as {
       throw new Error("Smoldot client does not exist.")
     }
 
-    const potentialRelayChains = potentialRelayChainIds
-      .map(
-        (chainId) => this.#chainConnections.get(`${chainId}::${tabId}`)?.chain,
-      )
-      .filter((chain): chain is Chain => !!chain)
+    const potentialRelayChains = tabId
+      ? potentialRelayChainIds
+          .map((chainId) => this.#chainConnections.get([tabId, chainId])?.chain)
+          .filter((chain): chain is Chain => !!chain)
+      : []
 
     return this.#client.addChain({
       chainSpec,
@@ -239,7 +242,12 @@ export class ConnectionManager extends (EventEmitter as {
     // for smoldot to return the chain. The way to know this is by checking
     // whether this `chainConnection` is still present insinde `#chainConnections`.
     // If it isn't, that means that the port got disconnected, so we should stop.
-    if (!this.#chainConnections.has(chainConnection.id)) {
+    if (
+      !this.#chainConnections.has([
+        chainConnection.tabId,
+        chainConnection.chainId,
+      ])
+    ) {
       chain.remove()
       return
     }
