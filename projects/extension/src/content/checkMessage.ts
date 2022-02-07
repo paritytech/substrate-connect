@@ -5,9 +5,10 @@ import { ToExtension } from "@substrate/connect-extension-protocol"
  *
  * Do not forget to update this function if the `ToExtension` interface changes!
  */
-export default function checkReceivedMessage(
-  message: any,
-): message is ToExtension {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export default function checkReceivedMessage(msg: any): msg is ToExtension {
+  const message = msg as ToExtension
+
   if (message.origin !== "substrate-connect-client") return false
   if (typeof message.type !== "string") return false
 
@@ -16,9 +17,8 @@ export default function checkReceivedMessage(
       if (typeof message.chainId !== "string") return false
       if (typeof message.chainSpec !== "string") return false
       if (!Array.isArray(message.potentialRelayChainIds)) return false
-      for (const index in message.potentialRelayChainIds) {
-        if (typeof message.potentialRelayChainIds[index] !== "string")
-          return false
+      for (const element of message.potentialRelayChainIds) {
+        if (typeof element !== "string") return false
       }
       break
     }
