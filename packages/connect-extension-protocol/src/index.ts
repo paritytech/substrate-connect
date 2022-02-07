@@ -209,7 +209,7 @@ interface ToExtensionAddChain {
    * chain specification.
    *
    * Set this to the list of all chains that are currently alive.
-   * 
+   *
    * If one of the chains isn't known by the extension, it gets silently removed from the array.
    * This is necessary in order to avoid race conditions, as the extension might have sent a
    * {@link ToApplicationError} message at the same time as this message has been sent.
