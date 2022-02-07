@@ -5,6 +5,7 @@ import {
   ProviderInterfaceEmitted,
 } from "@polkadot/rpc-provider/types"
 import { SupportedChains, getSpec } from "./specs/index.js"
+import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 
 /**
  * ScProvider is an API for providing an instance of a PolkadotJS Provider
@@ -80,7 +81,7 @@ export class ScProvider implements ProviderInterface {
     parachainSpec?: string,
     autoConnect = true,
   ) {
-    const isExtension = !!document.getElementById("substrateExtension")
+    const isExtension = !!document.getElementById(DOM_ELEMENT_ID)
 
     this.#providerP = this.internalProvider(
       isExtension,

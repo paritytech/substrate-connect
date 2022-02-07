@@ -79,10 +79,8 @@ test("connected and sends correct spec message", async () => {
   const expectedMessage: Partial<ToExtension> = {
     origin: "substrate-connect-client",
     type: "add-chain",
-    payload: {
-      chainSpec: '{"name":"Westend","id":"westend2"}',
-      potentialRelayChainIds: [],
-    },
+    chainSpec: '{"name":"Westend","id":"westend2"}',
+    potentialRelayChainIds: [],
   }
   expect(handler).toHaveBeenCalledTimes(2)
   const { data } = handler.mock.calls[0][0] as MessageEvent
@@ -104,18 +102,14 @@ test("connected multiple chains and sends correct spec message", async () => {
   const expectedMessage1: Partial<ToExtension> = {
     origin: "substrate-connect-client",
     type: "add-chain",
-    payload: {
-      chainSpec: '{"name":"Westend","id":"westend2"}',
-      potentialRelayChainIds: [],
-    },
+    chainSpec: '{"name":"Westend","id":"westend2"}',
+    potentialRelayChainIds: [],
   }
   const expectedMessage2: Partial<ToExtension> = {
     origin: "substrate-connect-client",
     type: "add-chain",
-    payload: {
-      chainSpec: '{"name":"Rococo","id":"rococo"}',
-      potentialRelayChainIds: [],
-    },
+    chainSpec: '{"name":"Rococo","id":"rococo"}',
+    potentialRelayChainIds: [],
   }
 
   expect(handler).toHaveBeenCalledTimes(4)
@@ -135,10 +129,8 @@ test("connected parachain sends correct spec message", async () => {
   const expectedMessage: Partial<ToExtension> = {
     origin: "substrate-connect-client",
     type: "add-chain",
-    payload: {
-      chainSpec: '{"name":"Westend","id":"westend2"}',
-      potentialRelayChainIds: [],
-    },
+    chainSpec: '{"name":"Westend","id":"westend2"}',
+    potentialRelayChainIds: [],
   }
   expect(handler).toHaveBeenCalledTimes(2)
   const { data } = handler.mock.calls[0][0] as MessageEvent
@@ -170,7 +162,7 @@ test("disconnects and emits an error when it receives an error message", async (
     origin: "substrate-connect-extension",
     chainId: "foo",
     type: "error",
-    payload: "disconnected",
+    errorMessage: "disconnected",
   })
   await waitForMessageToBePosted()
   expect(emitted).toHaveBeenCalled()
@@ -186,7 +178,7 @@ test("emits error when it receives an error message", async () => {
     origin: "substrate-connect-extension",
     chainId: "foo",
     type: "error",
-    payload: "Boom!",
+    errorMessage: "Boom!",
   }
   const errorHandler = jest.fn()
   ep.on("error", errorHandler)
@@ -195,7 +187,7 @@ test("emits error when it receives an error message", async () => {
 
   expect(errorHandler).toHaveBeenCalled()
   const error = errorHandler.mock.calls[0][0] as Error
-  expect(error.message).toEqual(errorMessage.payload)
+  expect(error.message).toEqual(errorMessage.errorMessage)
 })
 
 test("it routes incoming messages to the correct Provider", async () => {
@@ -234,10 +226,10 @@ test("it routes incoming messages to the correct Provider", async () => {
 
   const latestRequest = handler.mock.calls[
     handler.mock.calls.length - 1
-  ][0] as MessageEvent<{ payload: string; chainId: string }>
+  ][0] as MessageEvent<{ jsonRpcMessage: string; chainId: string }>
 
   const latestRequestRpcId = (
-    JSON.parse(latestRequest?.data.payload ?? "{}") as {
+    JSON.parse(latestRequest?.data.jsonRpcMessage ?? "{}") as {
       id: number
     }
   ).id
@@ -247,7 +239,7 @@ test("it routes incoming messages to the correct Provider", async () => {
     origin: "substrate-connect-extension",
     chainId: latestChainId,
     type: "rpc",
-    payload: JSON.stringify({
+    jsonRpcMessage: JSON.stringify({
       id: latestRequestRpcId,
       jsonrpc: "2.0",
       result: "hi ExtensionProvider2!",
