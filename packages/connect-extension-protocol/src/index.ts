@@ -7,12 +7,15 @@
  *
  * # Overview
  *
- * TODO: explain how the web page can detect whether the extension is installed
- *
  * If a web page wants to use the features of the substrate-connect extension,
- * it can do so by sending messages on its `window` by using
- * `Window.postMessage`. These messages must conform to the {@link ToExtension}
- * interface defined below.
+ * it must first check whether the extension is available by checking whether
+ * there exists an element on the DOM whose id is equal to
+ * `substrateConnectionExtensionAvailable`. This DOM element is automatically
+ * inserted by the extension when the page loads.
+ *
+ * If so, the web page can make use of the extension so by sending messages on
+ * its `window` by using `Window.postMessage`. These messages must conform to
+ * the {@link ToExtension} interface defined below.
  *
  * The substrate-connect extension (more precisely, its content-script) listens
  * for "message" events (using `window.addEventListener("message", ...)`) and
