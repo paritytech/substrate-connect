@@ -95,58 +95,70 @@
 // completely backwards-compatible, or an upgrade path must be carefully
 // planned.
 
+/**
+ * Messages sent by the extension always conform to this interface.
+ */
+export type ToApplication = ToApplicationHeader &
+  (ToApplicationError | ToApplicationChainReady | ToApplicationRpc)
+
+/**
+ * Header present in all messages sent by the extension.
+ */
 interface ToApplicationHeader {
+  /**
+   * Messages sent by the extension are sent on the `window`, alongside with potentially
+   * other messages that might be completely unrelated to substrate-connect. This `origin` field
+   * indicates that this message indeed comes from the substrate-connect extension.
+   */
   origin: "substrate-connect-extension"
 }
 
+/**
+ * Indicates that the given chain connection has encountered an error and can no longer continue.
+ *
+ * The chain is automatically considered as "dead". No {@link ToExtensionRemoveChain} message
+ * needs to be sent.
+ *
+ * This message can happen either before or after a {@link ToApplicationChainReady} concerning
+ * this chain has been sent.
+ */
 interface ToApplicationError {
   type: "error"
   chainId: string
+
+  /**
+   * Human-readable message indicating the problem that happened.
+   *
+   * Note that, while this message is readable by a human, it is not meant to be displayed to
+   * end users. The message itself can be rather cryptic, and is meant for developers to
+   * understand the problem that happened.
+   */
   errorMessage: string
 }
 
+/**
+ * Sent in response to a {@link ToExtensionAddChain} or {@link ToExtensionAddWellKnownChain}
+ * message. Indicates that the given chain is ready to receive JSON-RPC requests.
+ *
+ * No {@link ToExtensionRpc} message must be sent before this message has been received.
+ */
 interface ToApplicationChainReady {
   type: "chain-ready"
   chainId: string
 }
 
+/**
+ * JSON-RPC response or notification sent by the substrate-connect extension.
+ */
 interface ToApplicationRpc {
   type: "rpc"
   chainId: string
   jsonRpcMessage: string
 }
 
-export type ToApplication = ToApplicationHeader &
-  (ToApplicationError | ToApplicationChainReady | ToApplicationRpc)
-
-interface ToExtensionHeader {
-  origin: "substrate-connect-client"
-}
-
-interface ToExtensionAddChain {
-  type: "add-chain"
-  chainId: string
-  chainSpec: string
-  potentialRelayChainIds: string[]
-}
-
-interface ToExtensionAddWellKnownChain {
-  type: "add-well-known-chain"
-  chainId: string
-  chainName: string
-}
-
-interface ToExtensionRpc {
-  type: "rpc"
-  chainId: string
-  jsonRpcMessage: string
-}
-
-interface ToExtensionRemoveChain {
-  type: "remove-chain"
-  chainId: string
-}
-
+/**
+ * Messages destined to the extension must conform to this interface.
+ */
 export type ToExtension = ToExtensionHeader &
   (
     | ToExtensionAddChain
@@ -154,3 +166,109 @@ export type ToExtension = ToExtensionHeader &
     | ToExtensionRpc
     | ToExtensionRemoveChain
   )
+
+/**
+ * Header present in all messages destined to the extension.
+ */
+interface ToExtensionHeader {
+  /**
+   * Messages destined to the extension are sent on the `window`, alongside with potentially
+   * other messages that might be completely unrelated to substrate-connect. This `origin` field
+   * indicates to the substrate-connect extension that this message is destined to it.
+   */
+  origin: "substrate-connect-client"
+}
+
+/**
+ * Ask the extension to add a new connection to the chain with the given specification.
+ */
+interface ToExtensionAddChain {
+  type: "add-chain"
+
+  /**
+   * Identifier for this chain used in all future messages concerning this chain. Allocated by
+   * the sender of this message. It is recommended to generate this ID randomly, with at least
+   * 48 bits of entropy.
+   */
+  chainId: string
+
+  /**
+   * JSON-formatted document containing the specification of the chain.
+   *
+   * See the Substrate documentation for more information about the fields.
+   *
+   * Note that this specification is fully trusted. If an attacker can somehow alter this
+   * specification, they can redirect the connection to a fake chain controller by this attacker.
+   * In other words, the role of the extension is to connect to the chain whose specification is
+   * provided here, not to have an opinion on whether this specification is "legitimate".
+   */
+  chainSpec: string
+
+  /**
+   * List of `chainId`s of all chains that are part of the same trusted sandbox as the provided
+   * chain specification.
+   *
+   * Set this to the list of all chains that are currently alive.
+   * 
+   * If one of the chains isn't known by the extension, it gets silently removed from the array.
+   * This is necessary in order to avoid race conditions, as the extension might have sent a
+   * {@link ToApplicationError} message at the same time as this message has been sent.
+   */
+  potentialRelayChainIds: string[]
+}
+
+/**
+ * Ask the extension to add a new connection to the chain of the given name.
+ *
+ * The substrate-connect extension comes with some hardcoded chain names that applications can
+ * connect to. This list of names isn't indicated here, as it can change over time.
+ *
+ * Because the extension reserves the right to remove support for a well-known chain in the future,
+ * applications should fall back to {@link ToExtensionAddChain} if this well-known chain
+ * connection fails.
+ */
+interface ToExtensionAddWellKnownChain {
+  type: "add-well-known-chain"
+
+  /**
+   * Identifier for this chain used in all future messages concerning this chain. Allocated by
+   * the sender of this message. It is recommended to generate this ID randomly, with at least
+   * 48 bits of entropy.
+   */
+  chainId: string
+
+  /**
+   * Name of the chain to connect to.
+   */
+  chainName: string
+}
+
+/**
+ * Send a JSON-RPC request concerning the given chain.
+ *
+ * Must not be sent before a {@link ToApplicationChainReady} message has been received.
+ *
+ * If the chain isn't known by the extension, this message is silently discarded. This is
+ * necessary in order to avoid race conditions, as the extension might have sent a
+ * {@link ToApplicationError} message at the same time as this message has been sent.
+ */
+interface ToExtensionRpc {
+  type: "rpc"
+  chainId: string
+  jsonRpcMessage: string
+}
+
+/**
+ * Destroy the given chain.
+ *
+ * Applications are strongly encouraged to send this message when they don't need the given chain
+ * anymore.
+ *
+ * If the chain isn't known by the extension, this message is silently discarded. This is
+ * necessary in order to avoid race conditions, as the extension might have sent a
+ * {@link ToApplicationError} message at the same time as this message has been sent.
+ */
+interface ToExtensionRemoveChain {
+  type: "remove-chain"
+  chainId: string
+}
