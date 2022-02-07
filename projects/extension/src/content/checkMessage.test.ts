@@ -13,6 +13,13 @@ describe("checkMessage works", () => {
       }),
     ).toBe(true)
 
+    expect(
+      checkMessage({
+        origin: "substrate-connect-client",
+        type: "unknown-msg-type",
+      }),
+    ).toBe(false)
+
     // extra fields aren't a problem
     expect(
       checkMessage({

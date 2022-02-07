@@ -39,6 +39,9 @@ export default function checkReceivedMessage(msg: any): msg is ToExtension {
       if (typeof message.chainId !== "string") return false
       break
     }
+
+    default:
+      return false
   }
 
   return true
