@@ -94,7 +94,7 @@ beforeAll(async () => {
   )) as unknown as MockSmoldotLight
 })
 
-describe("SmoldotConnect::Extension", () => {
+describe("SmoldotConnect::smoldot-light", () => {
   describe("client", () => {
     it("does not eagerly instantiate the client", () => {
       getPublicApi({})
