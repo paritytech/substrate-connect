@@ -1,5 +1,6 @@
 import { ExtensionMessageRouter } from "./ExtensionMessageRouter"
 import { debug } from "../utils/debug"
+import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 
 debug("EXTENSION CONTENT SCRIPT RUNNING")
 
@@ -11,7 +12,7 @@ window.document.addEventListener("readystatechange", () => {
     debug("INJECTING EXTENSION SPAN")
 
     const s = document.createElement("span")
-    s.id = "substrateConnectExtensionAvailable"
+    s.id = DOM_ELEMENT_ID
     s.setAttribute("style", "display:none")
     document.body.appendChild(s)
   }
