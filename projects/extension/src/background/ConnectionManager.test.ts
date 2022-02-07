@@ -33,7 +33,7 @@ const createHelper = () => {
       url = TEST_URL,
     ) => {
       const port = new MockPort(chainId, tabId)
-      manager.addChainConnection(port)
+      manager.addPort(port)
 
       let chain: MockedChain | null = null
       if (addChainMsg) {

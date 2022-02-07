@@ -29,6 +29,11 @@ export const wellKnownChains: Map<string, string> = new Map<string, string>([
 
 const l = logger("Extension Connection Manager")
 
+interface Tab {
+  chainConnections: Map<string, ChainConnection>
+  port: chrome.runtime.Port
+}
+
 /**
  * ConnectionManager is the main class involved in managing connections from
  * content-script.  It keeps track of active chain connections and it is also
@@ -40,7 +45,7 @@ export class ConnectionManager extends (EventEmitter as {
 }) {
   #client: Client | null
   #emitScheduled = false
-  readonly #chainConnections: Map<string, ChainConnection> = new Map()
+  readonly #tabs: Map<number | null, Tab> = new Map()
 
   constructor(client: Client) {
     super()
@@ -53,8 +58,8 @@ export class ConnectionManager extends (EventEmitter as {
    * @returns all the connected chains.
    */
   get connections(): ExposedChainConnection[] {
-    return [...this.#chainConnections.values()]
-      .filter((a) => a.chainName)
+    return [...this.#tabs.values()]
+      .flatMap((tab) => [...tab.chainConnections.values()])
       .map((a: ChainConnection) => ({
         chainId: a.chainId,
         url: a.url,
@@ -82,18 +87,22 @@ export class ConnectionManager extends (EventEmitter as {
    * @param tabId - the id of the tab to disconnect
    */
   disconnectTab(tabId: number): void {
-    this.#chainConnections.forEach((a) => {
-      if (a.tabId === tabId) a.port.disconnect()
+    const tab = this.#tabs.get(tabId)
+    if (!tab) return
+
+    tab.chainConnections.forEach((a) => {
+      tab.port.disconnect()
     })
+    this.#tabs.delete(tabId)
   }
 
   /**
-   * addChainConnection registers a new chain-connection to be tracked by the background.
+   * addTab registers a new tab tracked by the background.
    *
    * @param port - a port for a fresh connection that was made to the background
    * by a content script.
    */
-  addChainConnection(port: chrome.runtime.Port): void {
+  addTab(port: chrome.runtime.Port): void {
     if (!this.#client) {
       throw new Error("Smoldot client does not exist.")
     }
@@ -101,40 +110,37 @@ export class ConnectionManager extends (EventEmitter as {
     // if create an `AppMediator` throws, it has sent an error down the
     // port and disconnected it, so we should just ignore
     try {
-      const { name: chainId, sender } = port
-      const tabId: number = sender!.tab!.id!
-      const url: string = sender!.url!
-
-      const healthChecker = smHealthChecker()
-      const id = `${chainId}::${tabId}`
-      const connection: ChainConnection = {
-        id,
-        chainName: "",
-        chainId,
-        tabId,
-        url,
-        port,
-        healthChecker,
-      }
+      const tabId: number = port.sender!.tab!.id!
+      const url: string = port.sender!.url!
 
       const onMessageHandler = (msg: ToExtension) => {
-        this.#handleMessage(msg, connection)
+        const tab = this.#tabs.get(tabId)
+        if (tab) this.#handleMessage(msg, tab)
       }
       port.onMessage.addListener(onMessageHandler)
 
       const onDisconnect = () => {
-        connection.chain && connection.chain.remove()
+        this.disconnectTab(tabId)
 
         port.onMessage.removeListener(onMessageHandler)
         port.onDisconnect.removeListener(onDisconnect)
 
-        if (this.#chainConnections.get(id)?.chainName) this.#emitStateChanged()
+        const tab = this.#tabs.get(tabId)
+        if (tab) {
+          tab.chainConnections.forEach((chain) => {
+            chain.chain?.remove()
+          })
+        }
 
-        this.#chainConnections.delete(id)
+        this.#emitStateChanged()
+        this.#tabs.delete(tabId)
       }
       port.onDisconnect.addListener(onDisconnect)
 
-      this.#chainConnections.set(id, connection)
+      this.#tabs.set(tabId, {
+        chainConnections: new Map(),
+        port,
+      })
     } catch (e) {
       const msg = `Error while connecting to the port ${e}`
       l.error(msg)
@@ -146,7 +152,7 @@ export class ConnectionManager extends (EventEmitter as {
   shutdown(): Promise<void> {
     if (!this.#client) return Promise.resolve()
 
-    this.#chainConnections.forEach((a) => a.port.disconnect())
+    this.#tabs.forEach((tab) => tab.port.disconnect())
     const client = this.#client
     this.#client = null
     return client.terminate()
@@ -165,18 +171,18 @@ export class ConnectionManager extends (EventEmitter as {
     chainSpec: string,
     potentialRelayChainIds: string[],
     jsonRpcCallback?: JsonRpcCallback,
-    tabId?: number,
+    tab?: Tab,
     databaseContent?: string,
   ): Promise<Chain> {
     if (!this.#client) {
       throw new Error("Smoldot client does not exist.")
     }
 
-    const potentialRelayChains = potentialRelayChainIds
-      .map(
-        (chainId) => this.#chainConnections.get(`${chainId}::${tabId}`)?.chain,
-      )
-      .filter((chain): chain is Chain => !!chain)
+    const potentialRelayChains = tab
+      ? potentialRelayChainIds
+          .map((chainId) => tab.chainConnections.get(chainId)?.chain)
+          .filter((chain): chain is Chain => !!chain)
+      : []
 
     return this.#client.addChain({
       chainSpec,
@@ -193,13 +199,28 @@ export class ConnectionManager extends (EventEmitter as {
 
   /** Handles the incoming message that contains Spec. */
   async #handleSpecMessage(
-    chainConnection: ChainConnection,
+    tab: Tab,
+    chainId: string,
     chainSpec: string,
     potentialRelayChainIds: string[],
   ) {
     if (!chainSpec) {
       throw new Error("Relay chain spec was not found")
     }
+
+    const chainConnection: ChainConnection = {
+      chainId,
+      tabId: tab.port.sender!.tab!.id!,
+      healthChecker: smHealthChecker(),
+      url: tab.port.sender!.url!,
+      port: tab.port,
+      chainName: JSON.parse(chainSpec).name.toLowerCase() || "unknown",
+    }
+
+    // TODO: should check for duplicates? or should the content script do that?
+    this.#tabs
+      .get(chainConnection.tabId)!
+      .chainConnections.set(chainId, chainConnection)
 
     const rpcCallback = (rpc: string) => {
       const rpcResp = chainConnection.healthChecker.responsePassThrough(rpc)
@@ -210,14 +231,11 @@ export class ConnectionManager extends (EventEmitter as {
         })
     }
 
-    chainConnection.chainName =
-      JSON.parse(chainSpec).name.toLowerCase() || "unknown"
-
     const chainPromise: Promise<Chain> = this.addChain(
       chainSpec,
       potentialRelayChainIds,
       rpcCallback,
-      chainConnection.tabId,
+      tab,
     )
 
     this.#emitStateChanged()
@@ -239,13 +257,16 @@ export class ConnectionManager extends (EventEmitter as {
     // for smoldot to return the chain. The way to know this is by checking
     // whether this `chainConnection` is still present insinde `#chainConnections`.
     // If it isn't, that means that the port got disconnected, so we should stop.
-    if (!this.#chainConnections.has(chainConnection.id)) {
+    if (
+      !this.#tabs.has(chainConnection.tabId) ||
+      !this.#tabs.get(chainConnection.tabId)!.chainConnections.has(chainId)
+    ) {
       chain.remove()
       return
     }
 
     chainConnection.chain = chain
-    chainConnection.port.postMessage({ type: "chain-ready" })
+    chainConnection.port.postMessage({ type: "chain-ready", chainId })
 
     // Initialize healthChecker
     chainConnection.healthChecker.setSendJsonRpc((rpc: string) => {
@@ -262,17 +283,23 @@ export class ConnectionManager extends (EventEmitter as {
     })
   }
 
-  #handleMessage(msg: ToExtension, chainConnection: ChainConnection): void {
-    if (msg.type === "remove-chain") return chainConnection.port.disconnect()
+  #handleMessage(msg: ToExtension, tab: Tab): void {
+    if (msg.type === "remove-chain") {
+      const chain = tab.chainConnections.get(msg.chainId)
+      if (chain) {
+        chain.chain?.remove()
+        tab.chainConnections.delete(msg.chainId)
+      }
+
+      return
+    }
 
     if (msg.type === "rpc") {
-      if (chainConnection.chain)
-        return chainConnection.healthChecker.sendJsonRpc(msg.jsonRpcMessage)
-
-      const errorMsg =
-        "RPC request received befor the chain was successfully added"
-      l.error(errorMsg)
-      this.#handleError(chainConnection.port, new Error(errorMsg))
+      const chain = tab.chainConnections.get(msg.chainId)
+      if (chain) {
+        // TODO: detect if chain not initialized yet
+        chain.healthChecker.sendJsonRpc(msg.jsonRpcMessage)
+      }
       return
     }
 
@@ -282,16 +309,14 @@ export class ConnectionManager extends (EventEmitter as {
         : [wellKnownChains.get(msg.chainName)!, [] as string[]]
 
     this.#handleSpecMessage(
-      chainConnection,
+      tab,
+      msg.chainId,
       chainSpec,
       potentialRelayChainIds,
     ).catch((e) => {
       const errorMsg = `An error happened while adding the chain ${e}`
       l.error(errorMsg)
-      this.#handleError(
-        chainConnection.port,
-        e instanceof Error ? e : new Error(errorMsg),
-      )
+      this.#handleError(tab.port, e instanceof Error ? e : new Error(errorMsg))
     })
   }
 }
