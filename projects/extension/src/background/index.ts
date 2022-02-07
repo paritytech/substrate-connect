@@ -98,7 +98,7 @@ chrome.runtime.onStartup.addListener(() => {
 })
 
 chrome.runtime.onConnect.addListener((port) => {
-  manager.addPort(port)
+  manager.addTab(port)
 })
 
 chrome.storage.local.get(["notifications"], (result) => {
