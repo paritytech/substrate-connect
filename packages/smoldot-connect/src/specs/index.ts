@@ -4,6 +4,7 @@ export async function getSpec(chain: string): Promise<string> {
     | { default: string }
 
   return typeof specRaw === "string"
-    ? specRaw
+    ? /* istanbul ignore next line */
+      specRaw
     : (specRaw as unknown as { default: string }).default
 }
