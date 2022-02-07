@@ -13,7 +13,6 @@ import {
   MockPort,
   MockSmoldotClient,
   TEST_URL,
-  HeaderlessToExtension,
 } from "../mocks"
 import { ToExtension } from "@substrate/connect-extension-protocol"
 
@@ -29,11 +28,11 @@ const createHelper = () => {
     connectPort: (
       chainId: string,
       tabId: number,
-      addChainMsg?: HeaderlessToExtension<ToExtension>,
+      addChainMsg?: ToExtension,
       url = TEST_URL,
     ) => {
       const port = new MockPort(chainId, tabId)
-      manager.addPort(port)
+      manager.addTab(port)
 
       let chain: MockedChain | null = null
       if (addChainMsg) {
@@ -77,6 +76,8 @@ describe("ConnectionManager", () => {
     expect(onStateChanged).not.toHaveBeenCalled()
 
     port._sendExtensionMessage({
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "add-well-known-chain",
       chainName: "polkadot",
     })
@@ -126,6 +127,8 @@ describe("ConnectionManager", () => {
     expect(client.chains.size).toBe(0)
 
     port._sendExtensionMessage({
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "add-well-known-chain",
       chainName: "polkadot",
     })
@@ -148,11 +151,15 @@ describe("ConnectionManager", () => {
     expect(client.chains.size).toBe(0)
 
     port._sendExtensionMessage({
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "add-well-known-chain",
       chainName: "polkadot",
     })
 
     port._sendExtensionMessage({
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "rpc",
       jsonRpcMessage: JSON.stringify({ jsonrpc: "2.0", id: "1" }),
     })
@@ -161,6 +168,8 @@ describe("ConnectionManager", () => {
 
     expect(port.postedMessages).toEqual([
       {
+        origin: "substrate-connect-extension",
+        chainId: "foo",
         type: "error",
         errorMessage:
           "RPC request received befor the chain was successfully added",
@@ -172,6 +181,8 @@ describe("ConnectionManager", () => {
     const { connectPort } = helper
 
     const { port, chain } = connectPort("chainId", 1, {
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "add-well-known-chain",
       chainName: "polkadot",
     })
@@ -179,6 +190,8 @@ describe("ConnectionManager", () => {
     await wait(0)
 
     port._sendExtensionMessage({
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "rpc",
       jsonRpcMessage: JSON.stringify({ jsonrpc: "2.0", id: "1" }),
     })
@@ -207,9 +220,13 @@ describe("ConnectionManager", () => {
 
     expect(port.postedMessages).toEqual([
       {
+        origin: "substrate-connect-extension",
+        chainId: "foo",
         type: "chain-ready",
       },
       {
+        origin: "substrate-connect-extension",
+        chainId: "foo",
         type: "rpc",
         jsonRpcMessage: JSON.stringify({
           jsonrpc: "2.0",
@@ -223,6 +240,8 @@ describe("ConnectionManager", () => {
   it("correctly errors when passed a wrong well-known-chain", async () => {
     const { connectPort } = helper
     const { port } = connectPort("chainId", 1, {
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "add-well-known-chain",
       chainName: "nonexisting",
     })
@@ -231,6 +250,8 @@ describe("ConnectionManager", () => {
 
     expect(port.postedMessages).toEqual([
       {
+        origin: "substrate-connect-extension",
+        chainId: "foo",
         type: "error",
         errorMessage: "Relay chain spec was not found",
       },
@@ -243,6 +264,8 @@ describe("ConnectionManager", () => {
     manager.on("stateChanged", onStateChanged)
 
     const { chain, chainId, tabId, url } = connectPort("chainId", 1, {
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "add-well-known-chain",
       chainName: "polkadot",
     })
@@ -293,6 +316,8 @@ describe("ConnectionManager", () => {
       .map((idx) => {
         const tabId = Math.floor(idx / 3)
         return connectPort(idx.toString(), tabId, {
+          origin: "substrate-connect-client",
+          chainId: "foo",
           type: "add-well-known-chain",
           chainName: "polkadot",
         })
@@ -337,6 +362,8 @@ describe("ConnectionManager", () => {
     const activeChains = allIds.map((idx) => {
       const tabId = Math.floor(idx / 3)
       const { chain } = connectPort(idx.toString(), tabId, {
+        origin: "substrate-connect-client",
+        chainId: "foo",
         type: "add-well-known-chain",
         chainName: "polkadot",
       })
@@ -348,6 +375,8 @@ describe("ConnectionManager", () => {
     // we will try to pass all the ids as potentialRelayChainIds, including
     // the ones that are not in our tab
     const { chain: newChain } = connectPort("lastOne", 0, {
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "add-chain",
       chainSpec: JSON.stringify({ name: "parachain" }),
       potentialRelayChainIds: allIds.map((id) => id.toString()),
@@ -381,11 +410,15 @@ describe("ConnectionManager", () => {
     const chainId = "same"
 
     const { chain: tab1Chain, port: tab1Port } = connectPort(chainId, 1, {
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "add-well-known-chain",
       chainName: "polkadot",
     })
 
     const { chain: tab2Chain, port: tab2Port } = connectPort(chainId, 2, {
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "add-well-known-chain",
       chainName: "polkadot",
     })
@@ -398,11 +431,15 @@ describe("ConnectionManager", () => {
 
     // let's make sure that each chain receives *only* their own messages
     tab1Port._sendExtensionMessage({
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "rpc",
       jsonRpcMessage: JSON.stringify({ jsonrpc: "2.0", id: "ping1" }),
     })
 
     tab2Port._sendExtensionMessage({
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "rpc",
       jsonRpcMessage: JSON.stringify({ jsonrpc: "2.0", id: "ping2" }),
     })
@@ -439,9 +476,13 @@ describe("ConnectionManager", () => {
 
     expect(tab1Port.postedMessages).toEqual([
       {
+        origin: "substrate-connect-extension",
+        chainId: "foo",
         type: "chain-ready",
       },
       {
+        origin: "substrate-connect-extension",
+        chainId: "foo",
         type: "rpc",
         jsonRpcMessage: JSON.stringify({
           jsonrpc: "2.0",
@@ -452,9 +493,13 @@ describe("ConnectionManager", () => {
     ])
     expect(tab2Port.postedMessages).toEqual([
       {
+        origin: "substrate-connect-extension",
+        chainId: "foo",
         type: "chain-ready",
       },
       {
+        origin: "substrate-connect-extension",
+        chainId: "foo",
         type: "rpc",
         jsonRpcMessage: JSON.stringify({
           jsonrpc: "2.0",
@@ -469,6 +514,8 @@ describe("ConnectionManager", () => {
     const { connectPort, client } = helper
 
     const { port } = connectPort("chainId", 1, {
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "add-well-known-chain",
       chainName: "polkadot",
     })
@@ -490,6 +537,8 @@ describe("ConnectionManager", () => {
     const { connectPort, client } = helper
 
     const { port } = connectPort("chainId", 1, {
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "add-well-known-chain",
       chainName: "polkadot",
     })
@@ -499,11 +548,15 @@ describe("ConnectionManager", () => {
     expect(client.chains.size).toBe(1)
 
     port._sendExtensionMessage({
+      origin: "substrate-connect-client",
+      chainId: "foo",
       type: "remove-chain",
     })
 
     expect(port.postedMessages).toEqual([
       {
+        origin: "substrate-connect-extension",
+        chainId: "foo",
         type: "chain-ready",
       },
     ])

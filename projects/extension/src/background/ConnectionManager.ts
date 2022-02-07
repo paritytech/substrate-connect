@@ -89,11 +89,7 @@ export class ConnectionManager extends (EventEmitter as {
   disconnectTab(tabId: number): void {
     const tab = this.#tabs.get(tabId)
     if (!tab) return
-
-    tab.chainConnections.forEach((a) => {
-      tab.port.disconnect()
-    })
-    this.#tabs.delete(tabId)
+    tab.port.disconnect()
   }
 
   /**
@@ -120,8 +116,6 @@ export class ConnectionManager extends (EventEmitter as {
       port.onMessage.addListener(onMessageHandler)
 
       const onDisconnect = () => {
-        this.disconnectTab(tabId)
-
         port.onMessage.removeListener(onMessageHandler)
         port.onDisconnect.removeListener(onDisconnect)
 
@@ -226,6 +220,8 @@ export class ConnectionManager extends (EventEmitter as {
       const rpcResp = chainConnection.healthChecker.responsePassThrough(rpc)
       if (rpcResp)
         chainConnection.port.postMessage({
+          origin: "substrate-connect-extension",
+          chainId,
           type: "rpc",
           jsonRpcMessage: rpcResp,
         })
@@ -266,7 +262,11 @@ export class ConnectionManager extends (EventEmitter as {
     }
 
     chainConnection.chain = chain
-    chainConnection.port.postMessage({ type: "chain-ready", chainId })
+    chainConnection.port.postMessage({ 
+      origin: "substrate-connect-extension",
+      type: "chain-ready",
+      chainId
+    })
 
     // Initialize healthChecker
     chainConnection.healthChecker.setSendJsonRpc((rpc: string) => {

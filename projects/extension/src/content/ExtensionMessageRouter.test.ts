@@ -144,6 +144,8 @@ describe("Connection and forward cases", () => {
     const handler = jest.fn()
     window.addEventListener("message", handler)
     port._sendAppMessage({
+      origin: "substrate-connect-extension",
+      chainId: "foo",
       type: "rpc",
       jsonRpcMessage: '{"id:":1,"jsonrpc:"2.0","result":666}',
     })
@@ -175,7 +177,12 @@ describe("Connection and forward cases", () => {
 
     const handler = jest.fn()
     window.addEventListener("message", handler)
-    port._sendAppMessage({ type: "error", errorMessage: "Boom!" })
+    port._sendAppMessage({ 
+      origin: "substrate-connect-extension",
+      chainId: "foo",
+      type: "error",
+      errorMessage: "Boom!"
+    })
     await waitForMessageToBePosted()
 
     expect(handler).toHaveBeenCalled()

@@ -14,22 +14,10 @@ const noop: any = Function.prototype
 
 export const TEST_URL = "https://test.com"
 
-export type HeaderlessToExtension<T extends ToExtension> = T extends {
-  origin: "substrate-connect-client"
-} & infer V
-  ? Omit<V, "chainId">
-  : unknown
-
-export type HeaderlessToApplication<T extends ToApplication> = T extends {
-  origin: "substrate-connect-extension"
-} & infer V
-  ? Omit<V, "chainId">
-  : unknown
-
 export class MockPort implements chrome.runtime.Port {
   sender: any
   connected = true
-  postedMessages: Array<any> = []
+  postedMessages: Array<ToApplication> = []
   readonly name: string
   #callbacks = {
     onDisconnect: noop,
@@ -54,15 +42,11 @@ export class MockPort implements chrome.runtime.Port {
     this.sender.tab.id = id
   }
 
-  _sendExtensionMessage(message: HeaderlessToExtension<ToExtension>): void {
-    this.#callbacks.onMessageCb({
-      ...message,
-      chainId: this.name,
-      origin: "substrate-connect-client",
-    })
+  _sendExtensionMessage(message: ToExtension): void {
+    this.#callbacks.onMessageCb(message)
   }
 
-  _sendAppMessage(msg: HeaderlessToApplication<ToApplication>): void {
+  _sendAppMessage(msg: ToApplication): void {
     this.#callbacks.onMessageCb(msg)
   }
 
