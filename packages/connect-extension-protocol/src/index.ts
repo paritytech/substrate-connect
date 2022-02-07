@@ -10,8 +10,8 @@
  * If a web page wants to use the features of the substrate-connect extension,
  * it must first check whether the extension is available by checking whether
  * there exists an element on the DOM whose `id` is equal to
- * `substrateConnectExtensionAvailable`. This DOM element is automatically
- * inserted by the extension when the page loads.
+ * {@link ToExtensionAddChain}. This DOM element is automatically inserted by
+ * the extension when the page loads.
  *
  * If so, the web page can make use of the extension by sending messages on
  * its `window` by using `Window.postMessage`. These messages must conform to
@@ -97,6 +97,11 @@
 // extremely careful when doing modifications: either the modifications are
 // completely backwards-compatible, or an upgrade path must be carefully
 // planned.
+
+/**
+ * `id` of the DOM elemeent automatically inserted by the extension when a web page loads.
+ */
+export const DOM_ELEMENT_ID: string = "substrateConnectExtensionAvailable"
 
 /**
  * Messages sent by the extension always conform to this interface.
