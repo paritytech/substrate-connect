@@ -87,7 +87,7 @@ const createChain = (
       rej(
         new Error(
           data.type === "error"
-            ? data.payload
+            ? data.errorMessage
             : "Unexpected message received from the extension while waiting for 'chain-ready' message",
         ),
       )
@@ -154,7 +154,7 @@ export class ExtensionProvider implements ProviderInterface {
     const { type } = data
     if (type === "error") {
       this.#isConnected = false
-      const error = new Error(data.payload)
+      const error = new Error(data.errorMessage)
       this.emit("error", error)
       // reject all hanging requests
       eraseRecord(this.#handlers, (h) => h.callback(error, undefined))
@@ -162,9 +162,9 @@ export class ExtensionProvider implements ProviderInterface {
       return
     }
 
-    if (type === "rpc" && data.payload) {
-      l.debug(() => ["received", data.payload])
-      const response = JSON.parse(data.payload) as JsonRpcResponse
+    if (type === "rpc" && data.jsonRpcMessage) {
+      l.debug(() => ["received", data.jsonRpcMessage])
+      const response = JSON.parse(data.jsonRpcMessage) as JsonRpcResponse
 
       return isUndefined(response.method)
         ? this.#onMessageResult(response)
@@ -299,14 +299,12 @@ export class ExtensionProvider implements ProviderInterface {
       ...(SupportedChains[this.#chainSpecs as SupportedChains]
         ? {
             type: "add-well-known-chain" as const,
-            payload: this.#chainSpecs,
+            chainName: this.#chainSpecs,
           }
         : {
             type: "add-chain" as const,
-            payload: {
-              chainSpec: this.#chainSpecs,
-              potentialRelayChainIds: [],
-            },
+            chainSpec: this.#chainSpecs,
+            potentialRelayChainIds: [],
           }),
     }
     await createChain(specMsg)
@@ -317,10 +315,8 @@ export class ExtensionProvider implements ProviderInterface {
       origin: CLIENT_ORIGIN,
       chainId: this.#chainId,
       type: "add-chain" as const,
-      payload: {
-        chainSpec: this.#parachainSpecs,
-        potentialRelayChainIds: [specMsg.chainId],
-      },
+      chainSpec: this.#parachainSpecs,
+      potentialRelayChainIds: [specMsg.chainId],
     })
   }
 
@@ -441,7 +437,7 @@ export class ExtensionProvider implements ProviderInterface {
         origin: CLIENT_ORIGIN,
         chainId: this.#chainId,
         type: "rpc",
-        payload: json,
+        jsonRpcMessage: json,
       }
       sendMessage(rpcMsg)
     })

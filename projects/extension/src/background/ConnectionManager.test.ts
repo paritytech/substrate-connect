@@ -78,7 +78,7 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     await wait(0)
@@ -127,7 +127,7 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
     await wait(0)
 
@@ -149,12 +149,12 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     port._sendExtensionMessage({
       type: "rpc",
-      payload: JSON.stringify({ jsonrpc: "2.0", id: "1" }),
+      jsonRpcMessage: JSON.stringify({ jsonrpc: "2.0", id: "1" }),
     })
 
     await wait(0)
@@ -162,7 +162,8 @@ describe("ConnectionManager", () => {
     expect(port.postedMessages).toEqual([
       {
         type: "error",
-        payload: "RPC request received befor the chain was successfully added",
+        errorMessage:
+          "RPC request received befor the chain was successfully added",
       },
     ])
   })
@@ -172,14 +173,14 @@ describe("ConnectionManager", () => {
 
     const { port, chain } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     await wait(0)
 
     port._sendExtensionMessage({
       type: "rpc",
-      payload: JSON.stringify({ jsonrpc: "2.0", id: "1" }),
+      jsonRpcMessage: JSON.stringify({ jsonrpc: "2.0", id: "1" }),
     })
 
     await wait(0)
@@ -210,7 +211,7 @@ describe("ConnectionManager", () => {
       },
       {
         type: "rpc",
-        payload: JSON.stringify({
+        jsonRpcMessage: JSON.stringify({
           jsonrpc: "2.0",
           id: "1",
           result: "{}",
@@ -225,22 +226,17 @@ describe("ConnectionManager", () => {
 
     port._sendExtensionMessage({
       type: "foo" as "rpc",
-      payload: "",
+      jsonRpcMessage: "",
     })
 
-    expect(port.postedMessages).toEqual([
-      {
-        type: "error",
-        payload: `Unrecognised message type 'foo' or payload '' received from content script`,
-      },
-    ])
+    expect(port.postedMessages[0].type).toEqual("error")
   })
 
   it("correctly errors when passed a wrong well-known-chain", async () => {
     const { connectPort } = helper
     const { port } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "nonexisting",
+      chainName: "nonexisting",
     })
 
     await wait(0)
@@ -248,7 +244,7 @@ describe("ConnectionManager", () => {
     expect(port.postedMessages).toEqual([
       {
         type: "error",
-        payload: "Relay chain spec was not found",
+        errorMessage: "Relay chain spec was not found",
       },
     ])
   })
@@ -260,7 +256,7 @@ describe("ConnectionManager", () => {
 
     const { chain, chainId, tabId, url } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     await wait(0)
@@ -310,7 +306,7 @@ describe("ConnectionManager", () => {
         const tabId = Math.floor(idx / 3)
         return connectPort(idx.toString(), tabId, {
           type: "add-well-known-chain",
-          payload: "polkadot",
+          chainName: "polkadot",
         })
       })
     await wait(0)
@@ -354,7 +350,7 @@ describe("ConnectionManager", () => {
       const tabId = Math.floor(idx / 3)
       const { chain } = connectPort(idx.toString(), tabId, {
         type: "add-well-known-chain",
-        payload: "polkadot",
+        chainName: "polkadot",
       })
       return chain
     })
@@ -365,10 +361,8 @@ describe("ConnectionManager", () => {
     // the ones that are not in our tab
     const { chain: newChain } = connectPort("lastOne", 0, {
       type: "add-chain",
-      payload: {
-        chainSpec: JSON.stringify({ name: "parachain" }),
-        potentialRelayChainIds: allIds.map((id) => id.toString()),
-      },
+      chainSpec: JSON.stringify({ name: "parachain" }),
+      potentialRelayChainIds: allIds.map((id) => id.toString()),
     })
 
     await wait(0)
@@ -400,12 +394,12 @@ describe("ConnectionManager", () => {
 
     const { chain: tab1Chain, port: tab1Port } = connectPort(chainId, 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     const { chain: tab2Chain, port: tab2Port } = connectPort(chainId, 2, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     await wait(0)
@@ -417,12 +411,12 @@ describe("ConnectionManager", () => {
     // let's make sure that each chain receives *only* their own messages
     tab1Port._sendExtensionMessage({
       type: "rpc",
-      payload: JSON.stringify({ jsonrpc: "2.0", id: "ping1" }),
+      jsonRpcMessage: JSON.stringify({ jsonrpc: "2.0", id: "ping1" }),
     })
 
     tab2Port._sendExtensionMessage({
       type: "rpc",
-      payload: JSON.stringify({ jsonrpc: "2.0", id: "ping2" }),
+      jsonRpcMessage: JSON.stringify({ jsonrpc: "2.0", id: "ping2" }),
     })
 
     await wait(0)
@@ -461,7 +455,7 @@ describe("ConnectionManager", () => {
       },
       {
         type: "rpc",
-        payload: JSON.stringify({
+        jsonRpcMessage: JSON.stringify({
           jsonrpc: "2.0",
           id: "ping1",
           result: '"pong1"',
@@ -474,7 +468,7 @@ describe("ConnectionManager", () => {
       },
       {
         type: "rpc",
-        payload: JSON.stringify({
+        jsonRpcMessage: JSON.stringify({
           jsonrpc: "2.0",
           id: "ping2",
           result: '"pong2"',
@@ -488,7 +482,7 @@ describe("ConnectionManager", () => {
 
     const { port } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     expect(client.chains.size).toBe(1)
@@ -509,7 +503,7 @@ describe("ConnectionManager", () => {
 
     const { port } = connectPort("chainId", 1, {
       type: "add-well-known-chain",
-      payload: "polkadot",
+      chainName: "polkadot",
     })
 
     await wait(0)

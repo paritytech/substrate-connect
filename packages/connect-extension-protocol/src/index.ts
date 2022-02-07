@@ -105,7 +105,7 @@ interface ToApplicationHeader {
 interface ToApplicationError {
   type: "error"
   chainId: string
-  payload: string
+  errorMessage: string
 }
 
 interface ToApplicationChainReady {
@@ -116,7 +116,7 @@ interface ToApplicationChainReady {
 interface ToApplicationRpc {
   type: "rpc"
   chainId: string
-  payload: string
+  jsonRpcMessage: string
 }
 
 export type ToApplication = ToApplicationHeader &
@@ -129,19 +129,20 @@ interface ToExtensionHeader {
 interface ToExtensionAddChain {
   type: "add-chain"
   chainId: string
-  payload: { chainSpec: string; potentialRelayChainIds: Array<string> }
+  chainSpec: string
+  potentialRelayChainIds: string[]
 }
 
 interface ToExtensionAddWellKnownChain {
   type: "add-well-known-chain"
   chainId: string
-  payload: string
+  chainName: string
 }
 
 interface ToExtensionRpc {
   type: "rpc"
   chainId: string
-  payload: string
+  jsonRpcMessage: string
 }
 
 interface ToExtensionRemoveChain {
