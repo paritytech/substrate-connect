@@ -80,7 +80,9 @@ export class ScProvider implements ProviderInterface {
     parachainSpec?: string,
     autoConnect = true,
   ) {
-    const isExtension = !!document.getElementById("substrateExtension")
+    const isExtension = !!document.getElementById(
+      "substrateConnectExtensionAvailable",
+    )
 
     this.#providerP = this.internalProvider(
       isExtension,

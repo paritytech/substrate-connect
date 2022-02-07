@@ -4,7 +4,7 @@ const pkg_name = process.env.PKG_NAME as string
 const version = process.env.PKG_VERSION as string
 
 /* spanId is the wellknown id of the span to be injected */
-export const spanId = "substrateExtension"
+export const spanId = "substrateConnectExtensionAvailable"
 
 /* ExtensionPageInjector is the part of the content script that injects a span
  * with a wellknown id into the page so that a page that is using substrate
