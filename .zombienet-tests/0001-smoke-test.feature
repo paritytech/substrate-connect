@@ -8,4 +8,4 @@ bob: is up
 alice: reports block height is at least 5 within 120 seconds
 alice: reports finalised height is at least 2 within 120 seconds
 alice: js-script ./0001-custom.js return is equal to 12 within 120 seconds
-bob: js-script ./0002-getHeaders.js within 120 seconds
+bob: js-script ./0001-getHeaders.js within 140 seconds
