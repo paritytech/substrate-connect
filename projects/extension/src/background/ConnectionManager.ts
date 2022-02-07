@@ -83,7 +83,10 @@ export class ConnectionManager extends (EventEmitter as {
    */
   disconnectTab(tabId: number): void {
     this.#chainConnections.forEach((a) => {
-      if (a.tabId === tabId) a.port.disconnect()
+      if (a.tabId === tabId) {
+        this.#chainConnections.delete(a.id);
+        a.port.disconnect()
+      }
     })
   }
 
