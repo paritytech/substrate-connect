@@ -20,10 +20,10 @@ import {
 import { SupportedChains } from "../specs/index.js"
 import { getRandomChainId } from "./getRandomChainId.js"
 
-const CONTENT_SCRIPT_ORIGIN = "content-script"
-const EXTENSION_PROVIDER_ORIGIN = "extension-provider"
+const EXTENSION_ORIGIN = "substrate-connect-extension"
+const CLIENT_ORIGIN = "substrate-connect-client"
 
-const l = logger(EXTENSION_PROVIDER_ORIGIN)
+const l = logger(CLIENT_ORIGIN)
 
 interface RpcStateAwaiting {
   callback: ProviderInterfaceCallback
@@ -74,7 +74,7 @@ const createChain = (
   new Promise<void>((res, rej) => {
     const waitForChainCb = ({ data }: MessageEvent<ToApplication>) => {
       if (
-        data.origin !== CONTENT_SCRIPT_ORIGIN ||
+        data.origin !== EXTENSION_ORIGIN ||
         data.chainId !== specMsg.chainId
       ) {
         return
@@ -87,7 +87,7 @@ const createChain = (
       rej(
         new Error(
           data.type === "error"
-            ? data.payload
+            ? data.errorMessage
             : "Unexpected message received from the extension while waiting for 'chain-ready' message",
         ),
       )
@@ -154,7 +154,7 @@ export class ExtensionProvider implements ProviderInterface {
     const { type } = data
     if (type === "error") {
       this.#isConnected = false
-      const error = new Error(data.payload)
+      const error = new Error(data.errorMessage)
       this.emit("error", error)
       // reject all hanging requests
       eraseRecord(this.#handlers, (h) => h.callback(error, undefined))
@@ -162,9 +162,9 @@ export class ExtensionProvider implements ProviderInterface {
       return
     }
 
-    if (type === "rpc" && data.payload) {
-      l.debug(() => ["received", data.payload])
-      const response = JSON.parse(data.payload) as JsonRpcResponse
+    if (type === "rpc" && data.jsonRpcMessage) {
+      l.debug(() => ["received", data.jsonRpcMessage])
+      const response = JSON.parse(data.jsonRpcMessage) as JsonRpcResponse
 
       return isUndefined(response.method)
         ? this.#onMessageResult(response)
@@ -294,19 +294,17 @@ export class ExtensionProvider implements ProviderInterface {
     const specMsg: ToExtension & {
       type: "add-well-known-chain" | "add-chain"
     } = {
-      origin: EXTENSION_PROVIDER_ORIGIN,
+      origin: CLIENT_ORIGIN,
       chainId: this.#parachainSpecs ? getRandomChainId() : this.#chainId,
       ...(SupportedChains[this.#chainSpecs as SupportedChains]
         ? {
             type: "add-well-known-chain" as const,
-            payload: this.#chainSpecs,
+            chainName: this.#chainSpecs,
           }
         : {
             type: "add-chain" as const,
-            payload: {
-              chainSpec: this.#chainSpecs,
-              potentialRelayChainIds: [],
-            },
+            chainSpec: this.#chainSpecs,
+            potentialRelayChainIds: [],
           }),
     }
     await createChain(specMsg)
@@ -314,13 +312,11 @@ export class ExtensionProvider implements ProviderInterface {
     if (!this.#parachainSpecs) return
 
     await createChain({
-      origin: EXTENSION_PROVIDER_ORIGIN,
+      origin: CLIENT_ORIGIN,
       chainId: this.#chainId,
       type: "add-chain" as const,
-      payload: {
-        chainSpec: this.#parachainSpecs,
-        potentialRelayChainIds: [specMsg.chainId],
-      },
+      chainSpec: this.#parachainSpecs,
+      potentialRelayChainIds: [specMsg.chainId],
     })
   }
 
@@ -350,7 +346,7 @@ export class ExtensionProvider implements ProviderInterface {
       "message",
       ({ data }: MessageEvent<ToApplication>) => {
         if (
-          data.origin === CONTENT_SCRIPT_ORIGIN &&
+          data.origin === EXTENSION_ORIGIN &&
           data.chainId === this.#chainId
         ) {
           this.#handleMessage(data)
@@ -372,7 +368,7 @@ export class ExtensionProvider implements ProviderInterface {
       clearInterval(this.#connectionStatePingerId)
     }
     sendMessage({
-      origin: EXTENSION_PROVIDER_ORIGIN,
+      origin: CLIENT_ORIGIN,
       chainId: this.#chainId,
       type: "remove-chain",
     })
@@ -438,10 +434,10 @@ export class ExtensionProvider implements ProviderInterface {
       }
 
       const rpcMsg: ToExtension = {
-        origin: EXTENSION_PROVIDER_ORIGIN,
+        origin: CLIENT_ORIGIN,
         chainId: this.#chainId,
         type: "rpc",
-        payload: json,
+        jsonRpcMessage: json,
       }
       sendMessage(rpcMsg)
     })

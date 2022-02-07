@@ -187,7 +187,7 @@ export class ConnectionManager extends (EventEmitter as {
   }
 
   #handleError(port: chrome.runtime.Port, e: Error) {
-    port.postMessage({ type: "error", payload: e.message })
+    port.postMessage({ type: "error", errorMessage: e.message })
     port.disconnect()
   }
 
@@ -204,7 +204,10 @@ export class ConnectionManager extends (EventEmitter as {
     const rpcCallback = (rpc: string) => {
       const rpcResp = chainConnection.healthChecker.responsePassThrough(rpc)
       if (rpcResp)
-        chainConnection.port.postMessage({ type: "rpc", payload: rpcResp })
+        chainConnection.port.postMessage({
+          type: "rpc",
+          jsonRpcMessage: rpcResp,
+        })
     }
 
     chainConnection.chainName =
@@ -262,9 +265,9 @@ export class ConnectionManager extends (EventEmitter as {
   #handleMessage(msg: ToExtension, chainConnection: ChainConnection): void {
     if (msg.type === "remove-chain") return chainConnection.port.disconnect()
 
-    if (msg.type === "rpc" && msg.payload) {
+    if (msg.type === "rpc" && msg.jsonRpcMessage) {
       if (chainConnection.chain)
-        return chainConnection.healthChecker.sendJsonRpc(msg.payload)
+        return chainConnection.healthChecker.sendJsonRpc(msg.jsonRpcMessage)
 
       const errorMsg =
         "RPC request received befor the chain was successfully added"
@@ -274,18 +277,20 @@ export class ConnectionManager extends (EventEmitter as {
     }
 
     if (
-      !msg.payload ||
+      (msg.type === "add-chain" &&
+        (!msg.chainSpec || !msg.potentialRelayChainIds)) ||
+      (msg.type === "add-well-known-chain" && !msg.chainName) ||
       (msg.type !== "add-chain" && msg.type !== "add-well-known-chain")
     ) {
-      const errorMsg = `Unrecognised message type '${msg.type}' or payload '${msg.payload}' received from content script`
+      const errorMsg = `Unrecognized message '${msg}' received from content script`
       l.error(errorMsg)
       return this.#handleError(chainConnection.port, new Error(errorMsg))
     }
 
     const [chainSpec, potentialRelayChainIds]: [string, string[]] =
       msg.type === "add-chain"
-        ? [msg.payload.chainSpec, msg.payload.potentialRelayChainIds]
-        : [wellKnownChains.get(msg.payload)!, [] as string[]]
+        ? [msg.chainSpec, msg.potentialRelayChainIds]
+        : [wellKnownChains.get(msg.chainName)!, [] as string[]]
 
     this.#handleSpecMessage(
       chainConnection,

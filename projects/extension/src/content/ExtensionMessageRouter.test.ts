@@ -39,8 +39,8 @@ describe("Disconnect and incorrect cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      payload: "westend",
-      origin: "extension-provider",
+      chainName: "westend",
+      origin: "substrate-connect-client",
     })
     await waitForMessageToBePosted()
 
@@ -50,7 +50,7 @@ describe("Disconnect and incorrect cases", () => {
     await waitForMessageToBePosted()
 
     const expectedMessage: Partial<ToApplication> = {
-      origin: "content-script",
+      origin: "substrate-connect-extension",
       type: "error",
     }
 
@@ -88,8 +88,8 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId,
       type: "add-well-known-chain",
-      payload: "westend",
-      origin: "extension-provider",
+      chainName: "westend",
+      origin: "substrate-connect-client",
     })
 
     await waitForMessageToBePosted()
@@ -105,17 +105,17 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      payload: "westend",
-      origin: "extension-provider",
+      chainName: "westend",
+      origin: "substrate-connect-client",
     })
     await waitForMessageToBePosted()
 
     // rpc
     const rpcMessage: ToExtension = {
       chainId: "test",
-      origin: "extension-provider",
+      origin: "substrate-connect-client",
       type: "rpc",
-      payload:
+      jsonRpcMessage:
         '{"id":1,"jsonrpc":"2.0","method":"state_getStorage","params":["<hash>"]}',
     }
     sendMessage(rpcMessage)
@@ -124,7 +124,7 @@ describe("Connection and forward cases", () => {
     expect(router.connections.length).toBe(1)
     const sample = {
       type: rpcMessage.type,
-      payload: rpcMessage.payload,
+      jsonRpcMessage: rpcMessage.jsonRpcMessage,
     }
     expect(port.postedMessages[port.postedMessages.length - 1]).toEqual(sample)
   })
@@ -136,8 +136,8 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      payload: "westend",
-      origin: "extension-provider",
+      chainName: "westend",
+      origin: "substrate-connect-client",
     })
     await waitForMessageToBePosted()
 
@@ -145,7 +145,7 @@ describe("Connection and forward cases", () => {
     window.addEventListener("message", handler)
     port._sendAppMessage({
       type: "rpc",
-      payload: '{"id:":1,"jsonrpc:"2.0","result":666}',
+      jsonRpcMessage: '{"id:":1,"jsonrpc:"2.0","result":666}',
     })
     await waitForMessageToBePosted()
 
@@ -155,9 +155,9 @@ describe("Connection and forward cases", () => {
     const forwarded = handler.mock.calls[0][0] as MessageEvent
     expect(forwarded.data).toEqual({
       chainId: "test",
-      origin: "content-script",
+      origin: "substrate-connect-extension",
       type: "rpc",
-      payload: '{"id:":1,"jsonrpc:"2.0","result":666}',
+      jsonRpcMessage: '{"id:":1,"jsonrpc:"2.0","result":666}',
     })
   })
 
@@ -168,23 +168,23 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      payload: "westend",
-      origin: "extension-provider",
+      chainName: "westend",
+      origin: "substrate-connect-client",
     })
     await waitForMessageToBePosted()
 
     const handler = jest.fn()
     window.addEventListener("message", handler)
-    port._sendAppMessage({ type: "error", payload: "Boom!" })
+    port._sendAppMessage({ type: "error", errorMessage: "Boom!" })
     await waitForMessageToBePosted()
 
     expect(handler).toHaveBeenCalled()
     const forwarded = handler.mock.calls[0][0] as MessageEvent
     expect(forwarded.data).toEqual({
-      origin: "content-script",
+      origin: "substrate-connect-extension",
       chainId: "test",
       type: "error",
-      payload: "Boom!",
+      errorMessage: "Boom!",
     })
   })
 })
