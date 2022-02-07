@@ -138,7 +138,8 @@ interface ToApplicationError {
 
 /**
  * Sent in response to a {@link ToExtensionAddChain} or {@link ToExtensionAddWellKnownChain}
- * message. Indicates that the given chain is ready to receive JSON-RPC requests.
+ * message. Indicates that the given chain has a valid chain specification or name and is ready
+ * to receive JSON-RPC requests.
  *
  * No {@link ToExtensionRpc} message must be sent before this message has been received.
  */
@@ -193,14 +194,15 @@ interface ToExtensionAddChain {
   chainId: string
 
   /**
-   * JSON-formatted document containing the specification of the chain.
+   * JSON document containing the specification of the chain.
    *
    * See the Substrate documentation for more information about the fields.
    *
    * Note that this specification is fully trusted. If an attacker can somehow alter this
-   * specification, they can redirect the connection to a fake chain controller by this attacker.
-   * In other words, the role of the extension is to connect to the chain whose specification is
-   * provided here, not to have an opinion on whether this specification is "legitimate".
+   * specification, they can redirect the connection to a fake chain controlled by this attacker.
+   * In other words, the role of the substrate-connect extension is to connect to the chain whose
+   * specification is provided here, but not to have an opinion on whether this specification is
+   * legitimate.
    */
   chainSpec: string
 
