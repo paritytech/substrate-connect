@@ -1,7 +1,7 @@
 import { ToExtension } from "@substrate/connect-extension-protocol"
 
 /**
- * Checks whether a message send on the window matches the `ToExtension` interface.
+ * Checks whether a message sent on the `window` matches the `ToExtension` interface.
  *
  * Do not forget to update this function if the `ToExtension` interface changes!
  */
