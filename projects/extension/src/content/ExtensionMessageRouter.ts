@@ -56,14 +56,16 @@ export class ExtensionMessageRouter {
 
     // forward any messages: extension -> page
     port.onMessage.addListener((data): void => {
-      const { type, payload } = data
       debug(`RECEIVED MESSAGE FROM ${chainId} PORT`, data)
-      sendMessage({
-        type,
-        payload,
+      const msg = {
+        ...data,
         chainId,
         origin: CONTENT_SCRIPT_ORIGIN,
-      })
+      }
+
+      // Because the construction of the message is hacky, we have no choice but to  cast
+      // to `unknown`. This is expected to be fixed in a later refactor.
+      sendMessage(msg as unknown as ToApplication)
     })
 
     // tell the page when the port disconnects
@@ -72,7 +74,7 @@ export class ExtensionMessageRouter {
         origin: "substrate-connect-extension",
         chainId,
         type: "error",
-        payload: "Lost communication with substrate-connect extension",
+        errorMessage: "Lost communication with substrate-connect extension",
       })
       delete this.#ports[chainId]
     })
