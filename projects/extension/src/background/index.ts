@@ -39,7 +39,7 @@ const publicManager: Background["manager"] = {
           chainName: info.chainName,
           tabId: info.apiInfo ? info.apiInfo.sandboxId.sender!.tab!.id! : 0,
           url: info.apiInfo ? info.apiInfo.sandboxId.sender!.tab!.url! : "",
-          healthStatus: undefined,
+          healthStatus: info.healthStatus,
         }
       }),
     )

@@ -14,6 +14,7 @@ import {
 
 export interface ChainInfo<SandboxId> {
   chainName: string
+  healthStatus?: SmoldotHealth,
   apiInfo?: {
     chainId: string
     sandboxId: SandboxId
@@ -67,11 +68,12 @@ export class ConnectionManager<SandboxId> {
    * This includes both well-known chains and chains added by sandbox messages.
    */
   get allChains(): ChainInfo<SandboxId>[] {
-    let output = []
+    let output: ChainInfo<SandboxId>[] = []
 
     for (const [chainName, _] of this.#wellKnownChains) {
       output.push({
         chainName,
+        // TODO: health
       })
     }
 
@@ -79,6 +81,7 @@ export class ConnectionManager<SandboxId> {
       for (const [chainId, chain] of sandbox.chains) {
         output.push({
           chainName: chain.name,
+          healthStatus: chain.isReady ? chain.healthObject.health : undefined,
           apiInfo: {
             chainId,
             sandboxId,
@@ -124,7 +127,7 @@ export class ConnectionManager<SandboxId> {
   deleteSandbox(sandboxId: SandboxId) {
     const sandbox = this.#sandboxes.get(sandboxId)!
     sandbox.chains.forEach((chain) => {
-      if (chain.smoldotChain instanceof Promise)
+      if (!chain.isReady)
         chain.smoldotChain.then((chain) => chain.remove())
       else {
         chain.healthChecker.stop()
@@ -176,7 +179,7 @@ export class ConnectionManager<SandboxId> {
         if (!chain) return
 
         // Check whether chain is ready yet
-        if (chain.smoldotChain instanceof Promise) {
+        if (!chain.isReady) {
           sendSandbox(sandbox, {
             origin: "substrate-connect-extension",
             type: "error",
@@ -245,9 +248,8 @@ export class ConnectionManager<SandboxId> {
               message.type === "add-chain"
                 ? message.potentialRelayChainIds.flatMap(
                     (untrustedChainId): SmoldotChain[] => {
-                      const chain =
-                        sandbox.chains.get(untrustedChainId)?.smoldotChain
-                      return chain && !(chain instanceof Promise) ? [chain] : []
+                      const chain = sandbox.chains.get(untrustedChainId);
+                      return (chain && chain.isReady) ? [chain.smoldotChain] : [];
                     },
                   )
                 : [],
@@ -257,9 +259,9 @@ export class ConnectionManager<SandboxId> {
         // fact that there is a chain with this ID currently initializing.
         const name = nameFromSpec(chainSpec)
         sandbox.chains.set(message.chainId, {
+          isReady: false,
           smoldotChain: chainInitialization,
           name,
-          healthChecker,
         })
 
         // Spawn in the background an async function that is called once the initialization
@@ -298,6 +300,7 @@ export class ConnectionManager<SandboxId> {
               healthObject.health = health
             })
             sandbox.chains.set(chainId, {
+              isReady: true,
               name,
               smoldotChain,
               healthChecker,
@@ -330,7 +333,7 @@ export class ConnectionManager<SandboxId> {
 
         // If the chain isn't ready yet, we remove it anyway, and do the clean up by adding
         // a callback to the `Promise`.
-        if (chain.smoldotChain instanceof Promise)
+        if (!chain.isReady)
           chain.smoldotChain.then((chain) => chain.remove())
         else {
           chain.healthChecker.stop()
@@ -358,12 +361,13 @@ interface Sandbox {
 type Stream = Promise<[ToApplication | null, Stream]>
 
 interface InitializingChain {
+  isReady: false,
   name: string
   smoldotChain: Promise<SmoldotChain>
-  healthChecker: SmoldotHealthChecker
 }
 
 interface ReadyChain {
+  isReady: true,
   name: string
   smoldotChain: SmoldotChain
   healthChecker: SmoldotHealthChecker
