@@ -10,6 +10,7 @@ import westend from "../../public/assets/westend.json"
 import kusama from "../../public/assets/kusama.json"
 import polkadot from "../../public/assets/polkadot.json"
 import rococo from "../../public/assets/rococo.json"
+import { ToExtension } from "@substrate/connect-extension-protocol"
 
 export const wellKnownChains: Map<string, string> = new Map<string, string>([
   ["polkadot", JSON.stringify(polkadot)],
@@ -42,9 +43,9 @@ const publicManager: Background["manager"] = {
         }
       }),
     )
-    manager.on("stateChanged", listener)
+    //manager.on("stateChanged", listener)
     return () => {
-      manager.removeListener("stateChanged", listener)
+      //manager.removeListener("stateChanged", listener)
     }
   },
   disconnectTab: (tabId: number) => {
@@ -113,8 +114,16 @@ chrome.runtime.onStartup.addListener(() => {
 })
 
 chrome.runtime.onConnect.addListener((port) => {
-  manager.addSandbox(port, (message) => {
-    port.postMessage(message)
+  manager.addSandbox(port)
+
+  ;(async () => {
+    for await (const message of manager.sandboxOutput(port)) {
+      port.postMessage(message)
+    }
+  })()
+
+  port.onMessage.addListener((message: ToExtension) => {
+    manager.sandboxMessage(port, message)
   })
 
   port.onDisconnect.addListener(() => {

@@ -2,12 +2,11 @@ import {
   Client as SmoldotClient,
   healthChecker as smHealthChecker,
   Chain as SmoldotChain,
-  start,
+  start as smoldotStart,
   HealthChecker as SmoldotHealthChecker,
   SmoldotHealth,
 } from "@substrate/smoldot-light"
-import EventEmitter from "eventemitter3"
-import { StateEmitter } from "./types"
+
 import {
   ToApplication,
   ToExtension,
@@ -21,18 +20,11 @@ export interface ChainInfo<SandboxId> {
   }
 }
 
-export class ConnectionManager<SandboxId> extends (EventEmitter as {
-  new (): StateEmitter
-}) {
-  #smoldotClient: SmoldotClient
+export class ConnectionManager<SandboxId> {
+  #smoldotClient: SmoldotClient = smoldotStart()
   #sandboxes: Map<SandboxId, Sandbox> = new Map()
   #wellKnownChains: Map<string, { chain: SmoldotChain; spec: string }> =
     new Map()
-
-  constructor() {
-    super()
-    this.#smoldotClient = start()
-  }
 
   /**
    * Adds a new well-known chain to this state machine.
@@ -101,15 +93,21 @@ export class ConnectionManager<SandboxId> extends (EventEmitter as {
   /**
    * Inserts a sandbox in the list of sandboxes held by this state machine.
    */
-  // TODO: use the events listener instead of a `messageSendBack` parameter
-  addSandbox(
-    sandboxId: SandboxId,
-    messageSendBack: (message: ToApplication) => void,
-  ) {
+  addSandbox(sandboxId: SandboxId) {
     if (this.#sandboxes.has(sandboxId)) throw new Error("Duplicate sandboxId")
 
+    let messagesQueueBack:
+      | null
+      | ((item: [ToApplication | null, Stream]) => void) = null
+    const messagesQueueFront = new Promise<[ToApplication | null, Stream]>(
+      (r, _) => {
+        messagesQueueBack = r
+      },
+    )
+
     this.#sandboxes.set(sandboxId, {
-      messageSendBack,
+      messagesQueueBack: messagesQueueBack!,
+      messagesQueueFront,
       chains: new Map(),
     })
   }
@@ -133,12 +131,30 @@ export class ConnectionManager<SandboxId> extends (EventEmitter as {
         chain.smoldotChain.remove()
       }
     })
+    sendSandbox(sandbox, null)
     this.#sandboxes.delete(sandboxId)
   }
 
-  /// Returns the list of all sandboxes that have been added.
+  /**
+   * Returns the list of all sandboxes that have been added.
+   */
   get sandboxes(): IterableIterator<SandboxId> {
     return this.#sandboxes.keys()
+  }
+
+  /**
+   * Asynchronous iterator that yields all the `ToApplication` messages that are generated in
+   * response to `sandboxMessage`.
+   */
+  async *sandboxOutput(sandboxId: SandboxId): AsyncGenerator<ToApplication> {
+    while (true) {
+      const sandbox = this.#sandboxes.get(sandboxId)!
+
+      const [message, nextFront] = await sandbox.messagesQueueFront
+      sandbox.messagesQueueFront = nextFront
+      if (!message) break
+      yield message
+    }
   }
 
   /**
@@ -161,7 +177,7 @@ export class ConnectionManager<SandboxId> extends (EventEmitter as {
 
         // Check whether chain is ready yet
         if (chain.smoldotChain instanceof Promise) {
-          sandbox.messageSendBack({
+          sendSandbox(sandbox, {
             origin: "substrate-connect-extension",
             type: "error",
             chainId: message.chainId,
@@ -179,7 +195,7 @@ export class ConnectionManager<SandboxId> extends (EventEmitter as {
       case "add-well-known-chain": {
         // Refuse the chain addition if the `chainId` is already in use.
         if (sandbox.chains.has(message.chainId)) {
-          sandbox.messageSendBack({
+          sendSandbox(sandbox, {
             origin: "substrate-connect-extension",
             type: "error",
             chainId: message.chainId,
@@ -191,7 +207,7 @@ export class ConnectionManager<SandboxId> extends (EventEmitter as {
         // Refuse the chain addition for invalid well-known chain names.
         if (message.type === "add-well-known-chain") {
           if (!this.#wellKnownChains.has(message.chainName)) {
-            sandbox.messageSendBack({
+            sendSandbox(sandbox, {
               origin: "substrate-connect-extension",
               type: "error",
               chainId: message.chainId,
@@ -218,7 +234,7 @@ export class ConnectionManager<SandboxId> extends (EventEmitter as {
               // chain. When we remove a sandbox, we call `remove()` on all of its chains.
               // Consequently, this JSON-RPC callback will never be called after we remove a
               // sandbox. Consequently, the sandbox is always alive here.
-              sandbox.messageSendBack({
+              sendSandbox(sandbox, {
                 origin: "substrate-connect-extension",
                 type: "rpc",
                 chainId,
@@ -287,14 +303,14 @@ export class ConnectionManager<SandboxId> extends (EventEmitter as {
               healthChecker,
               healthObject,
             })
-            sandbox.messageSendBack({
+            sendSandbox(sandbox, {
               origin: "substrate-connect-extension",
               type: "chain-ready",
               chainId: message.chainId,
             })
           } else {
             sandbox.chains.delete(chainId)
-            sandbox.messageSendBack({
+            sendSandbox(sandbox, {
               origin: "substrate-connect-extension",
               type: "error",
               chainId: message.chainId,
@@ -328,9 +344,18 @@ export class ConnectionManager<SandboxId> extends (EventEmitter as {
 }
 
 interface Sandbox {
-  messageSendBack: (message: ToApplication) => void
   chains: Map<string, InitializingChain | ReadyChain>
+
+  // A `Promise` that resolves to a tuple of `[ToApplication | null, Promise]`. The second
+  // element of the tuple is a `Promise` to the following message.
+  // In order to pull an element from the queue, wait for this promise, then overwrite
+  // `messagesQueueFront` with the yielded `̀Promise`.
+  messagesQueueFront: Stream
+  // The `resolve` function of the last `Promise` of the queue.
+  messagesQueueBack: (item: [ToApplication | null, Stream]) => void
 }
+
+type Stream = Promise<[ToApplication | null, Stream]>
 
 interface InitializingChain {
   name: string
@@ -356,4 +381,17 @@ function nameFromSpec(chainSpec: string): string {
   } catch (_error) {
     return "Unknown"
   }
+}
+
+/**
+ * Pushes a message on the queue of messages of the given `Sandbox`.
+ */
+function sendSandbox(sandbox: Sandbox, message: ToApplication | null) {
+  let resolve: null | ((item: [ToApplication | null, Stream]) => void) = null
+  const nextMessage = new Promise<[ToApplication | null, Stream]>((r, _) => {
+    resolve = r
+  })
+
+  sandbox.messagesQueueBack([message, nextMessage])
+  sandbox.messagesQueueBack = resolve!
 }
