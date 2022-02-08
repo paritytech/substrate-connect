@@ -5,6 +5,5 @@
   "exclude": "*.test.ts",
   "excludeExternals": false,
   "excludePrivate": true,
-  "includeVersion": true,
-  "packages": ["packages/*", "projects/extension"]
+  "includeVersion": true
 }
