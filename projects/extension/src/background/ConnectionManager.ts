@@ -181,7 +181,7 @@ export class ConnectionManager<SandboxId> extends (EventEmitter as {
               origin: "substrate-connect-extension",
               type: "error",
               chainId: message.chainId,
-              errorMessage: "Requested chainId already in use"
+              errorMessage: "Unknown well-known chain"
             })
             return;
           }
