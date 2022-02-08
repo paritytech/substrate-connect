@@ -177,11 +177,11 @@ describe("Connection and forward cases", () => {
 
     const handler = jest.fn()
     window.addEventListener("message", handler)
-    port._sendAppMessage({ 
+    port._sendAppMessage({
       origin: "substrate-connect-extension",
       chainId: "foo",
       type: "error",
-      errorMessage: "Boom!"
+      errorMessage: "Boom!",
     })
     await waitForMessageToBePosted()
 

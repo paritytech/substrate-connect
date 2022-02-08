@@ -32,8 +32,7 @@ export class ExtensionMessageRouter {
   constructor() {
     // forward any messages: extension -> page
     this.#port.onMessage.addListener((data: ToApplication): void => {
-      if (data.type == "error")
-        this.#chainIds.delete(data.chainId);
+      if (data.type == "error") this.#chainIds.delete(data.chainId)
 
       sendMessage(data)
     })
@@ -47,11 +46,10 @@ export class ExtensionMessageRouter {
           type: "error",
           errorMessage: "Lost communication with substrate-connect extension",
         })
-      });
+      })
 
-      this.#chainIds.clear();
+      this.#chainIds.clear()
     })
-
   }
 
   /**
@@ -92,8 +90,7 @@ export class ExtensionMessageRouter {
       this.#chainIds.add(data.chainId)
     }
 
-    if (data.type === "remove-chain")
-      this.#chainIds.delete(data.chainId)
+    if (data.type === "remove-chain") this.#chainIds.delete(data.chainId)
 
     this.#port.postMessage(data)
   }

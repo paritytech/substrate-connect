@@ -31,15 +31,17 @@ let manager: ConnectionManager<chrome.runtime.Port>
 
 const publicManager: Background["manager"] = {
   onManagerStateChanged(listener) {
-    listener(manager.allChains.map((info) => {
-      return {
-        chainId: info.apiInfo ? info.apiInfo.chainId : "",
-        chainName: info.chainName,
-        tabId: info.apiInfo ? info.apiInfo.sandboxId.sender!.tab!.id! : 0,
-        url: info.apiInfo ? info.apiInfo.sandboxId.sender!.tab!.url! : "",
-        healthStatus: undefined,
-      }
-    }))
+    listener(
+      manager.allChains.map((info) => {
+        return {
+          chainId: info.apiInfo ? info.apiInfo.chainId : "",
+          chainName: info.chainName,
+          tabId: info.apiInfo ? info.apiInfo.sandboxId.sender!.tab!.id! : 0,
+          url: info.apiInfo ? info.apiInfo.sandboxId.sender!.tab!.url! : "",
+          healthStatus: undefined,
+        }
+      }),
+    )
     manager.on("stateChanged", listener)
     return () => {
       manager.removeListener("stateChanged", listener)
@@ -48,8 +50,8 @@ const publicManager: Background["manager"] = {
   disconnectTab: (tabId: number) => {
     for (const port of manager.sandboxes) {
       if (port.sender?.tab?.id === tabId) {
-        manager.deleteSandbox(port);
-        break;
+        manager.deleteSandbox(port)
+        break
       }
     }
   },
@@ -74,8 +76,7 @@ const saveChainDbContent = async (key: string) => {
 }
 
 const flushDatabases = (): void => {
-  for (const [key, _] of wellKnownChains)
-    saveChainDbContent(key)
+  for (const [key, _] of wellKnownChains) saveChainDbContent(key)
 }
 
 chrome.alarms.onAlarm.addListener((alarm) => {
@@ -84,15 +85,14 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 
 const init = async () => {
   try {
-    manager = new ConnectionManager();
+    manager = new ConnectionManager()
     for (const [key, value] of wellKnownChains.entries()) {
       const dbContent = await new Promise<string | undefined>((res) =>
         chrome.storage.local.get([key], (val) => res(val[key] as string)),
       )
 
       await manager.addWellKnownChain(key, value, dbContent)
-      if (!dbContent)
-        saveChainDbContent(key)
+      if (!dbContent) saveChainDbContent(key)
     }
 
     chrome.alarms.create("DatabaseContentAlarm", {
@@ -115,7 +115,7 @@ chrome.runtime.onStartup.addListener(() => {
 chrome.runtime.onConnect.addListener((port) => {
   manager.addSandbox(port, (message) => {
     port.postMessage(message)
-  });
+  })
 
   port.onDisconnect.addListener(() => {
     manager.deleteSandbox(port)
