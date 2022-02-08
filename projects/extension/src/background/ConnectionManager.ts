@@ -199,7 +199,7 @@ export class ConnectionManager<SandboxId> extends (EventEmitter as {
             const filtered = healthChecker.responsePassThrough(jsonRpcMessage);
             if (!filtered)
               return;
-            // This JSON-RPC callback will never be call after we call `remove()` on the
+            // This JSON-RPC callback will never be called after we call `remove()` on the
             // chain. When we remove a sandbox, we call `remove()` on all of its chains.
             // Consequently, this JSON-RPC callback will never be called after we remove a
             // sandbox. Consequently, the sandbox is always alive here.
