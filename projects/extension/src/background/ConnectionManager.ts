@@ -265,7 +265,7 @@ export class ConnectionManager extends (EventEmitter as {
   #handleMessage(msg: ToExtension, chainConnection: ChainConnection): void {
     if (msg.type === "remove-chain") return chainConnection.port.disconnect()
 
-    if (msg.type === "rpc" && msg.jsonRpcMessage) {
+    if (msg.type === "rpc") {
       if (chainConnection.chain)
         return chainConnection.healthChecker.sendJsonRpc(msg.jsonRpcMessage)
 
@@ -274,17 +274,6 @@ export class ConnectionManager extends (EventEmitter as {
       l.error(errorMsg)
       this.#handleError(chainConnection.port, new Error(errorMsg))
       return
-    }
-
-    if (
-      (msg.type === "add-chain" &&
-        (!msg.chainSpec || !msg.potentialRelayChainIds)) ||
-      (msg.type === "add-well-known-chain" && !msg.chainName) ||
-      (msg.type !== "add-chain" && msg.type !== "add-well-known-chain")
-    ) {
-      const errorMsg = `Unrecognized message '${msg}' received from content script`
-      l.error(errorMsg)
-      return this.#handleError(chainConnection.port, new Error(errorMsg))
     }
 
     const [chainSpec, potentialRelayChainIds]: [string, string[]] =

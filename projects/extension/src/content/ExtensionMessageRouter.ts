@@ -6,6 +6,7 @@ import {
   ToApplication,
 } from "@substrate/connect-extension-protocol"
 import { debug } from "../utils/debug"
+import checkMessage from "./checkMessage"
 
 const CONTENT_SCRIPT_ORIGIN = "substrate-connect-extension"
 const EXTENSION_PROVIDER_ORIGIN = "substrate-connect-client"
@@ -92,11 +93,7 @@ export class ExtensionMessageRouter {
 
     debug(`RECEIVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data)
 
-    if (
-      type !== "rpc" &&
-      type !== "add-chain" &&
-      type !== "add-well-known-chain"
-    ) {
+    if (!checkMessage(data)) {
       // probably someone abusing the extension
       console.warn("Malformed message - unrecognised message.type", data)
       return
