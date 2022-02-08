@@ -14,7 +14,7 @@ import {
 
 export interface ChainInfo<SandboxId> {
   chainName: string
-  healthStatus?: SmoldotHealth,
+  healthStatus?: SmoldotHealth
   apiInfo?: {
     chainId: string
     sandboxId: SandboxId
@@ -127,8 +127,7 @@ export class ConnectionManager<SandboxId> {
   deleteSandbox(sandboxId: SandboxId) {
     const sandbox = this.#sandboxes.get(sandboxId)!
     sandbox.chains.forEach((chain) => {
-      if (!chain.isReady)
-        chain.smoldotChain.then((chain) => chain.remove())
+      if (!chain.isReady) chain.smoldotChain.then((chain) => chain.remove())
       else {
         chain.healthChecker.stop()
         chain.smoldotChain.remove()
@@ -248,8 +247,8 @@ export class ConnectionManager<SandboxId> {
               message.type === "add-chain"
                 ? message.potentialRelayChainIds.flatMap(
                     (untrustedChainId): SmoldotChain[] => {
-                      const chain = sandbox.chains.get(untrustedChainId);
-                      return (chain && chain.isReady) ? [chain.smoldotChain] : [];
+                      const chain = sandbox.chains.get(untrustedChainId)
+                      return chain && chain.isReady ? [chain.smoldotChain] : []
                     },
                   )
                 : [],
@@ -333,8 +332,7 @@ export class ConnectionManager<SandboxId> {
 
         // If the chain isn't ready yet, we remove it anyway, and do the clean up by adding
         // a callback to the `Promise`.
-        if (!chain.isReady)
-          chain.smoldotChain.then((chain) => chain.remove())
+        if (!chain.isReady) chain.smoldotChain.then((chain) => chain.remove())
         else {
           chain.healthChecker.stop()
           chain.smoldotChain.remove()
@@ -361,13 +359,13 @@ interface Sandbox {
 type Stream = Promise<[ToApplication | null, Stream]>
 
 interface InitializingChain {
-  isReady: false,
+  isReady: false
   name: string
   smoldotChain: Promise<SmoldotChain>
 }
 
 interface ReadyChain {
-  isReady: true,
+  isReady: true
   name: string
   smoldotChain: SmoldotChain
   healthChecker: SmoldotHealthChecker

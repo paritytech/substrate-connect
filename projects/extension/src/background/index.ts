@@ -115,7 +115,6 @@ chrome.runtime.onStartup.addListener(() => {
 
 chrome.runtime.onConnect.addListener((port) => {
   manager.addSandbox(port)
-
   ;(async () => {
     for await (const message of manager.sandboxOutput(port)) {
       port.postMessage(message)
