@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable no-empty */
 import {
-  ToExtension,
   ToApplication,
 } from "@substrate/connect-extension-protocol"
 import { debug } from "../utils/debug"
