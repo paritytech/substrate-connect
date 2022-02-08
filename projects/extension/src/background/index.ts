@@ -1,11 +1,22 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 
-import { wellKnownChains, ConnectionManager } from "./ConnectionManager"
+import { ConnectionManager } from "./ConnectionManager"
 import { logger } from "@polkadot/util"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
-import { Chain, start } from "@substrate/smoldot-light"
+
+import westend from "../../public/assets/westend.json"
+import kusama from "../../public/assets/kusama.json"
+import polkadot from "../../public/assets/polkadot.json"
+import rococo from "../../public/assets/rococo.json"
+
+export const wellKnownChains: Map<string, string> = new Map<string, string>([
+  ["polkadot", JSON.stringify(polkadot)],
+  ["kusama", JSON.stringify(kusama)],
+  ["rococo", JSON.stringify(rococo)],
+  ["westend", JSON.stringify(westend)],
+])
 
 export interface Background extends Window {
   manager: {
@@ -16,19 +27,32 @@ export interface Background extends Window {
   }
 }
 
-let manager: ConnectionManager
-
-const wellKnownConnections: Map<string, Chain> = new Map()
+let manager: ConnectionManager<chrome.runtime.Port>
 
 const publicManager: Background["manager"] = {
   onManagerStateChanged(listener) {
-    listener(manager.connections)
+    listener(manager.allChains.map((info) => {
+      return {
+        chainId: info.apiInfo ? info.apiInfo.chainId : "",
+        chainName: info.chainName,
+        tabId: info.apiInfo ? info.apiInfo.sandboxId.sender!.tab!.id! : 0,
+        url: info.apiInfo ? info.apiInfo.sandboxId.sender!.tab!.url! : "",
+        healthStatus: undefined,
+      }
+    }))
     manager.on("stateChanged", listener)
     return () => {
       manager.removeListener("stateChanged", listener)
     }
   },
-  disconnectTab: (tabId: number) => manager.disconnectTab(tabId),
+  disconnectTab: (tabId: number) => {
+    for (const port of manager.sandboxes) {
+      if (port.sender?.tab?.id === tabId) {
+        manager.deleteSandbox(port);
+        break;
+      }
+    }
+  },
 }
 
 declare let window: Background
@@ -41,16 +65,17 @@ export interface RequestRpcSend {
   params: unknown[]
 }
 
-const saveChainDbContent = async (key: string, chain: Chain) => {
-  const db = await chain.databaseContent(
+const saveChainDbContent = async (key: string) => {
+  const db = await manager.wellKnownChainDatabaseContent(
+    key,
     chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
   )
   chrome.storage.local.set({ [key]: db })
 }
 
 const flushDatabases = (): void => {
-  for (const [key, chain] of wellKnownConnections)
-    saveChainDbContent(key, chain)
+  for (const [key, _] of wellKnownChains)
+    saveChainDbContent(key)
 }
 
 chrome.alarms.onAlarm.addListener((alarm) => {
@@ -59,25 +84,15 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 
 const init = async () => {
   try {
-    manager = new ConnectionManager(start({ maxLogLevel: 3 }))
+    manager = new ConnectionManager();
     for (const [key, value] of wellKnownChains.entries()) {
-      const rpcCallback = (rpc: string) => {
-        console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
-      }
-
       const dbContent = await new Promise<string | undefined>((res) =>
         chrome.storage.local.get([key], (val) => res(val[key] as string)),
       )
 
-      const chain = await manager.addChain(
-        value,
-        [],
-        rpcCallback,
-        undefined,
-        dbContent,
-      )
-      wellKnownConnections.set(key, chain)
-      if (!dbContent) saveChainDbContent(key, chain)
+      await manager.addWellKnownChain(key, value, dbContent)
+      if (!dbContent)
+        saveChainDbContent(key)
     }
 
     chrome.alarms.create("DatabaseContentAlarm", {
@@ -85,7 +100,7 @@ const init = async () => {
     })
   } catch (e) {
     l.error(`Error creating smoldot: ${e}`)
-    manager?.shutdown()
+    //manager?.shutdown()
   }
 }
 
@@ -98,7 +113,13 @@ chrome.runtime.onStartup.addListener(() => {
 })
 
 chrome.runtime.onConnect.addListener((port) => {
-  manager.addChainConnection(port)
+  manager.addSandbox(port, (message) => {
+    port.postMessage(message)
+  });
+
+  port.onDisconnect.addListener(() => {
+    manager.deleteSandbox(port)
+  })
 })
 
 chrome.storage.local.get(["notifications"], (result) => {

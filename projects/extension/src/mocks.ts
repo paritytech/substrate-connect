@@ -54,7 +54,7 @@ export class MockPort implements chrome.runtime.Port {
     this.sender.tab.id = id
   }
 
-  _sendExtensionMessage(message: HeaderlessToExtension<ToExtension>): void {
+  _sendExtensionMessage(message: ToExtension): void {
     this.#callbacks.onMessageCb({
       ...message,
       chainId: this.name,
@@ -62,7 +62,7 @@ export class MockPort implements chrome.runtime.Port {
     })
   }
 
-  _sendAppMessage(msg: HeaderlessToApplication<ToApplication>): void {
+  _sendAppMessage(msg: ToApplication): void {
     this.#callbacks.onMessageCb(msg)
   }
 

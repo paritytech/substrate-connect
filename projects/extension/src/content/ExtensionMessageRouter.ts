@@ -8,7 +8,6 @@ import {
 import { debug } from "../utils/debug"
 import checkMessage from "./checkMessage"
 
-const CONTENT_SCRIPT_ORIGIN = "substrate-connect-extension"
 const EXTENSION_PROVIDER_ORIGIN = "substrate-connect-client"
 
 const sendMessage = (msg: ToApplication): void => {
@@ -17,9 +16,8 @@ const sendMessage = (msg: ToApplication): void => {
 
 /* ExtensionMessageRouter is the part of the content script that listens for
  * messages that the ExtensionProvider in an app sends using `window.postMessage`.
- * It establishes connections to the extension background on behalf of the app,
- * forwards RPC requests for the app to the extension background and disconnects
- * the port when the app requests it.
+ * It establishes a connection to the extension background on behalf of the app,
+ * and forwards RPC requests for the app to the extension background.
  *
  * Conversely it listens for messages sent through the port from the extension
  * background and forwards them to the app via `window.postMessage`
@@ -28,7 +26,33 @@ const sendMessage = (msg: ToApplication): void => {
  * to establish the connection with the background itself.
  */
 export class ExtensionMessageRouter {
-  #ports: Record<string, chrome.runtime.Port> = {}
+  #port: chrome.runtime.Port = chrome.runtime.connect()
+  #chainIds: Set<string> = new Set()
+
+  constructor() {
+    // forward any messages: extension -> page
+    this.#port.onMessage.addListener((data: ToApplication): void => {
+      if (data.type == "error")
+        this.#chainIds.delete(data.chainId);
+
+      sendMessage(data)
+    })
+
+    // tell the page when the port disconnects
+    this.#port.onDisconnect.addListener(() => {
+      this.#chainIds.forEach((chainId) => {
+        sendMessage({
+          origin: "substrate-connect-extension",
+          chainId,
+          type: "error",
+          errorMessage: "Lost communication with substrate-connect extension",
+        })
+      });
+
+      this.#chainIds.clear();
+    })
+
+  }
 
   /**
    * connections returns the names of all the ports this `ExtensionMessageRouter`
@@ -37,7 +61,7 @@ export class ExtensionMessageRouter {
    * @returns A list of strings
    */
   get connections(): string[] {
-    return Object.keys(this.#ports)
+    return Object.keys(this.#chainIds)
   }
 
   /** listen starts listening for messages sent by an app.  */
@@ -50,44 +74,9 @@ export class ExtensionMessageRouter {
     window.removeEventListener("message", this.#handleMessage)
   }
 
-  #establishNewConnection = (chainId: string): void => {
-    const port = chrome.runtime.connect({ name: chainId })
-
-    debug(`CONNECTED ${chainId} PORT`, port)
-
-    // forward any messages: extension -> page
-    port.onMessage.addListener((data): void => {
-      debug(`RECEIVED MESSAGE FROM ${chainId} PORT`, data)
-      const msg = {
-        ...data,
-        chainId,
-        origin: CONTENT_SCRIPT_ORIGIN,
-      }
-
-      // Because the construction of the message is hacky, we have no choice but to  cast
-      // to `unknown`. This is expected to be fixed in a later refactor.
-      sendMessage(msg as unknown as ToApplication)
-    })
-
-    // tell the page when the port disconnects
-    port.onDisconnect.addListener(() => {
-      sendMessage({
-        origin: "substrate-connect-extension",
-        chainId,
-        type: "error",
-        errorMessage: "Lost communication with substrate-connect extension",
-      })
-      delete this.#ports[chainId]
-    })
-
-    this.#ports[chainId] = port
-    debug(`CONNECTED TO ${chainId} PORT`)
-  }
-
-  #handleMessage = (msg: MessageEvent<ToExtension>): void => {
+  #handleMessage = (msg: MessageEvent): void => {
     const data = msg.data
-    const { origin, type } = data
-    if (!origin || origin !== EXTENSION_PROVIDER_ORIGIN) {
+    if (!data.origin || data.origin !== EXTENSION_PROVIDER_ORIGIN) {
       return
     }
 
@@ -99,22 +88,13 @@ export class ExtensionMessageRouter {
       return
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { chainId, origin: _, ...forwardMsg } = data
-    if (type === "add-well-known-chain" || type === "add-chain") {
-      this.#establishNewConnection(chainId)
+    if (data.type === "add-well-known-chain" || data.type === "add-chain") {
+      this.#chainIds.add(data.chainId)
     }
 
-    const port = this.#ports[chainId]
-    if (!port) {
-      // this is probably someone trying to abuse the extension.
-      console.warn(
-        `App requested to send message to ${chainId} - no port found`,
-      )
-      return
-    }
+    if (data.type === "remove-chain")
+      this.#chainIds.delete(data.chainId)
 
-    debug(`SENDING RPC MESSAGE TO ${chainId} PORT`, msg)
-    port.postMessage(forwardMsg)
+    this.#port.postMessage(data)
   }
 }
