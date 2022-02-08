@@ -11,7 +11,5 @@ export class HealthCheckError extends Error {
   ) {
     super(message)
     this.#cause = response
-    // 'Error' breaks the prototype chain - restore it
-    Object.setPrototypeOf(this, new.target.prototype)
   }
 }

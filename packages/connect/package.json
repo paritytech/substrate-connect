@@ -36,7 +36,6 @@
   },
   "devDependencies": {
     "@polkadot/api": "^7.6.1",
-    "@substrate/smoldot-test-utils": "^0.1.0",
     "jest": "^27.4.3"
   }
 }
