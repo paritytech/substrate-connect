@@ -49,10 +49,10 @@ const publicManager: Background["manager"] = {
     }
   },
   disconnectTab: (tabId: number) => {
+    // Note that multiple ports can share the same `tabId`
     for (const port of manager.sandboxes) {
       if (port.sender?.tab?.id === tabId) {
-        manager.deleteSandbox(port)
-        break
+        port.disconnect();
       }
     }
   },
