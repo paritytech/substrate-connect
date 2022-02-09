@@ -24,7 +24,7 @@ export interface ChainInfo<SandboxId> {
 export class ConnectionManager<SandboxId> {
   #smoldotClient: SmoldotClient = smoldotStart()
   #sandboxes: Map<SandboxId, Sandbox> = new Map()
-  #wellKnownChains: Map<string, { chain: SmoldotChain; spec: string }> =
+  #wellKnownChains: Map<string, WellKnownChain> =
     new Map()
 
   /**
@@ -38,13 +38,23 @@ export class ConnectionManager<SandboxId> {
     spec: string,
     databaseContent?: string,
   ): Promise<void> {
+    const healthChecker = smHealthChecker();
+
     const chain = await this.#smoldotClient.addChain({
       chainSpec: spec,
+      jsonRpcCallback: (response) => {
+        healthChecker.responsePassThrough(response);
+      },
       databaseContent,
       potentialRelayChains: [],
     })
 
-    this.#wellKnownChains.set(chainName, { chain, spec })
+    const wellKnownChain: WellKnownChain = { chain, spec, healthChecker };
+
+    healthChecker.setSendJsonRpc((rq) => chain.sendJsonRpc(rq));
+    healthChecker.start((health) => wellKnownChain.healthStatus = health)
+
+    this.#wellKnownChains.set(chainName, wellKnownChain)
   }
 
   /**
@@ -70,10 +80,10 @@ export class ConnectionManager<SandboxId> {
   get allChains(): ChainInfo<SandboxId>[] {
     let output: ChainInfo<SandboxId>[] = []
 
-    for (const [chainName, _] of this.#wellKnownChains) {
+    for (const [chainName, chain] of this.#wellKnownChains) {
       output.push({
         chainName,
-        // TODO: health
+        healthStatus: chain.healthStatus,
       })
     }
 
@@ -81,7 +91,7 @@ export class ConnectionManager<SandboxId> {
       for (const [chainId, chain] of sandbox.chains) {
         output.push({
           chainName: chain.name,
-          healthStatus: chain.isReady ? chain.healthObject.health : undefined,
+          healthStatus: chain.isReady ? chain.healthObject.healthStatus : undefined,
           apiInfo: {
             chainId,
             sandboxId,
@@ -246,11 +256,11 @@ export class ConnectionManager<SandboxId> {
             potentialRelayChains:
               message.type === "add-chain"
                 ? message.potentialRelayChainIds.flatMap(
-                    (untrustedChainId): SmoldotChain[] => {
-                      const chain = sandbox.chains.get(untrustedChainId)
-                      return chain && chain.isReady ? [chain.smoldotChain] : []
-                    },
-                  )
+                  (untrustedChainId): SmoldotChain[] => {
+                    const chain = sandbox.chains.get(untrustedChainId)
+                    return chain && chain.isReady ? [chain.smoldotChain] : []
+                  },
+                )
                 : [],
           })
 
@@ -263,63 +273,63 @@ export class ConnectionManager<SandboxId> {
           name,
         })
 
-        // Spawn in the background an async function that is called once the initialization
-        // finished, either successfully or not.
-        ;(async () => {
-          // `result` contains either the chain (on success) or the error message (on failure).
-          let result: SmoldotChain | string
-          try {
-            result = await chainInitialization
-          } catch (err) {
-            result =
-              err instanceof Error
-                ? err.message
-                : "Unknown error when adding chain"
-          }
+          // Spawn in the background an async function that is called once the initialization
+          // finished, either successfully or not.
+          ; (async () => {
+            // `result` contains either the chain (on success) or the error message (on failure).
+            let result: SmoldotChain | string
+            try {
+              result = await chainInitialization
+            } catch (err) {
+              result =
+                err instanceof Error
+                  ? err.message
+                  : "Unknown error when adding chain"
+            }
 
-          // Because the chain initialization might have taken a long time, we first need to
-          // check whether the chain that we're initializing is still in `this`, as it might
-          // have been removed by various other functions if it no longer interests us.
-          const sandbox = this.#sandboxes.get(sandboxId)
-          if (
-            !sandbox ||
-            !(sandbox.chains.get(chainId)?.smoldotChain === chainInitialization)
-          ) {
-            typeof result !== "string" && result.remove()
-            return
-          }
+            // Because the chain initialization might have taken a long time, we first need to
+            // check whether the chain that we're initializing is still in `this`, as it might
+            // have been removed by various other functions if it no longer interests us.
+            const sandbox = this.#sandboxes.get(sandboxId)
+            if (
+              !sandbox ||
+              !(sandbox.chains.get(chainId)?.smoldotChain === chainInitialization)
+            ) {
+              typeof result !== "string" && result.remove()
+              return
+            }
 
-          // Update `sandbox.chains`, either updating the entry on success or removing it on
-          // failure, and send back a message.
-          if (typeof result !== "string") {
-            const smoldotChain: SmoldotChain = result
-            healthChecker.setSendJsonRpc((rq) => smoldotChain.sendJsonRpc(rq))
-            const healthObject: { health?: SmoldotHealth } = {}
-            healthChecker.start((health) => {
-              healthObject.health = health
-            })
-            sandbox.chains.set(chainId, {
-              isReady: true,
-              name,
-              smoldotChain,
-              healthChecker,
-              healthObject,
-            })
-            sendSandbox(sandbox, {
-              origin: "substrate-connect-extension",
-              type: "chain-ready",
-              chainId: message.chainId,
-            })
-          } else {
-            sandbox.chains.delete(chainId)
-            sendSandbox(sandbox, {
-              origin: "substrate-connect-extension",
-              type: "error",
-              chainId: message.chainId,
-              errorMessage: result,
-            })
-          }
-        })()
+            // Update `sandbox.chains`, either updating the entry on success or removing it on
+            // failure, and send back a message.
+            if (typeof result !== "string") {
+              const smoldotChain: SmoldotChain = result
+              healthChecker.setSendJsonRpc((rq) => smoldotChain.sendJsonRpc(rq))
+              const healthObject: { healthStatus?: SmoldotHealth } = {}
+              healthChecker.start((health) => {
+                healthObject.healthStatus = health
+              })
+              sandbox.chains.set(chainId, {
+                isReady: true,
+                name,
+                smoldotChain,
+                healthChecker,
+                healthObject,
+              })
+              sendSandbox(sandbox, {
+                origin: "substrate-connect-extension",
+                type: "chain-ready",
+                chainId: message.chainId,
+              })
+            } else {
+              sandbox.chains.delete(chainId)
+              sendSandbox(sandbox, {
+                origin: "substrate-connect-extension",
+                type: "error",
+                chainId: message.chainId,
+                errorMessage: result,
+              })
+            }
+          })()
 
         break
       }
@@ -369,7 +379,14 @@ interface ReadyChain {
   name: string
   smoldotChain: SmoldotChain
   healthChecker: SmoldotHealthChecker
-  healthObject: { health?: SmoldotHealth }
+  healthObject: { healthStatus?: SmoldotHealth }
+}
+
+interface WellKnownChain {
+  chain: SmoldotChain
+  spec: string
+  healthChecker: SmoldotHealthChecker
+  healthStatus?: SmoldotHealth
 }
 
 /**
