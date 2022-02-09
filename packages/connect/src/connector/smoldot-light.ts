@@ -46,8 +46,8 @@ const transformErrors = (thunk: () => void) => {
   } catch (e) {
     const error = e as Error | undefined
     if (error?.name === "JsonRpcDisabledError") throw new JsonRpcDisabledError()
-    if (error?.name === "SdCrashError") throw new CrashError(error.message)
-    if (error?.name === "SdAlreadyDestroyedError")
+    if (error?.name === "CrashError") throw new CrashError(error.message)
+    if (error?.name === "AlreadyDestroyedError")
       throw new AlreadyDestroyedError()
     throw new CrashError(
       e instanceof Error ? e.message : `Unexpected error ${e}`,
