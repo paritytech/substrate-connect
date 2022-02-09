@@ -75,24 +75,20 @@ export const getConnectorClient = (): SubstrateConnector => {
       )
     })
 
-    const chainFn =
-      <Args extends Array<unknown>>(fn: (...args: Args) => void) =>
-      (...args: Args) => {
+    const chain: Chain = {
+      sendJsonRpc: (jsonRpcMessage) => {
         if (crashError) throw crashError
         if (!chains.has(chain)) throw new AlreadyDestroyedError()
-        fn(...args)
-      }
-
-    const chain: Chain = {
-      sendJsonRpc: chainFn((jsonRpcMessage) => {
         if (!jsonRpcCallback) throw new JsonRpcDisabledError()
         postToExtension({ type: "rpc", jsonRpcMessage })
-      }),
-      remove: chainFn(() => {
+      },
+      remove: () => {
+        if (crashError) throw crashError
+        if (!chains.has(chain)) throw new AlreadyDestroyedError()
         listeners.delete(chainId)
         chains.delete(chain)
         postToExtension({ type: "remove-chain" })
-      }),
+      },
     }
     chains.set(chain, chainId)
 
