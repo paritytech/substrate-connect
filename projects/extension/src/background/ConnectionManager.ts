@@ -91,7 +91,7 @@ export class ConnectionManager<SandboxId> {
       for (const [chainId, chain] of sandbox.chains) {
         output.push({
           chainName: chain.name,
-          healthStatus: chain.isReady ? chain.healthObject.healthStatus : undefined,
+          healthStatus: chain.isReady ? chain.healthStatus : undefined,
           apiInfo: {
             chainId,
             sandboxId,
@@ -310,17 +310,16 @@ export class ConnectionManager<SandboxId> {
             if (typeof result !== "string") {
               const smoldotChain: SmoldotChain = result
               healthChecker.setSendJsonRpc((rq) => smoldotChain.sendJsonRpc(rq))
-              const healthObject: { healthStatus?: SmoldotHealth } = {}
-              healthChecker.start((health) => {
-                healthObject.healthStatus = health
-              })
-              sandbox.chains.set(chainId, {
+              const readyChain: ReadyChain = {
                 isReady: true,
                 name,
                 smoldotChain,
                 healthChecker,
-                healthObject,
+              };
+              healthChecker.start((health) => {
+                readyChain.healthStatus = health
               })
+              sandbox.chains.set(chainId, readyChain)
               sendSandbox(sandbox, {
                 origin: "substrate-connect-extension",
                 type: "chain-ready",
@@ -388,7 +387,7 @@ interface ReadyChain {
   name: string
   smoldotChain: SmoldotChain
   healthChecker: SmoldotHealthChecker
-  healthObject: { healthStatus?: SmoldotHealth }
+  healthStatus?: SmoldotHealth
 }
 
 interface WellKnownChain {
