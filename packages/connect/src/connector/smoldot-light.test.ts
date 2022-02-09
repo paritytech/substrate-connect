@@ -6,7 +6,6 @@ import {
   CrashError,
   JsonRpcDisabledError,
 } from "./errors"
-import { WellKnownChains } from "../WellKnownChains.js"
 
 class SdAlreadyDestroyedError extends Error {
   constructor() {
@@ -83,9 +82,11 @@ const mockSmoldotLightFactory = () => {
 }
 
 jest.unstable_mockModule("@substrate/smoldot-light", mockSmoldotLightFactory)
+/*
 jest.unstable_mockModule("./specs/generated/polkadot.js", () => ({
   default: "polkadotFakeChainSpec",
 }))
+*/
 
 type MockSmoldotLight = ReturnType<typeof mockSmoldotLightFactory>
 let mockedSmoldotLight: MockSmoldotLight
@@ -149,19 +150,23 @@ describe("SmoldotConnect::smoldot-light", () => {
     })
 
     it("propagates the correct chainSpec to smoldot-light", async () => {
-      const { addChain, addWellKnownChain } = getConnectorClient()
+      const { addChain } = getConnectorClient()
       const chainSpec = "testChainSpec"
       await addChain(chainSpec)
 
       let mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(chainSpec)
 
+      /*
+      TODO: re-enable once we've improved the `check-specs` script https://github.com/paritytech/substrate-connect/pull/718#discussion_r802567024
+      
       await addWellKnownChain(WellKnownChains.polkadot)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(
         "polkadotFakeChainSpec",
       )
+      */
     })
 
     it("propagates the correct potentialRelayChainIds to smoldot-light", async () => {
