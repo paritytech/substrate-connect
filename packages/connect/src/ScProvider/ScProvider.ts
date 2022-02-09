@@ -9,10 +9,10 @@ import {
 import { assert, logger } from "@polkadot/util"
 import EventEmitter from "eventemitter3"
 import { SupportedChains } from "../SupportedChains.js"
-import { getSubstrateConnector, Chain } from "../connector/index.js"
+import { getConnectorClient, Chain } from "../connector/index.js"
 import { HealthCheckError } from "./HealthCheckError.js"
 
-const { addChain, addWellKnownChain } = getSubstrateConnector()
+const { addChain, addWellKnownChain } = getConnectorClient()
 const l = logger("smoldot-provider")
 
 interface RpcStateAwaiting {
@@ -299,7 +299,6 @@ export class ScProvider implements ProviderInterface {
           (response: string) => {
             this.#handleRpcReponse(response)
           },
-          [relay],
         )
 
         const parachainRemove = this.#chain.remove.bind(this.#chain)

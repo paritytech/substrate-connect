@@ -10,7 +10,6 @@ export type JsonRpcCallback = (response: string) => void
 export type AddChain = (
   chainSpec: string,
   jsonRpcCallback?: JsonRpcCallback,
-  potentialRelayChains?: Array<Chain>,
 ) => Promise<Chain>
 
 export type AddWellKnownChain = (

@@ -1,4 +1,4 @@
-import { getPublicApi } from "./smoldot-light"
+import { getConnectorClient } from "./smoldot-light"
 import { jest } from "@jest/globals"
 import type { AddChainOptions, ClientOptions } from "@substrate/smoldot-light"
 import {
@@ -58,6 +58,7 @@ const mockSmoldotLightFactory = () => {
     return {
       _options: options,
       _getChains: () => chains,
+      _getLatestChain: () => chains?.[chains.length - 1],
       terminate: jest.fn(),
       addChain: (addChainOptions: AddChainOptions) => {
         const chain = addChain(addChainOptions)
@@ -98,17 +99,19 @@ beforeAll(async () => {
 describe("SmoldotConnect::smoldot-light", () => {
   describe("client", () => {
     it("does not eagerly instantiate the client", () => {
-      getPublicApi({})
+      getConnectorClient()
       expect(mockedSmoldotLight.getLatestClient()).toBeUndefined()
     })
 
-    it("terminates the client when all its chains have been removed", async () => {
-      const { addChain } = getPublicApi({})
+    it("terminates the internal client when all the chains, from all clients, have been removed", async () => {
+      const { addChain } = getConnectorClient()
+      const { addChain: addChain2 } = getConnectorClient()
+
       const chain1 = await addChain("")
       expect(mockedSmoldotLight.getLatestClient()).not.toBeUndefined()
       const client = mockedSmoldotLight.getLatestClient()
 
-      const chain2 = await addChain("")
+      const chain2 = await addChain2("")
 
       chain1.remove()
       expect(client.terminate).not.toHaveBeenCalled()
@@ -128,7 +131,7 @@ describe("SmoldotConnect::smoldot-light", () => {
 
   describe("chain", () => {
     it("sends/receives rpc messages", async () => {
-      const { addChain } = getPublicApi({})
+      const { addChain } = getConnectorClient()
       const messagesReceived: string[] = []
       const chain = await addChain("", (response) => {
         messagesReceived.push(response)
@@ -146,23 +149,23 @@ describe("SmoldotConnect::smoldot-light", () => {
     })
 
     it("propagates the correct chainSpec to smoldot-light", async () => {
-      const { addChain, addWellKnownChain } = getPublicApi({})
+      const { addChain, addWellKnownChain } = getConnectorClient()
       const chainSpec = "testChainSpec"
       await addChain(chainSpec)
 
-      let mockedChain = mockedSmoldotLight.getLatestClient()._getChains()[0]
+      let mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(chainSpec)
 
       await addWellKnownChain(SupportedChains.polkadot)
 
-      mockedChain = mockedSmoldotLight.getLatestClient()._getChains()[1]
+      mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(
         "polkadotFakeChainSpec",
       )
     })
 
-    it("propagates the correct potentialRelayChains to smoldot-light", async () => {
-      const { addChain } = getPublicApi({})
+    it("propagates the correct potentialRelayChainIds to smoldot-light", async () => {
+      const { addChain } = getConnectorClient()
       const prevChains = await Promise.all(
         Array(3)
           .fill(null)
@@ -170,9 +173,12 @@ describe("SmoldotConnect::smoldot-light", () => {
       )
 
       prevChains[0].remove()
-      await addChain("", undefined, prevChains)
+      await addChain("")
 
-      const mockedChains = mockedSmoldotLight.getLatestClient()._getChains()
+      const mockedChains = mockedSmoldotLight
+        .getLatestClient()
+        ._getChains()
+        .slice(-4)
       const lastMockedChain = mockedChains[3]
 
       expect(lastMockedChain._addChainOptions.potentialRelayChains).toEqual([
@@ -182,13 +188,13 @@ describe("SmoldotConnect::smoldot-light", () => {
     })
 
     it("propagates the correct CrashError", async () => {
-      const { addChain } = getPublicApi({})
+      const { addChain } = getConnectorClient()
       const messagesReceived: string[] = []
       const chain = await addChain("", (response) => {
         messagesReceived.push(response)
       })
 
-      const mockedChain = mockedSmoldotLight.getLatestClient()._getChains()[0]
+      const mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       mockedChain._setSendJsonRpc(
         jest.fn((rpc) => {
           mockedChain._addChainOptions.jsonRpcCallback!(rpc + " pong")
@@ -231,13 +237,13 @@ describe("SmoldotConnect::smoldot-light", () => {
     })
 
     it("propagates the correct AlreadyDestroyedError", async () => {
-      const { addChain } = getPublicApi({})
+      const { addChain } = getConnectorClient()
       const messagesReceived: string[] = []
       const chain = await addChain("", (response) => {
         messagesReceived.push(response)
       })
 
-      const mockedChain = mockedSmoldotLight.getLatestClient()._getChains()[0]
+      const mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       mockedChain._setSendJsonRpc(
         jest.fn((rpc) => {
           mockedChain._addChainOptions.jsonRpcCallback!(rpc + " pong")
@@ -261,13 +267,13 @@ describe("SmoldotConnect::smoldot-light", () => {
     })
 
     it("propagates the correct JsonRpcDisabledError", async () => {
-      const { addChain } = getPublicApi({})
+      const { addChain } = getConnectorClient()
       const messagesReceived: string[] = []
       const chain = await addChain("", (response) => {
         messagesReceived.push(response)
       })
 
-      const mockedChain = mockedSmoldotLight.getLatestClient()._getChains()[0]
+      const mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       mockedChain._setSendJsonRpc(
         jest.fn((rpc) => {
           mockedChain._addChainOptions.jsonRpcCallback!(rpc + " pong")

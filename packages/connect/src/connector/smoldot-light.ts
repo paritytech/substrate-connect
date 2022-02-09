@@ -38,7 +38,17 @@ const getStart = () => {
   }))
 }
 
-const chains = new WeakMap<Chain, SChain>()
+let totalActiveChains = 0
+let clientPromise: Promise<Client> | null = null
+const getClient = (): Promise<Client> => {
+  if (clientPromise) return clientPromise
+  return (clientPromise = getStart().then((start) =>
+    start({
+      forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
+      maxLogLevel: 3 /* no debug/trace messages */,
+    }),
+  ))
+}
 
 const transformErrors = (thunk: () => void) => {
   try {
@@ -53,27 +63,18 @@ const transformErrors = (thunk: () => void) => {
   }
 }
 
-export const getPublicApi = (options: ClientOptions): SubstrateConnector => {
-  let clientPromise: Promise<Client> | null = null
-  const getClient = (options: ClientOptions): Promise<Client> => {
-    if (clientPromise) return clientPromise
-    return (clientPromise = getStart().then((start) => start(options)))
-  }
+export const getConnectorClient = (): SubstrateConnector => {
+  const chains = new Map<Chain, SChain>()
 
-  let refCount = 0
-  // export interface ClientOptions {
   const addChain: AddChain = async (
     chainSpec: string,
     jsonRpcCallback?: (msg: string) => void,
-    potentialRelayChains: Chain[] = [],
   ): Promise<Chain> => {
-    const client = await getClient(options)
+    const client = await getClient()
 
     const internalChain = await client.addChain({
       chainSpec,
-      potentialRelayChains: potentialRelayChains
-        .map((c) => chains.get(c)!)
-        .filter(Boolean),
+      potentialRelayChains: [...chains.values()],
       jsonRpcCallback,
     })
 
@@ -86,7 +87,7 @@ export const getPublicApi = (options: ClientOptions): SubstrateConnector => {
       remove: () => {
         if (chains.has(chain)) {
           chains.delete(chain)
-          if (--refCount === 0) {
+          if (--totalActiveChains === 0) {
             clientPromise = null
             client.terminate()
           }
@@ -98,7 +99,7 @@ export const getPublicApi = (options: ClientOptions): SubstrateConnector => {
     }
 
     chains.set(chain, internalChain)
-    refCount++
+    totalActiveChains++
     return chain
   }
 
@@ -109,7 +110,8 @@ export const getPublicApi = (options: ClientOptions): SubstrateConnector => {
     // the following line ensures that the http request for the dynamic import
     // of smoldot-light and the request for the dynamic import of the spec
     // happen in parallel
-    getClient(options)
+    getClient()
+
     const spec = await getSpec(supposedChain)
     return await addChain(spec, jsonRpcCallback)
   }
