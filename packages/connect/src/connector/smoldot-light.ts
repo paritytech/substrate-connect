@@ -5,9 +5,6 @@ import type {
   Chain as SChain,
   Client,
   ClientOptions,
-  AlreadyDestroyedError as IAlreadyDestroyedError,
-  CrashError as ICrashError,
-  JsonRpcDisabledError as IJsonRpcDisabledError,
 } from "@substrate/smoldot-light"
 import {
   AlreadyDestroyedError,
@@ -23,19 +20,10 @@ import type {
 } from "./types.js"
 import { WellKnownChains } from "../WellKnownChains.js"
 
-let SdAlreadyDestroyedError: typeof IAlreadyDestroyedError
-let SdCrashError: typeof ICrashError
-let SdJsonRpcDisabledError: typeof IJsonRpcDisabledError
-
 let startPromise: Promise<(options: ClientOptions) => Client> | null = null
 const getStart = () => {
   if (startPromise) return startPromise
-  startPromise = import("@substrate/smoldot-light").then((sm) => {
-    SdJsonRpcDisabledError = sm.JsonRpcDisabledError
-    SdCrashError = sm.CrashError
-    SdAlreadyDestroyedError = sm.AlreadyDestroyedError
-    return sm.start
-  })
+  startPromise = import("@substrate/smoldot-light").then((sm) => sm.start)
   return startPromise
 }
 
@@ -56,9 +44,11 @@ const transformErrors = (thunk: () => void) => {
   try {
     thunk()
   } catch (e) {
-    if (e instanceof SdJsonRpcDisabledError) throw new JsonRpcDisabledError()
-    if (e instanceof SdCrashError) throw new CrashError(e.message)
-    if (e instanceof SdAlreadyDestroyedError) throw new AlreadyDestroyedError()
+    const error = e as Error | undefined
+    if (error?.name === "JsonRpcDisabledError") throw new JsonRpcDisabledError()
+    if (error?.name === "SdCrashError") throw new CrashError(error.message)
+    if (error?.name === "SdAlreadyDestroyedError")
+      throw new AlreadyDestroyedError()
     throw new CrashError(
       e instanceof Error ? e.message : `Unexpected error ${e}`,
     )
