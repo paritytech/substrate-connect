@@ -187,9 +187,7 @@ describe("SmoldotConnect::Extension", () => {
         errorMessage: "",
       })
 
-      await expect(chainPromise).rejects.toThrow(
-        "There was an error creating the smoldot chain.",
-      )
+      await expect(chainPromise).rejects.toThrow()
     })
   })
 

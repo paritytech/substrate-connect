@@ -11,6 +11,7 @@ import {
   JsonRpcDisabledError,
 } from "./errors.js"
 import { WellKnownChains } from "../WellKnownChains.js"
+import { getSpec } from "./specs/index.js"
 
 type HeaderlessToExtensionGeneric<T extends ToExtension> = T extends {
   origin: "substrate-connect-client"
@@ -54,14 +55,23 @@ export const getConnectorClient = (): SubstrateConnector => {
       )
     }
 
-    await new Promise<void>((res, rej) => {
-      listeners.set(chainId, (msg) => {
-        listeners.delete(chainId)
-        if (msg.type === "chain-ready") return res()
-        rej(new Error("There was an error creating the smoldot chain."))
+    const createChain = (
+      msg: HeaderlessToExtension & {
+        type: "add-chain" | "add-well-known-chain"
+      },
+    ) =>
+      new Promise<void>((res, rej) => {
+        listeners.set(chainId, (msg) => {
+          listeners.delete(chainId)
+          if (msg.type === "chain-ready") return res()
+          rej(new Error("There was an error creating the smoldot chain."))
+        })
+
+        postToExtension(msg)
       })
 
-      postToExtension(
+    try {
+      await createChain(
         isWellKnown
           ? {
               type: "add-well-known-chain",
@@ -73,7 +83,16 @@ export const getConnectorClient = (): SubstrateConnector => {
               potentialRelayChainIds,
             },
       )
-    })
+    } catch (e) {
+      if (!isWellKnown) throw e
+
+      const chainSpec = await getSpec(chainSpecOrWellKnownName)
+      await createChain({
+        type: "add-chain",
+        chainSpec,
+        potentialRelayChainIds: [],
+      })
+    }
 
     const chain: Chain = {
       sendJsonRpc: (jsonRpcMessage) => {
