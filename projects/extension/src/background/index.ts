@@ -29,9 +29,11 @@ export interface Background extends Window {
 }
 
 let manager: ConnectionManager<chrome.runtime.Port>
-let listeners: Set<(state: ExposedChainConnection[]) => void> = new Set();
+let listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
 
-const notifyListener = (listener: (state: ExposedChainConnection[]) => void) => {
+const notifyListener = (
+  listener: (state: ExposedChainConnection[]) => void,
+) => {
   listener(
     manager.allChains.map((info) => {
       return {
@@ -47,23 +49,23 @@ const notifyListener = (listener: (state: ExposedChainConnection[]) => void) => 
 
 const notifyAllListeners = () => {
   for (const listener of listeners) {
-    notifyListener(listener);
+    notifyListener(listener)
   }
 }
 
 const publicManager: Background["manager"] = {
   onManagerStateChanged(listener) {
-    notifyListener(listener);
-    listeners.add(listener);
+    notifyListener(listener)
+    listeners.add(listener)
     return () => {
-      listeners.delete(listener);
+      listeners.delete(listener)
     }
   },
   disconnectTab: (tabId: number) => {
     // Note that multiple ports can share the same `tabId`
     for (const port of manager.sandboxes) {
       if (port.sender?.tab?.id === tabId) {
-        port.disconnect();
+        port.disconnect()
       }
     }
   },
@@ -139,8 +141,8 @@ chrome.runtime.onConnect.addListener((port) => {
       case "add-chain":
       case "add-well-known-chain":
       case "remove-chain": {
-        notifyAllListeners();
-        break;
+        notifyAllListeners()
+        break
       }
     }
   })
