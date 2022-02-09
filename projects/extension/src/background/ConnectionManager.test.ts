@@ -220,18 +220,6 @@ describe("ConnectionManager", () => {
     ])
   })
 
-  it("correctly errors when passed a malformed message", () => {
-    const { connectPort } = helper
-    const { port } = connectPort("chainId", 1)
-
-    port._sendExtensionMessage({
-      type: "foo" as "rpc",
-      jsonRpcMessage: "",
-    })
-
-    expect(port.postedMessages[0].type).toEqual("error")
-  })
-
   it("correctly errors when passed a wrong well-known-chain", async () => {
     const { connectPort } = helper
     const { port } = connectPort("chainId", 1, {
