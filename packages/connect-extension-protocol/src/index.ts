@@ -69,7 +69,8 @@
  *
  * Once a web page no longer wants to interface with a certain chain, it should
  * send a {@link ToExtensionRemoveChain} message to the extension in order for
- * resources to be de-allocated.
+ * resources to be de-allocated. This can also be done before a
+ * {@link ToApplicationChainReady} message has been sent back.
  *
  * At any point in time, the extension can send a {@link ToApplicationError}
  * message to indicate a critical problem with the chain or the extension that
