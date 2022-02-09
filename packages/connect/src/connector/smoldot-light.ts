@@ -30,24 +30,26 @@ let SdJsonRpcDisabledError: typeof IJsonRpcDisabledError
 let startPromise: Promise<(options: ClientOptions) => Client> | null = null
 const getStart = () => {
   if (startPromise) return startPromise
-  return (startPromise = import("@substrate/smoldot-light").then((sm) => {
+  startPromise = import("@substrate/smoldot-light").then((sm) => {
     SdJsonRpcDisabledError = sm.JsonRpcDisabledError
     SdCrashError = sm.CrashError
     SdAlreadyDestroyedError = sm.AlreadyDestroyedError
     return sm.start
-  }))
+  })
+  return startPromise
 }
 
 let totalActiveChains = 0
 let clientPromise: Promise<Client> | null = null
 const getClient = (): Promise<Client> => {
   if (clientPromise) return clientPromise
-  return (clientPromise = getStart().then((start) =>
+  clientPromise = getStart().then((start) =>
     start({
       forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
       maxLogLevel: 3 /* no debug/trace messages */,
     }),
-  ))
+  )
+  return clientPromise
 }
 
 const transformErrors = (thunk: () => void) => {
