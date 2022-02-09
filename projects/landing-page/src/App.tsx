@@ -89,7 +89,7 @@ const App: React.FunctionComponent = () => {
 
           <Section>
             <SectionHeading id="supported-networks" prefix="3">
-              Supported Networks
+              Well known Networks
             </SectionHeading>
             <Grid container>
               <CardNetwork
@@ -141,12 +141,12 @@ const App: React.FunctionComponent = () => {
             <ThemeProvider theme={createTheme(dark)}>
               <Code>yarn add @substrate/substrate-connect</Code>
               <Code heading="Simple usage (suported chain)">
-                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
+                <Box>{`import { ScProvider, WellKnownChains } from '@substrate/connect';`}</Box>
 
                 <Box mt={2}>{`// Create providers for known chains`}</Box>
-                <Box>{`const westendProvider = new ScProvider(SupportedChains.westend);`}</Box>
+                <Box>{`const westendProvider = new ScProvider(WellKnownChains.westend);`}</Box>
                 <Box>{`const api1 = await ApiPromise.create({ provider: westendProvider });`}</Box>
-                <Box>{`const kusamaProvider = new ScProvider(SupportedChains.kusama);`}</Box>
+                <Box>{`const kusamaProvider = new ScProvider(WellKnownChains.kusama);`}</Box>
                 <Box>{`const api2 = await ApiPromise.create({ provider: kusamaProvider });`}</Box>
 
                 <Box
@@ -185,10 +185,10 @@ const App: React.FunctionComponent = () => {
               </Code>
 
               <Code heading="Simple usage with options">
-                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
+                <Box>{`import { ScProvider, WellKnownChains } from '@substrate/connect';`}</Box>
                 <Box
                   mt={2}
-                >{`const provider = new ScProvider(SupportedChains.westend);`}</Box>
+                >{`const provider = new ScProvider(WellKnownChains.westend);`}</Box>
                 <Box>{`const apiOptions = {types: customTypes}`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>
                 <Box
@@ -200,12 +200,12 @@ const App: React.FunctionComponent = () => {
               </Code>
 
               <Code heading="Parachains usage">
-                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
+                <Box>{`import { ScProvider, WellKnownChains } from '@substrate/connect';`}</Box>
                 <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
 
                 <Box
                   mt={2}
-                >{`const provider = new ScProvider(SupportedChains.westend, JSON.stringify(parachainSpecs));`}</Box>
+                >{`const provider = new ScProvider(WellKnownChains.westend, JSON.stringify(parachainSpecs));`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider });`}</Box>
 
                 <Box
@@ -218,12 +218,12 @@ const App: React.FunctionComponent = () => {
               </Code>
 
               <Code heading="Parachains usage with options">
-                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
+                <Box>{`import { ScProvider, WellKnownChains } from '@substrate/connect';`}</Box>
                 <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
 
                 <Box
                   mt={2}
-                >{`const provider = new ScProvider(SupportedChains.westend, JSON.stringify(parachainSpecs));`}</Box>
+                >{`const provider = new ScProvider(WellKnownChains.westend, JSON.stringify(parachainSpecs));`}</Box>
                 <Box>{`const apiOptions = {types: customTypes}`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>
 
@@ -332,7 +332,7 @@ const App: React.FunctionComponent = () => {
             Wasm Light Clients
           </SidebarLink>
           <SidebarLink href="#supported-networks">
-            Supported Networks
+            Well known Networks
           </SidebarLink>
           <SidebarLink href="#getting-started">Getting Started</SidebarLink>
           <SidebarLink href="#api-docs">API Documentation</SidebarLink>

@@ -1,8 +1,7 @@
 import type { Config } from "@jest/types"
 
 const config: Config.InitialOptions = {
-  coverageReporters: ["text-summary"],
-  reporters: ["jest-silent-reporter"],
+  testEnvironment: "jsdom",
   resolver: "./extension-resolver.cjs",
   roots: ["<rootDir>/src"],
   verbose: true,
