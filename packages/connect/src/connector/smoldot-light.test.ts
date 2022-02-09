@@ -6,7 +6,7 @@ import {
   CrashError,
   JsonRpcDisabledError,
 } from "./errors"
-import { SupportedChains } from "../SupportedChains.js"
+import { WellKnownChains } from "../WellKnownChains.js"
 
 class SdAlreadyDestroyedError extends Error {
   constructor() {
@@ -156,7 +156,7 @@ describe("SmoldotConnect::smoldot-light", () => {
       let mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(chainSpec)
 
-      await addWellKnownChain(SupportedChains.polkadot)
+      await addWellKnownChain(WellKnownChains.polkadot)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(

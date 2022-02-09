@@ -10,7 +10,7 @@ import {
   CrashError,
   JsonRpcDisabledError,
 } from "./errors.js"
-import { SupportedChains } from "../SupportedChains.js"
+import { WellKnownChains } from "../WellKnownChains.js"
 
 type HeaderlessToExtensionGeneric<T extends ToExtension> = T extends {
   origin: "substrate-connect-client"
@@ -126,7 +126,7 @@ export const getConnectorClient = (): SubstrateConnector => {
     addChain: (chainSpec: string, jsonRpcCallback?: JsonRpcCallback) =>
       internalAddChain(false, chainSpec, jsonRpcCallback, [...chains.values()]),
     addWellKnownChain: (
-      name: SupportedChains,
+      name: WellKnownChains,
       jsonRpcCallback?: JsonRpcCallback,
     ) => internalAddChain(true, name, jsonRpcCallback),
   }

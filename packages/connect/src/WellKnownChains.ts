@@ -1,4 +1,4 @@
-export enum SupportedChains {
+export enum WellKnownChains {
   polkadot = "polkadot",
   kusama = "kusama",
   rococo = "rococo",

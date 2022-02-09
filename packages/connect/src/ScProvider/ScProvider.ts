@@ -8,7 +8,7 @@ import {
 } from "@polkadot/rpc-provider/types"
 import { assert, logger } from "@polkadot/util"
 import EventEmitter from "eventemitter3"
-import { SupportedChains } from "../SupportedChains.js"
+import { WellKnownChains } from "../WellKnownChains.js"
 import { getConnectorClient, Chain } from "../connector/index.js"
 import { HealthCheckError } from "./HealthCheckError.js"
 
@@ -110,7 +110,7 @@ export class ScProvider implements ProviderInterface {
    *
    */
   public constructor(
-    knownChain: SupportedChains,
+    knownChain: WellKnownChains,
     parachainSpec?: string,
     autoConnect?: boolean,
   )
@@ -290,8 +290,8 @@ export class ScProvider implements ProviderInterface {
   public connect = async (): Promise<void> => {
     try {
       if (this.#parachainSpecs) {
-        const relay = await (this.#chainSpec in SupportedChains
-          ? addWellKnownChain(this.#chainSpec as SupportedChains)
+        const relay = await (this.#chainSpec in WellKnownChains
+          ? addWellKnownChain(this.#chainSpec as WellKnownChains)
           : addChain(this.#chainSpec))
 
         this.#chain = await addChain(
@@ -311,9 +311,9 @@ export class ScProvider implements ProviderInterface {
           this.#handleRpcReponse(response)
         }
 
-        this.#chain = await (this.#chainSpec in SupportedChains
+        this.#chain = await (this.#chainSpec in WellKnownChains
           ? addWellKnownChain(
-              this.#chainSpec as SupportedChains,
+              this.#chainSpec as WellKnownChains,
               jsonRpcCallback,
             )
           : addChain(this.#chainSpec, jsonRpcCallback))

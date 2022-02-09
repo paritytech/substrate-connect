@@ -1,4 +1,4 @@
-import { SupportedChains } from "../SupportedChains.js"
+import { WellKnownChains } from "../WellKnownChains.js"
 
 export interface Chain {
   sendJsonRpc(rpc: string): void
@@ -13,7 +13,7 @@ export type AddChain = (
 ) => Promise<Chain>
 
 export type AddWellKnownChain = (
-  name: SupportedChains,
+  name: WellKnownChains,
   jsonRpcCallback?: JsonRpcCallback,
 ) => Promise<Chain>
 

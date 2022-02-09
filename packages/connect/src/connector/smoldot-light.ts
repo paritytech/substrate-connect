@@ -21,7 +21,7 @@ import type {
   Chain,
   SubstrateConnector,
 } from "./types.js"
-import { SupportedChains } from "../SupportedChains.js"
+import { WellKnownChains } from "../WellKnownChains.js"
 
 let SdAlreadyDestroyedError: typeof IAlreadyDestroyedError
 let SdCrashError: typeof ICrashError
@@ -104,7 +104,7 @@ export const getConnectorClient = (): SubstrateConnector => {
   }
 
   const addWellKnownChain: AddWellKnownChain = async (
-    supposedChain: SupportedChains,
+    supposedChain: WellKnownChains,
     jsonRpcCallback?: (msg: string) => void,
   ): Promise<Chain> => {
     // the following line ensures that the http request for the dynamic import
