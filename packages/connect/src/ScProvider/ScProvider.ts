@@ -63,14 +63,14 @@ const CONNECTION_STATE_PINGER_INTERVAL = 2000
  * @example
  *
  * ```
- * import { ScProvider, SupportedChains } from '@substrate/connect';
+ * import { ScProvider, WellKnownChains } from '@substrate/connect';
  * import { ApiPromise } from '@polkadot/api';
  *
  * // Create a new UApp with a unique name
- * const westendProvider = ScProvider(SupportedChains.westend)
+ * const westendProvider = ScProvider(WellKnownChains.westend)
  * const westend = await ApiPromise.create({ provider: westendProvider })
  *
- * const kusamaProvider = ScProvider(SupportedChains.kusama)
+ * const kusamaProvider = ScProvider(WellKnownChains.kusama)
  * const kusama = await ApiPromise.create({ provider: kusamaProvider })
  *
  * await westendProvider.rpc.chain.subscribeNewHeads((lastHeader) => {
@@ -104,7 +104,7 @@ export class ScProvider implements ProviderInterface {
   healthPingerInterval = CONNECTION_STATE_PINGER_INTERVAL
 
   /**
-   * @param knownChain - the name of a supported chain ({@link SupportedChains})
+   * @param knownChain - the name of a supported chain ({@link WellKnownChains})
    * @param parachainSpec - optional param of the parachain chainSpecs to connect to
    * @param autoConnect - whether the ScProvider should eagerly connect while its being instantiated. Defaults to `true`
    *
