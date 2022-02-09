@@ -161,10 +161,16 @@ export class ConnectionManager<SandboxId> {
   async *sandboxOutput(sandboxId: SandboxId): AsyncGenerator<ToApplication> {
     while (true) {
       const sandbox = this.#sandboxes.get(sandboxId)!
-
-      const [message, nextFront] = await sandbox.messagesQueueFront
-      sandbox.messagesQueueFront = nextFront
+      const queueFront = sandbox.messagesQueueFront
+      const [message, nextFront] = await queueFront
+      // A `null` message stops the iterator. We do this before updating
+      // `sandbox.messagesQueueFront` so that `null` is returned again in case `sandboxOutput`
+      // is called again.
       if (!message) break
+      // We check whether the queue front is still the same, in case the API user grabbed
+      // multiple iterators.
+      if (sandbox.messagesQueueFront === queueFront)
+        sandbox.messagesQueueFront = nextFront
       yield message
     }
   }
@@ -361,6 +367,9 @@ interface Sandbox {
   // element of the tuple is a `Promise` to the following message.
   // In order to pull an element from the queue, wait for this promise, then overwrite
   // `messagesQueueFront` with the yielded `̀Promise`.
+  //
+  // `null` must be pushed when the sandbox is destroyed, in order to interrupt any function
+  // currently waiting for a message.
   messagesQueueFront: Stream
   // The `resolve` function of the last `Promise` of the queue.
   messagesQueueBack: (item: [ToApplication | null, Stream]) => void
