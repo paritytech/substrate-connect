@@ -25,16 +25,6 @@ window.addEventListener("message", ({ data }: MessageEvent<ToApplication>) => {
   listeners.get(data.chainId)?.(data)
 })
 
-const listenToExtension = (
-  chainId: string,
-  callback: (msg: ToApplication) => void,
-): (() => void) => {
-  listeners.set(chainId, callback)
-  return () => {
-    listeners.delete(chainId)
-  }
-}
-
 function getRandomChainId(): string {
   const arr = new BigUint64Array(2)
   // It can only be used from the browser, so this is fine.
@@ -65,8 +55,8 @@ export const getConnectorClient = (): SubstrateConnector => {
     }
 
     await new Promise<void>((res, rej) => {
-      const stopListeningToExtension = listenToExtension(chainId, (msg) => {
-        stopListeningToExtension()
+      listeners.set(chainId, (msg) => {
+        listeners.delete(chainId)
         if (msg.type === "chain-ready") return res()
         rej(new Error("There was an error creating the smoldot chain."))
       })
@@ -99,7 +89,7 @@ export const getConnectorClient = (): SubstrateConnector => {
         postToExtension({ type: "rpc", jsonRpcMessage })
       }),
       remove: chainFn(() => {
-        stopListeningToExtension()
+        listeners.delete(chainId)
         chains.delete(chain)
         postToExtension({ type: "remove-chain" })
       }),
@@ -107,7 +97,7 @@ export const getConnectorClient = (): SubstrateConnector => {
     chains.set(chain, chainId)
 
     let crashError: CrashError | null = null
-    const stopListeningToExtension = listenToExtension(chainId, (msg) => {
+    listeners.set(chainId, (msg) => {
       if (msg.type !== "rpc" || !jsonRpcCallback) {
         chain.remove()
         crashError = new CrashError(
