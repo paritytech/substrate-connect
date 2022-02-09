@@ -29,23 +29,34 @@ export interface Background extends Window {
 }
 
 let manager: ConnectionManager<chrome.runtime.Port>
+let listeners: Set<(state: ExposedChainConnection[]) => void> = new Set();
+
+const notifyListener = (listener: (state: ExposedChainConnection[]) => void) => {
+  listener(
+    manager.allChains.map((info) => {
+      return {
+        chainId: info.apiInfo ? info.apiInfo.chainId : "",
+        chainName: info.chainName,
+        tabId: info.apiInfo ? info.apiInfo.sandboxId.sender!.tab!.id! : 0,
+        url: info.apiInfo ? info.apiInfo.sandboxId.sender!.tab!.url! : "",
+        healthStatus: info.healthStatus,
+      }
+    }),
+  )
+}
+
+const notifyAllListeners = () => {
+  for (const listener of listeners) {
+    notifyListener(listener);
+  }
+}
 
 const publicManager: Background["manager"] = {
   onManagerStateChanged(listener) {
-    listener(
-      manager.allChains.map((info) => {
-        return {
-          chainId: info.apiInfo ? info.apiInfo.chainId : "",
-          chainName: info.chainName,
-          tabId: info.apiInfo ? info.apiInfo.sandboxId.sender!.tab!.id! : 0,
-          url: info.apiInfo ? info.apiInfo.sandboxId.sender!.tab!.url! : "",
-          healthStatus: info.healthStatus,
-        }
-      }),
-    )
-    //manager.on("stateChanged", listener)
+    notifyListener(listener);
+    listeners.add(listener);
     return () => {
-      //manager.removeListener("stateChanged", listener)
+      listeners.delete(listener);
     }
   },
   disconnectTab: (tabId: number) => {
@@ -123,6 +134,15 @@ chrome.runtime.onConnect.addListener((port) => {
 
   port.onMessage.addListener((message: ToExtension) => {
     manager.sandboxMessage(port, message)
+
+    switch (message.type) {
+      case "add-chain":
+      case "add-well-known-chain":
+      case "remove-chain": {
+        notifyAllListeners();
+        break;
+      }
+    }
   })
 
   port.onDisconnect.addListener(() => {
