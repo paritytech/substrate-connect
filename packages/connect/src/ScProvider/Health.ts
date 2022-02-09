@@ -12,6 +12,24 @@ export interface HealthChecker {
   responsePassThrough(response: string): string | null
 }
 
+interface RequestType {
+  id: string
+  jsonrpc: string
+  method: string
+  params: Array<string>
+}
+
+interface ResponseType {
+  jsonrpcs: string
+  id: string
+  result: SmoldotHealth
+  params: SubType
+}
+
+interface SubType {
+  subscription: string | null
+}
+
 /*
  * Creates a new health checker.
  *
@@ -83,24 +101,6 @@ export const healthChecker = (): HealthChecker => {
       return checker.responsePassThrough(jsonRpcResponse)
     },
   }
-}
-
-type RequestType = {
-  id: string
-  jsonrpc: string
-  method: string
-  params: Array<string>
-}
-
-type ResponseType = {
-  jsonrpcs: string
-  id: string
-  result: SmoldotHealth
-  params: SubType
-}
-
-type SubType = {
-  subscription: string | null
 }
 
 class InnerChecker {
