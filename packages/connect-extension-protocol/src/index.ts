@@ -79,7 +79,7 @@
  * {@link ToApplicationError} messages *before* a chain has been initialized,
  * {@link ToApplicationError} messages that happen *after* a chain has been
  * initialized are rare and serious. If that happens, the web page is
- * encouraged remove all of its existing chains and stop using the extension
+ * encouraged to remove all of its existing chains and stop using the extension
  * altogether.
  *
  * Note that if the extension sends a {@link ToApplicationError} message,
