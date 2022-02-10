@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 export interface SmoldotHealth {
   isSyncing: boolean
   peers: number
@@ -10,24 +14,6 @@ export interface HealthChecker {
   stop(): void
   sendJsonRpc(request: string): void
   responsePassThrough(response: string): string | null
-}
-
-interface RequestType {
-  id: unknown
-  jsonrpc: string
-  method: string
-  params: Array<unknown>
-}
-
-interface ResponseType {
-  jsonrpc: string
-  id: unknown
-  result: SmoldotHealth
-  params: SubType
-}
-
-interface SubType {
-  subscription: string | null
 }
 
 /*
@@ -124,7 +110,7 @@ class InnerChecker {
   sendJsonRpc = (request: string): void => {
     // Replace the `id` in the request to prefix the request ID with `extern:`.
     try {
-      const parsedRequest: RequestType = JSON.parse(request) as RequestType
+      const parsedRequest = JSON.parse(request)
       if (parsedRequest.id) {
         const newId = "extern:" + JSON.stringify(parsedRequest.id)
         parsedRequest.id = newId
@@ -137,9 +123,9 @@ class InnerChecker {
   }
 
   responsePassThrough = (jsonRpcResponse: string): string | null => {
-    let parsedResponse: ResponseType
+    let parsedResponse
     try {
-      parsedResponse = JSON.parse(jsonRpcResponse) as ResponseType
+      parsedResponse = JSON.parse(jsonRpcResponse)
     } catch (err) {
       return jsonRpcResponse
     }
@@ -208,9 +194,7 @@ class InnerChecker {
       // Need to remove the `extern:` prefix.
       if (!parsedResponse.id.startsWith("extern:"))
         throw new Error("State inconsistency in health checker")
-      const newId = JSON.parse(
-        parsedResponse.id.slice("extern:".length),
-      ) as string
+      const newId = JSON.parse(parsedResponse.id.slice("extern:".length))
       parsedResponse.id = newId
     }
 
