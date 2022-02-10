@@ -47,12 +47,6 @@ const notifyListener = (
   )
 }
 
-const notifyAllListeners = () => {
-  for (const listener of listeners) {
-    notifyListener(listener)
-  }
-}
-
 const publicManager: Background["manager"] = {
   onManagerStateChanged(listener) {
     notifyListener(listener)
@@ -141,7 +135,7 @@ chrome.runtime.onConnect.addListener((port) => {
       case "add-chain":
       case "add-well-known-chain":
       case "remove-chain": {
-        notifyAllListeners()
+        listeners.forEach(notifyListener)
         break
       }
     }

@@ -280,36 +280,27 @@ export class ConnectionManager<SandboxId> {
           name,
         })
 
-        // Spawn in the background an async function that is called once the initialization
-        // finished, either successfully or not.
+        // Spawn in the background an async function to react to the initialization finishing.
         ;(async () => {
-          // `result` contains either the chain (on success) or the error message (on failure).
-          let result: SmoldotChain | string
           try {
-            result = await chainInitialization
-          } catch (err) {
-            result =
-              err instanceof Error
-                ? err.message
-                : "Unknown error when adding chain"
-          }
+            const chain = await chainInitialization
 
-          // Because the chain initialization might have taken a long time, we first need to
-          // check whether the chain that we're initializing is still in `this`, as it might
-          // have been removed by various other functions if it no longer interests us.
-          const sandbox = this.#sandboxes.get(sandboxId)
-          if (
-            !sandbox ||
-            !(sandbox.chains.get(chainId)?.smoldotChain === chainInitialization)
-          ) {
-            typeof result !== "string" && result.remove()
-            return
-          }
+            // Because the chain initialization might have taken a long time, we first need to
+            // check whether the chain that we're initializing is still in `this`, as it might
+            // have been removed by various other functions if it no longer interests us.
+            const sandbox = this.#sandboxes.get(sandboxId)
+            if (
+              !sandbox ||
+              !(
+                sandbox.chains.get(chainId)?.smoldotChain ===
+                chainInitialization
+              )
+            ) {
+              chain.remove()
+              return
+            }
 
-          // Update `sandbox.chains`, either updating the entry on success or removing it on
-          // failure, and send back a message.
-          if (typeof result !== "string") {
-            const smoldotChain: SmoldotChain = result
+            const smoldotChain: SmoldotChain = chain
             healthChecker.setSendJsonRpc((rq) => smoldotChain.sendJsonRpc(rq))
             const readyChain: ReadyChain = {
               isReady: true,
@@ -326,13 +317,32 @@ export class ConnectionManager<SandboxId> {
               type: "chain-ready",
               chainId: message.chainId,
             })
-          } else {
+          } catch (err) {
+            const error =
+              err instanceof Error
+                ? err.message
+                : "Unknown error when adding chain"
+
+            // Because the chain initialization might have taken a long time, we first need to
+            // check whether the chain that we're initializing is still in `this`, as it might
+            // have been removed by various other functions if it no longer interests us.
+            const sandbox = this.#sandboxes.get(sandboxId)
+            if (
+              !sandbox ||
+              !(
+                sandbox.chains.get(chainId)?.smoldotChain ===
+                chainInitialization
+              )
+            ) {
+              return
+            }
+
             sandbox.chains.delete(chainId)
             sendSandbox(sandbox, {
               origin: "substrate-connect-extension",
               type: "error",
               chainId: message.chainId,
-              errorMessage: result,
+              errorMessage: error,
             })
           }
         })()
