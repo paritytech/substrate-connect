@@ -13,15 +13,15 @@ export interface HealthChecker {
 }
 
 interface RequestType {
-  id: string
+  id: unknown
   jsonrpc: string
   method: string
-  params: Array<string>
+  params: Array<unknown>
 }
 
 interface ResponseType {
-  jsonrpcs: string
-  id: string
+  jsonrpc: string
+  id: unknown
   result: SmoldotHealth
   params: SubType
 }
