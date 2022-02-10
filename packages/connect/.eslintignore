@@ -8,3 +8,4 @@ coverage
 
 /src/specs/*.json
 jest.*.ts
+*.test.ts

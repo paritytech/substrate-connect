@@ -1,11 +1,4 @@
-export enum SupportedChains {
-  polkadot = "polkadot",
-  kusama = "kusama",
-  rococo = "rococo",
-  westend = "westend",
-}
-
-export async function getSpec(chain: SupportedChains): Promise<string> {
+export async function getSpec(chain: string): Promise<string> {
   const specRaw = (await import("./generated/" + chain + ".js")) as
     | string
     | { default: string }

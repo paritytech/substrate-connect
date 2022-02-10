@@ -22,8 +22,5 @@
     "src/background/settings.json"
   ],
   "exclude": ["*node_modules*", "../../node_modules*"],
-  "references": [
-    { "path": "../../packages/connect-extension-protocol" },
-    { "path": "../../packages/smoldot-test-utils" }
-  ]
+  "references": [{ "path": "../../packages/connect-extension-protocol" }]
 }
