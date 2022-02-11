@@ -62,7 +62,6 @@ const publicManager: Background["manager"] = {
         port.disconnect()
       }
     }
-    listeners.forEach(notifyListener)
   },
 }
 
@@ -92,6 +91,13 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === "DatabaseContentAlarm") flushDatabases()
 })
 
+const waitAllChainsUpdate = () => {
+  listeners.forEach(notifyListener)
+  manager.waitAllChainUpdate().then(() => {
+    waitAllChainsUpdate()
+  })
+}
+
 const init = async () => {
   try {
     manager = new ConnectionManager()
@@ -103,6 +109,8 @@ const init = async () => {
       await manager.addWellKnownChain(key, value, dbContent)
       if (!dbContent) saveChainDbContent(key)
     }
+
+    waitAllChainsUpdate()
 
     chrome.alarms.create("DatabaseContentAlarm", {
       periodInMinutes: 5,
@@ -131,20 +139,10 @@ chrome.runtime.onConnect.addListener((port) => {
 
   port.onMessage.addListener((message: ToExtension) => {
     manager.sandboxMessage(port, message)
-
-    switch (message.type) {
-      case "add-chain":
-      case "add-well-known-chain":
-      case "remove-chain": {
-        listeners.forEach(notifyListener)
-        break
-      }
-    }
   })
 
   port.onDisconnect.addListener(() => {
     manager.deleteSandbox(port)
-    listeners.forEach(notifyListener)
   })
 })
 

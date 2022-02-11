@@ -27,6 +27,7 @@ export class ConnectionManager<SandboxId> {
   #smoldotClient: SmoldotClient = smoldotStart()
   #sandboxes: Map<SandboxId, Sandbox> = new Map()
   #wellKnownChains: Map<string, WellKnownChain> = new Map()
+  #allChainsChangedCallbacks: (() => void)[] = []
 
   /**
    * Adds a new well-known chain to this state machine.
@@ -54,10 +55,17 @@ export class ConnectionManager<SandboxId> {
 
     healthChecker.setSendJsonRpc((rq) => chain.sendJsonRpc(rq))
     healthChecker.start(
-      (health) => (wellKnownChain.latestHealthStatus = health),
+      (health) => {
+        wellKnownChain.latestHealthStatus = health
+        this.#allChainsChangedCallbacks.forEach((cb) => cb())
+        this.#allChainsChangedCallbacks = []
+      },
     )
 
     this.#wellKnownChains.set(chainName, wellKnownChain)
+
+    this.#allChainsChangedCallbacks.forEach((cb) => cb())
+    this.#allChainsChangedCallbacks = []
   }
 
   /**
@@ -107,6 +115,15 @@ export class ConnectionManager<SandboxId> {
   }
 
   /**
+   * Waits for the value of `allChains` to change.
+   */
+  async waitAllChainUpdate(): Promise<void> {
+    await new Promise<void>((resolve, _) => {
+      this.#allChainsChangedCallbacks.push(resolve)
+    })
+  }
+
+  /**
    * Inserts a sandbox in the list of sandboxes held by this state machine.
    */
   addSandbox(sandboxId: SandboxId) {
@@ -142,6 +159,9 @@ export class ConnectionManager<SandboxId> {
     })
     sandbox.pushMessagesQueue(null)
     this.#sandboxes.delete(sandboxId)
+
+    this.#allChainsChangedCallbacks.forEach((cb) => cb())
+    this.#allChainsChangedCallbacks = []
   }
 
   /**
@@ -282,6 +302,8 @@ export class ConnectionManager<SandboxId> {
           smoldotChain: chainInitialization,
           name,
         })
+        this.#allChainsChangedCallbacks.forEach((cb) => cb())
+        this.#allChainsChangedCallbacks = []
 
         // Spawn in the background an async function to react to the initialization finishing.
         this.#handleChainInitializationFinished(
@@ -310,6 +332,8 @@ export class ConnectionManager<SandboxId> {
         // being finished will remove it.
 
         sandbox.chains.delete(message.chainId)
+        this.#allChainsChangedCallbacks.forEach((cb) => cb())
+        this.#allChainsChangedCallbacks = []
         break
       }
     }
@@ -355,6 +379,8 @@ export class ConnectionManager<SandboxId> {
       }
       healthChecker.start((health) => {
         readyChain.latestHealthStatus = health
+        this.#allChainsChangedCallbacks.forEach((cb) => cb())
+        this.#allChainsChangedCallbacks = []
       })
       sandbox.chains.set(chainId, readyChain)
       sandbox.pushMessagesQueue({
