@@ -62,6 +62,7 @@ const publicManager: Background["manager"] = {
         port.disconnect()
       }
     }
+    listeners.forEach(notifyListener)
   },
 }
 
@@ -143,6 +144,7 @@ chrome.runtime.onConnect.addListener((port) => {
 
   port.onDisconnect.addListener(() => {
     manager.deleteSandbox(port)
+    listeners.forEach(notifyListener)
   })
 })
 
