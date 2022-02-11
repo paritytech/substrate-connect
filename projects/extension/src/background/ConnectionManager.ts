@@ -5,7 +5,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Client, Chain } from "@substrate/smoldot-light"
-import { healthChecker as smHealthChecker } from "@substrate/connect"
+import {
+  healthChecker as smHealthChecker,
+  WellKnownChains,
+} from "@substrate/connect"
 
 import { JsonRpcCallback, SmoldotHealth } from "@substrate/smoldot-light"
 import { ExposedChainConnection, ChainConnection } from "./types"
@@ -18,11 +21,14 @@ import ksmcc3 from "../../public/assets/kusama.json"
 import polkadot from "../../public/assets/polkadot.json"
 import rococo_v1_13 from "../../public/assets/rococo.json"
 
-export const wellKnownChains: Map<string, string> = new Map<string, string>([
-  ["polkadot", JSON.stringify(polkadot)],
-  ["ksmcc3", JSON.stringify(ksmcc3)],
-  ["rococo_v1_13", JSON.stringify(rococo_v1_13)],
-  ["westend2", JSON.stringify(westend2)],
+export const wellKnownChains: Map<WellKnownChains, string> = new Map<
+  WellKnownChains,
+  string
+>([
+  [WellKnownChains.polkadot, JSON.stringify(polkadot)],
+  [WellKnownChains.ksmcc3, JSON.stringify(ksmcc3)],
+  [WellKnownChains.rococo_v1_13, JSON.stringify(rococo_v1_13)],
+  [WellKnownChains.westend2, JSON.stringify(westend2)],
 ])
 
 const l = logger("Extension Connection Manager")

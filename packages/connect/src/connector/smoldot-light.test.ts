@@ -165,12 +165,12 @@ describe("SmoldotConnect::smoldot-light", () => {
         "fake-polkadot-spec",
       )
 
-      await addWellKnownChain(WellKnownChains.kusama)
+      await addWellKnownChain(WellKnownChains.ksmcc3)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual("fake-kusama-spec")
 
-      await addWellKnownChain(WellKnownChains.rococo)
+      await addWellKnownChain(WellKnownChains.rococo_v1_13)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual("fake-rococo-spec")
