@@ -10,7 +10,7 @@ import { assert, logger } from "@polkadot/util"
 import EventEmitter from "eventemitter3"
 import { WellKnownChains } from "../WellKnownChains.js"
 import { getConnectorClient, Chain } from "../connector/index.js"
-import { HealthCheckError } from "./HealthCheckError.js"
+import { HealthCheckError } from "./Health.js"
 
 const { addChain, addWellKnownChain } = getConnectorClient()
 const l = logger("smoldot-provider")

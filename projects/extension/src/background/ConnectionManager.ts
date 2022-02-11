@@ -4,11 +4,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import {
-  Client,
-  healthChecker as smHealthChecker,
-  Chain,
-} from "@substrate/smoldot-light"
+import { Client, Chain } from "@substrate/smoldot-light"
+import { healthChecker as smHealthChecker } from "@substrate/connect"
+
 import { JsonRpcCallback, SmoldotHealth } from "@substrate/smoldot-light"
 import { ExposedChainConnection, ChainConnection } from "./types"
 import EventEmitter from "eventemitter3"
