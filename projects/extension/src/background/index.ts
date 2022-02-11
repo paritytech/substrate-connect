@@ -93,7 +93,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 
 const waitAllChainsUpdate = () => {
   listeners.forEach(notifyListener)
-  manager.waitAllChainUpdate().then(() => {
+  manager.waitAllChainChanged().then(() => {
     waitAllChainsUpdate()
   })
 }

@@ -117,7 +117,7 @@ export class ConnectionManager<SandboxId> {
   /**
    * Waits for the value of `allChains` to change.
    */
-  async waitAllChainUpdate(): Promise<void> {
+  async waitAllChainChanged(): Promise<void> {
     await new Promise<void>((resolve, _) => {
       this.#allChainsChangedCallbacks.push(resolve)
     })
