@@ -26,7 +26,7 @@ module.exports = (request, options) => {
     ) {
       try {
         console.log(
-          `Temporary replace extension '.js' to '.ts' for tests to run.\n`,
+          `Temporary replace extension '.js' to '.ts' for tests to run.\n ${request}`,
         )
         return defaultResolver(request.replace(/\.js$/, ".ts"), options)
       } catch (e) {
