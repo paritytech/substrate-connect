@@ -6,9 +6,10 @@ const mapNameToId: Map<string, string> = new Map<string, string>([
 ])
 
 export async function getSpec(chain: string): Promise<string> {
-  const specRaw = (await import(
-    "./generated/" + mapNameToId.get(chain) + ".js"
-  )) as string | { default: string }
+  const fileName = mapNameToId.get(chain) || ""
+  const specRaw = (await import("./generated/" + fileName + ".js")) as
+    | string
+    | { default: string }
 
   return typeof specRaw === "string"
     ? specRaw
