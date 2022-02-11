@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 import { wellKnownChains, ConnectionManager } from "./ConnectionManager"
 import { logger } from "@polkadot/util"
@@ -67,9 +68,7 @@ const init = async () => {
       }
 
       const dbContent = await new Promise<string | undefined>((res) =>
-        chrome.storage.local.get([key as string], (val) =>
-          res(val[key] as string),
-        ),
+        chrome.storage.local.get([key], (val) => res(val[key] as string)),
       )
 
       const chain = await manager.addChain(
