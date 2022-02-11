@@ -283,7 +283,10 @@ export class ConnectionManager extends (EventEmitter as {
     const [chainSpec, potentialRelayChainIds]: [string, string[]] =
       msg.type === "add-chain"
         ? [msg.chainSpec, msg.potentialRelayChainIds]
-        : [wellKnownChains.get(msg.chainName)!, [] as string[]]
+        : [
+            wellKnownChains.get(msg.chainName as WellKnownChains)!,
+            [] as string[],
+          ]
 
     this.#handleSpecMessage(
       chainConnection,

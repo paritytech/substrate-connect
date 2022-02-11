@@ -168,12 +168,14 @@ describe("SmoldotConnect::smoldot-light", () => {
       await addWellKnownChain(WellKnownChains.ksmcc3)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
-      expect(mockedChain._addChainOptions.chainSpec).toEqual("fake-kusama-spec")
+      expect(mockedChain._addChainOptions.chainSpec).toEqual("fake-ksmcc3-spec")
 
       await addWellKnownChain(WellKnownChains.rococo_v1_13)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
-      expect(mockedChain._addChainOptions.chainSpec).toEqual("fake-rococo-spec")
+      expect(mockedChain._addChainOptions.chainSpec).toEqual(
+        "fake-rococo_v1_13-spec",
+      )
     })
 
     it("propagates the correct potentialRelayChainIds to smoldot-light", async () => {
