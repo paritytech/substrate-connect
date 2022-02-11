@@ -152,16 +152,25 @@ export class ConnectionManager<SandboxId> {
   /**
    * Asynchronous iterator that yields all the `ToApplication` messages that are generated in
    * response to `sandboxMessage`.
+   *
+   * The iterator is guaranteed to always yield messages from sandboxes that are still alive. As
+   * soon as you call `deleteSandbox`, no new message will be generated and the iterator will
+   * end.
    */
   async *sandboxOutput(sandboxId: SandboxId): AsyncGenerator<ToApplication> {
     while (true) {
       const sandbox = this.#sandboxes.get(sandboxId)!
       const message = await sandbox.pullMessagesQueue()
-      if (!message) {
-        // Note that the sandbox is no longer in `this.#sandboxes` at this point.
-        break
-      }
-      yield message
+
+      // We check again whether the sandbox is still in `this.#sandboxes` in order to make sure
+      // to not give messages to destroyed sandboxes.
+      if (!this.#sandboxes.has(sandboxId))
+        break;
+
+      // `message` can be either a `ToApplication` or `null`, but `null` is only ever pushed to
+      // the queue when the sandbox is destroyed, in which case the check the line above should
+      // have caught that. In other words, if `message` is `null` here, there's a bug in the code.
+      yield message!
     }
   }
 
