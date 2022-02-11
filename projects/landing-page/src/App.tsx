@@ -144,9 +144,9 @@ const App: React.FunctionComponent = () => {
                 <Box>{`import { ScProvider, WellKnownChains } from '@substrate/connect';`}</Box>
 
                 <Box mt={2}>{`// Create providers for known chains`}</Box>
-                <Box>{`const westendProvider = new ScProvider(WellKnownChains.westend);`}</Box>
+                <Box>{`const westendProvider = new ScProvider(WellKnownChains.westend2);`}</Box>
                 <Box>{`const api1 = await ApiPromise.create({ provider: westendProvider });`}</Box>
-                <Box>{`const kusamaProvider = new ScProvider(WellKnownChains.kusama);`}</Box>
+                <Box>{`const kusamaProvider = new ScProvider(WellKnownChains.ksmcc3);`}</Box>
                 <Box>{`const api2 = await ApiPromise.create({ provider: kusamaProvider });`}</Box>
 
                 <Box
@@ -188,7 +188,7 @@ const App: React.FunctionComponent = () => {
                 <Box>{`import { ScProvider, WellKnownChains } from '@substrate/connect';`}</Box>
                 <Box
                   mt={2}
-                >{`const provider = new ScProvider(WellKnownChains.westend);`}</Box>
+                >{`const provider = new ScProvider(WellKnownChains.westend2);`}</Box>
                 <Box>{`const apiOptions = {types: customTypes}`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>
                 <Box
@@ -205,7 +205,7 @@ const App: React.FunctionComponent = () => {
 
                 <Box
                   mt={2}
-                >{`const provider = new ScProvider(WellKnownChains.westend, JSON.stringify(parachainSpecs));`}</Box>
+                >{`const provider = new ScProvider(WellKnownChains.westend2, JSON.stringify(parachainSpecs));`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider });`}</Box>
 
                 <Box
@@ -223,7 +223,7 @@ const App: React.FunctionComponent = () => {
 
                 <Box
                   mt={2}
-                >{`const provider = new ScProvider(WellKnownChains.westend, JSON.stringify(parachainSpecs));`}</Box>
+                >{`const provider = new ScProvider(WellKnownChains.westend2, JSON.stringify(parachainSpecs));`}</Box>
                 <Box>{`const apiOptions = {types: customTypes}`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>
 
