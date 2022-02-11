@@ -15,16 +15,16 @@ import EventEmitter from "eventemitter3"
 import { StateEmitter } from "./types"
 import { logger } from "@polkadot/util"
 import { ToExtension } from "@substrate/connect-extension-protocol"
-import westend from "../../public/assets/westend.json"
-import kusama from "../../public/assets/kusama.json"
+import westend2 from "../../public/assets/westend.json"
+import ksmcc3 from "../../public/assets/kusama.json"
 import polkadot from "../../public/assets/polkadot.json"
-import rococo from "../../public/assets/rococo.json"
+import rococo_v1_13 from "../../public/assets/rococo.json"
 
 export const wellKnownChains: Map<string, string> = new Map<string, string>([
   ["polkadot", JSON.stringify(polkadot)],
-  ["kusama", JSON.stringify(kusama)],
-  ["rococo", JSON.stringify(rococo)],
-  ["westend", JSON.stringify(westend)],
+  ["ksmcc3", JSON.stringify(ksmcc3)],
+  ["rococo_v1_13", JSON.stringify(rococo_v1_13)],
+  ["westend2", JSON.stringify(westend2)],
 ])
 
 const l = logger("Extension Connection Manager")
