@@ -132,11 +132,13 @@ export class ConnectionManager<SandboxId> {
   deleteSandbox(sandboxId: SandboxId) {
     const sandbox = this.#sandboxes.get(sandboxId)!
     sandbox.chains.forEach((chain) => {
-      if (!chain.isReady) chain.smoldotChain.then((chain) => chain.remove())
-      else {
+      if (chain.isReady) {
         chain.healthChecker.stop()
         chain.smoldotChain.remove()
       }
+
+      // If the chain isn't ready yet, the function that reacts to the chain initialization
+      // being finished will remove it.
     })
     sandbox.pushMessagesQueue(null)
     this.#sandboxes.delete(sandboxId)
@@ -266,11 +268,11 @@ export class ConnectionManager<SandboxId> {
             potentialRelayChains:
               message.type === "add-chain"
                 ? message.potentialRelayChainIds.flatMap(
-                    (untrustedChainId): SmoldotChain[] => {
-                      const chain = sandbox.chains.get(untrustedChainId)
-                      return chain && chain.isReady ? [chain.smoldotChain] : []
-                    },
-                  )
+                  (untrustedChainId): SmoldotChain[] => {
+                    const chain = sandbox.chains.get(untrustedChainId)
+                    return chain && chain.isReady ? [chain.smoldotChain] : []
+                  },
+                )
                 : [],
           })
 
@@ -283,72 +285,8 @@ export class ConnectionManager<SandboxId> {
           name,
         })
 
-        // Spawn in the background an async function to react to the initialization finishing.
-        ;(async () => {
-          try {
-            const chain = await chainInitialization
-
-            // Because the chain initialization might have taken a long time, we first need to
-            // check whether the chain that we're initializing is still in `this`, as it might
-            // have been removed by various other functions if it no longer interests us.
-            const sandbox = this.#sandboxes.get(sandboxId)
-            if (
-              !sandbox ||
-              !(
-                sandbox.chains.get(chainId)?.smoldotChain ===
-                chainInitialization
-              )
-            ) {
-              chain.remove()
-              return
-            }
-
-            const smoldotChain: SmoldotChain = chain
-            healthChecker.setSendJsonRpc((rq) => smoldotChain.sendJsonRpc(rq))
-            const readyChain: ReadyChain = {
-              isReady: true,
-              name,
-              smoldotChain,
-              healthChecker,
-            }
-            healthChecker.start((health) => {
-              readyChain.latestHealthStatus = health
-            })
-            sandbox.chains.set(chainId, readyChain)
-            sandbox.pushMessagesQueue({
-              origin: "substrate-connect-extension",
-              type: "chain-ready",
-              chainId: message.chainId,
-            })
-          } catch (err) {
-            const error =
-              err instanceof Error
-                ? err.message
-                : "Unknown error when adding chain"
-
-            // Because the chain initialization might have taken a long time, we first need to
-            // check whether the chain that we're initializing is still in `this`, as it might
-            // have been removed by various other functions if it no longer interests us.
-            const sandbox = this.#sandboxes.get(sandboxId)
-            if (
-              !sandbox ||
-              !(
-                sandbox.chains.get(chainId)?.smoldotChain ===
-                chainInitialization
-              )
-            ) {
-              return
-            }
-
-            sandbox.chains.delete(chainId)
-            sandbox.pushMessagesQueue({
-              origin: "substrate-connect-extension",
-              type: "error",
-              chainId: message.chainId,
-              errorMessage: error,
-            })
-          }
-        })()
+          // Spawn in the background an async function to react to the initialization finishing.
+          ; this.#handleChainInitializationFinished(sandboxId, chainId, chainInitialization, name, healthChecker)
 
         break
       }
@@ -359,16 +297,91 @@ export class ConnectionManager<SandboxId> {
         // simply ignored.
         if (!chain) return
 
-        // If the chain isn't ready yet, we remove it anyway, and do the clean up by adding
-        // a callback to the `Promise`.
-        if (!chain.isReady) chain.smoldotChain.then((chain) => chain.remove())
-        else {
+        if (chain.isReady) {
           chain.healthChecker.stop()
           chain.smoldotChain.remove()
         }
+
+        // If the chain isn't ready yet, the function that reacts to the chain initialization
+        // being finished will remove it.
+
         sandbox.chains.delete(message.chainId)
         break
       }
+    }
+  }
+
+  /**
+   * Waits until the given `chainInitialization` is finished (successfully or not), then updates
+   * the given `sandboxId`/`chainId` in `this`.
+   *
+   * If the given `sandboxId`/`chainId` stored in `this` doesn't exist anymore or doesn't match
+   * `chainInitialization`, this function assumes that we're no longer interested in this chain
+   * and discards the newly-created chain.
+   */
+  async #handleChainInitializationFinished(sandboxId: SandboxId, chainId: string, chainInitialization: Promise<SmoldotChain>, name: string, healthChecker: SmoldotHealthChecker): Promise<void> {
+    try {
+      const chain = await chainInitialization
+
+      // Because the chain initialization might have taken a long time, we first need to
+      // check whether the chain that we're initializing is still in `this`, as it might
+      // have been removed by various other functions if it no longer interests us.
+      const sandbox = this.#sandboxes.get(sandboxId)
+      if (
+        !sandbox ||
+        !(
+          sandbox.chains.get(chainId)?.smoldotChain ===
+          chainInitialization
+        )
+      ) {
+        chain.remove()
+        return
+      }
+
+      const smoldotChain: SmoldotChain = chain
+      healthChecker.setSendJsonRpc((rq) => smoldotChain.sendJsonRpc(rq))
+      const readyChain: ReadyChain = {
+        isReady: true,
+        name,
+        smoldotChain,
+        healthChecker,
+      }
+      healthChecker.start((health) => {
+        readyChain.latestHealthStatus = health
+      })
+      sandbox.chains.set(chainId, readyChain)
+      sandbox.pushMessagesQueue({
+        origin: "substrate-connect-extension",
+        type: "chain-ready",
+        chainId,
+      })
+    } catch (err) {
+      const error =
+        err instanceof Error
+          ? err.message
+          : "Unknown error when adding chain"
+
+      // Because the chain initialization might have taken a long time, we first need to
+      // check whether the chain that we're initializing is still in `this`, as it might
+      // have been removed by various other functions if it no longer interests us.
+      const sandbox = this.#sandboxes.get(sandboxId)
+      if (
+        !sandbox ||
+        !(
+          sandbox.chains.get(chainId)?.smoldotChain ===
+          chainInitialization
+        )
+      ) {
+        return
+      }
+
+      sandbox.chains.delete(chainId)
+      sandbox.pushMessagesQueue({
+        origin: "substrate-connect-extension",
+        type: "error",
+        chainId,
+        errorMessage: error,
+      })
     }
   }
 }
