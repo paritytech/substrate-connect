@@ -1,6 +1,6 @@
 {
   "name": "substrate-connect",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "A collection of libraries and tools needed to run Substrate Wasm light clients directly in the browser",
   "repository": "https://github.com/paritytech/substrate-connect.git",
   "author": "Parity Team <admin@parity.io>",
@@ -22,7 +22,7 @@
   "scripts": {
     "downloadSpecs": "node bin/downloadSpecs.js",
     "preapi-docs": "yarn workspace @substrate/extension run compile",
-    "api-docs": "typedoc",
+    "api-docs": "typedoc --entryPoints ./packages/connect/src/index.ts --entryPoints ./packages/connect-extension-protocol/src/index.ts",
     "deep-clean": "yarn workspaces -s run deep-clean && rm -rf .parcel-cache && rm -rf node_modules",
     "clean": " yarn workspaces run clean",
     "lint": "prettier --check . && yarn workspaces -s run lint",
