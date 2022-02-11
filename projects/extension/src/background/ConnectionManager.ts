@@ -390,13 +390,9 @@ export class ConnectionManager<SandboxId> {
 
 interface Sandbox {
   chains: Map<string, InitializingChain | ReadyChain>
-
   pullMessagesQueue: () => Promise<ToApplication | null>
-
   pushMessagesQueue: (message: ToApplication | null) => void
 }
-
-type Stream = Promise<[ToApplication | null, Stream]>
 
 interface InitializingChain {
   isReady: false
