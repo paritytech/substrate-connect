@@ -12,6 +12,8 @@ import {
   ToExtension,
 } from "@substrate/connect-extension-protocol"
 
+import createAsyncFifoQueue from "./Stream.js"
+
 export interface ChainInfo<SandboxId> {
   chainName: string
   healthStatus?: SmoldotHealth
@@ -110,18 +112,10 @@ export class ConnectionManager<SandboxId> {
   addSandbox(sandboxId: SandboxId) {
     if (this.#sandboxes.has(sandboxId)) throw new Error("Duplicate sandboxId")
 
-    let messagesQueueBack:
-      | null
-      | ((item: [ToApplication | null, Stream]) => void) = null
-    const messagesQueueFront = new Promise<[ToApplication | null, Stream]>(
-      (r, _) => {
-        messagesQueueBack = r
-      },
-    )
-
+    const queue = createAsyncFifoQueue<ToApplication | null>();
     this.#sandboxes.set(sandboxId, {
-      messagesQueueBack: messagesQueueBack!,
-      messagesQueueFront,
+      pushMessagesQueue: queue.push,
+      pullMessagesQueue: queue.pull,
       chains: new Map(),
     })
   }
@@ -144,7 +138,7 @@ export class ConnectionManager<SandboxId> {
         chain.smoldotChain.remove()
       }
     })
-    sendSandbox(sandbox, null)
+    sandbox.pushMessagesQueue(null)
     this.#sandboxes.delete(sandboxId)
   }
 
@@ -162,16 +156,11 @@ export class ConnectionManager<SandboxId> {
   async *sandboxOutput(sandboxId: SandboxId): AsyncGenerator<ToApplication> {
     while (true) {
       const sandbox = this.#sandboxes.get(sandboxId)!
-      const queueFront = sandbox.messagesQueueFront
-      const [message, nextFront] = await queueFront
-      // A `null` message stops the iterator. We do this before updating
-      // `sandbox.messagesQueueFront` so that `null` is returned again in case `sandboxOutput`
-      // is called again.
-      if (!message) break
-      // We check whether the queue front is still the same, in case the API user grabbed
-      // multiple iterators.
-      if (sandbox.messagesQueueFront === queueFront)
-        sandbox.messagesQueueFront = nextFront
+      const message = await sandbox.pullMessagesQueue()
+      if (!message) {
+        // Note that the sandbox is no longer in `this.#sandboxes` at this point.
+        break
+      }
       yield message
     }
   }
@@ -196,7 +185,7 @@ export class ConnectionManager<SandboxId> {
 
         // Check whether chain is ready yet
         if (!chain.isReady) {
-          sendSandbox(sandbox, {
+          sandbox.pushMessagesQueue({
             origin: "substrate-connect-extension",
             type: "error",
             chainId: message.chainId,
@@ -214,7 +203,7 @@ export class ConnectionManager<SandboxId> {
       case "add-well-known-chain": {
         // Refuse the chain addition if the `chainId` is already in use.
         if (sandbox.chains.has(message.chainId)) {
-          sendSandbox(sandbox, {
+          sandbox.pushMessagesQueue({
             origin: "substrate-connect-extension",
             type: "error",
             chainId: message.chainId,
@@ -226,7 +215,7 @@ export class ConnectionManager<SandboxId> {
         // Refuse the chain addition for invalid well-known chain names.
         if (message.type === "add-well-known-chain") {
           if (!this.#wellKnownChains.has(message.chainName)) {
-            sendSandbox(sandbox, {
+            sandbox.pushMessagesQueue({
               origin: "substrate-connect-extension",
               type: "error",
               chainId: message.chainId,
@@ -253,7 +242,7 @@ export class ConnectionManager<SandboxId> {
               // chain. When we remove a sandbox, we call `remove()` on all of its chains.
               // Consequently, this JSON-RPC callback will never be called after we remove a
               // sandbox. Consequently, the sandbox is always alive here.
-              sendSandbox(sandbox, {
+              sandbox.pushMessagesQueue({
                 origin: "substrate-connect-extension",
                 type: "rpc",
                 chainId,
@@ -312,7 +301,7 @@ export class ConnectionManager<SandboxId> {
               readyChain.latestHealthStatus = health
             })
             sandbox.chains.set(chainId, readyChain)
-            sendSandbox(sandbox, {
+            sandbox.pushMessagesQueue({
               origin: "substrate-connect-extension",
               type: "chain-ready",
               chainId: message.chainId,
@@ -338,7 +327,7 @@ export class ConnectionManager<SandboxId> {
             }
 
             sandbox.chains.delete(chainId)
-            sendSandbox(sandbox, {
+            sandbox.pushMessagesQueue({
               origin: "substrate-connect-extension",
               type: "error",
               chainId: message.chainId,
@@ -373,16 +362,9 @@ export class ConnectionManager<SandboxId> {
 interface Sandbox {
   chains: Map<string, InitializingChain | ReadyChain>
 
-  // A `Promise` that resolves to a tuple of `[ToApplication | null, Promise]`. The second
-  // element of the tuple is a `Promise` to the following message.
-  // In order to pull an element from the queue, wait for this promise, then overwrite
-  // `messagesQueueFront` with the yielded `̀Promise`.
-  //
-  // `null` must be pushed when the sandbox is destroyed, in order to interrupt any function
-  // currently waiting for a message.
-  messagesQueueFront: Stream
-  // The `resolve` function of the last `Promise` of the queue.
-  messagesQueueBack: (item: [ToApplication | null, Stream]) => void
+  pullMessagesQueue: () => Promise<ToApplication | null>
+
+  pushMessagesQueue: (message: ToApplication | null) => void
 }
 
 type Stream = Promise<[ToApplication | null, Stream]>
@@ -419,17 +401,4 @@ function nameFromSpec(chainSpec: string): string {
   } catch (_error) {
     return "Unknown"
   }
-}
-
-/**
- * Pushes a message on the queue of messages of the given `Sandbox`.
- */
-function sendSandbox(sandbox: Sandbox, message: ToApplication | null) {
-  let resolve: null | ((item: [ToApplication | null, Stream]) => void) = null
-  const nextMessage = new Promise<[ToApplication | null, Stream]>((r, _) => {
-    resolve = r
-  })
-
-  sandbox.messagesQueueBack([message, nextMessage])
-  sandbox.messagesQueueBack = resolve!
 }
