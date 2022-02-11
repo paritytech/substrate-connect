@@ -112,7 +112,7 @@ export class ConnectionManager<SandboxId> {
   addSandbox(sandboxId: SandboxId) {
     if (this.#sandboxes.has(sandboxId)) throw new Error("Duplicate sandboxId")
 
-    const queue = createAsyncFifoQueue<ToApplication | null>();
+    const queue = createAsyncFifoQueue<ToApplication | null>()
     this.#sandboxes.set(sandboxId, {
       pushMessagesQueue: queue.push,
       pullMessagesQueue: queue.pull,
@@ -162,8 +162,7 @@ export class ConnectionManager<SandboxId> {
   async *sandboxOutput(sandboxId: SandboxId): AsyncGenerator<ToApplication> {
     while (true) {
       const sandbox = this.#sandboxes.get(sandboxId)
-      if (!sandbox)
-        break;
+      if (!sandbox) break
 
       const message = await sandbox.pullMessagesQueue()
 
@@ -171,8 +170,7 @@ export class ConnectionManager<SandboxId> {
       // `deleteSandbox`. We therefore check again whether the sandbox is still in
       // `this.#sandboxes` in order to make sure to not give messages concerning destroyed
       // sandboxes.
-      if (!this.#sandboxes.has(sandboxId))
-        break;
+      if (!this.#sandboxes.has(sandboxId)) break
 
       // `message` can be either a `ToApplication` or `null`, but `null` is only ever pushed to
       // the queue when the sandbox is destroyed, in which case the check the line above should
@@ -268,11 +266,11 @@ export class ConnectionManager<SandboxId> {
             potentialRelayChains:
               message.type === "add-chain"
                 ? message.potentialRelayChainIds.flatMap(
-                  (untrustedChainId): SmoldotChain[] => {
-                    const chain = sandbox.chains.get(untrustedChainId)
-                    return chain && chain.isReady ? [chain.smoldotChain] : []
-                  },
-                )
+                    (untrustedChainId): SmoldotChain[] => {
+                      const chain = sandbox.chains.get(untrustedChainId)
+                      return chain && chain.isReady ? [chain.smoldotChain] : []
+                    },
+                  )
                 : [],
           })
 
@@ -285,8 +283,14 @@ export class ConnectionManager<SandboxId> {
           name,
         })
 
-          // Spawn in the background an async function to react to the initialization finishing.
-          ; this.#handleChainInitializationFinished(sandboxId, chainId, chainInitialization, name, healthChecker)
+        // Spawn in the background an async function to react to the initialization finishing.
+        this.#handleChainInitializationFinished(
+          sandboxId,
+          chainId,
+          chainInitialization,
+          name,
+          healthChecker,
+        )
 
         break
       }
@@ -319,7 +323,13 @@ export class ConnectionManager<SandboxId> {
    * `chainInitialization`, this function assumes that we're no longer interested in this chain
    * and discards the newly-created chain.
    */
-  async #handleChainInitializationFinished(sandboxId: SandboxId, chainId: string, chainInitialization: Promise<SmoldotChain>, name: string, healthChecker: SmoldotHealthChecker): Promise<void> {
+  async #handleChainInitializationFinished(
+    sandboxId: SandboxId,
+    chainId: string,
+    chainInitialization: Promise<SmoldotChain>,
+    name: string,
+    healthChecker: SmoldotHealthChecker,
+  ): Promise<void> {
     try {
       const chain = await chainInitialization
 
@@ -329,10 +339,7 @@ export class ConnectionManager<SandboxId> {
       const sandbox = this.#sandboxes.get(sandboxId)
       if (
         !sandbox ||
-        !(
-          sandbox.chains.get(chainId)?.smoldotChain ===
-          chainInitialization
-        )
+        !(sandbox.chains.get(chainId)?.smoldotChain === chainInitialization)
       ) {
         chain.remove()
         return
@@ -357,9 +364,7 @@ export class ConnectionManager<SandboxId> {
       })
     } catch (err) {
       const error =
-        err instanceof Error
-          ? err.message
-          : "Unknown error when adding chain"
+        err instanceof Error ? err.message : "Unknown error when adding chain"
 
       // Because the chain initialization might have taken a long time, we first need to
       // check whether the chain that we're initializing is still in `this`, as it might
@@ -367,10 +372,7 @@ export class ConnectionManager<SandboxId> {
       const sandbox = this.#sandboxes.get(sandboxId)
       if (
         !sandbox ||
-        !(
-          sandbox.chains.get(chainId)?.smoldotChain ===
-          chainInitialization
-        )
+        !(sandbox.chains.get(chainId)?.smoldotChain === chainInitialization)
       ) {
         return
       }

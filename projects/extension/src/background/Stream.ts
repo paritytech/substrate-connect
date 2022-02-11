@@ -7,11 +7,13 @@
  *
  * If `pull` is called and the queue is empty, it will wait until `push` is called.
  */
-export default function createAsyncFifoQueue<Message>(): { push: (message: Message) => void, pull: () => Promise<Message> } {
+export default function createAsyncFifoQueue<Message>(): {
+  push: (message: Message) => void
+  pull: () => Promise<Message>
+} {
   // The `resolve` function of the last `Promise` of the queue.
-  let messagesQueueBack:
-    | null
-    | ((item: [Message, Stream<Message>]) => void) = null
+  let messagesQueueBack: null | ((item: [Message, Stream<Message>]) => void) =
+    null
 
   // A `Promise` that resolves to a tuple of `[Message, Promise]`. The second element of the tuple
   // is a `Promise` to the following message.
@@ -20,11 +22,9 @@ export default function createAsyncFifoQueue<Message>(): { push: (message: Messa
   //
   // `null` must be pushed when the sandbox is destroyed, in order to interrupt any function
   // currently waiting for a message.
-  let messagesQueueFront = new Promise<[Message, Stream<Message>]>(
-    (r, _) => {
-      messagesQueueBack = r
-    },
-  )
+  let messagesQueueFront = new Promise<[Message, Stream<Message>]>((r, _) => {
+    messagesQueueBack = r
+  })
 
   const push = (message: Message) => {
     let resolve: null | ((item: [Message, Stream<Message>]) => void) = null
@@ -41,10 +41,9 @@ export default function createAsyncFifoQueue<Message>(): { push: (message: Messa
     const [message, nextFront] = await queueFront
     // We check whether the queue front is still the same, in case the API user called this
     // function multiple times.
-    if (messagesQueueFront === queueFront)
-      messagesQueueFront = nextFront
+    if (messagesQueueFront === queueFront) messagesQueueFront = nextFront
     return message
-  };
+  }
 
   return { push, pull }
 }
