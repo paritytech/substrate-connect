@@ -10,7 +10,6 @@
       "@substrate/connect-extension-protocol": [
         "./packages/connect-extension-protocol"
       ],
-      "@substrate/smoldot-test-utils": ["./packages/smoldot-test-utils"],
       "@substrate/connect": ["./packages/connect"]
     }
   }
