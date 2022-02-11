@@ -54,13 +54,11 @@ export class ConnectionManager<SandboxId> {
     const wellKnownChain: WellKnownChain = { chain, spec, healthChecker }
 
     healthChecker.setSendJsonRpc((rq) => chain.sendJsonRpc(rq))
-    healthChecker.start(
-      (health) => {
-        wellKnownChain.latestHealthStatus = health
-        this.#allChainsChangedCallbacks.forEach((cb) => cb())
-        this.#allChainsChangedCallbacks = []
-      },
-    )
+    healthChecker.start((health) => {
+      wellKnownChain.latestHealthStatus = health
+      this.#allChainsChangedCallbacks.forEach((cb) => cb())
+      this.#allChainsChangedCallbacks = []
+    })
 
     this.#wellKnownChains.set(chainName, wellKnownChain)
 
