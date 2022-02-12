@@ -11,9 +11,10 @@ sync with given chainspecs.
 Provide a known Chain Name ('kusama', 'polkadot', 'westend', 'rococo'):
 ```js
 import { ApiPromise } from '@polkadot/api';
-import { ScProvider, SupportedChains } from '@substrate/connect';
+import { createScClient, SupportedChains } from '@substrate/connect';
 
-const provider = new ScProvider(SupportedChains.westend);
+const scClient = createScClient();
+const provider = await scClient.addWellKnownChain(SupportedChains.westend);
 const api = await ApiPromise.create({ provider });
 ```
 
@@ -21,11 +22,13 @@ or provide your custom substrate chain's name and chainspec:
 
 ```js
 import { ApiPromise } from '@polkadot/api';
-import { ScProvider } from '@substrate/connect';
+import { createScClient } from '@substrate/connect';
 import mySubstrateChainSpec from './mySubstrateChainSpec.json';
 
 const myChainSpec = JSON.stringify(mySubstrateChainSpec);
-const provider = new ScProvider(myChainSpec);
+
+const scClient = createScClient();
+const provider = await scClient.addChain(myChainSpec);
 const api = await ApiPromise.create({ provider });
 ```
 
@@ -35,12 +38,14 @@ const api = await ApiPromise.create({ provider });
 For parachain support, you can providethe parachain's specs
 ```js
 import { ApiPromise } from '@polkadot/api';
-import { ScProvider, SupportedChains } from '@substrate/connect';
+import { createScClient, SupportedChains } from '@substrate/connect';
 import myParaChainSpec from './myParaChainSpec.json';
 
 const parachainSpec =  JSON.stringify(myParaChainSpec);
 
-const provider = new ScProvider(SupportedChains.westend, parachainSpec);
+const scClient = createScClient();
+await scClient.addWellKnownChain(SupportedChains.westend)
+const provider = await scClient.addChain(parachainSpec);
 const api = await ApiPromise.create({ provider });
 ```
 
