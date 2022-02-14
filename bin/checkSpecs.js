@@ -5,15 +5,8 @@ const path = require("path")
 const readFile = promisify(fs.readFile)
 const copyFile = promisify(fs.copyFile)
 
-const networks = [
-  "polkadot",
-  "kusama",
-  "westend",
-  "rococo", //, 'tick', 'track', 'trick'
-]
-
+const networks = ["polkadot", "kscmcc3", "westend2", "rococo_v1_13"]
 const chainDir = "../../.chains"
-
 const paths = {
   connect: "src/connector/specs",
   extension: "public/assets",

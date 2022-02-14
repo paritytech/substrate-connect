@@ -1,6 +1,6 @@
 export enum WellKnownChains {
   polkadot = "polkadot",
-  kusama = "kusama",
-  rococo = "rococo",
-  westend = "westend",
+  ksmcc3 = "ksmcc3",
+  rococo_v1_13 = "rococo_v1_13",
+  westend2 = "westend2",
 }
