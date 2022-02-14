@@ -8,9 +8,10 @@ import { Client, Chain } from "@substrate/smoldot-light"
 import {
   healthChecker as smHealthChecker,
   WellKnownChains,
+  SmoldotHealth,
+  JsonRpcCallback,
 } from "@substrate/connect"
 
-import { JsonRpcCallback, SmoldotHealth } from "@substrate/smoldot-light"
 import { ExposedChainConnection, ChainConnection } from "./types"
 import EventEmitter from "eventemitter3"
 import { StateEmitter } from "./types"
