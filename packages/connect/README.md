@@ -2,19 +2,19 @@
 
 This is a prototype for using [@polkadot/api](https://polkadot.js.org/docs/api/start)
 with the [smoldot](https://npmjs.com/package/smoldot) WASM light client either by 
-passing chainspecs or using the extension by predefined chains (e.g. westend, kusama).
+passing chainspecs or using the extension by predefined chains (e.g. westend2, ksmcc3).
 
 ScProvider check existence of substrate extension. If it is installed and activated then
 smoldot clients of extension will be used. If not, a new smoldot client will start and
 sync with given chainspecs.
 ## Usage
-Provide a known Chain Name ('kusama', 'polkadot', 'westend', 'rococo'):
+Provide a known Chain Name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v1_13'):
 ```js
 import { ApiPromise } from '@polkadot/api';
 import { createScClient, SupportedChains } from '@substrate/connect';
 
 const scClient = createScClient();
-const provider = await scClient.addWellKnownChain(SupportedChains.westend);
+const provider = await scClient.addWellKnownChain(SupportedChains.westend2);
 const api = await ApiPromise.create({ provider });
 ```
 
@@ -44,7 +44,7 @@ import myParaChainSpec from './myParaChainSpec.json';
 const parachainSpec =  JSON.stringify(myParaChainSpec);
 
 const scClient = createScClient();
-await scClient.addWellKnownChain(SupportedChains.westend)
+await scClient.addWellKnownChain(SupportedChains.westend2)
 const provider = await scClient.addChain(parachainSpec);
 const api = await ApiPromise.create({ provider });
 ```

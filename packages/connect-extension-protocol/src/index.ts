@@ -38,7 +38,7 @@
  *
  * Instead of a {@link ToExtensionAddChain} message, the web page can
  * alternatively send a {@link ToExtensionAddWellKnownChain} message and pass
- * a chain name recognized by the extension such as "polkadot" or "kusama", in
+ * a chain name recognized by the extension such as "polkadot" or "ksmcc3", in
  * which case the extension will use the chain specification stored internally.
  * Doing so provides multiple advantages such as less bandwidth usage (as the
  * web page doesn't have to download the chain specification), and a faster

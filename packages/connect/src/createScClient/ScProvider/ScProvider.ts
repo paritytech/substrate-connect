@@ -65,10 +65,10 @@ const CONNECTION_STATE_PINGER_INTERVAL = 2000
  * import { ApiPromise } from '@polkadot/api';
  *
  * // Create a new UApp with a unique name
- * const westendProvider = ScProvider(WellKnownChains.westend)
+ * const westendProvider = ScProvider(WellKnownChains.westend2)
  * const westend = await ApiPromise.create({ provider: westendProvider })
  *
- * const kusamaProvider = ScProvider(WellKnownChains.kusama)
+ * const kusamaProvider = ScProvider(WellKnownChains.ksmcc3)
  * const kusama = await ApiPromise.create({ provider: kusamaProvider })
  *
  * await westendProvider.rpc.chain.subscribeNewHeads((lastHeader) => {

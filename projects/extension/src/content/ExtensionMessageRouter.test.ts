@@ -39,7 +39,7 @@ describe("Disconnect and incorrect cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      chainName: "westend",
+      chainName: "westend2",
       origin: "substrate-connect-client",
     })
     await waitForMessageToBePosted()
@@ -88,7 +88,7 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId,
       type: "add-well-known-chain",
-      chainName: "westend",
+      chainName: "westend2",
       origin: "substrate-connect-client",
     })
 
@@ -105,7 +105,7 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      chainName: "westend",
+      chainName: "westend2",
       origin: "substrate-connect-client",
     })
     await waitForMessageToBePosted()
@@ -136,7 +136,7 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      chainName: "westend",
+      chainName: "westend2",
       origin: "substrate-connect-client",
     })
     await waitForMessageToBePosted()
@@ -168,7 +168,7 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      chainName: "westend",
+      chainName: "westend2",
       origin: "substrate-connect-client",
     })
     await waitForMessageToBePosted()
