@@ -1,6 +1,7 @@
 import type { ProviderInterface } from "@polkadot/rpc-provider/types"
+import type { JsonRpcCallback } from "../connector/types.js"
 import { WellKnownChains } from "../WellKnownChains.js"
-import { getConnectorClient, JsonRpcCallback } from "../connector/index.js"
+import { getConnectorClient } from "../connector/index.js"
 import { ScProvider } from "./ScProvider/index.js"
 
 export interface ScClient {
