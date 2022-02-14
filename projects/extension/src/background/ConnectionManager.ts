@@ -19,7 +19,7 @@ import { ToExtension } from "@substrate/connect-extension-protocol"
 import westend2 from "../../public/assets/westend2.json"
 import ksmcc3 from "../../public/assets/ksmcc3.json"
 import polkadot from "../../public/assets/polkadot.json"
-import rococo_v1_13 from "../../public/assets/rococo_v1_13.json"
+import rococo_v2 from "../../public/assets/rococo_v2.json"
 
 export const wellKnownChains: Map<WellKnownChains, string> = new Map<
   WellKnownChains,
@@ -27,7 +27,7 @@ export const wellKnownChains: Map<WellKnownChains, string> = new Map<
 >([
   [WellKnownChains.polkadot, JSON.stringify(polkadot)],
   [WellKnownChains.ksmcc3, JSON.stringify(ksmcc3)],
-  [WellKnownChains.rococo_v1_13, JSON.stringify(rococo_v1_13)],
+  [WellKnownChains.rococo_v2, JSON.stringify(rococo_v2)],
   [WellKnownChains.westend2, JSON.stringify(westend2)],
 ])
 
