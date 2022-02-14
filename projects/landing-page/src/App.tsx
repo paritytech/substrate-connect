@@ -177,7 +177,8 @@ const App: React.FunctionComponent = () => {
                 <Box>{`const scClient = createScClient();`}</Box>
                 <Box
                   mt={2}
-                >{`const myChain = await scClient.addChain(JSON.stringify(customSpecs));`}</Box>
+                >{`await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
+                <Box>{`const myChain = await scClient.addChain(JSON.stringify(customSpecs));`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider: myChain });`}</Box>
 
                 <Box
@@ -209,11 +210,9 @@ const App: React.FunctionComponent = () => {
                 <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
 
                 <Box>{`const scClient = createScClient();`}</Box>
-                <Box>{`await scClient.addWellKnownChain(WellKnownChains.westend);`}</Box>
                 <Box
                   mt={2}
-                >{`const provider = await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
-
+                >{`await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
                 <Box>{`const provider = await scClient.addChain(JSON.stringify(parachainSpecs));`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider });`}</Box>
 
@@ -231,10 +230,9 @@ const App: React.FunctionComponent = () => {
                 <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
 
                 <Box>{`const scClient = createScClient();`}</Box>
-                <Box>{`await scClient.addWellKnownChain(WellKnownChains.westend);`}</Box>
                 <Box
                   mt={2}
-                >{`const provider = await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
+                >{`await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
                 <Box>{`const provider = await scClient.addChain(JSON.stringify(parachainSpecs));`}</Box>
                 <Box>{`const apiOptions = {types: customTypes}`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>
