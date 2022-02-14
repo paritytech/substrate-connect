@@ -1,13 +1,5 @@
-const mapNameToId: Map<string, string> = new Map<string, string>([
-  ["polkadot", "polkadot"],
-  ["ksmcc3", "kusama"],
-  ["rococo_v1_13", "rococo"],
-  ["westend2", "westend"],
-])
-
 export async function getSpec(chain: string): Promise<string> {
-  const fileName = mapNameToId.get(chain) || ""
-  const specRaw = (await import("./generated/" + fileName + ".js")) as
+  const specRaw = (await import("./generated/" + chain + ".js")) as
     | string
     | { default: string }
 

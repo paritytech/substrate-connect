@@ -16,10 +16,10 @@ import EventEmitter from "eventemitter3"
 import { StateEmitter } from "./types"
 import { logger } from "@polkadot/util"
 import { ToExtension } from "@substrate/connect-extension-protocol"
-import westend2 from "../../public/assets/westend.json"
-import ksmcc3 from "../../public/assets/kusama.json"
+import westend2 from "../../public/assets/westend2.json"
+import ksmcc3 from "../../public/assets/ksmcc3.json"
 import polkadot from "../../public/assets/polkadot.json"
-import rococo_v1_13 from "../../public/assets/rococo.json"
+import rococo_v1_13 from "../../public/assets/rococo_v1_13.json"
 
 export const wellKnownChains: Map<WellKnownChains, string> = new Map<
   WellKnownChains,
