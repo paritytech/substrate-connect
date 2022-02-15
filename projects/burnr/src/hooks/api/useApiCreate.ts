@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { ApiPromise } from "@polkadot/api"
 import { logger } from "@polkadot/util"
-import { createScClient } from "@substrate/connect"
+import { createScClient, WellKnownChains } from "@substrate/connect"
 import { ALL_PROVIDERS, BURNR_WALLET } from "../../utils/constants"
 import { useIsMountedRef } from "./useIsMountedRef"
 
@@ -19,7 +19,9 @@ export const useApiCreate = (): ApiPromise => {
   useEffect((): void => {
     const choseSmoldot = async (endpoint: string): Promise<void> => {
       try {
-        const provider = await scClient.addChain(endpoint)
+        const provider = await scClient.addWellKnownChain(
+          endpoint as WellKnownChains,
+        )
         const api = await ApiPromise.create({ provider })
         l.log(`Burnr is now connected to ${endpoint}`)
         mountedRef.current && setApi(api)
