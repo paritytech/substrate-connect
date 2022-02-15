@@ -7,3 +7,5 @@ dist
 coverage
 _site
 *.tsbuildinfo
+polkadot
+zombienet-*
