@@ -170,11 +170,11 @@ describe("SmoldotConnect::smoldot-light", () => {
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual("fake-ksmcc3-spec")
 
-      await addWellKnownChain(WellKnownChains.rococo_v1_13)
+      await addWellKnownChain(WellKnownChains.rococo_v2)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(
-        "fake-rococo_v1_13-spec",
+        "fake-rococo_v2-spec",
       )
     })
 

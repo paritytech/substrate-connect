@@ -1,2 +1,2 @@
 export { ScProvider } from "./ScProvider.js"
-export { healthChecker } from "./Health.js"
+export { healthChecker, HealthChecker, SmoldotHealth } from "./Health.js"

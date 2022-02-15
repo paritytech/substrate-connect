@@ -4,7 +4,7 @@ const fs = require("fs")
 const specsRepo =
   "https://raw.githubusercontent.com/paritytech/smoldot/main/bin"
 const chainDir = ".chains"
-const networks = ["polkadot", "kscmcc3", "westend2", "rococo_v1_13"]
+const networks = ["polkadot", "ksmcc3", "westend2", "rococo_v2"]
 const paths = ["packages/connect/src/specs", "projects/extension/public/assets"]
 
 // check if paths exist. If not create them
