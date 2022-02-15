@@ -8,7 +8,7 @@ ScProvider check existence of substrate extension. If it is installed and activa
 smoldot clients of extension will be used. If not, a new smoldot client will start and
 sync with given chainspecs.
 ## Usage
-Provide a known Chain Name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v1_13'):
+Provide a known Chain Name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2'):
 ```js
 import { ApiPromise } from '@polkadot/api';
 import { createScClient, SupportedChains } from '@substrate/connect';
