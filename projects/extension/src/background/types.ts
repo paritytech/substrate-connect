@@ -1,6 +1,7 @@
 import EventEmitter from "eventemitter3"
 import StrictEventEmitter from "strict-event-emitter-types"
-import { HealthChecker, Chain, SmoldotHealth } from "@substrate/smoldot-light"
+import { HealthChecker, SmoldotHealth } from "@substrate/connect"
+import { Chain } from "@substrate/smoldot-light"
 
 export interface ExposedChainConnection {
   chainId: string

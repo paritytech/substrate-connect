@@ -60,7 +60,7 @@ export default function NodeConnected(): ReactElement {
     const getColor = async (api: ApiPromise) => {
       if (api && (await api.isReady)) {
         setFiberColor("primary")
-        l.log("Burnr wallet is now connected to", ALL_PROVIDERS.network)
+        l.log("Burnr wallet is now connected to", ALL_PROVIDERS.name)
       }
     }
 
@@ -83,7 +83,7 @@ export default function NodeConnected(): ReactElement {
             color={fiberColor}
           />
           <Box width="100%" display="flex" alignItems="baseline">
-            <Typography variant="h4">{ALL_PROVIDERS.network}</Typography>
+            <Typography variant="h4">{ALL_PROVIDERS.name}</Typography>
             <Typography
               variant="body2"
               className={classes.nodeDesc}

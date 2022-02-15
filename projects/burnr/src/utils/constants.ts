@@ -8,6 +8,7 @@ export const POLKA_ACCOUNT_ENDPOINTS = {
 }
 
 export const ALL_PROVIDERS: SimpleProvider = {
-  network: "Westend",
+  name: "Westend",
+  network: "westend2",
   client: "Light client",
 }

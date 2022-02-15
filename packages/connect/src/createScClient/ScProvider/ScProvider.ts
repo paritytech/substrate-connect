@@ -8,11 +8,9 @@ import {
 } from "@polkadot/rpc-provider/types"
 import { assert, logger } from "@polkadot/util"
 import EventEmitter from "eventemitter3"
-import { WellKnownChains } from "../WellKnownChains.js"
-import { getConnectorClient, Chain } from "../connector/index.js"
+import { Chain, JsonRpcCallback } from "../../connector/types"
 import { HealthCheckError } from "./Health.js"
 
-const { addChain, addWellKnownChain } = getConnectorClient()
 const l = logger("smoldot-provider")
 
 interface RpcStateAwaiting {
@@ -67,10 +65,10 @@ const CONNECTION_STATE_PINGER_INTERVAL = 2000
  * import { ApiPromise } from '@polkadot/api';
  *
  * // Create a new UApp with a unique name
- * const westendProvider = ScProvider(WellKnownChains.westend)
+ * const westendProvider = ScProvider(WellKnownChains.westend2)
  * const westend = await ApiPromise.create({ provider: westendProvider })
  *
- * const kusamaProvider = ScProvider(WellKnownChains.kusama)
+ * const kusamaProvider = ScProvider(WellKnownChains.ksmcc3)
  * const kusama = await ApiPromise.create({ provider: kusamaProvider })
  *
  * await westendProvider.rpc.chain.subscribeNewHeads((lastHeader) => {
@@ -87,57 +85,23 @@ const CONNECTION_STATE_PINGER_INTERVAL = 2000
  * ```
  */
 export class ScProvider implements ProviderInterface {
-  #chainSpec: string
   readonly #coder: RpcCoder = new RpcCoder()
   readonly #eventemitter: EventEmitter = new EventEmitter()
   readonly #handlers: Record<string, RpcStateAwaiting> = {}
   readonly #subscriptions: Record<string, StateSubscription> = {}
   readonly #waitingForId: Record<string, JsonRpcResponse> = {}
-  #connectionStatePingerId: ReturnType<typeof setInterval> | null
+  #connectionStatePingerId: ReturnType<typeof setInterval> | null = null
   #isConnected = false
+  #getChain: (handler: JsonRpcCallback) => Promise<Chain>
   #chain: Chain | undefined = undefined
-  #parachainSpecs: string | undefined = undefined
 
   /*
    * How frequently to see if we have any peers
    */
   healthPingerInterval = CONNECTION_STATE_PINGER_INTERVAL
 
-  /**
-   * @param knownChain - the name of a supported chain ({@link WellKnownChains})
-   * @param parachainSpec - optional param of the parachain chainSpecs to connect to
-   * @param autoConnect - whether the ScProvider should eagerly connect while its being instantiated. Defaults to `true`
-   *
-   */
-  public constructor(
-    knownChain: WellKnownChains,
-    parachainSpec?: string,
-    autoConnect?: boolean,
-  )
-  /**
-   * @param chainSpec - a string with the spec of the chain
-   * @param parachainSpec - optional param of the parachain chainSpecs to connect to
-   * @param autoConnect - whether the ScProvider should eagerly connect while its being instantiated. Defaults to `true`
-   *
-   */
-  public constructor(
-    chainSpec: string,
-    parachainSpec?: string,
-    autoConnect?: boolean,
-  )
-  public constructor(
-    chainSpec: string,
-    parachain?: string,
-    autoConnect = true,
-  ) {
-    this.#chainSpec = chainSpec
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    this.#connectionStatePingerId = null
-    if (parachain) {
-      this.#parachainSpecs = parachain
-    }
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    if (autoConnect) this.connect()
+  public constructor(getChain: (handler: JsonRpcCallback) => Promise<Chain>) {
+    this.#getChain = getChain
   }
 
   /**
@@ -289,42 +253,15 @@ export class ScProvider implements ProviderInterface {
    */
   public connect = async (): Promise<void> => {
     try {
-      if (this.#parachainSpecs) {
-        const relay = await (this.#chainSpec in WellKnownChains
-          ? addWellKnownChain(this.#chainSpec as WellKnownChains)
-          : addChain(this.#chainSpec))
-
-        this.#chain = await addChain(
-          this.#parachainSpecs,
-          (response: string) => {
-            this.#handleRpcReponse(response)
-          },
-        )
-
-        const parachainRemove = this.#chain.remove.bind(this.#chain)
-        this.#chain.remove = () => {
-          parachainRemove()
-          relay.remove()
-        }
-      } else {
-        const jsonRpcCallback = (response: string) => {
-          this.#handleRpcReponse(response)
-        }
-
-        this.#chain = await (this.#chainSpec in WellKnownChains
-          ? addWellKnownChain(
-              this.#chainSpec as WellKnownChains,
-              jsonRpcCallback,
-            )
-          : addChain(this.#chainSpec, jsonRpcCallback))
-      }
-      this.#connectionStatePingerId = setInterval(
-        this.#checkClientPeercount,
-        this.healthPingerInterval,
-      )
+      this.#chain = await this.#getChain(this.#handleRpcReponse.bind(this))
     } catch (error: unknown) {
       this.emit("error", error)
+      throw error
     }
+    this.#connectionStatePingerId = setInterval(
+      this.#checkClientPeercount,
+      this.healthPingerInterval,
+    )
   }
 
   /**

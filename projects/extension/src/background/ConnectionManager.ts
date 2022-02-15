@@ -5,24 +5,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Client, Chain } from "@substrate/smoldot-light"
-import { healthChecker as smHealthChecker } from "@substrate/connect"
+import {
+  healthChecker as smHealthChecker,
+  WellKnownChains,
+  SmoldotHealth,
+  JsonRpcCallback,
+} from "@substrate/connect"
 
-import { JsonRpcCallback, SmoldotHealth } from "@substrate/smoldot-light"
 import { ExposedChainConnection, ChainConnection } from "./types"
 import EventEmitter from "eventemitter3"
 import { StateEmitter } from "./types"
 import { logger } from "@polkadot/util"
 import { ToExtension } from "@substrate/connect-extension-protocol"
-import westend from "../../public/assets/westend.json"
-import kusama from "../../public/assets/kusama.json"
+import westend2 from "../../public/assets/westend2.json"
+import ksmcc3 from "../../public/assets/ksmcc3.json"
 import polkadot from "../../public/assets/polkadot.json"
-import rococo from "../../public/assets/rococo.json"
+import rococo_v2 from "../../public/assets/rococo_v2.json"
 
-export const wellKnownChains: Map<string, string> = new Map<string, string>([
-  ["polkadot", JSON.stringify(polkadot)],
-  ["kusama", JSON.stringify(kusama)],
-  ["rococo", JSON.stringify(rococo)],
-  ["westend", JSON.stringify(westend)],
+export const wellKnownChains: Map<WellKnownChains, string> = new Map<
+  WellKnownChains,
+  string
+>([
+  [WellKnownChains.polkadot, JSON.stringify(polkadot)],
+  [WellKnownChains.ksmcc3, JSON.stringify(ksmcc3)],
+  [WellKnownChains.rococo_v2, JSON.stringify(rococo_v2)],
+  [WellKnownChains.westend2, JSON.stringify(westend2)],
 ])
 
 const l = logger("Extension Connection Manager")
@@ -277,7 +284,10 @@ export class ConnectionManager extends (EventEmitter as {
     const [chainSpec, potentialRelayChainIds]: [string, string[]] =
       msg.type === "add-chain"
         ? [msg.chainSpec, msg.potentialRelayChainIds]
-        : [wellKnownChains.get(msg.chainName)!, [] as string[]]
+        : [
+            wellKnownChains.get(msg.chainName as WellKnownChains)!,
+            [] as string[],
+          ]
 
     this.#handleSpecMessage(
       chainConnection,

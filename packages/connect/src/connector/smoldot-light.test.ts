@@ -1,11 +1,12 @@
-import { getConnectorClient } from "./smoldot-light"
 import { jest } from "@jest/globals"
 import type { AddChainOptions, ClientOptions } from "@substrate/smoldot-light"
+import { WellKnownChains } from "../WellKnownChains"
 import {
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
 } from "./errors"
+import type { SubstrateConnector } from "./types"
 
 class SdAlreadyDestroyedError extends Error {
   constructor() {
@@ -82,16 +83,16 @@ const mockSmoldotLightFactory = () => {
 }
 
 jest.unstable_mockModule("@substrate/smoldot-light", mockSmoldotLightFactory)
-/*
-jest.unstable_mockModule("./specs/generated/polkadot.js", () => ({
-  default: "polkadotFakeChainSpec",
+jest.unstable_mockModule("./specs/index.js", () => ({
+  getSpec: (wellKnownChain: string) => `fake-${wellKnownChain}-spec`,
 }))
-*/
 
 type MockSmoldotLight = ReturnType<typeof mockSmoldotLightFactory>
 let mockedSmoldotLight: MockSmoldotLight
 
+let getConnectorClient: () => SubstrateConnector
 beforeAll(async () => {
+  ;({ getConnectorClient } = await import("./smoldot-light"))
   mockedSmoldotLight = (await import(
     "@substrate/smoldot-light"
   )) as unknown as MockSmoldotLight
@@ -150,23 +151,31 @@ describe("SmoldotConnect::smoldot-light", () => {
     })
 
     it("propagates the correct chainSpec to smoldot-light", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain, addWellKnownChain } = getConnectorClient()
       const chainSpec = "testChainSpec"
       await addChain(chainSpec)
 
       let mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(chainSpec)
 
-      /*
-      TODO: re-enable once we've improved the `check-specs` script https://github.com/paritytech/substrate-connect/pull/718#discussion_r802567024
-      
       await addWellKnownChain(WellKnownChains.polkadot)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(
-        "polkadotFakeChainSpec",
+        "fake-polkadot-spec",
       )
-      */
+
+      await addWellKnownChain(WellKnownChains.ksmcc3)
+
+      mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
+      expect(mockedChain._addChainOptions.chainSpec).toEqual("fake-ksmcc3-spec")
+
+      await addWellKnownChain(WellKnownChains.rococo_v2)
+
+      mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
+      expect(mockedChain._addChainOptions.chainSpec).toEqual(
+        "fake-rococo_v2-spec",
+      )
     })
 
     it("propagates the correct potentialRelayChainIds to smoldot-light", async () => {
