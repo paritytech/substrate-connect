@@ -5,7 +5,7 @@ async function connect(nodeName, networkInfo) {
   const customChainSpec = require(networkInfo.chainSpecPath)
   const { createScClient } = await import("@substrate/connect")
   const scClient = createScClient()
-  const provider = scClient.addChain(JSON.stringify(customChainSpec))
+  const provider = await scClient.addChain(JSON.stringify(customChainSpec))
   const api = new polkadotApi.ApiPromise({ provider, types: userDefinedTypes })
   return api
 }
