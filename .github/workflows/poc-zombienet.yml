@@ -25,4 +25,5 @@ jobs:
       - name: Run test
         run: |
           export PATH=$(pwd):$PATH
-          ./zombienet-linux -p native test ./.zombienet-tests/0001-smoke-test.feature
+          ./zombienet-linux -p native test ./.zombienet-tests/0001-relay-smoke-test.feature
+          ./zombienet-linux -p native test ./.zombienet-tests/0002-parachain.feature
