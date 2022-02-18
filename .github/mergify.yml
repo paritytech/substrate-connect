@@ -1,7 +1,7 @@
 queue_rules:
   - name: default
     conditions:
-      - check-success=build
+      - check-success=all
       - label=automerge
       - base=master
       - "#changes-requested-reviews-by=0"
@@ -10,7 +10,7 @@ queue_rules:
 pull_request_rules:
   - name: automatic merge when CI passes on master
     conditions:
-      - check-success=build
+      - check-success=all
       - label=automerge
       - base=master
       - "#changes-requested-reviews-by=0"
