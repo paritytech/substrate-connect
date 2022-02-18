@@ -24,7 +24,7 @@
   },
   "keywords": [],
   "devDependencies": {
-    "jest": "^27.4.7",
+    "jest": "^27.5.1",
     "web-ext": "^6.7.0"
   },
   "dependencies": {

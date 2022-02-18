@@ -24,3 +24,11 @@ jobs:
     - run: yarn build
     - run: yarn lint
     - run: yarn test
+
+  all:
+    # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
+    # are successful.
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+     - run: echo Success

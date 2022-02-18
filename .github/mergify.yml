@@ -1,0 +1,22 @@
+queue_rules:
+  - name: default
+    conditions:
+      - check-success=all
+      - label=automerge
+      - base=master
+      - "#changes-requested-reviews-by=0"
+      - "#approved-reviews-by>=1"
+      
+pull_request_rules:
+  - name: automatic merge when CI passes on master
+    conditions:
+      - check-success=all
+      - label=automerge
+      - base=master
+      - "#changes-requested-reviews-by=0"
+      - "#approved-reviews-by>=1"
+    actions:
+      queue:
+        name: default
+        method: squash
+
