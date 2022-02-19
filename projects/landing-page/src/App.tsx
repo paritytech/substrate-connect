@@ -278,7 +278,7 @@ const App: React.FunctionComponent = () => {
                 fullWidth: true,
               }}
             ></CardProject>
-            <SectionRef href="https://github.com/paritytech/substrate-connect/tree/master/projects/extension">
+            <SectionRef href="https://github.com/paritytech/substrate-connect/tree/main/projects/extension">
               Learn more
             </SectionRef>
             <SectionRef href="https://chrome.google.com/webstore/detail/khccbhhbocaaklceanjginbdheafklai">
@@ -305,7 +305,7 @@ const App: React.FunctionComponent = () => {
               title="Next Project"
               imageProps={{ path: YourProject as string }}
             >
-              <SectionRef href="https://github.com/paritytech/substrate-connect/blob/master/CONTRIBUTING.md">
+              <SectionRef href="https://github.com/paritytech/substrate-connect/blob/main/CONTRIBUTING.md">
                 Contributor’s guide
               </SectionRef>
             </CardProject>
