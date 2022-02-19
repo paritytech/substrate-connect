@@ -40,6 +40,6 @@
     "react-router": "^6.2.1",
     "react-router-dom": "^6.2.1",
     "regenerator-runtime": "^0.13.9",
-    "unique-names-generator": "^4.6.0"
+    "unique-names-generator": "^4.7.1"
   }
 }
