@@ -1,6 +1,6 @@
 ## Creating a Good Pull Request
 
-The [Parity contributing guidelines](https://github.com/paritytech/substrate/blob/master/docs/CONTRIBUTING.adoc) are great for telling you the mechanics of the process of submitting a pull request but they don't offer much guidance on how to actually craft a good one.  This document is an effort to try to give a little more guidance on what it means to create a good pull request.
+The [Parity contributing guidelines](https://github.com/paritytech/substrate/blob/main/docs/CONTRIBUTING.adoc) are great for telling you the mechanics of the process of submitting a pull request but they don't offer much guidance on how to actually craft a good one.  This document is an effort to try to give a little more guidance on what it means to create a good pull request.
 
 ### Philosophy
 
