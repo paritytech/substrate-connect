@@ -110,17 +110,19 @@ class InnerChecker {
 
   sendJsonRpc = (request: string): void => {
     // Replace the `id` in the request to prefix the request ID with `extern:`.
+    let parsedRequest
     try {
-      const parsedRequest = JSON.parse(request)
-      if (parsedRequest.id) {
-        const newId = "extern:" + JSON.stringify(parsedRequest.id)
-        parsedRequest.id = newId
-      }
-
-      this.#requestToSmoldot(JSON.stringify(parsedRequest))
+      parsedRequest = JSON.parse(request)
     } catch (err) {
       return
     }
+
+    if (parsedRequest.id) {
+      const newId = "extern:" + JSON.stringify(parsedRequest.id)
+      parsedRequest.id = newId
+    }
+
+    this.#requestToSmoldot(JSON.stringify(parsedRequest))
   }
 
   responsePassThrough = (jsonRpcResponse: string): string | null => {
