@@ -185,7 +185,7 @@ class InnerChecker {
       // actually possible for the health to have changed in between as the
       // current best block might have been updated during the subscription
       // request.
-      this.startHealthCheck()
+      if (!this.#currentHealthCheckId) this.startHealthCheck()
       this.update()
       return null
     }
