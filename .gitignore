@@ -9,3 +9,5 @@ _site
 *.tsbuildinfo
 polkadot
 zombienet-*
+adder-collator*
+init.sh

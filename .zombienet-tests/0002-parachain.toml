@@ -32,7 +32,7 @@ id = 100
   [parachains.collator]
   name = "collator01"
   image = "docker.io/paritypr/colander:4131-ccd09bbf"
-  command = "/usr/local/bin/adder-collator"
+  command = "adder-collator"
 
 [types.Header]
 number = "u64"
