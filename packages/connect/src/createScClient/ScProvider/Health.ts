@@ -209,28 +209,30 @@ class InnerChecker {
     }
 
     if (!this.#currentHealthTimeout) {
-      this.#currentHealthTimeout = setTimeout(() => {
-        this.#currentHealthTimeout = null
+      this.#currentHealthTimeout = setTimeout(
+        () => {
+          this.#currentHealthTimeout = null
 
-        // No matter what, don't start a health request if there is already one in progress.
-        // This is sane to do because receiving a response to a health request calls `update()`.
-        if (this.#currentHealthCheckId)
-          return
+          // No matter what, don't start a health request if there is already one in progress.
+          // This is sane to do because receiving a response to a health request calls `update()`.
+          if (this.#currentHealthCheckId) return
 
-        // Actual request starting.
-        this.#currentHealthCheckId = "health-checker:".concat(
-          this.#nextRequestId.toString(),
-        )
-        this.#nextRequestId += 1
-        this.#requestToSmoldot(
-          JSON.stringify({
-            jsonrpc: "2.0",
-            id: this.#currentHealthCheckId,
-            method: "system_health",
-            params: [],
-          }),
-        )
-      }, startNow ? 0 : 10000)
+          // Actual request starting.
+          this.#currentHealthCheckId = "health-checker:".concat(
+            this.#nextRequestId.toString(),
+          )
+          this.#nextRequestId += 1
+          this.#requestToSmoldot(
+            JSON.stringify({
+              jsonrpc: "2.0",
+              id: this.#currentHealthCheckId,
+              method: "system_health",
+              params: [],
+            }),
+          )
+        },
+        startNow ? 0 : 10000,
+      )
     }
 
     if (
