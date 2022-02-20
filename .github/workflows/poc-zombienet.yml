@@ -1,4 +1,4 @@
-name: PoC zombienet CI
+name: E2E Zombienet CI
 
 on:
   pull_request:
