@@ -230,7 +230,7 @@ class InnerChecker {
           }),
         )
       }
-      
+
       if (startNow) startHealthRequest()
       else this.#currentHealthTimeout = setTimeout(startHealthRequest, 1000)
     }
