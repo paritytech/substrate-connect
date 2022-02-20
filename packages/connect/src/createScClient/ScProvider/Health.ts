@@ -70,7 +70,7 @@ export const healthChecker = (): HealthChecker => {
         )
 
       checker = new InnerChecker(healthCallback, sendJsonRpc)
-      checker.startHealthCheck()
+      checker.update(true)
     },
     stop: () => {
       if (checker === null) return // Already stopped.
@@ -140,13 +140,13 @@ class InnerChecker {
       // Check whether query was successful. It is possible for queries to fail for
       // various reasons, such as the client being overloaded.
       if (!parsedResponse.result) {
-        this.update()
+        this.update(false)
         return null
       }
 
       this.#healthCallback(parsedResponse.result)
       this.#isSyncing = parsedResponse.result.isSyncing
-      this.update()
+      this.update(false)
       return null
     }
 
@@ -160,7 +160,7 @@ class InnerChecker {
       // Check whether query was successful. It is possible for queries to fail for
       // various reasons, such as the client being overloaded.
       if (!parsedResponse.result) {
-        this.update()
+        this.update(false)
         return null
       }
 
@@ -168,7 +168,7 @@ class InnerChecker {
       else
         this.#currentSubscriptionId = parsedResponse.result as unknown as string
 
-      this.update()
+      this.update(false)
       return null
     }
 
@@ -187,8 +187,7 @@ class InnerChecker {
       // actually possible for the health to have changed in between as the
       // current best block might have been updated during the subscription
       // request.
-      this.startHealthCheck()
-      this.update()
+      this.update(true)
       return null
     }
 
@@ -204,12 +203,38 @@ class InnerChecker {
     return JSON.stringify(parsedResponse)
   }
 
-  update = (): void => {
+  update = (startNow: boolean): void => {
+    // If `startNow`, clear `#currentHealthTimeout` so that it is set below.
+    if (startNow && this.#currentHealthTimeout) {
+      clearTimeout(this.#currentHealthTimeout)
+      this.#currentHealthTimeout = null
+    }
+
     if (!this.#currentHealthTimeout) {
-      this.#currentHealthTimeout = setTimeout(() => {
+      const startHealthRequest = () => {
         this.#currentHealthTimeout = null
-        this.startHealthCheck()
-      }, 10000)
+
+        // No matter what, don't start a health request if there is already one in progress.
+        // This is sane to do because receiving a response to a health request calls `update()`.
+        if (this.#currentHealthCheckId) return
+
+        // Actual request starting.
+        this.#currentHealthCheckId = "health-checker:".concat(
+          this.#nextRequestId.toString(),
+        )
+        this.#nextRequestId += 1
+        this.#requestToSmoldot(
+          JSON.stringify({
+            jsonrpc: "2.0",
+            id: this.#currentHealthCheckId,
+            method: "system_health",
+            params: [],
+          }),
+        )
+      }
+
+      if (startNow) startHealthRequest()
+      else this.#currentHealthTimeout = setTimeout(startHealthRequest, 1000)
     }
 
     if (
@@ -218,33 +243,13 @@ class InnerChecker {
       !this.#currentSubunsubRequestId
     )
       this.startSubscription()
+
     if (
       !this.#isSyncing &&
       this.#currentSubscriptionId &&
       !this.#currentSubunsubRequestId
     )
       this.endSubscription()
-  }
-
-  startHealthCheck = (): void => {
-    if (this.#currentHealthCheckId)
-      throw new Error("Internal error in health checker")
-    if (this.#currentHealthTimeout) {
-      clearTimeout(this.#currentHealthTimeout)
-      this.#currentHealthTimeout = null
-    }
-    this.#currentHealthCheckId = "health-checker:".concat(
-      this.#nextRequestId.toString(),
-    )
-    this.#nextRequestId += 1
-    this.#requestToSmoldot(
-      JSON.stringify({
-        jsonrpc: "2.0",
-        id: this.#currentHealthCheckId,
-        method: "system_health",
-        params: [],
-      }),
-    )
   }
 
   startSubscription = (): void => {
