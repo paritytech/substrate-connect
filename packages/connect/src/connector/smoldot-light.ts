@@ -34,7 +34,7 @@ const getClient = (): Promise<Client> => {
   clientPromise = getStart().then((start) =>
     start({
       forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
-      maxLogLevel: 3 /* no debug/trace messages */,
+      maxLogLevel: 4 /* no debug/trace messages */,
     }),
   )
   return clientPromise
