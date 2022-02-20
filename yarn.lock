@@ -2331,10 +2331,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@substrate/smoldot-light@0.6.2":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.6.2.tgz#3a1bffabc1d596c8b3e13050fc02ff04be2fdfa3"
-  integrity sha512-06epLoS/3ZmePVU0fVGuLKIeDDln2b5LmGgC0zYaXv9RvcS/vJwQmIOzVEBiFARJ/uz+q5f9HeroZuu6I1Bl+A==
+"@substrate/smoldot-light@0.6.3":
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.6.3.tgz#414935a8859227f417a1064ee5cb3e839048e375"
+  integrity sha512-Q+wF1RNtF4HIS4oXqlA66oKiYOEF0XiHT+WzMz4uwtMXQfy7IxHuHZ48czrPAMJDVXnQsfZxm8Espqluhe5DSA==
   dependencies:
     buffer "^6.0.1"
     pako "^2.0.4"
@@ -9965,7 +9965,7 @@ style-loader@^3.3.1:
   resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-3.3.1.tgz#057dfa6b3d4d7c7064462830f9113ed417d38575"
   integrity sha512-GPcQ+LDJbrcxHORTRes6Jy2sfvK2kS6hpSfI/fXhPt+spVzxF6LJ1dHLN9zIGmVaaP044YKaIatFaufENRiDoQ==
 
-styled-components@^5.3.3:
+styled-components@^5, styled-components@^5.3.3:
   version "5.3.3"
   resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-5.3.3.tgz#312a3d9a549f4708f0fb0edc829eb34bde032743"
   integrity sha512-++4iHwBM7ZN+x6DtPPWkCI4vdtwumQ+inA/DdAsqYd4SVgUKJie5vXyzotA00ttcFdQkCng7zc6grwlfIfw+lw==
