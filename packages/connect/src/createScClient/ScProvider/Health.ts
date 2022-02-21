@@ -1,8 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-
 export interface SmoldotHealth {
   isSyncing: boolean
   peers: number
@@ -134,7 +129,7 @@ class InnerChecker {
     }
 
     // Check whether response is a response to `system_health`.
-    if (parsedResponse.id && this.#currentHealthCheckId == parsedResponse.id) {
+    if (parsedResponse.id && this.#currentHealthCheckId === parsedResponse.id) {
       this.#currentHealthCheckId = null
 
       // Check whether query was successful. It is possible for queries to fail for
@@ -153,7 +148,7 @@ class InnerChecker {
     // Check whether response is a response to the subscription or unsubscription.
     if (
       parsedResponse.id &&
-      this.#currentSubunsubRequestId == parsedResponse.id
+      this.#currentSubunsubRequestId === parsedResponse.id
     ) {
       this.#currentSubunsubRequestId = null
 
@@ -176,7 +171,7 @@ class InnerChecker {
     if (
       parsedResponse.params &&
       this.#currentSubscriptionId &&
-      parsedResponse.params.subscription == this.#currentSubscriptionId
+      parsedResponse.params.subscription === this.#currentSubscriptionId
     ) {
       // Note that after a successful subscription, a notification containing
       // the current best block is always returned. Considering that a

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable no-empty */
 import {
   ToExtension,
   ToApplication,
@@ -99,7 +96,6 @@ export class ExtensionMessageRouter {
       return
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { chainId, origin: _, ...forwardMsg } = data
     if (type === "add-well-known-chain" || type === "add-chain") {
       this.#establishNewConnection(chainId)

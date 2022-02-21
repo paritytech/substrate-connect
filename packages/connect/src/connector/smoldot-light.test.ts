@@ -242,6 +242,7 @@ describe("SmoldotConnect::smoldot-light", () => {
 
       mockedChain._setSendJsonRpc(
         jest.fn((_) => {
+          // eslint-disable-next-line no-throw-literal
           throw "foo"
         }),
       )

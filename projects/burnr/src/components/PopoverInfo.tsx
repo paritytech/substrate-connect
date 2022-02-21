@@ -43,13 +43,13 @@ const PopoverInfo: FunctionComponent<Props> = ({ children }: Props) => {
 
   return (
     <>
-      <a
+      <button
         onMouseEnter={handlePopoverOpen}
         onMouseLeave={handlePopoverClose}
         className={classes.trigger}
       >
         <InfoOutlinedIcon color="disabled" />
-      </a>
+      </button>
 
       <Popover
         onClose={handlePopoverClose}

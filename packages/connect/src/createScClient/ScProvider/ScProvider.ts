@@ -200,7 +200,7 @@ export class ScProvider implements ProviderInterface {
   #simulateLifecycle = (health: HealthResponse): void => {
     // development chains should not have peers so we only emit connected
     // once and never disconnect
-    if (health.shouldHavePeers == false) {
+    if (!health.shouldHavePeers) {
       if (!this.#isConnected) {
         this.#isConnected = true
         this.emit("connected")
@@ -267,11 +267,9 @@ export class ScProvider implements ProviderInterface {
   /**
    * Manually "disconnect" - drops the reference to the WASM client
    */
-  // eslint-disable-next-line @typescript-eslint/require-await
   public async disconnect(): Promise<void> {
     try {
       if (this.#chain) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this.#chain.remove()
       }
     } catch (error: unknown) {
@@ -320,11 +318,9 @@ export class ScProvider implements ProviderInterface {
    */
   public async send(
     method: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: unknown[],
     isCacheable?: boolean,
     subscription?: SubscriptionHandler,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     return new Promise((resolve, reject): void => {
       assert(this.#chain, "Chain is not initialised")
@@ -374,11 +370,9 @@ export class ScProvider implements ProviderInterface {
     type: string,
     // the "method" property of the JSON request to register the subscription
     method: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: any[],
     callback: ProviderInterfaceCallback,
   ): Promise<number | string> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await this.send(method, params, false, { callback, type })
   }
 
@@ -403,7 +397,6 @@ export class ScProvider implements ProviderInterface {
     return (await this.send(method, [id])) as Promise<boolean>
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private emit(type: ProviderInterfaceEmitted, ...args: unknown[]): void {
     this.#eventemitter.emit(type, ...args)
   }

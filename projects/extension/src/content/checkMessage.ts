@@ -5,7 +5,6 @@ import { ToExtension } from "@substrate/connect-extension-protocol"
  *
  * Do not forget to update this function if the `ToExtension` interface changes!
  */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export default function checkReceivedMessage(msg: any): msg is ToExtension {
   const message = msg as ToExtension
 

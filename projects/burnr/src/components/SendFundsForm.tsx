@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   MouseEvent,
   useContext,
@@ -165,7 +162,7 @@ const SendFundsForm: FunctionComponent = () => {
   useEffect((): (() => void) => {
     let countdown: ReturnType<typeof setInterval>
     if (!loading) {
-      if (message != "") {
+      if (message !== "") {
         countdown = setInterval((): void => {
           setCountdownNo((oldCountdownNo: number) => {
             if (oldCountdownNo === 0) {

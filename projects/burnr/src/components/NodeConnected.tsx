@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useState, useEffect, ReactElement } from "react"
 
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
