@@ -29,7 +29,6 @@ const HistoryTableRow: FunctionComponent<Props> = ({
 }) => {
   const { balanceVisibility } = useContext(BalanceVisibleContext)
   return (
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     <TableRow hover key={`transaction`}>
       {columns.map((column) => {
         const value: string | number = row[column.id]

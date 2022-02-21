@@ -1,10 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 import { jest } from "@jest/globals"
 import { ConnectionManager } from "./ConnectionManager"
 import { ExposedChainConnection } from "./types"
@@ -65,7 +58,7 @@ describe("ConnectionManager", () => {
     helper.manager.shutdown()
   })
 
-  it("it emits after the add-chain message has been posted", async () => {
+  it("emits after the add-chain message has been posted", async () => {
     const { client, manager, connectPort } = helper
     const onStateChanged = jest.fn()
     manager.on("stateChanged", onStateChanged)

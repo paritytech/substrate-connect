@@ -51,7 +51,6 @@ export const createLocalStorageAccount = (): LocalStorageAccountCtx => {
     userAddress: pair.address,
     userName: (pair.meta.name as string) || "____ _____",
     userSeed: mnemonic,
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     userJson: pair.toJson as unknown as KeyringPair$Json,
     userHistory: [],
   }

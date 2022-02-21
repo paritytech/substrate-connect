@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import BN from "bn.js"
 import { useEffect, useState } from "react"
 import { formatBalance, logger } from "@polkadot/util"

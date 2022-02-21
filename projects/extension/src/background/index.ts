@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
 import { wellKnownChains, ConnectionManager } from "./ConnectionManager"
 import { logger } from "@polkadot/util"
 import { isEmpty } from "../utils/utils"
@@ -67,6 +63,7 @@ const init = async () => {
         console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
       }
 
+      // eslint-disable-next-line no-loop-func
       const dbContent = await new Promise<string | undefined>((res) =>
         chrome.storage.local.get([key], (val) => res(val[key] as string)),
       )

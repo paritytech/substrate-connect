@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { useEffect, useState } from "react"
 import { ApiPromise } from "@polkadot/api"
 import { logger } from "@polkadot/util"

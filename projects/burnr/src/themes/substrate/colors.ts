@@ -1,4 +1,4 @@
-export default {
+const colors = {
   black: "rgba(17, 17, 17, 1)",
   white: "rgba(255, 255, 255, 1)",
   paper: "rgba(238, 238, 238, 1)",
@@ -39,3 +39,5 @@ export default {
   gradient:
     "(46deg, #a081d9 0%, #6c98f5 14%, #5ee7f9 34%, #d1e3cc 59%, #bb8ba6 99%)",
 }
+
+export default colors
