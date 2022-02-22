@@ -4,7 +4,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 import { Typography, Box } from "@material-ui/core"
 import { ApiPromise } from "@polkadot/api"
 
-import { ALL_PROVIDERS, BURNR_WALLET } from "../utils/constants"
+import { NETWORK, BURNR_WALLET } from "../utils/constants"
 import { useApi } from "../hooks"
 import { logger } from "@polkadot/util"
 
@@ -59,7 +59,7 @@ export default function NodeConnected(): ReactElement {
     const getColor = async (api: ApiPromise) => {
       if (api && (await api.isReady)) {
         setFiberColor("primary")
-        l.log("Burnr wallet is now connected to", ALL_PROVIDERS.name)
+        l.log("Burnr wallet is now connected to", NETWORK.name)
       }
     }
 
@@ -82,13 +82,13 @@ export default function NodeConnected(): ReactElement {
             color={fiberColor}
           />
           <Box width="100%" display="flex" alignItems="baseline">
-            <Typography variant="h4">{ALL_PROVIDERS.name}</Typography>
+            <Typography variant="h4">{NETWORK.name}</Typography>
             <Typography
               variant="body2"
               className={classes.nodeDesc}
               color="textSecondary"
             >
-              {ALL_PROVIDERS.client}
+              {NETWORK.client}
             </Typography>
           </Box>
         </Box>

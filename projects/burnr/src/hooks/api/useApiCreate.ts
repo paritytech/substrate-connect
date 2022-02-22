@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { ApiPromise } from "@polkadot/api"
 import { logger } from "@polkadot/util"
 import { createScClient, WellKnownChains } from "@substrate/connect"
-import { ALL_PROVIDERS, BURNR_WALLET } from "../../utils/constants"
+import { NETWORK, BURNR_WALLET } from "../../utils/constants"
 import { useIsMountedRef } from "./useIsMountedRef"
 
 const scClient = createScClient()
@@ -11,7 +11,7 @@ const l = logger(BURNR_WALLET)
 export const useApiCreate = (): ApiPromise => {
   const [api, setApi] = useState<ApiPromise>({} as ApiPromise)
 
-  const [network] = useState<string>(ALL_PROVIDERS.network.toLowerCase())
+  const [network] = useState<string>(NETWORK.id)
   const mountedRef = useIsMountedRef()
 
   useEffect((): void => {
