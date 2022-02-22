@@ -122,12 +122,18 @@ export class ConnectionManager<SandboxId> {
    *
    * While it is not strictly mandatory, you are strongly encouraged to call this at the
    * beginning and before adding any sandbox.
+   *
+   * @throws Throws an exception if a well-known chain with that name has been added in the past.
    */
   async addWellKnownChain(
     chainName: string,
     spec: string,
     databaseContent?: string,
   ): Promise<void> {
+    if (this.#wellKnownChains.has(chainName)) {
+      throw new Error("Duplicate well-known chain");
+    }
+
     const healthChecker = smHealthChecker()
 
     const chain = await this.#smoldotClient.addChain({
