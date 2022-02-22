@@ -58,6 +58,7 @@ const publicManager: Background["manager"] = {
     // Note that multiple ports can share the same `tabId`
     for (const port of manager.sandboxes) {
       if (port.sender?.tab?.id === tabId) {
+        manager.deleteSandbox(port)
         port.disconnect()
       }
     }
