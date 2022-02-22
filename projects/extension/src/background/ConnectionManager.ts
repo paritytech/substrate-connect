@@ -93,13 +93,23 @@ export interface ChainInfo<SandboxId> {
  * the `@substrate/connect-extension-protocol` package. Use the {ConnectionManager.sandboxOutput}
  * function to retrieve these messages as they are generated.
  *
- * # Other
+ * # Information about the list of chains
  *
  * At any point, information about all the chains contained within the {ConnectionManager} can
  * be retrieved using {ConnectionManager.allChains}. This can be used for display purposes.
  *
  * Use {ConnectionManager.waitAllChainChanged} to wait until the next time any field within the
  * value returned by {ConnectionManager.allChains} has potentially been modified.
+ *
+ * # Database
+ *
+ * The {ConnectionManager.wellKnownChainDatabaseContent} method can be used to retrieve the
+ * content of the so-called "database" of a well-known chain. The string returned by this function
+ * is opaque and shouldn't be interpreted in any way by the API user.
+ *
+ * The {ConnectionManager.addWellKnownChain} accepts a `databaseContent` parameter that can be used
+ * to pass the "database" that was grabbed the last time the well-known chain was running.
+ *
  */
 export class ConnectionManager<SandboxId> {
   #smoldotClient: SmoldotClient = smoldotStart()
@@ -146,6 +156,10 @@ export class ConnectionManager<SandboxId> {
 
   /**
    * Returns the content of the database of the well-known chain with the given name.
+   *
+   * The `maxUtf8BytesSize` parameter is the maximum number of bytes that the string must occupy
+   * in its UTF-8 encoding. The returned string is guaranteed to not be larger than this number.
+   * If not provided, "infinite" is implied.
    *
    * @throws Throws an exception if the `chainName` isn't the name of a chain that has been
    *         added by a call to `addWellKnownChain`.
