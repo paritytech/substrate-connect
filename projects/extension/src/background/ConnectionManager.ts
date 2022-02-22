@@ -17,11 +17,40 @@ import {
 
 import createAsyncFifoQueue from "./Stream"
 
+/**
+ * Information about a chain that the {ConnectionManager} manages.
+ *
+ * This interface is as minimal as possible, as to allow as much flexibility as possible for the
+ * internals of the {ConnectionManager}.
+ */
 export interface ChainInfo<SandboxId> {
+  /**
+   * Name of the chain found in the chain specification.
+   *
+   * Important: this name is untrusted user input! It could be extremely long, contain weird
+   * characters (e.g. HTML tags), etc. Do not make any assumption about its content.
+   */
   chainName: string
   healthStatus?: SmoldotHealth
+
+  /**
+   * Information about how the chain was inserted in the {ConnectionManager}.
+   *
+   * If this field is not set, it means that the chain was added with
+   * {ConnectionManager.addWellKnownChain}.
+   */
   apiInfo?: {
+    /**
+     * Identifier of the chain obtained through the initial `add-chain`.
+     *
+     * Important: this name is untrusted user input! It could be extremely long, contain weird
+     * characters (e.g. HTML tags), etc. Do not make any assumption about its content.
+     */
     chainId: string
+
+    /**
+     * The identifier for the sandbox that has received the message that requests to add a chain.
+     */
     sandboxId: SandboxId
   }
 }
