@@ -55,6 +55,47 @@ export interface ChainInfo<SandboxId> {
   }
 }
 
+/**
+ * # Overview
+ *
+ * This class primarily contains two lists:
+ *
+ * - A list of sandboxes. Each sandbox contains a list of chain connections. A chain within a
+ * sandbox cannot interact in any way with a chain of a different sandbox. Pragmatically speaking,
+ * a sandbox corresponds to a browser tab, however what a sandbox corresponds to is out of concern
+ * of this module. You can add and remove sandboxes using {ConnectionManager.addSandbox} and
+ * {ConnectionManager.deleteSandbox}.
+ *
+ * - A list of trusted "well-known" chains, outside of any sandbox. Well-known chains can be added
+ * by calling {ConnectionManager.addWellKnownChain}. Once added, a well-known chain cannot be
+ * removed. Chains within sandboxes can interact with all well-known chains.
+ *
+ * # Sandboxes usage
+ *
+ * A sandbox can be added using {ConnectionManager.addSandbox}. Each sandbox is identified by a
+ * `SandboxId`, which is a generic argument of the {ConnectionManager}. This `SandboxId` must be
+ * provided every time you want to call a method that relates to a specific sandbox. Once a sandbox
+ * has been removed (using {ConnectionManager.deleteSandbox}), the {ConnectionManager} instantly
+ * removes all traces of this sandbox. Calling a method (other than {ConnectionManager.addSandbox})
+ * with an unknown `SandboxId` leads to an exception being thrown.
+ *
+ * Once a sandbox has been added using {ConnectionManager.addSandbox}, you can inject messages
+ * that concern this sandbox using {ConnectionManager.sandboxMessage}. These messages must conform
+ * to the {ToExtension} interface and to the protocol described in the
+ * `@substrate/connect-extension-protocol` package.
+ *
+ * A sandbox will spontaneously generate messages that conform to the {ToApplication} interface of
+ * the `@substrate/connect-extension-protocol` package. Use the {ConnectionManager.sandboxOutput}
+ * function to retrieve these messages as they are generated.
+ *
+ * # Other
+ *
+ * At any point, information about all the chains contained within the {ConnectionManager} can
+ * be retrieved using {ConnectionManager.allChains}. This can be used for display purposes.
+ *
+ * Use {ConnectionManager.waitAllChainChanged} to wait until the next time any field within the
+ * value returned by {ConnectionManager.allChains} has potentially been modified.
+ */
 export class ConnectionManager<SandboxId> {
   #smoldotClient: SmoldotClient = smoldotStart()
   #sandboxes: Map<SandboxId, Sandbox> = new Map()
