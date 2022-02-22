@@ -31,6 +31,11 @@ export interface ChainInfo<SandboxId> {
    * characters (e.g. HTML tags), etc. Do not make any assumption about its content.
    */
   chainName: string
+
+  /**
+   * Latest known health status of the chain. If missing, the health isn't known yet and it can
+   * be assumed that the chain has no peers yet.
+   */
   healthStatus?: SmoldotHealth
 
   /**
