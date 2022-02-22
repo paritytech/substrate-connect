@@ -115,6 +115,12 @@ export class ConnectionManager<SandboxId> {
   #smoldotClient: SmoldotClient = smoldotStart()
   #sandboxes: Map<SandboxId, Sandbox> = new Map()
   #wellKnownChains: Map<string, WellKnownChain> = new Map()
+
+  /**
+   * Contains a list of callbacks that must be called when any of the information returned by
+   * `allChains` has potentially changed, and then the list must be cleared. The
+   * `waitAllChainChanged` method adds elements to this list.
+   */
   #allChainsChangedCallbacks: (() => void)[] = []
 
   /**
@@ -150,12 +156,15 @@ export class ConnectionManager<SandboxId> {
     healthChecker.setSendJsonRpc((rq) => chain.sendJsonRpc(rq))
     healthChecker.start((health) => {
       wellKnownChain.latestHealthStatus = health
+
+      // Notify the `allChainsChangedCallbacks`.
       this.#allChainsChangedCallbacks.forEach((cb) => cb())
       this.#allChainsChangedCallbacks = []
     })
 
     this.#wellKnownChains.set(chainName, wellKnownChain)
 
+    // Notify the `allChainsChangedCallbacks`.
     this.#allChainsChangedCallbacks.forEach((cb) => cb())
     this.#allChainsChangedCallbacks = []
   }
@@ -256,6 +265,7 @@ export class ConnectionManager<SandboxId> {
     sandbox.pushMessagesQueue(null)
     this.#sandboxes.delete(sandboxId)
 
+    // Notify the `allChainsChangedCallbacks`.
     this.#allChainsChangedCallbacks.forEach((cb) => cb())
     this.#allChainsChangedCallbacks = []
   }
@@ -398,6 +408,8 @@ export class ConnectionManager<SandboxId> {
           smoldotChain: chainInitialization,
           name,
         })
+
+        // Notify the `allChainsChangedCallbacks`.
         this.#allChainsChangedCallbacks.forEach((cb) => cb())
         this.#allChainsChangedCallbacks = []
 
@@ -428,6 +440,8 @@ export class ConnectionManager<SandboxId> {
         // being finished will remove it.
 
         sandbox.chains.delete(message.chainId)
+
+        // Notify the `allChainsChangedCallbacks`.
         this.#allChainsChangedCallbacks.forEach((cb) => cb())
         this.#allChainsChangedCallbacks = []
         break
@@ -475,6 +489,7 @@ export class ConnectionManager<SandboxId> {
       }
       healthChecker.start((health) => {
         readyChain.latestHealthStatus = health
+        // Notify the `allChainsChangedCallbacks`.
         this.#allChainsChangedCallbacks.forEach((cb) => cb())
         this.#allChainsChangedCallbacks = []
       })
