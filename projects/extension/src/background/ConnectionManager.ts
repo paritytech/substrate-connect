@@ -220,7 +220,7 @@ export class ConnectionManager<SandboxId> {
   }
 
   /**
-   * Waits for the value of `allChains` to change.
+   * Waits for the value of `allChains` to have potentially changed.
    */
   async waitAllChainChanged(): Promise<void> {
     await new Promise<void>((resolve, _) => {
@@ -230,6 +230,8 @@ export class ConnectionManager<SandboxId> {
 
   /**
    * Inserts a sandbox in the list of sandboxes held by this state machine.
+   *
+   * @throws Throws an exception if a sandbox with that identifier already exists.
    */
   addSandbox(sandboxId: SandboxId) {
     if (this.#sandboxes.has(sandboxId)) throw new Error("Duplicate sandboxId")
@@ -247,7 +249,8 @@ export class ConnectionManager<SandboxId> {
    *
    * This performs some internal clean ups.
    *
-   * The `messageSendBack` callback will not be called again on this sandbox.
+   * Any iterator concerning this sandbox that was returned by {ConnectionManager.sandboxOutput}
+   * will end.
    *
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
@@ -259,8 +262,8 @@ export class ConnectionManager<SandboxId> {
         chain.smoldotChain.remove()
       }
 
-      // If the chain isn't ready yet, the function that reacts to the chain initialization
-      // being finished will remove it.
+      // If the chain isn't ready yet, the function that asynchronously reacts to the chain
+      // initialization being finished will remove it.
     })
     sandbox.pushMessagesQueue(null)
     this.#sandboxes.delete(sandboxId)
@@ -436,8 +439,8 @@ export class ConnectionManager<SandboxId> {
           chain.smoldotChain.remove()
         }
 
-        // If the chain isn't ready yet, the function that reacts to the chain initialization
-        // being finished will remove it.
+        // If the chain isn't ready yet, the function that asynchronously reacts to the chain
+        // initialization being finished will remove it.
 
         sandbox.chains.delete(message.chainId)
 
@@ -526,29 +529,103 @@ export class ConnectionManager<SandboxId> {
 }
 
 interface Sandbox {
+  /**
+   * List of chains within this sandbox, identified by the user-provided `id`. Chains can be
+   * removed from this list at any time, even if they are still initializing. Be aware that
+   * the `id`s (i.e. the keys of this map) are untrusted user input.
+   */
   chains: Map<string, InitializingChain | ReadyChain>
+
+  /**
+   * Function that pulls a message from the queue of messages, to give it to the API user. Used
+   * by {ConnectionManager.sandboxOutput}.
+   */
   pullMessagesQueue: () => Promise<ToApplication | null>
+
+  /**
+   * Function that adds a message to the queue in {Sandbox.pullMessagesQueue}.
+   */
   pushMessagesQueue: (message: ToApplication | null) => void
 }
 
 interface InitializingChain {
+  /**
+   * Used to differentiate {ReadyChain} from {InitializingChain}.
+   */
   isReady: false
+
+  /**
+   * Name of the chain found in its chain specification.
+   *
+   * Beware that this is untrusted user input.
+   */
   name: string
+
+  /**
+   * Promise provided by the smoldot client. Will be ready once the chain initialization has
+   * finished. For each chain currently initializing, there is an asynchronous function running
+   * in the background that waits on this promise and will transition the chain to a {ReadyChain}.
+   *
+   * The `Promise` is stored here so that this asynchronous function can make sure that the chain
+   * found in {Sandbox.chains} is still the same as the one that we waited on.
+   * For example, if the user adds a chain with id "foo", then removes the chain with id "foo",
+   * then adds another chain with id "foo", then once the first chain has finished its
+   * initialization it will notice that the `Promise` here is not the same as the one it has.
+   *
+   * Note that the chain's JSON-RPC callback is already connected to a {SmoldotHealthChecker} that
+   * isn't present in this interface.
+   */
   smoldotChain: Promise<SmoldotChain>
 }
 
 interface ReadyChain {
+  /**
+   * Used to differentiate {ReadyChain} from {InitializingChain}.
+   */
   isReady: true
+
+  /**
+   * Name of the chain found in its chain specification.
+   *
+   * Beware that this is untrusted user input.
+   */
   name: string
+
+  /**
+   * Chain stored within the {ConnectionManager.#client}.
+   */
   smoldotChain: SmoldotChain
+
+  /**
+   * Health checker connected to the chain.
+   */
   healthChecker: SmoldotHealthChecker
+
+  /**
+   * Whenever the health checker has a health update ready, it stores it here.
+   */
   latestHealthStatus?: SmoldotHealth
 }
 
 interface WellKnownChain {
+  /**
+   * Chain stored within the {ConnectionManager.#client}.
+   */
   chain: SmoldotChain
+
+  /**
+   * Chain specification of the well-known chain.
+   */
   spec: string
+
+  /**
+   * Health checker connected to the chain.
+   */
   healthChecker: SmoldotHealthChecker
+
+  /**
+   * Whenever the health checker has a health update ready, it stores it here.
+   */
   latestHealthStatus?: SmoldotHealth
 }
 
