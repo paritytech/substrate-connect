@@ -1,11 +1,14 @@
 import {
   Client as SmoldotClient,
-  healthChecker as smHealthChecker,
   Chain as SmoldotChain,
   start as smoldotStart,
+} from "@substrate/smoldot-light"
+
+import {
+  healthChecker as smHealthChecker,
   HealthChecker as SmoldotHealthChecker,
   SmoldotHealth,
-} from "@substrate/smoldot-light"
+} from "@substrate/connect"
 
 import {
   ToApplication,
