@@ -3,18 +3,19 @@ import { logger } from "@polkadot/util"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
+import { WellKnownChains } from "@substrate/connect"
 
-import westend from "../../public/assets/westend.json"
-import kusama from "../../public/assets/kusama.json"
+import westend2 from "../../public/assets/westend2.json"
+import ksmcc3 from "../../public/assets/ksmcc3.json"
 import polkadot from "../../public/assets/polkadot.json"
-import rococo from "../../public/assets/rococo.json"
+import rococo_v2 from "../../public/assets/rococo_v2.json"
 import { ToExtension } from "@substrate/connect-extension-protocol"
 
 export const wellKnownChains: Map<string, string> = new Map<string, string>([
-  ["polkadot", JSON.stringify(polkadot)],
-  ["kusama", JSON.stringify(kusama)],
-  ["rococo", JSON.stringify(rococo)],
-  ["westend", JSON.stringify(westend)],
+  [WellKnownChains.polkadot, JSON.stringify(polkadot)],
+  [WellKnownChains.ksmcc3, JSON.stringify(ksmcc3)],
+  [WellKnownChains.rococo_v2, JSON.stringify(rococo_v2)],
+  [WellKnownChains.westend2, JSON.stringify(westend2)],
 ])
 
 export interface Background extends Window {

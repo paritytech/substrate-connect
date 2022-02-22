@@ -1,6 +1,4 @@
-import EventEmitter from "eventemitter3"
-import StrictEventEmitter from "strict-event-emitter-types"
-import { SmoldotHealth } from "@substrate/smoldot-light"
+import { SmoldotHealth } from "@substrate/connect"
 
 export interface ExposedChainConnection {
   chainId: string
@@ -9,9 +7,3 @@ export interface ExposedChainConnection {
   url: string
   healthStatus?: SmoldotHealth
 }
-
-export interface StateEvents {
-  stateChanged: ExposedChainConnection[]
-}
-
-export type StateEmitter = StrictEventEmitter<EventEmitter, StateEvents>

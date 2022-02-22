@@ -12,7 +12,7 @@ import {
   ToExtension,
 } from "@substrate/connect-extension-protocol"
 
-import createAsyncFifoQueue from "./Stream.js"
+import createAsyncFifoQueue from "./Stream"
 
 export interface ChainInfo<SandboxId> {
   chainName: string
