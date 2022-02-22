@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { jest } from "@jest/globals"
 import { ExtensionMessageRouter } from "./ExtensionMessageRouter"
 import {
@@ -39,7 +38,7 @@ describe("Disconnect and incorrect cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      chainName: "westend",
+      chainName: "westend2",
       origin: "substrate-connect-client",
     })
     await waitForMessageToBePosted()
@@ -88,7 +87,7 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId,
       type: "add-well-known-chain",
-      chainName: "westend",
+      chainName: "westend2",
       origin: "substrate-connect-client",
     })
 
@@ -105,7 +104,7 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      chainName: "westend",
+      chainName: "westend2",
       origin: "substrate-connect-client",
     })
     await waitForMessageToBePosted()
@@ -136,7 +135,7 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      chainName: "westend",
+      chainName: "westend2",
       origin: "substrate-connect-client",
     })
     await waitForMessageToBePosted()
@@ -170,7 +169,7 @@ describe("Connection and forward cases", () => {
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
-      chainName: "westend",
+      chainName: "westend2",
       origin: "substrate-connect-client",
     })
     await waitForMessageToBePosted()

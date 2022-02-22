@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import React, { FunctionComponent, SetStateAction, Dispatch } from "react"
 import {
   Typography,
@@ -66,9 +65,7 @@ const Tab: FunctionComponent<TabProps> = ({
    **/
   const onDisconnect = (): void => {
     if (tab && tab.tabId) {
-      /* TODO(nik): Fix smoldot definition (see: https://github.com/paritytech/substrate-connect/blob/3350cdff9c4c294393160189816168a93c983f79/projects/extension/src/background/ConnectionManager.ts#L202)
-       ** eslint disable below seems to be due to smoldot definition */
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      // TODO(nik): Fix smoldot definition (see: https://github.com/paritytech/substrate-connect/blob/3350cdff9c4c294393160189816168a93c983f79/projects/extension/src/background/ConnectionManager.ts#L202)
       disconnectTab(tab.tabId)
       if (setActiveTab && current) {
         setActiveTab(undefined)

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable no-empty */
 import { ToApplication } from "@substrate/connect-extension-protocol"
 import { debug } from "../utils/debug"
 import checkMessage from "./checkMessage"

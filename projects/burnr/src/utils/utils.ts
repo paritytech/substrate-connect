@@ -51,7 +51,6 @@ export const createLocalStorageAccount = (): LocalStorageAccountCtx => {
     userAddress: pair.address,
     userName: (pair.meta.name as string) || "____ _____",
     userSeed: mnemonic,
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     userJson: pair.toJson as unknown as KeyringPair$Json,
     userHistory: [],
   }
@@ -120,7 +119,7 @@ export const validateLocalstorage = (): void => {
   const expectedValues: Record<string, string[]> = {
     theme: ["true", "false"],
     balanceVisibility: ["true", "false"],
-    endpoint: [ALL_PROVIDERS.network], // now an array although we don't even really need this in storage any more
+    endpoint: [ALL_PROVIDERS.network],
   }
 
   Object.keys(expectedValues).forEach((key) => {

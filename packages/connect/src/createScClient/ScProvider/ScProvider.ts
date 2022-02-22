@@ -8,14 +8,8 @@ import {
 } from "@polkadot/rpc-provider/types"
 import { assert, logger } from "@polkadot/util"
 import EventEmitter from "eventemitter3"
-import * as smoldot from "@substrate/smoldot-light"
-import { HealthCheckError } from "../errors.js"
-import { isUndefined } from "../utils/index.js"
-
-interface Smoldot {
-  start(options?: smoldot.ClientOptions): smoldot.Client
-  healthChecker(): smoldot.HealthChecker
-}
+import { Chain, JsonRpcCallback } from "../../connector/types"
+import { HealthCheckError } from "./Health.js"
 
 const l = logger("smoldot-provider")
 
@@ -57,71 +51,57 @@ const ANGLICISMS: { [index: string]: string } = {
 const CONNECTION_STATE_PINGER_INTERVAL = 2000
 
 /**
- * SmoldotProvider
- *
- * The SmoldotProvider allows interacting with a smoldot-based
- * WASM light client.  I.e. without doing RPC to a remote node over HTTP
- * or websockets
+ * ScProvider is an API for providing an instance of a PolkadotJS Provider
+ * to use a WASM-based light client. It takes care of detecting whether the
+ * user has the substrate connect browser extension installed or not and
+ * configures the PolkadotJS API appropriately; falling back to a provider
+ * which instantiates the WASM light client in the page when the extension is
+ * not available.
  *
  * @example
- * ```javascript
- * import readFileSync from 'fs';
- * import Api from '@polkadot/api/promise';
- * import { SmoldotProvider } from '../';
  *
- * const chainSpec = readFileSync('./path/to/chainSpec.json');
- * const provider = new SmoldotProvider(chainSpec);
- * const api = new Api(provider);
  * ```
- * @example
- * ```javascript
- * import readFileSync from 'fs';
- * import Api from '@polkadot/api/promise';
- * import { SmoldotProvider } from '../';
+ * import { ScProvider, WellKnownChains } from '@substrate/connect';
+ * import { ApiPromise } from '@polkadot/api';
  *
- * const chainSpec = readFileSync('./path/to/polkadot.json');
- * const pp = new SmoldotProvider(chainSpec);
- * const polkadotApi = new Api(pp);
+ * // Create a new UApp with a unique name
+ * const westendProvider = ScProvider(WellKnownChains.westend2)
+ * const westend = await ApiPromise.create({ provider: westendProvider })
  *
- * const chainSpec = readFileSync('./path/to/kusama.json');
- * const kp = new SmoldotProvider(chainSpec);
- * const kusamaApi = new Api(pp);
+ * const kusamaProvider = ScProvider(WellKnownChains.ksmcc3)
+ * const kusama = await ApiPromise.create({ provider: kusamaProvider })
+ *
+ * await westendProvider.rpc.chain.subscribeNewHeads((lastHeader) => {
+ *   console.log(lastHeader.hash);
+ * );
+ * await kusamaProvider.rpc.chain.subscribeNewHeads((lastHeader) => {
+ *   console.log(lastHeader.hash);
+ * });
+ *
+ * // Interact with westend and kusama APIs ...
+ *
+ * await westendProvider.disconnect();
+ * await kusamaProvider.disconnect();
  * ```
  */
-export class SmoldotProvider implements ProviderInterface {
-  #chainSpec: string
+export class ScProvider implements ProviderInterface {
   readonly #coder: RpcCoder = new RpcCoder()
   readonly #eventemitter: EventEmitter = new EventEmitter()
   readonly #handlers: Record<string, RpcStateAwaiting> = {}
   readonly #subscriptions: Record<string, StateSubscription> = {}
   readonly #waitingForId: Record<string, JsonRpcResponse> = {}
-  #connectionStatePingerId: ReturnType<typeof setInterval> | null
+  #connectionStatePingerId: ReturnType<typeof setInterval> | null = null
   #isConnected = false
-  #client: smoldot.Client | undefined = undefined
-  #chain: smoldot.Chain | undefined = undefined
-  #parachainSpecs: string | undefined = undefined
-  // reference to the smoldot module so we can defer loading the wasm client
-  // until connect is called
-  #smoldot: Smoldot
+  #getChain: (handler: JsonRpcCallback) => Promise<Chain>
+  #chain: Chain | undefined = undefined
 
   /*
    * How frequently to see if we have any peers
    */
   healthPingerInterval = CONNECTION_STATE_PINGER_INTERVAL
 
-  /**
-   * @param chainSpec - The chainSpec for the WASM client
-   * @param sm - (only used for testing) defaults to the actual smoldot module
-   */
-  //eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
-  public constructor(chainSpec: string, parachain?: string, sm?: any) {
-    this.#chainSpec = chainSpec
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    this.#smoldot = sm || smoldot
-    this.#connectionStatePingerId = null
-    if (parachain) {
-      this.#parachainSpecs = parachain
-    }
+  public constructor(getChain: (handler: JsonRpcCallback) => Promise<Chain>) {
+    this.#getChain = getChain
   }
 
   /**
@@ -136,7 +116,7 @@ export class SmoldotProvider implements ProviderInterface {
    * Returns a clone of the object
    * @throws throws an error as this is not supported.
    */
-  public clone(): SmoldotProvider {
+  public clone(): ScProvider {
     throw new Error("clone() is not supported.")
   }
 
@@ -145,7 +125,7 @@ export class SmoldotProvider implements ProviderInterface {
 
     const response = JSON.parse(res) as JsonRpcResponse
 
-    return isUndefined(response.method)
+    return response.method === undefined
       ? this.#onMessageResult(response)
       : this.#onMessageSubscribe(response)
   }
@@ -220,7 +200,7 @@ export class SmoldotProvider implements ProviderInterface {
   #simulateLifecycle = (health: HealthResponse): void => {
     // development chains should not have peers so we only emit connected
     // once and never disconnect
-    if (health.shouldHavePeers == false) {
+    if (!health.shouldHavePeers) {
       if (!this.#isConnected) {
         this.#isConnected = true
         this.emit("connected")
@@ -272,49 +252,25 @@ export class SmoldotProvider implements ProviderInterface {
    * "Connect" the WASM client - starts the smoldot WASM client
    */
   public connect = async (): Promise<void> => {
-    assert(!this.#client && !this.#isConnected, "Client is already connected")
     try {
-      this.#client = this.#smoldot.start({
-        forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
-        maxLogLevel: 3 /* no debug/trace messages */,
-      })
-      if (this.#parachainSpecs) {
-        const relay = await this.#client.addChain({
-          chainSpec: this.#chainSpec,
-        })
-        this.#chain = await this.#client.addChain({
-          chainSpec: this.#parachainSpecs,
-          jsonRpcCallback: (response: string) => {
-            this.#handleRpcReponse(response)
-          },
-          potentialRelayChains: [relay],
-        })
-      } else {
-        this.#chain = await this.#client.addChain({
-          chainSpec: this.#chainSpec,
-          jsonRpcCallback: (response: string) => {
-            this.#handleRpcReponse(response)
-          },
-        })
-      }
-      this.#connectionStatePingerId = setInterval(
-        this.#checkClientPeercount,
-        this.healthPingerInterval,
-      )
+      this.#chain = await this.#getChain(this.#handleRpcReponse.bind(this))
     } catch (error: unknown) {
       this.emit("error", error)
+      throw error
     }
+    this.#connectionStatePingerId = setInterval(
+      this.#checkClientPeercount,
+      this.healthPingerInterval,
+    )
   }
 
   /**
    * Manually "disconnect" - drops the reference to the WASM client
    */
-  // eslint-disable-next-line @typescript-eslint/require-await
   public async disconnect(): Promise<void> {
     try {
-      if (this.#client) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        await this.#client.terminate()
+      if (this.#chain) {
+        this.#chain.remove()
       }
     } catch (error: unknown) {
       this.emit("error", error)
@@ -362,14 +318,11 @@ export class SmoldotProvider implements ProviderInterface {
    */
   public async send(
     method: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: unknown[],
     isCacheable?: boolean,
     subscription?: SubscriptionHandler,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     return new Promise((resolve, reject): void => {
-      assert(this.#client, "Client is not initialised")
       assert(this.#chain, "Chain is not initialised")
       const json = this.#coder.encodeJson(method, params)
       const id = this.#coder.getId()
@@ -417,11 +370,9 @@ export class SmoldotProvider implements ProviderInterface {
     type: string,
     // the "method" property of the JSON request to register the subscription
     method: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: any[],
     callback: ProviderInterfaceCallback,
   ): Promise<number | string> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await this.send(method, params, false, { callback, type })
   }
 
@@ -435,7 +386,7 @@ export class SmoldotProvider implements ProviderInterface {
   ): Promise<boolean> {
     const subscription = `${type}::${id}`
 
-    if (isUndefined(this.#subscriptions[subscription])) {
+    if (!this.#subscriptions[subscription]) {
       l.debug(() => `Unable to find active subscription=${subscription}`)
 
       return false
@@ -446,7 +397,6 @@ export class SmoldotProvider implements ProviderInterface {
     return (await this.send(method, [id])) as Promise<boolean>
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private emit(type: ProviderInterfaceEmitted, ...args: unknown[]): void {
     this.#eventemitter.emit(type, ...args)
   }

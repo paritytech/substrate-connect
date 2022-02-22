@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { FunctionComponent } from "react"
 import { Link, makeStyles } from "@material-ui/core"
 
@@ -21,6 +20,7 @@ const LogoSubstrate: FunctionComponent<Props> = ({ theme }: Props) => {
   return (
     <Link href="http://substrate.io/" target="_blank" className={classes.root}>
       <img
+        alt="Substrate's Logo"
         src={
           theme
             ? "./assets/images/logo_substrate.svg"

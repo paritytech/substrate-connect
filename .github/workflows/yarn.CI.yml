@@ -2,9 +2,9 @@ name: Substrate Connect CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -21,6 +21,14 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: yarn install --frozen-lockfile
-    - run: yarn lint
     - run: yarn build
+    - run: yarn lint
     - run: yarn test
+
+  all:
+    # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
+    # are successful.
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+     - run: echo Success

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { FunctionComponent, useEffect, useRef, useState } from "react"
 import * as material from "@material-ui/core"
 import GlobalFonts from "../fonts/fonts"

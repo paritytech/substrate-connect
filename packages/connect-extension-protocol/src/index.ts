@@ -38,7 +38,7 @@
  *
  * Instead of a {@link ToExtensionAddChain} message, the web page can
  * alternatively send a {@link ToExtensionAddWellKnownChain} message and pass
- * a chain name recognized by the extension such as "polkadot" or "kusama", in
+ * a chain name recognized by the extension such as "polkadot" or "ksmcc3", in
  * which case the extension will use the chain specification stored internally.
  * Doing so provides multiple advantages such as less bandwidth usage (as the
  * web page doesn't have to download the chain specification), and a faster
@@ -69,14 +69,19 @@
  *
  * Once a web page no longer wants to interface with a certain chain, it should
  * send a {@link ToExtensionRemoveChain} message to the extension in order for
- * resources to be de-allocated.
+ * resources to be de-allocated. This can also be done before a
+ * {@link ToApplicationChainReady} message has been sent back.
  *
- * At any point in time, the extension can send a {@link ToApplicationError}
- * message to indicate a critical problem with the chain or the extension that
- * prevents execution from continuing. This can include for example the
- * extension being disabled by the user, the underlying client crashing, a lack
- * of memory, etc. If that happens, the web page is encouraged stop using the
- * extension altogether.
+ * At any point in time after the chain has been initialized, the extension
+ * can send a {@link ToApplicationError} message to indicate a critical problem
+ * with the chain or the extension that prevents execution from continuing.
+ * This can include for example the extension being disabled by the user, the
+ * underlying client crashing, an internal error, etc. Contrary to
+ * {@link ToApplicationError} messages *before* a chain has been initialized,
+ * {@link ToApplicationError} messages that happen *after* a chain has been
+ * initialized are rare and serious. If that happens, the web page is
+ * encouraged to remove all of its existing chains and stop using the extension
+ * altogether.
  *
  * Note that if the extension sends a {@link ToApplicationError} message,
  * either before of after the chain is ready, the corresponding `chainId` is

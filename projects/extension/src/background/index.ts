@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
-
 import { ConnectionManager } from "./ConnectionManager"
 import { logger } from "@polkadot/util"
 import { isEmpty } from "../utils/utils"

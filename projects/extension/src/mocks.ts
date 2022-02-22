@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-empty-function */
-
 import {
   ToApplication,
   ToExtension,
@@ -114,7 +108,6 @@ export class MockedChain implements Chain {
 }
 
 export class MockSmoldotClient implements Client {
-  constructor() {}
   chains = new Set<MockedChain>()
   addChain(options: AddChainOptions): Promise<MockedChain> {
     const chain = new MockedChain(options, () => {

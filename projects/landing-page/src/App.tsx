@@ -89,7 +89,7 @@ const App: React.FunctionComponent = () => {
 
           <Section>
             <SectionHeading id="supported-networks" prefix="3">
-              Supported Networks
+              Well known Networks
             </SectionHeading>
             <Grid container>
               <CardNetwork
@@ -141,12 +141,15 @@ const App: React.FunctionComponent = () => {
             <ThemeProvider theme={createTheme(dark)}>
               <Code>yarn add @substrate/substrate-connect</Code>
               <Code heading="Simple usage (suported chain)">
-                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
+                <Box>{`import { createScClient, WellKnownChains } from '@substrate/connect';`}</Box>
+
+                <Box mt={2}>{`// Create a client for our App`}</Box>
+                <Box>{`const scClient = createScClient();`}</Box>
 
                 <Box mt={2}>{`// Create providers for known chains`}</Box>
-                <Box>{`const westendProvider = new ScProvider(SupportedChains.westend);`}</Box>
+                <Box>{`const westendProvider = await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
                 <Box>{`const api1 = await ApiPromise.create({ provider: westendProvider });`}</Box>
-                <Box>{`const kusamaProvider = new ScProvider(SupportedChains.kusama);`}</Box>
+                <Box>{`const kusamaProvider = await scClient.addWellKnownChain(WellKnownChains.ksmcc3);`}</Box>
                 <Box>{`const api2 = await ApiPromise.create({ provider: kusamaProvider });`}</Box>
 
                 <Box
@@ -168,12 +171,14 @@ const App: React.FunctionComponent = () => {
               </Code>
 
               <Code heading="Simple usage (custom chain)">
-                <Box>{`import { ScProvider } from '@substrate/connect';`}</Box>
+                <Box>{`import { createScClient } from '@substrate/connect';`}</Box>
                 <Box>{`import customSpecs from './customSpecs.json';`}</Box>
 
+                <Box>{`const scClient = createScClient();`}</Box>
                 <Box
                   mt={2}
-                >{`const myChain = new ScProvider(JSON.stringify(customSpecs));`}</Box>
+                >{`await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
+                <Box>{`const myChain = await scClient.addChain(JSON.stringify(customSpecs));`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider: myChain });`}</Box>
 
                 <Box
@@ -185,10 +190,11 @@ const App: React.FunctionComponent = () => {
               </Code>
 
               <Code heading="Simple usage with options">
-                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
+                <Box>{`import { createScClient, WellKnownChains } from '@substrate/connect';`}</Box>
+                <Box>{`const scClient = createScClient();`}</Box>
                 <Box
                   mt={2}
-                >{`const provider = new ScProvider(SupportedChains.westend);`}</Box>
+                >{`const provider = await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
                 <Box>{`const apiOptions = {types: customTypes}`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>
                 <Box
@@ -200,12 +206,14 @@ const App: React.FunctionComponent = () => {
               </Code>
 
               <Code heading="Parachains usage">
-                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
+                <Box>{`import { createScClient, WellKnownChains } from '@substrate/connect';`}</Box>
                 <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
 
+                <Box>{`const scClient = createScClient();`}</Box>
                 <Box
                   mt={2}
-                >{`const provider = new ScProvider(SupportedChains.westend, JSON.stringify(parachainSpecs));`}</Box>
+                >{`await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
+                <Box>{`const provider = await scClient.addChain(JSON.stringify(parachainSpecs));`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider });`}</Box>
 
                 <Box
@@ -218,12 +226,14 @@ const App: React.FunctionComponent = () => {
               </Code>
 
               <Code heading="Parachains usage with options">
-                <Box>{`import { ScProvider, SupportedChains } from '@substrate/connect';`}</Box>
+                <Box>{`import { createScClient, WellKnownChains } from '@substrate/connect';`}</Box>
                 <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
 
+                <Box>{`const scClient = createScClient();`}</Box>
                 <Box
                   mt={2}
-                >{`const provider = new ScProvider(SupportedChains.westend, JSON.stringify(parachainSpecs));`}</Box>
+                >{`await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
+                <Box>{`const provider = await scClient.addChain(JSON.stringify(parachainSpecs));`}</Box>
                 <Box>{`const apiOptions = {types: customTypes}`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>
 
@@ -268,7 +278,7 @@ const App: React.FunctionComponent = () => {
                 fullWidth: true,
               }}
             ></CardProject>
-            <SectionRef href="https://github.com/paritytech/substrate-connect/tree/master/projects/extension">
+            <SectionRef href="https://github.com/paritytech/substrate-connect/tree/main/projects/extension">
               Learn more
             </SectionRef>
             <SectionRef href="https://chrome.google.com/webstore/detail/khccbhhbocaaklceanjginbdheafklai">
@@ -295,7 +305,7 @@ const App: React.FunctionComponent = () => {
               title="Next Project"
               imageProps={{ path: YourProject as string }}
             >
-              <SectionRef href="https://github.com/paritytech/substrate-connect/blob/master/CONTRIBUTING.md">
+              <SectionRef href="https://github.com/paritytech/substrate-connect/blob/main/CONTRIBUTING.md">
                 Contributor’s guide
               </SectionRef>
             </CardProject>
@@ -332,7 +342,7 @@ const App: React.FunctionComponent = () => {
             Wasm Light Clients
           </SidebarLink>
           <SidebarLink href="#supported-networks">
-            Supported Networks
+            Well known Networks
           </SidebarLink>
           <SidebarLink href="#getting-started">Getting Started</SidebarLink>
           <SidebarLink href="#api-docs">API Documentation</SidebarLink>

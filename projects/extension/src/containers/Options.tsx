@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { SetStateAction, useEffect, useState } from "react"
 import { createTheme, ThemeProvider } from "@material-ui/core"
 import Box from "@material-ui/core/Box"
