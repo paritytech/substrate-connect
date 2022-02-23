@@ -123,14 +123,15 @@ class Provider implements ProviderInterface {
         this.#orphanMessages.clear()
       }
 
-      let staleUnsubscriptionMessages: string[] = []
+      let staleSubscriptions: { method: string; id: number | string }[] = []
       const killStaleSubscriptions = () => {
-        staleUnsubscriptionMessages.forEach((json) => {
-          try {
-            // it's a fire-and-forget request we don't care about the answer
-            hc.sendJsonRpc(json)
-          } catch (_) {}
-        })
+        if (staleSubscriptions.length === 0) return
+
+        const { method, id } = staleSubscriptions.pop()!
+        Promise.race([
+          this.send(method, [id]).catch(() => {}),
+          new Promise((res) => setTimeout(res, 500)),
+        ]).then(killStaleSubscriptions)
       }
 
       hc.start((health) => {
@@ -140,29 +141,32 @@ class Provider implements ProviderInterface {
         // if it's the same as before, then nothing has changed and we are done
         if (this.#isChainReady === isReady) return
 
+        this.#isChainReady = isReady
         if (!isReady) {
           // If we've reached this point, that means that the chain used to be "ready"
           // and now we are about to emit `disconnected`.
           //
           // This will cause the PolkadotJs API think that the connection is
-          // actually dead. In reality the smoldot chains is not dead, of course.
+          // actually dead. In reality the smoldot chain is not dead, of course.
           // However, we have to cleanup all the existing callbacks because when
           // the smoldot chain stops syncing, then we will emit `connected` and
           // the PolkadotJs API will try to re-create the previous
-          // subscriptions and requests.
+          // subscriptions and requests. Although, now is not a good moment
+          // to be sending unsubscription messages to the smoldot chain, we
+          // should wait until is no longer syncing to send the unsubscription
+          // messages from the stale subscriptions of the previous connection.
           //
-          // However, when the smoldot chain is no longer syncing, then we will
-          // have to let smoldot know that those stale subscriptions are no longer
-          // needed. that's why -before we perform the cleanup of `this.#subscriptions`-
-          // we prepare the json messages that we will have to send to the smoldot
-          // chain to kill those stale subscriptions.
-          staleUnsubscriptionMessages = [...this.#subscriptions.values()].map(
-            ([, { method, id }]) => this.#coder.encodeJson(method, [id]),
-          )
+          // That's why -before we perform the cleanup of `this.#subscriptions`-
+          // we keep the necessary information that we will need later on to
+          // kill the stale subscriptions.
+          ;[...this.#subscriptions.values()].forEach((s) => {
+            staleSubscriptions.push(s[1])
+          })
           cleanup()
-        } else killStaleSubscriptions()
+        } else {
+          killStaleSubscriptions()
+        }
 
-        this.#isChainReady = isReady
         this.#eventemitter.emit(isReady ? "connected" : "disconnected")
       })
 

@@ -681,13 +681,14 @@ describe("Provider", () => {
       },
     })
 
+    await wait(0)
     // If everything has worked correctly, that means that now the last 2
     // requests that the chain should have received are:
-    // 1) the request for killing the stale unsubscription from the "previous" connection
-    // 2) the request from the healthChecker for unsubscribing from newHeads
+    // 1) the request from the healthChecker for unsubscribing from newHeads
+    // 2) the request for killing the stale unsubscription from the "previous" connection
     expect(chain._recevedRequests().slice(-2)).toEqual([
-      `{"id":"extern:2","jsonrpc":"2.0","method":"${method}","params":["${token}"]}`,
       '{"jsonrpc":"2.0","id":"health-checker:4","method":"chain_unsubscribeNewHeads","params":["token"]}',
+      `{"id":"extern:2","jsonrpc":"2.0","method":"${method}","params":["${token}"]}`,
     ])
   })
 })
