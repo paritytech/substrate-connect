@@ -40,9 +40,7 @@ class Provider implements ProviderInterface {
   }
 
   public get hasSubscriptions(): boolean {
-    // you would expect this to be `this.#subscriptions.size > 0`, right?
-    // well, nope... This must always return `true` b/c otherwise Polkadot
-    // thinks that this Provider doesn't support subscriptions.
+    // Indicates that subscriptions are supported
     return true
   }
 
