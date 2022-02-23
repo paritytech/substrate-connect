@@ -53,7 +53,7 @@ export class ExtensionMessageRouter {
    * @returns A list of strings
    */
   get connections(): string[] {
-    return Object.keys(this.#chainIds)
+    return [...this.#chainIds.keys()]
   }
 
   /** listen starts listening for messages sent by an app.  */
