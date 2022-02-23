@@ -2,6 +2,54 @@ import { jest } from "@jest/globals"
 import { CrashError } from "../connector/index.js"
 import type { Chain, JsonRpcCallback } from "../connector/types.js"
 import type { ScClient } from "./createScClient.js"
+import type { HealthChecker, SmoldotHealth } from "./Health.js"
+
+const wait = (ms: number) => new Promise((res) => setTimeout(res, ms))
+
+type MockedHealthChecker = HealthChecker & {
+  _isActive: () => boolean
+  _triggerHealthUpdate: (update: SmoldotHealth) => void
+}
+const healthCheckerMock = (): MockedHealthChecker => {
+  let cb: (health: SmoldotHealth) => void = () => {}
+  let sendJsonRpc: (request: string) => void = () => {}
+  let isActive = false
+
+  return {
+    setSendJsonRpc: (cb) => {
+      sendJsonRpc = cb
+    },
+    start: (x) => {
+      isActive = true
+      cb = x
+    },
+    stop: () => {
+      isActive = false
+    },
+    sendJsonRpc: (...args) => sendJsonRpc(...args),
+    responsePassThrough: (response) => response,
+    _isActive: () => isActive,
+    _triggerHealthUpdate: (update: SmoldotHealth) => {
+      cb(update)
+    },
+  }
+}
+
+const healthCheckerFactory = () => {
+  const _healthCheckers: MockedHealthChecker[] = []
+
+  return {
+    healthChecker: () => {
+      const result = healthCheckerMock()
+      _healthCheckers.push(result)
+      return result
+    },
+    _healthCheckers,
+    _latestHealthChecker: () => _healthCheckers.slice(-1)[0],
+  }
+}
+
+jest.unstable_mockModule("./Health.js", healthCheckerFactory)
 
 type MockChain = Chain & {
   _spec: () => string
@@ -46,8 +94,6 @@ const getFakeChain = (spec: string, callback: JsonRpcCallback): MockChain => {
     _getLatestRequest: () => _receivedRequests[_receivedRequests.length - 1],
   }
 }
-
-const wait = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
 const getFakeClient = () => {
   const chains: MockChain[] = []
@@ -100,11 +146,22 @@ jest.unstable_mockModule("../connector/index.js", connectorFactory)
 
 let createScClient: () => ScClient
 let mockedConnector: ReturnType<typeof connectorFactory>
+let mockedHealthChecker: ReturnType<typeof healthCheckerFactory>
+const getCurrentHealthChecker = () => mockedHealthChecker._latestHealthChecker()
+const setChainSyncyingStatus = (isSyncing: boolean) => {
+  getCurrentHealthChecker()._triggerHealthUpdate({
+    isSyncing,
+    peers: 1,
+    shouldHavePeers: true,
+  })
+}
+
 beforeAll(async () => {
   ;({ createScClient } = await import("./createScClient"))
   mockedConnector = (await import(
     "../connector/index.js"
   )) as unknown as ReturnType<typeof connectorFactory>
+  mockedHealthChecker = await (import("./Health.js") as any)
 })
 
 describe("createChain/createWellKnownCahin", () => {
@@ -155,43 +212,20 @@ describe("Provider", () => {
       const onConnected = jest.fn()
       provider.on("connected", onConnected)
 
-      await wait(100)
       expect(onConnected).not.toHaveBeenCalled()
-
-      const chain = mockedConnector.latestChain()
-      chain._triggerCallback({
-        jsonrpc: "2.0",
-        id: "health-checker:0",
-        result: {
-          isSyncing: false,
-          peers: 1,
-          shouldHavePeers: true,
-        },
-      })
+      setChainSyncyingStatus(false)
       expect(onConnected).toHaveBeenCalled()
     })
 
     it("stops receiving notifications after unsubscribing", async () => {
       const client = createScClient()
-
       const provider = await client.addChain("")
 
       const onConnected = jest.fn()
       provider.on("connected", onConnected)()
-
-      await wait(100)
       expect(onConnected).not.toHaveBeenCalled()
 
-      const chain = mockedConnector.latestChain()
-      chain._triggerCallback({
-        jsonrpc: "2.0",
-        id: "health-checker:0",
-        result: {
-          isSyncing: false,
-          peers: 1,
-          shouldHavePeers: true,
-        },
-      })
+      setChainSyncyingStatus(false)
       expect(onConnected).not.toHaveBeenCalled()
     })
 
@@ -199,17 +233,7 @@ describe("Provider", () => {
       const client = createScClient()
 
       const provider = await client.addChain("")
-
-      const chain = mockedConnector.latestChain()
-      chain._triggerCallback({
-        jsonrpc: "2.0",
-        id: "health-checker:0",
-        result: {
-          isSyncing: false,
-          peers: 1,
-          shouldHavePeers: true,
-        },
-      })
+      setChainSyncyingStatus(false)
 
       const onConnected = jest.fn()
       provider.on("connected", onConnected)
@@ -220,17 +244,7 @@ describe("Provider", () => {
       const client = createScClient()
 
       const provider = await client.addChain("")
-
-      const chain = mockedConnector.latestChain()
-      chain._triggerCallback({
-        jsonrpc: "2.0",
-        id: "health-checker:0",
-        result: {
-          isSyncing: false,
-          peers: 1,
-          shouldHavePeers: true,
-        },
-      })
+      setChainSyncyingStatus(false)
 
       const onConnected = jest.fn()
       provider.on("connected", onConnected)
@@ -241,17 +255,7 @@ describe("Provider", () => {
       expect(onDisconnected).not.toHaveBeenCalled()
 
       onConnected.mockRestore()
-      await wait(1000)
-
-      chain._triggerCallback({
-        jsonrpc: "2.0",
-        id: "health-checker:1",
-        result: {
-          isSyncing: true,
-          peers: 1,
-          shouldHavePeers: true,
-        },
-      })
+      setChainSyncyingStatus(true)
 
       expect(onConnected).not.toHaveBeenCalled()
       expect(onDisconnected).toHaveBeenCalled()
@@ -288,17 +292,7 @@ describe("Provider", () => {
     it("throws when trying to connect on an already connected Provider", async () => {
       const client = createScClient()
       const provider = await client.addChain("")
-      const chain = mockedConnector.latestChain()
-      chain._triggerCallback({
-        jsonrpc: "2.0",
-        id: "health-checker:0",
-        result: {
-          isSyncing: false,
-          peers: 1,
-          shouldHavePeers: true,
-        },
-      })
-      await wait(0)
+      setChainSyncyingStatus(false)
 
       await expect(provider.connect()).rejects.toThrowError(
         "Already connected!",
@@ -337,27 +331,19 @@ describe("Provider", () => {
       const client = createScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
-      chain._triggerCallback({
-        jsonrpc: "2.0",
-        id: "health-checker:0",
-        result: {
-          isSyncing: false,
-          peers: 1,
-          shouldHavePeers: true,
-        },
-      })
+      setChainSyncyingStatus(false)
 
       const responsePromise = provider.send("getData", ["foo"])
 
       await wait(0)
       expect(chain._getLatestRequest()).toEqual(
-        '{"id":"extern:1","jsonrpc":"2.0","method":"getData","params":["foo"]}',
+        '{"id":1,"jsonrpc":"2.0","method":"getData","params":["foo"]}',
       )
 
       const result = { foo: "foo" }
       chain._triggerCallback({
         jsonrpc: "2.0",
-        id: "extern:1",
+        id: 1,
         result,
       })
 
@@ -369,21 +355,12 @@ describe("Provider", () => {
       const client = createScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
-      chain._triggerCallback({
-        jsonrpc: "2.0",
-        id: "health-checker:0",
-        result: {
-          isSyncing: false,
-          peers: 1,
-          shouldHavePeers: true,
-        },
-      })
-      await wait(0)
+      setChainSyncyingStatus(false)
 
       setTimeout(() => {
         chain._triggerCallback({
           jsonrpc: "2.0",
-          id: "extern:1",
+          id: 1,
         })
       }, 0)
 
@@ -394,22 +371,16 @@ describe("Provider", () => {
       const client = createScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
-      chain._triggerCallback({
-        jsonrpc: "2.0",
-        id: "health-checker:0",
-        result: {
-          isSyncing: false,
-          peers: 1,
-          shouldHavePeers: true,
-        },
-      })
+      setChainSyncyingStatus(false)
       await wait(0)
 
       chain._setSendJsonRpcInterceptor(() => {
         throw new CrashError("boom!")
       })
 
-      await expect(provider.send("getData", ["foo"])).rejects.toThrow()
+      await expect(provider.send("getData", ["foo"])).rejects.toThrowError(
+        "Disconnected",
+      )
       expect(provider.isConnected).toBe(false)
     })
   })
@@ -419,22 +390,13 @@ describe("Provider", () => {
       const client = createScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
-      chain._triggerCallback({
-        jsonrpc: "2.0",
-        id: "health-checker:0",
-        result: {
-          isSyncing: false,
-          peers: 1,
-          shouldHavePeers: true,
-        },
-      })
-      await wait(0)
+      setChainSyncyingStatus(false)
 
       const unsubscribeToken = "unsubscribeToken"
       setTimeout(() => {
         chain._triggerCallback({
           jsonrpc: "2.0",
-          id: "extern:1",
+          id: 1,
           result: unsubscribeToken,
         })
       }, 0)
@@ -485,16 +447,7 @@ describe("Provider", () => {
       const client = createScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
-      chain._triggerCallback({
-        jsonrpc: "2.0",
-        id: "health-checker:0",
-        result: {
-          isSyncing: false,
-          peers: 1,
-          shouldHavePeers: true,
-        },
-      })
-      await wait(0)
+      setChainSyncyingStatus(false)
 
       const unsubscribeToken = "unsubscribeToken"
       chain._triggerCallback({
@@ -508,7 +461,7 @@ describe("Provider", () => {
       setTimeout(() => {
         chain._triggerCallback({
           jsonrpc: "2.0",
-          id: "extern:1",
+          id: 1,
           result: unsubscribeToken,
         })
       }, 0)
@@ -525,18 +478,21 @@ describe("Provider", () => {
       const client = createScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
-      chain._triggerCallback({
-        jsonrpc: "2.0",
-        id: "health-checker:0",
-        result: {
-          isSyncing: false,
-          peers: 1,
-          shouldHavePeers: true,
-        },
-      })
+      setChainSyncyingStatus(false)
       await wait(0)
 
       const unsubscribeToken = "unsubscribeToken"
+      setTimeout(() => {
+        chain._triggerCallback({
+          jsonrpc: "2.0",
+          id: 1,
+          result: unsubscribeToken,
+        })
+      }, 0)
+
+      const cb = jest.fn()
+      const token = await provider.subscribe("foo", "bar", ["baz"], cb)
+
       chain._triggerCallback({
         jsonrpc: "2.0",
         method: "foo",
@@ -545,16 +501,6 @@ describe("Provider", () => {
           subscription: unsubscribeToken,
         },
       })
-      setTimeout(() => {
-        chain._triggerCallback({
-          jsonrpc: "2.0",
-          id: "extern:1",
-          result: unsubscribeToken,
-        })
-      }, 0)
-
-      const cb = jest.fn()
-      const token = await provider.subscribe("foo", "bar", ["baz"], cb)
 
       expect(token).toBe(unsubscribeToken)
       expect(cb).toHaveBeenCalledTimes(1)
@@ -567,17 +513,7 @@ describe("Provider", () => {
     it("rejects when trying to unsubscribe from un unexisting subscription", async () => {
       const client = createScClient()
       const provider = await client.addChain("")
-      const chain = mockedConnector.latestChain()
-      chain._triggerCallback({
-        jsonrpc: "2.0",
-        id: "health-checker:0",
-        result: {
-          isSyncing: false,
-          peers: 1,
-          shouldHavePeers: true,
-        },
-      })
-      await wait(0)
+      setChainSyncyingStatus(false)
 
       await expect(provider.unsubscribe("", "", "")).rejects.toThrowError(
         "Unable to find active subscription=::",
@@ -589,19 +525,11 @@ describe("Provider", () => {
     const client = createScClient()
 
     const provider = await client.addChain("")
-
-    // we send the response to the first healthChecker
-    // request, in order to make the Provider `connected`
     const chain = mockedConnector.latestChain()
-    chain._triggerCallback({
-      jsonrpc: "2.0",
-      id: "health-checker:0",
-      result: {
-        isSyncing: false,
-        peers: 1,
-        shouldHavePeers: true,
-      },
-    })
+
+    // setting the syncing status of the chain to fals so that the Provider
+    // gets `connected`
+    setChainSyncyingStatus(false)
 
     // while connected we create a subscription
     const unsubscribeToken = "unsubscribeToken"
@@ -609,7 +537,7 @@ describe("Provider", () => {
     setTimeout(() => {
       chain._triggerCallback({
         jsonrpc: "2.0",
-        id: "extern:1",
+        id: 1,
         result: unsubscribeToken,
       })
     }, 0)
@@ -617,78 +545,34 @@ describe("Provider", () => {
     const cb = jest.fn()
     const token = await provider.subscribe("foo", method, ["baz"], cb)
 
-    // lets wait for the healthChecker to start another health request
-    await wait(1000)
+    // setting the syncing status of the chain to fals so that the Provider
+    // gets `disconnected`
+    setChainSyncyingStatus(true)
 
-    // lets answer to that request saying that the chain is syncing,
-    // so that the Provider emits `disconnected`
-    chain._triggerCallback({
-      jsonrpc: "2.0",
-      id: "health-checker:1",
-      result: {
-        isSyncing: true,
-        peers: 1,
-        shouldHavePeers: true,
-      },
-    })
-
-    // synce the smoldot chain is syncing, now the healthChecker will start
-    // a subscription to `chain_subscribeNewHeads`, so let's trigger a message
-    // to that subscription, so that the healthChecker sends a new request
-    // checking for the health status
-    await wait(0)
-
-    const subscriptionToken = "token"
-    chain._triggerCallback({
-      jsonrpc: "2.0",
-      id: "health-checker:2",
-      result: subscriptionToken,
-    })
-
-    chain._triggerCallback({
-      jsonrpc: "2.0",
-      method: "chain_subscribeNewHeads",
-      params: {
-        result: {},
-        subscription: subscriptionToken,
-      },
-    })
-
-    // let's wait some time before we respond to the latest healthCheck
-    // request letting the healthChecker know that the chain is no longer syncing
-    await wait(500)
+    // let's wait some time in order to ensure that the stale unsubscription
+    // messages are not sent until the chain syncing status changes back to false
+    await wait(200)
 
     // before we let the healthChecker know that the chain is no longer syncing,
-    // let's make sure that the chain has received the correct requests, and
+    // let's make sure that the chain has received the correct request, and
     // most importantly that it has not received a request for unsubscribing
     // from the stale subscription, since that request should happen once the
     // chain is no longer syncing
     expect(chain._recevedRequests()).toEqual([
-      '{"jsonrpc":"2.0","id":"health-checker:0","method":"system_health","params":[]}',
-      '{"id":"extern:1","jsonrpc":"2.0","method":"testMethod","params":["baz"]}',
-      '{"jsonrpc":"2.0","id":"health-checker:1","method":"system_health","params":[]}',
-      '{"jsonrpc":"2.0","id":"health-checker:2","method":"chain_subscribeNewHeads","params":[]}',
-      '{"jsonrpc":"2.0","id":"health-checker:3","method":"system_health","params":[]}',
+      '{"id":1,"jsonrpc":"2.0","method":"testMethod","params":["baz"]}',
     ])
 
-    chain._triggerCallback({
-      jsonrpc: "2.0",
-      id: "health-checker:3",
-      result: {
-        isSyncing: false,
-        peers: 1,
-        shouldHavePeers: true,
-      },
-    })
+    // lets change the sync status back to false
+    setChainSyncyingStatus(false)
 
+    // let's wait one tick to ensure that the microtasks got processed
     await wait(0)
-    // If everything has worked correctly, that means that now the last 2
-    // requests that the chain should have received are:
-    // 1) the request from the healthChecker for unsubscribing from newHeads
-    // 2) the request for killing the stale unsubscription from the "previous" connection
-    expect(chain._recevedRequests().slice(-2)).toEqual([
-      '{"jsonrpc":"2.0","id":"health-checker:4","method":"chain_unsubscribeNewHeads","params":["token"]}',
-      `{"id":"extern:2","jsonrpc":"2.0","method":"${method}","params":["${token}"]}`,
+
+    // let's make sure that we have now sent the request for killing the
+    // stale subscription
+    expect(chain._recevedRequests()).toEqual([
+      '{"id":1,"jsonrpc":"2.0","method":"testMethod","params":["baz"]}',
+      `{"id":2,"jsonrpc":"2.0","method":"${method}","params":["${token}"]}`,
     ])
   })
 })
