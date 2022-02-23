@@ -68,21 +68,10 @@ class Provider implements ProviderInterface {
 
     const hc = healthChecker()
     const onResponse = (res: string): void => {
-      if (!hc.responsePassThrough(res)) {
-        return
-      }
+      let hcRes = hc.responsePassThrough(res)
+      if (!hcRes) return
 
-      const response = JSON.parse(res) as JsonRpcResponse
-
-      // the healthChecker alters the original id. So, we must restore it
-      // because otherwise the RpcCoder won't be able to decode the resonse.
-      if (
-        typeof response.id === "string" &&
-        (response.id as unknown as string).startsWith("extern:")
-      ) {
-        response.id = Number((response.id as unknown as string).slice(7))
-      }
-
+      const response = JSON.parse(hcRes) as JsonRpcResponse
       let decodedResponse: string | Error
       try {
         decodedResponse = this.#coder.decodeResponse(response) as string
