@@ -137,7 +137,7 @@ export class ConnectionManager<SandboxId> {
     databaseContent?: string,
   ): Promise<void> {
     if (this.#wellKnownChains.has(chainName)) {
-      throw new Error("Duplicate well-known chain");
+      throw new Error("Duplicate well-known chain")
     }
 
     const healthChecker = smHealthChecker()

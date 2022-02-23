@@ -34,15 +34,17 @@ const notifyListener = (
   listener: (state: ExposedChainConnection[]) => void,
 ) => {
   listener(
-    manager.allChains.filter((info) => info.apiInfo).map((info) => {
-      return {
-        chainId: info.apiInfo!.chainId,
-        chainName: info.chainName,
-        tabId: info.apiInfo!.sandboxId.sender!.tab!.id!,
-        url: info.apiInfo!.sandboxId.sender!.tab!.url!,
-        healthStatus: info.healthStatus,
-      }
-    }),
+    manager.allChains
+      .filter((info) => info.apiInfo)
+      .map((info) => {
+        return {
+          chainId: info.apiInfo!.chainId,
+          chainName: info.chainName,
+          tabId: info.apiInfo!.sandboxId.sender!.tab!.id!,
+          url: info.apiInfo!.sandboxId.sender!.tab!.url!,
+          healthStatus: info.healthStatus,
+        }
+      }),
   )
 }
 
