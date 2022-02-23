@@ -78,11 +78,11 @@ class Provider implements ProviderInterface {
       }
 
       // It's not a subscription message, but rather a standar RPC response
-      if (response.method === undefined) {
+      if (response.params?.subscription === undefined) {
         return this.#requests.get(response.id)?.(decodedResponse)
       }
 
-      // It has a `method` property, that means that it's a subscription message
+      // We are dealing with a subscription message
       const subscriptionId = `${response.method}::${response.params.subscription}`
 
       const callback = this.#subscriptions.get(subscriptionId)?.[0]
