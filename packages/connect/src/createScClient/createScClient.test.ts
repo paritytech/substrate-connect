@@ -604,4 +604,110 @@ describe("Provider", () => {
       )
     })
   })
+
+  it("cleans up the state subscriptions once it reconnects", async () => {
+    const client = createScClient()
+
+    const provider = await client.addChain("")
+
+    // we send the response to the first healthChecker
+    // request, in order to make the Provider `connected`
+    const chain = mockedConnector.latestChain()
+    chain._triggerCallback({
+      jsonrpc: "2.0",
+      id: "health-checker:0",
+      result: {
+        isSyncing: false,
+        peers: 1,
+        shouldHavePeers: true,
+      },
+    })
+
+    // while connected we create a subscription
+    const unsubscribeToken = "unsubscribeToken"
+    const method = "testMethod"
+    setTimeout(() => {
+      chain._triggerCallback({
+        jsonrpc: "2.0",
+        id: "extern:1",
+        result: unsubscribeToken,
+      })
+    }, 0)
+
+    const cb = jest.fn()
+    const token = await provider.subscribe("foo", method, ["baz"], cb)
+
+    // lets wait for the healthChecker to start another health request
+    await wait(1000)
+
+    // lets answer to that request saying that the chain is syncing,
+    // so that the Provider emits `disconnected`
+    chain._triggerCallback({
+      jsonrpc: "2.0",
+      id: "health-checker:1",
+      result: {
+        isSyncing: true,
+        peers: 1,
+        shouldHavePeers: true,
+      },
+    })
+
+    // synce the smoldot chain is syncing, now the healthChecker will start
+    // a subscription to `chain_subscribeNewHeads`, so let's trigger a message
+    // to that subscription, so that the healthChecker sends a new request
+    // checking for the health status
+    await wait(0)
+
+    const subscriptionToken = "token"
+    chain._triggerCallback({
+      jsonrpc: "2.0",
+      id: "health-checker:2",
+      result: subscriptionToken,
+    })
+
+    chain._triggerCallback({
+      jsonrpc: "2.0",
+      method: "chain_subscribeNewHeads",
+      params: {
+        result: {},
+        subscription: subscriptionToken,
+      },
+    })
+
+    // let's wait some time before we respond to the latest healthCheck
+    // request letting the healthChecker know that the chain is no longer syncing
+    await wait(500)
+
+    // before we let the healthChecker know that the chain is no longer syncing,
+    // let's make sure that the chain has received the correct requests, and
+    // most importantly that it has not received a request for unsubscribing
+    // from the stale subscription, since that request should happen once the
+    // chain is no longer syncing
+    expect(chain._recevedRequests()).toEqual([
+      '{"jsonrpc":"2.0","id":"health-checker:0","method":"system_health","params":[]}',
+      '{"id":"extern:1","jsonrpc":"2.0","method":"testMethod","params":["baz"]}',
+      '{"jsonrpc":"2.0","id":"health-checker:1","method":"system_health","params":[]}',
+      '{"jsonrpc":"2.0","id":"health-checker:2","method":"chain_subscribeNewHeads","params":[]}',
+      '{"jsonrpc":"2.0","id":"health-checker:3","method":"system_health","params":[]}',
+    ])
+
+    chain._triggerCallback({
+      jsonrpc: "2.0",
+      id: "health-checker:3",
+      result: {
+        isSyncing: false,
+        peers: 1,
+        shouldHavePeers: true,
+      },
+    })
+
+    // If everything has worked correctly, that means that now the last 2
+    // requests that the chain should have received are:
+    // 1) the request for killing the stale unsubscription from the "previous" connection
+    // 2) the request from the healthChecker for unsubscribing from newHeads
+    expect(chain._recevedRequests().slice(-2)).toEqual([
+      `{"id":"extern:2","jsonrpc":"2.0","method":"${method}","params":["${token}"]}`,
+      '{"jsonrpc":"2.0","id":"health-checker:4","method":"chain_unsubscribeNewHeads","params":["token"]}',
+    ])
+  })
 })

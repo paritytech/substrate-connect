@@ -25,7 +25,10 @@ type ResponseCallback = (response: string | Error) => void
 class Provider implements ProviderInterface {
   readonly #coder: RpcCoder = new RpcCoder()
   readonly #getChain: (handler: JsonRpcCallback) => Promise<Chain>
-  readonly #subscriptions: Map<string, ResponseCallback> = new Map()
+  readonly #subscriptions: Map<
+    string,
+    [ResponseCallback, { method: string; id: string | number }]
+  > = new Map()
   readonly #orphanMessages: Map<string, Array<string | Error>> = new Map()
   readonly #requests: Map<number, ResponseCallback> = new Map()
   readonly #eventemitter: EventEmitter = new EventEmitter()
@@ -95,7 +98,7 @@ class Provider implements ProviderInterface {
       // It has a `method` property, that means that it's a subscription message
       const subscriptionId = `${response.method}::${response.params.subscription}`
 
-      const callback = this.#subscriptions.get(subscriptionId)
+      const callback = this.#subscriptions.get(subscriptionId)?.[0]
       if (callback) return callback(decodedResponse)
 
       // It's possible to receive subscriptions messages before having received
@@ -110,14 +113,57 @@ class Provider implements ProviderInterface {
       hc.setSendJsonRpc(chain.sendJsonRpc)
 
       this.#isChainReady = false
+      const cleanup = () => {
+        // If there are any callbacks left, we have to reject/error them.
+        // Otherwise, that would cause a memory leak.
+        const disconnectionError = new Error("Disconnected")
+        this.#requests.forEach((cb) => cb(disconnectionError))
+        this.#subscriptions.forEach(([cb]) => cb(disconnectionError))
+        this.#subscriptions.clear()
+        this.#orphanMessages.clear()
+      }
+
+      let staleUnsubscriptionMessages: string[] = []
+      const killStaleSubscriptions = () => {
+        staleUnsubscriptionMessages.forEach((json) => {
+          try {
+            // it's a fire-and-forget request we don't care about the answer
+            hc.sendJsonRpc(json)
+          } catch (_) {}
+        })
+      }
+
       hc.start((health) => {
         const isReady =
           !health.isSyncing && (health.peers > 0 || !health.shouldHavePeers)
 
-        if (this.#isChainReady !== isReady) {
-          this.#isChainReady = isReady
-          this.#eventemitter.emit(isReady ? "connected" : "disconnected")
-        }
+        // if it's the same as before, then nothing has changed and we are done
+        if (this.#isChainReady === isReady) return
+
+        if (!isReady) {
+          // If we've reached this point, that means that the chain used to be "ready"
+          // and now we are about to emit `disconnected`.
+          //
+          // This will cause the PolkadotJs API think that the connection is
+          // actually dead. In reality the smoldot chains is not dead, of course.
+          // However, we have to cleanup all the existing callbacks because when
+          // the smoldot chain stops syncing, then we will emit `connected` and
+          // the PolkadotJs API will try to re-create the previous
+          // subscriptions and requests.
+          //
+          // However, when the smoldot chain is no longer syncing, then we will
+          // have to let smoldot know that those stale subscriptions are no longer
+          // needed. that's why -before we perform the cleanup of `this.#subscriptions`-
+          // we prepare the json messages that we will have to send to the smoldot
+          // chain to kill those stale subscriptions.
+          staleUnsubscriptionMessages = [...this.#subscriptions.values()].map(
+            ([, { method, id }]) => this.#coder.encodeJson(method, [id]),
+          )
+          cleanup()
+        } else killStaleSubscriptions()
+
+        this.#isChainReady = isReady
+        this.#eventemitter.emit(isReady ? "connected" : "disconnected")
       })
 
       return {
@@ -125,15 +171,7 @@ class Provider implements ProviderInterface {
         sendJsonRpc: hc.sendJsonRpc.bind(hc),
         remove: () => {
           hc.stop()
-
-          // If there are any callbacks left, we have to reject/error them.
-          // Otherwise, that would cause a memory leak.
-          const disconnectionError = new Error("Disconnected")
-          this.#requests.forEach((cb) => cb(disconnectionError))
-          this.#subscriptions.forEach((cb) => cb(disconnectionError))
-          this.#subscriptions.clear()
-          this.#orphanMessages.clear()
-
+          cleanup()
           chain.remove()
         },
       }
@@ -219,8 +257,8 @@ class Provider implements ProviderInterface {
     params: any[],
     callback: ProviderInterfaceCallback,
   ): Promise<number | string> {
-    const returnId = await this.send(method, params)
-    const subscriptionId = `${type}::${returnId}`
+    const id = await this.send(method, params)
+    const subscriptionId = `${type}::${id}`
     const cb = (response: Error | string) => {
       if (response instanceof Error) {
         callback(response, undefined)
@@ -232,8 +270,8 @@ class Provider implements ProviderInterface {
     this.#orphanMessages.get(subscriptionId)?.forEach(cb)
     this.#orphanMessages.delete(subscriptionId)
 
-    this.#subscriptions.set(subscriptionId, cb)
-    return returnId
+    this.#subscriptions.set(subscriptionId, [cb, { method, id }])
+    return id
   }
 
   public unsubscribe(
