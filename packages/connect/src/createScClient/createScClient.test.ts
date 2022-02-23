@@ -583,29 +583,9 @@ describe("Provider", () => {
         "Unable to find active subscription=::",
       )
     })
-
-    it("rejects when trying to unsubscribe from un unexisting subscription", async () => {
-      const client = createScClient()
-      const provider = await client.addChain("")
-      const chain = mockedConnector.latestChain()
-      chain._triggerCallback({
-        jsonrpc: "2.0",
-        id: "health-checker:0",
-        result: {
-          isSyncing: false,
-          peers: 1,
-          shouldHavePeers: true,
-        },
-      })
-      await wait(0)
-
-      await expect(provider.unsubscribe("", "", "")).rejects.toThrowError(
-        "Unable to find active subscription=::",
-      )
-    })
   })
 
-  it("cleans up the state subscriptions once it reconnects", async () => {
+  it("cleans up the stale subscriptions once it reconnects", async () => {
     const client = createScClient()
 
     const provider = await client.addChain("")
