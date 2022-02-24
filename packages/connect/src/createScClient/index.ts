@@ -1,2 +1,2 @@
 export * from "./createScClient.js"
-export * from "./ScProvider/Health.js"
+export * from "./Health.js"
