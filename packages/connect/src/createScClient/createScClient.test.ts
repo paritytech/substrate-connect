@@ -1,5 +1,4 @@
 import { jest } from "@jest/globals"
-import { CrashError } from "../connector/index.js"
 import type { Chain, JsonRpcCallback } from "../connector/types.js"
 import type { ScClient } from "./createScClient.js"
 import type { HealthChecker, SmoldotHealth } from "./Health.js"
@@ -375,7 +374,7 @@ describe("Provider", () => {
       await wait(0)
 
       chain._setSendJsonRpcInterceptor(() => {
-        throw new CrashError("boom!")
+        throw new Error("boom!")
       })
 
       await expect(provider.send("getData", ["foo"])).rejects.toThrowError(
@@ -523,7 +522,6 @@ describe("Provider", () => {
 
   it("cleans up the stale subscriptions once it reconnects", async () => {
     const client = createScClient()
-
     const provider = await client.addChain("")
     const chain = mockedConnector.latestChain()
 
