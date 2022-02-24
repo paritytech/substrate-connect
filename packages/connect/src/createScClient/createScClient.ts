@@ -29,7 +29,6 @@ class Provider implements ProviderInterface {
     string,
     [ResponseCallback, { method: string; id: string | number }]
   > = new Map()
-  readonly #orphanMessages: Map<string, Array<string | Error>> = new Map()
   readonly #requests: Map<number, ResponseCallback> = new Map()
   readonly #eventemitter: EventEmitter = new EventEmitter()
   #chain: Promise<Chain> | null = null
@@ -86,14 +85,7 @@ class Provider implements ProviderInterface {
       const subscriptionId = `${response.method}::${response.params.subscription}`
 
       const callback = this.#subscriptions.get(subscriptionId)?.[0]
-      if (callback) return callback(decodedResponse)
-
-      // It's possible to receive subscriptions messages before having received
-      // the id of the subscription. In that case We should keep these
-      // messages around until we receive the subscription-id message.
-      if (!this.#orphanMessages.has(subscriptionId))
-        this.#orphanMessages.set(subscriptionId, [])
-      this.#orphanMessages.get(subscriptionId)!.push(decodedResponse)
+      callback?.(decodedResponse)
     }
 
     this.#chain = this.#getChain(onResponse).then((chain) => {
@@ -107,7 +99,6 @@ class Provider implements ProviderInterface {
         this.#requests.forEach((cb) => cb(disconnectionError))
         this.#subscriptions.forEach(([cb]) => cb(disconnectionError))
         this.#subscriptions.clear()
-        this.#orphanMessages.clear()
       }
 
       let staleSubscriptions: { method: string; id: number | string }[] = []
@@ -257,9 +248,6 @@ class Provider implements ProviderInterface {
         callback(null, response)
       }
     }
-
-    this.#orphanMessages.get(subscriptionId)?.forEach(cb)
-    this.#orphanMessages.delete(subscriptionId)
 
     this.#subscriptions.set(subscriptionId, [cb, { method, id }])
     return id

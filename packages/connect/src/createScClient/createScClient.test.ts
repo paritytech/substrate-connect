@@ -442,7 +442,7 @@ describe("Provider", () => {
       expect(cb).toHaveBeenLastCalledWith(null, 2)
     })
 
-    it("delivers subscription messages that were received before the subscription token", async () => {
+    it("ignores subscription messages that were received before the subscription token", async () => {
       const client = createScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
@@ -469,8 +469,7 @@ describe("Provider", () => {
       const token = await provider.subscribe("foo", "bar", ["baz"], cb)
 
       expect(token).toBe(unsubscribeToken)
-      expect(cb).toHaveBeenCalledTimes(1)
-      expect(cb).toHaveBeenLastCalledWith(null, 1)
+      expect(cb).not.toHaveBeenCalled()
     })
 
     it("emits the error when the message has an error", async () => {
