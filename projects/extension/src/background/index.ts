@@ -104,4 +104,3 @@ chrome.storage.local.get(["notifications"], (result) => {
 })
 
 init()
-
