@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals"
 import type { Chain, JsonRpcCallback } from "../connector/types.js"
-import type { ScClient } from "./createScClient.js"
+import type { PolkadotJsScClient } from "./createPolkadotJsScClient.js"
 import type { HealthChecker, SmoldotHealth } from "./Health.js"
 
 const wait = (ms: number) => new Promise((res) => setTimeout(res, ms))
@@ -143,7 +143,7 @@ const connectorFactory = () => {
 
 jest.unstable_mockModule("../connector/index.js", connectorFactory)
 
-let createScClient: () => ScClient
+let createPolkadotJsScClient: () => PolkadotJsScClient
 let mockedConnector: ReturnType<typeof connectorFactory>
 let mockedHealthChecker: ReturnType<typeof healthCheckerFactory>
 const getCurrentHealthChecker = () => mockedHealthChecker._latestHealthChecker()
@@ -156,7 +156,7 @@ const setChainSyncyingStatus = (isSyncing: boolean) => {
 }
 
 beforeAll(async () => {
-  ;({ createScClient } = await import("./createScClient"))
+  ;({ createPolkadotJsScClient } = await import("./createPolkadotJsScClient"))
   mockedConnector = (await import(
     "../connector/index.js"
   )) as unknown as ReturnType<typeof connectorFactory>
@@ -165,7 +165,7 @@ beforeAll(async () => {
 
 describe("createChain/createWellKnownCahin", () => {
   it("returns the Provider once the chain Promise is resolved", async () => {
-    const client = createScClient()
+    const client = createPolkadotJsScClient()
 
     let onResolveChain: Function = () => {}
     mockedConnector.latestClient()._setAddWellKnownChainInterceptor(
@@ -191,7 +191,7 @@ describe("createChain/createWellKnownCahin", () => {
   })
 
   it("rejects when smoldot can't create the underlying chain", async () => {
-    const client = createScClient()
+    const client = createPolkadotJsScClient()
 
     mockedConnector
       .latestClient()
@@ -204,7 +204,7 @@ describe("createChain/createWellKnownCahin", () => {
 describe("Provider", () => {
   describe("on", () => {
     it("emits `connected` as soon as the chain is not syncing", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
 
       const provider = await client.addChain("")
 
@@ -217,7 +217,7 @@ describe("Provider", () => {
     })
 
     it("stops receiving notifications after unsubscribing", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
       const provider = await client.addChain("")
 
       const onConnected = jest.fn()
@@ -229,7 +229,7 @@ describe("Provider", () => {
     })
 
     it("synchronously emits connected if the Provider is already `connected`", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
 
       const provider = await client.addChain("")
       setChainSyncyingStatus(false)
@@ -240,7 +240,7 @@ describe("Provider", () => {
     })
 
     it("emits `disconnected` once the chain goes back to syncing", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
 
       const provider = await client.addChain("")
       setChainSyncyingStatus(false)
@@ -263,7 +263,7 @@ describe("Provider", () => {
 
   describe("hasSubscriptions", () => {
     it("supports subscriptions", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
 
       const provider = await client.addChain("")
       expect(provider.hasSubscriptions).toBe(true)
@@ -272,7 +272,7 @@ describe("Provider", () => {
 
   describe("clone", () => {
     it("can not be clonned", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
 
       const provider = await client.addChain("")
       expect(() => provider.clone()).toThrowError()
@@ -281,7 +281,7 @@ describe("Provider", () => {
 
   describe("connect", () => {
     it("does not create a new chain when trying to re-connect while the current chain is syncing", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
       await provider.connect()
@@ -289,7 +289,7 @@ describe("Provider", () => {
     })
 
     it("throws when trying to connect on an already connected Provider", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
       const provider = await client.addChain("")
       setChainSyncyingStatus(false)
 
@@ -301,7 +301,7 @@ describe("Provider", () => {
 
   describe("disconnect", () => {
     it("removes the chain and cleans up", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
 
@@ -311,7 +311,7 @@ describe("Provider", () => {
     })
 
     it("does not throw when disconnecting on an already disconnected Provider", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
       const provider = await client.addChain("")
 
       await provider.disconnect()
@@ -321,13 +321,13 @@ describe("Provider", () => {
 
   describe("send", () => {
     it("throws when trying to send a request while the Provider is not connected", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
       const provider = await client.addChain("")
       await expect(provider.send("", [])).rejects.toThrow()
     })
 
     it("receives responses to its requests", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
       setChainSyncyingStatus(false)
@@ -351,7 +351,7 @@ describe("Provider", () => {
     })
 
     it("rejects when the response can't be deserialized", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
       setChainSyncyingStatus(false)
@@ -367,7 +367,7 @@ describe("Provider", () => {
     })
 
     it("rejects when the smoldot chain has crashed", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
       setChainSyncyingStatus(false)
@@ -386,7 +386,7 @@ describe("Provider", () => {
 
   describe("subscribe", () => {
     it("subscribes and recives messages until it unsubscribes", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
       setChainSyncyingStatus(false)
@@ -443,7 +443,7 @@ describe("Provider", () => {
     })
 
     it("ignores subscription messages that were received before the subscription token", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
       setChainSyncyingStatus(false)
@@ -473,7 +473,7 @@ describe("Provider", () => {
     })
 
     it("emits the error when the message has an error", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
       const provider = await client.addChain("")
       const chain = mockedConnector.latestChain()
       setChainSyncyingStatus(false)
@@ -509,7 +509,7 @@ describe("Provider", () => {
 
   describe("unsubscribe", () => {
     it("rejects when trying to unsubscribe from un unexisting subscription", async () => {
-      const client = createScClient()
+      const client = createPolkadotJsScClient()
       const provider = await client.addChain("")
       setChainSyncyingStatus(false)
 
@@ -520,7 +520,7 @@ describe("Provider", () => {
   })
 
   it("cleans up the stale subscriptions once it reconnects", async () => {
-    const client = createScClient()
+    const client = createPolkadotJsScClient()
     const provider = await client.addChain("")
     const chain = mockedConnector.latestChain()
 
