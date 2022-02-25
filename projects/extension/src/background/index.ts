@@ -4,6 +4,7 @@ import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
 import { WellKnownChains } from "@substrate/connect"
+import { start as smoldotStart } from "@substrate/smoldot-light"
 
 import westend2 from "../../public/assets/westend2.json"
 import ksmcc3 from "../../public/assets/ksmcc3.json"
@@ -102,7 +103,7 @@ const waitAllChainsUpdate = () => {
 
 const init = async () => {
   try {
-    manager = new ConnectionManager()
+    manager = new ConnectionManager(smoldotStart())
     for (const [key, value] of wellKnownChains.entries()) {
       const dbContent = await new Promise<string | undefined>((res) =>
         chrome.storage.local.get([key], (val) => res(val[key] as string)),

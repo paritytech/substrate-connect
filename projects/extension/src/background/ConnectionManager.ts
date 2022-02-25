@@ -1,7 +1,6 @@
 import {
   Client as SmoldotClient,
   Chain as SmoldotChain,
-  start as smoldotStart,
 } from "@substrate/smoldot-light"
 
 import {
@@ -112,9 +111,13 @@ export interface ChainInfo<SandboxId> {
  *
  */
 export class ConnectionManager<SandboxId> {
-  #smoldotClient: SmoldotClient = smoldotStart()
+  #smoldotClient: SmoldotClient
   #sandboxes: Map<SandboxId, Sandbox> = new Map()
   #wellKnownChains: Map<string, WellKnownChain> = new Map()
+
+  constructor(smoldotClient: SmoldotClient) {
+    this.#smoldotClient = smoldotClient;
+  }
 
   /**
    * Contains a list of callbacks that must be called when any of the information returned by
