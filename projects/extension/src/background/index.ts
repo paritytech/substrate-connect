@@ -105,6 +105,3 @@ chrome.storage.local.get(["notifications"], (result) => {
 
 init()
 
-// TODO (nik): once extension is on chrome/ff stores we need to take advantage
-// of the onBrowserUpdateAvailable and onUpdateAvailable lifecycle event
-// NOTE: onSuspend could be used to cleanup things but async actions are not guaranteed to complete :(
