@@ -12,7 +12,7 @@ export interface Option {
 
 export interface SimpleProvider {
   name: string
-  network: string
+  id: string
   client: string
 }
 
