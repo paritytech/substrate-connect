@@ -103,13 +103,10 @@ const waitAllChainsUpdate = () => {
 
 const init = async () => {
   try {
-    const loopChrome = (key: any, res: (arg0: string) => void) => {
-      return chrome.storage.local.get([key], (val) => res(val[key] as string))
-    }
     manager = new ConnectionManager(smoldotStart())
     for (const [key, value] of wellKnownChains.entries()) {
       const dbContent = await new Promise<string | undefined>((res) =>
-        loopChrome(key, res),
+        chrome.storage.local.get([key], (val) => res(val[key] as string)),
       )
 
       await manager.addWellKnownChain(key, value, dbContent)
