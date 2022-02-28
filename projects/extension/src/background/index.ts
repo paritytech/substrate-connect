@@ -123,20 +123,47 @@ const manager: Promise<ConnectionManager<chrome.runtime.Port>> = (async () => {
   return managerInit
 })()
 
+// Handle new port connections.
+//
+// Whenever a tab starts using the substrate-connect extension, it will open a port. This is caught
+// here.
 chrome.runtime.onConnect.addListener((port) => {
-  manager.addSandbox(port)
-  ;(async () => {
-    for await (const message of manager.sandboxOutput(port)) {
-      port.postMessage(message)
-    }
-  })()
+  // The difficulty here is that the manager might not have completely finished its
+  // initialization. However, we need to immediately add listeners to `port.onMessage` and
+  // to `port.onDisconnect` in order to be sure to not miss events.
+
+  // To handle this properly, we hold a `Promise` here, and update it every time we do
+  // something relevant to that port, making sure that everything happens in the correct order.
+
+  // Note that as long as the manager hasn't finished initializing, the chain of promises will
+  // continue to grow indefinitely. While this is a problem *in theory*, in practice the manager
+  // initialization shouldn't take more than a few dozen milliseconds and it is actually unlikely
+  // for any message to arrive at all.
+
+  let managerWithSandbox = manager.then((mgr) => {
+    mgr.addSandbox(port);
+
+    ;(async () => {
+      for await (const message of mgr.sandboxOutput(port)) {
+        port.postMessage(message)
+      }
+    })()
+
+    return mgr;
+  });
 
   port.onMessage.addListener((message: ToExtension) => {
-    manager.sandboxMessage(port, message)
+    managerWithSandbox = managerWithSandbox.then((mgr) => {
+      mgr.sandboxMessage(port, message);
+      return mgr;
+    })
   })
 
   port.onDisconnect.addListener(() => {
-    manager.deleteSandbox(port)
+    managerWithSandbox = managerWithSandbox.then((mgr) => {
+      mgr.deleteSandbox(port);
+      return mgr;
+    })
   })
 })
 
