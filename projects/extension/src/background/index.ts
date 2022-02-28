@@ -95,7 +95,7 @@ const flushDatabases = (mgr: ConnectionManager<chrome.runtime.Port>): void => {
 }
 
 const waitAllChainsUpdate = (mgr: ConnectionManager<chrome.runtime.Port>) => {
-  listeners.forEach((listener) => notifyListener(manager, listener))
+  listeners.forEach((listener) => notifyListener(mgr, listener))
   mgr.waitAllChainChanged().then(() => {
     waitAllChainsUpdate(mgr)
   })
