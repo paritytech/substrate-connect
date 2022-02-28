@@ -94,10 +94,10 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === "DatabaseContentAlarm") flushDatabases()
 })
 
-const waitAllChainsUpdate = () => {
+const waitAllChainsUpdate = (mgr: ConnectionManager<chrome.runtime.Port>) => {
   listeners.forEach(notifyListener)
-  manager.waitAllChainChanged().then(() => {
-    waitAllChainsUpdate()
+  mgr.waitAllChainChanged().then(() => {
+    waitAllChainsUpdate(mgr)
   })
 }
 
@@ -112,7 +112,7 @@ const init = async () => {
     if (!dbContent) saveChainDbContent(key)
   }
 
-  waitAllChainsUpdate()
+  waitAllChainsUpdate(manager)
 
   chrome.alarms.create("DatabaseContentAlarm", {
     periodInMinutes: 5,
