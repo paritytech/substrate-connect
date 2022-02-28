@@ -102,26 +102,21 @@ const waitAllChainsUpdate = () => {
 }
 
 const init = async () => {
-  try {
-    manager = new ConnectionManager(smoldotStart())
-    for (const [key, value] of wellKnownChains.entries()) {
-      const dbContent = await new Promise<string | undefined>((res) =>
-        chrome.storage.local.get([key], (val) => res(val[key] as string)),
-      )
+  manager = new ConnectionManager(smoldotStart())
+  for (const [key, value] of wellKnownChains.entries()) {
+    const dbContent = await new Promise<string | undefined>((res) =>
+      chrome.storage.local.get([key], (val) => res(val[key] as string)),
+    )
 
-      await manager.addWellKnownChain(key, value, dbContent)
-      if (!dbContent) saveChainDbContent(key)
-    }
-
-    waitAllChainsUpdate()
-
-    chrome.alarms.create("DatabaseContentAlarm", {
-      periodInMinutes: 5,
-    })
-  } catch (e) {
-    l.error(`Error creating smoldot: ${e}`)
-    //manager?.shutdown()
+    await manager.addWellKnownChain(key, value, dbContent)
+    if (!dbContent) saveChainDbContent(key)
   }
+
+  waitAllChainsUpdate()
+
+  chrome.alarms.create("DatabaseContentAlarm", {
+    periodInMinutes: 5,
+  })
 }
 
 chrome.runtime.onConnect.addListener((port) => {
