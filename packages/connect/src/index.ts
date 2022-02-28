@@ -74,11 +74,11 @@
  *
  * # Well-known chains
  *
- * This package contains a list of so-called {WellKnownChains}. This is a list of popular chains
+ * This package contains a list of so-called {WellKnownChain}s. This is a list of popular chains
  * that users are likely to connect to. Instead of calling `addChain` with a chain specification,
  * one can call `addWellKnownChain`, passing only the name of a well-known chain as parameter.
  *
- * Using {WellKnownChains} doesn't provide any benefit when the substrate-connect extension is not
+ * Using {WellKnownChain}s doesn't provide any benefit when the substrate-connect extension is not
  * installed.
  *
  * If, however, the substrate-connect extension is installed, using {addWellKnownChain} has several
@@ -96,6 +96,6 @@
  * @packageDocumentation
  */
 
-export { WellKnownChains } from "./WellKnownChains.js"
+export { WellKnownChain } from "./WellKnownChain.js"
 export * from "./connector/index.js"
 export * from "./createPolkadotJsScClient/index.js"

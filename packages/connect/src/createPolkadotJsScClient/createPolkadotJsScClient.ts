@@ -9,13 +9,13 @@ import type {
 import EventEmitter from "eventemitter3"
 import type { Chain, JsonRpcCallback } from "../connector/types.js"
 
-import { WellKnownChains } from "../WellKnownChains.js"
+import { WellKnownChain } from "../WellKnownChain.js"
 import { getConnectorClient } from "../connector/index.js"
 import { healthChecker } from "./Health.js"
 
 export interface PolkadotJsScClient {
   addWellKnownChain: (
-    wellKnownChain: WellKnownChains,
+    wellKnownChain: WellKnownChain,
   ) => Promise<ProviderInterface>
   addChain: (chainSpec: string) => Promise<ProviderInterface>
 }
@@ -292,7 +292,7 @@ export const createPolkadotJsScClient = (): PolkadotJsScClient => {
       await provider.connect()
       return provider
     },
-    addWellKnownChain: async (wellKnownChain: WellKnownChains) => {
+    addWellKnownChain: async (wellKnownChain: WellKnownChain) => {
       const provider = new Provider((callback: JsonRpcCallback) =>
         client.addWellKnownChain(wellKnownChain, callback),
       )
