@@ -24,16 +24,21 @@ const getStart = () => {
   return startPromise
 }
 
-let totalActiveChains = 0
+let clientNumReferences = 0
 let clientPromise: Promise<Client> | null = null
-const getClient = (): Promise<Client> => {
-  if (clientPromise) return clientPromise
+const getClientAndIncRef = (): Promise<Client> => {
+  if (clientPromise) {
+    clientNumReferences += 1
+    return clientPromise
+  }
+
   clientPromise = getStart().then((start) =>
     start({
       forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
       maxLogLevel: 3 /* no debug/trace messages */,
     }),
   )
+  clientNumReferences += 1
   return clientPromise
 }
 
@@ -66,37 +71,44 @@ export const getConnectorClient = (): SubstrateConnector => {
     chainSpec: string,
     jsonRpcCallback?: (msg: string) => void,
   ): Promise<Chain> => {
-    const client = await getClient()
+    const client = await getClientAndIncRef()
 
-    const internalChain = await client.addChain({
-      chainSpec,
-      potentialRelayChains: [...chains.values()],
-      jsonRpcCallback,
-    })
+    try {
+      const internalChain = await client.addChain({
+        chainSpec,
+        potentialRelayChains: [...chains.values()],
+        jsonRpcCallback,
+      })
 
-    const chain: Chain = {
-      sendJsonRpc: (rpc) => {
-        transformErrors(() => {
-          internalChain.sendJsonRpc(rpc)
-        })
-      },
-      remove: () => {
-        if (chains.has(chain)) {
-          chains.delete(chain)
-          if (--totalActiveChains === 0) {
-            clientPromise = null
-            client.terminate()
+      const chain: Chain = {
+        sendJsonRpc: (rpc) => {
+          transformErrors(() => {
+            internalChain.sendJsonRpc(rpc)
+          })
+        },
+        remove: () => {
+          if (chains.has(chain)) {
+            chains.delete(chain)
+            if (--clientNumReferences === 0) {
+              clientPromise = null
+              client.terminate()
+            }
           }
-        }
-        transformErrors(() => {
-          internalChain.remove()
-        })
-      },
-    }
+          transformErrors(() => {
+            internalChain.remove()
+          })
+        },
+      }
 
-    chains.set(chain, internalChain)
-    totalActiveChains++
-    return chain
+      chains.set(chain, internalChain)
+      return chain
+    } catch (error) {
+      if (--clientNumReferences === 0) {
+        clientPromise = null
+        client.terminate()
+      }
+      throw error
+    }
   }
 
   const addWellKnownChain: AddWellKnownChain = async (
@@ -106,10 +118,17 @@ export const getConnectorClient = (): SubstrateConnector => {
     // the following line ensures that the http request for the dynamic import
     // of smoldot-light and the request for the dynamic import of the spec
     // happen in parallel
-    getClient()
+    getClientAndIncRef()
 
-    const spec = await getSpec(supposedChain)
-    return await addChain(spec, jsonRpcCallback)
+    try {
+      const spec = await getSpec(supposedChain)
+      return await addChain(spec, jsonRpcCallback)
+    } finally {
+      if (--clientNumReferences === 0) {
+        clientPromise?.then((client) => client.terminate())
+        clientPromise = null
+      }
+    }
   }
   return { addChain, addWellKnownChain }
 }
