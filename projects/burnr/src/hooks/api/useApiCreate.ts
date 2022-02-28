@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
 import { ApiPromise } from "@polkadot/api"
 import { logger } from "@polkadot/util"
-import { createScClient, WellKnownChains } from "@substrate/connect"
+import { createPolkadotJsScClient, WellKnownChains } from "@substrate/connect"
 import { ALL_PROVIDERS, BURNR_WALLET } from "../../utils/constants"
 import { useIsMountedRef } from "./useIsMountedRef"
 
-const scClient = createScClient()
+const scClient = createPolkadotJsScClient()
 const l = logger(BURNR_WALLET)
 
 export const useApiCreate = (): ApiPromise => {
