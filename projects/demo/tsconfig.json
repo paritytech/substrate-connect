@@ -11,5 +11,5 @@
     "strict": true,
     "module": "ES2015"
   },
-  "include": ["src", "src/**/*.json"],
+  "include": ["src", "src/**/*.json"]
 }

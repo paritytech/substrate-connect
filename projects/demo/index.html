@@ -7,11 +7,18 @@
         font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
           monospace;
         font-size: 14px;
+        background-color: black;
+        color: #18ffb2;
+      }
+      #mn_title {
+        font-size: 1rem;
+        margin: 3rem 0 0 6rem;
+      }
+      .table {
+        margin: 0.1rem 10rem;
       }
       #messages {
-        background-color: black;
         margin: 0 auto;
-        color: #18ffb2;
         padding: 0.5rem;
       }
       .message {
@@ -43,6 +50,25 @@
         animation-timing-function: linear;
       }
     </style>
+    <div id="mn_title">Relay Chains - Latest Headers</div>
+    <table class="table">
+      <tr>
+        <td>Polkadot</td>
+        <td id="polkadot"></td>
+      </tr>
+      <tr>
+        <td>Kusama</td>
+        <td id="kusama"></td>
+      </tr>
+      <tr>
+        <td>Westend</td>
+        <td id="westend"></td>
+      </tr>
+      <tr>
+        <td>Rococo</td>
+        <td id="rococo"></td>
+      </tr>
+    </table>
     <section id="messages"></section>
     <script type="module" src="./src/index.ts"></script>
   </body>

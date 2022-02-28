@@ -1,10 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import "regenerator-runtime/runtime"
-import { createScClient, WellKnownChains } from "@substrate/connect"
+import { createPolkadotJsScClient, WellKnownChain } from "@substrate/connect"
 import { ApiPromise } from "@polkadot/api"
 import westmint from "./assets/westend-westmint.json"
 import UI, { emojis } from "./view"
@@ -15,11 +10,75 @@ window.onload = () => {
   ui.showSyncing()
   void (async () => {
     try {
-      const scClient = createScClient()
-      await scClient.addWellKnownChain(WellKnownChains.westend2);
-      const westmintProvider = await scClient.addChain(JSON.stringify(westmint));
-      const api = await ApiPromise.create({ provider: westmintProvider });
-      
+      const scClient = createPolkadotJsScClient()
+      const westendProvider = await scClient.addWellKnownChain(
+        WellKnownChain.westend2,
+      )
+      const kusamaProvider = await scClient.addWellKnownChain(
+        WellKnownChain.ksmcc3,
+      )
+      const polkadotProvider = await scClient.addWellKnownChain(
+        WellKnownChain.polkadot,
+      )
+      const rococoProvider = await scClient.addWellKnownChain(
+        WellKnownChain.rococo_v2,
+      )
+      const westend = await ApiPromise.create({ provider: westendProvider })
+      const kusama = await ApiPromise.create({ provider: kusamaProvider })
+      const polkadot = await ApiPromise.create({ provider: polkadotProvider })
+      const rococo = await ApiPromise.create({ provider: rococoProvider })
+
+      const westendFnc = async () => {
+        const westendUI = document.getElementById("westend")
+        const westendHead = await westend.rpc.chain.getHeader()
+        if (westendUI) {
+          westendUI.innerText = westendHead?.number.toString()
+          await westend.rpc.chain.subscribeNewHeads(
+            (lastHeader: { number: { toString: () => string } }) => {
+              westendUI.innerText = "#" + lastHeader?.number.toString()
+            },
+          )
+        }
+      }
+
+      const kusamaFnc = async () => {
+        const kusamaUI = document.getElementById("kusama")
+        const kusamaHead = await kusama.rpc.chain.getHeader()
+        if (kusamaUI) {
+          kusamaUI.innerText = kusamaHead?.number.toString()
+          await kusama.rpc.chain.subscribeNewHeads((lastHeader) => {
+            kusamaUI.innerText = "#" + lastHeader?.number.toString()
+          })
+        }
+      }
+
+      const polkadotFnc = async () => {
+        const polkadotUI = document.getElementById("polkadot")
+        const polkadotHead = await polkadot.rpc.chain.getHeader()
+        if (polkadotUI) {
+          polkadotUI.innerText = polkadotHead?.number.toString()
+          await polkadot.rpc.chain.subscribeNewHeads((lastHeader) => {
+            polkadotUI.innerText = "#" + lastHeader?.number.toString()
+          })
+        }
+      }
+
+      const rococoFnc = async () => {
+        const rococoUI = document.getElementById("rococo")
+        const rococoHead = await rococo.rpc.chain.getHeader()
+        if (rococoUI) {
+          rococoUI.innerText = rococoHead?.number.toString()
+          await rococo.rpc.chain.subscribeNewHeads((lastHeader) => {
+            rococoUI.innerText = "#" + lastHeader?.number.toString()
+          })
+        }
+      }
+
+      await Promise.all([westendFnc(), kusamaFnc(), polkadotFnc(), rococoFnc()])
+
+      const westmintProvider = await scClient.addChain(JSON.stringify(westmint))
+      const api = await ApiPromise.create({ provider: westmintProvider })
+
       const [chain, nodeName, nodeVersion, properties] = await Promise.all([
         api.rpc.system.chain(),
         api.rpc.system.name(),
@@ -48,7 +107,7 @@ window.onload = () => {
       const health = await api.rpc.system.health()
       const peers =
         health.peers.toNumber() === 1 ? "1 peer" : `${health.peers} peers`
-      ui.log(`${emojis.stethoscope} Chain is syncing with ${peers}`)
+      ui.log(`${emojis.stethoscope} Parachain is syncing with ${peers}`)
 
       // Check the state of syncing every 2s and update the syncing state message
       //
@@ -71,23 +130,8 @@ window.onload = () => {
       }
 
       await waitForChainToSync()
-      ui.log(`${emojis.newspaper} Receiving first 10 tokens:`)
-      for (let i = 0; i <= 9; i++) {
-        await api.query.assets.asset(i).then((asset) => {
-          if (asset.isNone) return
-          ui.log(`${emojis.banknote} ------------------- Asset No.${i + 1}:`)
-          const { owner, issuer, admin, supply, isFrozen } = JSON.parse(
-            asset as unknown as string,
-          )
-          ui.log(`${emojis.info} Owner: ${owner}`)
-          ui.log(`${emojis.info} Issuer: ${issuer}`)
-          ui.log(`${emojis.info} Admin: ${admin}`)
-          ui.log(`${emojis.info} Supply:${supply}`)
-          ui.log(`${emojis.info} Asset is ${!isFrozen && `not `} Frozen`)
-        })
-      }
     } catch (error) {
-      ui.error(<Error>error)
+      ui.error(error as Error)
     }
   })()
 }

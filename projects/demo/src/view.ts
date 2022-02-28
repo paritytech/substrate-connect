@@ -112,7 +112,7 @@ export default class UI {
       syncState.appendChild(this.timestampHtml())
       const syncMessage = document.createElement("em")
       syncMessage.classList.add("pulse")
-      syncMessage.innerHTML = `${emojis.chain} Chain is syncing...`
+      syncMessage.innerHTML = `${emojis.chain} Parachain is syncing...`
       syncState.appendChild(syncMessage)
 
       this.syncMessage = syncMessage
@@ -120,7 +120,7 @@ export default class UI {
       this.insertAtTopOfContainer(this.syncState)
     } else {
       // Cover case that we change from synced state back to syncing.
-      this.syncMessage.innerHTML = `${emojis.chain} Chain is syncing...`
+      this.syncMessage.innerHTML = `${emojis.chain} Parachain is syncing...`
       this.ensureClassOn(this.syncMessage, "pulse")
     }
   }
@@ -133,6 +133,6 @@ export default class UI {
     }
 
     this.syncMessage.classList.remove("pulse")
-    this.syncMessage.innerHTML = `${emojis.tick} Chain synced!`
+    this.syncMessage.innerHTML = `${emojis.tick} Parachain synced!`
   }
 }
