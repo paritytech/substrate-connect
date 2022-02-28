@@ -66,14 +66,14 @@ export type AddWellKnownChain = (
 /**
  * Client that allows connecting to chains.
  *
- * Use {SubstrateConnector.addChain} or {SubstrateConnector.addWellKnownChain} to connect to a
+ * Use {ScClient.addChain} or {ScClient.addWellKnownChain} to connect to a
  * chain.
  *
  * If you want to connect to a parachain, you **must** have connected to its corresponding relay
- * chain with the same instance of {SubstrateConnector}. The matching between relay chains and
+ * chain with the same instance of {ScClient}. The matching between relay chains and
  * parachains is done through the `relay_chain` field in the parachain specification.
  */
-export interface SubstrateConnector {
+export interface ScClient {
   /**
    * Connects to a chain.
    *
@@ -121,7 +121,7 @@ export interface SubstrateConnector {
    * objects.
    *
    * @param id Name of the well-known chain to add.
-   * @param jsonRpcCallback Same parameter as for {SubstrateConnector.addChain}
+   * @param jsonRpcCallback Same parameter as for {ScClient.addChain}
    *
    * @throws {AddChainError} If no chain with this name is known.
    * @throws {CrashError} If the background client has crashed.

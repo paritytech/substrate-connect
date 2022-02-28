@@ -10,7 +10,7 @@ import EventEmitter from "eventemitter3"
 import type { Chain, JsonRpcCallback } from "../connector/types.js"
 
 import { WellKnownChains } from "../WellKnownChains.js"
-import { getConnectorClient } from "../connector/index.js"
+import { createScClient } from "../connector/index.js"
 import { healthChecker } from "./Health.js"
 
 export interface PolkadotJsScClient {
@@ -274,7 +274,7 @@ class Provider implements ProviderInterface {
 }
 
 /**
- * Returns a {SubstrateConnector} that connects to chains, either through the substrate-connect
+ * Returns a {ScClient} that connects to chains, either through the substrate-connect
  * extension or by executing a light client directly from JavaScript, depending on whether the
  * extension is installed and available.
  *
@@ -282,7 +282,7 @@ class Provider implements ProviderInterface {
  * trait of the `@polkadot/api` library.
  */
 export const createPolkadotJsScClient = (): PolkadotJsScClient => {
-  const client = getConnectorClient()
+  const client = createScClient()
 
   return {
     addChain: async (chainSpec: string) => {

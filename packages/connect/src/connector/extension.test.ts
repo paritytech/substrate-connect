@@ -3,7 +3,7 @@ import {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"
-import { getConnectorClient } from "./extension"
+import { createScClient } from "./extension"
 import {
   AlreadyDestroyedError,
   CrashError,
@@ -58,7 +58,7 @@ const postToClient = (msg: ToApplication) => {
 describe("SmoldotConnect::Extension", () => {
   describe("addChain", () => {
     it("adding a chain resolves the Promise upon receiving the `chain-ready` message", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       const chainPromise = addChain("")
       const addChainMessage = await getClientMessage()
       expect(addChainMessage).toMatchObject({
@@ -81,7 +81,7 @@ describe("SmoldotConnect::Extension", () => {
     })
 
     it("adding a chain rejects the Promise upon receiving an error while waiting for `chain-ready`", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       const chainPromise = addChain("")
       const addChainMessage = await getClientMessage()
 
@@ -98,7 +98,7 @@ describe("SmoldotConnect::Extension", () => {
     })
 
     it("propagates the correct potentialRelayChainIds", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       let chainPromise = addChain("")
       const addChainMsg1 = await getClientMessage()
       postToClient({
@@ -132,7 +132,7 @@ describe("SmoldotConnect::Extension", () => {
 
       // adding an active chain from an unrelated client in order to ensure
       // that it doesn't show up in the list of `potentialRelayChainIds`
-      const { addChain: addChain2 } = getConnectorClient()
+      const { addChain: addChain2 } = createScClient()
       chainPromise = addChain2("")
       const addChainMsg4 = await getClientMessage()
       postToClient({
@@ -154,7 +154,7 @@ describe("SmoldotConnect::Extension", () => {
 
   describe("addWellKnownChain", () => {
     it("adding a chain resolves the Promise upon receiving the `chain-ready` message", async () => {
-      const { addWellKnownChain } = getConnectorClient()
+      const { addWellKnownChain } = createScClient()
       const chainPromise = addWellKnownChain(WellKnownChains.polkadot)
       const addChainMessage = await getClientMessage()
       expect(addChainMessage).toMatchObject({
@@ -176,7 +176,7 @@ describe("SmoldotConnect::Extension", () => {
     })
 
     it("adding a chain rejects the Promise upon receiving an error while waiting for `chain-ready`", async () => {
-      const { addWellKnownChain } = getConnectorClient()
+      const { addWellKnownChain } = createScClient()
       const chainPromise = addWellKnownChain(WellKnownChains.polkadot)
       const addChainMessage = await getClientMessage()
 
@@ -193,7 +193,7 @@ describe("SmoldotConnect::Extension", () => {
 
   describe("chain.sendJsonRpc", () => {
     it("sends and receives jsonRpc messages", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       const receivedMessages: string[] = []
       const jsonRpcCallback: JsonRpcCallback = (response) => {
         receivedMessages.push(response)
@@ -232,7 +232,7 @@ describe("SmoldotConnect::Extension", () => {
     })
 
     it("throws when calling sendJsonRpc if no jsonRpcCallback was provided", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       let clientMessageP = getClientMessage()
       const chainPromise = addChain("")
       const addChainMsg = await clientMessageP
@@ -249,7 +249,7 @@ describe("SmoldotConnect::Extension", () => {
 
   describe("chain.remove", () => {
     it("removes the chain", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       const chainPromise = addChain("")
       const addChainMsg = await getClientMessage()
       postToClient({
@@ -269,7 +269,7 @@ describe("SmoldotConnect::Extension", () => {
     })
 
     it("throws if the chain has already been removed", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       const chainPromise = addChain("", () => {})
       const addChainMsg = await getClientMessage()
       postToClient({
@@ -288,7 +288,7 @@ describe("SmoldotConnect::Extension", () => {
 
   describe("CrashError", () => {
     it("correctly handles CrashErrors received from the Extension", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       const chainPromise = addChain("", () => {})
       const addChainMsg = await getClientMessage()
       postToClient({
@@ -320,7 +320,7 @@ describe("SmoldotConnect::Extension", () => {
     })
 
     it("procudes a CrashError when receiving an unexpected message", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       const chainPromise = addChain("", () => {})
       const addChainMsg = await getClientMessage()
       postToClient({
@@ -355,7 +355,7 @@ describe("SmoldotConnect::Extension", () => {
     })
 
     it("procudes a CrashError when receiving an rpc message when no jsonRpcCallback was provided", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       const chainPromise = addChain("")
       const addChainMsg = await getClientMessage()
       postToClient({
@@ -392,7 +392,7 @@ describe("SmoldotConnect::Extension", () => {
   })
 
   it("ignores other messages", async () => {
-    const { addChain } = getConnectorClient()
+    const { addChain } = createScClient()
     const chainPromise = addChain("", () => {})
     const addChainMsg = await getClientMessage()
 

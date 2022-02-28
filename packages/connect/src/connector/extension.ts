@@ -2,7 +2,7 @@ import type {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"
-import type { Chain, JsonRpcCallback, SubstrateConnector } from "./types.js"
+import type { Chain, JsonRpcCallback, ScClient } from "./types.js"
 import {
   AlreadyDestroyedError,
   CrashError,
@@ -33,7 +33,7 @@ function getRandomChainId(): string {
 }
 
 /**
- * Returns a {SubstrateConnector} that connects to chains by asking the substrate-connect extension
+ * Returns a {ScClient} that connects to chains by asking the substrate-connect extension
  * to do so.
  *
  * This function assumes that the extension is installed and available. It is out of scope of this
@@ -41,7 +41,7 @@ function getRandomChainId(): string {
  * If you try to add a chain without the extension installed, nothing will happen and the
  * `Promise`s will never resolve.
  */
-export const getConnectorClient = (): SubstrateConnector => {
+export const createScClient = (): ScClient => {
   const chains = new Map<Chain, string>()
 
   const internalAddChain = async (
