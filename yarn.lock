@@ -2237,6 +2237,8 @@
     "@polkadot/types-codec" "7.10.1"
     "@polkadot/types-create" "7.10.1"
     "@polkadot/util" "^8.4.1"
+    "@polkadot/util-crypto" "^8.4.1"
+    rxjs "^7.5.4"
 
 "@polkadot/types-support@7.10.1":
   version "7.10.1"
