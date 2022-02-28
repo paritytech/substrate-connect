@@ -1,9 +1,23 @@
-import { wellKnownChains, ConnectionManager } from "./ConnectionManager"
+import { ConnectionManager } from "./ConnectionManager"
 import { logger } from "@polkadot/util"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
-import { Chain, start } from "@substrate/smoldot-light"
+import { WellKnownChains } from "@substrate/connect"
+import { start as smoldotStart } from "@substrate/smoldot-light"
+
+import westend2 from "../../public/assets/westend2.json"
+import ksmcc3 from "../../public/assets/ksmcc3.json"
+import polkadot from "../../public/assets/polkadot.json"
+import rococo_v2 from "../../public/assets/rococo_v2.json"
+import { ToExtension } from "@substrate/connect-extension-protocol"
+
+export const wellKnownChains: Map<string, string> = new Map<string, string>([
+  [WellKnownChains.polkadot, JSON.stringify(polkadot)],
+  [WellKnownChains.ksmcc3, JSON.stringify(ksmcc3)],
+  [WellKnownChains.rococo_v2, JSON.stringify(rococo_v2)],
+  [WellKnownChains.westend2, JSON.stringify(westend2)],
+])
 
 export interface Background extends Window {
   manager: {
@@ -14,19 +28,44 @@ export interface Background extends Window {
   }
 }
 
-let manager: ConnectionManager
+let manager: ConnectionManager<chrome.runtime.Port>
+let listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
 
-const wellKnownConnections: Map<string, Chain> = new Map()
+const notifyListener = (
+  listener: (state: ExposedChainConnection[]) => void,
+) => {
+  listener(
+    manager.allChains
+      .filter((info) => info.apiInfo)
+      .map((info) => {
+        return {
+          chainId: info.apiInfo!.chainId,
+          chainName: info.chainName,
+          tabId: info.apiInfo!.sandboxId.sender!.tab!.id!,
+          url: info.apiInfo!.sandboxId.sender!.tab!.url!,
+          healthStatus: info.healthStatus,
+        }
+      }),
+  )
+}
 
 const publicManager: Background["manager"] = {
   onManagerStateChanged(listener) {
-    listener(manager.connections)
-    manager.on("stateChanged", listener)
+    notifyListener(listener)
+    listeners.add(listener)
     return () => {
-      manager.removeListener("stateChanged", listener)
+      listeners.delete(listener)
     }
   },
-  disconnectTab: (tabId: number) => manager.disconnectTab(tabId),
+  disconnectTab: (tabId: number) => {
+    // Note that multiple ports can share the same `tabId`
+    for (const port of manager.sandboxes) {
+      if (port.sender?.tab?.id === tabId) {
+        manager.deleteSandbox(port)
+        port.disconnect()
+      }
+    }
+  },
 }
 
 declare let window: Background
@@ -39,57 +78,67 @@ export interface RequestRpcSend {
   params: unknown[]
 }
 
-const saveChainDbContent = async (key: string, chain: Chain) => {
-  const db = await chain.databaseContent(
+const saveChainDbContent = async (key: string) => {
+  const db = await manager.wellKnownChainDatabaseContent(
+    key,
     chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
   )
   chrome.storage.local.set({ [key]: db })
 }
 
 const flushDatabases = (): void => {
-  for (const [key, chain] of wellKnownConnections)
-    saveChainDbContent(key, chain)
+  for (const [key, _] of wellKnownChains) saveChainDbContent(key)
 }
 
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === "DatabaseContentAlarm") flushDatabases()
 })
 
+const waitAllChainsUpdate = () => {
+  listeners.forEach(notifyListener)
+  manager.waitAllChainChanged().then(() => {
+    waitAllChainsUpdate()
+  })
+}
+
 const init = async () => {
   try {
-    manager = new ConnectionManager(start({ maxLogLevel: 3 }))
+    manager = new ConnectionManager(smoldotStart())
     for (const [key, value] of wellKnownChains.entries()) {
-      const rpcCallback = (rpc: string) => {
-        console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
-      }
-
-      // eslint-disable-next-line no-loop-func
       const dbContent = await new Promise<string | undefined>((res) =>
         chrome.storage.local.get([key], (val) => res(val[key] as string)),
       )
 
-      const chain = await manager.addChain(
-        value,
-        [],
-        rpcCallback,
-        undefined,
-        dbContent,
-      )
-      wellKnownConnections.set(key, chain)
-      if (!dbContent) saveChainDbContent(key, chain)
+      await manager.addWellKnownChain(key, value, dbContent)
+      if (!dbContent) saveChainDbContent(key)
     }
+
+    waitAllChainsUpdate()
 
     chrome.alarms.create("DatabaseContentAlarm", {
       periodInMinutes: 5,
     })
   } catch (e) {
     l.error(`Error creating smoldot: ${e}`)
-    manager?.shutdown()
+    //manager?.shutdown()
   }
 }
 
 chrome.runtime.onConnect.addListener((port) => {
-  manager.addChainConnection(port)
+  manager.addSandbox(port)
+  ;(async () => {
+    for await (const message of manager.sandboxOutput(port)) {
+      port.postMessage(message)
+    }
+  })()
+
+  port.onMessage.addListener((message: ToExtension) => {
+    manager.sandboxMessage(port, message)
+  })
+
+  port.onDisconnect.addListener(() => {
+    manager.deleteSandbox(port)
+  })
 })
 
 chrome.storage.local.get(["notifications"], (result) => {
