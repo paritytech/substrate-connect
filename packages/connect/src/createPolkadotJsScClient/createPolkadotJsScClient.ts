@@ -13,7 +13,7 @@ import { WellKnownChains } from "../WellKnownChains.js"
 import { getConnectorClient } from "../connector/index.js"
 import { healthChecker } from "./Health.js"
 
-export interface ScClient {
+export interface PolkadotJsScClient {
   addWellKnownChain: (
     wellKnownChain: WellKnownChains,
   ) => Promise<ProviderInterface>
@@ -273,7 +273,7 @@ class Provider implements ProviderInterface {
   }
 }
 
-export const createScClient = (): ScClient => {
+export const createPolkadotJsScClient = (): PolkadotJsScClient => {
   const client = getConnectorClient()
 
   return {
