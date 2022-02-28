@@ -87,39 +87,45 @@ const saveChainDbContent = async (
 // Start initializing a `ConnectionManager`.
 // This initialization operation shouldn't take more than a few dozen milliseconds, but we still
 // need to properly handle situations where initialization isn't finished yet.
-const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> = (async () => {
-  const managerInit = new ConnectionManager<chrome.runtime.Port>(smoldotStart())
-  for (const [key, value] of wellKnownChains.entries()) {
-    const dbContent = await new Promise<string | undefined>((res) =>
-      chrome.storage.local.get([key], (val) => res(val[key] as string)),
+const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> =
+  (async () => {
+    const managerInit = new ConnectionManager<chrome.runtime.Port>(
+      smoldotStart(),
     )
+    for (const [key, value] of wellKnownChains.entries()) {
+      const dbContent = await new Promise<string | undefined>((res) =>
+        chrome.storage.local.get([key], (val) => res(val[key] as string)),
+      )
 
-    await managerInit.addWellKnownChain(key, value, dbContent)
-    if (!dbContent) saveChainDbContent(managerInit, key)
-  }
-
-  // Notify all the callbacks waiting for changes in the manager.
-  const waitAllChainsUpdate = (manager: ConnectionManager<chrome.runtime.Port>) => {
-    listeners.forEach((listener) => notifyListener(manager, listener))
-    manager.waitAllChainChanged().then(() => {
-      waitAllChainsUpdate(manager)
-    })
-  }  
-  waitAllChainsUpdate(managerInit)
-
-  // Create an alarm that will periodically save the content of the database of the well-known
-  // chains.
-  chrome.alarms.onAlarm.addListener((alarm) => {
-    if (alarm.name === "DatabaseContentAlarm") {
-      for (const [key, _] of wellKnownChains) saveChainDbContent(managerInit, key)
+      await managerInit.addWellKnownChain(key, value, dbContent)
+      if (!dbContent) saveChainDbContent(managerInit, key)
     }
-  })
-  chrome.alarms.create("DatabaseContentAlarm", {
-    periodInMinutes: 5,
-  })
 
-  return managerInit
-})()
+    // Notify all the callbacks waiting for changes in the manager.
+    const waitAllChainsUpdate = (
+      manager: ConnectionManager<chrome.runtime.Port>,
+    ) => {
+      listeners.forEach((listener) => notifyListener(manager, listener))
+      manager.waitAllChainChanged().then(() => {
+        waitAllChainsUpdate(manager)
+      })
+    }
+    waitAllChainsUpdate(managerInit)
+
+    // Create an alarm that will periodically save the content of the database of the well-known
+    // chains.
+    chrome.alarms.onAlarm.addListener((alarm) => {
+      if (alarm.name === "DatabaseContentAlarm") {
+        for (const [key, _] of wellKnownChains)
+          saveChainDbContent(managerInit, key)
+      }
+    })
+    chrome.alarms.create("DatabaseContentAlarm", {
+      periodInMinutes: 5,
+    })
+
+    return managerInit
+  })()
 
 // Handle new port connections.
 //
@@ -140,7 +146,6 @@ chrome.runtime.onConnect.addListener((port) => {
 
   let managerWithSandbox = managerPromise.then((manager) => {
     manager.addSandbox(port)
-
     ;(async () => {
       for await (const message of manager.sandboxOutput(port)) {
         port.postMessage(message)
