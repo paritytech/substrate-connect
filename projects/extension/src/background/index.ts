@@ -28,7 +28,6 @@ export interface Background extends Window {
   }
 }
 
-let manager: Promise<ConnectionManager<chrome.runtime.Port>>
 const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
 
 const notifyListener = (
@@ -101,7 +100,7 @@ const waitAllChainsUpdate = (mgr: ConnectionManager<chrome.runtime.Port>) => {
   })
 }
 
-const init = async () => {
+const manager: Promise<ConnectionManager<chrome.runtime.Port>> = (async () => {
   const managerInit = new ConnectionManager<chrome.runtime.Port>(smoldotStart())
   for (const [key, value] of wellKnownChains.entries()) {
     const dbContent = await new Promise<string | undefined>((res) =>
@@ -121,8 +120,8 @@ const init = async () => {
     periodInMinutes: 5,
   })
 
-  manager = Promise.resolve(managerInit);
-}
+  return managerInit
+})()
 
 chrome.runtime.onConnect.addListener((port) => {
   manager.addSandbox(port)
@@ -151,5 +150,3 @@ chrome.storage.local.get(["notifications"], (result) => {
     })
   }
 })
-
-init()
