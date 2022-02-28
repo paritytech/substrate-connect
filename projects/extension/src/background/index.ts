@@ -51,14 +51,14 @@ const notifyListener = (
 
 const publicManager: Background["manager"] = {
   onManagerStateChanged(listener) {
-    manager.then((mgr) => notifyListener(mgr, listener))
+    managerPromise.then((mgr) => notifyListener(mgr, listener))
     listeners.add(listener)
     return () => {
       listeners.delete(listener)
     }
   },
   disconnectTab: (tabId: number) => {
-    manager.then((mgr) => {
+    managerPromise.then((mgr) => {
       // Note that multiple ports can share the same `tabId`
       for (const port of mgr.sandboxes) {
         if (port.sender?.tab?.id === tabId) {
@@ -102,7 +102,7 @@ const waitAllChainsUpdate = (mgr: ConnectionManager<chrome.runtime.Port>) => {
   })
 }
 
-const manager: Promise<ConnectionManager<chrome.runtime.Port>> = (async () => {
+const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> = (async () => {
   const managerInit = new ConnectionManager<chrome.runtime.Port>(smoldotStart())
   for (const [key, value] of wellKnownChains.entries()) {
     const dbContent = await new Promise<string | undefined>((res) =>
@@ -142,7 +142,7 @@ chrome.runtime.onConnect.addListener((port) => {
   // initialization shouldn't take more than a few dozen milliseconds and it is actually unlikely
   // for any message to arrive at all.
 
-  let managerWithSandbox = manager.then((mgr) => {
+  let managerWithSandbox = managerPromise.then((mgr) => {
     mgr.addSandbox(port)
 
     ;(async () => {
