@@ -95,13 +95,6 @@ const flushDatabases = (manager: ConnectionManager<chrome.runtime.Port>): void =
   for (const [key, _] of wellKnownChains) saveChainDbContent(manager, key)
 }
 
-const waitAllChainsUpdate = (manager: ConnectionManager<chrome.runtime.Port>) => {
-  listeners.forEach((listener) => notifyListener(manager, listener))
-  manager.waitAllChainChanged().then(() => {
-    waitAllChainsUpdate(manager)
-  })
-}
-
 const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> = (async () => {
   const managerInit = new ConnectionManager<chrome.runtime.Port>(smoldotStart())
   for (const [key, value] of wellKnownChains.entries()) {
@@ -113,6 +106,13 @@ const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> = (async (
     if (!dbContent) saveChainDbContent(managerInit, key)
   }
 
+  // Notify all the callbacks waiting for changes in the manager.
+  const waitAllChainsUpdate = (manager: ConnectionManager<chrome.runtime.Port>) => {
+    listeners.forEach((listener) => notifyListener(manager, listener))
+    manager.waitAllChainChanged().then(() => {
+      waitAllChainsUpdate(manager)
+    })
+  }  
   waitAllChainsUpdate(managerInit)
 
   chrome.alarms.onAlarm.addListener((alarm) => {
