@@ -9,13 +9,13 @@ import type {
 import EventEmitter from "eventemitter3"
 import type { Chain, JsonRpcCallback } from "../connector/types.js"
 
-import { WellKnownChains } from "../WellKnownChains.js"
+import { WellKnownChain } from "../WellKnownChain.js"
 import { getConnectorClient } from "../connector/index.js"
 import { healthChecker } from "./Health.js"
 
-export interface ScClient {
+export interface PolkadotJsScClient {
   addWellKnownChain: (
-    wellKnownChain: WellKnownChains,
+    wellKnownChain: WellKnownChain,
   ) => Promise<ProviderInterface>
   addChain: (chainSpec: string) => Promise<ProviderInterface>
 }
@@ -273,7 +273,15 @@ class Provider implements ProviderInterface {
   }
 }
 
-export const createScClient = (): ScClient => {
+/**
+ * Returns a {SubstrateConnector} that connects to chains, either through the substrate-connect
+ * extension or by executing a light client directly from JavaScript, depending on whether the
+ * extension is installed and available.
+ *
+ * The chains returned by `addChain` and `addWellKnownChain` implement the `ProviderInterface`
+ * trait of the `@polkadot/api` library.
+ */
+export const createPolkadotJsScClient = (): PolkadotJsScClient => {
   const client = getConnectorClient()
 
   return {
@@ -284,7 +292,7 @@ export const createScClient = (): ScClient => {
       await provider.connect()
       return provider
     },
-    addWellKnownChain: async (wellKnownChain: WellKnownChains) => {
+    addWellKnownChain: async (wellKnownChain: WellKnownChain) => {
       const provider = new Provider((callback: JsonRpcCallback) =>
         client.addWellKnownChain(wellKnownChain, callback),
       )

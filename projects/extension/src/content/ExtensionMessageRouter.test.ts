@@ -23,6 +23,8 @@ const sendMessage = (msg: ToExtension): void => {
 describe("Disconnect and incorrect cases", () => {
   beforeEach(() => {
     chrome.runtime.connect.mockClear()
+    port = new MockPort("test", 0)
+    chrome.runtime.connect.mockImplementation(() => port)
     router = new ExtensionMessageRouter()
     router.listen()
   })
@@ -32,9 +34,6 @@ describe("Disconnect and incorrect cases", () => {
   })
 
   test("port disconnecting sends an error message and removes port", async () => {
-    const port = new MockPort("test", 0)
-    const connect = chrome.runtime.connect
-    connect.mockImplementation(() => port)
     sendMessage({
       chainId: "test",
       type: "add-well-known-chain",
@@ -64,7 +63,6 @@ describe("Disconnect and incorrect cases", () => {
     } as unknown as ToExtension)
 
     await waitForMessageToBePosted()
-    expect(chrome.runtime.connect).not.toHaveBeenCalled()
     expect(router.connections.length).toBe(0)
   })
 })
@@ -72,10 +70,10 @@ describe("Disconnect and incorrect cases", () => {
 describe("Connection and forward cases", () => {
   beforeEach(() => {
     chrome.runtime.connect.mockClear()
-    router = new ExtensionMessageRouter()
-    router.listen()
     port = new MockPort("test", 0)
     chrome.runtime.connect.mockImplementation(() => port)
+    router = new ExtensionMessageRouter()
+    router.listen()
   })
 
   afterEach(() => {
@@ -92,14 +90,11 @@ describe("Connection and forward cases", () => {
     })
 
     await waitForMessageToBePosted()
-    expect(chrome.runtime.connect).toHaveBeenCalledTimes(1)
     expect(router.connections.length).toBe(1)
     expect(router.connections[0]).toBe(chainId)
   })
 
   test("forwards rpc message from app -> extension", async () => {
-    const port = new MockPort("test", 0)
-    chrome.runtime.connect.mockImplementation(() => port)
     // connect
     sendMessage({
       chainId: "test",
@@ -122,6 +117,8 @@ describe("Connection and forward cases", () => {
     expect(chrome.runtime.connect).toHaveBeenCalledTimes(1)
     expect(router.connections.length).toBe(1)
     const sample = {
+      chainId: "test",
+      origin: "substrate-connect-client",
       type: rpcMessage.type,
       jsonRpcMessage: rpcMessage.jsonRpcMessage,
     }
@@ -129,8 +126,6 @@ describe("Connection and forward cases", () => {
   })
 
   test("forwards rpc message from extension -> app", async () => {
-    const port = new MockPort("test", 0)
-    chrome.runtime.connect.mockImplementation(() => port)
     // connect
     sendMessage({
       chainId: "test",
@@ -143,6 +138,8 @@ describe("Connection and forward cases", () => {
     const handler = jest.fn()
     window.addEventListener("message", handler)
     port._sendAppMessage({
+      origin: "substrate-connect-extension",
+      chainId: "test",
       type: "rpc",
       jsonRpcMessage: '{"id:":1,"jsonrpc:"2.0","result":666}',
     })
@@ -161,8 +158,6 @@ describe("Connection and forward cases", () => {
   })
 
   test("forwards error message from extension -> app", async () => {
-    const port = new MockPort("test", 0)
-    chrome.runtime.connect.mockImplementation(() => port)
     // connect
     sendMessage({
       chainId: "test",
@@ -174,7 +169,12 @@ describe("Connection and forward cases", () => {
 
     const handler = jest.fn()
     window.addEventListener("message", handler)
-    port._sendAppMessage({ type: "error", errorMessage: "Boom!" })
+    port._sendAppMessage({
+      origin: "substrate-connect-extension",
+      chainId: "test",
+      type: "error",
+      errorMessage: "Boom!",
+    })
     await waitForMessageToBePosted()
 
     expect(handler).toHaveBeenCalled()

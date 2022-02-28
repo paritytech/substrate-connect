@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals"
 import type { AddChainOptions, ClientOptions } from "@substrate/smoldot-light"
-import { WellKnownChains } from "../WellKnownChains"
+import { WellKnownChain } from "../WellKnownChain"
 import {
   AlreadyDestroyedError,
   CrashError,
@@ -106,28 +106,47 @@ describe("SmoldotConnect::smoldot-light", () => {
     })
 
     it("terminates the internal client when all the chains, from all clients, have been removed", async () => {
+      const { addWellKnownChain } = getConnectorClient()
       const { addChain } = getConnectorClient()
-      const { addChain: addChain2 } = getConnectorClient()
 
-      const chain1 = await addChain("")
-      expect(mockedSmoldotLight.getLatestClient()).not.toBeUndefined()
+      const chain1 = await addWellKnownChain("" as WellKnownChain)
       const client = mockedSmoldotLight.getLatestClient()
 
-      const chain2 = await addChain2("")
+      const chain2 = await addChain("")
+      expect(client).toBe(mockedSmoldotLight.getLatestClient())
 
       chain1.remove()
       expect(client.terminate).not.toHaveBeenCalled()
 
       chain2.remove()
       expect(client.terminate).toHaveBeenCalled()
-      expect(mockedSmoldotLight.getLatestClient()).toBe(client)
 
-      const chain3 = await addChain("")
+      const chain3 = await addWellKnownChain("" as WellKnownChain)
       expect(mockedSmoldotLight.getLatestClient()).not.toBe(client)
       expect(
         mockedSmoldotLight.getLatestClient().terminate,
       ).not.toHaveBeenCalled()
       chain3.remove()
+      expect(mockedSmoldotLight.getLatestClient().terminate).toHaveBeenCalled()
+    })
+
+    it("handles race conditions on the client when adding/removing chains", async () => {
+      const { addChain } = getConnectorClient()
+      const { addChain: addChain2 } = getConnectorClient()
+
+      const chain1 = await addChain("")
+      const client = mockedSmoldotLight.getLatestClient()
+
+      const chain2Promise = addChain2("")
+
+      chain1.remove()
+
+      expect(client.terminate).not.toHaveBeenCalled()
+
+      const chain2 = await chain2Promise
+      chain2.remove()
+
+      expect(client.terminate).toHaveBeenCalled()
     })
   })
 
@@ -158,19 +177,19 @@ describe("SmoldotConnect::smoldot-light", () => {
       let mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(chainSpec)
 
-      await addWellKnownChain(WellKnownChains.polkadot)
+      await addWellKnownChain(WellKnownChain.polkadot)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(
         "fake-polkadot-spec",
       )
 
-      await addWellKnownChain(WellKnownChains.ksmcc3)
+      await addWellKnownChain(WellKnownChain.ksmcc3)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual("fake-ksmcc3-spec")
 
-      await addWellKnownChain(WellKnownChains.rococo_v2)
+      await addWellKnownChain(WellKnownChain.rococo_v2)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(

@@ -7,8 +7,8 @@ export const POLKA_ACCOUNT_ENDPOINTS = {
   polkastats: "polkastats.io",
 }
 
-export const ALL_PROVIDERS: SimpleProvider = {
+export const NETWORK: SimpleProvider = {
   name: "Westend",
-  network: "westend2",
+  id: "westend2",
   client: "Light client",
 }

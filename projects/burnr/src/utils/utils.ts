@@ -9,7 +9,7 @@ import { KeyringPair$Json } from "@polkadot/keyring/types"
 import { formatBalance } from "@polkadot/util"
 import type { Balance } from "@polkadot/types/interfaces"
 import BN from "bn.js"
-import { ALL_PROVIDERS } from "./constants"
+import { NETWORK } from "./constants"
 
 const keyring = new Keyring({ type: "sr25519" })
 
@@ -119,7 +119,7 @@ export const validateLocalstorage = (): void => {
   const expectedValues: Record<string, string[]> = {
     theme: ["true", "false"],
     balanceVisibility: ["true", "false"],
-    endpoint: [ALL_PROVIDERS.network],
+    endpoint: [NETWORK.id],
   }
 
   Object.keys(expectedValues).forEach((key) => {

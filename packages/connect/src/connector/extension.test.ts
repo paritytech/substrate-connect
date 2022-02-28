@@ -12,7 +12,7 @@ import {
 import { JsonRpcCallback } from "./types"
 
 // we have to fake this API on node
-import { WellKnownChains } from "../WellKnownChains.js"
+import { WellKnownChain } from "../WellKnownChain.js"
 ;(globalThis.crypto as any) = {
   getRandomValues: <T extends ArrayBufferView | null>(arr: T) => {
     if (!arr) return arr
@@ -155,7 +155,7 @@ describe("SmoldotConnect::Extension", () => {
   describe("addWellKnownChain", () => {
     it("adding a chain resolves the Promise upon receiving the `chain-ready` message", async () => {
       const { addWellKnownChain } = getConnectorClient()
-      const chainPromise = addWellKnownChain(WellKnownChains.polkadot)
+      const chainPromise = addWellKnownChain(WellKnownChain.polkadot)
       const addChainMessage = await getClientMessage()
       expect(addChainMessage).toMatchObject({
         origin: "substrate-connect-client",
@@ -177,7 +177,7 @@ describe("SmoldotConnect::Extension", () => {
 
     it("adding a chain rejects the Promise upon receiving an error while waiting for `chain-ready`", async () => {
       const { addWellKnownChain } = getConnectorClient()
-      const chainPromise = addWellKnownChain(WellKnownChains.polkadot)
+      const chainPromise = addWellKnownChain(WellKnownChain.polkadot)
       const addChainMessage = await getClientMessage()
 
       postToClient({

@@ -10,4 +10,3 @@ export { useLocalStorage } from "./api/useLocalStorage"
  * Component hooks
  */
 export { useBalance } from "./useBalance"
-export { useChainInfo } from "./useChainInfo"
