@@ -11,9 +11,9 @@ sync with given chainspecs.
 Provide a known Chain Name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2'):
 ```js
 import { ApiPromise } from '@polkadot/api';
-import { createScClient, SupportedChains } from '@substrate/connect';
+import { createPolkadotJsScClient, SupportedChains } from '@substrate/connect';
 
-const scClient = createScClient();
+const scClient = createPolkadotJsScClient();
 const provider = await scClient.addWellKnownChain(SupportedChains.westend2);
 const api = await ApiPromise.create({ provider });
 ```
@@ -22,12 +22,12 @@ or provide your custom substrate chain's name and chainspec:
 
 ```js
 import { ApiPromise } from '@polkadot/api';
-import { createScClient } from '@substrate/connect';
+import { createPolkadotJsScClient } from '@substrate/connect';
 import mySubstrateChainSpec from './mySubstrateChainSpec.json';
 
 const myChainSpec = JSON.stringify(mySubstrateChainSpec);
 
-const scClient = createScClient();
+const scClient = createPolkadotJsScClient();
 const provider = await scClient.addChain(myChainSpec);
 const api = await ApiPromise.create({ provider });
 ```
@@ -38,12 +38,12 @@ const api = await ApiPromise.create({ provider });
 For parachain support, you can providethe parachain's specs
 ```js
 import { ApiPromise } from '@polkadot/api';
-import { createScClient, SupportedChains } from '@substrate/connect';
+import { createPolkadotJsScClient, SupportedChains } from '@substrate/connect';
 import myParaChainSpec from './myParaChainSpec.json';
 
 const parachainSpec =  JSON.stringify(myParaChainSpec);
 
-const scClient = createScClient();
+const scClient = createPolkadotJsScClient();
 await scClient.addWellKnownChain(SupportedChains.westend2)
 const provider = await scClient.addChain(parachainSpec);
 const api = await ApiPromise.create({ provider });
