@@ -5,7 +5,9 @@ import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 export * from "./errors.js"
 export * from "./types.js"
 
-const isExtension =
+// We detect whether the extension is installed based on the presence of a DOM element with
+// a specific `id`. See `connect-extension-protocol`.
+const isExtensionPresent =
   typeof document === "object" &&
   typeof document.getElementById === "function" &&
   !!document.getElementById(DOM_ELEMENT_ID)
@@ -15,6 +17,6 @@ const isExtension =
  * extension or by executing a light client directly from JavaScript, depending on whether the
  * extension is installed and available.
  */
-export const getConnectorClient = isExtension
+export const getConnectorClient = isExtensionPresent
   ? eGetConnectorClient
   : slGetConnectorClient
