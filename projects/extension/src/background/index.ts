@@ -91,6 +91,9 @@ const saveChainDbContent = async (
   chrome.storage.local.set({ [key]: db })
 }
 
+// Start initializing a `ConnectionManager`.
+// This initialization operation shouldn't take more than a few dozen milliseconds, but we still
+// need to properly handle situations where initialization isn't finished yet.
 const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> = (async () => {
   const managerInit = new ConnectionManager<chrome.runtime.Port>(smoldotStart())
   for (const [key, value] of wellKnownChains.entries()) {
