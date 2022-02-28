@@ -3,8 +3,8 @@
  *
  * Connecting to a chain is done in two steps:
  *
- * - Call {getConnectorClient} or {createPolkadotJsScClient}, which gives you a so-called *client*.
- * - Call `addChain` or `addWellKnownChain` on this client.
+ * 1. Call {getConnectorClient} or {createPolkadotJsScClient}, which gives you a so-called *client*.
+ * 2. Call `addChain` or `addWellKnownChain` on this client.
  *
  * Use {createPolkadotJsScClient} if you want to bind the PolkadotJS library to substrate-connect.
  * This client will provide chains that implement the `ProviderInterface` interface defined in the
