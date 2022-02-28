@@ -78,20 +78,20 @@ export interface RequestRpcSend {
   params: unknown[]
 }
 
-const saveChainDbContent = async (key: string) => {
-  const db = await manager.wellKnownChainDatabaseContent(
+const saveChainDbContent = async (mgr: ConnectionManager<chrome.runtime.Port>, key: string) => {
+  const db = await mgr.wellKnownChainDatabaseContent(
     key,
     chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
   )
   chrome.storage.local.set({ [key]: db })
 }
 
-const flushDatabases = (): void => {
-  for (const [key, _] of wellKnownChains) saveChainDbContent(key)
+const flushDatabases = (mgr: ConnectionManager<chrome.runtime.Port>): void => {
+  for (const [key, _] of wellKnownChains) saveChainDbContent(mgr, key)
 }
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === "DatabaseContentAlarm") flushDatabases()
+  if (alarm.name === "DatabaseContentAlarm") flushDatabases(manager)
 })
 
 const waitAllChainsUpdate = (mgr: ConnectionManager<chrome.runtime.Port>) => {
@@ -109,7 +109,7 @@ const init = async () => {
     )
 
     await manager.addWellKnownChain(key, value, dbContent)
-    if (!dbContent) saveChainDbContent(key)
+    if (!dbContent) saveChainDbContent(manager, key)
   }
 
   waitAllChainsUpdate(manager)
