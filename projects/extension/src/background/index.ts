@@ -51,20 +51,22 @@ const notifyListener = (
 
 const publicManager: Background["manager"] = {
   onManagerStateChanged(listener) {
-    notifyListener(manager, listener)
+    manager.then((mgr) => notifyListener(mgr, listener))
     listeners.add(listener)
     return () => {
       listeners.delete(listener)
     }
   },
   disconnectTab: (tabId: number) => {
-    // Note that multiple ports can share the same `tabId`
-    for (const port of manager.sandboxes) {
-      if (port.sender?.tab?.id === tabId) {
-        manager.deleteSandbox(port)
-        port.disconnect()
+    manager.then((mgr) => {
+      // Note that multiple ports can share the same `tabId`
+      for (const port of mgr.sandboxes) {
+        if (port.sender?.tab?.id === tabId) {
+          mgr.deleteSandbox(port)
+          port.disconnect()
+        }
       }
-    }
+    })
   },
 }
 
@@ -141,7 +143,7 @@ chrome.runtime.onConnect.addListener((port) => {
   // for any message to arrive at all.
 
   let managerWithSandbox = manager.then((mgr) => {
-    mgr.addSandbox(port);
+    mgr.addSandbox(port)
 
     ;(async () => {
       for await (const message of mgr.sandboxOutput(port)) {
@@ -149,20 +151,20 @@ chrome.runtime.onConnect.addListener((port) => {
       }
     })()
 
-    return mgr;
-  });
+    return mgr
+  })
 
   port.onMessage.addListener((message: ToExtension) => {
     managerWithSandbox = managerWithSandbox.then((mgr) => {
-      mgr.sandboxMessage(port, message);
-      return mgr;
+      mgr.sandboxMessage(port, message)
+      return mgr
     })
   })
 
   port.onDisconnect.addListener(() => {
     managerWithSandbox = managerWithSandbox.then((mgr) => {
-      mgr.deleteSandbox(port);
-      return mgr;
+      mgr.deleteSandbox(port)
+      return mgr
     })
   })
 })
