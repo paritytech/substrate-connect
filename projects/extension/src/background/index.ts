@@ -29,7 +29,7 @@ export interface Background extends Window {
 }
 
 let manager: ConnectionManager<chrome.runtime.Port>
-let listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
+const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
 
 const notifyListener = (
   listener: (state: ExposedChainConnection[]) => void,
