@@ -106,28 +106,47 @@ describe("SmoldotConnect::smoldot-light", () => {
     })
 
     it("terminates the internal client when all the chains, from all clients, have been removed", async () => {
-      const { addChain } = getConnectorClient()
+      const { addWellKnownChain } = getConnectorClient()
       const { addChain: addChain2 } = getConnectorClient()
 
-      const chain1 = await addChain("")
-      expect(mockedSmoldotLight.getLatestClient()).not.toBeUndefined()
+      const chain1 = await addWellKnownChain("" as WellKnownChains)
       const client = mockedSmoldotLight.getLatestClient()
 
-      const chain2 = await addChain2("")
+      const chain2 = await addChain2("" as WellKnownChains)
+      expect(client).toBe(mockedSmoldotLight.getLatestClient())
 
       chain1.remove()
       expect(client.terminate).not.toHaveBeenCalled()
 
       chain2.remove()
       expect(client.terminate).toHaveBeenCalled()
-      expect(mockedSmoldotLight.getLatestClient()).toBe(client)
 
-      const chain3 = await addChain("")
+      const chain3 = await addWellKnownChain("" as WellKnownChains)
       expect(mockedSmoldotLight.getLatestClient()).not.toBe(client)
       expect(
         mockedSmoldotLight.getLatestClient().terminate,
       ).not.toHaveBeenCalled()
       chain3.remove()
+      expect(mockedSmoldotLight.getLatestClient().terminate).toHaveBeenCalled()
+    })
+
+    it("handles race conditions on the client, when adding/removing chains", async () => {
+      const { addChain } = getConnectorClient()
+      const { addChain: addChain2 } = getConnectorClient()
+
+      const chain1 = await addChain("")
+      const client = mockedSmoldotLight.getLatestClient()
+
+      const chain2Promise = addChain2("")
+
+      chain1.remove()
+
+      expect(client.terminate).not.toHaveBeenCalled()
+
+      const chain2 = await chain2Promise
+      chain2.remove()
+
+      expect(client.terminate).toHaveBeenCalled()
     })
   })
 
