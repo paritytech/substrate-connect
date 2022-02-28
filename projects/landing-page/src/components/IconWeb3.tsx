@@ -19,7 +19,7 @@ const useStyles = makeStyles<Theme, Props>({
 })
 
 const hasGlyph = (string: string) =>
-  ["kusama", "polkadot", "westend", "kulupu", "rococo"].indexOf(string) > -1
+  ["kusama", "polkadot", "westend", "kulupu", "rococo 2"].indexOf(string) > -1
 
 const IconWeb3: FunctionComponent<Props> = ({ size, color, children }) => {
   const classes = useStyles({ size, color })
