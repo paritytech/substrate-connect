@@ -107,12 +107,12 @@ describe("SmoldotConnect::smoldot-light", () => {
 
     it("terminates the internal client when all the chains, from all clients, have been removed", async () => {
       const { addWellKnownChain } = getConnectorClient()
-      const { addChain: addChain2 } = getConnectorClient()
+      const { addChain } = getConnectorClient()
 
       const chain1 = await addWellKnownChain("" as WellKnownChains)
       const client = mockedSmoldotLight.getLatestClient()
 
-      const chain2 = await addChain2("" as WellKnownChains)
+      const chain2 = await addChain("")
       expect(client).toBe(mockedSmoldotLight.getLatestClient())
 
       chain1.remove()
@@ -130,7 +130,7 @@ describe("SmoldotConnect::smoldot-light", () => {
       expect(mockedSmoldotLight.getLatestClient().terminate).toHaveBeenCalled()
     })
 
-    it("handles race conditions on the client, when adding/removing chains", async () => {
+    it("handles race conditions on the client when adding/removing chains", async () => {
       const { addChain } = getConnectorClient()
       const { addChain: addChain2 } = getConnectorClient()
 
