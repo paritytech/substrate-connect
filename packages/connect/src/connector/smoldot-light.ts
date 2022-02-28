@@ -57,6 +57,13 @@ const transformErrors = (thunk: () => void) => {
   }
 }
 
+/**
+ * Returns a {SubstrateConnector} that connects to chains by executing a light client directly
+ * from JavaScript.
+ *
+ * This is quite expensive in terms of CPU, but it is the only choice when the substrate-connect
+ * extension is not installed.
+ */
 export const getConnectorClient = (): SubstrateConnector => {
   const chains = new Map<Chain, SChain>()
 
