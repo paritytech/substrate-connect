@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals"
 import type { AddChainOptions, ClientOptions } from "@substrate/smoldot-light"
-import { WellKnownChains } from "../WellKnownChains"
+import { WellKnownChain } from "../WellKnownChain"
 import {
   AlreadyDestroyedError,
   CrashError,
@@ -109,7 +109,7 @@ describe("SmoldotConnect::smoldot-light", () => {
       const { addWellKnownChain } = getConnectorClient()
       const { addChain } = getConnectorClient()
 
-      const chain1 = await addWellKnownChain("" as WellKnownChains)
+      const chain1 = await addWellKnownChain("" as WellKnownChain)
       const client = mockedSmoldotLight.getLatestClient()
 
       const chain2 = await addChain("")
@@ -121,7 +121,7 @@ describe("SmoldotConnect::smoldot-light", () => {
       chain2.remove()
       expect(client.terminate).toHaveBeenCalled()
 
-      const chain3 = await addWellKnownChain("" as WellKnownChains)
+      const chain3 = await addWellKnownChain("" as WellKnownChain)
       expect(mockedSmoldotLight.getLatestClient()).not.toBe(client)
       expect(
         mockedSmoldotLight.getLatestClient().terminate,
@@ -177,19 +177,19 @@ describe("SmoldotConnect::smoldot-light", () => {
       let mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(chainSpec)
 
-      await addWellKnownChain(WellKnownChains.polkadot)
+      await addWellKnownChain(WellKnownChain.polkadot)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(
         "fake-polkadot-spec",
       )
 
-      await addWellKnownChain(WellKnownChains.ksmcc3)
+      await addWellKnownChain(WellKnownChain.ksmcc3)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual("fake-ksmcc3-spec")
 
-      await addWellKnownChain(WellKnownChains.rococo_v2)
+      await addWellKnownChain(WellKnownChain.rococo_v2)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(

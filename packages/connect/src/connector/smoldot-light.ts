@@ -15,7 +15,7 @@ import type {
   Chain,
   SubstrateConnector,
 } from "./types.js"
-import { WellKnownChains } from "../WellKnownChains.js"
+import { WellKnownChain } from "../WellKnownChain.js"
 
 let startPromise: Promise<(options: ClientOptions) => Client> | null = null
 const getStart = () => {
@@ -112,7 +112,7 @@ export const getConnectorClient = (): SubstrateConnector => {
   }
 
   const addWellKnownChain: AddWellKnownChain = async (
-    supposedChain: WellKnownChains,
+    supposedChain: WellKnownChain,
     jsonRpcCallback?: (msg: string) => void,
   ): Promise<Chain> => {
     // the following line ensures that the http request for the dynamic import
