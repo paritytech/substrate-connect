@@ -91,10 +91,6 @@ const saveChainDbContent = async (
   chrome.storage.local.set({ [key]: db })
 }
 
-const flushDatabases = (manager: ConnectionManager<chrome.runtime.Port>): void => {
-  for (const [key, _] of wellKnownChains) saveChainDbContent(manager, key)
-}
-
 const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> = (async () => {
   const managerInit = new ConnectionManager<chrome.runtime.Port>(smoldotStart())
   for (const [key, value] of wellKnownChains.entries()) {
@@ -115,8 +111,12 @@ const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> = (async (
   }  
   waitAllChainsUpdate(managerInit)
 
+  // Create an alarm that will periodically save the content of the database of the well-known
+  // chains.
   chrome.alarms.onAlarm.addListener((alarm) => {
-    if (alarm.name === "DatabaseContentAlarm") flushDatabases(managerInit)
+    if (alarm.name === "DatabaseContentAlarm") {
+      for (const [key, _] of wellKnownChains) saveChainDbContent(managerInit, key)
+    }
   })
   chrome.alarms.create("DatabaseContentAlarm", {
     periodInMinutes: 5,
