@@ -1,7 +1,4 @@
-import EventEmitter from "eventemitter3"
-import StrictEventEmitter from "strict-event-emitter-types"
-import { HealthChecker, SmoldotHealth } from "@substrate/connect"
-import { Chain } from "@substrate/smoldot-light"
+import { SmoldotHealth } from "@substrate/connect"
 
 export interface ExposedChainConnection {
   chainId: string
@@ -10,16 +7,3 @@ export interface ExposedChainConnection {
   url: string
   healthStatus?: SmoldotHealth
 }
-
-export interface ChainConnection extends ExposedChainConnection {
-  id: string
-  chain?: Chain
-  port: chrome.runtime.Port
-  healthChecker: HealthChecker
-}
-
-export interface StateEvents {
-  stateChanged: ExposedChainConnection[]
-}
-
-export type StateEmitter = StrictEventEmitter<EventEmitter, StateEvents>

@@ -1,4 +1,4 @@
-import { WellKnownChains } from "../WellKnownChains.js"
+import { WellKnownChain } from "../WellKnownChain.js"
 
 /**
  * Active connection to a blockchain.
@@ -59,7 +59,7 @@ export type AddChain = (
 ) => Promise<Chain>
 
 export type AddWellKnownChain = (
-  id: WellKnownChains,
+  id: WellKnownChain,
   jsonRpcCallback?: JsonRpcCallback,
 ) => Promise<Chain>
 

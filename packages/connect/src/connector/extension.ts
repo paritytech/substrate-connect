@@ -8,7 +8,7 @@ import {
   CrashError,
   JsonRpcDisabledError,
 } from "./errors.js"
-import { WellKnownChains } from "../WellKnownChains.js"
+import { WellKnownChain } from "../WellKnownChain.js"
 import { getSpec } from "./specs/index.js"
 
 type HeaderlessToExtensionGeneric<T extends ToExtension> = T extends {
@@ -138,7 +138,7 @@ export const createScClient = (): ScClient => {
     addChain: (chainSpec: string, jsonRpcCallback?: JsonRpcCallback) =>
       internalAddChain(false, chainSpec, jsonRpcCallback, [...chains.values()]),
     addWellKnownChain: (
-      name: WellKnownChains,
+      name: WellKnownChain,
       jsonRpcCallback?: JsonRpcCallback,
     ) => internalAddChain(true, name, jsonRpcCallback),
   }

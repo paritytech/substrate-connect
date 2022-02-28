@@ -10,7 +10,7 @@ import {
 } from "./errors.js"
 import { getSpec } from "./specs/index.js"
 import type { AddChain, AddWellKnownChain, Chain, ScClient } from "./types.js"
-import { WellKnownChains } from "../WellKnownChains.js"
+import { WellKnownChain } from "../WellKnownChains.js"
 
 let startPromise: Promise<(options: ClientOptions) => Client> | null = null
 const getStart = () => {
@@ -107,7 +107,7 @@ export const createScClient = (): ScClient => {
   }
 
   const addWellKnownChain: AddWellKnownChain = async (
-    supposedChain: WellKnownChains,
+    supposedChain: WellKnownChain,
     jsonRpcCallback?: (msg: string) => void,
   ): Promise<Chain> => {
     // the following line ensures that the http request for the dynamic import
