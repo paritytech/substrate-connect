@@ -2,7 +2,6 @@ import { createScClient as smoldotScClient } from "./smoldot-light.js"
 import { createScClient as extensionScClient } from "./extension.js"
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 
-export * from "./errors.js"
 export * from "./types.js"
 
 // We detect whether the extension is installed based on the presence of a DOM element with
