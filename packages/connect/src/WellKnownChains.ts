@@ -1,3 +1,8 @@
+/**
+ * List of popular chains that are likely to be connected to.
+ *
+ * The values in this enum correspond to the `id` field of the relevant chain specification.
+ */
 export enum WellKnownChains {
   polkadot = "polkadot",
   ksmcc3 = "ksmcc3",

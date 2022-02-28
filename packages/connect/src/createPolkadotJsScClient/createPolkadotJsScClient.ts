@@ -273,6 +273,14 @@ class Provider implements ProviderInterface {
   }
 }
 
+/**
+ * Returns a {SubstrateConnector} that connects to chains, either through the substrate-connect
+ * extension or by executing a light client directly from JavaScript, depending on whether the
+ * extension is installed and available.
+ *
+ * The chains returned by `addChain` and `addWellKnownChain` implement the `ProviderInterface`
+ * trait of the `@polkadot/api` library.
+ */
 export const createPolkadotJsScClient = (): PolkadotJsScClient => {
   const client = getConnectorClient()
 
