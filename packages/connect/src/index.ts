@@ -18,7 +18,7 @@
  *
  * If you use {createPolkadotJsScClient}, be aware that the PolkadotJS library and its API are
  * fundamentally built around full nodes functionnalities, while substrate-connect is a light
- * client. Some functionnalities of PolkadotJS will not work properly, or/and not as well as they
+ * client. Some functionnalities of PolkadotJS will not work properly, and/or not as well as they
  * could. This is fundamentally not fixable, and, while {createPolkadotJsScClient} is acceptable
  * for demos and prototypes, it is not possible to achieve the best user experience by using
  * PolkadotJS. Proper light-client-oriented high-level libraries built on top of
