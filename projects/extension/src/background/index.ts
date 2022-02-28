@@ -28,7 +28,7 @@ export interface Background extends Window {
   }
 }
 
-let manager: ConnectionManager<chrome.runtime.Port>
+let manager: Promise<ConnectionManager<chrome.runtime.Port>>
 const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
 
 const notifyListener = (
@@ -102,24 +102,26 @@ const waitAllChainsUpdate = (mgr: ConnectionManager<chrome.runtime.Port>) => {
 }
 
 const init = async () => {
-  manager = new ConnectionManager(smoldotStart())
+  const managerInit = new ConnectionManager<chrome.runtime.Port>(smoldotStart())
   for (const [key, value] of wellKnownChains.entries()) {
     const dbContent = await new Promise<string | undefined>((res) =>
       chrome.storage.local.get([key], (val) => res(val[key] as string)),
     )
 
-    await manager.addWellKnownChain(key, value, dbContent)
-    if (!dbContent) saveChainDbContent(manager, key)
+    await managerInit.addWellKnownChain(key, value, dbContent)
+    if (!dbContent) saveChainDbContent(managerInit, key)
   }
 
-  waitAllChainsUpdate(manager)
+  waitAllChainsUpdate(managerInit)
 
   chrome.alarms.onAlarm.addListener((alarm) => {
-    if (alarm.name === "DatabaseContentAlarm") flushDatabases(manager)
+    if (alarm.name === "DatabaseContentAlarm") flushDatabases(managerInit)
   })
   chrome.alarms.create("DatabaseContentAlarm", {
     periodInMinutes: 5,
   })
+
+  manager = Promise.resolve(managerInit);
 }
 
 chrome.runtime.onConnect.addListener((port) => {
