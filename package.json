@@ -17,6 +17,7 @@
     "packages/connect",
     "projects/extension",
     "projects/burnr",
+    "projects/demo",
     "projects/landing-page"
   ],
   "scripts": {
@@ -29,6 +30,7 @@
     "build": "yarn workspaces -s run build",
     "test": "yarn workspaces -s run test",
     "dev:burnr": "yarn workspace @substrate/burnr run dev",
+    "dev:demo": "yarn workspace @substrate/demo run dev",
     "dev:landing-page": "yarn workspace @substrate/landing-page run dev",
     "dev:extension": "yarn workspace @substrate/extension run dev",
     "deploy": "./deploy.sh",
