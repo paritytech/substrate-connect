@@ -18,7 +18,7 @@
  *
  * If you use {createPolkadotJsScClient}, be aware that the PolkadotJS library and its API are
  * fundamentally built around full nodes functionnalities, while substrate-connect is a light
- * client. Some functionnalities of PolkadotJS will not work properly, or and not as well as they
+ * client. Some functionnalities of PolkadotJS will not work properly, or/and not as well as they
  * could. This is fundamentally not fixable, and, while {createPolkadotJsScClient} is acceptable
  * for demos and prototypes, it is not possible to achieve the best user experience by using
  * PolkadotJS. Proper light-client-oriented high-level libraries built on top of
@@ -26,11 +26,11 @@
  *
  * # Adding parachains
  *
- * Connecting to a parachain is done the same way as connecting to a standalone chains: obtaining
+ * Connecting to a parachain is done the same way as connecting to a standalone chain: obtaining
  * a client (with {getConnectorClient} or {createPolkadotJsScClient}) then calling `addChain`.
  *
  * However, if you call `addChain` with a parachain chain specification, you **must** have
- * connected to its corresponding relay chain beforehand (using `addChain` or ̀`addWellKnownChain`).
+ * connected to its corresponding relay chain beforehand (using `addChain` or `addWellKnownChain`).
  * Failing to do so will lead to an error at the initialization of the parachain.
  *
  * Furthermore, the parachain must be added to the same client object as the one the relay chain
