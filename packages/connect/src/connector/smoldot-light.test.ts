@@ -5,8 +5,8 @@ import {
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
-} from "./errors"
-import type { ScClient } from "./types"
+  ScClient,
+} from "./types"
 
 class SdAlreadyDestroyedError extends Error {
   constructor() {

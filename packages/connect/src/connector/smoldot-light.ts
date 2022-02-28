@@ -3,13 +3,16 @@ import type {
   Client,
   ClientOptions,
 } from "@substrate/smoldot-light"
+import { getSpec } from "./specs/index.js"
 import {
+  AddChain,
+  AddWellKnownChain,
+  Chain,
+  ScClient,
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
-} from "./errors.js"
-import { getSpec } from "./specs/index.js"
-import type { AddChain, AddWellKnownChain, Chain, ScClient } from "./types.js"
+} from "./types.js"
 import { WellKnownChain } from "../WellKnownChain.js"
 
 let startPromise: Promise<(options: ClientOptions) => Client> | null = null
