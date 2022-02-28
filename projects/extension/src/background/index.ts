@@ -59,6 +59,9 @@ window.manager = {
     }
   },
   disconnectTab: (tabId: number) => {
+    // Note that the manager is always ready here, otherwise the caller wouldn't be aware of any
+    // `tabId`. However there is no API in JavaScript that allows assuming that a `Promise` is
+    // already ready.
     managerPromise.then((manager) => {
       // Note that multiple ports can share the same `tabId`
       for (const port of manager.sandboxes) {
