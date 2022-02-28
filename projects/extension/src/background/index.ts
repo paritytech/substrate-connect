@@ -73,13 +73,6 @@ const publicManager: Background["manager"] = {
 declare let window: Background
 window.manager = publicManager
 
-const l = logger("Extension")
-
-export interface RequestRpcSend {
-  method: string
-  params: unknown[]
-}
-
 const saveChainDbContent = async (
   manager: ConnectionManager<chrome.runtime.Port>,
   key: string,
