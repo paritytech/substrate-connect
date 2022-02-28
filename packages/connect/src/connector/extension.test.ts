@@ -5,11 +5,11 @@ import {
 } from "@substrate/connect-extension-protocol"
 import { createScClient } from "./extension"
 import {
+  JsonRpcCallback,
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
-} from "./errors"
-import { JsonRpcCallback } from "./types"
+} from "./types"
 
 // we have to fake this API on node
 import { WellKnownChain } from "../WellKnownChain.js"

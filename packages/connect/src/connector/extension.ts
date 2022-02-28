@@ -2,12 +2,14 @@ import type {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"
-import type { Chain, JsonRpcCallback, ScClient } from "./types.js"
 import {
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
-} from "./errors.js"
+  Chain,
+  JsonRpcCallback,
+  ScClient,
+} from "./types.js"
 import { WellKnownChain } from "../WellKnownChain.js"
 import { getSpec } from "./specs/index.js"
 
