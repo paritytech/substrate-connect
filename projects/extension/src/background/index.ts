@@ -87,7 +87,7 @@ const saveChainDbContent = async (key: string) => {
 }
 
 const flushDatabases = (): void => {
-  for (const [key, _] of wellKnownChains) saveChainDbContent(key)
+  for (const [key] of wellKnownChains) saveChainDbContent(key)
 }
 
 chrome.alarms.onAlarm.addListener((alarm) => {
@@ -103,10 +103,13 @@ const waitAllChainsUpdate = () => {
 
 const init = async () => {
   try {
+    const loopChrome = (key: any, res: (arg0: string) => void) => {
+      return chrome.storage.local.get([key], (val) => res(val[key] as string))
+    }
     manager = new ConnectionManager(smoldotStart())
     for (const [key, value] of wellKnownChains.entries()) {
       const dbContent = await new Promise<string | undefined>((res) =>
-        chrome.storage.local.get([key], (val) => res(val[key] as string)),
+        loopChrome(key, res),
       )
 
       await manager.addWellKnownChain(key, value, dbContent)
