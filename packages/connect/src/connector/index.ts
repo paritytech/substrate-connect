@@ -1,5 +1,5 @@
-import { createScClient as slcreateScClient } from "./smoldot-light.js"
-import { createScClient as ecreateScClient } from "./extension.js"
+import { createScClient as smoldotScClient } from "./smoldot-light.js"
+import { createScClient as extensionScClient } from "./extension.js"
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 
 export * from "./errors.js"
@@ -18,5 +18,5 @@ const isExtensionPresent =
  * extension is installed and available.
  */
 export const createScClient = isExtensionPresent
-  ? ecreateScClient
-  : slcreateScClient
+  ? extensionScClient
+  : smoldotScClient
