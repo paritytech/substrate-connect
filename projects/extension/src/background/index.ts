@@ -31,11 +31,11 @@ export interface Background extends Window {
 const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
 
 const notifyListener = (
-  mgr: ConnectionManager<chrome.runtime.Port>,
+  manager: ConnectionManager<chrome.runtime.Port>,
   listener: (state: ExposedChainConnection[]) => void,
 ) => {
   listener(
-    mgr.allChains
+    manager.allChains
       .filter((info) => info.apiInfo)
       .map((info) => {
         return {
@@ -51,18 +51,18 @@ const notifyListener = (
 
 const publicManager: Background["manager"] = {
   onManagerStateChanged(listener) {
-    managerPromise.then((mgr) => notifyListener(mgr, listener))
+    managerPromise.then((manager) => notifyListener(manager, listener))
     listeners.add(listener)
     return () => {
       listeners.delete(listener)
     }
   },
   disconnectTab: (tabId: number) => {
-    managerPromise.then((mgr) => {
+    managerPromise.then((manager) => {
       // Note that multiple ports can share the same `tabId`
-      for (const port of mgr.sandboxes) {
+      for (const port of manager.sandboxes) {
         if (port.sender?.tab?.id === tabId) {
-          mgr.deleteSandbox(port)
+          manager.deleteSandbox(port)
           port.disconnect()
         }
       }
@@ -81,24 +81,24 @@ export interface RequestRpcSend {
 }
 
 const saveChainDbContent = async (
-  mgr: ConnectionManager<chrome.runtime.Port>,
+  manager: ConnectionManager<chrome.runtime.Port>,
   key: string,
 ) => {
-  const db = await mgr.wellKnownChainDatabaseContent(
+  const db = await manager.wellKnownChainDatabaseContent(
     key,
     chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
   )
   chrome.storage.local.set({ [key]: db })
 }
 
-const flushDatabases = (mgr: ConnectionManager<chrome.runtime.Port>): void => {
-  for (const [key, _] of wellKnownChains) saveChainDbContent(mgr, key)
+const flushDatabases = (manager: ConnectionManager<chrome.runtime.Port>): void => {
+  for (const [key, _] of wellKnownChains) saveChainDbContent(manager, key)
 }
 
-const waitAllChainsUpdate = (mgr: ConnectionManager<chrome.runtime.Port>) => {
-  listeners.forEach((listener) => notifyListener(mgr, listener))
-  mgr.waitAllChainChanged().then(() => {
-    waitAllChainsUpdate(mgr)
+const waitAllChainsUpdate = (manager: ConnectionManager<chrome.runtime.Port>) => {
+  listeners.forEach((listener) => notifyListener(manager, listener))
+  manager.waitAllChainChanged().then(() => {
+    waitAllChainsUpdate(manager)
   })
 }
 
@@ -142,29 +142,29 @@ chrome.runtime.onConnect.addListener((port) => {
   // initialization shouldn't take more than a few dozen milliseconds and it is actually unlikely
   // for any message to arrive at all.
 
-  let managerWithSandbox = managerPromise.then((mgr) => {
-    mgr.addSandbox(port)
+  let managerWithSandbox = managerPromise.then((manager) => {
+    manager.addSandbox(port)
 
     ;(async () => {
-      for await (const message of mgr.sandboxOutput(port)) {
+      for await (const message of manager.sandboxOutput(port)) {
         port.postMessage(message)
       }
     })()
 
-    return mgr
+    return manager
   })
 
   port.onMessage.addListener((message: ToExtension) => {
-    managerWithSandbox = managerWithSandbox.then((mgr) => {
-      mgr.sandboxMessage(port, message)
-      return mgr
+    managerWithSandbox = managerWithSandbox.then((manager) => {
+      manager.sandboxMessage(port, message)
+      return manager
     })
   })
 
   port.onDisconnect.addListener(() => {
-    managerWithSandbox = managerWithSandbox.then((mgr) => {
-      mgr.deleteSandbox(port)
-      return mgr
+    managerWithSandbox = managerWithSandbox.then((manager) => {
+      manager.deleteSandbox(port)
+      return manager
     })
   })
 })
