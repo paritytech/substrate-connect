@@ -49,7 +49,8 @@ const notifyListener = (
   )
 }
 
-const publicManager: Background["manager"] = {
+declare let window: Background
+window.manager = {
   onManagerStateChanged(listener) {
     managerPromise.then((manager) => notifyListener(manager, listener))
     listeners.add(listener)
@@ -69,9 +70,6 @@ const publicManager: Background["manager"] = {
     })
   },
 }
-
-declare let window: Background
-window.manager = publicManager
 
 const saveChainDbContent = async (
   manager: ConnectionManager<chrome.runtime.Port>,
