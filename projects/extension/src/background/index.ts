@@ -32,10 +32,11 @@ let manager: ConnectionManager<chrome.runtime.Port>
 const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
 
 const notifyListener = (
+  mgr: ConnectionManager<chrome.runtime.Port>,
   listener: (state: ExposedChainConnection[]) => void,
 ) => {
   listener(
-    manager.allChains
+    mgr.allChains
       .filter((info) => info.apiInfo)
       .map((info) => {
         return {
@@ -51,7 +52,7 @@ const notifyListener = (
 
 const publicManager: Background["manager"] = {
   onManagerStateChanged(listener) {
-    notifyListener(listener)
+    notifyListener(manager, listener)
     listeners.add(listener)
     return () => {
       listeners.delete(listener)
@@ -94,7 +95,7 @@ const flushDatabases = (mgr: ConnectionManager<chrome.runtime.Port>): void => {
 }
 
 const waitAllChainsUpdate = (mgr: ConnectionManager<chrome.runtime.Port>) => {
-  listeners.forEach(notifyListener)
+  listeners.forEach((listener) => notifyListener(manager, listener))
   mgr.waitAllChainChanged().then(() => {
     waitAllChainsUpdate(mgr)
   })
