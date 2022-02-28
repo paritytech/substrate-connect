@@ -10,7 +10,7 @@ import {
 } from "./errors.js"
 import { getSpec } from "./specs/index.js"
 import type { AddChain, AddWellKnownChain, Chain, ScClient } from "./types.js"
-import { WellKnownChain } from "../WellKnownChains.js"
+import { WellKnownChain } from "../WellKnownChain.js"
 
 let startPromise: Promise<(options: ClientOptions) => Client> | null = null
 const getStart = () => {

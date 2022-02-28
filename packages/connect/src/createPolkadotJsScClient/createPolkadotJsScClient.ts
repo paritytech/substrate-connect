@@ -9,7 +9,7 @@ import type {
 import EventEmitter from "eventemitter3"
 import type { Chain, JsonRpcCallback } from "../connector/types.js"
 
-import { WellKnownChain } from "../WellKnownChains.js"
+import { WellKnownChain } from "../WellKnownChain.js"
 import { createScClient } from "../connector/index.js"
 import { healthChecker } from "./Health.js"
 
