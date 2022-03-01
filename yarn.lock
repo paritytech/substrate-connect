@@ -2181,7 +2181,7 @@
     "@polkadot/util" "^8.4.1"
     rxjs "^7.5.4"
 
-"@polkadot/rpc-provider@7.10.1", "@polkadot/rpc-provider@^7.9.1":
+"@polkadot/rpc-provider@7.10.1", "@polkadot/rpc-provider@^7.10.1":
   version "7.10.1"
   resolved "https://registry.yarnpkg.com/@polkadot/rpc-provider/-/rpc-provider-7.10.1.tgz#59e5eb9a424950e1d79a31a14d258518379b8319"
   integrity sha512-UMcTC3y3oPkCmROx0SM7aziYw3Fs6MLOlIjxaWc9FQXOwBEva6tjYiFAMl4qmGzyvpoT7Q6/pePnE/pUKEG+Jw==
@@ -2237,8 +2237,6 @@
     "@polkadot/types-codec" "7.10.1"
     "@polkadot/types-create" "7.10.1"
     "@polkadot/util" "^8.4.1"
-    "@polkadot/util-crypto" "^8.4.1"
-    rxjs "^7.5.4"
 
 "@polkadot/types-support@7.10.1":
   version "7.10.1"
