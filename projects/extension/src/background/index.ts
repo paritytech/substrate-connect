@@ -87,7 +87,7 @@ const saveChainDbContent = async (key: string) => {
 }
 
 const flushDatabases = (): void => {
-  for (const [key, _] of wellKnownChains) saveChainDbContent(key)
+  for (const [key] of wellKnownChains) saveChainDbContent(key)
 }
 
 chrome.alarms.onAlarm.addListener((alarm) => {
