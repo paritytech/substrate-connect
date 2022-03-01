@@ -2060,7 +2060,7 @@
     chrome-trace-event "^1.0.2"
     nullthrows "^1.1.1"
 
-"@polkadot/api-augment@7.10.1":
+"@polkadot/api-augment@7.10.1", "@polkadot/api-augment@^7.10.1":
   version "7.10.1"
   resolved "https://registry.yarnpkg.com/@polkadot/api-augment/-/api-augment-7.10.1.tgz#efe43b8b62ac8c243c264b887b4622efc4cf5bdf"
   integrity sha512-7OeCeiwtKAncXDO08a/cqU++IGYAVtFe0ENBJ+gzvj0VhlxXLF0zIH6qBtmELZGfl4f5JKO/yQd4iae8CbbVOQ==
@@ -2246,7 +2246,7 @@
     "@babel/runtime" "^7.17.2"
     "@polkadot/util" "^8.4.1"
 
-"@polkadot/types@7.10.1":
+"@polkadot/types@7.10.1", "@polkadot/types@^7.10.1":
   version "7.10.1"
   resolved "https://registry.yarnpkg.com/@polkadot/types/-/types-7.10.1.tgz#c19dce979d68e9f9b32321b44746034e1a35d81f"
   integrity sha512-nAe/X61NTMPQTGl2x5mAjnQQN2SPs5ta3g+luLmER1WBwrjC7HixBxMRqVxDEzcjQFU8DsRfh8buR5CIs6uNFQ==

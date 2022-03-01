@@ -11,7 +11,9 @@ module.exports = {
   rules: {
     "import/no-extraneous-dependencies": [
       "error",
-      { devDependencies: ["**/*.test.ts", "**/*.spec.ts"] },
+      {
+        devDependencies: ["**/*.test.ts", "**/*.spec.ts"],
+      },
     ],
   },
   env: {
