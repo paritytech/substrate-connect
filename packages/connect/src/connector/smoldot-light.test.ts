@@ -1,12 +1,12 @@
 import { jest } from "@jest/globals"
 import type { AddChainOptions, ClientOptions } from "@substrate/smoldot-light"
-import { WellKnownChains } from "../WellKnownChains"
+import { WellKnownChain } from "../WellKnownChain"
 import {
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
-} from "./errors"
-import type { SubstrateConnector } from "./types"
+  ScClient,
+} from "./types"
 
 class SdAlreadyDestroyedError extends Error {
   constructor() {
@@ -90,9 +90,9 @@ jest.unstable_mockModule("./specs/index.js", () => ({
 type MockSmoldotLight = ReturnType<typeof mockSmoldotLightFactory>
 let mockedSmoldotLight: MockSmoldotLight
 
-let getConnectorClient: () => SubstrateConnector
+let createScClient: () => ScClient
 beforeAll(async () => {
-  ;({ getConnectorClient } = await import("./smoldot-light"))
+  ;({ createScClient } = await import("./smoldot-light"))
   mockedSmoldotLight = (await import(
     "@substrate/smoldot-light"
   )) as unknown as MockSmoldotLight
@@ -101,15 +101,15 @@ beforeAll(async () => {
 describe("SmoldotConnect::smoldot-light", () => {
   describe("client", () => {
     it("does not eagerly instantiate the client", () => {
-      getConnectorClient()
+      createScClient()
       expect(mockedSmoldotLight.getLatestClient()).toBeUndefined()
     })
 
     it("terminates the internal client when all the chains, from all clients, have been removed", async () => {
-      const { addWellKnownChain } = getConnectorClient()
-      const { addChain } = getConnectorClient()
+      const { addWellKnownChain } = createScClient()
+      const { addChain } = createScClient()
 
-      const chain1 = await addWellKnownChain("" as WellKnownChains)
+      const chain1 = await addWellKnownChain("" as WellKnownChain)
       const client = mockedSmoldotLight.getLatestClient()
 
       const chain2 = await addChain("")
@@ -121,7 +121,7 @@ describe("SmoldotConnect::smoldot-light", () => {
       chain2.remove()
       expect(client.terminate).toHaveBeenCalled()
 
-      const chain3 = await addWellKnownChain("" as WellKnownChains)
+      const chain3 = await addWellKnownChain("" as WellKnownChain)
       expect(mockedSmoldotLight.getLatestClient()).not.toBe(client)
       expect(
         mockedSmoldotLight.getLatestClient().terminate,
@@ -131,8 +131,8 @@ describe("SmoldotConnect::smoldot-light", () => {
     })
 
     it("handles race conditions on the client when adding/removing chains", async () => {
-      const { addChain } = getConnectorClient()
-      const { addChain: addChain2 } = getConnectorClient()
+      const { addChain } = createScClient()
+      const { addChain: addChain2 } = createScClient()
 
       const chain1 = await addChain("")
       const client = mockedSmoldotLight.getLatestClient()
@@ -152,7 +152,7 @@ describe("SmoldotConnect::smoldot-light", () => {
 
   describe("chain", () => {
     it("sends/receives rpc messages", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       const messagesReceived: string[] = []
       const chain = await addChain("", (response) => {
         messagesReceived.push(response)
@@ -170,26 +170,26 @@ describe("SmoldotConnect::smoldot-light", () => {
     })
 
     it("propagates the correct chainSpec to smoldot-light", async () => {
-      const { addChain, addWellKnownChain } = getConnectorClient()
+      const { addChain, addWellKnownChain } = createScClient()
       const chainSpec = "testChainSpec"
       await addChain(chainSpec)
 
       let mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(chainSpec)
 
-      await addWellKnownChain(WellKnownChains.polkadot)
+      await addWellKnownChain(WellKnownChain.polkadot)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(
         "fake-polkadot-spec",
       )
 
-      await addWellKnownChain(WellKnownChains.ksmcc3)
+      await addWellKnownChain(WellKnownChain.ksmcc3)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual("fake-ksmcc3-spec")
 
-      await addWellKnownChain(WellKnownChains.rococo_v2)
+      await addWellKnownChain(WellKnownChain.rococo_v2)
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(
@@ -198,7 +198,7 @@ describe("SmoldotConnect::smoldot-light", () => {
     })
 
     it("propagates the correct potentialRelayChainIds to smoldot-light", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       const prevChains = await Promise.all(
         Array(3)
           .fill(null)
@@ -221,7 +221,7 @@ describe("SmoldotConnect::smoldot-light", () => {
     })
 
     it("propagates the correct CrashError", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       const messagesReceived: string[] = []
       const chain = await addChain("", (response) => {
         messagesReceived.push(response)
@@ -271,7 +271,7 @@ describe("SmoldotConnect::smoldot-light", () => {
     })
 
     it("propagates the correct AlreadyDestroyedError", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       const messagesReceived: string[] = []
       const chain = await addChain("", (response) => {
         messagesReceived.push(response)
@@ -301,7 +301,7 @@ describe("SmoldotConnect::smoldot-light", () => {
     })
 
     it("propagates the correct JsonRpcDisabledError", async () => {
-      const { addChain } = getConnectorClient()
+      const { addChain } = createScClient()
       const messagesReceived: string[] = []
       const chain = await addChain("", (response) => {
         messagesReceived.push(response)

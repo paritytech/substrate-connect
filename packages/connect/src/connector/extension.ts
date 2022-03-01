@@ -2,13 +2,15 @@ import type {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"
-import type { Chain, JsonRpcCallback, SubstrateConnector } from "./types.js"
 import {
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
-} from "./errors.js"
-import { WellKnownChains } from "../WellKnownChains.js"
+  Chain,
+  JsonRpcCallback,
+  ScClient,
+} from "./types.js"
+import { WellKnownChain } from "../WellKnownChain.js"
 import { getSpec } from "./specs/index.js"
 
 type HeaderlessToExtensionGeneric<T extends ToExtension> = T extends {
@@ -33,7 +35,7 @@ function getRandomChainId(): string {
 }
 
 /**
- * Returns a {SubstrateConnector} that connects to chains by asking the substrate-connect extension
+ * Returns a {ScClient} that connects to chains by asking the substrate-connect extension
  * to do so.
  *
  * This function assumes that the extension is installed and available. It is out of scope of this
@@ -41,7 +43,7 @@ function getRandomChainId(): string {
  * If you try to add a chain without the extension installed, nothing will happen and the
  * `Promise`s will never resolve.
  */
-export const getConnectorClient = (): SubstrateConnector => {
+export const createScClient = (): ScClient => {
   const chains = new Map<Chain, string>()
 
   const internalAddChain = async (
@@ -138,7 +140,7 @@ export const getConnectorClient = (): SubstrateConnector => {
     addChain: (chainSpec: string, jsonRpcCallback?: JsonRpcCallback) =>
       internalAddChain(false, chainSpec, jsonRpcCallback, [...chains.values()]),
     addWellKnownChain: (
-      name: WellKnownChains,
+      name: WellKnownChain,
       jsonRpcCallback?: JsonRpcCallback,
     ) => internalAddChain(true, name, jsonRpcCallback),
   }

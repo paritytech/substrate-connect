@@ -3,7 +3,7 @@
  *
  * The values in this enum correspond to the `id` field of the relevant chain specification.
  */
-export enum WellKnownChains {
+export enum WellKnownChain {
   polkadot = "polkadot",
   ksmcc3 = "ksmcc3",
   rococo_v2 = "rococo_v2",

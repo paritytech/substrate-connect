@@ -3,7 +3,7 @@ import { logger } from "@polkadot/util"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
-import { WellKnownChains } from "@substrate/connect"
+import { WellKnownChain } from "@substrate/connect"
 import { start as smoldotStart } from "@substrate/smoldot-light"
 
 import westend2 from "../../public/assets/westend2.json"
@@ -13,10 +13,10 @@ import rococo_v2 from "../../public/assets/rococo_v2.json"
 import { ToExtension } from "@substrate/connect-extension-protocol"
 
 export const wellKnownChains: Map<string, string> = new Map<string, string>([
-  [WellKnownChains.polkadot, JSON.stringify(polkadot)],
-  [WellKnownChains.ksmcc3, JSON.stringify(ksmcc3)],
-  [WellKnownChains.rococo_v2, JSON.stringify(rococo_v2)],
-  [WellKnownChains.westend2, JSON.stringify(westend2)],
+  [WellKnownChain.polkadot, JSON.stringify(polkadot)],
+  [WellKnownChain.ksmcc3, JSON.stringify(ksmcc3)],
+  [WellKnownChain.rococo_v2, JSON.stringify(rococo_v2)],
+  [WellKnownChain.westend2, JSON.stringify(westend2)],
 ])
 
 export interface Background extends Window {
@@ -117,7 +117,7 @@ const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> =
     // chains.
     chrome.alarms.onAlarm.addListener((alarm) => {
       if (alarm.name === "DatabaseContentAlarm") {
-        for (const [key, _] of wellKnownChains)
+        for (const [key] of wellKnownChains)
           saveChainDbContent(managerInit, key)
       }
     })

@@ -129,7 +129,7 @@ const connectorFactory = () => {
   const clients: ReturnType<typeof getFakeClient>[] = []
   const latestClient = () => clients[clients.length - 1]
   return {
-    getConnectorClient: () => {
+    createScClient: () => {
       const result = getFakeClient()
       clients.push(result)
       return result
