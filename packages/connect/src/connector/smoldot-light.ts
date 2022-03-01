@@ -3,17 +3,15 @@ import type {
   Client,
   ClientOptions,
 } from "@substrate/smoldot-light"
-import {
-  AlreadyDestroyedError,
-  CrashError,
-  JsonRpcDisabledError,
-} from "./errors.js"
 import { getSpec } from "./specs/index.js"
-import type {
+import {
   AddChain,
   AddWellKnownChain,
   Chain,
-  SubstrateConnector,
+  ScClient,
+  AlreadyDestroyedError,
+  CrashError,
+  JsonRpcDisabledError,
 } from "./types.js"
 import { WellKnownChain } from "../WellKnownChain.js"
 
@@ -58,13 +56,13 @@ const transformErrors = (thunk: () => void) => {
 }
 
 /**
- * Returns a {SubstrateConnector} that connects to chains by executing a light client directly
+ * Returns a {ScClient} that connects to chains by executing a light client directly
  * from JavaScript.
  *
  * This is quite expensive in terms of CPU, but it is the only choice when the substrate-connect
  * extension is not installed.
  */
-export const getConnectorClient = (): SubstrateConnector => {
+export const createScClient = (): ScClient => {
   const chains = new Map<Chain, SChain>()
 
   const addChain: AddChain = async (
