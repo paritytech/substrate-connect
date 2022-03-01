@@ -1,5 +1,4 @@
 import { ConnectionManager } from "./ConnectionManager"
-import { logger } from "@polkadot/util"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
