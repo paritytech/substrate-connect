@@ -1,6 +1,6 @@
 {
   "name": "@substrate/extension",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Browser extension to manage substrate-based blockchain light clients",
   "main": "dist/src/index.js",
   "author": "Parity Technologies",
@@ -31,7 +31,7 @@
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/styles": "^4.11.4",
-    "@polkadot/rpc-provider": "^7.9.1",
+    "@polkadot/rpc-provider": "^7.10.1",
     "@substrate/connect-extension-protocol": "^1.0.0",
     "@substrate/smoldot-light": "0.6.4",
     "react": "^17.0.2",
