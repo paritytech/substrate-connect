@@ -26,7 +26,7 @@ export class ExtensionMessageRouter {
   constructor() {
     // forward any messages: extension -> page
     this.#port.onMessage.addListener((data: ToApplication): void => {
-      if (data.type == "error") this.#chainIds.delete(data.chainId)
+      if (data.type === "error") this.#chainIds.delete(data.chainId)
 
       sendMessage(data)
     })
