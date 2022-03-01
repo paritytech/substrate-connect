@@ -10,4 +10,7 @@ module.exports = {
   env: {
     browser: true,
   },
+  globals: {
+    chrome: true,
+  },
 }
