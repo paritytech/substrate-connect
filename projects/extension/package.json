@@ -24,7 +24,9 @@
   },
   "keywords": [],
   "devDependencies": {
+    "@jest/globals": "^27.5.1",
     "jest": "^27.5.1",
+    "jest-chrome": "^0.7.2",
     "web-ext": "^6.7.0"
   },
   "dependencies": {
@@ -32,6 +34,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/styles": "^4.11.4",
     "@polkadot/rpc-provider": "^7.10.1",
+    "@substrate/connect": "0.6.0",
     "@substrate/connect-extension-protocol": "^1.0.0",
     "@substrate/smoldot-light": "0.6.4",
     "react": "^17.0.2",
