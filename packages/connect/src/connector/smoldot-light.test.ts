@@ -92,7 +92,8 @@ let mockedSmoldotLight: MockSmoldotLight
 
 let createScClient: () => ScClient
 beforeAll(async () => {
-  ;({ createScClient } = await import("./smoldot-light"))
+  const getCreateScClient = await import("./smoldot-light")
+  createScClient = getCreateScClient.default()
   mockedSmoldotLight = (await import(
     "@substrate/smoldot-light"
   )) as unknown as MockSmoldotLight

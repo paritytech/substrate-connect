@@ -3,13 +3,15 @@ import {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"
-import { createScClient } from "./extension"
+import getCreateScClient from "./extension"
 import {
   JsonRpcCallback,
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
 } from "./types"
+
+const createScClient = getCreateScClient()
 
 // we have to fake this API on node
 import { WellKnownChain } from "../WellKnownChain.js"
