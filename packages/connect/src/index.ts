@@ -98,4 +98,5 @@
 
 export { WellKnownChain } from "./WellKnownChain.js"
 export * from "./connector/index.js"
+export * from "./Health.js"
 export * from "./createPolkadotJsScClient/index.js"

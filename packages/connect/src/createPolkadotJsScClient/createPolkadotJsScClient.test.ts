@@ -1,54 +1,26 @@
 import { jest } from "@jest/globals"
 import type { Chain, JsonRpcCallback } from "../connector/types.js"
 import type { PolkadotJsScClient } from "./createPolkadotJsScClient.js"
-import type { HealthChecker, SmoldotHealth } from "./Health.js"
+import type { HealthHandler, GetChain, GetHealthChain } from "../Health.js"
 
 const wait = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
-type MockedHealthChecker = HealthChecker & {
-  _isActive: () => boolean
-  _triggerHealthUpdate: (update: SmoldotHealth) => void
-}
-const healthCheckerMock = (): MockedHealthChecker => {
-  let cb: (health: SmoldotHealth) => void = () => {}
-  let sendJsonRpc: (request: string) => void = () => {}
-  let isActive = false
-
-  return {
-    setSendJsonRpc: (cb) => {
-      sendJsonRpc = cb
-    },
-    start: (x) => {
-      isActive = true
-      cb = x
-    },
-    stop: () => {
-      isActive = false
-    },
-    sendJsonRpc: (...args) => sendJsonRpc(...args),
-    responsePassThrough: (response) => response,
-    _isActive: () => isActive,
-    _triggerHealthUpdate: (update: SmoldotHealth) => {
-      cb(update)
-    },
-  }
-}
-
 const healthCheckerFactory = () => {
-  const _healthCheckers: MockedHealthChecker[] = []
+  const _healthHandlers: HealthHandler[] = []
 
   return {
-    healthChecker: () => {
-      const result = healthCheckerMock()
-      _healthCheckers.push(result)
-      return result
-    },
-    _healthCheckers,
-    _latestHealthChecker: () => _healthCheckers.slice(-1)[0],
+    healthChecker:
+      (getChain: GetChain<Chain>): GetHealthChain<Chain> =>
+      (jsonHandler, healthHandler) => {
+        _healthHandlers.push(healthHandler)
+        return getChain(jsonHandler)
+      },
+    _healthHandlers,
+    _latestHealthHandler: () => _healthHandlers.slice(-1)[0],
   }
 }
 
-jest.unstable_mockModule("./Health.js", healthCheckerFactory)
+jest.unstable_mockModule("../Health.js", healthCheckerFactory)
 
 type MockChain = Chain & {
   _spec: () => string
@@ -146,9 +118,9 @@ jest.unstable_mockModule("../connector/index.js", connectorFactory)
 let createPolkadotJsScClient: () => PolkadotJsScClient
 let mockedConnector: ReturnType<typeof connectorFactory>
 let mockedHealthChecker: ReturnType<typeof healthCheckerFactory>
-const getCurrentHealthChecker = () => mockedHealthChecker._latestHealthChecker()
+const getCurrentHealthHandler = () => mockedHealthChecker._latestHealthHandler()
 const setChainSyncyingStatus = (isSyncing: boolean) => {
-  getCurrentHealthChecker()._triggerHealthUpdate({
+  getCurrentHealthHandler()({
     isSyncing,
     peers: 1,
     shouldHavePeers: true,
@@ -160,7 +132,7 @@ beforeAll(async () => {
   mockedConnector = (await import(
     "../connector/index.js"
   )) as unknown as ReturnType<typeof connectorFactory>
-  mockedHealthChecker = await (import("./Health.js") as any)
+  mockedHealthChecker = await (import("../Health.js") as any)
 })
 
 describe("createChain/createWellKnownCahin", () => {

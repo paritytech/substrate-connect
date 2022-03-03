@@ -1,10 +1,59 @@
+import type { JsonRpcCallback } from "./connector/types.js"
+
 export interface SmoldotHealth {
   isSyncing: boolean
   peers: number
   shouldHavePeers: boolean
 }
 
-export interface HealthChecker {
+export type HealthHandler = (healthUpdate: SmoldotHealth) => void
+export type GetHealthChain<
+  T extends {
+    sendJsonRpc: (jsonRpc: string) => void
+    remove: () => void
+  },
+> = (handler: JsonRpcCallback, healthHandler: HealthHandler) => Promise<T>
+
+export type GetChain<
+  T extends {
+    sendJsonRpc: (jsonRpc: string) => void
+    remove: () => void
+  },
+> = (handler: JsonRpcCallback) => Promise<T>
+export type HealthChecker = <
+  T extends {
+    sendJsonRpc: (jsonRpc: string) => void
+    remove: () => void
+  },
+>(
+  getChain: GetChain<T>,
+) => GetHealthChain<T>
+
+export const healthChecker: HealthChecker =
+  (getChain) => async (jsonHandler, healthHandler) => {
+    const hc = innerHealthChecker()
+
+    const chain = await getChain((rawResponse) => {
+      const response = hc.responsePassThrough(rawResponse)
+      if (response) jsonHandler(response)
+    })
+
+    hc.setSendJsonRpc(chain.sendJsonRpc.bind(chain))
+
+    hc.start(healthHandler)
+
+    chain.sendJsonRpc = hc.sendJsonRpc.bind(hc)
+
+    const originalRemove = chain.remove.bind(chain)
+    chain.remove = () => {
+      hc.stop()
+      originalRemove()
+    }
+
+    return chain
+  }
+
+interface InnerHealthChecker {
   setSendJsonRpc(sendRequest: (request: string) => void): void
   start(healthCallback: (health: SmoldotHealth) => void): void
   stop(): void
@@ -44,7 +93,7 @@ export interface HealthChecker {
  * `isSyncing: false` is very low.
  *
  */
-export const healthChecker = (): HealthChecker => {
+const innerHealthChecker = (): InnerHealthChecker => {
   // `null` if health checker is not started.
   let checker: null | InnerChecker = null
   let sendJsonRpc: null | ((request: string) => void) = null

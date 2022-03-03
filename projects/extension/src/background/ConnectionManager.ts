@@ -1,11 +1,12 @@
 import {
   Client as SmoldotClient,
   Chain as SmoldotChain,
+  JsonRpcCallback,
 } from "@substrate/smoldot-light"
 
 import {
   healthChecker as smHealthChecker,
-  HealthChecker as SmoldotHealthChecker,
+  HealthHandler,
   SmoldotHealth,
 } from "@substrate/connect"
 
@@ -111,12 +112,32 @@ export interface ChainInfo<SandboxId> {
  *
  */
 export class ConnectionManager<SandboxId> {
-  #smoldotClient: SmoldotClient
+  #addChain: (
+    chainSpec: string,
+    jsonRpcCallback: JsonRpcCallback,
+    healthCallback: HealthHandler,
+    databaseContent: string | undefined,
+    potentialRelayChains: Array<SmoldotChain>,
+  ) => Promise<SmoldotChain>
   #sandboxes: Map<SandboxId, Sandbox> = new Map()
   #wellKnownChains: Map<string, WellKnownChain> = new Map()
 
   constructor(smoldotClient: SmoldotClient) {
-    this.#smoldotClient = smoldotClient
+    this.#addChain = (
+      chainSpec,
+      jsonRpcCallback,
+      healthHandler,
+      databaseContent,
+      potentialRelayChains,
+    ) =>
+      smHealthChecker((cb: JsonRpcCallback) =>
+        smoldotClient.addChain({
+          chainSpec,
+          jsonRpcCallback: cb,
+          databaseContent,
+          potentialRelayChains,
+        }),
+      )(jsonRpcCallback, healthHandler)
   }
 
   /**
@@ -143,27 +164,21 @@ export class ConnectionManager<SandboxId> {
       throw new Error("Duplicate well-known chain")
     }
 
-    const healthChecker = smHealthChecker()
+    const chain = await this.#addChain(
+      spec,
+      () => {},
+      (health) => {
+        wellKnownChain.latestHealthStatus = health
 
-    const chain = await this.#smoldotClient.addChain({
-      chainSpec: spec,
-      jsonRpcCallback: (response) => {
-        healthChecker.responsePassThrough(response)
+        // Notify the `allChainsChangedCallbacks`.
+        this.#allChainsChangedCallbacks.forEach((cb) => cb())
+        this.#allChainsChangedCallbacks = []
       },
       databaseContent,
-      potentialRelayChains: [],
-    })
+      [],
+    )
 
-    const wellKnownChain: WellKnownChain = { chain, spec, healthChecker }
-
-    healthChecker.setSendJsonRpc((rq) => chain.sendJsonRpc(rq))
-    healthChecker.start((health) => {
-      wellKnownChain.latestHealthStatus = health
-
-      // Notify the `allChainsChangedCallbacks`.
-      this.#allChainsChangedCallbacks.forEach((cb) => cb())
-      this.#allChainsChangedCallbacks = []
-    })
+    const wellKnownChain: WellKnownChain = { chain, spec }
 
     this.#wellKnownChains.set(chainName, wellKnownChain)
 
@@ -261,7 +276,6 @@ export class ConnectionManager<SandboxId> {
     const sandbox = this.#sandboxes.get(sandboxId)!
     sandbox.chains.forEach((chain) => {
       if (chain.isReady) {
-        chain.healthChecker.stop()
         chain.smoldotChain.remove()
       }
 
@@ -341,7 +355,7 @@ export class ConnectionManager<SandboxId> {
         }
 
         // Everything is green for this JSON-RPC message
-        chain.healthChecker.sendJsonRpc(message.jsonRpcMessage)
+        chain.smoldotChain.sendJsonRpc(message.jsonRpcMessage)
         break
       }
 
@@ -377,34 +391,37 @@ export class ConnectionManager<SandboxId> {
           message.type === "add-chain"
             ? message.chainSpec
             : this.#wellKnownChains.get(message.chainName)!.spec
-        const healthChecker = smHealthChecker()
-        const chainInitialization: Promise<SmoldotChain> =
-          this.#smoldotClient.addChain({
-            chainSpec,
-            jsonRpcCallback: (jsonRpcMessage) => {
-              const filtered = healthChecker.responsePassThrough(jsonRpcMessage)
-              if (!filtered) return
-              // This JSON-RPC callback will never be called after we call `remove()` on the
-              // chain. When we remove a sandbox, we call `remove()` on all of its chains.
-              // Consequently, this JSON-RPC callback will never be called after we remove a
-              // sandbox. Consequently, the sandbox is always alive here.
-              sandbox.pushMessagesQueue({
-                origin: "substrate-connect-extension",
-                type: "rpc",
-                chainId,
-                jsonRpcMessage: filtered,
-              })
-            },
-            potentialRelayChains:
-              message.type === "add-chain"
-                ? message.potentialRelayChainIds.flatMap(
-                    (untrustedChainId): SmoldotChain[] => {
-                      const chain = sandbox.chains.get(untrustedChainId)
-                      return chain && chain.isReady ? [chain.smoldotChain] : []
-                    },
-                  )
-                : [],
-          })
+        const chainInitialization: Promise<SmoldotChain> = this.#addChain(
+          chainSpec,
+          (jsonRpcMessage) => {
+            // This JSON-RPC callback will never be called after we call `remove()` on the
+            // chain. When we remove a sandbox, we call `remove()` on all of its chains.
+            // Consequently, this JSON-RPC callback will never be called after we remove a
+            // sandbox. Consequently, the sandbox is always alive here.
+            sandbox.pushMessagesQueue({
+              origin: "substrate-connect-extension",
+              type: "rpc",
+              chainId,
+              jsonRpcMessage,
+            })
+          },
+          (health) => {
+            const readyChain = sandbox.chains.get(chainId)! as ReadyChain
+            readyChain.latestHealthStatus = health
+            // Notify the `allChainsChangedCallbacks`.
+            this.#allChainsChangedCallbacks.forEach((cb) => cb())
+            this.#allChainsChangedCallbacks = []
+          },
+          undefined,
+          message.type === "add-chain"
+            ? message.potentialRelayChainIds.flatMap(
+                (untrustedChainId): SmoldotChain[] => {
+                  const chain = sandbox.chains.get(untrustedChainId)
+                  return chain && chain.isReady ? [chain.smoldotChain] : []
+                },
+              )
+            : [],
+        )
 
         // Insert the promise in `sandbox.chains` so that the state machine is aware of the
         // fact that there is a chain with this ID currently initializing.
@@ -425,7 +442,6 @@ export class ConnectionManager<SandboxId> {
           chainId,
           chainInitialization,
           name,
-          healthChecker,
         )
 
         break
@@ -438,7 +454,6 @@ export class ConnectionManager<SandboxId> {
         if (!chain) return
 
         if (chain.isReady) {
-          chain.healthChecker.stop()
           chain.smoldotChain.remove()
         }
 
@@ -468,7 +483,6 @@ export class ConnectionManager<SandboxId> {
     chainId: string,
     chainInitialization: Promise<SmoldotChain>,
     name: string,
-    healthChecker: SmoldotHealthChecker,
   ): Promise<void> {
     try {
       const chain = await chainInitialization
@@ -486,19 +500,11 @@ export class ConnectionManager<SandboxId> {
       }
 
       const smoldotChain: SmoldotChain = chain
-      healthChecker.setSendJsonRpc((rq) => smoldotChain.sendJsonRpc(rq))
       const readyChain: ReadyChain = {
         isReady: true,
         name,
         smoldotChain,
-        healthChecker,
       }
-      healthChecker.start((health) => {
-        readyChain.latestHealthStatus = health
-        // Notify the `allChainsChangedCallbacks`.
-        this.#allChainsChangedCallbacks.forEach((cb) => cb())
-        this.#allChainsChangedCallbacks = []
-      })
       sandbox.chains.set(chainId, readyChain)
       sandbox.pushMessagesQueue({
         origin: "substrate-connect-extension",
@@ -600,11 +606,6 @@ interface ReadyChain {
   smoldotChain: SmoldotChain
 
   /**
-   * Health checker connected to the chain.
-   */
-  healthChecker: SmoldotHealthChecker
-
-  /**
    * Whenever the health checker has a health update ready, it stores it here.
    */
   latestHealthStatus?: SmoldotHealth
@@ -620,11 +621,6 @@ interface WellKnownChain {
    * Chain specification of the well-known chain.
    */
   spec: string
-
-  /**
-   * Health checker connected to the chain.
-   */
-  healthChecker: SmoldotHealthChecker
 
   /**
    * Whenever the health checker has a health update ready, it stores it here.
