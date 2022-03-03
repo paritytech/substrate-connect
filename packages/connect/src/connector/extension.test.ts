@@ -10,11 +10,11 @@ import {
   CrashError,
   JsonRpcDisabledError,
 } from "./types"
+import { WellKnownChain } from "../WellKnownChain.js"
 
 const createScClient = getCreateScClient()
 
 // we have to fake this API on node
-import { WellKnownChain } from "../WellKnownChain.js"
 ;(globalThis.crypto as any) = {
   getRandomValues: <T extends ArrayBufferView | null>(arr: T) => {
     if (!arr) return arr
