@@ -21,10 +21,15 @@ type HeaderlessToExtensionGeneric<T extends ToExtension> = T extends {
 type HeaderlessToExtension = HeaderlessToExtensionGeneric<ToExtension>
 
 const listeners = new Map<string, (msg: ToApplication) => void>()
-window.addEventListener("message", ({ data }: MessageEvent<ToApplication>) => {
-  if (data?.origin !== "substrate-connect-extension") return
-  listeners.get(data.chainId)?.(data)
-})
+if (typeof window === "object") {
+  window.addEventListener(
+    "message",
+    ({ data }: MessageEvent<ToApplication>) => {
+      if (data?.origin !== "substrate-connect-extension") return
+      listeners.get(data.chainId)?.(data)
+    },
+  )
+}
 
 function getRandomChainId(): string {
   const arr = new BigUint64Array(2)

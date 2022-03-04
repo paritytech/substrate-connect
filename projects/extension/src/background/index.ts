@@ -1,5 +1,4 @@
 import { ConnectionManager } from "./ConnectionManager"
-import { logger } from "@polkadot/util"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
@@ -28,10 +27,10 @@ export interface Background extends Window {
   }
 }
 
-let manager: ConnectionManager<chrome.runtime.Port>
-let listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
+const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
 
 const notifyListener = (
+  manager: ConnectionManager<chrome.runtime.Port>,
   listener: (state: ExposedChainConnection[]) => void,
 ) => {
   listener(
@@ -49,36 +48,35 @@ const notifyListener = (
   )
 }
 
-const publicManager: Background["manager"] = {
+declare let window: Background
+window.manager = {
   onManagerStateChanged(listener) {
-    notifyListener(listener)
+    managerPromise.then((manager) => notifyListener(manager, listener))
     listeners.add(listener)
     return () => {
       listeners.delete(listener)
     }
   },
   disconnectTab: (tabId: number) => {
-    // Note that multiple ports can share the same `tabId`
-    for (const port of manager.sandboxes) {
-      if (port.sender?.tab?.id === tabId) {
-        manager.deleteSandbox(port)
-        port.disconnect()
+    // Note that the manager is always ready here, otherwise the caller wouldn't be aware of any
+    // `tabId`. However there is no API in JavaScript that allows assuming that a `Promise` is
+    // already ready.
+    managerPromise.then((manager) => {
+      // Note that multiple ports can share the same `tabId`
+      for (const port of manager.sandboxes) {
+        if (port.sender?.tab?.id === tabId) {
+          manager.deleteSandbox(port)
+          port.disconnect()
+        }
       }
-    }
+    })
   },
 }
 
-declare let window: Background
-window.manager = publicManager
-
-const l = logger("Extension")
-
-export interface RequestRpcSend {
-  method: string
-  params: unknown[]
-}
-
-const saveChainDbContent = async (key: string) => {
+const saveChainDbContent = async (
+  manager: ConnectionManager<chrome.runtime.Port>,
+  key: string,
+) => {
   const db = await manager.wellKnownChainDatabaseContent(
     key,
     chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
@@ -86,58 +84,89 @@ const saveChainDbContent = async (key: string) => {
   chrome.storage.local.set({ [key]: db })
 }
 
-const flushDatabases = (): void => {
-  for (const [key] of wellKnownChains) saveChainDbContent(key)
-}
-
-chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === "DatabaseContentAlarm") flushDatabases()
-})
-
-const waitAllChainsUpdate = () => {
-  listeners.forEach(notifyListener)
-  manager.waitAllChainChanged().then(() => {
-    waitAllChainsUpdate()
-  })
-}
-
-const init = async () => {
-  try {
-    manager = new ConnectionManager(smoldotStart())
+// Start initializing a `ConnectionManager`.
+// This initialization operation shouldn't take more than a few dozen milliseconds, but we still
+// need to properly handle situations where initialization isn't finished yet.
+const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> =
+  (async () => {
+    const managerInit = new ConnectionManager<chrome.runtime.Port>(
+      smoldotStart(),
+    )
     for (const [key, value] of wellKnownChains.entries()) {
       const dbContent = await new Promise<string | undefined>((res) =>
         chrome.storage.local.get([key], (val) => res(val[key] as string)),
       )
 
-      await manager.addWellKnownChain(key, value, dbContent)
-      if (!dbContent) saveChainDbContent(key)
+      await managerInit.addWellKnownChain(key, value, dbContent)
+      if (!dbContent) saveChainDbContent(managerInit, key)
     }
 
-    waitAllChainsUpdate()
+    // Notify all the callbacks waiting for changes in the manager.
+    const waitAllChainsUpdate = (
+      manager: ConnectionManager<chrome.runtime.Port>,
+    ) => {
+      listeners.forEach((listener) => notifyListener(manager, listener))
+      manager.waitAllChainChanged().then(() => {
+        waitAllChainsUpdate(manager)
+      })
+    }
+    waitAllChainsUpdate(managerInit)
 
+    // Create an alarm that will periodically save the content of the database of the well-known
+    // chains.
+    chrome.alarms.onAlarm.addListener((alarm) => {
+      if (alarm.name === "DatabaseContentAlarm") {
+        for (const [key] of wellKnownChains)
+          saveChainDbContent(managerInit, key)
+      }
+    })
     chrome.alarms.create("DatabaseContentAlarm", {
       periodInMinutes: 5,
     })
-  } catch (e) {
-    l.error(`Error creating smoldot: ${e}`)
-    //manager?.shutdown()
-  }
-}
 
-chrome.runtime.onConnect.addListener((port) => {
-  manager.addSandbox(port)
-  ;(async () => {
-    for await (const message of manager.sandboxOutput(port)) {
-      port.postMessage(message)
-    }
+    return managerInit
   })()
 
+// Handle new port connections.
+//
+// Whenever a tab starts using the substrate-connect extension, it will open a port. This is caught
+// here.
+chrome.runtime.onConnect.addListener((port) => {
+  // The difficulty here is that the manager might not have completely finished its
+  // initialization. However, we need to immediately add listeners to `port.onMessage` and
+  // to `port.onDisconnect` in order to be sure to not miss events.
+
+  // To handle this properly, we hold a `Promise` here, and update it every time we do
+  // something relevant to that port, making sure that everything happens in the correct order.
+
+  // Note that as long as the manager hasn't finished initializing, the chain of promises will
+  // continue to grow indefinitely. While this is a problem *in theory*, in practice the manager
+  // initialization shouldn't take more than a few dozen milliseconds and it is actually unlikely
+  // for any message to arrive at all.
+
+  let managerWithSandbox = managerPromise.then((manager) => {
+    manager.addSandbox(port)
+    ;(async () => {
+      for await (const message of manager.sandboxOutput(port)) {
+        port.postMessage(message)
+      }
+    })()
+
+    return manager
+  })
+
   port.onMessage.addListener((message: ToExtension) => {
-    manager.sandboxMessage(port, message)
+    managerWithSandbox = managerWithSandbox.then((manager) => {
+      manager.sandboxMessage(port, message)
+      return manager
+    })
   })
 
   port.onDisconnect.addListener(() => {
-    manager.deleteSandbox(port)
+    managerWithSandbox = managerWithSandbox.then((manager) => {
+      manager.deleteSandbox(port)
+      return manager
+    })
   })
 })
 
@@ -151,5 +180,3 @@ chrome.storage.local.get(["notifications"], (result) => {
     })
   }
 })
-
-init()
