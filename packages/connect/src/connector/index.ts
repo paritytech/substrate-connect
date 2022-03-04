@@ -1,5 +1,5 @@
-import getSmoldotScClient from "./smoldot-light.js"
-import getExtensionScClient from "./extension.js"
+import { createScClient as smoldotScClient } from "./smoldot-light.js"
+import { createScClient as extensionScClient } from "./extension.js"
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 
 export * from "./types.js"
@@ -16,7 +16,6 @@ const isExtensionPresent =
  * extension or by executing a light client directly from JavaScript, depending on whether the
  * extension is installed and available.
  */
-const getCreateScClient = isExtensionPresent
-  ? getExtensionScClient
-  : getSmoldotScClient
-export const createScClient = getCreateScClient()
+export const createScClient = isExtensionPresent
+  ? extensionScClient
+  : smoldotScClient
