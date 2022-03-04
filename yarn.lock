@@ -2100,7 +2100,7 @@
     "@polkadot/util-crypto" "^8.4.1"
     rxjs "^7.5.4"
 
-"@polkadot/api@7.10.1", "@polkadot/api@^7.10.1":
+"@polkadot/api@7.10.1", "@polkadot/api@^7.10.1", "@polkadot/api@^7.8.1":
   version "7.10.1"
   resolved "https://registry.yarnpkg.com/@polkadot/api/-/api-7.10.1.tgz#a4866e7e139f00e0387687a9cc11545855ca7b5c"
   integrity sha512-uZcDI9sVyCkIQB58IZMSs658dMl337Z0N3XrFPA+iJTih45NfeCWBZPjUhdYit+ss3TXAQHbZKlP7WamNNO2WA==
