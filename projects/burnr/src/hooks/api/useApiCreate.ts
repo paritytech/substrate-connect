@@ -20,8 +20,7 @@ export const useApiCreate = (): ApiPromise => {
         const provider = await scClient.addWellKnownChain(
           endpoint as WellKnownChain,
         )
-        const api = new ApiPromise({ provider })
-        // const api = await ApiPromise.create({ provider })
+        const api = await ApiPromise.create({ provider })
         l.log(`Burnr is now connected to ${endpoint}`)
         mountedRef.current && setApi(api)
       } catch (err) {
