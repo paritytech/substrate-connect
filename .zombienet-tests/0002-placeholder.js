@@ -1,7 +1,7 @@
 const { connect } = require("./utils")
 
 async function run(nodeName, networkInfo) {
-  console.log(networkInfo);
+  console.log(networkInfo)
   const api = await connect(nodeName, networkInfo)
   let count = 0
   await new Promise(async (resolve, reject) => {
