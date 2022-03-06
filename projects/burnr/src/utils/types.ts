@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Balance, Index, RefCount } from "@polkadot/types/interfaces"
 import { u32 } from "@polkadot/types"
 import { Codec } from "@polkadot/types/types"
@@ -13,7 +12,7 @@ export interface Option {
 
 export interface SimpleProvider {
   name: string
-  network: string
+  id: string
   client: string
 }
 

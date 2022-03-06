@@ -1,16 +1,16 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 import type {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"
-import type { Chain, JsonRpcCallback, SubstrateConnector } from "./types.js"
 import {
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
-} from "./errors.js"
-import { WellKnownChains } from "../WellKnownChains.js"
+  Chain,
+  JsonRpcCallback,
+  ScClient,
+} from "./types.js"
+import { WellKnownChain } from "../WellKnownChain.js"
 import { getSpec } from "./specs/index.js"
 
 type HeaderlessToExtensionGeneric<T extends ToExtension> = T extends {
@@ -21,10 +21,15 @@ type HeaderlessToExtensionGeneric<T extends ToExtension> = T extends {
 type HeaderlessToExtension = HeaderlessToExtensionGeneric<ToExtension>
 
 const listeners = new Map<string, (msg: ToApplication) => void>()
-window.addEventListener("message", ({ data }: MessageEvent<ToApplication>) => {
-  if (data?.origin !== "substrate-connect-extension") return
-  listeners.get(data.chainId)?.(data)
-})
+if (typeof window === "object") {
+  window.addEventListener(
+    "message",
+    ({ data }: MessageEvent<ToApplication>) => {
+      if (data?.origin !== "substrate-connect-extension") return
+      listeners.get(data.chainId)?.(data)
+    },
+  )
+}
 
 function getRandomChainId(): string {
   const arr = new BigUint64Array(2)
@@ -34,7 +39,16 @@ function getRandomChainId(): string {
   return result.toString(36)
 }
 
-export const getConnectorClient = (): SubstrateConnector => {
+/**
+ * Returns a {ScClient} that connects to chains by asking the substrate-connect extension
+ * to do so.
+ *
+ * This function assumes that the extension is installed and available. It is out of scope of this
+ * function to detect whether this is the case.
+ * If you try to add a chain without the extension installed, nothing will happen and the
+ * `Promise`s will never resolve.
+ */
+export const createScClient = (): ScClient => {
   const chains = new Map<Chain, string>()
 
   const internalAddChain = async (
@@ -131,7 +145,7 @@ export const getConnectorClient = (): SubstrateConnector => {
     addChain: (chainSpec: string, jsonRpcCallback?: JsonRpcCallback) =>
       internalAddChain(false, chainSpec, jsonRpcCallback, [...chains.values()]),
     addWellKnownChain: (
-      name: WellKnownChains,
+      name: WellKnownChain,
       jsonRpcCallback?: JsonRpcCallback,
     ) => internalAddChain(true, name, jsonRpcCallback),
   }

@@ -141,15 +141,15 @@ const App: React.FunctionComponent = () => {
             <ThemeProvider theme={createTheme(dark)}>
               <Code>yarn add @substrate/substrate-connect</Code>
               <Code heading="Simple usage (suported chain)">
-                <Box>{`import { createScClient, WellKnownChains } from '@substrate/connect';`}</Box>
+                <Box>{`import { createPolkadotJsScClient, WellKnownChain } from '@substrate/connect';`}</Box>
 
                 <Box mt={2}>{`// Create a client for our App`}</Box>
-                <Box>{`const scClient = createScClient();`}</Box>
+                <Box>{`const scClient = createPolkadotJsScClient();`}</Box>
 
                 <Box mt={2}>{`// Create providers for known chains`}</Box>
-                <Box>{`const westendProvider = await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
+                <Box>{`const westendProvider = await scClient.addWellKnownChain(WellKnownChain.westend2);`}</Box>
                 <Box>{`const api1 = await ApiPromise.create({ provider: westendProvider });`}</Box>
-                <Box>{`const kusamaProvider = await scClient.addWellKnownChain(WellKnownChains.ksmcc3);`}</Box>
+                <Box>{`const kusamaProvider = await scClient.addWellKnownChain(WellKnownChain.ksmcc3);`}</Box>
                 <Box>{`const api2 = await ApiPromise.create({ provider: kusamaProvider });`}</Box>
 
                 <Box
@@ -171,13 +171,13 @@ const App: React.FunctionComponent = () => {
               </Code>
 
               <Code heading="Simple usage (custom chain)">
-                <Box>{`import { createScClient } from '@substrate/connect';`}</Box>
+                <Box>{`import { createPolkadotJsScClient } from '@substrate/connect';`}</Box>
                 <Box>{`import customSpecs from './customSpecs.json';`}</Box>
 
-                <Box>{`const scClient = createScClient();`}</Box>
+                <Box>{`const scClient = createPolkadotJsScClient();`}</Box>
                 <Box
                   mt={2}
-                >{`await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
+                >{`await scClient.addWellKnownChain(WellKnownChain.westend2);`}</Box>
                 <Box>{`const myChain = await scClient.addChain(JSON.stringify(customSpecs));`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider: myChain });`}</Box>
 
@@ -190,11 +190,11 @@ const App: React.FunctionComponent = () => {
               </Code>
 
               <Code heading="Simple usage with options">
-                <Box>{`import { createScClient, WellKnownChains } from '@substrate/connect';`}</Box>
-                <Box>{`const scClient = createScClient();`}</Box>
+                <Box>{`import { createPolkadotJsScClient, WellKnownChain } from '@substrate/connect';`}</Box>
+                <Box>{`const scClient = createPolkadotJsScClient();`}</Box>
                 <Box
                   mt={2}
-                >{`const provider = await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
+                >{`const provider = await scClient.addWellKnownChain(WellKnownChain.westend2);`}</Box>
                 <Box>{`const apiOptions = {types: customTypes}`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>
                 <Box
@@ -206,13 +206,13 @@ const App: React.FunctionComponent = () => {
               </Code>
 
               <Code heading="Parachains usage">
-                <Box>{`import { createScClient, WellKnownChains } from '@substrate/connect';`}</Box>
+                <Box>{`import { createPolkadotJsScClient, WellKnownChain } from '@substrate/connect';`}</Box>
                 <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
 
-                <Box>{`const scClient = createScClient();`}</Box>
+                <Box>{`const scClient = createPolkadotJsScClient();`}</Box>
                 <Box
                   mt={2}
-                >{`await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
+                >{`await scClient.addWellKnownChain(WellKnownChain.westend2);`}</Box>
                 <Box>{`const provider = await scClient.addChain(JSON.stringify(parachainSpecs));`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider });`}</Box>
 
@@ -226,13 +226,13 @@ const App: React.FunctionComponent = () => {
               </Code>
 
               <Code heading="Parachains usage with options">
-                <Box>{`import { createScClient, WellKnownChains } from '@substrate/connect';`}</Box>
+                <Box>{`import { createPolkadotJsScClient, WellKnownChain } from '@substrate/connect';`}</Box>
                 <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
 
-                <Box>{`const scClient = createScClient();`}</Box>
+                <Box>{`const scClient = createPolkadotJsScClient();`}</Box>
                 <Box
                   mt={2}
-                >{`await scClient.addWellKnownChain(WellKnownChains.westend2);`}</Box>
+                >{`await scClient.addWellKnownChain(WellKnownChain.westend2);`}</Box>
                 <Box>{`const provider = await scClient.addChain(JSON.stringify(parachainSpecs));`}</Box>
                 <Box>{`const apiOptions = {types: customTypes}`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>

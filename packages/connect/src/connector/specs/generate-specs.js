@@ -15,7 +15,6 @@ const BASE_PATH = "./src/connector/specs"
 
 const files = readdirSync(BASE_PATH)
 
-/* eslint-disable */
 const processFile = async (fileName) => {
   const rawStr = await readFile(path.join(BASE_PATH, fileName), "utf8")
   const fileStr = `export default \`${JSON.stringify(JSON.parse(rawStr))}\``
