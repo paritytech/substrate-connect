@@ -1,13 +1,22 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
-import { wellKnownChains, ConnectionManager } from "./ConnectionManager"
-import { logger } from "@polkadot/util"
+import { ConnectionManager } from "./ConnectionManager"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
-import { Chain, start } from "@substrate/smoldot-light"
+import { WellKnownChain } from "@substrate/connect"
+import { start as smoldotStart } from "@substrate/smoldot-light"
+
+import westend2 from "../../public/assets/westend2.json"
+import ksmcc3 from "../../public/assets/ksmcc3.json"
+import polkadot from "../../public/assets/polkadot.json"
+import rococo_v2 from "../../public/assets/rococo_v2.json"
+import { ToExtension } from "@substrate/connect-extension-protocol"
+
+export const wellKnownChains: Map<string, string> = new Map<string, string>([
+  [WellKnownChain.polkadot, JSON.stringify(polkadot)],
+  [WellKnownChain.ksmcc3, JSON.stringify(ksmcc3)],
+  [WellKnownChain.rococo_v2, JSON.stringify(rococo_v2)],
+  [WellKnownChain.westend2, JSON.stringify(westend2)],
+])
 
 export interface Background extends Window {
   manager: {
@@ -18,89 +27,147 @@ export interface Background extends Window {
   }
 }
 
-let manager: ConnectionManager
+const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
 
-const wellKnownConnections: Map<string, Chain> = new Map()
-
-const publicManager: Background["manager"] = {
-  onManagerStateChanged(listener) {
-    listener(manager.connections)
-    manager.on("stateChanged", listener)
-    return () => {
-      manager.removeListener("stateChanged", listener)
-    }
-  },
-  disconnectTab: (tabId: number) => manager.disconnectTab(tabId),
+const notifyListener = (
+  manager: ConnectionManager<chrome.runtime.Port>,
+  listener: (state: ExposedChainConnection[]) => void,
+) => {
+  listener(
+    manager.allChains
+      .filter((info) => info.apiInfo)
+      .map((info) => {
+        return {
+          chainId: info.apiInfo!.chainId,
+          chainName: info.chainName,
+          tabId: info.apiInfo!.sandboxId.sender!.tab!.id!,
+          url: info.apiInfo!.sandboxId.sender!.tab!.url!,
+          healthStatus: info.healthStatus,
+        }
+      }),
+  )
 }
 
 declare let window: Background
-window.manager = publicManager
-
-const l = logger("Extension")
-
-export interface RequestRpcSend {
-  method: string
-  params: unknown[]
+window.manager = {
+  onManagerStateChanged(listener) {
+    managerPromise.then((manager) => notifyListener(manager, listener))
+    listeners.add(listener)
+    return () => {
+      listeners.delete(listener)
+    }
+  },
+  disconnectTab: (tabId: number) => {
+    // Note that the manager is always ready here, otherwise the caller wouldn't be aware of any
+    // `tabId`. However there is no API in JavaScript that allows assuming that a `Promise` is
+    // already ready.
+    managerPromise.then((manager) => {
+      // Note that multiple ports can share the same `tabId`
+      for (const port of manager.sandboxes) {
+        if (port.sender?.tab?.id === tabId) {
+          manager.deleteSandbox(port)
+          port.disconnect()
+        }
+      }
+    })
+  },
 }
 
-const saveChainDbContent = async (key: string, chain: Chain) => {
-  const db = await chain.databaseContent(
+const saveChainDbContent = async (
+  manager: ConnectionManager<chrome.runtime.Port>,
+  key: string,
+) => {
+  const db = await manager.wellKnownChainDatabaseContent(
+    key,
     chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
   )
   chrome.storage.local.set({ [key]: db })
 }
 
-const flushDatabases = (): void => {
-  for (const [key, chain] of wellKnownConnections)
-    saveChainDbContent(key, chain)
-}
-
-chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === "DatabaseContentAlarm") flushDatabases()
-})
-
-const init = async () => {
-  try {
-    manager = new ConnectionManager(start({ maxLogLevel: 3 }))
+// Start initializing a `ConnectionManager`.
+// This initialization operation shouldn't take more than a few dozen milliseconds, but we still
+// need to properly handle situations where initialization isn't finished yet.
+const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> =
+  (async () => {
+    const managerInit = new ConnectionManager<chrome.runtime.Port>(
+      smoldotStart(),
+    )
     for (const [key, value] of wellKnownChains.entries()) {
-      const rpcCallback = (rpc: string) => {
-        console.warn(`Got RPC from ${key} dummy chain: ${rpc}`)
-      }
-
       const dbContent = await new Promise<string | undefined>((res) =>
         chrome.storage.local.get([key], (val) => res(val[key] as string)),
       )
 
-      const chain = await manager.addChain(
-        value,
-        [],
-        rpcCallback,
-        undefined,
-        dbContent,
-      )
-      wellKnownConnections.set(key, chain)
-      if (!dbContent) saveChainDbContent(key, chain)
+      await managerInit.addWellKnownChain(key, value, dbContent)
+      if (!dbContent) saveChainDbContent(managerInit, key)
     }
 
+    // Notify all the callbacks waiting for changes in the manager.
+    const waitAllChainsUpdate = (
+      manager: ConnectionManager<chrome.runtime.Port>,
+    ) => {
+      listeners.forEach((listener) => notifyListener(manager, listener))
+      manager.waitAllChainChanged().then(() => {
+        waitAllChainsUpdate(manager)
+      })
+    }
+    waitAllChainsUpdate(managerInit)
+
+    // Create an alarm that will periodically save the content of the database of the well-known
+    // chains.
+    chrome.alarms.onAlarm.addListener((alarm) => {
+      if (alarm.name === "DatabaseContentAlarm") {
+        for (const [key] of wellKnownChains)
+          saveChainDbContent(managerInit, key)
+      }
+    })
     chrome.alarms.create("DatabaseContentAlarm", {
       periodInMinutes: 5,
     })
-  } catch (e) {
-    l.error(`Error creating smoldot: ${e}`)
-    manager?.shutdown()
-  }
-}
 
-chrome.runtime.onInstalled.addListener(() => {
-  init()
-})
+    return managerInit
+  })()
 
-chrome.runtime.onStartup.addListener(() => {
-  init()
-})
-
+// Handle new port connections.
+//
+// Whenever a tab starts using the substrate-connect extension, it will open a port. This is caught
+// here.
 chrome.runtime.onConnect.addListener((port) => {
-  manager.addChainConnection(port)
+  // The difficulty here is that the manager might not have completely finished its
+  // initialization. However, we need to immediately add listeners to `port.onMessage` and
+  // to `port.onDisconnect` in order to be sure to not miss events.
+
+  // To handle this properly, we hold a `Promise` here, and update it every time we do
+  // something relevant to that port, making sure that everything happens in the correct order.
+
+  // Note that as long as the manager hasn't finished initializing, the chain of promises will
+  // continue to grow indefinitely. While this is a problem *in theory*, in practice the manager
+  // initialization shouldn't take more than a few dozen milliseconds and it is actually unlikely
+  // for any message to arrive at all.
+
+  let managerWithSandbox = managerPromise.then((manager) => {
+    manager.addSandbox(port)
+    ;(async () => {
+      for await (const message of manager.sandboxOutput(port)) {
+        port.postMessage(message)
+      }
+    })()
+
+    return manager
+  })
+
+  port.onMessage.addListener((message: ToExtension) => {
+    managerWithSandbox = managerWithSandbox.then((manager) => {
+      manager.sandboxMessage(port, message)
+      return manager
+    })
+  })
+
+  port.onDisconnect.addListener(() => {
+    managerWithSandbox = managerWithSandbox.then((manager) => {
+      manager.deleteSandbox(port)
+      return manager
+    })
+  })
 })
 
 chrome.storage.local.get(["notifications"], (result) => {
@@ -113,7 +180,3 @@ chrome.storage.local.get(["notifications"], (result) => {
     })
   }
 })
-
-// TODO (nik): once extension is on chrome/ff stores we need to take advantage
-// of the onBrowserUpdateAvailable and onUpdateAvailable lifecycle event
-// NOTE: onSuspend could be used to cleanup things but async actions are not guaranteed to complete :(

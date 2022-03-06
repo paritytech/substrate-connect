@@ -5,7 +5,7 @@ import { ApiContext, AccountContext } from "./utils/contexts"
 import { LocalStorageAccountCtx } from "./utils/types"
 import { useApiCreate, useLocalStorage } from "./hooks"
 import { createLocalStorageAccount } from "./utils/utils"
-import { ALL_PROVIDERS } from "./utils/constants"
+import { NETWORK } from "./utils/constants"
 import { ApiPromise } from "@polkadot/api"
 
 import Home from "./Home"
@@ -43,7 +43,7 @@ const App: React.FunctionComponent<Props> = ({ className = "" }: Props) => {
   const classes = useStyles()
   const [endpoint, setEndpoint] = useLocalStorage("endpoint")
   if (!endpoint) {
-    setEndpoint(ALL_PROVIDERS.network)
+    setEndpoint(NETWORK.id)
   }
   const [localStorageAccount, setLocalStorageAccount] = useLocalStorage(
     endpoint?.toLowerCase(),

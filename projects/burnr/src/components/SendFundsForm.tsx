@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   MouseEvent,
   useContext,
@@ -27,7 +24,7 @@ import { useBalance, useApi, useLocalStorage } from "../hooks"
 import { HistoryTableRow } from "."
 import { isValidAddressPolkadotAddress, prettyBalance } from "../utils/utils"
 import { Column } from "../utils/types"
-import { ALL_PROVIDERS } from "../utils/constants"
+import { NETWORK } from "../utils/constants"
 
 const useStyles = makeStyles((theme: Theme) => ({
   errorMessage: {
@@ -129,7 +126,7 @@ const SendFundsForm: FunctionComponent = () => {
   // TODO: This must be prettier and reusable (exists already on App)
   const [endpoint, setEndpoint] = useLocalStorage("endpoint")
   if (!endpoint) {
-    setEndpoint(Object.keys(ALL_PROVIDERS)[0])
+    setEndpoint(Object.keys(NETWORK)[0])
   }
   const [, setLocalStorageAccount] = useLocalStorage(
     endpoint.split("-")[0]?.toLowerCase(),
@@ -165,7 +162,7 @@ const SendFundsForm: FunctionComponent = () => {
   useEffect((): (() => void) => {
     let countdown: ReturnType<typeof setInterval>
     if (!loading) {
-      if (message != "") {
+      if (message !== "") {
         countdown = setInterval((): void => {
           setCountdownNo((oldCountdownNo: number) => {
             if (oldCountdownNo === 0) {
