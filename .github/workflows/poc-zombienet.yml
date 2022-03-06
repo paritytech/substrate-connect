@@ -20,11 +20,11 @@ jobs:
           chmod +x zombienet-linux
       - name: Get polkadot
         run: |
-          curl -L -O https://github.com/paritytech/polkadot/releases/download/v0.9.17/polkadot
+          curl -L -O https://github.com/paritytech/polkadot/releases/download/v0.9.17-rc4/polkadot
           chmod +x polkadot
       - name: Get polkadot-collator
         run: |
-          curl -L -O https://github.com/paritytech/cumulus/releases/download/v0.9.17/polkadot-collator
+          curl -L -O https://github.com/paritytech/cumulus/releases/download/polkadot-v0.9.17/polkadot-collator
           chmod +x polkadot-collator
       - name: Run test
         run: |
