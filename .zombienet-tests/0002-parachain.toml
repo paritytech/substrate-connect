@@ -26,6 +26,7 @@ cumulus_based = true
   name = "collator1"
   image = "docker.io/paritypr/colander:4131-ccd09bbf"
   command = "polkadot-collator"
+  args = ["-lparachain=debug"]
 
 [types.Header]
 number = "u64"
