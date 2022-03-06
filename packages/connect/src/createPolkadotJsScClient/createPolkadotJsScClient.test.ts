@@ -401,7 +401,12 @@ describe("Provider", () => {
       }, 0)
 
       const cb = jest.fn()
-      const token = await provider.subscribe("foo", "bar", ["baz"], cb)
+      const token = await provider.subscribe(
+        "foo",
+        "chain_subscribeNewHeads",
+        ["baz"],
+        cb,
+      )
 
       expect(token).toBe(unsubscribeToken)
       expect(cb).not.toHaveBeenCalled()
@@ -428,7 +433,7 @@ describe("Provider", () => {
       expect(cb).toHaveBeenCalledTimes(2)
       expect(cb).toHaveBeenLastCalledWith(null, 2)
 
-      provider.unsubscribe("foo", "bar", unsubscribeToken)
+      provider.unsubscribe("foo", "chain_unsubscribeNewHeads", unsubscribeToken)
 
       chain._triggerCallback({
         jsonrpc: "2.0",
@@ -466,7 +471,12 @@ describe("Provider", () => {
       }, 0)
 
       const cb = jest.fn()
-      const token = await provider.subscribe("foo", "bar", ["baz"], cb)
+      const token = await provider.subscribe(
+        "foo",
+        "chain_subscribeNewHeads",
+        ["baz"],
+        cb,
+      )
 
       expect(token).toBe(unsubscribeToken)
       expect(cb).not.toHaveBeenCalled()
@@ -489,7 +499,12 @@ describe("Provider", () => {
       }, 0)
 
       const cb = jest.fn()
-      const token = await provider.subscribe("foo", "bar", ["baz"], cb)
+      const token = await provider.subscribe(
+        "foo",
+        "chain_subscribeNewHeads",
+        ["baz"],
+        cb,
+      )
 
       chain._triggerCallback({
         jsonrpc: "2.0",
@@ -504,6 +519,17 @@ describe("Provider", () => {
       expect(cb).toHaveBeenCalledTimes(1)
       expect(cb.mock.lastCall![0]).toBeInstanceOf(Error)
       expect(cb.mock.lastCall![1]).toBe(undefined)
+    })
+
+    it("errors when subscribing to an unsupported method", async () => {
+      const client = createPolkadotJsScClient()
+      const provider = await client.addChain("")
+      setChainSyncyingStatus(false)
+      await wait(0)
+
+      await expect(
+        provider.subscribe("foo", "bar", ["baz"], () => {}),
+      ).rejects.toThrowError("Unsupported subscribe method: bar")
     })
   })
 
@@ -530,7 +556,6 @@ describe("Provider", () => {
 
     // while connected we create a subscription
     const unsubscribeToken = "unsubscribeToken"
-    const method = "testMethod"
     setTimeout(() => {
       chain._triggerCallback({
         jsonrpc: "2.0",
@@ -540,7 +565,12 @@ describe("Provider", () => {
     }, 0)
 
     const cb = jest.fn()
-    const token = await provider.subscribe("foo", method, ["baz"], cb)
+    const token = await provider.subscribe(
+      "foo",
+      "chain_subscribeNewHeads",
+      ["baz"],
+      cb,
+    )
 
     // setting the syncing status of the chain to fals so that the Provider
     // gets `disconnected`
@@ -556,7 +586,7 @@ describe("Provider", () => {
     // from the stale subscription, since that request should happen once the
     // chain is no longer syncing
     expect(chain._recevedRequests()).toEqual([
-      '{"id":1,"jsonrpc":"2.0","method":"testMethod","params":["baz"]}',
+      '{"id":1,"jsonrpc":"2.0","method":"chain_subscribeNewHeads","params":["baz"]}',
     ])
 
     // lets change the sync status back to false
@@ -568,8 +598,8 @@ describe("Provider", () => {
     // let's make sure that we have now sent the request for killing the
     // stale subscription
     expect(chain._recevedRequests()).toEqual([
-      '{"id":1,"jsonrpc":"2.0","method":"testMethod","params":["baz"]}',
-      `{"id":2,"jsonrpc":"2.0","method":"${method}","params":["${token}"]}`,
+      '{"id":1,"jsonrpc":"2.0","method":"chain_subscribeNewHeads","params":["baz"]}',
+      `{"id":2,"jsonrpc":"2.0","method":"chain_unsubscribeNewHeads","params":["${token}"]}`,
     ])
   })
 })

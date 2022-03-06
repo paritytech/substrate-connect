@@ -22,12 +22,22 @@ export interface PolkadotJsScClient {
 
 type ResponseCallback = (response: string | Error) => void
 
+const subscriptionUnsubscritionMethods = new Map<string, string>([
+  ["author_submitAndWatchExtrinsic", "author_unwatchExtrinsic"],
+  ["chain_subscribeAllHeads", "chain_unsubscribeAllHeads"],
+  ["chain_subscribeFinalizedHeads", "chain_unsubscribeFinalizedHeads"],
+  ["chain_subscribeNewHeads", "chain_unsubscribeNewHeads"],
+  ["state_subscribeRuntimeVersion", "state_unsubscribeRuntimeVersion"],
+  ["state_subscribeStorage", "state_unsubscribeStorage"],
+  ["transaction_unstable_submitAndWatch", "transaction_unstable_unwatch"],
+])
+
 class Provider implements ProviderInterface {
   readonly #coder: RpcCoder = new RpcCoder()
   readonly #getChain: (handler: JsonRpcCallback) => Promise<Chain>
   readonly #subscriptions: Map<
     string,
-    [ResponseCallback, { method: string; id: string | number }]
+    [ResponseCallback, { unsubscribeMethod: string; id: string | number }]
   > = new Map()
   readonly #requests: Map<number, ResponseCallback> = new Map()
   readonly #eventemitter: EventEmitter = new EventEmitter()
@@ -101,13 +111,16 @@ class Provider implements ProviderInterface {
         this.#subscriptions.clear()
       }
 
-      let staleSubscriptions: { method: string; id: number | string }[] = []
+      let staleSubscriptions: {
+        unsubscribeMethod: string
+        id: number | string
+      }[] = []
       const killStaleSubscriptions = () => {
         if (staleSubscriptions.length === 0) return
 
-        const { method, id } = staleSubscriptions.pop()!
+        const { unsubscribeMethod, id } = staleSubscriptions.pop()!
         Promise.race([
-          this.send(method, [id]).catch(() => {}),
+          this.send(unsubscribeMethod, [id]).catch(() => {}),
           new Promise((res) => setTimeout(res, 500)),
         ]).then(killStaleSubscriptions)
       }
@@ -231,14 +244,14 @@ class Provider implements ProviderInterface {
   }
 
   public async subscribe(
-    // the "method" property of the JSON response to this subscription
     type: string,
-    // the "method" property of the JSON request to register the subscription
     method: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: any[],
     callback: ProviderInterfaceCallback,
   ): Promise<number | string> {
+    if (!subscriptionUnsubscritionMethods.has(method))
+      throw new Error(`Unsupported subscribe method: ${method}`)
+
     const id = await this.send(method, params)
     const subscriptionId = `${type}::${id}`
     const cb = (response: Error | string) => {
@@ -249,7 +262,8 @@ class Provider implements ProviderInterface {
       }
     }
 
-    this.#subscriptions.set(subscriptionId, [cb, { method, id }])
+    const unsubscribeMethod = subscriptionUnsubscritionMethods.get(method)!
+    this.#subscriptions.set(subscriptionId, [cb, { unsubscribeMethod, id }])
     return id
   }
 
