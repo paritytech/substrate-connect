@@ -19,7 +19,7 @@ const useStyles = makeStyles<Theme, Props>({
 })
 
 const hasGlyph = (string: string) =>
-  ["kusama", "polkadot", "kulupu", "rococo", "westend"].indexOf(
+  ["kusama", "polkadot", "kulupu", "rococo 2", "westend"].indexOf(
     string.toLowerCase(),
   ) > -1
 

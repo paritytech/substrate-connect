@@ -1,305 +1,646 @@
-/* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Client, Chain } from "@substrate/smoldot-light"
+import {
+  Client as SmoldotClient,
+  Chain as SmoldotChain,
+} from "@substrate/smoldot-light"
+
 import {
   healthChecker as smHealthChecker,
-  WellKnownChains,
+  HealthChecker as SmoldotHealthChecker,
   SmoldotHealth,
-  JsonRpcCallback,
 } from "@substrate/connect"
 
-import { ExposedChainConnection, ChainConnection } from "./types"
-import EventEmitter from "eventemitter3"
-import { StateEmitter } from "./types"
-import { logger } from "@polkadot/util"
-import { ToExtension } from "@substrate/connect-extension-protocol"
-import westend2 from "../../public/assets/westend2.json"
-import ksmcc3 from "../../public/assets/ksmcc3.json"
-import polkadot from "../../public/assets/polkadot.json"
-import rococo_v2 from "../../public/assets/rococo_v2.json"
+import {
+  ToApplication,
+  ToExtension,
+} from "@substrate/connect-extension-protocol"
 
-export const wellKnownChains: Map<WellKnownChains, string> = new Map<
-  WellKnownChains,
-  string
->([
-  [WellKnownChains.polkadot, JSON.stringify(polkadot)],
-  [WellKnownChains.ksmcc3, JSON.stringify(ksmcc3)],
-  [WellKnownChains.rococo_v2, JSON.stringify(rococo_v2)],
-  [WellKnownChains.westend2, JSON.stringify(westend2)],
-])
-
-const l = logger("Extension Connection Manager")
+import createAsyncFifoQueue from "./Stream"
 
 /**
- * ConnectionManager is the main class involved in managing connections from
- * content-script.  It keeps track of active chain connections and it is also
- * responsible for triggering events when the state changes for the UI to update
- * accordingly.
+ * Information about a chain that the {ConnectionManager} manages.
+ *
+ * This interface is as minimal as possible, as to allow as much flexibility as possible for the
+ * internals of the {ConnectionManager}.
  */
-export class ConnectionManager extends (EventEmitter as {
-  new (): StateEmitter
-}) {
-  #client: Client | null
-  #emitScheduled = false
-  readonly #chainConnections: Map<string, ChainConnection> = new Map()
+export interface ChainInfo<SandboxId> {
+  /**
+   * Name of the chain found in the chain specification.
+   *
+   * Important: this name is untrusted user input! It could be extremely long, contain weird
+   * characters (e.g. HTML tags), etc. Do not make any assumption about its content.
+   */
+  chainName: string
 
-  constructor(client: Client) {
-    super()
-    this.#client = client
+  /**
+   * Latest known health status of the chain. If missing, the health isn't known yet and it can
+   * be assumed that the chain has no peers yet.
+   */
+  healthStatus?: SmoldotHealth
+
+  /**
+   * Information about how the chain was inserted in the {ConnectionManager}.
+   *
+   * If this field is not set, it means that the chain was added with
+   * {ConnectionManager.addWellKnownChain}.
+   */
+  apiInfo?: {
+    /**
+     * Identifier of the chain obtained through the initial `add-chain`.
+     *
+     * Important: this name is untrusted user input! It could be extremely long, contain weird
+     * characters (e.g. HTML tags), etc. Do not make any assumption about its content.
+     */
+    chainId: string
+
+    /**
+     * The identifier for the sandbox that has received the message that requests to add a chain.
+     */
+    sandboxId: SandboxId
+  }
+}
+
+/**
+ * # Overview
+ *
+ * This class primarily contains two lists:
+ *
+ * - A list of sandboxes. Each sandbox contains a list of chain connections. A chain within a
+ * sandbox cannot interact in any way with a chain of a different sandbox. Pragmatically speaking,
+ * a sandbox corresponds to a browser tab, however what a sandbox corresponds to is out of concern
+ * of this module. You can add and remove sandboxes using {ConnectionManager.addSandbox} and
+ * {ConnectionManager.deleteSandbox}.
+ *
+ * - A list of trusted "well-known" chains, outside of any sandbox. Well-known chains can be added
+ * by calling {ConnectionManager.addWellKnownChain}. Once added, a well-known chain cannot be
+ * removed. Chains within sandboxes can interact with all well-known chains.
+ *
+ * # Sandboxes usage
+ *
+ * A sandbox can be added using {ConnectionManager.addSandbox}. Each sandbox is identified by a
+ * `SandboxId`, which is a generic argument of the {ConnectionManager}. This `SandboxId` must be
+ * provided every time you want to call a method that relates to a specific sandbox. Once a sandbox
+ * has been removed (using {ConnectionManager.deleteSandbox}), the {ConnectionManager} instantly
+ * removes all traces of this sandbox. Calling a method (other than {ConnectionManager.addSandbox})
+ * with an unknown `SandboxId` leads to an exception being thrown.
+ *
+ * Once a sandbox has been added using {ConnectionManager.addSandbox}, you can inject messages
+ * that concern this sandbox using {ConnectionManager.sandboxMessage}. These messages must conform
+ * to the {ToExtension} interface and to the protocol described in the
+ * `@substrate/connect-extension-protocol` package.
+ *
+ * A sandbox will spontaneously generate messages that conform to the {ToApplication} interface of
+ * the `@substrate/connect-extension-protocol` package. Use the {ConnectionManager.sandboxOutput}
+ * function to retrieve these messages as they are generated.
+ *
+ * # Information about the list of chains
+ *
+ * At any point, information about all the chains contained within the {ConnectionManager} can
+ * be retrieved using {ConnectionManager.allChains}. This can be used for display purposes.
+ *
+ * Use {ConnectionManager.waitAllChainChanged} to wait until the next time any field within the
+ * value returned by {ConnectionManager.allChains} has potentially been modified.
+ *
+ * # Database
+ *
+ * The {ConnectionManager.wellKnownChainDatabaseContent} method can be used to retrieve the
+ * content of the so-called "database" of a well-known chain. The string returned by this function
+ * is opaque and shouldn't be interpreted in any way by the API user.
+ *
+ * The {ConnectionManager.addWellKnownChain} accepts a `databaseContent` parameter that can be used
+ * to pass the "database" that was grabbed the last time the well-known chain was running.
+ *
+ */
+export class ConnectionManager<SandboxId> {
+  #smoldotClient: SmoldotClient
+  #sandboxes: Map<SandboxId, Sandbox> = new Map()
+  #wellKnownChains: Map<string, WellKnownChain> = new Map()
+
+  constructor(smoldotClient: SmoldotClient) {
+    this.#smoldotClient = smoldotClient
   }
 
   /**
-   *
-   *
-   * @returns all the connected chains.
+   * Contains a list of callbacks that must be called when any of the information returned by
+   * `allChains` has potentially changed, and then the list must be cleared. The
+   * `waitAllChainChanged` method adds elements to this list.
    */
-  get connections(): ExposedChainConnection[] {
-    return [...this.#chainConnections.values()]
-      .filter((a) => a.chainName)
-      .map((a: ChainConnection) => ({
-        chainId: a.chainId,
-        url: a.url,
-        tabId: a.tabId,
-        chainName: a.chainName,
-        healthStatus: a.healthStatus,
-      }))
-  }
+  #allChainsChangedCallbacks: (() => void)[] = []
 
-  #emitStateChanged() {
-    // let's make sure that we don't unnecessary spam the UI with notifications
-    if (this.#emitScheduled) return
+  /**
+   * Adds a new well-known chain to this state machine.
+   *
+   * While it is not strictly mandatory, you are strongly encouraged to call this at the
+   * beginning and before adding any sandbox.
+   *
+   * @throws Throws an exception if a well-known chain with that name has been added in the past.
+   */
+  async addWellKnownChain(
+    chainName: string,
+    spec: string,
+    databaseContent?: string,
+  ): Promise<void> {
+    if (this.#wellKnownChains.has(chainName)) {
+      throw new Error("Duplicate well-known chain")
+    }
 
-    this.#emitScheduled = true
-    setTimeout(() => {
-      this.emit("stateChanged", this.connections)
-      this.#emitScheduled = false
-    }, 0)
+    const healthChecker = smHealthChecker()
+
+    const chain = await this.#smoldotClient.addChain({
+      chainSpec: spec,
+      jsonRpcCallback: (response) => {
+        healthChecker.responsePassThrough(response)
+      },
+      databaseContent,
+      potentialRelayChains: [],
+    })
+
+    const wellKnownChain: WellKnownChain = { chain, spec, healthChecker }
+
+    healthChecker.setSendJsonRpc((rq) => chain.sendJsonRpc(rq))
+    healthChecker.start((health) => {
+      wellKnownChain.latestHealthStatus = health
+
+      // Notify the `allChainsChangedCallbacks`.
+      this.#allChainsChangedCallbacks.forEach((cb) => cb())
+      this.#allChainsChangedCallbacks = []
+    })
+
+    this.#wellKnownChains.set(chainName, wellKnownChain)
+
+    // Notify the `allChainsChangedCallbacks`.
+    this.#allChainsChangedCallbacks.forEach((cb) => cb())
+    this.#allChainsChangedCallbacks = []
   }
 
   /**
-   * disconnectTab disconnects all chains connected
-   * from the supplied tabId
+   * Returns the content of the database of the well-known chain with the given name.
    *
-   * @param tabId - the id of the tab to disconnect
+   * The `maxUtf8BytesSize` parameter is the maximum number of bytes that the string must occupy
+   * in its UTF-8 encoding. The returned string is guaranteed to not be larger than this number.
+   * If not provided, "infinite" is implied.
+   *
+   * @throws Throws an exception if the `chainName` isn't the name of a chain that has been
+   *         added by a call to `addWellKnownChain`.
    */
-  disconnectTab(tabId: number): void {
-    this.#chainConnections.forEach((a) => {
-      if (a.tabId === tabId) a.port.disconnect()
+  async wellKnownChainDatabaseContent(
+    chainName: string,
+    maxUtf8BytesSize?: number,
+  ): Promise<string> {
+    return await this.#wellKnownChains
+      .get(chainName)!
+      .chain.databaseContent(maxUtf8BytesSize)
+  }
+
+  /**
+   * Returns a list of all chains, for display purposes only.
+   *
+   * This includes both well-known chains and chains added by sandbox messages.
+   */
+  get allChains(): ChainInfo<SandboxId>[] {
+    let output: ChainInfo<SandboxId>[] = []
+
+    for (const [chainName, chain] of this.#wellKnownChains) {
+      output.push({
+        chainName,
+        healthStatus: chain.latestHealthStatus,
+      })
+    }
+
+    for (const [sandboxId, sandbox] of this.#sandboxes) {
+      for (const [chainId, chain] of sandbox.chains) {
+        output.push({
+          chainName: chain.name,
+          healthStatus: chain.isReady ? chain.latestHealthStatus : undefined,
+          apiInfo: {
+            chainId,
+            sandboxId,
+          },
+        })
+      }
+    }
+
+    return output
+  }
+
+  /**
+   * Waits for the value of `allChains` to have potentially changed.
+   */
+  async waitAllChainChanged(): Promise<void> {
+    await new Promise<void>((resolve, _) => {
+      this.#allChainsChangedCallbacks.push(resolve)
     })
   }
 
   /**
-   * addChainConnection registers a new chain-connection to be tracked by the background.
+   * Inserts a sandbox in the list of sandboxes held by this state machine.
    *
-   * @param port - a port for a fresh connection that was made to the background
-   * by a content script.
+   * @throws Throws an exception if a sandbox with that identifier already exists.
    */
-  addChainConnection(port: chrome.runtime.Port): void {
-    if (!this.#client) {
-      throw new Error("Smoldot client does not exist.")
+  addSandbox(sandboxId: SandboxId) {
+    if (this.#sandboxes.has(sandboxId)) throw new Error("Duplicate sandboxId")
+
+    const queue = createAsyncFifoQueue<ToApplication | null>()
+    this.#sandboxes.set(sandboxId, {
+      pushMessagesQueue: queue.push,
+      pullMessagesQueue: queue.pull,
+      chains: new Map(),
+    })
+  }
+
+  /**
+   * Removes a sandbox from the list of sandboxes.
+   *
+   * This performs some internal clean ups.
+   *
+   * Any iterator concerning this sandbox that was returned by {ConnectionManager.sandboxOutput}
+   * will end.
+   *
+   * @throws Throws an exception if the ̀`sandboxId` isn't valid.
+   */
+  deleteSandbox(sandboxId: SandboxId) {
+    const sandbox = this.#sandboxes.get(sandboxId)!
+    sandbox.chains.forEach((chain) => {
+      if (chain.isReady) {
+        chain.healthChecker.stop()
+        chain.smoldotChain.remove()
+      }
+
+      // If the chain isn't ready yet, the function that asynchronously reacts to the chain
+      // initialization being finished will remove it.
+    })
+    sandbox.pushMessagesQueue(null)
+    this.#sandboxes.delete(sandboxId)
+
+    // Notify the `allChainsChangedCallbacks`.
+    this.#allChainsChangedCallbacks.forEach((cb) => cb())
+    this.#allChainsChangedCallbacks = []
+  }
+
+  /**
+   * Returns the list of all sandboxes that have been added.
+   */
+  get sandboxes(): IterableIterator<SandboxId> {
+    return this.#sandboxes.keys()
+  }
+
+  /**
+   * Asynchronous iterator that yields all the `ToApplication` messages that are generated
+   * spontaneously or in response to `sandboxMessage`.
+   *
+   * The iterator is guaranteed to always yield messages from sandboxes that are still alive. As
+   * soon as you call `deleteSandbox`, no new message will be generated and the iterator will
+   * end.
+   */
+  async *sandboxOutput(sandboxId: SandboxId): AsyncGenerator<ToApplication> {
+    while (true) {
+      const sandbox = this.#sandboxes.get(sandboxId)
+      if (!sandbox) break
+
+      const message = await sandbox.pullMessagesQueue()
+
+      // While we were waiting for a message, the user might have removed the sandbox using
+      // `deleteSandbox`. We therefore check again whether the sandbox is still in
+      // `this.#sandboxes` in order to make sure to not give messages concerning destroyed
+      // sandboxes.
+      if (!this.#sandboxes.has(sandboxId)) break
+
+      // `message` can be either a `ToApplication` or `null`, but `null` is only ever pushed to
+      // the queue when the sandbox is destroyed, in which case the check the line above should
+      // have caught that. In other words, if `message` is `null` here, there's a bug in the code.
+      yield message!
     }
+  }
 
-    // if create an `AppMediator` throws, it has sent an error down the
-    // port and disconnected it, so we should just ignore
+  /**
+   * Injects a message into the given sandbox.
+   *
+   * The message and the behaviour of this function conform to the `connect-extension-protocol`.
+   *
+   * @throws Throws an exception if the ̀`sandboxId` isn't valid.
+   */
+  sandboxMessage(sandboxId: SandboxId, message: ToExtension) {
+    // It is illegal to call this function with an invalid `sandboxId`.
+    const sandbox = this.#sandboxes.get(sandboxId)!
+
+    switch (message.type) {
+      case "rpc": {
+        const chain = sandbox.chains.get(message.chainId)
+        // As documented in the protocol, RPC messages concerning an invalid chainId are simply
+        // ignored.
+        if (!chain) return
+
+        // Check whether chain is ready yet
+        if (!chain.isReady) {
+          sandbox.pushMessagesQueue({
+            origin: "substrate-connect-extension",
+            type: "error",
+            chainId: message.chainId,
+            errorMessage: "Received RPC message while chain isn't ready yet",
+          })
+          return
+        }
+
+        // Everything is green for this JSON-RPC message
+        chain.healthChecker.sendJsonRpc(message.jsonRpcMessage)
+        break
+      }
+
+      case "add-chain":
+      case "add-well-known-chain": {
+        // Refuse the chain addition if the `chainId` is already in use.
+        if (sandbox.chains.has(message.chainId)) {
+          sandbox.pushMessagesQueue({
+            origin: "substrate-connect-extension",
+            type: "error",
+            chainId: message.chainId,
+            errorMessage: "Requested chainId already in use",
+          })
+          return
+        }
+
+        // Refuse the chain addition for invalid well-known chain names.
+        if (message.type === "add-well-known-chain") {
+          if (!this.#wellKnownChains.has(message.chainName)) {
+            sandbox.pushMessagesQueue({
+              origin: "substrate-connect-extension",
+              type: "error",
+              chainId: message.chainId,
+              errorMessage: "Unknown well-known chain",
+            })
+            return
+          }
+        }
+
+        // Start the initialization of the chain in the background.
+        const chainId = message.chainId
+        const chainSpec =
+          message.type === "add-chain"
+            ? message.chainSpec
+            : this.#wellKnownChains.get(message.chainName)!.spec
+        const healthChecker = smHealthChecker()
+        const chainInitialization: Promise<SmoldotChain> =
+          this.#smoldotClient.addChain({
+            chainSpec,
+            jsonRpcCallback: (jsonRpcMessage) => {
+              const filtered = healthChecker.responsePassThrough(jsonRpcMessage)
+              if (!filtered) return
+              // This JSON-RPC callback will never be called after we call `remove()` on the
+              // chain. When we remove a sandbox, we call `remove()` on all of its chains.
+              // Consequently, this JSON-RPC callback will never be called after we remove a
+              // sandbox. Consequently, the sandbox is always alive here.
+              sandbox.pushMessagesQueue({
+                origin: "substrate-connect-extension",
+                type: "rpc",
+                chainId,
+                jsonRpcMessage: filtered,
+              })
+            },
+            potentialRelayChains:
+              message.type === "add-chain"
+                ? message.potentialRelayChainIds.flatMap(
+                    (untrustedChainId): SmoldotChain[] => {
+                      const chain = sandbox.chains.get(untrustedChainId)
+                      return chain && chain.isReady ? [chain.smoldotChain] : []
+                    },
+                  )
+                : [],
+          })
+
+        // Insert the promise in `sandbox.chains` so that the state machine is aware of the
+        // fact that there is a chain with this ID currently initializing.
+        const name = nameFromSpec(chainSpec)
+        sandbox.chains.set(message.chainId, {
+          isReady: false,
+          smoldotChain: chainInitialization,
+          name,
+        })
+
+        // Notify the `allChainsChangedCallbacks`.
+        this.#allChainsChangedCallbacks.forEach((cb) => cb())
+        this.#allChainsChangedCallbacks = []
+
+        // Spawn in the background an async function to react to the initialization finishing.
+        this.#handleChainInitializationFinished(
+          sandboxId,
+          chainId,
+          chainInitialization,
+          name,
+          healthChecker,
+        )
+
+        break
+      }
+
+      case "remove-chain": {
+        const chain = sandbox.chains.get(message.chainId)
+        // As documented in the protocol, remove-chain messages concerning an invalid chainId are
+        // simply ignored.
+        if (!chain) return
+
+        if (chain.isReady) {
+          chain.healthChecker.stop()
+          chain.smoldotChain.remove()
+        }
+
+        // If the chain isn't ready yet, the function that asynchronously reacts to the chain
+        // initialization being finished will remove it.
+
+        sandbox.chains.delete(message.chainId)
+
+        // Notify the `allChainsChangedCallbacks`.
+        this.#allChainsChangedCallbacks.forEach((cb) => cb())
+        this.#allChainsChangedCallbacks = []
+        break
+      }
+    }
+  }
+
+  /**
+   * Waits until the given `chainInitialization` is finished (successfully or not), then updates
+   * the given `sandboxId`/`chainId` in `this`.
+   *
+   * If the given `sandboxId`/`chainId` stored in `this` doesn't exist anymore or doesn't match
+   * `chainInitialization`, this function assumes that we're no longer interested in this chain
+   * and discards the newly-created chain.
+   */
+  async #handleChainInitializationFinished(
+    sandboxId: SandboxId,
+    chainId: string,
+    chainInitialization: Promise<SmoldotChain>,
+    name: string,
+    healthChecker: SmoldotHealthChecker,
+  ): Promise<void> {
     try {
-      const { name: chainId, sender } = port
-      const tabId: number = sender!.tab!.id!
-      const url: string = sender!.url!
+      const chain = await chainInitialization
 
-      const healthChecker = smHealthChecker()
-      const id = `${chainId}::${tabId}`
-      const connection: ChainConnection = {
-        id,
-        chainName: "",
-        chainId,
-        tabId,
-        url,
-        port,
+      // Because the chain initialization might have taken a long time, we first need to
+      // check whether the chain that we're initializing is still in `this`, as it might
+      // have been removed by various other functions if it no longer interests us.
+      const sandbox = this.#sandboxes.get(sandboxId)
+      if (
+        !sandbox ||
+        !(sandbox.chains.get(chainId)?.smoldotChain === chainInitialization)
+      ) {
+        chain.remove()
+        return
+      }
+
+      const smoldotChain: SmoldotChain = chain
+      healthChecker.setSendJsonRpc((rq) => smoldotChain.sendJsonRpc(rq))
+      const readyChain: ReadyChain = {
+        isReady: true,
+        name,
+        smoldotChain,
         healthChecker,
       }
+      healthChecker.start((health) => {
+        readyChain.latestHealthStatus = health
+        // Notify the `allChainsChangedCallbacks`.
+        this.#allChainsChangedCallbacks.forEach((cb) => cb())
+        this.#allChainsChangedCallbacks = []
+      })
+      sandbox.chains.set(chainId, readyChain)
+      sandbox.pushMessagesQueue({
+        origin: "substrate-connect-extension",
+        type: "chain-ready",
+        chainId,
+      })
+    } catch (err) {
+      const error =
+        err instanceof Error ? err.message : "Unknown error when adding chain"
 
-      const onMessageHandler = (msg: ToExtension) => {
-        this.#handleMessage(msg, connection)
+      // Because the chain initialization might have taken a long time, we first need to
+      // check whether the chain that we're initializing is still in `this`, as it might
+      // have been removed by various other functions if it no longer interests us.
+      const sandbox = this.#sandboxes.get(sandboxId)
+      if (
+        !sandbox ||
+        !(sandbox.chains.get(chainId)?.smoldotChain === chainInitialization)
+      ) {
+        return
       }
-      port.onMessage.addListener(onMessageHandler)
 
-      const onDisconnect = () => {
-        connection.chain && connection.chain.remove()
-
-        port.onMessage.removeListener(onMessageHandler)
-        port.onDisconnect.removeListener(onDisconnect)
-
-        if (this.#chainConnections.get(id)?.chainName) this.#emitStateChanged()
-
-        this.#chainConnections.delete(id)
-      }
-      port.onDisconnect.addListener(onDisconnect)
-
-      this.#chainConnections.set(id, connection)
-    } catch (e) {
-      const msg = `Error while connecting to the port ${e}`
-      l.error(msg)
-      this.#handleError(port, e instanceof Error ? e : new Error(msg))
+      sandbox.chains.delete(chainId)
+      sandbox.pushMessagesQueue({
+        origin: "substrate-connect-extension",
+        type: "error",
+        chainId,
+        errorMessage: error,
+      })
     }
   }
+}
 
-  /** shutdown shuts down the connected smoldot client. */
-  shutdown(): Promise<void> {
-    if (!this.#client) return Promise.resolve()
-
-    this.#chainConnections.forEach((a) => a.port.disconnect())
-    const client = this.#client
-    this.#client = null
-    return client.terminate()
-  }
+interface Sandbox {
+  /**
+   * List of chains within this sandbox, identified by the user-provided `id`. Chains can be
+   * removed from this list at any time, even if they are still initializing. Be aware that
+   * the `id`s (i.e. the keys of this map) are untrusted user input.
+   */
+  chains: Map<string, InitializingChain | ReadyChain>
 
   /**
-   * addChain adds the Chain in the smoldot client
-   *
-   * @param spec - ChainSpec of chain to be added
-   * @param jsonRpcCallback - The jsonRpcCallback function that should be triggered
-   * @param relayChain - optional Smoldot's Chain for relay chain
-   *
-   * @returns addedChain - An the newly added chain info
+   * Function that pulls a message from the queue of messages, to give it to the API user. Used
+   * by {ConnectionManager.sandboxOutput}.
    */
-  addChain(
-    chainSpec: string,
-    potentialRelayChainIds: string[],
-    jsonRpcCallback?: JsonRpcCallback,
-    tabId?: number,
-    databaseContent?: string,
-  ): Promise<Chain> {
-    if (!this.#client) {
-      throw new Error("Smoldot client does not exist.")
-    }
+  pullMessagesQueue: () => Promise<ToApplication | null>
 
-    const potentialRelayChains = potentialRelayChainIds
-      .map(
-        (chainId) => this.#chainConnections.get(`${chainId}::${tabId}`)?.chain,
-      )
-      .filter((chain): chain is Chain => !!chain)
+  /**
+   * Function that adds a message to the queue in {Sandbox.pullMessagesQueue}.
+   */
+  pushMessagesQueue: (message: ToApplication | null) => void
+}
 
-    return this.#client.addChain({
-      chainSpec,
-      databaseContent,
-      jsonRpcCallback,
-      potentialRelayChains,
-    })
-  }
+interface InitializingChain {
+  /**
+   * Used to differentiate {ReadyChain} from {InitializingChain}.
+   */
+  isReady: false
 
-  #handleError(port: chrome.runtime.Port, e: Error) {
-    port.postMessage({ type: "error", errorMessage: e.message })
-    port.disconnect()
-  }
+  /**
+   * Name of the chain found in its chain specification.
+   *
+   * Beware that this is untrusted user input.
+   */
+  name: string
 
-  /** Handles the incoming message that contains Spec. */
-  async #handleSpecMessage(
-    chainConnection: ChainConnection,
-    chainSpec: string,
-    potentialRelayChainIds: string[],
-  ) {
-    if (!chainSpec) {
-      throw new Error("Relay chain spec was not found")
-    }
+  /**
+   * Promise provided by the smoldot client. Will be ready once the chain initialization has
+   * finished. For each chain currently initializing, there is an asynchronous function running
+   * in the background that waits on this promise and will transition the chain to a {ReadyChain}.
+   *
+   * The `Promise` is stored here so that this asynchronous function can make sure that the chain
+   * found in {Sandbox.chains} is still the same as the one that we waited on.
+   * For example, if the user adds a chain with id "foo", then removes the chain with id "foo",
+   * then adds another chain with id "foo", then once the first chain has finished its
+   * initialization it will notice that the `Promise` here is not the same as the one it has.
+   *
+   * Note that the chain's JSON-RPC callback is already connected to a {SmoldotHealthChecker} that
+   * isn't present in this interface.
+   */
+  smoldotChain: Promise<SmoldotChain>
+}
 
-    const rpcCallback = (rpc: string) => {
-      const rpcResp = chainConnection.healthChecker.responsePassThrough(rpc)
-      if (rpcResp)
-        chainConnection.port.postMessage({
-          type: "rpc",
-          jsonRpcMessage: rpcResp,
-        })
-    }
+interface ReadyChain {
+  /**
+   * Used to differentiate {ReadyChain} from {InitializingChain}.
+   */
+  isReady: true
 
-    chainConnection.chainName =
-      JSON.parse(chainSpec).name.toLowerCase() || "unknown"
+  /**
+   * Name of the chain found in its chain specification.
+   *
+   * Beware that this is untrusted user input.
+   */
+  name: string
 
-    const chainPromise: Promise<Chain> = this.addChain(
-      chainSpec,
-      potentialRelayChainIds,
-      rpcCallback,
-      chainConnection.tabId,
-    )
+  /**
+   * Chain stored within the {ConnectionManager.#client}.
+   */
+  smoldotChain: SmoldotChain
 
-    this.#emitStateChanged()
+  /**
+   * Health checker connected to the chain.
+   */
+  healthChecker: SmoldotHealthChecker
 
-    chrome.storage.local.get("notifications", (s) => {
-      s.notifications &&
-        chrome.notifications.create(chainConnection.port.name, {
-          title: "Substrate Connect",
-          message: `Chain ${chainConnection.chainId} connected to ${chainConnection.chainName}.`,
-          iconUrl: "./icons/icon-32.png",
-          type: "basic",
-        })
-    })
+  /**
+   * Whenever the health checker has a health update ready, it stores it here.
+   */
+  latestHealthStatus?: SmoldotHealth
+}
 
-    const chain = await chainPromise
+interface WellKnownChain {
+  /**
+   * Chain stored within the {ConnectionManager.#client}.
+   */
+  chain: SmoldotChain
 
-    // it has to be taken into account the fact that it's technically possible
-    // -although, quite unlikey- that the port gets closed while we are waiting
-    // for smoldot to return the chain. The way to know this is by checking
-    // whether this `chainConnection` is still present insinde `#chainConnections`.
-    // If it isn't, that means that the port got disconnected, so we should stop.
-    if (!this.#chainConnections.has(chainConnection.id)) {
-      chain.remove()
-      return
-    }
+  /**
+   * Chain specification of the well-known chain.
+   */
+  spec: string
 
-    chainConnection.chain = chain
-    chainConnection.port.postMessage({ type: "chain-ready" })
+  /**
+   * Health checker connected to the chain.
+   */
+  healthChecker: SmoldotHealthChecker
 
-    // Initialize healthChecker
-    chainConnection.healthChecker.setSendJsonRpc((rpc: string) => {
-      chain.sendJsonRpc(rpc)
-    })
-    chainConnection.healthChecker.start((health: SmoldotHealth) => {
-      const hasChanged =
-        chainConnection.healthStatus?.peers !== health.peers ||
-        chainConnection.healthStatus.isSyncing !== health.isSyncing ||
-        chainConnection.healthStatus.shouldHavePeers !== health.shouldHavePeers
+  /**
+   * Whenever the health checker has a health update ready, it stores it here.
+   */
+  latestHealthStatus?: SmoldotHealth
+}
 
-      chainConnection.healthStatus = health
-      if (hasChanged) this.emit("stateChanged", this.connections)
-    })
-  }
-
-  #handleMessage(msg: ToExtension, chainConnection: ChainConnection): void {
-    if (msg.type === "remove-chain") return chainConnection.port.disconnect()
-
-    if (msg.type === "rpc") {
-      if (chainConnection.chain)
-        return chainConnection.healthChecker.sendJsonRpc(msg.jsonRpcMessage)
-
-      const errorMsg =
-        "RPC request received befor the chain was successfully added"
-      l.error(errorMsg)
-      this.#handleError(chainConnection.port, new Error(errorMsg))
-      return
-    }
-
-    const [chainSpec, potentialRelayChainIds]: [string, string[]] =
-      msg.type === "add-chain"
-        ? [msg.chainSpec, msg.potentialRelayChainIds]
-        : [
-            wellKnownChains.get(msg.chainName as WellKnownChains)!,
-            [] as string[],
-          ]
-
-    this.#handleSpecMessage(
-      chainConnection,
-      chainSpec,
-      potentialRelayChainIds,
-    ).catch((e) => {
-      const errorMsg = `An error happened while adding the chain ${e}`
-      l.error(errorMsg)
-      this.#handleError(
-        chainConnection.port,
-        e instanceof Error ? e : new Error(errorMsg),
-      )
-    })
+/**
+ * Returns the `name` field of the given chain specification, or "Unknown" if the chain
+ * specification is invalid or is missing the field.
+ */
+function nameFromSpec(chainSpec: string): string {
+  // TODO: consider using a streaming parser in order to avoid allocating the memory for the entire spec
+  try {
+    return JSON.parse(chainSpec).name!
+  } catch (_error) {
+    return "Unknown"
   }
 }
