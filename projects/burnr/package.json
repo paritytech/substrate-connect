@@ -28,7 +28,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@polkadot/api": "^7.10.1",
-    "@polkadot/api-augment": "^7.10.1",
+    "@polkadot/api-augment": "^7.11.1",
     "@polkadot/keyring": "^8.3.3",
     "@polkadot/react-identicon": "^1.1.1",
     "@polkadot/types": "^7.10.1",
