@@ -42,7 +42,8 @@ const notifyListener = (
           chainName: info.chainName,
           tabId: info.apiInfo!.sandboxId.sender!.tab!.id!,
           url: info.apiInfo!.sandboxId.sender!.tab!.url!,
-          healthStatus: info.healthStatus,
+          isSyncing: info.isSyncing,
+          peers: info.peers,
         }
       }),
   )
