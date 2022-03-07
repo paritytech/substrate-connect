@@ -32,10 +32,14 @@ export interface ChainInfo<SandboxId> {
   chainName: string
 
   /**
-   * Latest known health status of the chain. If missing, the health isn't known yet and it can
-   * be assumed that the chain has no peers yet.
+   * Whether the chain is still in its syncing phase.
    */
-  healthStatus?: SmoldotHealth
+  isSyncing: boolean
+
+  /**
+   * Latest known number of peers the chain is connected to.
+   */
+  peers: number
 
   /**
    * Information about how the chain was inserted in the {ConnectionManager}.
@@ -154,11 +158,18 @@ export class ConnectionManager<SandboxId> {
       potentialRelayChains: [],
     })
 
-    const wellKnownChain: WellKnownChain = { chain, spec, healthChecker }
+    const wellKnownChain: WellKnownChain = {
+      chain,
+      spec,
+      healthChecker,
+      isSyncing: true,
+      peers: 0,
+    }
 
     healthChecker.setSendJsonRpc((rq) => chain.sendJsonRpc(rq))
     healthChecker.start((health) => {
-      wellKnownChain.latestHealthStatus = health
+      wellKnownChain.isSyncing = health.isSyncing
+      wellKnownChain.peers = health.peers
 
       // Notify the `allChainsChangedCallbacks`.
       this.#allChainsChangedCallbacks.forEach((cb) => cb())
@@ -202,7 +213,8 @@ export class ConnectionManager<SandboxId> {
     for (const [chainName, chain] of this.#wellKnownChains) {
       output.push({
         chainName,
-        healthStatus: chain.latestHealthStatus,
+        isSyncing: chain.isSyncing,
+        peers: chain.peers,
       })
     }
 
@@ -210,7 +222,8 @@ export class ConnectionManager<SandboxId> {
       for (const [chainId, chain] of sandbox.chains) {
         output.push({
           chainName: chain.name,
-          healthStatus: chain.isReady ? chain.latestHealthStatus : undefined,
+          isSyncing: chain.isReady ? chain.isSyncing : true,
+          peers: chain.isReady ? chain.peers : 0,
           apiInfo: {
             chainId,
             sandboxId,
@@ -492,9 +505,12 @@ export class ConnectionManager<SandboxId> {
         name,
         smoldotChain,
         healthChecker,
+        isSyncing: true,
+        peers: 0,
       }
       healthChecker.start((health) => {
-        readyChain.latestHealthStatus = health
+        readyChain.isSyncing = health.isSyncing
+        readyChain.peers = health.peers
         // Notify the `allChainsChangedCallbacks`.
         this.#allChainsChangedCallbacks.forEach((cb) => cb())
         this.#allChainsChangedCallbacks = []
@@ -605,9 +621,14 @@ interface ReadyChain {
   healthChecker: SmoldotHealthChecker
 
   /**
-   * Whenever the health checker has a health update ready, it stores it here.
+   * Whether the chain is still in its syncing phase.
    */
-  latestHealthStatus?: SmoldotHealth
+  isSyncing: boolean
+
+  /**
+   * Latest known number of peers the chain is connected to.
+   */
+  peers: number
 }
 
 interface WellKnownChain {
@@ -627,9 +648,14 @@ interface WellKnownChain {
   healthChecker: SmoldotHealthChecker
 
   /**
-   * Whenever the health checker has a health update ready, it stores it here.
+   * Whether the chain is still in its syncing phase.
    */
-  latestHealthStatus?: SmoldotHealth
+  isSyncing: boolean
+
+  /**
+   * Latest known number of peers the chain is connected to.
+   */
+  peers: number
 }
 
 /**

@@ -33,9 +33,8 @@ export interface NetworkTabProps {
 }
 
 export interface OptionsNetworkTabHealthContent {
-  isSyncing?: boolean
-  peers?: number
-  shouldHavePeers?: boolean
+  isSyncing: boolean
+  peers: number
   status: NetworkStatus
 }
 export interface App {
