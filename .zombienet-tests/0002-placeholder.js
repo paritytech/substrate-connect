@@ -1,7 +1,7 @@
 const { connect } = require("./utils")
 
 async function run(nodeName, networkInfo) {
-  const api = await connect(nodeName, networkInfo)
+  const api = await connect(nodeName, networkInfo, true)
   let count = 0
   await new Promise(async (resolve, reject) => {
     const unsub = await api.rpc.chain.subscribeNewHeads((header) => {
