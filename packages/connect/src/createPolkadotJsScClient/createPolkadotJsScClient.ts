@@ -31,7 +31,7 @@ const subscriptionUnsubscriptionMethods = new Map<string, string>([
   ["author_submitAndWatchExtrinsic", "author_unwatchExtrinsic"],
   ["chain_subscribeAllHeads", "chain_unsubscribeAllHeads"],
   ["chain_subscribeFinalizedHeads", "chain_unsubscribeFinalizedHeads"],
-  ["chain_subscribeNewHeads", "chain_unsubscribeNewHeads"],
+  ["chain_subscribeNewHead", "chain_unsubscribeNewHeads"],
   ["state_subscribeRuntimeVersion", "state_unsubscribeRuntimeVersion"],
   ["state_subscribeStorage", "state_unsubscribeStorage"],
 ])

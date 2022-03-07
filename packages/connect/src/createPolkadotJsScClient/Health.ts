@@ -36,7 +36,7 @@ export interface HealthChecker {
  * the health of the chain.
  *
  * In addition to this, as long as the health check reports that `isSyncing` is `true`, the
- * health checker also maintains a subscription to new best blocks using `chain_subscribeNewHeads`.
+ * health checker also maintains a subscription to new best blocks using `chain_subscribeNewHead`.
  * Whenever a new block is notified, a health check is performed immediately in order to determine
  * whether `isSyncing` has changed to `false`.
  *
@@ -258,7 +258,7 @@ class InnerChecker {
       JSON.stringify({
         jsonrpc: "2.0",
         id: this.#currentSubunsubRequestId,
-        method: "chain_subscribeNewHeads",
+        method: "chain_subscribeNewHead",
         params: [],
       }),
     )

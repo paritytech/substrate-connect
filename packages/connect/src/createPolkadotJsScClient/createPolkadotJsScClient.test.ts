@@ -403,7 +403,7 @@ describe("Provider", () => {
       const cb = jest.fn()
       const token = await provider.subscribe(
         "foo",
-        "chain_subscribeNewHeads",
+        "chain_subscribeNewHead",
         ["baz"],
         cb,
       )
@@ -473,7 +473,7 @@ describe("Provider", () => {
       const cb = jest.fn()
       const token = await provider.subscribe(
         "foo",
-        "chain_subscribeNewHeads",
+        "chain_subscribeNewHead",
         ["baz"],
         cb,
       )
@@ -501,7 +501,7 @@ describe("Provider", () => {
       const cb = jest.fn()
       const token = await provider.subscribe(
         "foo",
-        "chain_subscribeNewHeads",
+        "chain_subscribeNewHead",
         ["baz"],
         cb,
       )
@@ -567,7 +567,7 @@ describe("Provider", () => {
     const cb = jest.fn()
     const token = await provider.subscribe(
       "foo",
-      "chain_subscribeNewHeads",
+      "chain_subscribeNewHead",
       ["baz"],
       cb,
     )
@@ -586,7 +586,7 @@ describe("Provider", () => {
     // from the stale subscription, since that request should happen once the
     // chain is no longer syncing
     expect(chain._recevedRequests()).toEqual([
-      '{"id":1,"jsonrpc":"2.0","method":"chain_subscribeNewHeads","params":["baz"]}',
+      '{"id":1,"jsonrpc":"2.0","method":"chain_subscribeNewHead","params":["baz"]}',
     ])
 
     // lets change the sync status back to false
@@ -598,7 +598,7 @@ describe("Provider", () => {
     // let's make sure that we have now sent the request for killing the
     // stale subscription
     expect(chain._recevedRequests()).toEqual([
-      '{"id":1,"jsonrpc":"2.0","method":"chain_subscribeNewHeads","params":["baz"]}',
+      '{"id":1,"jsonrpc":"2.0","method":"chain_subscribeNewHead","params":["baz"]}',
       `{"id":2,"jsonrpc":"2.0","method":"chain_unsubscribeNewHeads","params":["${token}"]}`,
     ])
   })
