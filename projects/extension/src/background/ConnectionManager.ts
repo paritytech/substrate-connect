@@ -6,7 +6,6 @@ import {
 import {
   healthChecker as smHealthChecker,
   HealthChecker as SmoldotHealthChecker,
-  SmoldotHealth,
 } from "@substrate/connect"
 
 import {
