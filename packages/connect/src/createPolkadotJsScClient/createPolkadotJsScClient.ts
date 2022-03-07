@@ -26,7 +26,7 @@ type ResponseCallback = (response: string | Error) => void
 // https://github.com/paritytech/smoldot/blob/17425040ddda47d539556eeaf62b88c4240d1d42/src/json_rpc/methods.rs#L338-L462
 // It's important to take into account that smoldot is adding support to the new
 // json-rpc-interface https://paritytech.github.io/json-rpc-interface-spec/
-// However, these list should only include methods that belong to the "old" API
+// However, at the moment this list only includes methods that belong to the "old" API
 const subscriptionUnsubscriptionMethods = new Map<string, string>([
   ["author_submitAndWatchExtrinsic", "author_unwatchExtrinsic"],
   ["chain_subscribeAllHeads", "chain_unsubscribeAllHeads"],
