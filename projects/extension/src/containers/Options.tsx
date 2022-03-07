@@ -93,7 +93,8 @@ const Options: React.FunctionComponent = () => {
             return networks.set(app.chainName, {
               name: app.chainName,
               health: {
-                ...(app.healthStatus ?? {}),
+                isSyncing: app.isSyncing,
+                peers: app.peers,
                 status: "connected",
               },
               apps: [{ name: app.url, url: app.url }],
