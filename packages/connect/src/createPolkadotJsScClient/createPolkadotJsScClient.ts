@@ -22,14 +22,18 @@ export interface PolkadotJsScClient {
 
 type ResponseCallback = (response: string | Error) => void
 
-const subscriptionUnsubscritionMethods = new Map<string, string>([
+// These methods have been taken from:
+// https://github.com/paritytech/smoldot/blob/17425040ddda47d539556eeaf62b88c4240d1d42/src/json_rpc/methods.rs#L338-L462
+// It's important to take into account that smoldot is adding support to the new
+// json-rpc-interface https://paritytech.github.io/json-rpc-interface-spec/
+// However, these list should only include methods that belong to the "old" API
+const subscriptionUnsubscriptionMethods = new Map<string, string>([
   ["author_submitAndWatchExtrinsic", "author_unwatchExtrinsic"],
   ["chain_subscribeAllHeads", "chain_unsubscribeAllHeads"],
   ["chain_subscribeFinalizedHeads", "chain_unsubscribeFinalizedHeads"],
   ["chain_subscribeNewHeads", "chain_unsubscribeNewHeads"],
   ["state_subscribeRuntimeVersion", "state_unsubscribeRuntimeVersion"],
   ["state_subscribeStorage", "state_unsubscribeStorage"],
-  ["transaction_unstable_submitAndWatch", "transaction_unstable_unwatch"],
 ])
 
 class Provider implements ProviderInterface {
@@ -249,7 +253,7 @@ class Provider implements ProviderInterface {
     params: any[],
     callback: ProviderInterfaceCallback,
   ): Promise<number | string> {
-    if (!subscriptionUnsubscritionMethods.has(method))
+    if (!subscriptionUnsubscriptionMethods.has(method))
       throw new Error(`Unsupported subscribe method: ${method}`)
 
     const id = await this.send(method, params)
@@ -262,7 +266,7 @@ class Provider implements ProviderInterface {
       }
     }
 
-    const unsubscribeMethod = subscriptionUnsubscritionMethods.get(method)!
+    const unsubscribeMethod = subscriptionUnsubscriptionMethods.get(method)!
     this.#subscriptions.set(subscriptionId, [cb, { unsubscribeMethod, id }])
     return id
   }
