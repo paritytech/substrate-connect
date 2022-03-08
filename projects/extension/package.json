@@ -33,7 +33,7 @@
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/styles": "^4.11.4",
-    "@polkadot/rpc-provider": "^7.10.1",
+    "@polkadot/rpc-provider": "^7.11.1",
     "@substrate/connect": "0.6.2",
     "@substrate/connect-extension-protocol": "^1.0.0",
     "@substrate/smoldot-light": "0.6.4",

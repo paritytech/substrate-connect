@@ -29,7 +29,7 @@
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "dependencies": {
-    "@polkadot/rpc-provider": "^7.10.1",
+    "@polkadot/rpc-provider": "^7.11.1",
     "@substrate/connect-extension-protocol": "^1.0.0",
     "@substrate/smoldot-light": "0.6.4",
     "eventemitter3": "^4.0.7"
