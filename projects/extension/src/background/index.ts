@@ -24,7 +24,44 @@ export interface Background extends Window {
       listener: (state: ExposedChainConnection[]) => void,
     ) => () => void
     disconnectTab: (tabId: number) => void
+    getLogger: () => LogKeeper
   }
+}
+
+interface LogKeeper {
+  debug: string[]
+  warn: string[]
+  error: string[]
+}
+
+const logKeeper: LogKeeper = {
+  debug: [],
+  warn: [],
+  error: [],
+}
+
+const getTime = () => {
+  const date = new Date()
+  return `${date.getHours() < 10 ? "0" : ""}${date.getHours()}:${
+    date.getMinutes() < 10 ? "0" : ""
+  }${date.getMinutes()}:${
+    date.getSeconds() < 10 ? "0" : ""
+  }${date.getSeconds()} ${date.getMilliseconds()}`
+}
+
+const logger = (level: number, target: string, message: string) => {
+  const logLevels = ["Error", "Warn", "Info", "Debug"]
+  if (level !== 4) {
+    // log all non-debug logs to background console
+    console.log(`${logLevels[level - 1]}: ${message}`)
+    if (level == 1) {
+      logKeeper.error.push(`${getTime()} | ${target} | ${message}`)
+    } else if (level === 2) {
+      logKeeper.warn.push(`${getTime()} | ${target} | ${message}`)
+    }
+  }
+  logKeeper.debug.length >= 1000 && logKeeper.debug.shift()
+  logKeeper.debug.push(`${getTime()} | ${target} | ${message}`)
 }
 
 const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
@@ -72,6 +109,7 @@ window.manager = {
       }
     })
   },
+  getLogger: () => logKeeper,
 }
 
 const saveChainDbContent = async (
@@ -91,7 +129,10 @@ const saveChainDbContent = async (
 const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> =
   (async () => {
     const managerInit = new ConnectionManager<chrome.runtime.Port>(
-      smoldotStart(),
+      smoldotStart({
+        maxLogLevel: 4,
+        logCallback: logger,
+      }),
     )
     for (const [key, value] of wellKnownChains.entries()) {
       const dbContent = await new Promise<string | undefined>((res) =>
