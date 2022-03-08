@@ -54,7 +54,7 @@ const logger = (level: number, target: string, message: string) => {
   if (level !== 4) {
     // log all non-debug logs to background console
     console.log(`${logLevels[level - 1]}: ${message}`)
-    if (level == 1) {
+    if (level === 1) {
       logKeeper.error.push(`${getTime()} | ${target} | ${message}`)
     } else if (level === 2) {
       logKeeper.warn.push(`${getTime()} | ${target} | ${message}`)
