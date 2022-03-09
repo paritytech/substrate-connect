@@ -1,7 +1,3 @@
 # Changelog
 
 ## [Unreleased]
-
-### Added
-
-- Changelog
