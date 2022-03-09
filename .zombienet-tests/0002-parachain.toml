@@ -22,11 +22,12 @@ command = "polkadot"
 id = 100
 cumulus_based = true
 
-  [parachains.collator]
-  name = "collator1"
-  image = "docker.io/paritypr/colander:4131-ccd09bbf"
-  command = "polkadot-collator"
-  args = ["-lparachain=debug"]
+  [[parachains.collator_groups]]
+    count = 2
+    [parachains.collator_groups.collator]
+    name = "collator"
+    command = "polkadot-collator"
+    args = ["-lparachain=debug"]
 
 [types.Header]
 number = "u64"
