@@ -1,6 +1,3 @@
 # Changelog
 
 ## [Unreleased]
-
-# Removed
-
