@@ -186,8 +186,8 @@ const Options: React.FunctionComponent = () => {
   }
 
   const getLevelInfo = (level: number) => {
-    let color: string = "#000000"
-    let desc: string = "Info"
+    let color: string = "#999"
+    let desc: string = "Trace"
     switch (level) {
       case 0:
       case 1:
@@ -197,6 +197,10 @@ const Options: React.FunctionComponent = () => {
       case 2:
         color = "#f99602"
         desc = "Warn"
+        break
+      case 3:
+        color = "#000"
+        desc = "Info"
         break
       case 4:
         color = "#5e5e5e"
