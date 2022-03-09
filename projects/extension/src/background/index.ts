@@ -28,14 +28,21 @@ export interface Background extends Window {
   }
 }
 
+type logStructure = {
+  time: string
+  level: string
+  target: string
+  message: string
+}
+
 interface LogKeeper {
-  debug: string[]
-  warn: string[]
-  error: string[]
+  all: logStructure[]
+  warn: logStructure[]
+  error: logStructure[]
 }
 
 const logKeeper: LogKeeper = {
-  debug: [],
+  all: [],
   warn: [],
   error: [],
 }
@@ -49,19 +56,40 @@ const getTime = () => {
   }${date.getSeconds()} ${date.getMilliseconds()}`
 }
 
+const maintainArr = (arr: logStructure[], incLog: logStructure): void => {
+  if (arr.length >= 1000) arr.shift()
+  arr.push(incLog)
+}
+
+// duplicate "Error" is intentional for the extreme case of level === 0
+const logLevels = ["Error", "Error", "Warn", "Info", "Debug"]
+
 const logger = (level: number, target: string, message: string) => {
-  const logLevels = ["Error", "Warn", "Info", "Debug"]
+  const incLog = {
+    time: getTime(),
+    level: logLevels[level],
+    target,
+    message,
+  }
+  const { error, warn, all } = logKeeper
   if (level !== 4) {
     // log all non-debug logs to background console
-    console.log(`${logLevels[level - 1]}: ${message}`)
-    if (level === 1) {
-      logKeeper.error.push(`${getTime()} | ${target} | ${message}`)
-    } else if (level === 2) {
-      logKeeper.warn.push(`${getTime()} | ${target} | ${message}`)
+    switch (level) {
+      case 0:
+      case 1:
+        maintainArr(error, incLog)
+        console.error(message)
+        break
+      case 2:
+        maintainArr(warn, incLog)
+        console.warn(message)
+        break
+      case 3:
+        console.info(message)
+        break
     }
   }
-  logKeeper.debug.length >= 1000 && logKeeper.debug.shift()
-  logKeeper.debug.push(`${getTime()} | ${target} | ${message}`)
+  maintainArr(all, incLog)
 }
 
 const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()

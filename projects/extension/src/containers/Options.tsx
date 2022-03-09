@@ -37,6 +37,13 @@ interface StyledTabProps {
   label: string
 }
 
+type logStructure = {
+  time: string
+  level: string
+  target: string
+  message: string
+}
+
 const MenuTabs = withStyles({
   root: {
     minHeight: 34,
@@ -56,6 +63,10 @@ const useStyles = makeStyles((theme) => ({
   secondaryHeading: {
     fontSize: theme.typography.pxToRem(15),
     color: theme.palette.text.secondary,
+  },
+  logContainer: {
+    maxHeight: "500px",
+    overflow: "auto",
   },
 }))
 
@@ -103,16 +114,16 @@ const Options: React.FunctionComponent = () => {
   const [value, setValue] = useState<number>(0)
   const [networks, setNetworks] = useState<NetworkTabProps[]>([])
   const [notifications, setNotifications] = useState<boolean>(false)
-  const [debugLogs, setDebugLogs] = useState<string[]>([])
-  const [warnLogs, setWarnLogs] = useState<string[]>([])
-  const [errLogs, setErrLogs] = useState<string[]>([])
+  const [allLogs, setAllLogs] = useState<logStructure[]>([])
+  const [warnLogs, setWarnLogs] = useState<logStructure[]>([])
+  const [errLogs, setErrLogs] = useState<logStructure[]>([])
   const [expanded, setExpanded] = useState<string | boolean>(false)
 
   useEffect(() => {
     const interval = setInterval(() => {
       chrome.runtime.getBackgroundPage((bg) => {
         const logs = (bg as Background).manager.getLogger()
-        setDebugLogs(logs.debug)
+        setAllLogs(logs.all)
         setWarnLogs(logs.warn)
         setErrLogs(logs.error)
       })
@@ -237,7 +248,7 @@ const Options: React.FunctionComponent = () => {
             aria-controls="panel1bh-content"
             id="panel1bh-header"
           >
-            <Typography className={classes.heading}>Error Logs</Typography>
+            <Typography className={classes.heading}>Errors</Typography>
             <Typography className={classes.secondaryHeading}>
               <Badge
                 badgeContent={errLogs.length}
@@ -247,9 +258,8 @@ const Options: React.FunctionComponent = () => {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <div style={{ maxHeight: "500px", overflow: "auto" }}>
-              {errLogs.map((d: string) => {
-                const res = d.split("|")
+            <div className={classes.logContainer}>
+              {errLogs.map((res: logStructure) => {
                 return (
                   <p style={{ lineHeight: "1.2rem" }}>
                     <span
@@ -258,7 +268,7 @@ const Options: React.FunctionComponent = () => {
                         fontWeight: "bold",
                       }}
                     >
-                      {res[0]}
+                      {res?.time}
                     </span>
                     <span
                       style={{
@@ -267,9 +277,9 @@ const Options: React.FunctionComponent = () => {
                         margin: "0 0.5rem",
                       }}
                     >
-                      {res[1]}
+                      {res.target}
                     </span>
-                    <span>{res[2]}</span>
+                    <span>{res.message}</span>
                   </p>
                 )
               })}
@@ -285,7 +295,7 @@ const Options: React.FunctionComponent = () => {
             aria-controls="panel2bh-content"
             id="panel2bh-header"
           >
-            <Typography className={classes.heading}>Warning Logs</Typography>
+            <Typography className={classes.heading}>Warnings</Typography>
             <Typography className={classes.secondaryHeading}>
               <Badge
                 badgeContent={warnLogs.length}
@@ -295,9 +305,8 @@ const Options: React.FunctionComponent = () => {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <div style={{ maxHeight: "500px", overflow: "auto" }}>
-              {warnLogs.map((d: string) => {
-                const res = d.split("|")
+            <div className={classes.logContainer}>
+              {warnLogs.map((res: logStructure) => {
                 return (
                   <p style={{ lineHeight: "1.2rem" }}>
                     <span
@@ -306,7 +315,7 @@ const Options: React.FunctionComponent = () => {
                         fontWeight: "bold",
                       }}
                     >
-                      {res[0]}
+                      {res?.time}
                     </span>
                     <span
                       style={{
@@ -315,9 +324,9 @@ const Options: React.FunctionComponent = () => {
                         margin: "0 0.5rem",
                       }}
                     >
-                      {res[1]}
+                      {res.target}
                     </span>
-                    <span>{res[2]}</span>
+                    <span>{res.message}</span>
                   </p>
                 )
               })}
@@ -333,13 +342,12 @@ const Options: React.FunctionComponent = () => {
             aria-controls="panel3bh-content"
             id="panel3bh-header"
           >
-            <Typography className={classes.heading}>Debug Logs</Typography>
+            <Typography className={classes.heading}>Logs</Typography>
             <Typography className={classes.secondaryHeading}></Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <div style={{ maxHeight: "500px", overflow: "auto" }}>
-              {debugLogs.map((d: string) => {
-                const res = d.split("|")
+            <div className={classes.logContainer}>
+              {allLogs.map((res: logStructure) => {
                 return (
                   <p style={{ lineHeight: "1.2rem" }}>
                     <span
@@ -348,7 +356,7 @@ const Options: React.FunctionComponent = () => {
                         fontWeight: "bold",
                       }}
                     >
-                      {res[0]}
+                      {res?.time}
                     </span>
                     <span
                       style={{
@@ -357,9 +365,9 @@ const Options: React.FunctionComponent = () => {
                         margin: "0 0.5rem",
                       }}
                     >
-                      {res[1]}
+                      {res.target}
                     </span>
-                    <span>{res[2]}</span>
+                    <span>{res.message}</span>
                   </p>
                 )
               })}
