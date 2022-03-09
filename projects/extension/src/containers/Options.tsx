@@ -37,7 +37,7 @@ interface StyledTabProps {
   label: string
 }
 
-type logStructure = {
+interface logStructure {
   time: string
   level: string
   target: string
@@ -347,30 +347,45 @@ const Options: React.FunctionComponent = () => {
           </AccordionSummary>
           <AccordionDetails>
             <div className={classes.logContainer}>
-              {allLogs.map((res: logStructure) => {
-                return (
-                  <p style={{ lineHeight: "1.2rem" }}>
-                    <span
-                      style={{
-                        fontSize: "0.8rem",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {res?.time}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "0.8rem",
-                        fontStyle: "oblique",
-                        margin: "0 0.5rem",
-                      }}
-                    >
-                      {res.target}
-                    </span>
-                    <span>{res.message}</span>
-                  </p>
-                )
-              })}
+              {allLogs.map(({ time, level, target, message }: logStructure) => (
+                <p style={{ lineHeight: "1.2rem" }}>
+                  <span
+                    style={{
+                      fontSize: "0.8rem",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {time}
+                  </span>
+                  <span
+                    style={{
+                      color:
+                        level === "Error"
+                          ? "#c90a00"
+                          : level === "Warn"
+                          ? "#f99602"
+                          : level === "Debug"
+                          ? "#5e5e5e"
+                          : "#000000",
+                      fontSize: "0.8rem",
+                      fontWeight: "bold",
+                      margin: "0 0.5rem",
+                    }}
+                  >
+                    {level}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "0.8rem",
+                      fontStyle: "oblique",
+                      margin: "0 0.5rem",
+                    }}
+                  >
+                    {target}
+                  </span>
+                  <span>{message}</span>
+                </p>
+              ))}
             </div>
           </AccordionDetails>
         </Accordion>

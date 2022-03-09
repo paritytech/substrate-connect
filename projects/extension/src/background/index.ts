@@ -28,7 +28,7 @@ export interface Background extends Window {
   }
 }
 
-type logStructure = {
+interface logStructure {
   time: string
   level: string
   target: string
@@ -56,11 +56,6 @@ const getTime = () => {
   }${date.getSeconds()} ${date.getMilliseconds()}`
 }
 
-const maintainArr = (arr: logStructure[], incLog: logStructure): void => {
-  if (arr.length >= 1000) arr.shift()
-  arr.push(incLog)
-}
-
 // duplicate "Error" is intentional for the extreme case of level === 0
 const logLevels = ["Error", "Error", "Warn", "Info", "Debug"]
 
@@ -77,11 +72,13 @@ const logger = (level: number, target: string, message: string) => {
     switch (level) {
       case 0:
       case 1:
-        maintainArr(error, incLog)
+        if (error.length >= 1000) error.shift()
+        error.push(incLog)
         console.error(message)
         break
       case 2:
-        maintainArr(warn, incLog)
+        if (warn.length >= 1000) warn.shift()
+        warn.push(incLog)
         console.warn(message)
         break
       case 3:
@@ -89,7 +86,8 @@ const logger = (level: number, target: string, message: string) => {
         break
     }
   }
-  maintainArr(all, incLog)
+  if (all.length >= 1000) all.shift()
+  all.push(incLog)
 }
 
 const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
