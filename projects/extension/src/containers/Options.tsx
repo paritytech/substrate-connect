@@ -39,7 +39,7 @@ interface StyledTabProps {
 
 interface logStructure {
   time: string
-  level: string
+  level: number
   target: string
   message: string
 }
@@ -183,6 +183,27 @@ const Options: React.FunctionComponent = () => {
     newValue: number,
   ) => {
     setValue(newValue)
+  }
+
+  const getLevelInfo = (level: number) => {
+    let color: string = "#000000"
+    let desc: string = "Info"
+    switch (level) {
+      case 0:
+      case 1:
+        color = "#c90a00"
+        desc = "Error"
+        break
+      case 2:
+        color = "#f99602"
+        desc = "Warn"
+        break
+      case 4:
+        color = "#5e5e5e"
+        desc = "Debug"
+        break
+    }
+    return [desc, color]
   }
 
   return (
@@ -351,6 +372,7 @@ const Options: React.FunctionComponent = () => {
                 <p style={{ lineHeight: "1.2rem" }}>
                   <span
                     style={{
+                      color: getLevelInfo(level)[1],
                       fontSize: "0.8rem",
                       fontWeight: "bold",
                     }}
@@ -359,20 +381,13 @@ const Options: React.FunctionComponent = () => {
                   </span>
                   <span
                     style={{
-                      color:
-                        level === "Error"
-                          ? "#c90a00"
-                          : level === "Warn"
-                          ? "#f99602"
-                          : level === "Debug"
-                          ? "#5e5e5e"
-                          : "#000000",
+                      color: getLevelInfo(level)[1],
                       fontSize: "0.8rem",
                       fontWeight: "bold",
                       margin: "0 0.5rem",
                     }}
                   >
-                    {level}
+                    {getLevelInfo(level)[0]}
                   </span>
                   <span
                     style={{

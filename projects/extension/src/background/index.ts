@@ -30,7 +30,7 @@ export interface Background extends Window {
 
 interface logStructure {
   time: string
-  level: string
+  level: number
   target: string
   message: string
 }
@@ -56,13 +56,10 @@ const getTime = () => {
   }${date.getSeconds()} ${date.getMilliseconds()}`
 }
 
-// duplicate "Error" is intentional for the extreme case of level === 0
-const logLevels = ["Error", "Error", "Warn", "Info", "Debug"]
-
 const logger = (level: number, target: string, message: string) => {
   const incLog = {
     time: getTime(),
-    level: logLevels[level],
+    level,
     target,
     message,
   }
