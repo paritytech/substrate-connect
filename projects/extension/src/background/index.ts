@@ -24,7 +24,67 @@ export interface Background extends Window {
       listener: (state: ExposedChainConnection[]) => void,
     ) => () => void
     disconnectTab: (tabId: number) => void
+    getLogger: () => LogKeeper
   }
+}
+
+interface logStructure {
+  time: string
+  level: number
+  target: string
+  message: string
+}
+
+interface LogKeeper {
+  all: logStructure[]
+  warn: logStructure[]
+  error: logStructure[]
+}
+
+const logKeeper: LogKeeper = {
+  all: [],
+  warn: [],
+  error: [],
+}
+
+const getTime = () => {
+  const date = new Date()
+  return `${date.getHours() < 10 ? "0" : ""}${date.getHours()}:${
+    date.getMinutes() < 10 ? "0" : ""
+  }${date.getMinutes()}:${
+    date.getSeconds() < 10 ? "0" : ""
+  }${date.getSeconds()} ${date.getMilliseconds()}`
+}
+
+const logger = (level: number, target: string, message: string) => {
+  const incLog = {
+    time: getTime(),
+    level,
+    target,
+    message,
+  }
+  const { error, warn, all } = logKeeper
+  if (level !== 4) {
+    // log all non-debug logs to background console
+    switch (level) {
+      case 0:
+      case 1:
+        if (error.length >= 1000) error.shift()
+        error.push(incLog)
+        console.error(message)
+        break
+      case 2:
+        if (warn.length >= 1000) warn.shift()
+        warn.push(incLog)
+        console.warn(message)
+        break
+      case 3:
+        console.info(message)
+        break
+    }
+  }
+  if (all.length >= 1000) all.shift()
+  all.push(incLog)
 }
 
 const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
@@ -72,6 +132,7 @@ window.manager = {
       }
     })
   },
+  getLogger: () => logKeeper,
 }
 
 const saveChainDbContent = async (
@@ -91,7 +152,10 @@ const saveChainDbContent = async (
 const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> =
   (async () => {
     const managerInit = new ConnectionManager<chrome.runtime.Port>(
-      smoldotStart(),
+      smoldotStart({
+        maxLogLevel: 4,
+        logCallback: logger,
+      }),
     )
     for (const [key, value] of wellKnownChains.entries()) {
       const dbContent = await new Promise<string | undefined>((res) =>
