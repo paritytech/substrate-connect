@@ -163,6 +163,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
    * end.
    */
   async *sandboxOutput(sandboxId: SandboxId): AsyncGenerator<ToApplication, void> {
+    // TODO: problematic in case sandboxOutput is grabbed multiple times, or not grabbed at all
     const iter = this.#inner.sandboxOutput(sandboxId);
     for await (const item of iter) {
       switch (item.type) {
