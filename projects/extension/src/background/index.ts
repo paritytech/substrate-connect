@@ -62,15 +62,15 @@ const logger = (level: number, target: string, message: string) => {
       case 1:
         if (error.length >= 1000) error.shift()
         error.push(incLog)
-        console.error(message)
+        console.error(`[${target}] ${message}`)
         break
       case 2:
         if (warn.length >= 1000) warn.shift()
         warn.push(incLog)
-        console.warn(message)
+        console.warn(`[${target}] ${message}`)
         break
       case 3:
-        console.info(message)
+        console.info(`[${target}] ${message}`)
         break
     }
   }
