@@ -254,6 +254,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
             }),
           });
           this.#nextHealthCheckRqId += 1;
+          yield item;
           break;
         }
 
@@ -275,6 +276,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
             if (jsonRpcMessageId.startsWith("extern:")) {
               jsonRpcMessage.id = JSON.parse((jsonRpcMessage.id as string).slice("extern:".length));
               item.jsonRpcMessage = JSON.stringify(jsonRpcMessage);
+              yield item;
 
             } else if (jsonRpcMessageId.startsWith("health-check:")) {
               // Store the health status in the locally-held information.
@@ -308,6 +310,9 @@ export class ConnectionManagerWithHealth<SandboxId> {
                 }),
               });
               this.#nextHealthCheckRqId += 1;
+
+            } else {
+              yield item;
             }
           }
 
@@ -318,11 +323,14 @@ export class ConnectionManagerWithHealth<SandboxId> {
           // Note that this can happen during the initialization of a chain, in which case it is
           // not in the list.
           this.#sandboxesChains.get(sandboxId)?.delete(item.chainId);
+          yield item;
           break;
         }
-      }
 
-      yield item;
+        default: {
+          yield item;
+        }
+      }
     }
   }
 
