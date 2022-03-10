@@ -342,6 +342,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
                       params: [true],
                     }),
                   })
+                  break
                 }
               }
             } else {
