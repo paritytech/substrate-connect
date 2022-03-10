@@ -1,15 +1,11 @@
 import React, { SetStateAction, useEffect, useState } from "react"
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Badge,
+  Button,
+  CircularProgress,
   createTheme,
   ThemeProvider,
-  Typography,
 } from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import Box from "@material-ui/core/Box"
 import Switch from "@material-ui/core/Switch"
 import FormGroup from "@material-ui/core/FormGroup"
@@ -26,7 +22,11 @@ import {
   //  Parachain,
   NetworkTabProps,
 } from "../types"
-
+import {
+  PlayArrow,
+  Pause as PauseIcon,
+  FileCopy as FileCopyIcon,
+} from "@material-ui/icons"
 interface TabPanelProps {
   children?: React.ReactNode
   index: number
@@ -38,7 +38,7 @@ interface StyledTabProps {
 }
 
 interface logStructure {
-  time: string
+  unix_timestamp: number
   level: number
   target: string
   message: string
@@ -64,9 +64,33 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.pxToRem(15),
     color: theme.palette.text.secondary,
   },
+  logs: {
+    display: "block",
+  },
   logContainer: {
-    maxHeight: "500px",
-    overflow: "auto",
+    maxHeight: "80vh",
+    overflowY: "auto",
+    display: "block",
+    width: "100%",
+  },
+  logTitle: {
+    margin: "20px 0",
+    display: "flex",
+  },
+  errCounter: {
+    borderRadius: "30px",
+    backgroundColor: "red",
+    padding: "10px 15px",
+    margin: "0 10px",
+  },
+  warnCounter: {
+    borderRadius: "30px",
+    backgroundColor: "yellow",
+    padding: "10px 15px",
+    margin: "0 10px",
+  },
+  copyClipboard: {
+    margin: "0 10px",
   },
 }))
 
@@ -117,19 +141,47 @@ const Options: React.FunctionComponent = () => {
   const [allLogs, setAllLogs] = useState<logStructure[]>([])
   const [warnLogs, setWarnLogs] = useState<logStructure[]>([])
   const [errLogs, setErrLogs] = useState<logStructure[]>([])
-  const [expanded, setExpanded] = useState<string | boolean>(false)
+  const [poolingLogs, setPoolingLogs] = useState<boolean>(true)
+
+  const getTime = (d: number) => {
+    const date = new Date(d)
+    return `${("0" + date.getHours()).slice(-2)}:${(
+      "0" + date.getMinutes()
+    ).slice(-2)}:${("0" + date.getSeconds()).slice(-2)} ${(
+      "00" + date.getMilliseconds()
+    ).slice(-3)}`
+  }
+
+  const textifyLogs = () => {
+    return allLogs
+      .map(
+        (a: logStructure) =>
+          getTime(a.unix_timestamp) +
+          " " +
+          getLevelInfo(a.level)[0] +
+          " - " +
+          a.target +
+          " " +
+          a.message,
+      )
+      .join("\r\n")
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
-      chrome.runtime.getBackgroundPage((bg) => {
-        const logs = (bg as Background).manager.getLogger()
-        setAllLogs(logs.all)
-        setWarnLogs(logs.warn)
-        setErrLogs(logs.error)
-      })
+      if (poolingLogs) {
+        chrome.runtime.getBackgroundPage((bg) => {
+          const logs = (bg as Background).manager.getLogger()
+          setAllLogs([...logs.all])
+          setWarnLogs([...logs.warn])
+          setErrLogs([...logs.error])
+        })
+      }
     }, 5000)
-    return () => clearInterval(interval)
-  }, [])
+    return () => {
+      clearInterval(interval)
+    }
+  }, [poolingLogs])
 
   useEffect(() => {
     chrome.storage.local.get(["notifications"], (res) => {
@@ -171,12 +223,6 @@ const Options: React.FunctionComponent = () => {
       }
     })
   }, [notifications])
-
-  const handleAccordionChange =
-    (panel: string) =>
-    (event: React.ChangeEvent<unknown>, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false)
-    }
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
@@ -264,36 +310,54 @@ const Options: React.FunctionComponent = () => {
         </FormControl>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <Accordion
-          expanded={expanded === "panel1"}
-          onChange={handleAccordionChange("panel1")}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1bh-content"
-            id="panel1bh-header"
-          >
-            <Typography className={classes.heading}>Errors</Typography>
-            <Typography className={classes.secondaryHeading}>
-              <Badge
-                badgeContent={errLogs.length}
-                showZero
-                color="error"
-              ></Badge>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className={classes.logContainer}>
-              {errLogs.map((res: logStructure) => {
-                return (
-                  <p style={{ lineHeight: "1.2rem" }}>
+        <div className={classes.logs}>
+          <div className={classes.logTitle}>
+            <Button
+              variant="contained"
+              startIcon={poolingLogs ? <PauseIcon /> : <PlayArrow />}
+              onClick={() => setPoolingLogs(!poolingLogs)}
+            >
+              {poolingLogs ? "Pause" : "Retrieve "} logs
+            </Button>
+            <Button
+              className={classes.copyClipboard}
+              variant="contained"
+              startIcon={<FileCopyIcon />}
+              onClick={() => navigator.clipboard.writeText(textifyLogs())}
+            >
+              Copy to clipboard
+            </Button>
+            <div className={classes.errCounter}>{errLogs.length} Errors</div>
+            <div className={classes.warnCounter}>
+              {warnLogs.length} Warnings
+            </div>
+          </div>
+          <div className={classes.logContainer}>
+            {allLogs.length > 0 ? (
+              allLogs.map(
+                (
+                  { unix_timestamp, level, target, message }: logStructure,
+                  i: number,
+                ) => (
+                  <p key={"all_" + i} style={{ lineHeight: "1.2rem" }}>
                     <span
                       style={{
+                        color: getLevelInfo(level)[1],
                         fontSize: "0.8rem",
                         fontWeight: "bold",
                       }}
                     >
-                      {res?.time}
+                      {getTime(unix_timestamp)}
+                    </span>
+                    <span
+                      style={{
+                        color: getLevelInfo(level)[1],
+                        fontSize: "0.8rem",
+                        fontWeight: "bold",
+                        margin: "0 0.5rem",
+                      }}
+                    >
+                      {getLevelInfo(level)[0]}
                     </span>
                     <span
                       style={{
@@ -302,112 +366,17 @@ const Options: React.FunctionComponent = () => {
                         margin: "0 0.5rem",
                       }}
                     >
-                      {res.target}
+                      {target}
                     </span>
-                    <span>{res.message}</span>
+                    <span>{message}</span>
                   </p>
-                )
-              })}
-            </div>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion
-          expanded={expanded === "panel2"}
-          onChange={handleAccordionChange("panel2")}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel2bh-content"
-            id="panel2bh-header"
-          >
-            <Typography className={classes.heading}>Warnings</Typography>
-            <Typography className={classes.secondaryHeading}>
-              <Badge
-                badgeContent={warnLogs.length}
-                showZero
-                color="primary"
-              ></Badge>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className={classes.logContainer}>
-              {warnLogs.map((res: logStructure) => {
-                return (
-                  <p style={{ lineHeight: "1.2rem" }}>
-                    <span
-                      style={{
-                        fontSize: "0.8rem",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {res?.time}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "0.8rem",
-                        fontStyle: "oblique",
-                        margin: "0 0.5rem",
-                      }}
-                    >
-                      {res.target}
-                    </span>
-                    <span>{res.message}</span>
-                  </p>
-                )
-              })}
-            </div>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion
-          expanded={expanded === "panel3"}
-          onChange={handleAccordionChange("panel3")}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel3bh-content"
-            id="panel3bh-header"
-          >
-            <Typography className={classes.heading}>Logs</Typography>
-            <Typography className={classes.secondaryHeading}></Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div className={classes.logContainer}>
-              {allLogs.map(({ time, level, target, message }: logStructure) => (
-                <p style={{ lineHeight: "1.2rem" }}>
-                  <span
-                    style={{
-                      color: getLevelInfo(level)[1],
-                      fontSize: "0.8rem",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {time}
-                  </span>
-                  <span
-                    style={{
-                      color: getLevelInfo(level)[1],
-                      fontSize: "0.8rem",
-                      fontWeight: "bold",
-                      margin: "0 0.5rem",
-                    }}
-                  >
-                    {getLevelInfo(level)[0]}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "0.8rem",
-                      fontStyle: "oblique",
-                      margin: "0 0.5rem",
-                    }}
-                  >
-                    {target}
-                  </span>
-                  <span>{message}</span>
-                </p>
-              ))}
-            </div>
-          </AccordionDetails>
-        </Accordion>
+                ),
+              )
+            ) : (
+              <CircularProgress />
+            )}
+          </div>
+        </div>
       </TabPanel>
     </ThemeProvider>
   )
