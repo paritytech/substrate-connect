@@ -109,7 +109,7 @@ import { ConnectionManager } from './ConnectionManager'
  */
 export class ConnectionManagerWithHealth<SandboxId> {
   #inner: ConnectionManager<SandboxId>
-  #sandboxesChains: Map<SandboxId, Map<string, Chain>> = new Map();
+  #sandboxesChains: Map<SandboxId, Sandbox> = new Map();
   #pingInterval: ReturnType<typeof globalThis.setInterval>
   #nextHealthCheckRqId: number = 0
   #allChainsChangedCallbacks: (() => void)[] = []
@@ -166,7 +166,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
       let isSyncing = true;
 
       if (chainInfo.apiInfo) {
-        const chain = this.#sandboxesChains.get(chainInfo.apiInfo.sandboxId)!.get(chainInfo.apiInfo.chainId)!;
+        const chain = this.#sandboxesChains.get(chainInfo.apiInfo.sandboxId)!.chains.get(chainInfo.apiInfo.chainId)!;
         peers = chain.peers;
         isSyncing = chain.isSyncing;
       }
@@ -199,7 +199,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
     // by `this.#inner.addSandbox`. For this reason, we call `this.#inner` first.
     this.#inner.addSandbox(sandboxId);
 
-    this.#sandboxesChains.set(sandboxId, new Map());
+    this.#sandboxesChains.set(sandboxId, { chains: new Map() });
   }
 
   /**
@@ -238,7 +238,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
     for await (let item of iter) {
       switch (item.type) {
         case "chain-ready": {
-          this.#sandboxesChains.get(sandboxId)?.set(item.chainId, {
+          this.#sandboxesChains.get(sandboxId)?.chains.set(item.chainId, {
             isSyncing: true,
             peers: 0
           });
@@ -259,7 +259,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
         }
 
         case "rpc": {
-          const chain = this.#sandboxesChains.get(sandboxId)!.get(item.chainId)!;
+          const chain = this.#sandboxesChains.get(sandboxId)!.chains.get(item.chainId)!;
 
           // Do the opposite of what is done when a JSON-RPC request arrives by removing the
           // prefix in front of the response.
@@ -322,7 +322,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
         case "error": {
           // Note that this can happen during the initialization of a chain, in which case it is
           // not in the list.
-          this.#sandboxesChains.get(sandboxId)?.delete(item.chainId);
+          this.#sandboxesChains.get(sandboxId)?.chains.delete(item.chainId);
           yield item;
           break;
         }
@@ -346,7 +346,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
       case "remove-chain": {
         // As documented in the protocol, remove-chain messages concerning an invalid chainId are
         // simply ignored.
-        this.#sandboxesChains.get(sandboxId)!.delete(message.chainId);
+        this.#sandboxesChains.get(sandboxId)!.chains.delete(message.chainId);
         this.#inner.sandboxMessage(sandboxId, message);
         break;
       }
@@ -369,7 +369,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
 
   #sendPings() {
     for (const [sandboxId, sandbox] of this.#sandboxesChains) {
-      for (const [chainId, _] of sandbox) {
+      for (const [chainId, _] of sandbox.chains) {
         this.#inner.sandboxMessage(sandboxId, {
           origin: "substrate-connect-client",
           type: "rpc",
@@ -385,6 +385,10 @@ export class ConnectionManagerWithHealth<SandboxId> {
       }
     }
   }
+}
+
+interface Sandbox {
+  chains: Map<string, Chain>
 }
 
 interface Chain {
