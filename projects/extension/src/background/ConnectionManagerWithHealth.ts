@@ -159,7 +159,13 @@ export class ConnectionManagerWithHealth<SandboxId> {
    * This includes both well-known chains and chains added by sandbox messages.
    */
   get allChains(): ChainInfo<SandboxId>[] {
-    return this.#inner.allChains
+    return this.#inner.allChains.map((chainInfo) => {
+      return {
+        peers: 0,  // TODO: fill
+        isSyncing: true,  // TODO: fill
+        ... chainInfo
+      };
+    })
   }
 
   /**

@@ -31,16 +31,6 @@ export interface ChainInfo<SandboxId> {
   chainName: string
 
   /**
-   * Whether the chain is still in its syncing phase.
-   */
-  isSyncing: boolean
-
-  /**
-   * Latest known number of peers the chain is connected to.
-   */
-  peers: number
-
-  /**
    * Information about how the chain was inserted in the {ConnectionManager}.
    *
    * If this field is not set, it means that the chain was added with
@@ -212,8 +202,6 @@ export class ConnectionManager<SandboxId> {
     for (const [chainName, chain] of this.#wellKnownChains) {
       output.push({
         chainName,
-        isSyncing: chain.isSyncing,
-        peers: chain.peers,
       })
     }
 
@@ -221,8 +209,6 @@ export class ConnectionManager<SandboxId> {
       for (const [chainId, chain] of sandbox.chains) {
         output.push({
           chainName: chain.name,
-          isSyncing: chain.isReady ? chain.isSyncing : true,
-          peers: chain.isReady ? chain.peers : 0,
           apiInfo: {
             chainId,
             sandboxId,
