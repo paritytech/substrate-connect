@@ -300,8 +300,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
             }
           } else {
             if (
-              jsonRpcMessage.method == "chainHead_unstable_followEvent" &&
-              jsonRpcMessage.params.subscription == chain.readySubscriptionId
+              jsonRpcMessage.method === "chainHead_unstable_followEvent" &&
+              jsonRpcMessage.params.subscription === chain.readySubscriptionId
             ) {
               // We've received a notification on our `chainHead_unstable_followEvent`
               // subscription.
@@ -406,7 +406,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
 
   #sendPings() {
     for (const [sandboxId, sandbox] of this.#sandboxesChains) {
-      for (const [chainId, _] of sandbox) {
+      for (const [chainId] of sandbox) {
         this.#inner.sandboxMessage(sandboxId, {
           origin: "substrate-connect-client",
           type: "rpc",

@@ -179,7 +179,7 @@ export class ConnectionManager<SandboxId> {
   get allChains(): ChainInfo<SandboxId>[] {
     let output: ChainInfo<SandboxId>[] = []
 
-    for (const [chainName, chain] of this.#wellKnownChains) {
+    for (const [chainName] of this.#wellKnownChains) {
       output.push({
         chainName,
       })
