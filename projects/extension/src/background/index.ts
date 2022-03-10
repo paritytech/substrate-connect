@@ -212,7 +212,14 @@ chrome.runtime.onConnect.addListener((port) => {
   let managerWithSandbox = managerPromise.then((manager) => {
     manager.addSandbox(port)
     ;(async () => {
-      for await (const message of manager.sandboxOutput(port)) {
+      while (true) {
+        let message;
+        try {
+          message = await manager.nextSandboxMessage(port);
+        } catch(error) {
+          // An error is thrown by `nextSandboxMessage` if the sandbox is destroyed.
+          break;
+        }
         port.postMessage(message)
       }
     })()
