@@ -405,3 +405,5 @@ interface Chain {
   isSyncing: boolean
   peers: number
 }
+
+// TODO: this code uses `system_health` at the moment, because there's no alternative, even in the new JSON-RPC API, to get the number of peers
