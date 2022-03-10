@@ -29,7 +29,7 @@ export interface Background extends Window {
 }
 
 interface logStructure {
-  time: string
+  time: number
   level: number
   target: string
   message: string
@@ -58,7 +58,7 @@ const getTime = () => {
 
 const logger = (level: number, target: string, message: string) => {
   const incLog = {
-    time: getTime(),
+    time: new Date().getTime(),
     level,
     target,
     message,
@@ -83,6 +83,7 @@ const logger = (level: number, target: string, message: string) => {
         break
     }
   }
+
   if (all.length >= 1000) all.shift()
   all.push(incLog)
 }
