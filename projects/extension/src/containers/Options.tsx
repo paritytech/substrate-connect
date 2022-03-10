@@ -1,5 +1,15 @@
 import React, { SetStateAction, useEffect, useState } from "react"
-import { createTheme, ThemeProvider } from "@material-ui/core"
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Badge,
+  createTheme,
+  ThemeProvider,
+  Typography,
+} from "@material-ui/core"
+import { makeStyles } from "@material-ui/core/styles"
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import Box from "@material-ui/core/Box"
 import Switch from "@material-ui/core/Switch"
 import FormGroup from "@material-ui/core/FormGroup"
@@ -27,11 +37,38 @@ interface StyledTabProps {
   label: string
 }
 
+interface logStructure {
+  time: string
+  level: number
+  target: string
+  message: string
+}
+
 const MenuTabs = withStyles({
   root: {
     minHeight: 34,
   },
 })(Tabs)
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: "100%",
+  },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    flexBasis: "33.33%",
+    flexShrink: 0,
+    fontWeight: "bold",
+  },
+  secondaryHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary,
+  },
+  logContainer: {
+    maxHeight: "500px",
+    overflow: "auto",
+  },
+}))
 
 const MenuTab = withStyles((theme: Theme) =>
   createStyles({
@@ -72,10 +109,27 @@ const TabPanel = (props: TabPanelProps) => {
 }
 
 const Options: React.FunctionComponent = () => {
+  const classes = useStyles()
   const appliedTheme = createTheme(light)
   const [value, setValue] = useState<number>(0)
   const [networks, setNetworks] = useState<NetworkTabProps[]>([])
   const [notifications, setNotifications] = useState<boolean>(false)
+  const [allLogs, setAllLogs] = useState<logStructure[]>([])
+  const [warnLogs, setWarnLogs] = useState<logStructure[]>([])
+  const [errLogs, setErrLogs] = useState<logStructure[]>([])
+  const [expanded, setExpanded] = useState<string | boolean>(false)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      chrome.runtime.getBackgroundPage((bg) => {
+        const logs = (bg as Background).manager.getLogger()
+        setAllLogs(logs.all)
+        setWarnLogs(logs.warn)
+        setErrLogs(logs.error)
+      })
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     chrome.storage.local.get(["notifications"], (res) => {
@@ -118,11 +172,42 @@ const Options: React.FunctionComponent = () => {
     })
   }, [notifications])
 
+  const handleAccordionChange =
+    (panel: string) =>
+    (event: React.ChangeEvent<unknown>, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false)
+    }
+
   const handleChange = (
     event: React.ChangeEvent<unknown>,
     newValue: number,
   ) => {
     setValue(newValue)
+  }
+
+  const getLevelInfo = (level: number) => {
+    let color: string = "#999"
+    let desc: string = "Trace"
+    switch (level) {
+      case 0:
+      case 1:
+        color = "#c90a00"
+        desc = "Error"
+        break
+      case 2:
+        color = "#f99602"
+        desc = "Warn"
+        break
+      case 3:
+        color = "#000"
+        desc = "Info"
+        break
+      case 4:
+        color = "#5e5e5e"
+        desc = "Debug"
+        break
+    }
+    return [desc, color]
   }
 
   return (
@@ -142,12 +227,9 @@ const Options: React.FunctionComponent = () => {
       >
         <MenuTab label="Networks"></MenuTab>
         <MenuTab label="Settings"></MenuTab>
+        <MenuTab label="Logs"></MenuTab>
       </MenuTabs>
-
       <TabPanel value={value} index={0}>
-        {/*  Deactivate search for now
-          <ClientSearch />
-        */}
         {networks.length ? (
           networks.map((network: NetworkTabProps, i: number) => {
             const { name, health, apps } = network
@@ -180,6 +262,152 @@ const Options: React.FunctionComponent = () => {
             />
           </FormGroup>
         </FormControl>
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <Accordion
+          expanded={expanded === "panel1"}
+          onChange={handleAccordionChange("panel1")}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1bh-content"
+            id="panel1bh-header"
+          >
+            <Typography className={classes.heading}>Errors</Typography>
+            <Typography className={classes.secondaryHeading}>
+              <Badge
+                badgeContent={errLogs.length}
+                showZero
+                color="error"
+              ></Badge>
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div className={classes.logContainer}>
+              {errLogs.map((res: logStructure) => {
+                return (
+                  <p style={{ lineHeight: "1.2rem" }}>
+                    <span
+                      style={{
+                        fontSize: "0.8rem",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {res?.time}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "0.8rem",
+                        fontStyle: "oblique",
+                        margin: "0 0.5rem",
+                      }}
+                    >
+                      {res.target}
+                    </span>
+                    <span>{res.message}</span>
+                  </p>
+                )
+              })}
+            </div>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion
+          expanded={expanded === "panel2"}
+          onChange={handleAccordionChange("panel2")}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel2bh-content"
+            id="panel2bh-header"
+          >
+            <Typography className={classes.heading}>Warnings</Typography>
+            <Typography className={classes.secondaryHeading}>
+              <Badge
+                badgeContent={warnLogs.length}
+                showZero
+                color="primary"
+              ></Badge>
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div className={classes.logContainer}>
+              {warnLogs.map((res: logStructure) => {
+                return (
+                  <p style={{ lineHeight: "1.2rem" }}>
+                    <span
+                      style={{
+                        fontSize: "0.8rem",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {res?.time}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "0.8rem",
+                        fontStyle: "oblique",
+                        margin: "0 0.5rem",
+                      }}
+                    >
+                      {res.target}
+                    </span>
+                    <span>{res.message}</span>
+                  </p>
+                )
+              })}
+            </div>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion
+          expanded={expanded === "panel3"}
+          onChange={handleAccordionChange("panel3")}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel3bh-content"
+            id="panel3bh-header"
+          >
+            <Typography className={classes.heading}>Logs</Typography>
+            <Typography className={classes.secondaryHeading}></Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div className={classes.logContainer}>
+              {allLogs.map(({ time, level, target, message }: logStructure) => (
+                <p style={{ lineHeight: "1.2rem" }}>
+                  <span
+                    style={{
+                      color: getLevelInfo(level)[1],
+                      fontSize: "0.8rem",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {time}
+                  </span>
+                  <span
+                    style={{
+                      color: getLevelInfo(level)[1],
+                      fontSize: "0.8rem",
+                      fontWeight: "bold",
+                      margin: "0 0.5rem",
+                    }}
+                  >
+                    {getLevelInfo(level)[0]}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "0.8rem",
+                      fontStyle: "oblique",
+                      margin: "0 0.5rem",
+                    }}
+                  >
+                    {target}
+                  </span>
+                  <span>{message}</span>
+                </p>
+              ))}
+            </div>
+          </AccordionDetails>
+        </Accordion>
       </TabPanel>
     </ThemeProvider>
   )
