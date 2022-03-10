@@ -100,9 +100,6 @@ interface NetworkContentProps {
 }
 
 const NetworkContent = ({ network, health, apps }: NetworkContentProps) => {
-  const peers = health && health.peers
-  const status = health && health.status
-  const isSyncing = health && health.isSyncing
   return (
     <Typography variant="subtitle2" component="div">
       <Grid container>
@@ -110,20 +107,20 @@ const NetworkContent = ({ network, health, apps }: NetworkContentProps) => {
           {emojis.seedling} Light Client
         </Grid>
         <Grid item xs={9}>
-          {isSyncing ? "Synchronizing" : "Synchronized"}
+          {health.isSyncing ? "Synchronizing" : "Synchronized"}
         </Grid>
         <Grid item xs={3}>
           {emojis.star} Network
         </Grid>
         <Grid item xs={9}>
           {network}
-          <br /> Chain is {status}
+          <br /> Chain is {health.status}
         </Grid>
         <Grid item xs={3}>
           {emojis.deal} Peers
         </Grid>
         <Grid item xs={9}>
-          {peers}
+          {health.peers}
         </Grid>
         <Grid item xs={3}>
           {emojis.apps} Apps
