@@ -289,7 +289,6 @@ export class ConnectionManagerWithHealth<SandboxId> {
               const result: { peers: number; isSyncing: boolean } =
                 jsonRpcMessage.result
               chain.peers = result.peers
-              chain.isSyncing = result.isSyncing
 
               // Notify the `allChainsChangedCallbacks`.
               this.#allChainsChangedCallbacks.forEach((cb) => cb())
@@ -305,18 +304,46 @@ export class ConnectionManagerWithHealth<SandboxId> {
               jsonRpcMessage.method == "chainHead_unstable_followEvent" &&
               jsonRpcMessage.params.subscription == chain.readySubscriptionId
             ) {
-              this.#inner.sandboxMessage(sandboxId, {
-                origin: "substrate-connect-client",
-                type: "rpc",
-                chainId: item.chainId,
-                jsonRpcMessage: JSON.stringify({
-                  jsonrpc: "2.0",
-                  id: "health-check:" + this.#nextHealthCheckRqId,
-                  method: "system_health",
-                  params: [],
-                }),
-              })
-              this.#nextHealthCheckRqId += 1
+              // We've received a notification on our `chainHead_unstable_followEvent`
+              // subscription.
+              switch (jsonRpcMessage.params.result.event) {
+                case "initialized": {
+                  chain.isSyncing = false
+    
+                  // Notify the `allChainsChangedCallbacks`.
+                  this.#allChainsChangedCallbacks.forEach((cb) => cb())
+                  this.#allChainsChangedCallbacks = []
+    
+                  this.#inner.sandboxMessage(sandboxId, {
+                    origin: "substrate-connect-client",
+                    type: "rpc",
+                    chainId: item.chainId,
+                    jsonRpcMessage: JSON.stringify({
+                      jsonrpc: "2.0",
+                      id: "health-check:" + this.#nextHealthCheckRqId,
+                      method: "system_health",
+                      params: [],
+                    }),
+                  })
+                  this.#nextHealthCheckRqId += 1
+
+                  break;
+                }
+                case "stop": {
+                  delete chain.readySubscriptionId;
+                  this.#inner.sandboxMessage(sandboxId, {
+                    origin: "substrate-connect-client",
+                    type: "rpc",
+                    chainId: item.chainId,
+                    jsonRpcMessage: JSON.stringify({
+                      jsonrpc: "2.0",
+                      id: "ready-sub:" + this.#nextHealthCheckRqId,
+                      method: "chainHead_unstable_follow",
+                      params: [true],
+                    }),
+                  })
+                }
+              }
             } else {
               return item
             }
