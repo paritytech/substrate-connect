@@ -256,35 +256,64 @@ export class ConnectionManagerWithHealth<SandboxId> {
           this.#nextHealthCheckRqId += 1;
           break;
         }
+
         case "rpc": {
+          const chain = this.#sandboxesChains.get(sandboxId)!.get(item.chainId)!;
+
           // Do the opposite of what is done when a JSON-RPC request arrives by removing the
           // prefix in front of the response.
           // Because smoldot always sends back correct answers, we can just assume that all the
           // fields are present.
           let jsonRpcMessage = JSON.parse(item.jsonRpcMessage);
-          const jsonRpcMessageId = (jsonRpcMessage.id as string);
-          if (jsonRpcMessageId.startsWith("extern:")) {
-            jsonRpcMessage.id = JSON.parse((jsonRpcMessage.id as string).slice("extern:".length));
-            item.jsonRpcMessage = JSON.stringify(jsonRpcMessage);
-          } else if (jsonRpcMessageId.startsWith("health-check:")) {
-            // Store the health status in the locally-held information.
-            const result: { peers: number, isSyncing: boolean } = jsonRpcMessage.result;
-            const chain = this.#sandboxesChains.get(sandboxId)!.get(item.chainId)!;
-            chain.peers = result.peers;
-            chain.isSyncing = result.isSyncing;
 
-            // Notify the `allChainsChangedCallbacks`.
-            this.#allChainsChangedCallbacks.forEach((cb) => cb())
-            this.#allChainsChangedCallbacks = []
-          } else if (jsonRpcMessageId.startsWith("ready-sub:")) {
-            const chain = this.#sandboxesChains.get(sandboxId)!.get(item.chainId)!;
-            chain.readySubscriptionId = jsonRpcMessage.result;
+          // The JSON-RPC message might not contain an id if it is a notification.
+          if (jsonRpcMessage.id) {
+            // We know that the `id` is always a string, because all the requests that we send are
+            // rewritten to use a string `id`.
+            const jsonRpcMessageId = (jsonRpcMessage.id as string);
+
+            if (jsonRpcMessageId.startsWith("extern:")) {
+              jsonRpcMessage.id = JSON.parse((jsonRpcMessage.id as string).slice("extern:".length));
+              item.jsonRpcMessage = JSON.stringify(jsonRpcMessage);
+
+            } else if (jsonRpcMessageId.startsWith("health-check:")) {
+              // Store the health status in the locally-held information.
+              const result: { peers: number, isSyncing: boolean } = jsonRpcMessage.result;
+              chain.peers = result.peers;
+              chain.isSyncing = result.isSyncing;
+
+              // Notify the `allChainsChangedCallbacks`.
+              this.#allChainsChangedCallbacks.forEach((cb) => cb())
+              this.#allChainsChangedCallbacks = []
+
+            } else if (jsonRpcMessageId.startsWith("ready-sub:")) {
+              chain.readySubscriptionId = jsonRpcMessage.result;
+
+            } else {
+              // Never supposed to happen. Indicates a bug somewhere.
+              throw new Error();
+            }
+
           } else {
-            // Never supposed to happen. Indicates a bug somewhere.
-            throw new Error();
+            if (jsonRpcMessage.method == "chainHead_unstable_followEvent" && jsonRpcMessage.params.subscription == chain.readySubscriptionId) {
+              this.#inner.sandboxMessage(sandboxId, {
+                origin: "substrate-connect-client",
+                type: "rpc",
+                chainId: item.chainId,
+                jsonRpcMessage: JSON.stringify({
+                  jsonrpc: "2.0",
+                  id: "health-check:" + this.#nextHealthCheckRqId,
+                  method: "system_health",
+                  params: [],
+                }),
+              });
+              this.#nextHealthCheckRqId += 1;
+            }
           }
+
           break;
         }
+
         case "error": {
           // Note that this can happen during the initialization of a chain, in which case it is
           // not in the list.
@@ -351,6 +380,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
 }
 
 interface Chain {
+  // TODO: consider unsubscribing
   readySubscriptionId?: string,
   isSyncing: boolean
   peers: number
