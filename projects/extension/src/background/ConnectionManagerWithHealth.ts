@@ -156,8 +156,11 @@ export class ConnectionManagerWithHealth<SandboxId> {
    * soon as you call `deleteSandbox`, no new message will be generated and the iterator will
    * end.
    */
-  async *sandboxOutput(sandboxId: SandboxId): AsyncGenerator<ToApplication> {
-    return this.#inner.sandboxOutput(sandboxId)
+  async *sandboxOutput(sandboxId: SandboxId): AsyncGenerator<ToApplication, void> {
+    const iter = this.#inner.sandboxOutput(sandboxId);
+    for await (const item of iter) {
+      yield item;
+    }
   }
 
   /**

@@ -303,7 +303,7 @@ export class ConnectionManager<SandboxId> {
    * soon as you call `deleteSandbox`, no new message will be generated and the iterator will
    * end.
    */
-  async *sandboxOutput(sandboxId: SandboxId): AsyncGenerator<ToApplication> {
+  async *sandboxOutput(sandboxId: SandboxId): AsyncGenerator<ToApplication, void> {
     while (true) {
       const sandbox = this.#sandboxes.get(sandboxId)
       if (!sandbox) break
