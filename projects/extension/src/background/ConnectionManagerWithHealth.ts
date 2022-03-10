@@ -169,15 +169,25 @@ export class ConnectionManagerWithHealth<SandboxId> {
   async *sandboxOutput(sandboxId: SandboxId): AsyncGenerator<ToApplication, void> {
     // TODO: problematic in case sandboxOutput is grabbed multiple times, or not grabbed at all
     const iter = this.#inner.sandboxOutput(sandboxId);
-    for await (const item of iter) {
+    for await (let item of iter) {
       switch (item.type) {
         case "chain-ready": {
           this.#sandboxesChains.get(sandboxId)?.add(item.chainId);
+          break;
+        }
+        case "rpc": {
+          // Do the opposite of what is done when a JSON-RPC request arrives by removing the
+          // prefix in front of the response.
+          let jsonRpcMessage = JSON.parse(item.jsonRpcMessage);
+          jsonRpcMessage.id = JSON.parse((jsonRpcMessage.id as string).slice("extern:".length));
+          item.jsonRpcMessage = JSON.stringify(jsonRpcMessage);
+          break;
         }
         case "error": {
           // Note that this can happen during the initialization of a chain, in which case it is
           // not in the list.
           this.#sandboxesChains.get(sandboxId)?.delete(item.chainId);
+          break;
         }
       }
 
@@ -193,14 +203,27 @@ export class ConnectionManagerWithHealth<SandboxId> {
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
   sandboxMessage(sandboxId: SandboxId, message: ToExtension) {
-    this.#inner.sandboxMessage(sandboxId, message);
-
     switch (message.type) {
       case "remove-chain": {
         // As documented in the protocol, remove-chain messages concerning an invalid chainId are
         // simply ignored.
         this.#sandboxesChains.get(sandboxId)!.delete(message.chainId);
+        this.#inner.sandboxMessage(sandboxId, message);
         break;
+      }
+      case "rpc": {
+        // All incoming JSON-RPC requests are modified to add `extern:` in front of their id.
+        try {
+          let parsedJsonRpcMessage = JSON.parse(message.jsonRpcMessage);
+          parsedJsonRpcMessage.id = "extern:" + JSON.stringify(parsedJsonRpcMessage.id);
+          message.jsonRpcMessage = JSON.stringify(parsedJsonRpcMessage)
+        } finally {
+          this.#inner.sandboxMessage(sandboxId, message);
+        }
+        break;
+      }
+      default: {
+        this.#inner.sandboxMessage(sandboxId, message);
       }
     }
   }
