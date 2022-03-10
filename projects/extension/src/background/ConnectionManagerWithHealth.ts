@@ -109,9 +109,10 @@ import { ConnectionManager } from './ConnectionManager'
  */
 export class ConnectionManagerWithHealth<SandboxId> {
   #inner: ConnectionManager<SandboxId>
-  #sandboxesChains: Map<SandboxId, Set<string>> = new Map();
+  #sandboxesChains: Map<SandboxId, Map<string, Chain>> = new Map();
   #pingInterval: ReturnType<typeof globalThis.setInterval>
   #nextHealthCheckRqId: number = 0
+  #allChainsChangedCallbacks: (() => void)[] = []
 
   constructor(smoldotClient: SmoldotClient) {
     this.#inner = new ConnectionManager(smoldotClient);
@@ -160,9 +161,19 @@ export class ConnectionManagerWithHealth<SandboxId> {
    */
   get allChains(): ChainInfo<SandboxId>[] {
     return this.#inner.allChains.map((chainInfo) => {
+      // TODO: fill for well-known chains
+      let peers = 0;
+      let isSyncing = true;
+
+      if (chainInfo.apiInfo) {
+        const chain = this.#sandboxesChains.get(chainInfo.apiInfo.sandboxId)!.get(chainInfo.apiInfo.chainId)!;
+        peers = chain.peers;
+        isSyncing = chain.isSyncing;
+      }
+
       return {
-        peers: 0,  // TODO: fill
-        isSyncing: true,  // TODO: fill
+        peers,
+        isSyncing,
         ... chainInfo
       };
     })
@@ -172,7 +183,10 @@ export class ConnectionManagerWithHealth<SandboxId> {
    * Waits for the value of `allChains` to have potentially changed.
    */
   async waitAllChainChanged(): Promise<void> {
-    await this.#inner.waitAllChainChanged()
+    const promise = new Promise<void>((resolve, _) => {
+      this.#allChainsChangedCallbacks.push(resolve)
+    });
+    await Promise.race([promise, this.#inner.waitAllChainChanged()]);
   }
 
   /**
@@ -185,7 +199,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
     // by `this.#inner.addSandbox`. For this reason, we call `this.#inner` first.
     this.#inner.addSandbox(sandboxId);
 
-    this.#sandboxesChains.set(sandboxId, new Set());
+    this.#sandboxesChains.set(sandboxId, new Map());
   }
 
   /**
@@ -224,7 +238,10 @@ export class ConnectionManagerWithHealth<SandboxId> {
     for await (let item of iter) {
       switch (item.type) {
         case "chain-ready": {
-          this.#sandboxesChains.get(sandboxId)?.add(item.chainId);
+          this.#sandboxesChains.get(sandboxId)?.set(item.chainId, {
+            isSyncing: true,
+            peers: 0
+          });
           break;
         }
         case "rpc": {
@@ -238,8 +255,15 @@ export class ConnectionManagerWithHealth<SandboxId> {
             jsonRpcMessage.id = JSON.parse((jsonRpcMessage.id as string).slice("extern:".length));
             item.jsonRpcMessage = JSON.stringify(jsonRpcMessage);
           } else if (jsonRpcMessageId.startsWith("health-check:")) {
-            // TODO: process output
-            // (jsonRpcMessage.result)
+            // Store the health status in the locally-held information.
+            const result: { peers: number, isSyncing: boolean } = jsonRpcMessage.result;
+            const chain = this.#sandboxesChains.get(sandboxId)!.get(item.chainId)!;
+            chain.peers = result.peers;
+            chain.isSyncing = result.isSyncing;
+
+            // Notify the `allChainsChangedCallbacks`.
+            this.#allChainsChangedCallbacks.forEach((cb) => cb())
+            this.#allChainsChangedCallbacks = []
           } else {
             // Never supposed to happen. Indicates a bug somewhere.
             throw new Error();
@@ -293,7 +317,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
 
   #sendPings() {
     for (const [sandboxId, sandbox] of this.#sandboxesChains) {
-      for (const chainId of sandbox) {
+      for (const [chainId, _] of sandbox) {
         this.#inner.sandboxMessage(sandboxId, {
           origin: "substrate-connect-client",
           type: "rpc",
@@ -309,4 +333,9 @@ export class ConnectionManagerWithHealth<SandboxId> {
       }
     }
   }
+}
+
+interface Chain {
+  isSyncing: boolean
+  peers: number
 }
