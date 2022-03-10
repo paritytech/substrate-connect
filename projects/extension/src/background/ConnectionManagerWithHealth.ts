@@ -242,6 +242,18 @@ export class ConnectionManagerWithHealth<SandboxId> {
             isSyncing: true,
             peers: 0
           });
+          this.#inner.sandboxMessage(sandboxId, {
+            origin: "substrate-connect-client",
+            type: "rpc",
+            chainId: item.chainId,
+            jsonRpcMessage: JSON.stringify({
+              jsonrpc: "2.0",
+              id: "ready-sub:" + this.#nextHealthCheckRqId,
+              method: "chainHead_unstable_follow",
+              params: [true],
+            }),
+          });
+          this.#nextHealthCheckRqId += 1;
           break;
         }
         case "rpc": {
@@ -264,6 +276,9 @@ export class ConnectionManagerWithHealth<SandboxId> {
             // Notify the `allChainsChangedCallbacks`.
             this.#allChainsChangedCallbacks.forEach((cb) => cb())
             this.#allChainsChangedCallbacks = []
+          } else if (jsonRpcMessageId.startsWith("ready-sub:")) {
+            const chain = this.#sandboxesChains.get(sandboxId)!.get(item.chainId)!;
+            chain.readySubscriptionId = jsonRpcMessage.result;
           } else {
             // Never supposed to happen. Indicates a bug somewhere.
             throw new Error();
@@ -336,6 +351,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
 }
 
 interface Chain {
+  readySubscriptionId?: string,
   isSyncing: boolean
   peers: number
 }
