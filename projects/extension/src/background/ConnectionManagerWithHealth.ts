@@ -309,11 +309,11 @@ export class ConnectionManagerWithHealth<SandboxId> {
               switch (jsonRpcMessage.params.result.event) {
                 case "initialized": {
                   chain.isSyncing = false
-    
+
                   // Notify the `allChainsChangedCallbacks`.
                   this.#allChainsChangedCallbacks.forEach((cb) => cb())
                   this.#allChainsChangedCallbacks = []
-    
+
                   this.#inner.sandboxMessage(sandboxId, {
                     origin: "substrate-connect-client",
                     type: "rpc",
@@ -327,10 +327,10 @@ export class ConnectionManagerWithHealth<SandboxId> {
                   })
                   this.#nextHealthCheckRqId += 1
 
-                  break;
+                  break
                 }
                 case "stop": {
-                  delete chain.readySubscriptionId;
+                  delete chain.readySubscriptionId
                   this.#inner.sandboxMessage(sandboxId, {
                     origin: "substrate-connect-client",
                     type: "rpc",
