@@ -4,11 +4,6 @@ import {
 } from "@substrate/smoldot-light"
 
 import {
-  healthChecker as smHealthChecker,
-  HealthChecker as SmoldotHealthChecker,
-} from "@substrate/connect"
-
-import {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"
@@ -136,13 +131,8 @@ export class ConnectionManager<SandboxId> {
       throw new Error("Duplicate well-known chain")
     }
 
-    const healthChecker = smHealthChecker()
-
     const chain = await this.#smoldotClient.addChain({
       chainSpec: spec,
-      jsonRpcCallback: (response) => {
-        healthChecker.responsePassThrough(response)
-      },
       databaseContent,
       potentialRelayChains: [],
     })
@@ -150,20 +140,9 @@ export class ConnectionManager<SandboxId> {
     const wellKnownChain: WellKnownChain = {
       chain,
       spec,
-      healthChecker,
       isSyncing: true,
       peers: 0,
     }
-
-    healthChecker.setSendJsonRpc((rq) => chain.sendJsonRpc(rq))
-    healthChecker.start((health) => {
-      wellKnownChain.isSyncing = health.isSyncing
-      wellKnownChain.peers = health.peers
-
-      // Notify the `allChainsChangedCallbacks`.
-      this.#allChainsChangedCallbacks.forEach((cb) => cb())
-      this.#allChainsChangedCallbacks = []
-    })
 
     this.#wellKnownChains.set(chainName, wellKnownChain)
 
@@ -259,7 +238,6 @@ export class ConnectionManager<SandboxId> {
     const sandbox = this.#sandboxes.get(sandboxId)!
     sandbox.chains.forEach((chain) => {
       if (chain.isReady) {
-        chain.healthChecker.stop()
         chain.smoldotChain.remove()
       }
 
@@ -339,7 +317,7 @@ export class ConnectionManager<SandboxId> {
         }
 
         // Everything is green for this JSON-RPC message
-        chain.healthChecker.sendJsonRpc(message.jsonRpcMessage)
+        chain.smoldotChain.sendJsonRpc(message.jsonRpcMessage)
         break
       }
 
@@ -375,13 +353,10 @@ export class ConnectionManager<SandboxId> {
           message.type === "add-chain"
             ? message.chainSpec
             : this.#wellKnownChains.get(message.chainName)!.spec
-        const healthChecker = smHealthChecker()
         const chainInitialization: Promise<SmoldotChain> =
           this.#smoldotClient.addChain({
             chainSpec,
             jsonRpcCallback: (jsonRpcMessage) => {
-              const filtered = healthChecker.responsePassThrough(jsonRpcMessage)
-              if (!filtered) return
               // This JSON-RPC callback will never be called after we call `remove()` on the
               // chain. When we remove a sandbox, we call `remove()` on all of its chains.
               // Consequently, this JSON-RPC callback will never be called after we remove a
@@ -390,7 +365,7 @@ export class ConnectionManager<SandboxId> {
                 origin: "substrate-connect-extension",
                 type: "rpc",
                 chainId,
-                jsonRpcMessage: filtered,
+                jsonRpcMessage,
               })
             },
             potentialRelayChains:
@@ -422,8 +397,7 @@ export class ConnectionManager<SandboxId> {
           sandboxId,
           chainId,
           chainInitialization,
-          name,
-          healthChecker,
+          name
         )
 
         break
@@ -436,7 +410,6 @@ export class ConnectionManager<SandboxId> {
         if (!chain) return
 
         if (chain.isReady) {
-          chain.healthChecker.stop()
           chain.smoldotChain.remove()
         }
 
@@ -466,7 +439,6 @@ export class ConnectionManager<SandboxId> {
     chainId: string,
     chainInitialization: Promise<SmoldotChain>,
     name: string,
-    healthChecker: SmoldotHealthChecker,
   ): Promise<void> {
     try {
       const chain = await chainInitialization
@@ -484,22 +456,13 @@ export class ConnectionManager<SandboxId> {
       }
 
       const smoldotChain: SmoldotChain = chain
-      healthChecker.setSendJsonRpc((rq) => smoldotChain.sendJsonRpc(rq))
       const readyChain: ReadyChain = {
         isReady: true,
         name,
         smoldotChain,
-        healthChecker,
         isSyncing: true,
         peers: 0,
       }
-      healthChecker.start((health) => {
-        readyChain.isSyncing = health.isSyncing
-        readyChain.peers = health.peers
-        // Notify the `allChainsChangedCallbacks`.
-        this.#allChainsChangedCallbacks.forEach((cb) => cb())
-        this.#allChainsChangedCallbacks = []
-      })
       sandbox.chains.set(chainId, readyChain)
       sandbox.pushMessagesQueue({
         origin: "substrate-connect-extension",
@@ -575,9 +538,6 @@ interface InitializingChain {
    * For example, if the user adds a chain with id "foo", then removes the chain with id "foo",
    * then adds another chain with id "foo", then once the first chain has finished its
    * initialization it will notice that the `Promise` here is not the same as the one it has.
-   *
-   * Note that the chain's JSON-RPC callback is already connected to a {SmoldotHealthChecker} that
-   * isn't present in this interface.
    */
   smoldotChain: Promise<SmoldotChain>
 }
@@ -601,11 +561,6 @@ interface ReadyChain {
   smoldotChain: SmoldotChain
 
   /**
-   * Health checker connected to the chain.
-   */
-  healthChecker: SmoldotHealthChecker
-
-  /**
    * Whether the chain is still in its syncing phase.
    */
   isSyncing: boolean
@@ -626,11 +581,6 @@ interface WellKnownChain {
    * Chain specification of the well-known chain.
    */
   spec: string
-
-  /**
-   * Health checker connected to the chain.
-   */
-  healthChecker: SmoldotHealthChecker
 
   /**
    * Whether the chain is still in its syncing phase.
