@@ -29,7 +29,7 @@ export interface Background extends Window {
 }
 
 interface logStructure {
-  time: number
+  unix_timestamp: number
   level: number
   target: string
   message: string
@@ -47,18 +47,9 @@ const logKeeper: LogKeeper = {
   error: [],
 }
 
-const getTime = () => {
-  const date = new Date()
-  return `${date.getHours() < 10 ? "0" : ""}${date.getHours()}:${
-    date.getMinutes() < 10 ? "0" : ""
-  }${date.getMinutes()}:${
-    date.getSeconds() < 10 ? "0" : ""
-  }${date.getSeconds()} ${date.getMilliseconds()}`
-}
-
 const logger = (level: number, target: string, message: string) => {
   const incLog = {
-    time: new Date().getTime(),
+    unix_timestamp: new Date().getTime(),
     level,
     target,
     message,

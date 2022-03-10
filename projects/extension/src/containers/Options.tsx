@@ -38,7 +38,7 @@ interface StyledTabProps {
 }
 
 interface logStructure {
-  time: number
+  unix_timestamp: number
   level: number
   target: string
   message: string
@@ -156,7 +156,7 @@ const Options: React.FunctionComponent = () => {
     return allLogs
       .map(
         (a: logStructure) =>
-          getTime(a.time) +
+          getTime(a.unix_timestamp) +
           " " +
           getLevelInfo(a.level)[0] +
           " - " +
@@ -335,7 +335,10 @@ const Options: React.FunctionComponent = () => {
           <div className={classes.logContainer}>
             {allLogs.length > 0 ? (
               allLogs.map(
-                ({ time, level, target, message }: logStructure, i: number) => (
+                (
+                  { unix_timestamp, level, target, message }: logStructure,
+                  i: number,
+                ) => (
                   <p key={"all_" + i} style={{ lineHeight: "1.2rem" }}>
                     <span
                       style={{
@@ -344,7 +347,7 @@ const Options: React.FunctionComponent = () => {
                         fontWeight: "bold",
                       }}
                     >
-                      {getTime(time)}
+                      {getTime(unix_timestamp)}
                     </span>
                     <span
                       style={{
