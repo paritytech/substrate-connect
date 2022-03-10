@@ -64,6 +64,7 @@ export { ChainInfo } from './ConnectionManager'
  */
 export class ConnectionManagerWithHealth<SandboxId> {
   #inner: ConnectionManager<SandboxId>
+  #sandboxesChains: Map<SandboxId, Set<string>> = new Map();
 
   constructor(smoldotClient: SmoldotClient) {
     this.#inner = new ConnectionManager(smoldotClient)
@@ -124,7 +125,11 @@ export class ConnectionManagerWithHealth<SandboxId> {
    * @throws Throws an exception if a sandbox with that identifier already exists.
    */
   addSandbox(sandboxId: SandboxId) {
-    this.#inner.addSandbox(sandboxId)
+    // We don't neeed to check for duplicate `sandboxId` below, because this is done
+    // by `this.#inner.addSandbox`. For this reason, we call `this.#inner` first.
+    this.#inner.addSandbox(sandboxId);
+
+    this.#sandboxesChains.set(sandboxId, new Set());
   }
 
   /**
@@ -138,7 +143,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
   deleteSandbox(sandboxId: SandboxId) {
-    this.#inner.deleteSandbox(sandboxId)
+    this.#inner.deleteSandbox(sandboxId);
+    this.#sandboxesChains.delete(sandboxId);
   }
 
   /**
@@ -159,6 +165,17 @@ export class ConnectionManagerWithHealth<SandboxId> {
   async *sandboxOutput(sandboxId: SandboxId): AsyncGenerator<ToApplication, void> {
     const iter = this.#inner.sandboxOutput(sandboxId);
     for await (const item of iter) {
+      switch (item.type) {
+        case "chain-ready": {
+          this.#sandboxesChains.get(sandboxId)?.add(item.chainId);
+        }
+        case "error": {
+          // Note that this can happen during the initialization of a chain, in which case it is
+          // not in the list.
+          this.#sandboxesChains.get(sandboxId)?.delete(item.chainId);
+        }
+      }
+
       yield item;
     }
   }
@@ -171,6 +188,15 @@ export class ConnectionManagerWithHealth<SandboxId> {
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
   sandboxMessage(sandboxId: SandboxId, message: ToExtension) {
-    this.#inner.sandboxMessage(sandboxId, message)
+    this.#inner.sandboxMessage(sandboxId, message);
+
+    switch (message.type) {
+      case "remove-chain": {
+        // As documented in the protocol, remove-chain messages concerning an invalid chainId are
+        // simply ignored.
+        this.#sandboxesChains.get(sandboxId)!.delete(message.chainId);
+        break;
+      }
+    }
   }
 }
