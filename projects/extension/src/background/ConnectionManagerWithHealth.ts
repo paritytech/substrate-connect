@@ -1,13 +1,11 @@
-import {
-  Client as SmoldotClient,
-} from "@substrate/smoldot-light"
+import { Client as SmoldotClient } from "@substrate/smoldot-light"
 
 import {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"
 
-import { ConnectionManager } from './ConnectionManager'
+import { ConnectionManager } from "./ConnectionManager"
 
 /**
  * Information about a chain that the {ConnectionManager} manages.
@@ -15,7 +13,7 @@ import { ConnectionManager } from './ConnectionManager'
  * This interface is as minimal as possible, as to allow as much flexibility as possible for the
  * internals of the {ConnectionManager}.
  */
- export interface ChainInfo<SandboxId> {
+export interface ChainInfo<SandboxId> {
   /**
    * Name of the chain found in the chain specification.
    *
@@ -110,16 +108,16 @@ import { ConnectionManager } from './ConnectionManager'
  */
 export class ConnectionManagerWithHealth<SandboxId> {
   #inner: ConnectionManager<SandboxId>
-  #sandboxesChains: Map<SandboxId, Sandbox> = new Map();
+  #sandboxesChains: Map<SandboxId, Sandbox> = new Map()
   #pingInterval: ReturnType<typeof globalThis.setInterval>
   #nextHealthCheckRqId: number = 0
   #allChainsChangedCallbacks: (() => void)[] = []
 
   constructor(smoldotClient: SmoldotClient) {
-    this.#inner = new ConnectionManager(smoldotClient);
+    this.#inner = new ConnectionManager(smoldotClient)
     this.#pingInterval = globalThis.setInterval(() => {
-      this.#sendPings();
-    }, 10000);
+      this.#sendPings()
+    }, 10000)
   }
 
   /**
@@ -152,7 +150,10 @@ export class ConnectionManagerWithHealth<SandboxId> {
     chainName: string,
     maxUtf8BytesSize?: number,
   ): Promise<string> {
-    return await this.#inner.wellKnownChainDatabaseContent(chainName, maxUtf8BytesSize)
+    return await this.#inner.wellKnownChainDatabaseContent(
+      chainName,
+      maxUtf8BytesSize,
+    )
   }
 
   /**
@@ -163,20 +164,22 @@ export class ConnectionManagerWithHealth<SandboxId> {
   get allChains(): ChainInfo<SandboxId>[] {
     return this.#inner.allChains.map((chainInfo) => {
       // TODO: fill for well-known chains
-      let peers = 0;
-      let isSyncing = true;
+      let peers = 0
+      let isSyncing = true
 
       if (chainInfo.apiInfo) {
-        const chain = this.#sandboxesChains.get(chainInfo.apiInfo.sandboxId)!.chains.get(chainInfo.apiInfo.chainId)!;
-        peers = chain.peers;
-        isSyncing = chain.isSyncing;
+        const chain = this.#sandboxesChains
+          .get(chainInfo.apiInfo.sandboxId)!
+          .chains.get(chainInfo.apiInfo.chainId)!
+        peers = chain.peers
+        isSyncing = chain.isSyncing
       }
 
       return {
         peers,
         isSyncing,
-        ... chainInfo
-      };
+        ...chainInfo,
+      }
     })
   }
 
@@ -186,8 +189,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
   async waitAllChainChanged(): Promise<void> {
     const promise = new Promise<void>((resolve, _) => {
       this.#allChainsChangedCallbacks.push(resolve)
-    });
-    await Promise.race([promise, this.#inner.waitAllChainChanged()]);
+    })
+    await Promise.race([promise, this.#inner.waitAllChainChanged()])
   }
 
   /**
@@ -198,9 +201,9 @@ export class ConnectionManagerWithHealth<SandboxId> {
   addSandbox(sandboxId: SandboxId) {
     // We don't neeed to check for duplicate `sandboxId` below, because this is done
     // by `this.#inner.addSandbox`. For this reason, we call `this.#inner` first.
-    this.#inner.addSandbox(sandboxId);
+    this.#inner.addSandbox(sandboxId)
 
-    this.#sandboxesChains.set(sandboxId, { chains: new Map() });
+    this.#sandboxesChains.set(sandboxId, { chains: new Map() })
   }
 
   /**
@@ -214,8 +217,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
   deleteSandbox(sandboxId: SandboxId) {
-    this.#inner.deleteSandbox(sandboxId);
-    this.#sandboxesChains.delete(sandboxId);
+    this.#inner.deleteSandbox(sandboxId)
+    this.#sandboxesChains.delete(sandboxId)
   }
 
   /**
@@ -235,14 +238,14 @@ export class ConnectionManagerWithHealth<SandboxId> {
    */
   async nextSandboxMessage(sandboxId: SandboxId): Promise<ToApplication> {
     while (true) {
-      const item = await this.#inner.nextSandboxMessage(sandboxId);
+      const item = await this.#inner.nextSandboxMessage(sandboxId)
 
       switch (item.type) {
         case "chain-ready": {
           this.#sandboxesChains.get(sandboxId)?.chains.set(item.chainId, {
             isSyncing: true,
-            peers: 0
-          });
+            peers: 0,
+          })
           this.#inner.sandboxMessage(sandboxId, {
             origin: "substrate-connect-client",
             type: "rpc",
@@ -253,51 +256,55 @@ export class ConnectionManagerWithHealth<SandboxId> {
               method: "chainHead_unstable_follow",
               params: [true],
             }),
-          });
-          this.#nextHealthCheckRqId += 1;
-          return item;
+          })
+          this.#nextHealthCheckRqId += 1
+          return item
         }
 
         case "rpc": {
-          const chain = this.#sandboxesChains.get(sandboxId)!.chains.get(item.chainId)!;
+          const chain = this.#sandboxesChains
+            .get(sandboxId)!
+            .chains.get(item.chainId)!
 
           // Do the opposite of what is done when a JSON-RPC request arrives by removing the
           // prefix in front of the response.
           // Because smoldot always sends back correct answers, we can just assume that all the
           // fields are present.
-          let jsonRpcMessage = JSON.parse(item.jsonRpcMessage);
+          let jsonRpcMessage = JSON.parse(item.jsonRpcMessage)
 
           // The JSON-RPC message might not contain an id if it is a notification.
           if (jsonRpcMessage.id) {
             // We know that the `id` is always a string, because all the requests that we send are
             // rewritten to use a string `id`.
-            const jsonRpcMessageId = (jsonRpcMessage.id as string);
+            const jsonRpcMessageId = jsonRpcMessage.id as string
 
             if (jsonRpcMessageId.startsWith("extern:")) {
-              jsonRpcMessage.id = JSON.parse((jsonRpcMessage.id as string).slice("extern:".length));
-              item.jsonRpcMessage = JSON.stringify(jsonRpcMessage);
-              return item;
-
+              jsonRpcMessage.id = JSON.parse(
+                (jsonRpcMessage.id as string).slice("extern:".length),
+              )
+              item.jsonRpcMessage = JSON.stringify(jsonRpcMessage)
+              return item
             } else if (jsonRpcMessageId.startsWith("health-check:")) {
               // Store the health status in the locally-held information.
-              const result: { peers: number, isSyncing: boolean } = jsonRpcMessage.result;
-              chain.peers = result.peers;
-              chain.isSyncing = result.isSyncing;
+              const result: { peers: number; isSyncing: boolean } =
+                jsonRpcMessage.result
+              chain.peers = result.peers
+              chain.isSyncing = result.isSyncing
 
               // Notify the `allChainsChangedCallbacks`.
               this.#allChainsChangedCallbacks.forEach((cb) => cb())
               this.#allChainsChangedCallbacks = []
-
             } else if (jsonRpcMessageId.startsWith("ready-sub:")) {
-              chain.readySubscriptionId = jsonRpcMessage.result;
-
+              chain.readySubscriptionId = jsonRpcMessage.result
             } else {
               // Never supposed to happen. Indicates a bug somewhere.
-              throw new Error();
+              throw new Error()
             }
-
           } else {
-            if (jsonRpcMessage.method == "chainHead_unstable_followEvent" && jsonRpcMessage.params.subscription == chain.readySubscriptionId) {
+            if (
+              jsonRpcMessage.method == "chainHead_unstable_followEvent" &&
+              jsonRpcMessage.params.subscription == chain.readySubscriptionId
+            ) {
               this.#inner.sandboxMessage(sandboxId, {
                 origin: "substrate-connect-client",
                 type: "rpc",
@@ -308,26 +315,25 @@ export class ConnectionManagerWithHealth<SandboxId> {
                   method: "system_health",
                   params: [],
                 }),
-              });
-              this.#nextHealthCheckRqId += 1;
-
+              })
+              this.#nextHealthCheckRqId += 1
             } else {
-              return item;
+              return item
             }
           }
 
-          break;
+          break
         }
 
         case "error": {
           // Note that this can happen during the initialization of a chain, in which case it is
           // not in the list.
-          this.#sandboxesChains.get(sandboxId)?.chains.delete(item.chainId);
-          return item;
+          this.#sandboxesChains.get(sandboxId)?.chains.delete(item.chainId)
+          return item
         }
 
         default: {
-          return item;
+          return item
         }
       }
     }
@@ -345,23 +351,24 @@ export class ConnectionManagerWithHealth<SandboxId> {
       case "remove-chain": {
         // As documented in the protocol, remove-chain messages concerning an invalid chainId are
         // simply ignored.
-        this.#sandboxesChains.get(sandboxId)!.chains.delete(message.chainId);
-        this.#inner.sandboxMessage(sandboxId, message);
-        break;
+        this.#sandboxesChains.get(sandboxId)!.chains.delete(message.chainId)
+        this.#inner.sandboxMessage(sandboxId, message)
+        break
       }
       case "rpc": {
         // All incoming JSON-RPC requests are modified to add `extern:` in front of their id.
         try {
-          let parsedJsonRpcMessage = JSON.parse(message.jsonRpcMessage);
-          parsedJsonRpcMessage.id = "extern:" + JSON.stringify(parsedJsonRpcMessage.id);
+          let parsedJsonRpcMessage = JSON.parse(message.jsonRpcMessage)
+          parsedJsonRpcMessage.id =
+            "extern:" + JSON.stringify(parsedJsonRpcMessage.id)
           message.jsonRpcMessage = JSON.stringify(parsedJsonRpcMessage)
         } finally {
-          this.#inner.sandboxMessage(sandboxId, message);
+          this.#inner.sandboxMessage(sandboxId, message)
         }
-        break;
+        break
       }
       default: {
-        this.#inner.sandboxMessage(sandboxId, message);
+        this.#inner.sandboxMessage(sandboxId, message)
       }
     }
   }
@@ -379,8 +386,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
             method: "system_health",
             params: [],
           }),
-        });
-        this.#nextHealthCheckRqId += 1;
+        })
+        this.#nextHealthCheckRqId += 1
       }
     }
   }
@@ -392,7 +399,7 @@ interface Sandbox {
 
 interface Chain {
   // TODO: consider unsubscribing
-  readySubscriptionId?: string,
+  readySubscriptionId?: string
   isSyncing: boolean
   peers: number
 }

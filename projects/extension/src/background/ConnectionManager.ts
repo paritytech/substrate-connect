@@ -269,11 +269,10 @@ export class ConnectionManager<SandboxId> {
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
   async nextSandboxMessage(sandboxId: SandboxId): Promise<ToApplication> {
-    const sandbox = this.#sandboxes.get(sandboxId)!;
-    const message = await sandbox.pullMessagesQueue();
-    if (message === null)
-      throw new Error("Sandbox has been destroyed");
-    return message;
+    const sandbox = this.#sandboxes.get(sandboxId)!
+    const message = await sandbox.pullMessagesQueue()
+    if (message === null) throw new Error("Sandbox has been destroyed")
+    return message
   }
 
   /**
@@ -386,7 +385,7 @@ export class ConnectionManager<SandboxId> {
           sandboxId,
           chainId,
           chainInitialization,
-          name
+          name,
         )
 
         break
