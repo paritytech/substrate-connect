@@ -238,18 +238,20 @@ export class ConnectionManagerWithHealth<SandboxId> {
    */
   async nextSandboxMessage(sandboxId: SandboxId): Promise<ToApplication> {
     while (true) {
-      const item = await this.#inner.nextSandboxMessage(sandboxId)
+      const toApplication = await this.#inner.nextSandboxMessage(sandboxId)
 
-      switch (item.type) {
+      switch (toApplication.type) {
         case "chain-ready": {
-          this.#sandboxesChains.get(sandboxId)?.chains.set(item.chainId, {
-            isSyncing: true,
-            peers: 0,
-          })
+          this.#sandboxesChains
+            .get(sandboxId)
+            ?.chains.set(toApplication.chainId, {
+              isSyncing: true,
+              peers: 0,
+            })
           this.#inner.sandboxMessage(sandboxId, {
             origin: "substrate-connect-client",
             type: "rpc",
-            chainId: item.chainId,
+            chainId: toApplication.chainId,
             jsonRpcMessage: JSON.stringify({
               jsonrpc: "2.0",
               id: "ready-sub:" + this.#nextHealthCheckRqId,
@@ -258,19 +260,19 @@ export class ConnectionManagerWithHealth<SandboxId> {
             }),
           })
           this.#nextHealthCheckRqId += 1
-          return item
+          return toApplication
         }
 
         case "rpc": {
           const chain = this.#sandboxesChains
             .get(sandboxId)!
-            .chains.get(item.chainId)!
+            .chains.get(toApplication.chainId)!
 
           // Do the opposite of what is done when a JSON-RPC request arrives by removing the
           // prefix in front of the response.
           // Because smoldot always sends back correct answers, we can just assume that all the
           // fields are present.
-          let jsonRpcMessage = JSON.parse(item.jsonRpcMessage)
+          let jsonRpcMessage = JSON.parse(toApplication.jsonRpcMessage)
 
           // The JSON-RPC message might not contain an id if it is a notification.
           if (jsonRpcMessage.id) {
@@ -282,12 +284,11 @@ export class ConnectionManagerWithHealth<SandboxId> {
               jsonRpcMessage.id = JSON.parse(
                 (jsonRpcMessage.id as string).slice("extern:".length),
               )
-              item.jsonRpcMessage = JSON.stringify(jsonRpcMessage)
-              return item
+              toApplication.jsonRpcMessage = JSON.stringify(jsonRpcMessage)
+              return toApplication
             } else if (jsonRpcMessageId.startsWith("health-check:")) {
               // Store the health status in the locally-held information.
-              const result: { peers: number; isSyncing: boolean } =
-                jsonRpcMessage.result
+              const result: { peers: number } = jsonRpcMessage.result
               chain.peers = result.peers
 
               // Notify the `allChainsChangedCallbacks`.
@@ -308,16 +309,18 @@ export class ConnectionManagerWithHealth<SandboxId> {
               // subscription.
               switch (jsonRpcMessage.params.result.event) {
                 case "initialized": {
+                  // The chain is now in sync and has downloaded the runtime.
                   chain.isSyncing = false
 
                   // Notify the `allChainsChangedCallbacks`.
                   this.#allChainsChangedCallbacks.forEach((cb) => cb())
                   this.#allChainsChangedCallbacks = []
 
+                  // Immediately send a single health request to the chain.
                   this.#inner.sandboxMessage(sandboxId, {
                     origin: "substrate-connect-client",
                     type: "rpc",
-                    chainId: item.chainId,
+                    chainId: toApplication.chainId,
                     jsonRpcMessage: JSON.stringify({
                       jsonrpc: "2.0",
                       id: "health-check:" + this.#nextHealthCheckRqId,
@@ -330,11 +333,13 @@ export class ConnectionManagerWithHealth<SandboxId> {
                   break
                 }
                 case "stop": {
+                  // Our subscription has been force-killed by the client. This is normal and can
+                  // happen for example if the client is overloaded. Restart the subscription.
                   delete chain.readySubscriptionId
                   this.#inner.sandboxMessage(sandboxId, {
                     origin: "substrate-connect-client",
                     type: "rpc",
-                    chainId: item.chainId,
+                    chainId: toApplication.chainId,
                     jsonRpcMessage: JSON.stringify({
                       jsonrpc: "2.0",
                       id: "ready-sub:" + this.#nextHealthCheckRqId,
@@ -346,7 +351,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
                 }
               }
             } else {
-              return item
+              return toApplication
             }
           }
 
@@ -356,12 +361,14 @@ export class ConnectionManagerWithHealth<SandboxId> {
         case "error": {
           // Note that this can happen during the initialization of a chain, in which case it is
           // not in the list.
-          this.#sandboxesChains.get(sandboxId)?.chains.delete(item.chainId)
-          return item
+          this.#sandboxesChains
+            .get(sandboxId)
+            ?.chains.delete(toApplication.chainId)
+          return toApplication
         }
 
         default: {
-          return item
+          return toApplication
         }
       }
     }
