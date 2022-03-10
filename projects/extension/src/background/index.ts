@@ -1,4 +1,4 @@
-import { ConnectionManager } from "./ConnectionManager"
+import { ConnectionManagerWithHealth } from "./ConnectionManagerWithHealth"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
@@ -90,7 +90,7 @@ const logger = (level: number, target: string, message: string) => {
 const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
 
 const notifyListener = (
-  manager: ConnectionManager<chrome.runtime.Port>,
+  manager: ConnectionManagerWithHealth<chrome.runtime.Port>,
   listener: (state: ExposedChainConnection[]) => void,
 ) => {
   listener(
@@ -136,7 +136,7 @@ window.manager = {
 }
 
 const saveChainDbContent = async (
-  manager: ConnectionManager<chrome.runtime.Port>,
+  manager: ConnectionManagerWithHealth<chrome.runtime.Port>,
   key: string,
 ) => {
   const db = await manager.wellKnownChainDatabaseContent(
@@ -146,12 +146,12 @@ const saveChainDbContent = async (
   chrome.storage.local.set({ [key]: db })
 }
 
-// Start initializing a `ConnectionManager`.
+// Start initializing a `ConnectionManagerWithHealth`.
 // This initialization operation shouldn't take more than a few dozen milliseconds, but we still
 // need to properly handle situations where initialization isn't finished yet.
-const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> =
+const managerPromise: Promise<ConnectionManagerWithHealth<chrome.runtime.Port>> =
   (async () => {
-    const managerInit = new ConnectionManager<chrome.runtime.Port>(
+    const managerInit = new ConnectionManagerWithHealth<chrome.runtime.Port>(
       smoldotStart({
         maxLogLevel: 4,
         logCallback: logger,
@@ -168,7 +168,7 @@ const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> =
 
     // Notify all the callbacks waiting for changes in the manager.
     const waitAllChainsUpdate = (
-      manager: ConnectionManager<chrome.runtime.Port>,
+      manager: ConnectionManagerWithHealth<chrome.runtime.Port>,
     ) => {
       listeners.forEach((listener) => notifyListener(manager, listener))
       manager.waitAllChainChanged().then(() => {
