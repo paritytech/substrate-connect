@@ -163,7 +163,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
    */
   get allChains(): ChainInfo<SandboxId>[] {
     return this.#inner.allChains.map((chainInfo) => {
-      // TODO: fill for well-known chains
+      // TODO: fill for well-known chains; would be solved by https://github.com/paritytech/substrate-connect/issues/855
       let peers = 0
       let isSyncing = true
 
@@ -398,7 +398,9 @@ interface Sandbox {
 }
 
 interface Chain {
-  // TODO: consider unsubscribing
+  // Note that once subscribed, we never unsubscribe. Unsubscribing adds a lot of complexity, and
+  // having an active subscription might be useful in the future if we want to display, say, the
+  // current block or the runtime version.
   readySubscriptionId?: string
   isSyncing: boolean
   peers: number
