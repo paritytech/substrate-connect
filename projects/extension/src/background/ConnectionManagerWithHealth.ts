@@ -66,11 +66,12 @@ export class ConnectionManagerWithHealth<SandboxId> {
   #inner: ConnectionManager<SandboxId>
   #sandboxesChains: Map<SandboxId, Set<string>> = new Map();
   #pingInterval: ReturnType<typeof globalThis.setInterval>
+  #nextHealthCheckRqId: number = 0
 
   constructor(smoldotClient: SmoldotClient) {
     this.#inner = new ConnectionManager(smoldotClient);
     this.#pingInterval = globalThis.setInterval(() => {
-      // TODO: ping the health of all the chains
+      this.#sendPings();
     }, 10000);
   }
 
@@ -178,9 +179,20 @@ export class ConnectionManagerWithHealth<SandboxId> {
         case "rpc": {
           // Do the opposite of what is done when a JSON-RPC request arrives by removing the
           // prefix in front of the response.
+          // Because smoldot always sends back correct answers, we can just assume that all the
+          // fields are present.
           let jsonRpcMessage = JSON.parse(item.jsonRpcMessage);
-          jsonRpcMessage.id = JSON.parse((jsonRpcMessage.id as string).slice("extern:".length));
-          item.jsonRpcMessage = JSON.stringify(jsonRpcMessage);
+          const jsonRpcMessageId = (jsonRpcMessage.id as string);
+          if (jsonRpcMessageId.startsWith("extern:")) {
+            jsonRpcMessage.id = JSON.parse((jsonRpcMessage.id as string).slice("extern:".length));
+            item.jsonRpcMessage = JSON.stringify(jsonRpcMessage);
+          } else if (jsonRpcMessageId.startsWith("health-check:")) {
+            // TODO: process output
+            // (jsonRpcMessage.result)
+          } else {
+            // Never supposed to happen. Indicates a bug somewhere.
+            throw new Error();
+          }
           break;
         }
         case "error": {
@@ -224,6 +236,25 @@ export class ConnectionManagerWithHealth<SandboxId> {
       }
       default: {
         this.#inner.sandboxMessage(sandboxId, message);
+      }
+    }
+  }
+
+  #sendPings() {
+    for (const [sandboxId, sandbox] of this.#sandboxesChains) {
+      for (const chainId of sandbox) {
+        this.#inner.sandboxMessage(sandboxId, {
+          origin: "substrate-connect-client",
+          type: "rpc",
+          chainId,
+          jsonRpcMessage: JSON.stringify({
+            jsonrpc: "2.0",
+            id: "health-check:" + this.#nextHealthCheckRqId,
+            method: "system_health",
+            params: [],
+          }),
+        });
+        this.#nextHealthCheckRqId += 1;
       }
     }
   }
