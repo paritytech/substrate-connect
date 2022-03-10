@@ -256,7 +256,6 @@ export class ConnectionManagerWithHealth<SandboxId> {
           });
           this.#nextHealthCheckRqId += 1;
           return item;
-          break;
         }
 
         case "rpc": {
