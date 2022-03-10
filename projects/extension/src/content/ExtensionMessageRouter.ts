@@ -1,4 +1,7 @@
-import { ToApplication } from "@substrate/connect-extension-protocol"
+import {
+  ToApplication,
+  ToExtension,
+} from "@substrate/connect-extension-protocol"
 import { debug } from "../utils/debug"
 import checkMessage from "./checkMessage"
 
@@ -20,31 +23,8 @@ const sendMessage = (msg: ToApplication): void => {
  * to establish the connection with the background itself.
  */
 export class ExtensionMessageRouter {
-  #port: chrome.runtime.Port = chrome.runtime.connect()
+  #port?: chrome.runtime.Port
   #chainIds: Set<string> = new Set()
-
-  constructor() {
-    // forward any messages: extension -> page
-    this.#port.onMessage.addListener((data: ToApplication): void => {
-      if (data.type === "error") this.#chainIds.delete(data.chainId)
-
-      sendMessage(data)
-    })
-
-    // tell the page when the port disconnects
-    this.#port.onDisconnect.addListener(() => {
-      this.#chainIds.forEach((chainId) => {
-        sendMessage({
-          origin: "substrate-connect-extension",
-          chainId,
-          type: "error",
-          errorMessage: "Lost communication with substrate-connect extension",
-        })
-      })
-
-      this.#chainIds.clear()
-    })
-  }
 
   /**
    * connections returns the names of all the ports this `ExtensionMessageRouter`
@@ -86,6 +66,35 @@ export class ExtensionMessageRouter {
 
     if (data.type === "remove-chain") this.#chainIds.delete(data.chainId)
 
-    this.#port.postMessage(data)
+    this.#postMessage(data)
+  }
+
+  #postMessage(message: ToExtension): void {
+    if (!this.#port) {
+      this.#port = chrome.runtime.connect()
+
+      // forward any messages: extension -> page
+      this.#port.onMessage.addListener((data: ToApplication): void => {
+        if (data.type === "error") this.#chainIds.delete(data.chainId)
+
+        sendMessage(data)
+      })
+
+      // tell the page when the port disconnects
+      this.#port.onDisconnect.addListener(() => {
+        this.#chainIds.forEach((chainId) => {
+          sendMessage({
+            origin: "substrate-connect-extension",
+            chainId,
+            type: "error",
+            errorMessage: "Lost communication with substrate-connect extension",
+          })
+        })
+
+        this.#chainIds.clear()
+      })
+    }
+
+    this.#port.postMessage(message)
   }
 }
