@@ -65,9 +65,13 @@ export { ChainInfo } from './ConnectionManager'
 export class ConnectionManagerWithHealth<SandboxId> {
   #inner: ConnectionManager<SandboxId>
   #sandboxesChains: Map<SandboxId, Set<string>> = new Map();
+  #pingInterval: ReturnType<typeof globalThis.setInterval>
 
   constructor(smoldotClient: SmoldotClient) {
-    this.#inner = new ConnectionManager(smoldotClient)
+    this.#inner = new ConnectionManager(smoldotClient);
+    this.#pingInterval = globalThis.setInterval(() => {
+      // TODO: ping the health of all the chains
+    }, 10000);
   }
 
   /**
