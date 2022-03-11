@@ -55,8 +55,11 @@ export interface ChainInfo<SandboxId> {
 }
 
 /**
- * Message that notifies of the fact that {ConnectionManager.allChains} will now return a
- * different value.
+ * Message that notifies of the fact that {ConnectionManagerWithHealth.allChains} will now return
+ * a different value.
+ *
+ * Note that the list of chains also changes if chains are added or removed by the user or by
+ * the {ConnectionManagerWithHealth}. This isn't covered by this message.
  */
 export interface ChainsStatusChanged {
   origin: "connection-manager"
@@ -102,8 +105,9 @@ export interface ChainsStatusChanged {
  * At any point, information about all the chains contained within the {ConnectionManager} can
  * be retrieved using {ConnectionManager.allChains}. This can be used for display purposes.
  *
- * When {ConnectionManager.sandboxMessage} produces a {ChainsStatusChanged}, the fields within the
- * value returned by {ConnectionManager.allChains} has potentially been modified.
+ * When {ConnectionManager.sandboxMessage} produces a {ChainsStatusChanged} or when a chain is
+ * added or removed by the user or the {ConnectionManager}, the fields within the value returned
+ * by {ConnectionManager.allChains} has potentially been modified.
  *
  * # Database
  *
