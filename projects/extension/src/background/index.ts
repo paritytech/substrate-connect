@@ -1,5 +1,4 @@
 import { ConnectionManagerWithHealth } from "./ConnectionManagerWithHealth"
-import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
 import { WellKnownChain } from "@substrate/connect"
@@ -235,7 +234,7 @@ chrome.runtime.onConnect.addListener((port) => {
 })
 
 chrome.storage.local.get(["notifications"], (result) => {
-  if (isEmpty(result)) {
+  if (Object.keys(result).length === 0) {
     // Setup default settings
     chrome.storage.local.set({ notifications: settings.notifications }, () => {
       if (chrome.runtime.lastError) {
