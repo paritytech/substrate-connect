@@ -10,6 +10,7 @@ async function connect(nodeName, networkInfo, parachainId) {
     await scClient.addChain(JSON.stringify(customChainSpec))
     const customParachainSpec = require(networkInfo?.paras[parachainId]
       ?.chainSpecPath)
+    console.log("customParachainSpec", JSON.stringify(customParachainSpec))
     provider = await scClient.addChain(JSON.stringify(customParachainSpec))
   } else {
     provider = await scClient.addChain(JSON.stringify(customChainSpec))
