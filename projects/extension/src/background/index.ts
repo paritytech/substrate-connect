@@ -9,7 +9,10 @@ import westend2 from "../../public/assets/westend2.json"
 import ksmcc3 from "../../public/assets/ksmcc3.json"
 import polkadot from "../../public/assets/polkadot.json"
 import rococo_v2 from "../../public/assets/rococo_v2.json"
-import { ToExtension } from "@substrate/connect-extension-protocol"
+import {
+  ToApplication,
+  ToExtension,
+} from "@substrate/connect-extension-protocol"
 
 export const wellKnownChains: Map<string, string> = new Map<string, string>([
   [WellKnownChain.polkadot, JSON.stringify(polkadot)],
@@ -159,17 +162,6 @@ const managerPromise: Promise<
     if (!dbContent) saveChainDbContent(managerInit, key)
   }
 
-  // Notify all the callbacks waiting for changes in the manager.
-  const waitAllChainsUpdate = (
-    manager: ConnectionManagerWithHealth<chrome.runtime.Port>,
-  ) => {
-    listeners.forEach((listener) => notifyListener(manager, listener))
-    manager.waitAllChainChanged().then(() => {
-      waitAllChainsUpdate(manager)
-    })
-  }
-  waitAllChainsUpdate(managerInit)
-
   // Create an alarm that will periodically save the content of the database of the well-known
   // chains.
   chrome.alarms.onAlarm.addListener((alarm) => {
@@ -212,7 +204,17 @@ chrome.runtime.onConnect.addListener((port) => {
           // An error is thrown by `nextSandboxMessage` if the sandbox is destroyed.
           break
         }
-        port.postMessage(message)
+
+        if (message.type === "chains-status-changed") {
+          listeners.forEach((listener) => notifyListener(manager, listener))
+        } else {
+          if (message.type === "chain-ready" || message.type === "error")
+            listeners.forEach((listener) => notifyListener(manager, listener))
+
+          // We make sure that the message is indeed of type `ToApplication`.
+          const messageCorrectType: ToApplication = message
+          port.postMessage(messageCorrectType)
+        }
       }
     })()
 
@@ -222,6 +224,11 @@ chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((message: ToExtension) => {
     managerWithSandbox = managerWithSandbox.then((manager) => {
       manager.sandboxMessage(port, message)
+      if (
+        message.type === "add-chain" ||
+        message.type === "add-well-known-chain"
+      )
+        listeners.forEach((listener) => notifyListener(manager, listener))
       return manager
     })
   })
@@ -229,6 +236,7 @@ chrome.runtime.onConnect.addListener((port) => {
   port.onDisconnect.addListener(() => {
     managerWithSandbox = managerWithSandbox.then((manager) => {
       manager.deleteSandbox(port)
+      listeners.forEach((listener) => notifyListener(manager, listener))
       return manager
     })
   })
