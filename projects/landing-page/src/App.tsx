@@ -81,6 +81,15 @@ const App: React.FunctionComponent = () => {
               network and lowers its maintenance costs. Decentralized in-browser
               light clients are a unique feature of substrate-based networks.
             </SectionText>
+            <SectionText>
+              As a light client, substrate-connect, only verifies the
+              authenticity of blocks, but not their correctness. For this
+              reason, the block that is reported as being the best block might
+              be incorrect. In the context of a light client, only the finalised
+              block can be assumed to be correct. Consequently, accessing the
+              storage of any non-finalised block is also not guaranteed to
+              report correct values.
+            </SectionText>
             <SectionRef href="https://www.parity.io/what-is-a-light-client/">
               “What is a light client and why you should care?” by Thibaut
               Sardan
