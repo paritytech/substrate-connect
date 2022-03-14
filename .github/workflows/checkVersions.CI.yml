@@ -1,0 +1,24 @@
+name: Version Checker CI
+
+on:
+  push:
+    branches: [ main, nik-CI-version-check ]
+  pull_request:
+    branches: [ main, nik-CI-version-check ]
+
+jobs:
+  versionCheck:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - id: package-version
+      run: echo "::set-output name=version::`grep -rw './projects/extension/package.json' -e 'version' | sed 's/[^0-9.]//g'`"
+    - id: webpack-version
+      run: echo "::set-output name=version::`grep -rnw './projects/extension/webpack.config.js' -e 'PKG_VERSION' | grep -o '".*"' | tr -d '"'`"
+    - id: manifest-version
+      run: echo "::set-output name=version::`grep -rw './projects/extension/public/manifest.json' -e 'version' | sed 's/[^0-9.]//g'`"
+    - run: exit 1
+      if: ${{ steps.package-version.outputs.version != steps.webpack-version.outputs.version }}
+    - run: exit 1
+      if: ${{ steps.package-version.outputs.version != steps.manifest-version.outputs.version }}
