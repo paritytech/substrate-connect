@@ -2,9 +2,9 @@ name: Version Checker CI
 
 on:
   push:
-    branches: [ main, nik-CI-version-check ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, nik-CI-version-check ]
+    branches: [ main ]
 
 jobs:
   versionCheck:
