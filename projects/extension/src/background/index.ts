@@ -2,7 +2,6 @@ import { ConnectionManagerWithHealth } from "./ConnectionManagerWithHealth"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
-import { WellKnownChain } from "@substrate/connect"
 import { start as smoldotStart } from "@substrate/smoldot-light"
 
 import westend2 from "../../public/assets/westend2.json"
@@ -11,11 +10,17 @@ import polkadot from "../../public/assets/polkadot.json"
 import rococo_v2 from "../../public/assets/rococo_v2.json"
 import { ToExtension } from "@substrate/connect-extension-protocol"
 
+// Note that this list doesn't necessarily always have to match the list of well-known
+// chains in `@substrate/connect`. The list of well-known chains is not part of the stability
+// guarantees of the connect <-> extension protocol and is thus allowed to change
+// between versions of the extension. For this reason, we don't use the `WellKnownChain`
+// enum from `@substrate/connect` but instead manually make the list in that enum match
+// the list present here.
 export const wellKnownChains: Map<string, string> = new Map<string, string>([
-  [WellKnownChain.polkadot, JSON.stringify(polkadot)],
-  [WellKnownChain.ksmcc3, JSON.stringify(ksmcc3)],
-  [WellKnownChain.rococo_v2, JSON.stringify(rococo_v2)],
-  [WellKnownChain.westend2, JSON.stringify(westend2)],
+  [polkadot.id, JSON.stringify(polkadot)],
+  [ksmcc3.id, JSON.stringify(ksmcc3)],
+  [rococo_v2.id, JSON.stringify(rococo_v2)],
+  [westend2.id, JSON.stringify(westend2)],
 ])
 
 export interface Background extends Window {
