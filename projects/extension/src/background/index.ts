@@ -10,6 +10,12 @@ import polkadot from "../../public/assets/polkadot.json"
 import rococo_v2 from "../../public/assets/rococo_v2.json"
 import { ToExtension } from "@substrate/connect-extension-protocol"
 
+// Note that this list doesn't necessarily always have to match the list of well-known
+// chains in `@substrate/connect`. The list of well-known chains is not part of the stability
+// guarantees of the connect <-> extension protocol and is thus allowed to change
+// between versions of the extension. For this reason, we don't use the `WellKnownChain`
+// enum from `@substrate/connect` but instead manually make the list in that enum match
+// the list present here.
 export const wellKnownChains: Map<string, string> = new Map<string, string>([
   [polkadot.id, JSON.stringify(polkadot)],
   [ksmcc3.id, JSON.stringify(ksmcc3)],
