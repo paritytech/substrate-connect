@@ -1,4 +1,4 @@
-name: Version Checker CI
+name: Substrate Connect CI
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  versionCheck:
+  check-extension-versions:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,3 +22,28 @@ jobs:
       if: ${{ steps.package-version.outputs.version != steps.webpack-version.outputs.version }}
     - run: exit 1
       if: ${{ steps.package-version.outputs.version != steps.manifest-version.outputs.version }}
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 17.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: yarn install --frozen-lockfile
+    - run: yarn build
+    - run: yarn lint
+    - run: yarn test
+
+  all:
+    # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
+    # are successful.
+    needs: [check-extension-versions, build]
+    runs-on: ubuntu-latest
+    steps:
+     - run: echo Success
