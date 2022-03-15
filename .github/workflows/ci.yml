@@ -13,15 +13,20 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - id: package-version
-      run: echo "::set-output name=version::`grep -rw './projects/extension/package.json' -e 'version' | sed 's/[^0-9.]//g'`"
+      run: echo "::set-output name=version::`jq .version ./projects/extension/package.json`"
     - id: webpack-version
-      run: echo "::set-output name=version::`grep -rnw './projects/extension/webpack.config.js' -e 'PKG_VERSION' | grep -o '".*"' | tr -d '"'`"
+      run: echo "::set-output name=version::`grep -rnw './projects/extension/webpack.config.js' -e 'PKG_VERSION' | grep -o '".*"'`"
     - id: manifest-version
-      run: echo "::set-output name=version::`grep -rw './projects/extension/public/manifest.json' -e 'version' | sed 's/[^0-9.]//g'`"
+      run: echo "::set-output name=version::`jq .version ./projects/extension/public/manifest.json`"
     - run: exit 1
       if: ${{ steps.package-version.outputs.version != steps.webpack-version.outputs.version }}
     - run: exit 1
       if: ${{ steps.package-version.outputs.version != steps.manifest-version.outputs.version }}
+    - run: exit 1
+      if: ${{ steps.package-version.outputs.version != steps.manifest-version.outputs.version }}
+    - run: exit 1
+      if: ${{steps.package-version.outputs.version == '' || steps.webpack-version.outputs.version == ''  || steps.manifest-version.outputs.version == '' }}
+    
   build:
     runs-on: ubuntu-latest
 
