@@ -2,7 +2,6 @@ import { ConnectionManagerWithHealth } from "./ConnectionManagerWithHealth"
 import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
-import { WellKnownChain } from "@substrate/connect"
 import { start as smoldotStart } from "@substrate/smoldot-light"
 
 import westend2 from "../../public/assets/westend2.json"
@@ -12,10 +11,10 @@ import rococo_v2 from "../../public/assets/rococo_v2.json"
 import { ToExtension } from "@substrate/connect-extension-protocol"
 
 export const wellKnownChains: Map<string, string> = new Map<string, string>([
-  [WellKnownChain.polkadot, JSON.stringify(polkadot)],
-  [WellKnownChain.ksmcc3, JSON.stringify(ksmcc3)],
-  [WellKnownChain.rococo_v2, JSON.stringify(rococo_v2)],
-  [WellKnownChain.westend2, JSON.stringify(westend2)],
+  [polkadot.id, JSON.stringify(polkadot)],
+  [ksmcc3.id, JSON.stringify(ksmcc3)],
+  [rococo_v2.id, JSON.stringify(rococo_v2)],
+  [westend2.id, JSON.stringify(westend2)],
 ])
 
 export interface Background extends Window {
