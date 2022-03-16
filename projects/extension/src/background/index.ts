@@ -225,7 +225,8 @@ chrome.runtime.onConnect.addListener((port) => {
           // If an error happened, this might be an indication that the manager has crashed.
           // If that is the case, we need to notify the UI and restart everything.
           // TODO: this isn't implemented yet
-          if (message.type === "error" && manager.hasCrashed) true
+          if (message.type === "error" && manager.hasCrashed) {
+          }
         }
       }
     })()
