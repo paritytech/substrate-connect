@@ -7,5 +7,5 @@ yarn-error.log*
 tsconfig.*
 extension-resolver.cjs
 jest.config*
-
 src/**/*
+dist/connector/specs/*.json
