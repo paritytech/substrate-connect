@@ -492,7 +492,8 @@ export class ConnectionManager<SandboxId> {
    * Well-known chains aren't touched.
    */
   #resetAllNonWellKnownChains(errorMessage: string) {
-    for (const [_sandboxId, sandbox] of this.#sandboxes) {
+    for (const sandboxTuple of this.#sandboxes) {
+      const sandbox = sandboxTuple[1] // A stupid lint prevents us from doing `[_, sandbox]` above
       for (const [chainId, chain] of sandbox.chains) {
         sandbox.chains.delete(chainId)
         sandbox.pushMessagesQueue({
