@@ -149,7 +149,7 @@ const SendFundsForm: FunctionComponent = () => {
       const fee = await api.tx.balances
         .transfer(address, new BN(amount))
         .paymentInfo(sender)
-      setFee(fee.partialFee)
+      setFee(fee.partialFee as unknown as Balance)
     }
     !amount ||
     amount === "0" ||
