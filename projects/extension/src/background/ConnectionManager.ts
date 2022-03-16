@@ -1,6 +1,7 @@
 import {
   Client as SmoldotClient,
   Chain as SmoldotChain,
+  CrashError,
 } from "@substrate/smoldot-light"
 
 import {
@@ -461,6 +462,8 @@ export class ConnectionManager<SandboxId> {
         chainId,
       })
     } catch (err) {
+      if (err instanceof CrashError) this.#hasCrashed = true
+
       const error =
         err instanceof Error ? err.message : "Unknown error when adding chain"
 
