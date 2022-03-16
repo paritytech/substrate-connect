@@ -1,21 +1,28 @@
 import { ConnectionManagerWithHealth } from "./ConnectionManagerWithHealth"
-import { isEmpty } from "../utils/utils"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
-import { WellKnownChain } from "@substrate/connect"
 import { start as smoldotStart } from "@substrate/smoldot-light"
 
 import westend2 from "../../public/assets/westend2.json"
 import ksmcc3 from "../../public/assets/ksmcc3.json"
 import polkadot from "../../public/assets/polkadot.json"
 import rococo_v2 from "../../public/assets/rococo_v2.json"
-import { ToExtension } from "@substrate/connect-extension-protocol"
+import {
+  ToApplication,
+  ToExtension,
+} from "@substrate/connect-extension-protocol"
 
+// Note that this list doesn't necessarily always have to match the list of well-known
+// chains in `@substrate/connect`. The list of well-known chains is not part of the stability
+// guarantees of the connect <-> extension protocol and is thus allowed to change
+// between versions of the extension. For this reason, we don't use the `WellKnownChain`
+// enum from `@substrate/connect` but instead manually make the list in that enum match
+// the list present here.
 export const wellKnownChains: Map<string, string> = new Map<string, string>([
-  [WellKnownChain.polkadot, JSON.stringify(polkadot)],
-  [WellKnownChain.ksmcc3, JSON.stringify(ksmcc3)],
-  [WellKnownChain.rococo_v2, JSON.stringify(rococo_v2)],
-  [WellKnownChain.westend2, JSON.stringify(westend2)],
+  [polkadot.id, JSON.stringify(polkadot)],
+  [ksmcc3.id, JSON.stringify(ksmcc3)],
+  [rococo_v2.id, JSON.stringify(rococo_v2)],
+  [westend2.id, JSON.stringify(westend2)],
 ])
 
 export interface Background extends Window {
@@ -159,17 +166,6 @@ const managerPromise: Promise<
     if (!dbContent) saveChainDbContent(managerInit, key)
   }
 
-  // Notify all the callbacks waiting for changes in the manager.
-  const waitAllChainsUpdate = (
-    manager: ConnectionManagerWithHealth<chrome.runtime.Port>,
-  ) => {
-    listeners.forEach((listener) => notifyListener(manager, listener))
-    manager.waitAllChainChanged().then(() => {
-      waitAllChainsUpdate(manager)
-    })
-  }
-  waitAllChainsUpdate(managerInit)
-
   // Create an alarm that will periodically save the content of the database of the well-known
   // chains.
   chrome.alarms.onAlarm.addListener((alarm) => {
@@ -212,7 +208,17 @@ chrome.runtime.onConnect.addListener((port) => {
           // An error is thrown by `nextSandboxMessage` if the sandbox is destroyed.
           break
         }
-        port.postMessage(message)
+
+        if (message.type === "chains-status-changed") {
+          listeners.forEach((listener) => notifyListener(manager, listener))
+        } else {
+          if (message.type === "chain-ready" || message.type === "error")
+            listeners.forEach((listener) => notifyListener(manager, listener))
+
+          // We make sure that the message is indeed of type `ToApplication`.
+          const messageCorrectType: ToApplication = message
+          port.postMessage(messageCorrectType)
+        }
       }
     })()
 
@@ -222,6 +228,11 @@ chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((message: ToExtension) => {
     managerWithSandbox = managerWithSandbox.then((manager) => {
       manager.sandboxMessage(port, message)
+      if (
+        message.type === "add-chain" ||
+        message.type === "add-well-known-chain"
+      )
+        listeners.forEach((listener) => notifyListener(manager, listener))
       return manager
     })
   })
@@ -229,13 +240,14 @@ chrome.runtime.onConnect.addListener((port) => {
   port.onDisconnect.addListener(() => {
     managerWithSandbox = managerWithSandbox.then((manager) => {
       manager.deleteSandbox(port)
+      listeners.forEach((listener) => notifyListener(manager, listener))
       return manager
     })
   })
 })
 
 chrome.storage.local.get(["notifications"], (result) => {
-  if (isEmpty(result)) {
+  if (Object.keys(result).length === 0) {
     // Setup default settings
     chrome.storage.local.set({ notifications: settings.notifications }, () => {
       if (chrome.runtime.lastError) {
