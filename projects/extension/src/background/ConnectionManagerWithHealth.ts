@@ -183,8 +183,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
         const chain = this.#sandboxesChains
           .get(chainInfo.apiInfo.sandboxId)!
           .get(chainInfo.apiInfo.chainId)!
-        peers = chain.peers
-        isSyncing = chain.isSyncing
+        peers = chain?.peers
+        isSyncing = chain?.isSyncing
       }
 
       return {
