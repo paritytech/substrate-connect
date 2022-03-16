@@ -2,7 +2,6 @@ import {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"
-import { debug } from "../utils/debug"
 import checkMessage from "./checkMessage"
 
 const EXTENSION_PROVIDER_ORIGIN = "substrate-connect-client"
@@ -51,8 +50,6 @@ export class ExtensionMessageRouter {
     if (!data.origin || data.origin !== EXTENSION_PROVIDER_ORIGIN) {
       return
     }
-
-    debug(`RECEIVED MESSAGE FROM ${EXTENSION_PROVIDER_ORIGIN}`, data)
 
     if (!checkMessage(data)) {
       // probably someone abusing the extension
