@@ -4,11 +4,6 @@ import {
 } from "@substrate/smoldot-light"
 
 import {
-  healthChecker as smHealthChecker,
-  HealthChecker as SmoldotHealthChecker,
-} from "@substrate/connect"
-
-import {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"
@@ -29,16 +24,6 @@ export interface ChainInfo<SandboxId> {
    * characters (e.g. HTML tags), etc. Do not make any assumption about its content.
    */
   chainName: string
-
-  /**
-   * Whether the chain is still in its syncing phase.
-   */
-  isSyncing: boolean
-
-  /**
-   * Latest known number of peers the chain is connected to.
-   */
-  peers: number
 
   /**
    * Information about how the chain was inserted in the {ConnectionManager}.
@@ -92,16 +77,14 @@ export interface ChainInfo<SandboxId> {
  * `@substrate/connect-extension-protocol` package.
  *
  * A sandbox will spontaneously generate messages that conform to the {ToApplication} interface of
- * the `@substrate/connect-extension-protocol` package. Use the {ConnectionManager.sandboxOutput}
- * function to retrieve these messages as they are generated.
+ * the `@substrate/connect-extension-protocol` package. Use the
+ * {ConnectionManager.nextSandboxMessage} function to retrieve these messages as they are
+ * generated.
  *
  * # Information about the list of chains
  *
  * At any point, information about all the chains contained within the {ConnectionManager} can
  * be retrieved using {ConnectionManager.allChains}. This can be used for display purposes.
- *
- * Use {ConnectionManager.waitAllChainChanged} to wait until the next time any field within the
- * value returned by {ConnectionManager.allChains} has potentially been modified.
  *
  * # Database
  *
@@ -123,13 +106,6 @@ export class ConnectionManager<SandboxId> {
   }
 
   /**
-   * Contains a list of callbacks that must be called when any of the information returned by
-   * `allChains` has potentially changed, and then the list must be cleared. The
-   * `waitAllChainChanged` method adds elements to this list.
-   */
-  #allChainsChangedCallbacks: (() => void)[] = []
-
-  /**
    * Adds a new well-known chain to this state machine.
    *
    * While it is not strictly mandatory, you are strongly encouraged to call this at the
@@ -146,13 +122,8 @@ export class ConnectionManager<SandboxId> {
       throw new Error("Duplicate well-known chain")
     }
 
-    const healthChecker = smHealthChecker()
-
     const chain = await this.#smoldotClient.addChain({
       chainSpec: spec,
-      jsonRpcCallback: (response) => {
-        healthChecker.responsePassThrough(response)
-      },
       databaseContent,
       potentialRelayChains: [],
     })
@@ -160,26 +131,11 @@ export class ConnectionManager<SandboxId> {
     const wellKnownChain: WellKnownChain = {
       chain,
       spec,
-      healthChecker,
       isSyncing: true,
       peers: 0,
     }
 
-    healthChecker.setSendJsonRpc((rq) => chain.sendJsonRpc(rq))
-    healthChecker.start((health) => {
-      wellKnownChain.isSyncing = health.isSyncing
-      wellKnownChain.peers = health.peers
-
-      // Notify the `allChainsChangedCallbacks`.
-      this.#allChainsChangedCallbacks.forEach((cb) => cb())
-      this.#allChainsChangedCallbacks = []
-    })
-
     this.#wellKnownChains.set(chainName, wellKnownChain)
-
-    // Notify the `allChainsChangedCallbacks`.
-    this.#allChainsChangedCallbacks.forEach((cb) => cb())
-    this.#allChainsChangedCallbacks = []
   }
 
   /**
@@ -209,11 +165,9 @@ export class ConnectionManager<SandboxId> {
   get allChains(): ChainInfo<SandboxId>[] {
     let output: ChainInfo<SandboxId>[] = []
 
-    for (const [chainName, chain] of this.#wellKnownChains) {
+    for (const [chainName] of this.#wellKnownChains) {
       output.push({
         chainName,
-        isSyncing: chain.isSyncing,
-        peers: chain.peers,
       })
     }
 
@@ -221,8 +175,6 @@ export class ConnectionManager<SandboxId> {
       for (const [chainId, chain] of sandbox.chains) {
         output.push({
           chainName: chain.name,
-          isSyncing: chain.isReady ? chain.isSyncing : true,
-          peers: chain.isReady ? chain.peers : 0,
           apiInfo: {
             chainId,
             sandboxId,
@@ -232,15 +184,6 @@ export class ConnectionManager<SandboxId> {
     }
 
     return output
-  }
-
-  /**
-   * Waits for the value of `allChains` to have potentially changed.
-   */
-  async waitAllChainChanged(): Promise<void> {
-    await new Promise<void>((resolve, _) => {
-      this.#allChainsChangedCallbacks.push(resolve)
-    })
   }
 
   /**
@@ -264,8 +207,8 @@ export class ConnectionManager<SandboxId> {
    *
    * This performs some internal clean ups.
    *
-   * Any iterator concerning this sandbox that was returned by {ConnectionManager.sandboxOutput}
-   * will end.
+   * Any `Promise` concerning this sandbox that was returned by
+   * {ConnectionManager.nextSandboxMessage} will generate an error.
    *
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
@@ -273,7 +216,6 @@ export class ConnectionManager<SandboxId> {
     const sandbox = this.#sandboxes.get(sandboxId)!
     sandbox.chains.forEach((chain) => {
       if (chain.isReady) {
-        chain.healthChecker.stop()
         chain.smoldotChain.remove()
       }
 
@@ -282,10 +224,6 @@ export class ConnectionManager<SandboxId> {
     })
     sandbox.pushMessagesQueue(null)
     this.#sandboxes.delete(sandboxId)
-
-    // Notify the `allChainsChangedCallbacks`.
-    this.#allChainsChangedCallbacks.forEach((cb) => cb())
-    this.#allChainsChangedCallbacks = []
   }
 
   /**
@@ -296,31 +234,18 @@ export class ConnectionManager<SandboxId> {
   }
 
   /**
-   * Asynchronous iterator that yields all the `ToApplication` messages that are generated
-   * spontaneously or in response to `sandboxMessage`.
+   * Returns the next {ToApplication} message that is generated spontaneously or in response to
+   * `sandboxMessage`.
    *
-   * The iterator is guaranteed to always yield messages from sandboxes that are still alive. As
-   * soon as you call `deleteSandbox`, no new message will be generated and the iterator will
-   * end.
+   * If a message is generated by a sandbox before this function is called, the message is queued.
+   *
+   * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
-  async *sandboxOutput(sandboxId: SandboxId): AsyncGenerator<ToApplication> {
-    while (true) {
-      const sandbox = this.#sandboxes.get(sandboxId)
-      if (!sandbox) break
-
-      const message = await sandbox.pullMessagesQueue()
-
-      // While we were waiting for a message, the user might have removed the sandbox using
-      // `deleteSandbox`. We therefore check again whether the sandbox is still in
-      // `this.#sandboxes` in order to make sure to not give messages concerning destroyed
-      // sandboxes.
-      if (!this.#sandboxes.has(sandboxId)) break
-
-      // `message` can be either a `ToApplication` or `null`, but `null` is only ever pushed to
-      // the queue when the sandbox is destroyed, in which case the check the line above should
-      // have caught that. In other words, if `message` is `null` here, there's a bug in the code.
-      yield message!
-    }
+  async nextSandboxMessage(sandboxId: SandboxId): Promise<ToApplication> {
+    const sandbox = this.#sandboxes.get(sandboxId)!
+    const message = await sandbox.pullMessagesQueue()
+    if (message === null) throw new Error("Sandbox has been destroyed")
+    return message
   }
 
   /**
@@ -353,7 +278,7 @@ export class ConnectionManager<SandboxId> {
         }
 
         // Everything is green for this JSON-RPC message
-        chain.healthChecker.sendJsonRpc(message.jsonRpcMessage)
+        chain.smoldotChain.sendJsonRpc(message.jsonRpcMessage)
         break
       }
 
@@ -389,13 +314,10 @@ export class ConnectionManager<SandboxId> {
           message.type === "add-chain"
             ? message.chainSpec
             : this.#wellKnownChains.get(message.chainName)!.spec
-        const healthChecker = smHealthChecker()
         const chainInitialization: Promise<SmoldotChain> =
           this.#smoldotClient.addChain({
             chainSpec,
             jsonRpcCallback: (jsonRpcMessage) => {
-              const filtered = healthChecker.responsePassThrough(jsonRpcMessage)
-              if (!filtered) return
               // This JSON-RPC callback will never be called after we call `remove()` on the
               // chain. When we remove a sandbox, we call `remove()` on all of its chains.
               // Consequently, this JSON-RPC callback will never be called after we remove a
@@ -404,7 +326,7 @@ export class ConnectionManager<SandboxId> {
                 origin: "substrate-connect-extension",
                 type: "rpc",
                 chainId,
-                jsonRpcMessage: filtered,
+                jsonRpcMessage,
               })
             },
             potentialRelayChains:
@@ -427,17 +349,12 @@ export class ConnectionManager<SandboxId> {
           name,
         })
 
-        // Notify the `allChainsChangedCallbacks`.
-        this.#allChainsChangedCallbacks.forEach((cb) => cb())
-        this.#allChainsChangedCallbacks = []
-
         // Spawn in the background an async function to react to the initialization finishing.
         this.#handleChainInitializationFinished(
           sandboxId,
           chainId,
           chainInitialization,
           name,
-          healthChecker,
         )
 
         break
@@ -450,7 +367,6 @@ export class ConnectionManager<SandboxId> {
         if (!chain) return
 
         if (chain.isReady) {
-          chain.healthChecker.stop()
           chain.smoldotChain.remove()
         }
 
@@ -458,10 +374,6 @@ export class ConnectionManager<SandboxId> {
         // initialization being finished will remove it.
 
         sandbox.chains.delete(message.chainId)
-
-        // Notify the `allChainsChangedCallbacks`.
-        this.#allChainsChangedCallbacks.forEach((cb) => cb())
-        this.#allChainsChangedCallbacks = []
         break
       }
     }
@@ -480,7 +392,6 @@ export class ConnectionManager<SandboxId> {
     chainId: string,
     chainInitialization: Promise<SmoldotChain>,
     name: string,
-    healthChecker: SmoldotHealthChecker,
   ): Promise<void> {
     try {
       const chain = await chainInitialization
@@ -498,22 +409,13 @@ export class ConnectionManager<SandboxId> {
       }
 
       const smoldotChain: SmoldotChain = chain
-      healthChecker.setSendJsonRpc((rq) => smoldotChain.sendJsonRpc(rq))
       const readyChain: ReadyChain = {
         isReady: true,
         name,
         smoldotChain,
-        healthChecker,
         isSyncing: true,
         peers: 0,
       }
-      healthChecker.start((health) => {
-        readyChain.isSyncing = health.isSyncing
-        readyChain.peers = health.peers
-        // Notify the `allChainsChangedCallbacks`.
-        this.#allChainsChangedCallbacks.forEach((cb) => cb())
-        this.#allChainsChangedCallbacks = []
-      })
       sandbox.chains.set(chainId, readyChain)
       sandbox.pushMessagesQueue({
         origin: "substrate-connect-extension",
@@ -556,7 +458,7 @@ interface Sandbox {
 
   /**
    * Function that pulls a message from the queue of messages, to give it to the API user. Used
-   * by {ConnectionManager.sandboxOutput}.
+   * by {ConnectionManager.nextSandboxMessage}.
    */
   pullMessagesQueue: () => Promise<ToApplication | null>
 
@@ -589,9 +491,6 @@ interface InitializingChain {
    * For example, if the user adds a chain with id "foo", then removes the chain with id "foo",
    * then adds another chain with id "foo", then once the first chain has finished its
    * initialization it will notice that the `Promise` here is not the same as the one it has.
-   *
-   * Note that the chain's JSON-RPC callback is already connected to a {SmoldotHealthChecker} that
-   * isn't present in this interface.
    */
   smoldotChain: Promise<SmoldotChain>
 }
@@ -615,11 +514,6 @@ interface ReadyChain {
   smoldotChain: SmoldotChain
 
   /**
-   * Health checker connected to the chain.
-   */
-  healthChecker: SmoldotHealthChecker
-
-  /**
    * Whether the chain is still in its syncing phase.
    */
   isSyncing: boolean
@@ -640,11 +534,6 @@ interface WellKnownChain {
    * Chain specification of the well-known chain.
    */
   spec: string
-
-  /**
-   * Health checker connected to the chain.
-   */
-  healthChecker: SmoldotHealthChecker
 
   /**
    * Whether the chain is still in its syncing phase.

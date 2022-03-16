@@ -1,21 +1,28 @@
-import { ConnectionManager } from "./ConnectionManager"
-import { isEmpty } from "../utils/utils"
+import { ConnectionManagerWithHealth } from "./ConnectionManagerWithHealth"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
-import { WellKnownChain } from "@substrate/connect"
 import { start as smoldotStart } from "@substrate/smoldot-light"
 
 import westend2 from "../../public/assets/westend2.json"
 import ksmcc3 from "../../public/assets/ksmcc3.json"
 import polkadot from "../../public/assets/polkadot.json"
 import rococo_v2 from "../../public/assets/rococo_v2.json"
-import { ToExtension } from "@substrate/connect-extension-protocol"
+import {
+  ToApplication,
+  ToExtension,
+} from "@substrate/connect-extension-protocol"
 
+// Note that this list doesn't necessarily always have to match the list of well-known
+// chains in `@substrate/connect`. The list of well-known chains is not part of the stability
+// guarantees of the connect <-> extension protocol and is thus allowed to change
+// between versions of the extension. For this reason, we don't use the `WellKnownChain`
+// enum from `@substrate/connect` but instead manually make the list in that enum match
+// the list present here.
 export const wellKnownChains: Map<string, string> = new Map<string, string>([
-  [WellKnownChain.polkadot, JSON.stringify(polkadot)],
-  [WellKnownChain.ksmcc3, JSON.stringify(ksmcc3)],
-  [WellKnownChain.rococo_v2, JSON.stringify(rococo_v2)],
-  [WellKnownChain.westend2, JSON.stringify(westend2)],
+  [polkadot.id, JSON.stringify(polkadot)],
+  [ksmcc3.id, JSON.stringify(ksmcc3)],
+  [rococo_v2.id, JSON.stringify(rococo_v2)],
+  [westend2.id, JSON.stringify(westend2)],
 ])
 
 export interface Background extends Window {
@@ -29,7 +36,7 @@ export interface Background extends Window {
 }
 
 interface logStructure {
-  time: string
+  unix_timestamp: number
   level: number
   target: string
   message: string
@@ -47,18 +54,9 @@ const logKeeper: LogKeeper = {
   error: [],
 }
 
-const getTime = () => {
-  const date = new Date()
-  return `${date.getHours() < 10 ? "0" : ""}${date.getHours()}:${
-    date.getMinutes() < 10 ? "0" : ""
-  }${date.getMinutes()}:${
-    date.getSeconds() < 10 ? "0" : ""
-  }${date.getSeconds()} ${date.getMilliseconds()}`
-}
-
 const logger = (level: number, target: string, message: string) => {
   const incLog = {
-    time: getTime(),
+    unix_timestamp: new Date().getTime(),
     level,
     target,
     message,
@@ -83,6 +81,7 @@ const logger = (level: number, target: string, message: string) => {
         break
     }
   }
+
   if (all.length >= 1000) all.shift()
   all.push(incLog)
 }
@@ -90,7 +89,7 @@ const logger = (level: number, target: string, message: string) => {
 const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
 
 const notifyListener = (
-  manager: ConnectionManager<chrome.runtime.Port>,
+  manager: ConnectionManagerWithHealth<chrome.runtime.Port>,
   listener: (state: ExposedChainConnection[]) => void,
 ) => {
   listener(
@@ -136,7 +135,7 @@ window.manager = {
 }
 
 const saveChainDbContent = async (
-  manager: ConnectionManager<chrome.runtime.Port>,
+  manager: ConnectionManagerWithHealth<chrome.runtime.Port>,
   key: string,
 ) => {
   const db = await manager.wellKnownChainDatabaseContent(
@@ -146,51 +145,40 @@ const saveChainDbContent = async (
   chrome.storage.local.set({ [key]: db })
 }
 
-// Start initializing a `ConnectionManager`.
+// Start initializing a `ConnectionManagerWithHealth`.
 // This initialization operation shouldn't take more than a few dozen milliseconds, but we still
 // need to properly handle situations where initialization isn't finished yet.
-const managerPromise: Promise<ConnectionManager<chrome.runtime.Port>> =
-  (async () => {
-    const managerInit = new ConnectionManager<chrome.runtime.Port>(
-      smoldotStart({
-        maxLogLevel: 4,
-        logCallback: logger,
-      }),
+const managerPromise: Promise<
+  ConnectionManagerWithHealth<chrome.runtime.Port>
+> = (async () => {
+  const managerInit = new ConnectionManagerWithHealth<chrome.runtime.Port>(
+    smoldotStart({
+      maxLogLevel: 4,
+      logCallback: logger,
+    }),
+  )
+  for (const [key, value] of wellKnownChains.entries()) {
+    const dbContent = await new Promise<string | undefined>((res) =>
+      chrome.storage.local.get([key], (val) => res(val[key] as string)),
     )
-    for (const [key, value] of wellKnownChains.entries()) {
-      const dbContent = await new Promise<string | undefined>((res) =>
-        chrome.storage.local.get([key], (val) => res(val[key] as string)),
-      )
 
-      await managerInit.addWellKnownChain(key, value, dbContent)
-      if (!dbContent) saveChainDbContent(managerInit, key)
+    await managerInit.addWellKnownChain(key, value, dbContent)
+    if (!dbContent) saveChainDbContent(managerInit, key)
+  }
+
+  // Create an alarm that will periodically save the content of the database of the well-known
+  // chains.
+  chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name === "DatabaseContentAlarm") {
+      for (const [key] of wellKnownChains) saveChainDbContent(managerInit, key)
     }
+  })
+  chrome.alarms.create("DatabaseContentAlarm", {
+    periodInMinutes: 5,
+  })
 
-    // Notify all the callbacks waiting for changes in the manager.
-    const waitAllChainsUpdate = (
-      manager: ConnectionManager<chrome.runtime.Port>,
-    ) => {
-      listeners.forEach((listener) => notifyListener(manager, listener))
-      manager.waitAllChainChanged().then(() => {
-        waitAllChainsUpdate(manager)
-      })
-    }
-    waitAllChainsUpdate(managerInit)
-
-    // Create an alarm that will periodically save the content of the database of the well-known
-    // chains.
-    chrome.alarms.onAlarm.addListener((alarm) => {
-      if (alarm.name === "DatabaseContentAlarm") {
-        for (const [key] of wellKnownChains)
-          saveChainDbContent(managerInit, key)
-      }
-    })
-    chrome.alarms.create("DatabaseContentAlarm", {
-      periodInMinutes: 5,
-    })
-
-    return managerInit
-  })()
+  return managerInit
+})()
 
 // Handle new port connections.
 //
@@ -212,8 +200,25 @@ chrome.runtime.onConnect.addListener((port) => {
   let managerWithSandbox = managerPromise.then((manager) => {
     manager.addSandbox(port)
     ;(async () => {
-      for await (const message of manager.sandboxOutput(port)) {
-        port.postMessage(message)
+      while (true) {
+        let message
+        try {
+          message = await manager.nextSandboxMessage(port)
+        } catch (error) {
+          // An error is thrown by `nextSandboxMessage` if the sandbox is destroyed.
+          break
+        }
+
+        if (message.type === "chains-status-changed") {
+          listeners.forEach((listener) => notifyListener(manager, listener))
+        } else {
+          if (message.type === "chain-ready" || message.type === "error")
+            listeners.forEach((listener) => notifyListener(manager, listener))
+
+          // We make sure that the message is indeed of type `ToApplication`.
+          const messageCorrectType: ToApplication = message
+          port.postMessage(messageCorrectType)
+        }
       }
     })()
 
@@ -223,6 +228,11 @@ chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((message: ToExtension) => {
     managerWithSandbox = managerWithSandbox.then((manager) => {
       manager.sandboxMessage(port, message)
+      if (
+        message.type === "add-chain" ||
+        message.type === "add-well-known-chain"
+      )
+        listeners.forEach((listener) => notifyListener(manager, listener))
       return manager
     })
   })
@@ -230,13 +240,14 @@ chrome.runtime.onConnect.addListener((port) => {
   port.onDisconnect.addListener(() => {
     managerWithSandbox = managerWithSandbox.then((manager) => {
       manager.deleteSandbox(port)
+      listeners.forEach((listener) => notifyListener(manager, listener))
       return manager
     })
   })
 })
 
 chrome.storage.local.get(["notifications"], (result) => {
-  if (isEmpty(result)) {
+  if (Object.keys(result).length === 0) {
     // Setup default settings
     chrome.storage.local.set({ notifications: settings.notifications }, () => {
       if (chrome.runtime.lastError) {
