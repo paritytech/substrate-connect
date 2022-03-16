@@ -23,6 +23,16 @@
  * for demos and prototypes, it is not possible to achieve the best user experience by using
  * PolkadotJS. Proper light-client-oriented high-level libraries built on top of
  * {createScClient} are currently in development.
+ * 
+ * # Security concern
+ *
+ * As an important note - a light client only verifies the authenticity of blocks, but not their
+ * correctness. For this reason, the block that is reported as being the best block might be
+ * incorrect. In the context of a light client, only the finalised block can be assumed
+ * to be correct. Consequently, accessing the storage of any non-finalised block is also
+ * not guaranteed to report correct values. This security concerni is mostly relevant
+ * to PolkadotJS, as PolkadotJS assumes best block by default.
+
  *
  * # Adding parachains
  *
