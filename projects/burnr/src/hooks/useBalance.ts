@@ -22,7 +22,7 @@ export const useBalance = (address: string): State => {
   const mountedRef = useIsMountedRef()
   useEffect((): (() => void) => {
     const l = logger(BURNR_WALLET)
-    let unsubscribe: null | (() => void) = null
+    let unsubscribe: any = null
     address &&
       api.query.system
         .account(address, ({ data }: AccountInfo): void => {
