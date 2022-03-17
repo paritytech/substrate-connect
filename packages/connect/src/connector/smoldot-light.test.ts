@@ -193,7 +193,7 @@ describe("SmoldotConnect::smoldot-light", () => {
 
       mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
       expect(mockedChain._addChainOptions.chainSpec).toEqual(
-        "fake-rococo_v2-spec",
+        "fake-rococo_v2_1-spec",
       )
     })
 
