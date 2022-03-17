@@ -1,0 +1,18 @@
+[settings]
+timeout = 240000
+
+[relaychain]
+default_image = "parity/polkadot:latest"
+chain = "rococo-local"
+default_command = "polkadot"
+
+  [[relaychain.nodes]]
+  name = "alice"
+  validator = true
+  extra_args = [ "--alice" ]
+
+  [[relaychain.nodes]]
+  name = "bob"
+  validator = true
+  extra_args = [ "--bob" ]
+  add_to_bootnodes = true
