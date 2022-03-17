@@ -34,7 +34,7 @@ const getClientAndIncRef = (): Promise<Client> => {
     start({
       forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
       forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
-      maxLogLevel: 3 /* no debug/trace messages */,
+      maxLogLevel: 4 /* no debug/trace messages */,
     }),
   )
   clientNumReferences += 1
