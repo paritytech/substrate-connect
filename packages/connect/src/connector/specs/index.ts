@@ -4,7 +4,7 @@ export async function getSpec(chain: string): Promise<string> {
   // This is done by make sure that the name doesn't contain `..`. This also means that we can't
   // support well-known chain whose name contains `..`, but that seems unlikely to ever be
   // problematic.
-  if (chain.search("..") !== 1) throw new Error("Invalid chain name")
+  if (chain.indexOf("..") !== -1) throw new Error("Invalid chain name")
 
   try {
     const specRaw = (await import("./generated/" + chain + ".js")) as
