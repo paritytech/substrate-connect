@@ -28,14 +28,14 @@
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "dependencies": {
-    "@polkadot/rpc-provider": "^7.10.1",
+    "@polkadot/rpc-provider": "^7.12.1",
     "@substrate/connect-extension-protocol": "^1.0.0",
-    "@substrate/smoldot-light": "0.6.4",
+    "@substrate/smoldot-light": "0.6.5",
     "eventemitter3": "^4.0.7"
   },
   "devDependencies": {
-    "@polkadot/api": "^7.10.1",
     "@jest/globals": "^27.5.1",
+    "@polkadot/api": "^7.12.1",
     "jest": "^27.5.1"
   }
 }
