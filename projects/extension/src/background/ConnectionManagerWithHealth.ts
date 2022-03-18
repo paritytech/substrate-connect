@@ -121,6 +121,10 @@ export interface ChainsStatusChanged {
  */
 export class ConnectionManagerWithHealth<SandboxId> {
   #inner: ConnectionManager<SandboxId>
+  // List of all chains, including chains that are still initializing. Kept in parallel of the list
+  // in the `ConnectionManager`. Note that because this list is updated only when
+  // `nextSandboxMessage` is called, it is possible for the list of chains here to contain chains
+  // that the underlying `ConnectionManager` has already removed.
   #sandboxesChains: Map<SandboxId, Map<string, Chain>> = new Map()
   #pingInterval: ReturnType<typeof globalThis.setInterval>
   #nextHealthCheckRqId: number = 0
@@ -174,24 +178,37 @@ export class ConnectionManagerWithHealth<SandboxId> {
    * This includes both well-known chains and chains added by sandbox messages.
    */
   get allChains(): ChainInfo<SandboxId>[] {
-    return this.#inner.allChains.map((chainInfo) => {
+    return this.#inner.allChains.flatMap((chainInfo) => {
       // TODO: fill for well-known chains; would be solved by https://github.com/paritytech/substrate-connect/issues/855
       let peers = 0
       let isSyncing = true
 
       if (chainInfo.apiInfo) {
         const chain = this.#sandboxesChains
-          .get(chainInfo.apiInfo.sandboxId)!
-          .get(chainInfo.apiInfo.chainId)!
+          .get(chainInfo.apiInfo.sandboxId)
+          ?.get(chainInfo.apiInfo.chainId)
+
+        // Given that chains are added to `this` when messages are processed in
+        // `nextSandboxMessage`, it is possible that a chain gets added by the underlying
+        // `ConnectionManager` and that `allChains` gets called before the confirmation has been
+        // process in `nextSandboxMessage`. For this reason, calling `ConnectionManager.allChains`
+        // might produce chains that aren't known locally. This is handled here.
+        // Similarly, it is possible for `this` to contain chains that the underlying
+        // `ConnectionManager` no longer knows, but this doesn't cause any problem in this
+        // function.
+        if (!chain) return []
+
         peers = chain.peers
         isSyncing = chain.isSyncing
       }
 
-      return {
-        peers,
-        isSyncing,
-        ...chainInfo,
-      }
+      return [
+        {
+          peers,
+          isSyncing,
+          ...chainInfo,
+        },
+      ]
     })
   }
 
@@ -249,10 +266,12 @@ export class ConnectionManagerWithHealth<SandboxId> {
 
       switch (toApplication.type) {
         case "chain-ready": {
-          this.#sandboxesChains.get(sandboxId)?.set(toApplication.chainId, {
-            isSyncing: true,
-            peers: 0,
-          })
+          // Internal check to make sure that there's no hidden bug.
+          if (!this.#sandboxesChains.get(sandboxId)!.has(toApplication.chainId))
+            throw new Error(
+              "Internal error: inconsistency between lists of chains",
+            )
+
           this.#inner.sandboxMessage(sandboxId, {
             origin: "substrate-connect-client",
             type: "rpc",
@@ -366,9 +385,14 @@ export class ConnectionManagerWithHealth<SandboxId> {
         }
 
         case "error": {
-          // Note that this can happen during the initialization of a chain, in which case it is
-          // not in the list.
-          this.#sandboxesChains.get(sandboxId)?.delete(toApplication.chainId)
+          const hadChain = this.#sandboxesChains
+            .get(sandboxId)!
+            .delete(toApplication.chainId)
+          // Internal check to make sure that there's no hidden bug.
+          if (!hadChain)
+            throw new Error(
+              "Internal error: inconsistency between lists of chains",
+            )
           return toApplication
         }
 
@@ -388,6 +412,17 @@ export class ConnectionManagerWithHealth<SandboxId> {
    */
   sandboxMessage(sandboxId: SandboxId, message: ToExtension) {
     switch (message.type) {
+      case "add-chain":
+      case "add-well-known-chain": {
+        // Note that chains that are still initializing are also kept within `this`, otherwise it
+        // isn't possible to keep the list of chains synchronized with the list in the underlying
+        // machine without being subject to race conditions.
+        this.#sandboxesChains.get(sandboxId)!.set(message.chainId, {
+          isSyncing: true,
+          peers: 0,
+        })
+        break
+      }
       case "remove-chain": {
         // As documented in the protocol, remove-chain messages concerning an invalid chainId are
         // simply ignored.
