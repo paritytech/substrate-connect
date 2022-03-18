@@ -178,37 +178,25 @@ export class ConnectionManagerWithHealth<SandboxId> {
    * This includes both well-known chains and chains added by sandbox messages.
    */
   get allChains(): ChainInfo<SandboxId>[] {
-    return this.#inner.allChains.flatMap((chainInfo) => {
+    return this.#inner.allChains.map((chainInfo) => {
       // TODO: fill for well-known chains; would be solved by https://github.com/paritytech/substrate-connect/issues/855
       let peers = 0
       let isSyncing = true
 
       if (chainInfo.apiInfo) {
         const chain = this.#sandboxesChains
-          .get(chainInfo.apiInfo.sandboxId)
-          ?.get(chainInfo.apiInfo.chainId)
-
-        // Given that chains are added to `this` when messages are processed in
-        // `nextSandboxMessage`, it is possible that a chain gets added by the underlying
-        // `ConnectionManager` and that `allChains` gets called before the confirmation has been
-        // process in `nextSandboxMessage`. For this reason, calling `ConnectionManager.allChains`
-        // might produce chains that aren't known locally. This is handled here.
-        // Similarly, it is possible for `this` to contain chains that the underlying
-        // `ConnectionManager` no longer knows, but this doesn't cause any problem in this
-        // function.
-        if (!chain) return []
+          .get(chainInfo.apiInfo.sandboxId)!
+          .get(chainInfo.apiInfo.chainId)!
 
         peers = chain.peers
         isSyncing = chain.isSyncing
       }
 
-      return [
-        {
-          peers,
-          isSyncing,
-          ...chainInfo,
-        },
-      ]
+      return {
+        peers,
+        isSyncing,
+        ...chainInfo,
+      }
     })
   }
 
