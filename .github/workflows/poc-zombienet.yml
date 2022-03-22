@@ -1,0 +1,33 @@
+name: E2E Zombienet CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: build
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+      - name: Get zombienet
+        run: |
+          curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.2.21/zombienet-linux
+          chmod +x zombienet-linux
+      - name: Get polkadot
+        run: |
+          curl -L -O https://github.com/paritytech/polkadot/releases/download/v0.9.17-rc4/polkadot
+          chmod +x polkadot
+      - name: Get polkadot-collator
+        run: |
+          curl -L -O https://github.com/paritytech/cumulus/releases/download/polkadot-v0.9.17/polkadot-collator
+          chmod +x polkadot-collator
+      - name: Run test
+        run: |
+          export PATH=$(pwd):$PATH
+          ./zombienet-linux -p native test ./.zombienet-tests/0001-relay-smoke-test.feature
+          ./zombienet-linux -p native test ./.zombienet-tests/0002-parachain.feature
