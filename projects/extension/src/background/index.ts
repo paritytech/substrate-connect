@@ -142,7 +142,10 @@ const saveChainDbContent = async (
     key,
     chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
   )
-  chrome.storage.local.set({ [key]: db })
+
+  // `db` can be `undefined` if the database content couldn't be obtained. In that case, we leave
+  // the database as it was before.
+  if (db) chrome.storage.local.set({ [key]: db })
 }
 
 // Start initializing a `ConnectionManagerWithHealth`.
@@ -218,6 +221,12 @@ chrome.runtime.onConnect.addListener((port) => {
           // We make sure that the message is indeed of type `ToApplication`.
           const messageCorrectType: ToApplication = message
           port.postMessage(messageCorrectType)
+
+          // If an error happened, this might be an indication that the manager has crashed.
+          // If that is the case, we need to notify the UI and restart everything.
+          // TODO: this isn't implemented yet
+          if (message.type === "error" && manager.hasCrashed) {
+          }
         }
       }
     })()
