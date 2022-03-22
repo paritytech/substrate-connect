@@ -21,7 +21,7 @@ window.onload = () => {
         WellKnownChain.polkadot,
       )
       const rococoProvider = await scClient.addWellKnownChain(
-        WellKnownChain.rococo_v2,
+        WellKnownChain.rococo_v2_1,
       )
       const westend = await ApiPromise.create({ provider: westendProvider })
       const kusama = await ApiPromise.create({ provider: kusamaProvider })

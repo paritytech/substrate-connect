@@ -155,6 +155,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
   /**
    * Returns the content of the database of the well-known chain with the given name.
    *
+   * Returns `undefined` if the database content couldn't be obtained.
+   *
    * The `maxUtf8BytesSize` parameter is the maximum number of bytes that the string must occupy
    * in its UTF-8 encoding. The returned string is guaranteed to not be larger than this number.
    * If not provided, "infinite" is implied.
@@ -165,7 +167,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
   async wellKnownChainDatabaseContent(
     chainName: string,
     maxUtf8BytesSize?: number,
-  ): Promise<string> {
+  ): Promise<string | undefined> {
     return await this.#inner.wellKnownChainDatabaseContent(
       chainName,
       maxUtf8BytesSize,
@@ -198,6 +200,15 @@ export class ConnectionManagerWithHealth<SandboxId> {
         ...chainInfo,
       }
     })
+  }
+
+  /**
+   * Returns `true` if the underlying client has crashed in the past.
+   *
+   * A crash is non-reversible. The only solution is to rebuild a new manager.
+   */
+  get hasCrashed(): boolean {
+    return this.#inner.hasCrashed
   }
 
   /**
