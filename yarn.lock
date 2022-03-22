@@ -2430,15 +2430,6 @@
     pako "^2.0.4"
     websocket "^1.0.32"
 
-"@substrate/smoldot-light@0.6.5":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.6.5.tgz#1b917d9871922a8fab1d13d6ce3116f8dcc81614"
-  integrity sha512-v0XE4/xS/jKg0Ogi8htILUQRl69WVcHMvYbCn3f5asfF17aFdQfmehDd9S+bBv/do94bT1M8XwInSMTfP4c7GA==
-  dependencies:
-    buffer "^6.0.1"
-    pako "^2.0.4"
-    websocket "^1.0.32"
-
 "@substrate/ss58-registry@^1.16.0":
   version "1.16.0"
   resolved "https://registry.yarnpkg.com/@substrate/ss58-registry/-/ss58-registry-1.16.0.tgz#100d174f38999cfba34ca02b812257a75c3fe952"
