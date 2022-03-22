@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Upgraded [smoldot to v0.6.7](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#067---2022-03-22). [#885](https://github.com/paritytech/substrate-connect/pull/885)
+
 ### Added
 
 - Replace the `rococo_v2` well-known chain with `rococo_v2_1`. Note that this does not break `@substrate/connect`, as it automatically falls back to downloading chain specifications if `rococo_v2` is requested. ([#879](https://github.com/paritytech/substrate-connect/pull/879))
