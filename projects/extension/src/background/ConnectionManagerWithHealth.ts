@@ -121,6 +121,10 @@ export interface ChainsStatusChanged {
  */
 export class ConnectionManagerWithHealth<SandboxId> {
   #inner: ConnectionManager<SandboxId>
+  // List of all chains, including chains that are still initializing. Kept in parallel of the list
+  // in the `ConnectionManager`. Note that because this list is updated only when
+  // `nextSandboxMessage` is called, it is possible for the list of chains here to contain chains
+  // that the underlying `ConnectionManager` has already removed.
   #sandboxesChains: Map<SandboxId, Map<string, Chain>> = new Map()
   #pingInterval: ReturnType<typeof globalThis.setInterval>
   #nextHealthCheckRqId: number = 0
@@ -151,6 +155,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
   /**
    * Returns the content of the database of the well-known chain with the given name.
    *
+   * Returns `undefined` if the database content couldn't be obtained.
+   *
    * The `maxUtf8BytesSize` parameter is the maximum number of bytes that the string must occupy
    * in its UTF-8 encoding. The returned string is guaranteed to not be larger than this number.
    * If not provided, "infinite" is implied.
@@ -161,7 +167,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
   async wellKnownChainDatabaseContent(
     chainName: string,
     maxUtf8BytesSize?: number,
-  ): Promise<string> {
+  ): Promise<string | undefined> {
     return await this.#inner.wellKnownChainDatabaseContent(
       chainName,
       maxUtf8BytesSize,
@@ -183,6 +189,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
         const chain = this.#sandboxesChains
           .get(chainInfo.apiInfo.sandboxId)!
           .get(chainInfo.apiInfo.chainId)!
+
         peers = chain.peers
         isSyncing = chain.isSyncing
       }
@@ -193,6 +200,15 @@ export class ConnectionManagerWithHealth<SandboxId> {
         ...chainInfo,
       }
     })
+  }
+
+  /**
+   * Returns `true` if the underlying client has crashed in the past.
+   *
+   * A crash is non-reversible. The only solution is to rebuild a new manager.
+   */
+  get hasCrashed(): boolean {
+    return this.#inner.hasCrashed
   }
 
   /**
@@ -249,10 +265,12 @@ export class ConnectionManagerWithHealth<SandboxId> {
 
       switch (toApplication.type) {
         case "chain-ready": {
-          this.#sandboxesChains.get(sandboxId)?.set(toApplication.chainId, {
-            isSyncing: true,
-            peers: 0,
-          })
+          // Internal check to make sure that there's no hidden bug.
+          if (!this.#sandboxesChains.get(sandboxId)!.has(toApplication.chainId))
+            throw new Error(
+              "Internal error: inconsistency between lists of chains",
+            )
+
           this.#inner.sandboxMessage(sandboxId, {
             origin: "substrate-connect-client",
             type: "rpc",
@@ -366,9 +384,14 @@ export class ConnectionManagerWithHealth<SandboxId> {
         }
 
         case "error": {
-          // Note that this can happen during the initialization of a chain, in which case it is
-          // not in the list.
-          this.#sandboxesChains.get(sandboxId)?.delete(toApplication.chainId)
+          const hadChain = this.#sandboxesChains
+            .get(sandboxId)!
+            .delete(toApplication.chainId)
+          // Internal check to make sure that there's no hidden bug.
+          if (!hadChain)
+            throw new Error(
+              "Internal error: inconsistency between lists of chains",
+            )
           return toApplication
         }
 
@@ -388,6 +411,17 @@ export class ConnectionManagerWithHealth<SandboxId> {
    */
   sandboxMessage(sandboxId: SandboxId, message: ToExtension) {
     switch (message.type) {
+      case "add-chain":
+      case "add-well-known-chain": {
+        // Note that chains that are still initializing are also kept within `this`, otherwise it
+        // isn't possible to keep the list of chains synchronized with the list in the underlying
+        // machine without being subject to race conditions.
+        this.#sandboxesChains.get(sandboxId)!.set(message.chainId, {
+          isSyncing: true,
+          peers: 0,
+        })
+        break
+      }
       case "remove-chain": {
         // As documented in the protocol, remove-chain messages concerning an invalid chainId are
         // simply ignored.

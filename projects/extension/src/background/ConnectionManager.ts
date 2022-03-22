@@ -1,6 +1,7 @@
 import {
   Client as SmoldotClient,
   Chain as SmoldotChain,
+  CrashError,
 } from "@substrate/smoldot-light"
 
 import {
@@ -100,6 +101,7 @@ export class ConnectionManager<SandboxId> {
   #smoldotClient: SmoldotClient
   #sandboxes: Map<SandboxId, Sandbox> = new Map()
   #wellKnownChains: Map<string, WellKnownChain> = new Map()
+  #hasCrashed: boolean = false
 
   constructor(smoldotClient: SmoldotClient) {
     this.#smoldotClient = smoldotClient
@@ -141,6 +143,8 @@ export class ConnectionManager<SandboxId> {
   /**
    * Returns the content of the database of the well-known chain with the given name.
    *
+   * Returns `undefined` if the database content couldn't be obtained.
+   *
    * The `maxUtf8BytesSize` parameter is the maximum number of bytes that the string must occupy
    * in its UTF-8 encoding. The returned string is guaranteed to not be larger than this number.
    * If not provided, "infinite" is implied.
@@ -151,10 +155,26 @@ export class ConnectionManager<SandboxId> {
   async wellKnownChainDatabaseContent(
     chainName: string,
     maxUtf8BytesSize?: number,
-  ): Promise<string> {
-    return await this.#wellKnownChains
-      .get(chainName)!
-      .chain.databaseContent(maxUtf8BytesSize)
+  ): Promise<string | undefined> {
+    try {
+      return await this.#wellKnownChains
+        .get(chainName)!
+        .chain.databaseContent(maxUtf8BytesSize)
+    } catch (error) {
+      // If an exception is thrown, we kill all chains. This can only happen either in case of a
+      // crash in smoldot or a bug in substrate-connect.
+      this.#hasCrashed = true
+      return undefined
+    }
+  }
+
+  /**
+   * Returns `true` if the underlying client has crashed in the past.
+   *
+   * A crash is non-reversible. The only solution is to rebuild a new manager.
+   */
+  get hasCrashed(): boolean {
+    return this.#hasCrashed
   }
 
   /**
@@ -216,7 +236,9 @@ export class ConnectionManager<SandboxId> {
     const sandbox = this.#sandboxes.get(sandboxId)!
     sandbox.chains.forEach((chain) => {
       if (chain.isReady) {
-        chain.smoldotChain.remove()
+        try {
+          chain.smoldotChain.remove()
+        } catch (error) {}
       }
 
       // If the chain isn't ready yet, the function that asynchronously reacts to the chain
@@ -278,7 +300,20 @@ export class ConnectionManager<SandboxId> {
         }
 
         // Everything is green for this JSON-RPC message
-        chain.smoldotChain.sendJsonRpc(message.jsonRpcMessage)
+
+        // If `sendJsonRpc` throws an exception, we kill all chains. This can only happen either
+        // in case of a crash in smoldot or a bug in substrate-connect.
+        try {
+          chain.smoldotChain.sendJsonRpc(message.jsonRpcMessage)
+        } catch (error) {
+          this.#resetAllNonWellKnownChains(
+            "Internal error in smoldot: " +
+              (error instanceof Error ? error.toString() : "(unknown)"),
+          )
+          this.#hasCrashed = true
+          return
+        }
+
         break
       }
 
@@ -367,7 +402,9 @@ export class ConnectionManager<SandboxId> {
         if (!chain) return
 
         if (chain.isReady) {
-          chain.smoldotChain.remove()
+          try {
+            chain.smoldotChain.remove()
+          } catch (error) {}
         }
 
         // If the chain isn't ready yet, the function that asynchronously reacts to the chain
@@ -404,7 +441,9 @@ export class ConnectionManager<SandboxId> {
         !sandbox ||
         !(sandbox.chains.get(chainId)?.smoldotChain === chainInitialization)
       ) {
-        chain.remove()
+        try {
+          chain.remove()
+        } catch (error) {}
         return
       }
 
@@ -423,6 +462,8 @@ export class ConnectionManager<SandboxId> {
         chainId,
       })
     } catch (err) {
+      if (err instanceof CrashError) this.#hasCrashed = true
+
       const error =
         err instanceof Error ? err.message : "Unknown error when adding chain"
 
@@ -444,6 +485,33 @@ export class ConnectionManager<SandboxId> {
         chainId,
         errorMessage: error,
       })
+    }
+  }
+
+  /**
+   * Destroys all the chains of all the sandboxes. The error message passed as parameter will be
+   * sent to indicate what happened.
+   *
+   * Well-known chains aren't touched.
+   */
+  #resetAllNonWellKnownChains(errorMessage: string) {
+    for (const sandboxTuple of this.#sandboxes) {
+      const sandbox = sandboxTuple[1] // A stupid lint prevents us from doing `[_, sandbox]` above
+      for (const [chainId, chain] of sandbox.chains) {
+        sandbox.chains.delete(chainId)
+        sandbox.pushMessagesQueue({
+          origin: "substrate-connect-extension",
+          type: "error",
+          chainId,
+          errorMessage,
+        })
+
+        if (chain.isReady) {
+          try {
+            chain.smoldotChain.remove()
+          } catch (error) {}
+        }
+      }
     }
   }
 }

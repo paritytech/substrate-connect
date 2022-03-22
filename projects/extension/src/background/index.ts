@@ -6,7 +6,7 @@ import { start as smoldotStart } from "@substrate/smoldot-light"
 import westend2 from "../../public/assets/westend2.json"
 import ksmcc3 from "../../public/assets/ksmcc3.json"
 import polkadot from "../../public/assets/polkadot.json"
-import rococo_v2 from "../../public/assets/rococo_v2.json"
+import rococo_v2_1 from "../../public/assets/rococo_v2_1.json"
 import {
   ToApplication,
   ToExtension,
@@ -21,7 +21,7 @@ import {
 export const wellKnownChains: Map<string, string> = new Map<string, string>([
   [polkadot.id, JSON.stringify(polkadot)],
   [ksmcc3.id, JSON.stringify(ksmcc3)],
-  [rococo_v2.id, JSON.stringify(rococo_v2)],
+  [rococo_v2_1.id, JSON.stringify(rococo_v2_1)],
   [westend2.id, JSON.stringify(westend2)],
 ])
 
@@ -142,7 +142,10 @@ const saveChainDbContent = async (
     key,
     chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
   )
-  chrome.storage.local.set({ [key]: db })
+
+  // `db` can be `undefined` if the database content couldn't be obtained. In that case, we leave
+  // the database as it was before.
+  if (db) chrome.storage.local.set({ [key]: db })
 }
 
 // Start initializing a `ConnectionManagerWithHealth`.
@@ -218,6 +221,12 @@ chrome.runtime.onConnect.addListener((port) => {
           // We make sure that the message is indeed of type `ToApplication`.
           const messageCorrectType: ToApplication = message
           port.postMessage(messageCorrectType)
+
+          // If an error happened, this might be an indication that the manager has crashed.
+          // If that is the case, we need to notify the UI and restart everything.
+          // TODO: this isn't implemented yet
+          if (message.type === "error" && manager.hasCrashed) {
+          }
         }
       }
     })()
