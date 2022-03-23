@@ -48,7 +48,7 @@
     "@types/copy-webpack-plugin": "^10.1.0",
     "@types/jest": "^27.4.1",
     "@types/jsdom": "^16.2.14",
-    "@types/node": "^17.0.21",
+    "@types/node": "^17.0.23",
     "@types/qrcode.react": "^1.0.2",
     "@types/react": "^17.0.42",
     "@types/react-dom": "^17.0.13",
