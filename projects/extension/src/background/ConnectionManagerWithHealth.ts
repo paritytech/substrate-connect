@@ -420,6 +420,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
           isSyncing: true,
           peers: 0,
         })
+        this.#inner.sandboxMessage(sandboxId, message)
         break
       }
       case "remove-chain": {
