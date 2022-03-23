@@ -44,7 +44,7 @@
     "@hot-loader/react-dom": "^17.0.2",
     "@material-ui/types": "^5.1.0",
     "@types/asap": "^2.0.0",
-    "@types/chrome": "^0.0.179",
+    "@types/chrome": "^0.0.180",
     "@types/copy-webpack-plugin": "^10.1.0",
     "@types/jest": "^27.4.1",
     "@types/jsdom": "^16.2.14",
