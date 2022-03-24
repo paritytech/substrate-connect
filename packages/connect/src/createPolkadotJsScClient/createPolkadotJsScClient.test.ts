@@ -1,4 +1,3 @@
-import { jest } from "@jest/globals"
 import type { Chain, JsonRpcCallback } from "../connector/types.js"
 import type { PolkadotJsScClient } from "./createPolkadotJsScClient.js"
 import type { HealthChecker, SmoldotHealth } from "./Health.js"
@@ -48,7 +47,7 @@ const healthCheckerFactory = () => {
   }
 }
 
-jest.unstable_mockModule("./Health.js", healthCheckerFactory)
+;(jest as any).unstable_mockModule("./Health.js", healthCheckerFactory)
 
 type MockChain = Chain & {
   _spec: () => string
@@ -141,7 +140,7 @@ const connectorFactory = () => {
   }
 }
 
-jest.unstable_mockModule("../connector/index.js", connectorFactory)
+;(jest as any).unstable_mockModule("../connector/index.js", connectorFactory)
 
 let createPolkadotJsScClient: () => PolkadotJsScClient
 let mockedConnector: ReturnType<typeof connectorFactory>

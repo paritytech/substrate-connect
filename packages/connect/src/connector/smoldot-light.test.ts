@@ -1,4 +1,3 @@
-import { jest } from "@jest/globals"
 import type { AddChainOptions, ClientOptions } from "@substrate/smoldot-light"
 import { WellKnownChain } from "../WellKnownChain"
 import {
@@ -82,10 +81,14 @@ const mockSmoldotLightFactory = () => {
   return mock
 }
 
-jest.unstable_mockModule("@substrate/smoldot-light", mockSmoldotLightFactory)
-jest.unstable_mockModule("./specs/index.js", () => ({
-  getSpec: (wellKnownChain: string) => `fake-${wellKnownChain}-spec`,
-}))
+;(jest as any)
+  .unstable_mockModule(
+    "@substrate/smoldot-light",
+    mockSmoldotLightFactory,
+  )(jest as any)
+  .unstable_mockModule("./specs/index.js", () => ({
+    getSpec: (wellKnownChain: string) => `fake-${wellKnownChain}-spec`,
+  }))
 
 type MockSmoldotLight = ReturnType<typeof mockSmoldotLightFactory>
 let mockedSmoldotLight: MockSmoldotLight
