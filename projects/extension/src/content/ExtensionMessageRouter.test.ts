@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { jest } from "@jest/globals"
 import { ExtensionMessageRouter } from "./ExtensionMessageRouter"
 import {
   ToExtension,
