@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.6.3 - 2022-03-23
+
 ### Added
 
 - The `isExtensionPresent` constant indicates whether the substrate-connect extension has been detected. ([#869](https://github.com/paritytech/substrate-connect/pull/869))
