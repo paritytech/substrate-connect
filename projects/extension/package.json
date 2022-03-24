@@ -10,7 +10,7 @@
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "compile": "tsc -b",
-    "test": "node --no-warnings --experimental-vm-modules $(yarn bin)/jest --colors --coverage",
+    "test": "node --no-warnings --experimental-vm-modules ../../node_modules/jest/bin/jest.js --colors --coverage",
     "prebuild": "yarn clean",
     "build": "webpack --config webpack.prod.js && zip -r ./dist/substrate-connect.zip ./dist/*",
     "dev": "yarn run prebuild && webpack --node-env development --config webpack.dev.js",
@@ -23,8 +23,6 @@
   },
   "keywords": [],
   "devDependencies": {
-    "@jest/globals": "^27.5.1",
-    "jest": "^27.5.1",
     "jest-chrome": "^0.7.2",
     "web-ext": "^6.7.0"
   },
