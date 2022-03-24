@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from "@jest/globals"
 import type { AddChainOptions, ClientOptions } from "@substrate/smoldot-light"
 import { WellKnownChain } from "../WellKnownChain"

@@ -42,6 +42,7 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "@hot-loader/react-dom": "^17.0.2",
+    "@jest/globals": "^27.5.1",
     "@material-ui/types": "^5.1.0",
     "@types/asap": "^2.0.0",
     "@types/chrome": "^0.0.180",

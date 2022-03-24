@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from "@jest/globals"
 import type { Chain, JsonRpcCallback } from "../connector/types.js"
 import type { PolkadotJsScClient } from "./createPolkadotJsScClient.js"

@@ -14,6 +14,7 @@
     "module": "ES2020"
   },
   "exclude": [
+    "**/*.test.ts",
     "jest.config*",
     "tsconfig*",
     "*node_modules*",
