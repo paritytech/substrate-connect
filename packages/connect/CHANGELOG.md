@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.6.4 - 2022-03-25
+
 ### Changed
 
 - Update @substrate/smoldot-light to [version 0.6.9](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#069---2022-03-25) ([#901](https://github.com/paritytech/substrate-connect/pull/901))
