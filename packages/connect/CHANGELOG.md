@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- The smoldot background worker will now bound its CPU usage to 50% of one CPU on average.
+
 ## 0.6.3 - 2022-03-23
 
 ### Added
