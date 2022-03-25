@@ -1,5 +1,5 @@
 [settings]
-timeout = 1000
+timeout = 36000
 
 [relaychain]
 default_image = "docker.io/paritypr/synth-wave:4131-0.9.12-ccd09bbf-29a1ac18"
