@@ -24,7 +24,7 @@
   "keywords": [],
   "devDependencies": {
     "jest-chrome": "^0.7.2",
-    "web-ext": "^6.7.0"
+    "web-ext": "^6.8.0"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.3",
