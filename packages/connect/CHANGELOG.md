@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- The smoldot background worker will now bound its CPU usage to 50% of one CPU on average.
+- The smoldot background worker will now bound its CPU usage to 50% of one CPU on average. ([#900](https://github.com/paritytech/substrate-connect/pull/900))
 
 ## 0.6.3 - 2022-03-23
 
