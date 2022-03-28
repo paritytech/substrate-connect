@@ -3,19 +3,18 @@ const { ApiPromise } = require("@polkadot/api")
 async function connect(nodeName, networkInfo, parachainId) {
   const { userDefinedTypes } = networkInfo.nodesByName[nodeName]
   const customChainSpec = require(networkInfo.chainSpecPath)
-  const { createPolkadotJsScClient } = await import("@substrate/connect")
-  const scClient = createPolkadotJsScClient()
+  const { ScProvider } = await import("@polkadot/rpc-provider/substrate-connect")
   let provider
   if (parachainId) {
-    await scClient.addChain(JSON.stringify(customChainSpec))
+    const relayProvider = new ScProvider(JSON.stringify(customChainSpec))
     const customParachainSpec = require(networkInfo?.paras[parachainId]
       ?.chainSpecPath)
-    provider = await scClient.addChain(JSON.stringify(customParachainSpec))
+    provider = new ScProvider(JSON.stringify(customParachainSpec), relayProvider)
   } else {
-    provider = await scClient.addChain(JSON.stringify(customChainSpec))
+    provider = new ScProvider(JSON.stringify(customChainSpec))
   }
-  const api = await ApiPromise.create({ provider, types: userDefinedTypes })
-  return api
+  await provider.connect()
+  return ApiPromise.create({ provider, types: userDefinedTypes })
 }
 
 module.exports = { connect }
