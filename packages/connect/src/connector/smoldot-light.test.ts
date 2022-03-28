@@ -32,12 +32,16 @@ class SdJsonRpcDisabledError extends Error {
 
 const mockSmoldotLightFactory = () => {
   const start = (options: ClientOptions) => {
-    const addChain = (addChainOptions: AddChainOptions) => {
+    const addChain = (
+      addChainOptions: AddChainOptions,
+      isClientTerminated: () => boolean,
+    ) => {
       let _remove = jest.fn<void, []>()
       let _sendJsonRpc = jest.fn<void, [rpc: string]>()
       return {
         _addChainOptions: addChainOptions,
         remove() {
+          if (isClientTerminated()) throw new SdAlreadyDestroyedError()
           _remove()
         },
         _setRemove(nextRemove: typeof _remove) {
@@ -45,6 +49,7 @@ const mockSmoldotLightFactory = () => {
         },
         _getSendRemove: () => _remove,
         sendJsonRpc(rpc: string) {
+          if (isClientTerminated()) throw new SdAlreadyDestroyedError()
           _sendJsonRpc(rpc)
         },
         _setSendJsonRpc(nextSendJsonRpc: typeof _sendJsonRpc) {
@@ -56,13 +61,18 @@ const mockSmoldotLightFactory = () => {
     type MockChain = ReturnType<typeof addChain>
     const chains: MockChain[] = []
 
+    const terminate = jest.fn()
+
     return {
       _options: options,
       _getChains: () => chains,
       _getLatestChain: () => chains?.[chains.length - 1],
-      terminate: jest.fn(),
+      terminate,
       addChain: (addChainOptions: AddChainOptions) => {
-        const chain = addChain(addChainOptions)
+        const chain = addChain(
+          addChainOptions,
+          () => terminate.mock.calls.length > 0,
+        )
         chains.push(chain)
         return Promise.resolve(chain)
       },

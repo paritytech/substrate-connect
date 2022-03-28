@@ -91,6 +91,7 @@ export const createScClient = (): ScClient => {
             if (--clientNumReferences === 0) {
               clientPromise = null
               client.terminate()
+              return
             }
           }
           transformErrors(() => {
