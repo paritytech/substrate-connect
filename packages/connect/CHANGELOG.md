@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Breaking
+
+- Removed `createPolkadotJsScClient` from the API, because the `ScProvider` has been added to `@polkadot/rpc-provider`
+
 ## 0.6.4, 0.6.5 - 2022-03-25
 
 ### Changed
