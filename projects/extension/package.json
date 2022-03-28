@@ -24,7 +24,7 @@
   "keywords": [],
   "devDependencies": {
     "jest-chrome": "^0.7.2",
-    "web-ext": "^6.7.0"
+    "web-ext": "^6.8.0"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.3",
@@ -32,10 +32,10 @@
     "@material-ui/styles": "^4.11.4",
     "@polkadot/rpc-provider": "^7.13.1",
     "@substrate/connect-extension-protocol": "^1.0.0",
-    "@substrate/smoldot-light": "0.6.8",
+    "@substrate/smoldot-light": "0.6.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hot-loader": "^4.13.0",
-    "styled-components": "^5.3.3"
+    "styled-components": "^5.3.5"
   }
 }
