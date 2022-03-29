@@ -41,7 +41,7 @@
  *
  * # Resources sharing
  *
- * While calling {createScClient}  multiple times leads to a different observable behaviour
+ * While calling {createScClient} multiple times leads to a different observable behaviour
  * when it comes to parachains (see previous section), internally resources are shared
  * between all the clients.
  *
