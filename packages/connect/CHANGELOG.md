@@ -2,8 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed an issue when calling `chain.remove()` where it would throw an `AlreadyDestroyedError`.
+
 ### Changed
 
+- Update @substrate/smoldot-light to [version 0.6.10](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#0610---2022-03-29) ([#918](https://github.com/paritytech/substrate-connect/pull/918))
 - The smoldot background worker will now bound its CPU usage to 50% of one CPU on average. ([#900](https://github.com/paritytech/substrate-connect/pull/900))
 
 ## 0.6.4, 0.6.5 - 2022-03-25
