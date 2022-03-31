@@ -1,7 +1,9 @@
 import "regenerator-runtime/runtime"
-import { WellKnownChain } from "@substrate/connect"
 import { ApiPromise } from "@polkadot/api"
-import { ScProvider } from "@polkadot/rpc-provider/substrate-connect"
+import {
+  ScProvider,
+  WellKnownChain,
+} from "@polkadot/rpc-provider/substrate-connect"
 import westmint from "./assets/westend-westmint.json"
 import UI, { emojis } from "./view"
 

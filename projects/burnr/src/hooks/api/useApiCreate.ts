@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
 import { ApiPromise } from "@polkadot/api"
 import { logger } from "@polkadot/util"
-import { WellKnownChain } from "@substrate/connect"
-import { ScProvider } from "@polkadot/rpc-provider/substrate-connect"
+import {
+  ScProvider,
+  WellKnownChain,
+} from "@polkadot/rpc-provider/substrate-connect"
 import { NETWORK, BURNR_WALLET } from "../../utils/constants"
 import { useIsMountedRef } from "./useIsMountedRef"
 
