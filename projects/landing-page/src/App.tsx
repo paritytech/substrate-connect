@@ -139,7 +139,7 @@ const App: React.FunctionComponent = () => {
               Getting Started
             </SectionHeading>
             <ThemeProvider theme={createTheme(dark)}>
-              <Code>yarn add @substrate/substrate-connect</Code>
+              <Code>yarn add @substrate/connect</Code>
               <Code heading="Simple usage (suported chain)">
                 <Box>{`import { createPolkadotJsScClient, WellKnownChain } from '@substrate/connect';`}</Box>
 
