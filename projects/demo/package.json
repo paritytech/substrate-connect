@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@polkadot/api": "^7.13.1",
-    "@substrate/connect": "^0.6.5",
+    "@substrate/connect": "^0.7.0",
     "regenerator-runtime": "^0.13.9"
   }
 }

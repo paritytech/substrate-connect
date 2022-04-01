@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.7.0 - 2022-04-01
+
 ### Fixed
 
 - Fixed an issue when calling `chain.remove()` where it would throw an `AlreadyDestroyedError`.
