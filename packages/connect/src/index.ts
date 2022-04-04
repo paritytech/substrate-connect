@@ -9,8 +9,8 @@
  * Use {createScClient} if you are interested in a lower-level experience where you directly
  * send JSON-RPC requests and receive responses.
  *
- * Proper light-client-oriented high-level libraries built on top of
- * {createScClient} are currently in development.
+ * For a high-level library build on top of `substrate-connect` you can use
+ * {@polkadot/rpc-provider/substrate-connect}.
  *
  * # Adding parachains
  *
