@@ -2571,10 +2571,10 @@
     "@substrate/smoldot-light" "0.6.8"
     eventemitter3 "^4.0.7"
 
-"@substrate/smoldot-light@0.6.10":
-  version "0.6.10"
-  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.6.10.tgz#961926660962e2a25004a80fb13d865a7c146779"
-  integrity sha512-7N//5OSdU+e2WlUWbxW3c7783tvaPKbRxtyqm9VZCxpiTuP7dOpm/ZOvYNJEeG7LE/pON4Kahnya/R1bpktoJg==
+"@substrate/smoldot-light@0.6.13":
+  version "0.6.13"
+  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.6.13.tgz#4fc6303595297215785ddc43f4f66be58e2ca2be"
+  integrity sha512-CG9W4pGfqbTo+UuWXgxo6nNS3jcxqGvQLCwg4Auovd1N3D+oOru54xm/LpwDh/EXRaYlrSa1b8D3GJhodCWKiw==
   dependencies:
     buffer "^6.0.1"
     pako "^2.0.4"
