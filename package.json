@@ -93,6 +93,6 @@
     "webpack-dev-server": "^4.7.4"
   },
   "resolutions": {
-    "@substrate/smoldot-light": "0.6.13"
+    "@substrate/connect": "0.6.5"
   }
 }
