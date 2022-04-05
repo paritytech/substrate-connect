@@ -244,7 +244,6 @@ const App: React.FunctionComponent = () => {
                 <Box pl={2}>{`  WellKnownChain.polkadot,`}</Box>
                 <Box pl={2}>{`  function jsonRpcCallback(response) {`}</Box>
                 <Box pl={4}>{`    console.log('response', response);`}</Box>
-                <Box pl={4}>{`    chain.remove();`}</Box>
                 <Box pl={2}>{`  }`}</Box>
                 <Box>{`);`}</Box>
 
@@ -275,7 +274,6 @@ const App: React.FunctionComponent = () => {
                 <Box pl={2}>{`  parachainSpecs,`}</Box>
                 <Box pl={2}>{`  function jsonRpcCallback(response) {`}</Box>
                 <Box pl={4}>{`    console.log('response', response);`}</Box>
-                <Box pl={4}>{`    chain.remove();`}</Box>
                 <Box pl={2}>{`  }`}</Box>
                 <Box>{`);`}</Box>
 
