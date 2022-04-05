@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Breaking
+
+- Removed `createPolkadotJsScClient` from the API, as the `ScProvider` has been upstreamed to `@polkadot/rpc-provider`. ([#909](https://github.com/paritytech/substrate-connect/pull/909))
+
 ### Fixed
 
 - Fixed an issue when calling `chain.remove()` where it would throw an `AlreadyDestroyedError`.

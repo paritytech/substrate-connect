@@ -1,6 +1,9 @@
 import "regenerator-runtime/runtime"
-import { createPolkadotJsScClient, WellKnownChain } from "@substrate/connect"
 import { ApiPromise } from "@polkadot/api"
+import {
+  ScProvider,
+  WellKnownChain,
+} from "@polkadot/rpc-provider/substrate-connect"
 import westmint from "./assets/westend-westmint.json"
 import UI, { emojis } from "./view"
 
@@ -10,18 +13,14 @@ window.onload = () => {
   ui.showSyncing()
   void (async () => {
     try {
-      const scClient = createPolkadotJsScClient()
-      const westendProvider = await scClient.addWellKnownChain(
-        WellKnownChain.westend2,
-      )
-      const kusamaProvider = await scClient.addWellKnownChain(
-        WellKnownChain.ksmcc3,
-      )
-      const polkadotProvider = await scClient.addWellKnownChain(
-        WellKnownChain.polkadot,
-      )
-      const rococoProvider = await scClient.addWellKnownChain(
-        WellKnownChain.rococo_v2_1,
+      const westendProvider = new ScProvider(WellKnownChain.westend2)
+      const kusamaProvider = new ScProvider(WellKnownChain.ksmcc3)
+      const polkadotProvider = new ScProvider(WellKnownChain.polkadot)
+      const rococoProvider = new ScProvider(WellKnownChain.rococo_v2_1)
+      await Promise.all(
+        [westendProvider, kusamaProvider, polkadotProvider, rococoProvider].map(
+          (p) => p.connect(),
+        ),
       )
       const westend = await ApiPromise.create({ provider: westendProvider })
       const kusama = await ApiPromise.create({ provider: kusamaProvider })
@@ -76,7 +75,11 @@ window.onload = () => {
 
       await Promise.all([westendFnc(), kusamaFnc(), polkadotFnc(), rococoFnc()])
 
-      const westmintProvider = await scClient.addChain(JSON.stringify(westmint))
+      const westmintProvider = new ScProvider(
+        JSON.stringify(westmint),
+        westendProvider,
+      )
+      await westendProvider.connect()
       const api = await ApiPromise.create({ provider: westmintProvider })
 
       const [chain, nodeName, nodeVersion, properties] = await Promise.all([
