@@ -6,9 +6,8 @@
  * 1. Call {createScClient}, which gives you a so-called *client*.
  * 2. Call `addChain` or `addWellKnownChain` on this client.
  *
- * Use {createScClient} if you are interested in a lower-level experience where you directly
- * send JSON-RPC requests and receive responses.
- *
+ * Note that this library is a low-level library where you directly send JSON-RPC requests and
+ * receive responses.
  * For a high-level library build on top of `substrate-connect` you can use
  * {@polkadot/rpc-provider/substrate-connect}.
  *
@@ -57,8 +56,8 @@
  * connections to the same chain. Internally, however, only one "actual" connection to that chain
  * will exist.
  *
- * This means that there is no problem in calling {createScClient} from within
- * a library for example.
+ * This means that there is no problem in calling {createScClient} from within a library for
+ * example.
  *
  * # Well-known chains
  *

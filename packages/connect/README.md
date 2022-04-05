@@ -1,12 +1,13 @@
 # @substrate/connect
 
-## Using `@substrate/connect` through the Polkadot RPC Provider
+## Using `@substrate/connect` through the PolkadotJS RPC Provider
 
-PolkadotJS provides a high-level API built on top of `@substrate/connect`.
-So, unless you are writting your own library, you probably
-want to use the PolkadotJS RPC Provider.
+The recommended way to use `@substrate/connect` is to use PolkadotJS,
+which provides a higher-level API built on top of it.
+Unless you are writting your own library, you probably want to use the
+PolkadotJS RPC provider.
 
-Provide a well known Chain Name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_1'):
+Provide a well-known chain name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_1'):
 
 ```js
 import { ApiPromise } from "@polkadot/api";
@@ -23,7 +24,7 @@ await polkadotApi.rpc.chain.subscribeNewHeads((lastHeader) => {
 });
 ```
 
-or provide your custom substrate chain's name and chainspec:
+...or provide your custom Substrate chain's specification:
 
 ```js
 import { ApiPromise } from "@polkadot/api";
@@ -40,10 +41,10 @@ await polkadotApi.rpc.chain.subscribeNewHeads((lastHeader) => {
 });
 ```
 
-For parachain support, you you must first instantiate the ScProvider
-for the relay chain, and then pass the instance of that ScProvider
-as the second argument of the constructor of the parachain ScProvider.
-The following example creates a parachain for the Westend Test Network.
+In order to connect to a parachain, you must first instantiate the `ScProvider`
+corresponding to the relay chain, then pass this `ScProvider` as the second
+argument of the constructor of the parachain `ScProvider`. The following example
+connects to a parachain of the Westend test network:
 
 ```js
 import { ApiPromise } from "@polkadot/api";
@@ -68,7 +69,7 @@ await polkadotApi.rpc.chain.subscribeNewHeads((lastHeader) => {
 
 ## Using `@substrate/connect` for library authors
 
-Provide a known Chain Name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_1'):
+Provide a well-known chain name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_1'):
 
 ```js
 import { createScClient, WellKnownChain } from '@substrate/connect';
@@ -86,7 +87,7 @@ chain.sendJsonRpc(
 );
 ```
 
-or provide your custom substrate chain's name and chainspec:
+...or provide your custom substrate chain's name and chainspec:
 
 ```js
 import { createScClient } from '@substrate/connect';
@@ -107,9 +108,10 @@ chain.sendJsonRpc(
 );
 ```
 
-For parachain support, you you must first instantiate the relay chain
-where the parachain will be connected to, and then instantiate the parachain.
-The following example creates a parachain for the Westend Test Network.
+In order to connect to a parachain, you must first instantiate the relay chain
+this parachain is connected to, then instantiate the parachain on the same
+`ScClient`. The following example connects to a parachain of the Westend test
+network:
 
 ```js
 import { createScClient, WellKnownChain } from '@substrate/connect';
@@ -130,6 +132,7 @@ parachain.sendJsonRpc(
   '{"jsonrpc":"2.0","id":"1","method":"system_health","params":[]}'
 );
 ```
+
 ## Scripts
 
 * `yarn test` to run the unit tests
