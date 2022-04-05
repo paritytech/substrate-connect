@@ -3,31 +3,18 @@
  *
  * Connecting to a chain is done in two steps:
  *
- * 1. Call {createScClient} or {createPolkadotJsScClient}, which gives you a so-called *client*.
+ * 1. Call {createScClient}, which gives you a so-called *client*.
  * 2. Call `addChain` or `addWellKnownChain` on this client.
  *
- * Use {createPolkadotJsScClient} if you want to bind the PolkadotJS library to substrate-connect.
- * This client will provide chains that implement the `ProviderInterface` interface defined in the
- * `@polkadot/api` NPM package. These chains can be passed to `ApiPromise.create`, and you can
- * then use the PolkadotJS library as you normally would. See <https://polkadot.js.org/docs>.
- *
- * Use {createScClient} if you are interested in a lower-level experience where you directly
- * send JSON-RPC requests and receive responses.
- * In the library's internals, {createPolkadotJsScClient} is implemented on top of
- * {createScClient}.
- *
- * If you use {createPolkadotJsScClient}, be aware that the PolkadotJS library and its API are
- * fundamentally built around full nodes functionnalities, while substrate-connect is a light
- * client. Some functionnalities of PolkadotJS will not work properly, and/or not as well as they
- * could. This is fundamentally not fixable, and, while {createPolkadotJsScClient} is acceptable
- * for demos and prototypes, it is not possible to achieve the best user experience by using
- * PolkadotJS. Proper light-client-oriented high-level libraries built on top of
- * {createScClient} are currently in development.
+ * Note that this library is a low-level library where you directly send JSON-RPC requests and
+ * receive responses.
+ * For a high-level library build on top of `substrate-connect` you can use
+ * {@polkadot/rpc-provider/substrate-connect}.
  *
  * # Adding parachains
  *
  * Connecting to a parachain is done the same way as connecting to a standalone chain: obtaining
- * a client (with {createScClient} or {createPolkadotJsScClient}) then calling `addChain`.
+ * a client then calling `addChain`.
  *
  * However, if you call `addChain` with a parachain chain specification, you **must** have
  * connected to its corresponding relay chain beforehand (using `addChain` or `addWellKnownChain`).
@@ -53,9 +40,9 @@
  *
  * # Resources sharing
  *
- * While calling {createScClient} or {createPolkadotJsScClient} multiple times leads to a
- * different observable behaviour when it comes to parachains (see previous section), internally
- * resources are shared between all the clients.
+ * While calling {createScClient} multiple times leads to a different observable behaviour
+ * when it comes to parachains (see previous section), internally resources are shared
+ * between all the clients.
  *
  * In order words, it is not a problem to do this:
  *
@@ -69,8 +56,8 @@
  * connections to the same chain. Internally, however, only one "actual" connection to that chain
  * will exist.
  *
- * This means that there is no problem in calling {createScClient} or
- * {createPolkadotJsScClient} from within a library for example.
+ * This means that there is no problem in calling {createScClient} from within a library for
+ * example.
  *
  * # Well-known chains
  *
@@ -98,4 +85,3 @@
 
 export { WellKnownChain } from "./WellKnownChain.js"
 export * from "./connector/index.js"
-export * from "./createPolkadotJsScClient/index.js"
