@@ -13,6 +13,7 @@ jobs:
 
     strategy:
       matrix:
+        # This starts one parallel job for each of these addresses.
         rpc-node-address: [
           "wss://rpc.polkadot.io",
           "wss://kusama-rpc.polkadot.io",
@@ -44,6 +45,7 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: chain-spec-${{ steps.get-chain-id.outputs.id }}
+        # Note that passing `repo/**` maintains paths under `repo`. This is a bit of magic by the upload-artifact action.
         path: |
           repo/**/${{ steps.get-chain-id.outputs.id }}.json
 
