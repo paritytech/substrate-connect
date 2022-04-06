@@ -2563,27 +2563,16 @@
     "@sinonjs/commons" "^1.7.0"
 
 "@substrate/connect@0.7.0-alpha.0":
-  version "0.7.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@substrate/connect/-/connect-0.7.0-alpha.0.tgz#df605f4e808b58d146ad0272a79b2c4b870459a5"
-  integrity sha512-fvO7w++M8R95R/pGJFW9+cWOt8OYnnTfgswxtlPqSgzqX4tta8xcNQ51crC72FcL5agwSGkA1gc2/+eyTj7O8A==
+  version "0.6.5"
   dependencies:
     "@substrate/connect-extension-protocol" "^1.0.0"
-    "@substrate/smoldot-light" "0.6.8"
+    "@substrate/smoldot-light" "0.6.13"
     eventemitter3 "^4.0.7"
 
-"@substrate/smoldot-light@0.6.10":
-  version "0.6.10"
-  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.6.10.tgz#961926660962e2a25004a80fb13d865a7c146779"
-  integrity sha512-7N//5OSdU+e2WlUWbxW3c7783tvaPKbRxtyqm9VZCxpiTuP7dOpm/ZOvYNJEeG7LE/pON4Kahnya/R1bpktoJg==
-  dependencies:
-    buffer "^6.0.1"
-    pako "^2.0.4"
-    websocket "^1.0.32"
-
-"@substrate/smoldot-light@0.6.8":
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.6.8.tgz#e626e25cd2386824f1164e7d7dda7258580c36e4"
-  integrity sha512-9lVwbG6wrtss0sd6013BJGe4WN4taujsGG49pwyt1Lj36USeL2Sb164TTUxmZF/g2NQEqDPwPROBdekQ2gFmgg==
+"@substrate/smoldot-light@0.6.13":
+  version "0.6.13"
+  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.6.13.tgz#4fc6303595297215785ddc43f4f66be58e2ca2be"
+  integrity sha512-CG9W4pGfqbTo+UuWXgxo6nNS3jcxqGvQLCwg4Auovd1N3D+oOru54xm/LpwDh/EXRaYlrSa1b8D3GJhodCWKiw==
   dependencies:
     buffer "^6.0.1"
     pako "^2.0.4"
