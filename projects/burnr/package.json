@@ -3,11 +3,6 @@
   "version": "0.0.1",
   "description": "A light-client-based, in-browser wallet for Substrate. It's meant to be quick and easy to use but less secure than other solutions.",
   "author": "Parity Team <admin@parity.io>",
-  "contributors": [
-    "Stefanie Doll <stefie@parity.io>",
-    "Sveta Goldstein <sveta@parity.io>",
-    "Nikolaos Kontakis <nikolaos@parity.io>"
-  ],
   "license": "Apache-2.0",
   "scripts": {
     "prebuild": "yarn clean",
