@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.1.2 - 2022-04-06
+
 ### Added
 
 - Replace the `rococo_v2` well-known chain with `rococo_v2_1`. Note that this does not break `@substrate/connect`, as it automatically falls back to downloading chain specifications if `rococo_v2` is requested. ([#879](https://github.com/paritytech/substrate-connect/pull/879))
