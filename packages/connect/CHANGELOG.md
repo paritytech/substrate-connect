@@ -2,13 +2,17 @@
 
 ## [Unreleased]
 
+### Breaking
+
+- Removed `createPolkadotJsScClient` from the API, as the `ScProvider` has been upstreamed to `@polkadot/rpc-provider`. ([#909](https://github.com/paritytech/substrate-connect/pull/909))
+
 ### Fixed
 
 - Fixed an issue when calling `chain.remove()` where it would throw an `AlreadyDestroyedError`.
 
 ### Changed
 
-- Update @substrate/smoldot-light to [version 0.6.10](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#0610---2022-03-29) ([#918](https://github.com/paritytech/substrate-connect/pull/918))
+- Update @substrate/smoldot-light to [version 0.6.13](https://github.com/paritytech/smoldot/blob/315c3683d3beee1c8f5884261f761530ddf7ef53/bin/wasm-node/CHANGELOG.md#0613---2022-04-05) ([#919](https://github.com/paritytech/substrate-connect/pull/919))
 - The smoldot background worker will now bound its CPU usage to 50% of one CPU on average. ([#900](https://github.com/paritytech/substrate-connect/pull/900))
 
 ## 0.6.4, 0.6.5 - 2022-03-25

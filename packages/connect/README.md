@@ -1,52 +1,136 @@
-# Polkadot JS Provider for Smoldot Light Client
+# @substrate/connect
 
-This is a prototype for using [@polkadot/api](https://polkadot.js.org/docs/api/start)
-with the [smoldot](https://npmjs.com/package/smoldot) WASM light client either by 
-passing chainspecs or using the extension by predefined chains (e.g. westend2, ksmcc3).
+## Using `@substrate/connect` through the PolkadotJS RPC Provider
 
-ScProvider check existence of substrate extension. If it is installed and activated then
-smoldot clients of extension will be used. If not, a new smoldot client will start and
-sync with given chainspecs.
-## Usage
-Provide a known Chain Name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_1'):
+The recommended way to use `@substrate/connect` is to use PolkadotJS,
+which provides a higher-level API built on top of it.
+Unless you are writting your own library, you probably want to use the
+PolkadotJS RPC provider.
+
+Provide a well-known chain name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_1'):
+
 ```js
-import { ApiPromise } from '@polkadot/api';
-import { createPolkadotJsScClient, SupportedChains } from '@substrate/connect';
+import { ApiPromise } from "@polkadot/api";
+import {
+  ScProvider,
+  WellKnownChain,
+} from "@polkadot/rpc-provider/substrate-connect";
 
-const scClient = createPolkadotJsScClient();
-const provider = await scClient.addWellKnownChain(SupportedChains.westend2);
-const api = await ApiPromise.create({ provider });
+const provider = new ScProvider(WellKnownChain.polkadot);
+await provider.connect();
+const polkadotApi = await ApiPromise.create({ provider });
+await polkadotApi.rpc.chain.subscribeNewHeads((lastHeader) => {
+  console.log(lastHeader.number.toString());
+});
 ```
 
-or provide your custom substrate chain's name and chainspec:
+...or provide your custom Substrate chain's specification:
 
 ```js
-import { ApiPromise } from '@polkadot/api';
-import { createPolkadotJsScClient } from '@substrate/connect';
-import mySubstrateChainSpec from './mySubstrateChainSpec.json';
+import { ApiPromise } from "@polkadot/api";
+import { ScProvider } from "@polkadot/rpc-provider/substrate-connect";
+import myJsonSubstrateChainSpec from './mySubstrateChainSpec.json';
 
-const myChainSpec = JSON.stringify(mySubstrateChainSpec);
+const mySubstrateChainSpec = JSON.stringify(myJsonSubstrateChainSpec);
 
-const scClient = createPolkadotJsScClient();
-const provider = await scClient.addChain(myChainSpec);
-const api = await ApiPromise.create({ provider });
+const provider = new ScProvider(mySubstrateChainSpec);
+await provider.connect();
+const polkadotApi = await ApiPromise.create({ provider });
+await polkadotApi.rpc.chain.subscribeNewHeads((lastHeader) => {
+  console.log(lastHeader.number.toString());
+});
 ```
 
+In order to connect to a parachain, you must first instantiate the `ScProvider`
+corresponding to the relay chain, then pass this `ScProvider` as the second
+argument of the constructor of the parachain `ScProvider`. The following example
+connects to a parachain of the Westend test network:
 
-### Parachain support
-
-For parachain support, you can providethe parachain's specs
 ```js
-import { ApiPromise } from '@polkadot/api';
-import { createPolkadotJsScClient, SupportedChains } from '@substrate/connect';
-import myParaChainSpec from './myParaChainSpec.json';
+import { ApiPromise } from "@polkadot/api";
+import {
+  ScProvider,
+  WellKnownChain,
+} from "@polkadot/rpc-provider/substrate-connect";
+import jsonParachainSpec from './myParaChainSpec.json';
 
-const parachainSpec =  JSON.stringify(myParaChainSpec);
+const parachainSpec = JSON.stringify(jsonParachainSpec);
 
-const scClient = createPolkadotJsScClient();
-await scClient.addWellKnownChain(SupportedChains.westend2)
-const provider = await scClient.addChain(parachainSpec);
-const api = await ApiPromise.create({ provider });
+const relayProvider = new ScProvider(WellKnownChain.westend2);
+const provider = new ScProvider(parachainSpec, relayProvider);
+
+await provider.connect();
+
+const polkadotApi = await ApiPromise.create({ provider });
+await polkadotApi.rpc.chain.subscribeNewHeads((lastHeader) => {
+  console.log(lastHeader.number.toString());
+});
+```
+
+## Using `@substrate/connect` for library authors
+
+Provide a well-known chain name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_1'):
+
+```js
+import { createScClient, WellKnownChain } from '@substrate/connect';
+
+const scClient = createScClient();
+const chain = await scClient.addWellKnownChain(
+  WellKnownChain.westend2,
+  function jsonRpcCallback(response) {
+    console.log("response", response);
+  }
+);
+
+chain.sendJsonRpc(
+  '{"jsonrpc":"2.0","id":"1","method":"system_health","params":[]}'
+);
+```
+
+...or provide your custom substrate chain's name and chainspec:
+
+```js
+import { createScClient } from '@substrate/connect';
+import myJsonChainSpec from './mySubstrateChainSpec.json';
+
+const myChainSpec = JSON.stringify(myJsonChainSpec);
+
+const scClient = createScClient();
+const chain = await scClient.addChain(
+  myChainSpec,
+  function jsonRpcCallback(response) {
+    console.log("response", response);
+  }
+);
+
+chain.sendJsonRpc(
+  '{"jsonrpc":"2.0","id":"1","method":"system_health","params":[]}'
+);
+```
+
+In order to connect to a parachain, you must first instantiate the relay chain
+this parachain is connected to, then instantiate the parachain on the same
+`ScClient`. The following example connects to a parachain of the Westend test
+network:
+
+```js
+import { createScClient, WellKnownChain } from '@substrate/connect';
+import jsonParachainSpec from './myParaChainSpec.json';
+
+const parachainSpec = JSON.stringify(jsonParachainSpec);
+
+const scClient = createScClient();
+await scClient.addWellKnownChain(WellKnownChain.westend2)
+const parachain = await scClient.addChain(
+  parachainSpec,
+  function jsonRpcCallback(response) {
+    console.log("response", response);
+  }
+);
+
+parachain.sendJsonRpc(
+  '{"jsonrpc":"2.0","id":"1","method":"system_health","params":[]}'
+);
 ```
 
 ## Scripts
