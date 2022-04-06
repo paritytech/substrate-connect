@@ -14,18 +14,14 @@ window.onload = () => {
   void (async () => {
     try {
       const westendProvider = new ScProvider(WellKnownChain.westend2)
-      const kusamaProvider = new ScProvider(WellKnownChain.ksmcc3)
-      const polkadotProvider = new ScProvider(WellKnownChain.polkadot)
-      const rococoProvider = new ScProvider(WellKnownChain.rococo_v2_1)
-      await Promise.all(
-        [westendProvider, kusamaProvider, polkadotProvider, rococoProvider].map(
-          (p) => p.connect(),
-        ),
-      )
+      // const kusamaProvider = new ScProvider(WellKnownChain.ksmcc3)
+      // const polkadotProvider = new ScProvider(WellKnownChain.polkadot)
+      // const rococoProvider = new ScProvider(WellKnownChain.rococo_v2_1)
+      await Promise.all([westendProvider].map((p) => p.connect()))
       const westend = await ApiPromise.create({ provider: westendProvider })
-      const kusama = await ApiPromise.create({ provider: kusamaProvider })
-      const polkadot = await ApiPromise.create({ provider: polkadotProvider })
-      const rococo = await ApiPromise.create({ provider: rococoProvider })
+      // const kusama = await ApiPromise.create({ provider: kusamaProvider })
+      // const polkadot = await ApiPromise.create({ provider: polkadotProvider })
+      // const rococo = await ApiPromise.create({ provider: rococoProvider })
 
       const westendFnc = async () => {
         const westendUI = document.getElementById("westend")
@@ -40,40 +36,40 @@ window.onload = () => {
         }
       }
 
-      const kusamaFnc = async () => {
-        const kusamaUI = document.getElementById("kusama")
-        const kusamaHead = await kusama.rpc.chain.getHeader()
-        if (kusamaUI) {
-          kusamaUI.innerText = kusamaHead?.number.toString()
-          await kusama.rpc.chain.subscribeNewHeads((lastHeader) => {
-            kusamaUI.innerText = "#" + lastHeader?.number.toString()
-          })
-        }
-      }
+      // const kusamaFnc = async () => {
+      //   const kusamaUI = document.getElementById("kusama")
+      //   const kusamaHead = await kusama.rpc.chain.getHeader()
+      //   if (kusamaUI) {
+      //     kusamaUI.innerText = kusamaHead?.number.toString()
+      //     await kusama.rpc.chain.subscribeNewHeads((lastHeader) => {
+      //       kusamaUI.innerText = "#" + lastHeader?.number.toString()
+      //     })
+      //   }
+      // }
 
-      const polkadotFnc = async () => {
-        const polkadotUI = document.getElementById("polkadot")
-        const polkadotHead = await polkadot.rpc.chain.getHeader()
-        if (polkadotUI) {
-          polkadotUI.innerText = polkadotHead?.number.toString()
-          await polkadot.rpc.chain.subscribeNewHeads((lastHeader) => {
-            polkadotUI.innerText = "#" + lastHeader?.number.toString()
-          })
-        }
-      }
+      // const polkadotFnc = async () => {
+      //   const polkadotUI = document.getElementById("polkadot")
+      //   const polkadotHead = await polkadot.rpc.chain.getHeader()
+      //   if (polkadotUI) {
+      //     polkadotUI.innerText = polkadotHead?.number.toString()
+      //     await polkadot.rpc.chain.subscribeNewHeads((lastHeader) => {
+      //       polkadotUI.innerText = "#" + lastHeader?.number.toString()
+      //     })
+      //   }
+      // }
 
-      const rococoFnc = async () => {
-        const rococoUI = document.getElementById("rococo")
-        const rococoHead = await rococo.rpc.chain.getHeader()
-        if (rococoUI) {
-          rococoUI.innerText = rococoHead?.number.toString()
-          await rococo.rpc.chain.subscribeNewHeads((lastHeader) => {
-            rococoUI.innerText = "#" + lastHeader?.number.toString()
-          })
-        }
-      }
+      // const rococoFnc = async () => {
+      //   const rococoUI = document.getElementById("rococo")
+      //   const rococoHead = await rococo.rpc.chain.getHeader()
+      //   if (rococoUI) {
+      //     rococoUI.innerText = rococoHead?.number.toString()
+      //     await rococo.rpc.chain.subscribeNewHeads((lastHeader) => {
+      //       rococoUI.innerText = "#" + lastHeader?.number.toString()
+      //     })
+      //   }
+      // }
 
-      await Promise.all([westendFnc(), kusamaFnc(), polkadotFnc(), rococoFnc()])
+      await Promise.all([westendFnc()])
 
       const westmintProvider = new ScProvider(
         JSON.stringify(westmint),
