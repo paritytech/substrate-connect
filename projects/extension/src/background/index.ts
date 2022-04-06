@@ -158,6 +158,7 @@ const managerPromise: Promise<
     smoldotStart({
       maxLogLevel: 4,
       logCallback: logger,
+      cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
     }),
   )
   for (const [key, value] of wellKnownChains.entries()) {
