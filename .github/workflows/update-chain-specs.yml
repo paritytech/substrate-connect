@@ -23,6 +23,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        path: repo
     - run: |
         curl -L -O https://github.com/vi/websocat/releases/download/v1.9.0/websocat_linux64
         chmod +x websocat_linux64
@@ -34,17 +36,16 @@ jobs:
       run: echo "::set-output name=id::`jq -r .id ./chain_spec.json`"
     - run: |  # Overwrite the `lightSyncState` field of the existing chain spec with the value of spec that's been downloaded.
         tmp=$(mktemp)
-        output=./packages/connect/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json
+        output=./repo/packages/connect/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json
         jq --slurpfile downloaded ./chain_spec.json '.lightSyncState = $downloaded[0].lightSyncState' "$output" > "$tmp"
         mv "$tmp" "$output"
     - run: |
-        cp ./packages/connect/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json ./projects/extension/public/assets/${{ steps.get-chain-id.outputs.id }}.json
+        cp ./repo/packages/connect/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json ./repo/projects/extension/public/assets/${{ steps.get-chain-id.outputs.id }}.json
     - uses: actions/upload-artifact@v3
       with:
         name: chain-spec-${{ steps.get-chain-id.outputs.id }}
         path: |
-          **/${{ steps.get-chain-id.outputs.id }}.json
-          **/${{ steps.get-chain-id.outputs.id }}.json
+          repo/**/${{ steps.get-chain-id.outputs.id }}.json
 
   create-pr:
     runs-on: ubuntu-latest
@@ -53,12 +54,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        path: repo
     - uses: actions/download-artifact@v3
       with:
         # Since we're not passing a name, this automatically downloads *all* artifacts
+        # Unfortunately, this creates intermediary directories.
         path: .
+    - run: cp ./chain-spec-*/ ./repo
     - uses: peter-evans/create-pull-request@v4
       with:
+        path: repo
         branch: automatic-checkpoints-update
         title: Update checkpoints in chain specifications
         body: |
