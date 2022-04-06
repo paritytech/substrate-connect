@@ -1,0 +1,28 @@
+name: chain-specs-periodic-update
+
+on:
+  pull_request:
+    branches: [ main ]   # TODO: remove before merging, I'm just testing
+  schedule:
+    - cron: '0 8 * * *'  # every day at 8am
+
+jobs:
+  download-spec:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rpc-node-address: [
+          "wss://rpc.polkadot.io",
+          "wss://kusama-rpc.polkadot.io",
+          "wss://westend-rpc.polkadot.io",
+          "wss://rococo-rpc.polkadot.io"
+        ]
+    steps:
+    - run: |
+        curl -L -O https://github.com/vi/websocat/releases/download/v1.9.0/websocat_linux64
+        chmod +x websocat_linux64
+    - run: |
+        echo '{"id":53,"jsonrpc":"2.0","method":"sync_state_genSyncSpec","params":[true]}' |
+        ./websocat_linux64 -n1 -B 99999999 ${{ matrix.rpc-node-address }} |
+        jq .result > chain_spec.json
+    - run: cat chain_spec.json
