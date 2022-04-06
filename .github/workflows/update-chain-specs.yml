@@ -22,7 +22,10 @@ jobs:
         curl -L -O https://github.com/vi/websocat/releases/download/v1.9.0/websocat_linux64
         chmod +x websocat_linux64
     - run: |
-        echo '{"id":53,"jsonrpc":"2.0","method":"sync_state_genSyncSpec","params":[true]}' |
+        echo '{"id":1,"jsonrpc":"2.0","method":"sync_state_genSyncSpec","params":[true]}' |
         ./websocat_linux64 -n1 -B 99999999 ${{ matrix.rpc-node-address }} |
         jq .result > chain_spec.json
-    - run: cat chain_spec.json
+    - uses: actions/upload-artifact@v3
+      with:
+        name: chain-spec
+        path: ./chain_spec.json
