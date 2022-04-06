@@ -17,6 +17,7 @@ jobs:
           "wss://westend-rpc.polkadot.io",
           "wss://rococo-rpc.polkadot.io"
         ]
+      fail-fast: false
     steps:
     - uses: actions/checkout@v3
     - run: |
