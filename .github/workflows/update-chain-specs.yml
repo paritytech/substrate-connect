@@ -18,6 +18,7 @@ jobs:
           "wss://rococo-rpc.polkadot.io"
         ]
     steps:
+    - uses: actions/checkout@v3
     - run: |
         curl -L -O https://github.com/vi/websocat/releases/download/v1.9.0/websocat_linux64
         chmod +x websocat_linux64
@@ -25,7 +26,16 @@ jobs:
         echo '{"id":1,"jsonrpc":"2.0","method":"sync_state_genSyncSpec","params":[true]}' |
         ./websocat_linux64 -n1 -B 99999999 ${{ matrix.rpc-node-address }} |
         jq .result > chain_spec.json
+    - id: get-chain-id
+      run: echo "::set-output name=id::`jq .id ./chain_spec.json`"
     - uses: actions/upload-artifact@v3
       with:
-        name: chain-spec
+        name: chain-spec-${{ steps.get-chain-id.outputs.id }}
         path: ./chain_spec.json
+    - run: |
+        tmp=$(mktemp)
+        checkpoint=`jq .lightSyncState ./chain_spec.json`
+        output=./packages/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json
+        jq --arg cp "$checkpoint" '.address = $cp' "$output" > "$tmp" && mv "$tmp" "$output"
+    - run: |
+        cp ./packages/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json ./projects/extension/public/assets/${{ steps.get-chain-id.outputs.id }}.json
