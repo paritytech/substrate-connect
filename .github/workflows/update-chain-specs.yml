@@ -61,7 +61,7 @@ jobs:
         # Since we're not passing a name, this automatically downloads *all* artifacts
         # Unfortunately, this creates intermediary directories.
         path: .
-    - run: cp ./chain-spec-*/ ./repo
+    - run: cp -r ./chain-spec-*/ ./repo
     - uses: peter-evans/create-pull-request@v4
       with:
         path: repo
