@@ -35,7 +35,7 @@ jobs:
     - run: |
         tmp=$(mktemp)
         checkpoint=`jq .lightSyncState ./chain_spec.json`
-        output=./packages/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json
+        output=./packages/connect/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json
         jq --arg cp "$checkpoint" '.address = $cp' "$output" > "$tmp" && mv "$tmp" "$output"
     - run: |
-        cp ./packages/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json ./projects/extension/public/assets/${{ steps.get-chain-id.outputs.id }}.json
+        cp ./packages/connect/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json ./projects/extension/public/assets/${{ steps.get-chain-id.outputs.id }}.json
