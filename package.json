@@ -36,7 +36,8 @@
     "dev:landing-page": "yarn workspace @substrate/landing-page run dev",
     "dev:extension": "yarn workspace @substrate/extension run dev",
     "deploy": "./deploy.sh",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "checkResolutions": "node ./.ensure-resolution.mjs"
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",
