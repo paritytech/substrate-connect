@@ -3,10 +3,6 @@
   "version": "0.0.1",
   "description": "Landing page for Substrate connect.",
   "author": "Parity Team <admin@parity.io>",
-  "contributors": [
-    "Sveta Goldstein <sveta@parity.io>",
-    "Nikolaos Kontakis <nikolaos@parity.io>"
-  ],
   "license": "GPL-3.0-only",
   "scripts": {
     "prebuild": "yarn clean",
