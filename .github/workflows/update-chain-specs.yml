@@ -27,7 +27,7 @@ jobs:
         ./websocat_linux64 -n1 -B 99999999 ${{ matrix.rpc-node-address }} |
         jq .result > chain_spec.json
     - id: get-chain-id
-      run: echo "::set-output name=id::`jq .id ./chain_spec.json`"
+      run: echo "::set-output name=id::`jq -r .id ./chain_spec.json`"
     - uses: actions/upload-artifact@v3
       with:
         name: chain-spec-${{ steps.get-chain-id.outputs.id }}
