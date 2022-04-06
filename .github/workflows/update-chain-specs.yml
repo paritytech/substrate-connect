@@ -6,9 +6,11 @@ on:
   schedule:
     - cron: '0 8 * * *'  # every day at 8am
 
+
 jobs:
   download-spec:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         rpc-node-address: [
@@ -17,7 +19,8 @@ jobs:
           "wss://westend-rpc.polkadot.io",
           "wss://rococo-rpc.polkadot.io"
         ]
-      fail-fast: false
+      fail-fast: false   # Don't automatically cancel the jobs of the other RPC nodes if one fails
+
     steps:
     - uses: actions/checkout@v3
     - run: |
@@ -27,16 +30,16 @@ jobs:
         echo '{"id":1,"jsonrpc":"2.0","method":"sync_state_genSyncSpec","params":[true]}' |
         ./websocat_linux64 -n1 -B 99999999 ${{ matrix.rpc-node-address }} |
         jq .result > chain_spec.json
-    - id: get-chain-id
+    - id: get-chain-id  # Reads the `id` field in the newly-downloaded chain spec
       run: echo "::set-output name=id::`jq -r .id ./chain_spec.json`"
     - uses: actions/upload-artifact@v3
       with:
         name: chain-spec-${{ steps.get-chain-id.outputs.id }}
         path: ./chain_spec.json
-    - run: |
+    - run: |  # Overwrite the `lightSyncState` field of the existing chain spec with the value of spec that's been downloaded.
         tmp=$(mktemp)
-        checkpoint=`jq .lightSyncState ./chain_spec.json`
         output=./packages/connect/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json
-        jq --arg cp "$checkpoint" '.address = $cp' "$output" > "$tmp" && mv "$tmp" "$output"
+        jq --slurpfile downloaded ./chain_spec.json '.lightSyncState = $downloaded[0].lightSyncState' "$output" > "$tmp"
+        mv "$tmp" "$output"
     - run: |
         cp ./packages/connect/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json ./projects/extension/public/assets/${{ steps.get-chain-id.outputs.id }}.json
