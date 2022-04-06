@@ -94,6 +94,6 @@
     "webpack-dev-server": "^4.7.4"
   },
   "resolutions": {
-    "@substrate/connect": "0.6.5"
+    "@substrate/connect": "0.7.0"
   }
 }

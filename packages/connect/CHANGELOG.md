@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.7.0 - 2022-04-06
+
 ### Breaking
 
 - Removed `createPolkadotJsScClient` from the API, as the `ScProvider` has been upstreamed to `@polkadot/rpc-provider`. ([#909](https://github.com/paritytech/substrate-connect/pull/909))
