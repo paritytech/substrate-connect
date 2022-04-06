@@ -43,8 +43,8 @@ jobs:
       with:
         name: chain-spec-${{ steps.get-chain-id.outputs.id }}
         path: |
-          packages/**/*.json
-          projects/**/*.json
+          **/${{ steps.get-chain-id.outputs.id }}.json
+          **/${{ steps.get-chain-id.outputs.id }}.json
 
   create-pr:
     runs-on: ubuntu-latest
