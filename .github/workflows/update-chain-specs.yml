@@ -43,3 +43,7 @@ jobs:
         mv "$tmp" "$output"
     - run: |
         cp ./packages/connect/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json ./projects/extension/public/assets/${{ steps.get-chain-id.outputs.id }}.json
+    - uses: peter-evans/create-pull-request@v4
+      with:
+        branch: update-checkpoint-${{ steps.get-chain-id.outputs.id }}
+        title: Update checkpoint of chain ${{ steps.get-chain-id.outputs.id }}
