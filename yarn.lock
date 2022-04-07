@@ -2563,27 +2563,16 @@
     "@sinonjs/commons" "^1.7.0"
 
 "@substrate/connect@0.7.0-alpha.0":
-  version "0.7.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@substrate/connect/-/connect-0.7.0-alpha.0.tgz#df605f4e808b58d146ad0272a79b2c4b870459a5"
-  integrity sha512-fvO7w++M8R95R/pGJFW9+cWOt8OYnnTfgswxtlPqSgzqX4tta8xcNQ51crC72FcL5agwSGkA1gc2/+eyTj7O8A==
+  version "0.7.0"
   dependencies:
     "@substrate/connect-extension-protocol" "^1.0.0"
-    "@substrate/smoldot-light" "0.6.8"
+    "@substrate/smoldot-light" "0.6.14"
     eventemitter3 "^4.0.7"
 
 "@substrate/smoldot-light@0.6.14":
   version "0.6.14"
   resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.6.14.tgz#6990fb3d201ff6e374a626210b1992d7b7b5f9a3"
   integrity sha512-GjMZ1Im683g9hzgT6IItY8Vi+2fZNZXnxbmlaqggyMlM6FEl40GvowKJcbRkI5Te1azNe2BzZlqhh0cPCh3ESA==
-  dependencies:
-    buffer "^6.0.1"
-    pako "^2.0.4"
-    websocket "^1.0.32"
-
-"@substrate/smoldot-light@0.6.8":
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/@substrate/smoldot-light/-/smoldot-light-0.6.8.tgz#e626e25cd2386824f1164e7d7dda7258580c36e4"
-  integrity sha512-9lVwbG6wrtss0sd6013BJGe4WN4taujsGG49pwyt1Lj36USeL2Sb164TTUxmZF/g2NQEqDPwPROBdekQ2gFmgg==
   dependencies:
     buffer "^6.0.1"
     pako "^2.0.4"
@@ -10184,7 +10173,7 @@ style-loader@^3.3.1:
   resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-3.3.1.tgz#057dfa6b3d4d7c7064462830f9113ed417d38575"
   integrity sha512-GPcQ+LDJbrcxHORTRes6Jy2sfvK2kS6hpSfI/fXhPt+spVzxF6LJ1dHLN9zIGmVaaP044YKaIatFaufENRiDoQ==
 
-styled-components@^5, styled-components@^5.3.5:
+styled-components@^5.3.5:
   version "5.3.5"
   resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-5.3.5.tgz#a750a398d01f1ca73af16a241dec3da6deae5ec4"
   integrity sha512-ndETJ9RKaaL6q41B69WudeqLzOpY1A/ET/glXkNZ2T7dPjPqpPCXXQjDFYZWwNnE5co0wX+gTCqx9mfxTmSIPg==
