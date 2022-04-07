@@ -2563,7 +2563,7 @@
     "@sinonjs/commons" "^1.7.0"
 
 "@substrate/connect@0.7.0-alpha.0":
-  version "0.7.1"
+  version "0.7.2"
   dependencies:
     "@substrate/connect-extension-protocol" "^1.0.0"
     "@substrate/smoldot-light" "0.6.15"
