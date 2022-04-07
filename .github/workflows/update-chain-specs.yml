@@ -71,6 +71,7 @@ jobs:
       with:
         path: repo
         branch: automatic-checkpoints-update
+        base: main
         title: Update checkpoints in chain specifications
         # Note that the `download-spec` job above fails if the downloaded specification doesn't
         # correspond to an existing file. It is therefore impossible that the pull request
