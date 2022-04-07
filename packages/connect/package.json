@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@substrate/connect-extension-protocol": "^1.0.0",
-    "@substrate/smoldot-light": "0.6.13",
+    "@substrate/smoldot-light": "0.6.14",
     "eventemitter3": "^4.0.7"
   }
 }
