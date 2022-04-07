@@ -184,6 +184,12 @@ const Options: React.FunctionComponent = () => {
   }, [poolingLogs])
 
   useEffect(() => {
+    chrome.storage.local.get(["crashError"], (res) => {
+      if (res.crashError) {
+        setValue(2)
+      }
+    })
+
     chrome.storage.local.get(["notifications"], (res) => {
       setNotifications(res.notifications as SetStateAction<boolean>)
     })
