@@ -26,6 +26,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         path: repo
+        ref: main
     - run: |
         curl -L -O https://github.com/vi/websocat/releases/download/v1.9.0/websocat_linux64
         chmod +x websocat_linux64
@@ -61,6 +62,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         path: repo
+        ref: main
     - uses: actions/download-artifact@v3
       with:
         # Since we're not passing a name, this automatically downloads *all* artifacts
