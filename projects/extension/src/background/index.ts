@@ -35,6 +35,12 @@ export interface Background extends Window {
   }
 }
 
+interface ErrorStruct {
+  name: string
+  message: string
+  stack?: string
+}
+
 interface logStructure {
   unix_timestamp: number
   level: number
@@ -154,13 +160,45 @@ const saveChainDbContent = async (
 const managerPromise: Promise<
   ConnectionManagerWithHealth<chrome.runtime.Port>
 > = (async () => {
-  const managerInit = new ConnectionManagerWithHealth<chrome.runtime.Port>(
-    smoldotStart({
-      maxLogLevel: 4,
-      logCallback: logger,
-      cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
-    }),
-  )
+  let managerInit: ConnectionManagerWithHealth<chrome.runtime.Port>
+  try {
+    managerInit = new ConnectionManagerWithHealth<chrome.runtime.Port>(
+      smoldotStart({
+        maxLogLevel: 4,
+        logCallback: logger,
+        cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
+      }),
+    )
+  } catch (err) {
+    // In case of crash of manager restart the extension for 3 times every 5 seconds and save retry
+    // time in localstorage. When 3rd time occurs - stop retrying, save the error in localstorage
+    // for UI to be able to retrieve it and allow only manual retry
+    const errString =
+      (err as ErrorStruct).name +
+      ":" +
+      (err as ErrorStruct).message +
+      "\n" +
+      (err as ErrorStruct).stack
+    chrome.storage.local.get(["smoldotCrash"], (result) => {
+      if (result.smoldotCrash <= 2) {
+        chrome.storage.local.set({ smoldotCrash: result.smoldotCrash + 1 })
+        setTimeout(() => {
+          chrome.runtime.reload()
+        }, 5000)
+      } else {
+        chrome.storage.local.set({ smoldotCrash: 0 })
+        chrome.storage.local.set({
+          crashError: errString,
+        })
+      }
+      logger(1, "Smoldot", errString)
+      console.error(err)
+    })
+    // This is a dumb return - in order to avoid returning "undfined" as a type which
+    // leads to unecessary extra code. "Unecessary" cause the Extension supposebly is already crashed
+    return {} as ConnectionManagerWithHealth<chrome.runtime.Port>
+  }
+  chrome.storage.local.set({ smoldotCrash: 0 })
   for (const [key, value] of wellKnownChains.entries()) {
     const dbContent = await new Promise<string | undefined>((res) =>
       chrome.storage.local.get([key], (val) => res(val[key] as string)),
@@ -256,6 +294,7 @@ chrome.runtime.onConnect.addListener((port) => {
   })
 })
 
+// Init localStorage variables that are used during the lifeCycle of the extension
 chrome.storage.local.get(["notifications"], (result) => {
   if (Object.keys(result).length === 0) {
     // Setup default settings
@@ -266,3 +305,11 @@ chrome.storage.local.get(["notifications"], (result) => {
     })
   }
 })
+
+chrome.storage.local.get(["smoldotCrash"], (result) => {
+  if (!result.smoldotCrash && result.smoldotCrash !== 0) {
+    chrome.storage.local.set({ smoldotCrash: 0 })
+  }
+})
+
+chrome.storage.local.set({ crashError: "" })
