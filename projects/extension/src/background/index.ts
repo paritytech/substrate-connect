@@ -265,10 +265,13 @@ chrome.runtime.onConnect.addListener((port) => {
 
           // If an error happened, this might be an indication that the manager has crashed.
           // If that is the case, we need to notify the UI and restart everything.
-          if (message.type === "error" && readyManager.hasCrashed) {
-            manager = { state: "crashed", error: "test" }  // TODO: proper error message
-            smoldotCrashErrorChangedListeners.forEach((l) => l())
-            chainsChangedListeners.forEach((l) => l())
+          if (message.type === "error") {
+            const error = readyManager.hasCrashed;
+            if (error) {
+              manager = { state: "crashed", error }
+              smoldotCrashErrorChangedListeners.forEach((l) => l())
+              chainsChangedListeners.forEach((l) => l())
+            }
           }
         }
       }
