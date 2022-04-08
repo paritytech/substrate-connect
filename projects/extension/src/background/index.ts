@@ -28,6 +28,7 @@ export const wellKnownChains: Map<string, string> = new Map<string, string>([
 export interface Background extends Window {
   uiInterface: {
     onChainsChanged: (listener: () => void) => () => void
+    onSmoldotCrashErrorChanged: (listener: () => void) => () => void
     disconnectTab: (tabId: number) => void
     get chains(): ExposedChainConnection[]
     get logger(): LogKeeper
@@ -87,6 +88,7 @@ const logger = (level: number, target: string, message: string) => {
 }
 
 const chainsChangedListeners: Set<() => void> = new Set()
+const smoldotCrashErrorChangedListeners: Set<() => void> = new Set()
 
 declare let window: Background
 window.uiInterface = {
@@ -94,6 +96,12 @@ window.uiInterface = {
     chainsChangedListeners.add(listener)
     return () => {
       chainsChangedListeners.delete(listener)
+    }
+  },
+  onSmoldotCrashErrorChanged(listener) {
+    smoldotCrashErrorChangedListeners.add(listener)
+    return () => {
+      smoldotCrashErrorChangedListeners.delete(listener)
     }
   },
   disconnectTab: (tabId: number) => {
@@ -194,6 +202,7 @@ manager = {
       chainsChangedListeners.forEach((l) => l());
       manager = { state: "ready", manager: managerInit }
     } catch(error) {
+      smoldotCrashErrorChangedListeners.forEach((l) => l());
       const msg = error instanceof Error ? error.toString() : "Unknown error at initialization";
       manager = { state: "crashed", error: msg }
     }
