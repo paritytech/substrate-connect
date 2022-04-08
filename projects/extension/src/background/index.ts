@@ -31,7 +31,7 @@ export interface Background extends Window {
       listener: (state: ExposedChainConnection[]) => void,
     ) => () => void
     disconnectTab: (tabId: number) => void
-    getLogger: () => LogKeeper
+    get logger(): LogKeeper
   }
 }
 
@@ -131,7 +131,7 @@ window.manager = {
       }
     })
   },
-  getLogger: () => logKeeper,
+  get logger() { return logKeeper },
 }
 
 const saveChainDbContent = async (

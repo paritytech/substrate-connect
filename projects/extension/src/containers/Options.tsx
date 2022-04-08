@@ -171,7 +171,7 @@ const Options: React.FunctionComponent = () => {
     const interval = setInterval(() => {
       if (poolingLogs) {
         chrome.runtime.getBackgroundPage((bg) => {
-          const logs = (bg as Background).manager.getLogger()
+          const logs = (bg as Background).manager.logger
           setAllLogs([...logs.all])
           setWarnLogs([...logs.warn])
           setErrLogs([...logs.error])
