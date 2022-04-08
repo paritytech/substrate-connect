@@ -68,21 +68,13 @@ jobs:
         # Since we're not passing a name, this automatically downloads *all* artifacts
         # Unfortunately, this creates intermediary directories.
         path: .
-    - id: token-generator
-      # We need a GitHub token below. This is generate on the fly through an app installed in
-      # the repo. Alternatively, one could generate a personal access token with the "workflow"
-      # priviledge.
-      uses: tibdex/github-app-token@v1
-      with:
-        app_id: ${{ secrets.TOKEN_GEN_APP_ID }}
-        private_key: ${{ secrets.TOKEN_GEN_PRIVATE_KEY }}
     - run: cp -r ./chain-spec-*/* ./repo
     - uses: peter-evans/create-pull-request@v4
       with:
         # We use a custom secret (rather than the default GITHUB_TOKEN) so that opening the pull
         # request triggers other actions such as the CI checks. GitHub prevents actions that use
         # GITHUB_TOKEN from triggering further actions, to avoid recursive actions.
-        token: ${{ steps.token-generator.outputs.token }}
+        token: ${{ secrets.GH_TOKEN }}
         path: repo
         branch: automatic-checkpoints-update
         base: main
