@@ -30,8 +30,14 @@ export interface Background extends Window {
     onChainsChanged: (listener: () => void) => () => void
     onSmoldotCrashErrorChanged: (listener: () => void) => () => void
     disconnectTab: (tabId: number) => void
+    // List of all chains that are currently running.
+    // Use `onChainsChanged` to register a callback that is called when this list or its content
+    // might have changed.
     get chains(): ExposedChainConnection[]
     get logger(): LogKeeper
+    // If smoldot has crashed, contains a string containing a crash message.
+    // Use `onSmoldotCrashErrorChanged` to register a callback that is called when this crash
+    // message might have changed.
     get smoldotCrashError(): string | undefined
   }
 }
@@ -87,7 +93,10 @@ const logger = (level: number, target: string, message: string) => {
   all.push(incLog)
 }
 
+// Listeners that must be notified when the `get chains()` getter would return a different value.
 const chainsChangedListeners: Set<() => void> = new Set()
+// Listeners that must be notified when the `get smoldotCrashError()` getter would return a
+// different value.
 const smoldotCrashErrorChangedListeners: Set<() => void> = new Set()
 
 declare let window: Background
@@ -165,6 +174,10 @@ const saveChainDbContent = async (
   }
 }
 
+// The manager can be in multiple different states: currently initializing, operational, or
+// crashed.
+// While initializing, the `whenInitFinished` promise can be used to know when the initialization
+// is over and the manager is now operational or crashed.
 let manager:
   | { state: "initializing"; whenInitFinished: Promise<void> }
   | {
@@ -211,6 +224,7 @@ manager = {
         periodInMinutes: 5,
       })
 
+      // Success. Update the state and notify listeners.
       chainsChangedListeners.forEach((l) => l())
       manager = { state: "ready", manager: managerInit }
     } catch (error) {
