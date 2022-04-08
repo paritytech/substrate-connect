@@ -31,6 +31,7 @@ export interface Background extends Window {
     disconnectTab: (tabId: number) => void
     get chains(): ExposedChainConnection[]
     get logger(): LogKeeper
+    get smoldotCrashError(): string | undefined
   }
 }
 
@@ -127,6 +128,10 @@ window.uiInterface = {
     }
   },
   get logger() { return logKeeper },
+  get smoldotCrashError() {
+    if (manager.state === "crashed")
+      return manager.error;
+  }
 }
 
 const saveChainDbContent = async (
@@ -145,7 +150,8 @@ const saveChainDbContent = async (
 
 let manager:
   { state: "initializing", whenInitFinished: Promise<void> } |
-  { state: "ready", manager: ConnectionManagerWithHealth<chrome.runtime.Port> }
+  { state: "ready", manager: ConnectionManagerWithHealth<chrome.runtime.Port> } |
+  { state: "crashed", error: string }
 = {
   state: "initializing",
   whenInitFinished: (async () => {})()
@@ -154,6 +160,7 @@ let manager:
 manager = {
   state: "initializing",
   whenInitFinished: (async () => {
+    try {
   // Start initializing a `ConnectionManagerWithHealth`.
   // This initialization operation shouldn't take more than a few dozen milliseconds, but we
   // still need to properly handle situations where initialization isn't finished yet.
@@ -186,6 +193,10 @@ manager = {
 
       chainsChangedListeners.forEach((l) => l());
       manager = { state: "ready", manager: managerInit }
+    } catch(error) {
+      const msg = error instanceof Error ? error.toString() : "Unknown error at initialization";
+      manager = { state: "crashed", error: msg }
+    }
   })()
 };
 
@@ -208,15 +219,20 @@ chrome.runtime.onConnect.addListener((port) => {
 
   let managerPromise = (async () => {
     while (true) {
-      if (manager.state == "initializing") {
+      if (manager.state === "initializing") {
         await manager.whenInitFinished;
-      } else if (manager.state == "ready") {
+      } else if (manager.state === "ready") {
         return manager.manager;
+      } else if (manager.state === "crashed") {
+        return undefined;
       }
     }
   })();
 
   let managerWithSandbox = managerPromise.then((manager) => {
+    if (!manager)
+      return manager;
+
     manager.addSandbox(port)
     ;(async () => {
       while (true) {
@@ -252,18 +268,40 @@ chrome.runtime.onConnect.addListener((port) => {
 
   port.onMessage.addListener((message: ToExtension) => {
     managerWithSandbox = managerWithSandbox.then((manager) => {
-      manager.sandboxMessage(port, message)
-      if (
-        message.type === "add-chain" ||
-        message.type === "add-well-known-chain"
-      )
-        chainsChangedListeners.forEach((l) => l())
+      if (manager) {
+        manager.sandboxMessage(port, message)
+        if (
+          message.type === "add-chain" ||
+          message.type === "add-well-known-chain"
+        ) {
+          chainsChangedListeners.forEach((l) => l());
+        }
+      } else {
+        // If the page wants to send a message while the manager has crashed, we instantly
+        // return an error.
+        if (
+          message.type === "add-chain" ||
+          message.type === "add-well-known-chain"
+        ) {
+          const msg: ToApplication ={
+            origin: "substrate-connect-extension",
+            type: "error",
+            chainId: message.chainId,
+            errorMessage: "Smoldot has crashed",
+          };
+          port.postMessage(msg)
+        }
+      }
+
       return manager
     })
   })
 
   port.onDisconnect.addListener(() => {
     managerWithSandbox = managerWithSandbox.then((manager) => {
+      if (!manager)
+        return manager;
+  
       manager.deleteSandbox(port)
       chainsChangedListeners.forEach((l) => l())
       return manager
