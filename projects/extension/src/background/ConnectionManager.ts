@@ -163,8 +163,9 @@ export class ConnectionManager<SandboxId> {
     } catch (error) {
       // If an exception is thrown, we kill all chains. This can only happen either in case of a
       // crash in smoldot or a bug in substrate-connect.
-      const errorMsg = "Internal error in smoldot: " +
-        (error instanceof Error ? error.toString() : "(unknown)");
+      const errorMsg =
+        "Internal error in smoldot: " +
+        (error instanceof Error ? error.toString() : "(unknown)")
       this.#hasCrashed = errorMsg
       return undefined
     }
@@ -309,8 +310,9 @@ export class ConnectionManager<SandboxId> {
         try {
           chain.smoldotChain.sendJsonRpc(message.jsonRpcMessage)
         } catch (error) {
-          const errorMsg = "Internal error in smoldot: " +
-            (error instanceof Error ? error.toString() : "(unknown)");
+          const errorMsg =
+            "Internal error in smoldot: " +
+            (error instanceof Error ? error.toString() : "(unknown)")
           this.#resetAllNonWellKnownChains(errorMsg)
           this.#hasCrashed = errorMsg
           return
