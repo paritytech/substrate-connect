@@ -191,7 +191,7 @@ const Options: React.FunctionComponent = () => {
     let cb: () => void = () => {}
     chrome.runtime.getBackgroundPage((backgroundPage) => {
       const bg = backgroundPage as Background
-      cb = bg.uiInterface.onManagerStateChanged(() => {
+      cb = bg.uiInterface.onChainsChanged(() => {
         const networks = new Map<string, NetworkTabProps>()
         bg.uiInterface.chains.forEach((app) => {
           const network = networks.get(app.chainName)
