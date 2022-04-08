@@ -135,7 +135,7 @@ const TabPanel = (props: TabPanelProps) => {
 const Options: React.FunctionComponent = () => {
   const classes = useStyles()
   const appliedTheme = createTheme(light)
-  const [value, setValue] = useState<number>(0)
+  const [tab, setTab] = useState<number>(0)
   const [networks, setNetworks] = useState<NetworkTabProps[]>([])
   const [notifications, setNotifications] = useState<boolean>(false)
   const [allLogs, setAllLogs] = useState<logStructure[]>([])
@@ -186,7 +186,7 @@ const Options: React.FunctionComponent = () => {
   useEffect(() => {
     chrome.storage.local.get(["crashError"], (res) => {
       if (res.crashError) {
-        setValue(2)
+        setTab(2)
       }
     })
 
@@ -232,9 +232,9 @@ const Options: React.FunctionComponent = () => {
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
-    newValue: number,
+    chosenTab: number,
   ) => {
-    setValue(newValue)
+    setTab(chosenTab)
   }
 
   const getLevelInfo = (level: number) => {
@@ -269,7 +269,7 @@ const Options: React.FunctionComponent = () => {
         <Logo />
       </Box>
       <MenuTabs
-        value={value}
+        value={tab}
         onChange={handleChange}
         TabIndicatorProps={{
           style: {
@@ -281,7 +281,7 @@ const Options: React.FunctionComponent = () => {
         <MenuTab label="Settings"></MenuTab>
         <MenuTab label="Logs"></MenuTab>
       </MenuTabs>
-      <TabPanel value={value} index={0}>
+      <TabPanel value={tab} index={0}>
         {networks.length ? (
           networks.map((network: NetworkTabProps, i: number) => {
             const { name, health, apps } = network
@@ -293,7 +293,7 @@ const Options: React.FunctionComponent = () => {
           <div>No networks or apps are connected to the extension.</div>
         )}
       </TabPanel>
-      <TabPanel value={value} index={1}>
+      <TabPanel value={tab} index={1}>
         <FormControl component="fieldset">
           <FormGroup aria-label="position" row>
             <FormControlLabel
@@ -315,7 +315,7 @@ const Options: React.FunctionComponent = () => {
           </FormGroup>
         </FormControl>
       </TabPanel>
-      <TabPanel value={value} index={2}>
+      <TabPanel value={tab} index={2}>
         <div className={classes.logs}>
           <div className={classes.logTitle}>
             <Button

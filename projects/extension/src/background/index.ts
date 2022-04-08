@@ -35,12 +35,6 @@ export interface Background extends Window {
   }
 }
 
-interface ErrorStruct {
-  name: string
-  message: string
-  stack?: string
-}
-
 interface logStructure {
   unix_timestamp: number
   level: number
@@ -174,11 +168,11 @@ const managerPromise: Promise<
     // time in localstorage. When 3rd time occurs - stop retrying, save the error in localstorage
     // for UI to be able to retrieve it and allow only manual retry
     const errString =
-      (err as ErrorStruct).name +
+      (err as Error).name +
       ":" +
-      (err as ErrorStruct).message +
+      (err as Error).message +
       "\n" +
-      (err as ErrorStruct).stack
+      (err as Error).stack
     chrome.storage.local.set({
       crashError: errString,
     })
