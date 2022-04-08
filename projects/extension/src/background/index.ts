@@ -31,6 +31,7 @@ export interface Background extends Window {
       listener: (state: ExposedChainConnection[]) => void,
     ) => () => void
     disconnectTab: (tabId: number) => void
+    get chains(): ExposedChainConnection[]
     get logger(): LogKeeper
   }
 }
@@ -129,6 +130,24 @@ window.uiInterface = {
           port.disconnect()
         }
       }
+  },
+  get chains(): ExposedChainConnection[] {
+    if (manager.state === "ready") {
+      return manager.manager.allChains
+        .filter((info) => info.apiInfo)
+        .map((info) => {
+          return {
+            chainId: info.apiInfo!.chainId,
+            chainName: info.chainName,
+            tabId: info.apiInfo!.sandboxId.sender!.tab!.id!,
+            url: info.apiInfo!.sandboxId.sender!.tab!.url!,
+            isSyncing: info.isSyncing,
+            peers: info.peers,
+          }
+        })
+    } else {
+      return [];
+    }
   },
   get logger() { return logKeeper },
 }
