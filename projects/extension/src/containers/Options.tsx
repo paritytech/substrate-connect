@@ -171,7 +171,7 @@ const Options: React.FunctionComponent = () => {
     const interval = setInterval(() => {
       if (poolingLogs) {
         chrome.runtime.getBackgroundPage((bg) => {
-          const logs = (bg as Background).manager.logger
+          const logs = (bg as Background).uiInterface.logger
           setAllLogs([...logs.all])
           setWarnLogs([...logs.warn])
           setErrLogs([...logs.error])
@@ -191,7 +191,7 @@ const Options: React.FunctionComponent = () => {
     let cb: () => void = () => {}
     chrome.runtime.getBackgroundPage((backgroundPage) => {
       const bg = backgroundPage as Background
-      cb = bg.manager.onManagerStateChanged((apps) => {
+      cb = bg.uiInterface.onManagerStateChanged((apps) => {
         const networks = new Map<string, NetworkTabProps>()
         apps.forEach((app) => {
           const network = networks.get(app.chainName)

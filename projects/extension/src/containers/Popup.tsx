@@ -29,9 +29,9 @@ const Popup: FunctionComponent = () => {
         if (!isActive) return
 
         const bg = backgroundPage as Background
-        disconnectTabRef.current = bg.manager.disconnectTab
+        disconnectTabRef.current = bg.uiInterface.disconnectTab
 
-        unsubscribe = bg.manager.onManagerStateChanged((apps) => {
+        unsubscribe = bg.uiInterface.onManagerStateChanged((apps) => {
           const networksByTab: Map<number, Set<string>> = new Map()
           apps.forEach((app) => {
             if (!networksByTab.has(app.tabId))
@@ -116,7 +116,7 @@ const Popup: FunctionComponent = () => {
         /**
          * If "Stop all connections" button is pressed then disconnectAll 
          * function will be called to disconnect all apps.
-          <MenuButton fullWidth className='danger' onClick={(): void => { manager?.disconnectAll(); }}>Stop all connections</MenuButton>
+          <MenuButton fullWidth className='danger' onClick={(): void => { uiInterface?.disconnectAll(); }}>Stop all connections</MenuButton>
         */}
       </Box>
     </ThemeProvider>

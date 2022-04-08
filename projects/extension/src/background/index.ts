@@ -26,7 +26,7 @@ export const wellKnownChains: Map<string, string> = new Map<string, string>([
 ])
 
 export interface Background extends Window {
-  manager: {
+  uiInterface: {
     onManagerStateChanged: (
       listener: (state: ExposedChainConnection[]) => void,
     ) => () => void
@@ -109,7 +109,7 @@ const notifyListener = (
 }
 
 declare let window: Background
-window.manager = {
+window.uiInterface = {
   onManagerStateChanged(listener) {
     managerPromise.then((manager) => notifyListener(manager, listener))
     listeners.add(listener)
