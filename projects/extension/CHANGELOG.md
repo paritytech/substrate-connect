@@ -4,7 +4,7 @@
 
 ### Added
 
-- Introduce catch smoldot crash/panic during initilization. When this happen new icons appear on Popup that indicates the error and allow user to manually reload the extension. Indication icon redirects to latest logs. ([#958](https://github.com/paritytech/substrate-connect/pull/958))
+- Add catch of smoldot crash/panic during initilization of client. When this happen new icons appear on Popup that indicates the error and allow user to manually reload the extension. Indication icon redirects to latest logs. ([#958](https://github.com/paritytech/substrate-connect/pull/958))
 
 ### Changed
 
