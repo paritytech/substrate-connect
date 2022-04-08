@@ -143,17 +143,27 @@ window.uiInterface = {
 }
 
 const saveChainDbContent = async (
-  manager: ConnectionManagerWithHealth<chrome.runtime.Port>,
+  readyManager: ConnectionManagerWithHealth<chrome.runtime.Port>,
   key: string,
 ) => {
-  const db = await manager.wellKnownChainDatabaseContent(
+  const db = await readyManager.wellKnownChainDatabaseContent(
     key,
     chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
   )
 
   // `db` can be `undefined` if the database content couldn't be obtained. In that case, we leave
   // the database as it was before.
-  if (db) chrome.storage.local.set({ [key]: db })
+  if (db)
+    chrome.storage.local.set({ [key]: db })
+  else {
+    // `db` being undefined can mean that the manager might have crashed.
+    const error = readyManager.hasCrashed;
+    if (error) {
+      manager = { state: "crashed", error }
+      smoldotCrashErrorChangedListeners.forEach((l) => l())
+      chainsChangedListeners.forEach((l) => l())
+    }
+  }
 }
 
 let manager:
