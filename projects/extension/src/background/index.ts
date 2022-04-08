@@ -27,9 +27,7 @@ export const wellKnownChains: Map<string, string> = new Map<string, string>([
 
 export interface Background extends Window {
   uiInterface: {
-    onChainsChanged: (
-      listener: (state: ExposedChainConnection[]) => void,
-    ) => () => void
+    onChainsChanged: (listener: () => void) => () => void
     disconnectTab: (tabId: number) => void
     get chains(): ExposedChainConnection[]
     get logger(): LogKeeper
@@ -87,32 +85,11 @@ const logger = (level: number, target: string, message: string) => {
   all.push(incLog)
 }
 
-const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
-
-const notifyListener = (
-  manager: ConnectionManagerWithHealth<chrome.runtime.Port>,
-  listener: (state: ExposedChainConnection[]) => void,
-) => {
-  listener(
-    manager.allChains
-      .filter((info) => info.apiInfo)
-      .map((info) => {
-        return {
-          chainId: info.apiInfo!.chainId,
-          chainName: info.chainName,
-          tabId: info.apiInfo!.sandboxId.sender!.tab!.id!,
-          url: info.apiInfo!.sandboxId.sender!.tab!.url!,
-          isSyncing: info.isSyncing,
-          peers: info.peers,
-        }
-      }),
-  )
-}
+const listeners: Set<() => void> = new Set()
 
 declare let window: Background
 window.uiInterface = {
   onChainsChanged(listener) {
-    // TODO: temporarily commented out managerPromise.then((manager) => notifyListener(manager, listener))
     listeners.add(listener)
     return () => {
       listeners.delete(listener)
@@ -207,6 +184,7 @@ manager = {
     periodInMinutes: 5,
   })
 
+      listeners.forEach((l) => l());
       manager = { state: "ready", manager: managerInit }
   })()
 };
@@ -251,10 +229,10 @@ chrome.runtime.onConnect.addListener((port) => {
         }
 
         if (message.type === "chains-status-changed") {
-          listeners.forEach((listener) => notifyListener(manager, listener))
+          listeners.forEach((listener) => listener())
         } else {
           if (message.type === "chain-ready" || message.type === "error")
-            listeners.forEach((listener) => notifyListener(manager, listener))
+            listeners.forEach((listener) => listener())
 
           // We make sure that the message is indeed of type `ToApplication`.
           const messageCorrectType: ToApplication = message
@@ -279,7 +257,7 @@ chrome.runtime.onConnect.addListener((port) => {
         message.type === "add-chain" ||
         message.type === "add-well-known-chain"
       )
-        listeners.forEach((listener) => notifyListener(manager, listener))
+        listeners.forEach((l) => l())
       return manager
     })
   })
@@ -287,7 +265,7 @@ chrome.runtime.onConnect.addListener((port) => {
   port.onDisconnect.addListener(() => {
     managerWithSandbox = managerWithSandbox.then((manager) => {
       manager.deleteSandbox(port)
-      listeners.forEach((listener) => notifyListener(manager, listener))
+      listeners.forEach((l) => l())
       return manager
     })
   })
