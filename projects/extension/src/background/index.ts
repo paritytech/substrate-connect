@@ -111,7 +111,7 @@ const notifyListener = (
 declare let window: Background
 window.uiInterface = {
   onManagerStateChanged(listener) {
-    managerPromise.then((manager) => notifyListener(manager, listener))
+    // TODO: temporarily commented out managerPromise.then((manager) => notifyListener(manager, listener))
     listeners.add(listener)
     return () => {
       listeners.delete(listener)
@@ -119,17 +119,16 @@ window.uiInterface = {
   },
   disconnectTab: (tabId: number) => {
     // Note that the manager is always ready here, otherwise the caller wouldn't be aware of any
-    // `tabId`. However there is no API in JavaScript that allows assuming that a `Promise` is
-    // already ready.
-    managerPromise.then((manager) => {
+    // `tabId`.
+    if (manager.state !== "ready")
+      return;
       // Note that multiple ports can share the same `tabId`
-      for (const port of manager.sandboxes) {
+      for (const port of manager.manager.sandboxes) {
         if (port.sender?.tab?.id === tabId) {
-          manager.deleteSandbox(port)
+          manager.manager.deleteSandbox(port)
           port.disconnect()
         }
       }
-    })
   },
   get logger() { return logKeeper },
 }
@@ -148,12 +147,20 @@ const saveChainDbContent = async (
   if (db) chrome.storage.local.set({ [key]: db })
 }
 
-// Start initializing a `ConnectionManagerWithHealth`.
-// This initialization operation shouldn't take more than a few dozen milliseconds, but we still
-// need to properly handle situations where initialization isn't finished yet.
-const managerPromise: Promise<
-  ConnectionManagerWithHealth<chrome.runtime.Port>
-> = (async () => {
+let manager:
+  { state: "initializing", whenInitFinished: Promise<void> } |
+  { state: "ready", manager: ConnectionManagerWithHealth<chrome.runtime.Port> }
+= {
+  state: "initializing",
+  whenInitFinished: (async () => {})()
+};
+
+manager = {
+  state: "initializing",
+  whenInitFinished: (async () => {
+  // Start initializing a `ConnectionManagerWithHealth`.
+  // This initialization operation shouldn't take more than a few dozen milliseconds, but we
+  // still need to properly handle situations where initialization isn't finished yet.
   const managerInit = new ConnectionManagerWithHealth<chrome.runtime.Port>(
     smoldotStart({
       maxLogLevel: 4,
@@ -181,8 +188,9 @@ const managerPromise: Promise<
     periodInMinutes: 5,
   })
 
-  return managerInit
-})()
+      manager = { state: "ready", manager: managerInit }
+  })()
+};
 
 // Handle new port connections.
 //
@@ -200,6 +208,16 @@ chrome.runtime.onConnect.addListener((port) => {
   // continue to grow indefinitely. While this is a problem *in theory*, in practice the manager
   // initialization shouldn't take more than a few dozen milliseconds and it is actually unlikely
   // for any message to arrive at all.
+
+  let managerPromise = (async () => {
+    while (true) {
+      if (manager.state == "initializing") {
+        await manager.whenInitFinished;
+      } else if (manager.state == "ready") {
+        return manager.manager;
+      }
+    }
+  })();
 
   let managerWithSandbox = managerPromise.then((manager) => {
     manager.addSandbox(port)
