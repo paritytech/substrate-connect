@@ -148,6 +148,7 @@ window.uiInterface = {
   },
   get smoldotCrashError() {
     if (manager.state === "crashed") return manager.error
+    else return undefined
   },
 }
 
