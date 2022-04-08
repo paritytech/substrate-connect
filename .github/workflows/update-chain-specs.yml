@@ -71,6 +71,10 @@ jobs:
     - run: cp -r ./chain-spec-*/* ./repo
     - uses: peter-evans/create-pull-request@v4
       with:
+        # We use a custom secret (rather than the default GITHUB_TOKEN) so that opening the pull
+        # request triggers other actions such as the CI checks. GitHub prevents actions that use
+        # GITHUB_TOKEN from triggering further actions, to avoid recursive actions.
+        token: GH_TOKEN
         path: repo
         branch: automatic-checkpoints-update
         base: main
