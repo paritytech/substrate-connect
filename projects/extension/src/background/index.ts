@@ -179,26 +179,15 @@ const managerPromise: Promise<
       (err as ErrorStruct).message +
       "\n" +
       (err as ErrorStruct).stack
-    chrome.storage.local.get(["smoldotCrash"], (result) => {
-      if (result.smoldotCrash <= 2) {
-        chrome.storage.local.set({ smoldotCrash: result.smoldotCrash + 1 })
-        setTimeout(() => {
-          chrome.runtime.reload()
-        }, 5000)
-      } else {
-        chrome.storage.local.set({ smoldotCrash: 0 })
-        chrome.storage.local.set({
-          crashError: errString,
-        })
-      }
-      logger(1, "Smoldot", errString)
-      console.error(err)
+    chrome.storage.local.set({
+      crashError: errString,
     })
+    logger(1, "Smoldot", errString)
+    console.error(err)
     // This is a dumb return - in order to avoid returning "undfined" as a type which
     // leads to unecessary extra code. "Unecessary" cause the Extension supposebly is already crashed
     return {} as ConnectionManagerWithHealth<chrome.runtime.Port>
   }
-  chrome.storage.local.set({ smoldotCrash: 0 })
   for (const [key, value] of wellKnownChains.entries()) {
     const dbContent = await new Promise<string | undefined>((res) =>
       chrome.storage.local.get([key], (val) => res(val[key] as string)),
@@ -303,12 +292,6 @@ chrome.storage.local.get(["notifications"], (result) => {
         console.error(chrome.runtime.lastError)
       }
     })
-  }
-})
-
-chrome.storage.local.get(["smoldotCrash"], (result) => {
-  if (!result.smoldotCrash && result.smoldotCrash !== 0) {
-    chrome.storage.local.set({ smoldotCrash: 0 })
   }
 })
 
