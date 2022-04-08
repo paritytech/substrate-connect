@@ -85,14 +85,14 @@ const logger = (level: number, target: string, message: string) => {
   all.push(incLog)
 }
 
-const listeners: Set<() => void> = new Set()
+const chainsChangedListeners: Set<() => void> = new Set()
 
 declare let window: Background
 window.uiInterface = {
   onChainsChanged(listener) {
-    listeners.add(listener)
+    chainsChangedListeners.add(listener)
     return () => {
-      listeners.delete(listener)
+      chainsChangedListeners.delete(listener)
     }
   },
   disconnectTab: (tabId: number) => {
@@ -184,7 +184,7 @@ manager = {
     periodInMinutes: 5,
   })
 
-      listeners.forEach((l) => l());
+      chainsChangedListeners.forEach((l) => l());
       manager = { state: "ready", manager: managerInit }
   })()
 };
@@ -229,10 +229,10 @@ chrome.runtime.onConnect.addListener((port) => {
         }
 
         if (message.type === "chains-status-changed") {
-          listeners.forEach((listener) => listener())
+          chainsChangedListeners.forEach((listener) => listener())
         } else {
           if (message.type === "chain-ready" || message.type === "error")
-            listeners.forEach((listener) => listener())
+            chainsChangedListeners.forEach((listener) => listener())
 
           // We make sure that the message is indeed of type `ToApplication`.
           const messageCorrectType: ToApplication = message
@@ -257,7 +257,7 @@ chrome.runtime.onConnect.addListener((port) => {
         message.type === "add-chain" ||
         message.type === "add-well-known-chain"
       )
-        listeners.forEach((l) => l())
+        chainsChangedListeners.forEach((l) => l())
       return manager
     })
   })
@@ -265,7 +265,7 @@ chrome.runtime.onConnect.addListener((port) => {
   port.onDisconnect.addListener(() => {
     managerWithSandbox = managerWithSandbox.then((manager) => {
       manager.deleteSandbox(port)
-      listeners.forEach((l) => l())
+      chainsChangedListeners.forEach((l) => l())
       return manager
     })
   })
