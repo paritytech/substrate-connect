@@ -31,7 +31,7 @@ const Popup: FunctionComponent = () => {
         const bg = backgroundPage as Background
         disconnectTabRef.current = bg.uiInterface.disconnectTab
 
-        unsubscribe = bg.uiInterface.onChainsChanged(() => {
+        const refresh = () => {
           const networksByTab: Map<number, Set<string>> = new Map()
           bg.uiInterface.chains.forEach((app) => {
             if (!networksByTab.has(app.tabId))
@@ -52,7 +52,9 @@ const Popup: FunctionComponent = () => {
           })
 
           setOtherTabs(nextTabs)
-        })
+        }
+        unsubscribe = bg.uiInterface.onChainsChanged(refresh)
+        refresh()
       })
     })()
 
