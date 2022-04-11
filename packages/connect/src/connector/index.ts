@@ -33,3 +33,13 @@ export const isExtensionPresent =
 export const createScClient = isExtensionPresent
   ? extensionScClient
   : smoldotScClient
+
+/**
+ * Returns an in-page {@link ScClient} ignoring if the extension is installed.
+ *
+ * @param clientOptions options to be used when creating smoldot-light instance
+ * This is inteded for debugging issues with smoldot connecting to chains.
+ *
+ * @internal
+ */
+export const createSmoldotScClient = smoldotScClient

@@ -2,6 +2,7 @@ import type {
   Chain as SChain,
   Client,
   ClientOptions,
+  LogCallback
 } from "@substrate/smoldot-light"
 import { getSpec } from "./specs/index.js"
 import {
@@ -22,21 +23,44 @@ const getStart = () => {
   return startPromise
 }
 
+/**
+ *  Options to be passed to smoldot before starting the light client
+ */
+export interface ScOptions {
+  /* Corresponds to the {@link https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/javascript/src/client.ts | Smoldot maxLogLevel}
+   * Numbers higher than this value will not be passed to the {@link logCallback{.
+   *
+   * @remarks
+   * 1 = error, 2 = warn, 3 = info, 4 = debug, 5 = trace
+   */
+  maxLogLevel: number,
+  /* Corresponds to the {@link https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/javascript/src/client.ts | Smoldot logCallback} */
+  logCallback?: LogCallback
+}
+
+const defaultOptions: ScOptions = {
+  maxLogLevel: 4, /* log everything except trace level */
+  logCallback: undefined
+};
+
+const otherSmoldotOptions: ClientOptions = {
+  forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
+  forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
+};
+
+
 let clientNumReferences = 0
 let clientPromise: Promise<Client> | null = null
-const getClientAndIncRef = (): Promise<Client> => {
+const getClientAndIncRef = (clientOptions = defaultOptions): Promise<Client> => {
+  const finalOptions: ClientOptions = Object.assign({}, otherSmoldotOptions, clientOptions);
+
   if (clientPromise) {
     clientNumReferences += 1
     return clientPromise
   }
 
   clientPromise = getStart().then((start) =>
-    start({
-      forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
-      forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
-      maxLogLevel: 4 /* no debug/trace messages */,
-      cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
-    }),
+    start(finalOptions),
   )
   clientNumReferences += 1
   return clientPromise
@@ -64,14 +88,14 @@ const transformErrors = (thunk: () => void) => {
  * This is quite expensive in terms of CPU, but it is the only choice when the substrate-connect
  * extension is not installed.
  */
-export const createScClient = (): ScClient => {
+export const createScClient = (clientOptions = defaultOptions): ScClient => {
   const chains = new Map<Chain, SChain>()
 
   const addChain: AddChain = async (
     chainSpec: string,
     jsonRpcCallback?: (msg: string) => void,
   ): Promise<Chain> => {
-    const client = await getClientAndIncRef()
+    const client = await getClientAndIncRef(clientOptions)
 
     try {
       const internalChain = await client.addChain({
