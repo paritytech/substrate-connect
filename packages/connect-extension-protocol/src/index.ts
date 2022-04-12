@@ -1,5 +1,4 @@
 /**
- * @packageDocumentation
  *
  * This module contains the types and explanations of the communication
  * protocol between the JavaScript code embedded in a web page and the
@@ -87,6 +86,8 @@
  * either before of after the chain is ready, the corresponding `chainId` is
  * immediately considered dead/removed, and the web page doesn't need to send
  * a {@link ToExtensionRemoveChain} message.
+ *
+ * @packageDocumentation
  */
 
 // READ THIS BEFORE MODIFYING ANYTHING BELOW
@@ -117,7 +118,7 @@ export type ToApplication = ToApplicationHeader &
 /**
  * Header present in all messages sent by the extension.
  */
-interface ToApplicationHeader {
+export interface ToApplicationHeader {
   /**
    * Messages sent by the extension are sent on the `window`, alongside with potentially
    * other messages that might be completely unrelated to substrate-connect. This `origin` field
@@ -135,7 +136,7 @@ interface ToApplicationHeader {
  * This message can happen either before or after a {@link ToApplicationChainReady} concerning
  * this chain has been sent.
  */
-interface ToApplicationError {
+export interface ToApplicationError {
   type: "error"
   chainId: string
 
@@ -156,7 +157,7 @@ interface ToApplicationError {
  *
  * No {@link ToExtensionRpc} message must be sent before this message has been received.
  */
-interface ToApplicationChainReady {
+export interface ToApplicationChainReady {
   type: "chain-ready"
   chainId: string
 }
@@ -164,7 +165,7 @@ interface ToApplicationChainReady {
 /**
  * JSON-RPC response or notification sent by the substrate-connect extension.
  */
-interface ToApplicationRpc {
+export interface ToApplicationRpc {
   type: "rpc"
   chainId: string
   jsonRpcMessage: string
@@ -184,7 +185,7 @@ export type ToExtension = ToExtensionHeader &
 /**
  * Header present in all messages destined to the extension.
  */
-interface ToExtensionHeader {
+export interface ToExtensionHeader {
   /**
    * Messages destined to the extension are sent on the `window`, alongside with potentially
    * other messages that might be completely unrelated to substrate-connect. This `origin` field
@@ -196,7 +197,7 @@ interface ToExtensionHeader {
 /**
  * Ask the extension to add a new connection to the chain with the given specification.
  */
-interface ToExtensionAddChain {
+export interface ToExtensionAddChain {
   type: "add-chain"
 
   /**
@@ -242,7 +243,7 @@ interface ToExtensionAddChain {
  * applications should fall back to {@link ToExtensionAddChain} if this well-known chain
  * connection fails.
  */
-interface ToExtensionAddWellKnownChain {
+export interface ToExtensionAddWellKnownChain {
   type: "add-well-known-chain"
 
   /**
@@ -267,7 +268,7 @@ interface ToExtensionAddWellKnownChain {
  * necessary in order to avoid race conditions, as the extension might have sent a
  * {@link ToApplicationError} message at the same time as this message has been sent.
  */
-interface ToExtensionRpc {
+export interface ToExtensionRpc {
   type: "rpc"
   chainId: string
   jsonRpcMessage: string
@@ -283,7 +284,7 @@ interface ToExtensionRpc {
  * necessary in order to avoid race conditions, as the extension might have sent a
  * {@link ToApplicationError} message at the same time as this message has been sent.
  */
-interface ToExtensionRemoveChain {
+export interface ToExtensionRemoveChain {
   type: "remove-chain"
   chainId: string
 }
