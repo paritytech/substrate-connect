@@ -40,7 +40,7 @@ function getRandomChainId(): string {
 }
 
 /**
- * Returns a {ScClient} that connects to chains by asking the substrate-connect extension
+ * Returns a {@link ScClient} that connects to chains by asking the substrate-connect extension
  * to do so.
  *
  * This function assumes that the extension is installed and available. It is out of scope of this
