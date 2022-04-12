@@ -9,6 +9,11 @@ PolkadotJS RPC provider.
 
 Provide a well-known chain name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_1'):
 
+Note these names are the "real" names of the chains rather than the friendly 
+names (e.g. "kusama" or "rococo"). 'ksmcc3' is the name for kusama.  This
+matters for chains which have been hard forked. I.e. rococo - "rococo_v2" and 
+"rococo_v2_1" are two completely unrelated chains.
+
 ```js
 import { ApiPromise } from "@polkadot/api";
 import {
