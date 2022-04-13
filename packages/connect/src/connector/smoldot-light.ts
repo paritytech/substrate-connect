@@ -2,7 +2,7 @@ import type {
   Chain as SChain,
   Client,
   ClientOptions,
-  LogCallback
+  LogCallback,
 } from "@substrate/smoldot-light"
 import { getSpec } from "./specs/index.js"
 import {
@@ -33,36 +33,39 @@ export interface ScOptions {
    * @remarks
    * 1 = error, 2 = warn, 3 = info, 4 = debug, 5 = trace
    */
-  maxLogLevel: number,
+  maxLogLevel: number
   /* Corresponds to the {@link https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/javascript/src/client.ts | Smoldot logCallback} */
   logCallback?: LogCallback
 }
 
 const defaultOptions: ScOptions = {
-  maxLogLevel: 4, /* log everything except trace level */
-  logCallback: undefined
-};
+  maxLogLevel: 4 /* log everything except trace level */,
+  logCallback: undefined,
+}
 
 const otherSmoldotOptions: ClientOptions = {
   forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
   forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
   cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
-};
-
+}
 
 let clientNumReferences = 0
 let clientPromise: Promise<Client> | null = null
-const getClientAndIncRef = (clientOptions = defaultOptions): Promise<Client> => {
-  const finalOptions: ClientOptions = Object.assign({}, otherSmoldotOptions, clientOptions);
+const getClientAndIncRef = (
+  clientOptions = defaultOptions,
+): Promise<Client> => {
+  const finalOptions: ClientOptions = Object.assign(
+    {},
+    otherSmoldotOptions,
+    clientOptions,
+  )
 
   if (clientPromise) {
     clientNumReferences += 1
     return clientPromise
   }
 
-  clientPromise = getStart().then((start) =>
-    start(finalOptions),
-  )
+  clientPromise = getStart().then((start) => start(finalOptions))
   clientNumReferences += 1
   return clientPromise
 }
