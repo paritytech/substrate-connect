@@ -26,7 +26,7 @@ export const isExtensionPresent =
   !!document.getElementById(DOM_ELEMENT_ID)
 
 /**
- * Returns a {ScClient} that connects to chains, either through the substrate-connect
+ * Returns a {@link ScClient} that connects to chains, either through the substrate-connect
  * extension or by executing a light client directly from JavaScript, depending on whether the
  * extension is installed and available.
  */
