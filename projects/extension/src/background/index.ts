@@ -315,7 +315,8 @@ chrome.runtime.onConnect.addListener((port) => {
         manager.sandboxMessage(port, message)
         if (
           message.type === "add-chain" ||
-          message.type === "add-well-known-chain"
+          message.type === "add-well-known-chain" ||
+          message.type === "remove-chain"
         ) {
           chainsChangedListeners.forEach((l) => l())
         }
