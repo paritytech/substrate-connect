@@ -95,7 +95,7 @@ const logger = (level: number, target: string, message: string) => {
 
 // Listeners that must be notified when the `get chains()` getter would return a different value.
 const chainsChangedListeners: Set<() => void> = new Set()
-const notifyAllChainsChanedListeners = () => {
+const notifyAllChainsChangedListeners = () => {
   chainsChangedListeners.forEach((l) => {
     try {
       l()
@@ -184,7 +184,7 @@ const saveChainDbContent = async (
     if (error) {
       manager = { state: "crashed", error }
       notifyAllSmoldotCrashErrorChangedListeners()
-      notifyAllChainsChanedListeners()
+      notifyAllChainsChangedListeners()
     }
   }
 }
@@ -240,7 +240,7 @@ manager = {
       })
 
       // Success. Update the state and notify listeners.
-      notifyAllChainsChanedListeners()
+      notifyAllChainsChangedListeners()
       manager = { state: "ready", manager: managerInit }
     } catch (error) {
       notifyAllSmoldotCrashErrorChangedListeners()
@@ -297,10 +297,10 @@ chrome.runtime.onConnect.addListener((port) => {
         }
 
         if (message.type === "chains-status-changed") {
-          notifyAllChainsChanedListeners()
+          notifyAllChainsChangedListeners()
         } else {
           if (message.type === "chain-ready" || message.type === "error")
-            notifyAllChainsChanedListeners()
+            notifyAllChainsChangedListeners()
 
           // We make sure that the message is indeed of type `ToApplication`.
           const messageCorrectType: ToApplication = message
@@ -313,7 +313,7 @@ chrome.runtime.onConnect.addListener((port) => {
             if (error) {
               manager = { state: "crashed", error }
               notifyAllSmoldotCrashErrorChangedListeners()
-              notifyAllChainsChanedListeners()
+              notifyAllChainsChangedListeners()
             }
           }
         }
@@ -332,7 +332,7 @@ chrome.runtime.onConnect.addListener((port) => {
           message.type === "add-well-known-chain" ||
           message.type === "remove-chain"
         ) {
-          notifyAllChainsChanedListeners()
+          notifyAllChainsChangedListeners()
         }
       } else {
         // If the page wants to send a message while the manager has crashed, we instantly
@@ -360,7 +360,7 @@ chrome.runtime.onConnect.addListener((port) => {
       if (!manager) return manager
 
       manager.deleteSandbox(port)
-      notifyAllChainsChanedListeners()
+      notifyAllChainsChangedListeners()
       return manager
     })
   })
