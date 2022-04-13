@@ -95,9 +95,23 @@ const logger = (level: number, target: string, message: string) => {
 
 // Listeners that must be notified when the `get chains()` getter would return a different value.
 const chainsChangedListeners: Set<() => void> = new Set()
+const notifyAllChainsChanedListeners = () => {
+  chainsChangedListeners.forEach((l) => {
+    try {
+      l()
+    } catch (e) {}
+  })
+}
 // Listeners that must be notified when the `get smoldotCrashError()` getter would return a
 // different value.
 const smoldotCrashErrorChangedListeners: Set<() => void> = new Set()
+const notifyAllSmoldotCrashErrorChangedListeners = () => {
+  smoldotCrashErrorChangedListeners.forEach((l) => {
+    try {
+      l()
+    } catch (e) {}
+  })
+}
 
 declare let window: Background
 window.uiInterface = {
@@ -169,16 +183,8 @@ const saveChainDbContent = async (
     const error = readyManager.hasCrashed
     if (error) {
       manager = { state: "crashed", error }
-      smoldotCrashErrorChangedListeners.forEach((l) => {
-        try {
-          l()
-        } catch (e) {}
-      })
-      chainsChangedListeners.forEach((l) => {
-        try {
-          l()
-        } catch (e) {}
-      })
+      notifyAllSmoldotCrashErrorChangedListeners()
+      notifyAllChainsChanedListeners()
     }
   }
 }
@@ -234,18 +240,10 @@ manager = {
       })
 
       // Success. Update the state and notify listeners.
-      chainsChangedListeners.forEach((l) => {
-        try {
-          l()
-        } catch (e) {}
-      })
+      notifyAllChainsChanedListeners()
       manager = { state: "ready", manager: managerInit }
     } catch (error) {
-      smoldotCrashErrorChangedListeners.forEach((l) => {
-        try {
-          l()
-        } catch (e) {}
-      })
+      notifyAllSmoldotCrashErrorChangedListeners()
       const msg =
         error instanceof Error
           ? error.toString()
@@ -299,18 +297,10 @@ chrome.runtime.onConnect.addListener((port) => {
         }
 
         if (message.type === "chains-status-changed") {
-          chainsChangedListeners.forEach((l) => {
-            try {
-              l()
-            } catch (e) {}
-          })
+          notifyAllChainsChanedListeners()
         } else {
           if (message.type === "chain-ready" || message.type === "error")
-            chainsChangedListeners.forEach((l) => {
-              try {
-                l()
-              } catch (e) {}
-            })
+            notifyAllChainsChanedListeners()
 
           // We make sure that the message is indeed of type `ToApplication`.
           const messageCorrectType: ToApplication = message
@@ -322,16 +312,8 @@ chrome.runtime.onConnect.addListener((port) => {
             const error = readyManager.hasCrashed
             if (error) {
               manager = { state: "crashed", error }
-              smoldotCrashErrorChangedListeners.forEach((l) => {
-                try {
-                  l()
-                } catch (e) {}
-              })
-              chainsChangedListeners.forEach((l) => {
-                try {
-                  l()
-                } catch (e) {}
-              })
+              notifyAllSmoldotCrashErrorChangedListeners()
+              notifyAllChainsChanedListeners()
             }
           }
         }
@@ -350,11 +332,7 @@ chrome.runtime.onConnect.addListener((port) => {
           message.type === "add-well-known-chain" ||
           message.type === "remove-chain"
         ) {
-          chainsChangedListeners.forEach((l) => {
-            try {
-              l()
-            } catch (e) {}
-          })
+          notifyAllChainsChanedListeners()
         }
       } else {
         // If the page wants to send a message while the manager has crashed, we instantly
@@ -382,11 +360,7 @@ chrome.runtime.onConnect.addListener((port) => {
       if (!manager) return manager
 
       manager.deleteSandbox(port)
-      chainsChangedListeners.forEach((l) => {
-        try {
-          l()
-        } catch (e) {}
-      })
+      notifyAllChainsChanedListeners()
       return manager
     })
   })
