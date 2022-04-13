@@ -46,6 +46,7 @@ const defaultOptions: ScOptions = {
 const otherSmoldotOptions: ClientOptions = {
   forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
   forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
+  cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
 };
 
 
