@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from "react"
-import styled from "styled-components"
 import { substrateGreen } from "./theme"
 
 export interface Props {
@@ -8,35 +7,31 @@ export interface Props {
   borderColor?: string
 }
 
-const SCircle = styled.div<Props>`
-  width: ${(props) =>
-    props.size === "small"
-      ? "5px"
-      : props.size === "medium"
-      ? "10px"
-      : props.size === "large" && "15px"};
-  height: ${(props) =>
-    props.size === "small"
-      ? "5px"
-      : props.size === "medium"
-      ? "10px"
-      : props.size === "large" && "15px"};
-  border-radius: ${(props) =>
-    props.size === "small"
-      ? "5px"
-      : props.size === "medium"
-      ? "10px"
-      : props.size === "large" && "15px"};
-  border: 1px solid ${(props) => props.borderColor || substrateGreen[400]};
-  background-color: ${(props) => props.color || substrateGreen[400]};
-`
-
 const StatusCircle: FunctionComponent<Props> = ({
   size = "medium",
   color,
   borderColor,
 }: Props) => {
-  return <SCircle data-testid="circle" {...{ size, color, borderColor }} />
+  const s =
+    size === "small"
+      ? "1.5"
+      : size === "medium"
+      ? "2.5"
+      : size === "large" && "3.5"
+  const r =
+    size === "small"
+      ? "lg"
+      : size === "medium"
+      ? "xl"
+      : size === "large" && "2xl"
+
+  const styleObj = {
+    border: `${color || substrateGreen[400]}`,
+    backgroundColor: `"1px solid ${borderColor || substrateGreen[400]}"`,
+  }
+  const cName = `w-${s} h-${s} rounded-${r}`
+
+  return <div data-testid="circle" className={cName} style={styleObj} />
 }
 
 export default StatusCircle

@@ -1,17 +1,11 @@
 import React, { FunctionComponent, SetStateAction, Dispatch } from "react"
-import {
-  Typography,
-  Box,
-  IconButton,
-  createStyles,
-  makeStyles,
-} from "@material-ui/core"
-import BlockIcon from "@material-ui/icons/Block"
-import Zoom from "@material-ui/core/Zoom"
-import Tooltip, { TooltipProps } from "@material-ui/core/Tooltip"
-import { grey } from "@material-ui/core/colors"
-import { IconWeb3 } from "."
+import BlockIcon from "@mui/icons-material/Block"
 import { TabInterface } from "../types"
+import { Tooltip, Network, NetworkIcon } from "mottled-library"
+
+import "mottled-library/css/core.css"
+import "mottled-library/css/NetworkIcon.css"
+import "mottled-library/css/Tooltip.css"
 
 interface TabProps {
   disconnectTab: (tabId: number) => void
@@ -20,43 +14,12 @@ interface TabProps {
   setActiveTab?: Dispatch<SetStateAction<TabInterface | undefined>>
 }
 
-const useStylesBootstrap = makeStyles((theme) => ({
-  arrow: {
-    color: theme.palette.common.black,
-  },
-  tooltip: {
-    backgroundColor: theme.palette.common.black,
-    fontSize: 14,
-  },
-}))
-
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    disableButton: {
-      color: theme.palette.text.hint,
-      marginLeft: theme.spacing(),
-      "&:not(:hover)": {
-        opacity: 0.2,
-      },
-      "& svg": {
-        fontSize: "0.8rem",
-      },
-    },
-  }),
-)
-
-const BootstrapTooltip = (props: TooltipProps) => {
-  const classes = useStylesBootstrap()
-  return <Tooltip arrow classes={classes} {...props} />
-}
-
 const Tab: FunctionComponent<TabProps> = ({
   disconnectTab,
   tab,
   current = false,
   setActiveTab,
 }) => {
-  const classes = useStyles()
   /**
    * If Tab that initiated this function has a tabId (check for validity) then disconnectTab
    * function will be called to disconnect the tab. At the same time, in case the tan is marked as current
@@ -65,7 +28,6 @@ const Tab: FunctionComponent<TabProps> = ({
    **/
   const onDisconnect = (): void => {
     if (tab && tab.tabId) {
-      // TODO(nik): Fix smoldot definition (see: https://github.com/paritytech/substrate-connect/blob/3350cdff9c4c294393160189816168a93c983f79/projects/extension/src/background/ConnectionManager.ts#L202)
       disconnectTab(tab.tabId)
       if (setActiveTab && current) {
         setActiveTab(undefined)
@@ -74,44 +36,37 @@ const Tab: FunctionComponent<TabProps> = ({
   }
 
   return (
-    <Box
-      pt={current ? 1.25 : 0.5}
-      pb={current ? 1.25 : 0.5}
-      pr={1}
-      pl={1}
-      style={!tab ? { height: "10px" } : {}}
+    <div
+      className={`flex items-center justify-between font-roboto ${
+        current ? "text-sm font-bold" : "text-sm"
+      }`}
     >
-      <Box display="flex" alignItems="center" justifyContent="space-between">
-        {tab && (
-          <>
-            <Typography noWrap variant={current ? "h3" : "h4"}>
-              {tab.url}
-            </Typography>
-            <Box display="flex" alignItems="center">
-              {tab?.networks.map((n) => (
-                <IconWeb3 key={n} size="14px" color={grey[800]}>
-                  {n}
-                </IconWeb3>
-              ))}
-              <IconButton
+      {tab && (
+        <>
+          <div className="truncate py-1.5 my-1.5 ml-6 w-7/12">{tab.url}</div>
+          <div className="flex items-center right-6 absolute">
+            {tab?.networks.map((n) => (
+              <NetworkIcon
+                cName="text-neutral-500"
+                network={n.toLowerCase() as Network}
+                show="icon"
+                size="lg"
+              />
+            ))}
+            <Tooltip
+              text={"Disconnect app"}
+              position={"left"}
+              cName="text-xs font-medium"
+            >
+              <BlockIcon
+                style={{ width: "1rem", marginLeft: "0.5rem", color: "red" }}
                 onClick={onDisconnect}
-                size="small"
-                className={classes.disableButton}
-              >
-                {/* TODO: Disconnect should be replacesd with Block/Unblock once functionality is implemented */}
-                <BootstrapTooltip
-                  title={"Disconnect this app"}
-                  TransitionComponent={Zoom}
-                  placement={"top"}
-                >
-                  <BlockIcon />
-                </BootstrapTooltip>
-              </IconButton>
-            </Box>
-          </>
-        )}
-      </Box>
-    </Box>
+              />
+            </Tooltip>
+          </div>
+        </>
+      )}
+    </div>
   )
 }
 

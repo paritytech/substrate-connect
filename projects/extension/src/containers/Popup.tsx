@@ -1,18 +1,16 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react"
-import * as material from "@material-ui/core"
-import GlobalFonts from "../fonts/fonts"
-import { light, MenuButton, Tab, Logo } from "../components"
-import CallMadeIcon from "@material-ui/icons/CallMade"
-import { Background } from "../background/"
-import { TabInterface } from "../types"
 
-const { createTheme, ThemeProvider, Box, Divider } = material
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
+import CallMadeIcon from "@mui/icons-material/CallMade"
+
+import { Logo, Tab } from "../components"
+import { Background } from "../background"
+import { TabInterface } from "../types"
 
 const Popup: FunctionComponent = () => {
   const disconnectTabRef = useRef<(tapId: number) => void>((_: number) => {})
   const [activeTab, setActiveTab] = useState<TabInterface | undefined>()
   const [otherTabs, setOtherTabs] = useState<TabInterface[]>([])
-  const appliedTheme = createTheme(light)
 
   useEffect(() => {
     let isActive = true
@@ -67,59 +65,52 @@ const Popup: FunctionComponent = () => {
   }
 
   return (
-    <ThemeProvider theme={appliedTheme}>
-      <Box width={"320px"} pl={1.5} pr={1.5}>
-        <GlobalFonts />
-        <Box pt={2} pb={1} pl={1} pr={1}>
-          <Logo />
-        </Box>
+    <div className="w-80">
+      <div className="py-1.5 my-3 mx-6 text-sm flex justify-between border-neutral-200 border-b">
+        <Logo />
+        <SettingsOutlinedIcon
+          onClick={goToOptions}
+          className="cursor-pointer"
+        />
+      </div>
 
-        {activeTab && (
-          <Tab
-            disconnectTab={disconnectTabRef.current}
-            current
-            tab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-        )}
+      {activeTab && (
+        <Tab
+          disconnectTab={disconnectTabRef.current}
+          current
+          tab={activeTab}
+          setActiveTab={setActiveTab}
+        />
+      )}
 
-        {otherTabs.length > 0 && (
-          <Box marginY={1}>
-            {otherTabs.map((t) => (
-              <>
-                <Tab
-                  disconnectTab={disconnectTabRef.current}
-                  key={t.tabId}
-                  tab={t}
-                />
-                <Divider />
-              </>
-            ))}
-          </Box>
-        )}
-        <MenuButton fullWidth onClick={goToOptions}>
-          Options
-        </MenuButton>
-        <Divider />
-        <MenuButton
-          fullWidth
-          endIcon={<CallMadeIcon />}
-          onClick={() =>
-            chrome.tabs.update({
-              url: "https://paritytech.github.io/substrate-connect/#extension",
-            })
-          }
-        >
-          About
-        </MenuButton>
-        {/* 
-        /**
-         * If "Stop all connections" button is pressed then disconnectAll 
-         * function will be called to disconnect all apps.
-          <MenuButton fullWidth className='danger' onClick={(): void => { manager?.disconnectAll(); }}>Stop all connections</MenuButton>
-        */}
-      </Box>
-    </ThemeProvider>
+      {otherTabs.length > 0 && (
+        <div className="my-1">
+          {otherTabs.map((t) => (
+            <>
+              <Tab
+                disconnectTab={disconnectTabRef.current}
+                key={t.tabId}
+                tab={t}
+              />
+            </>
+          ))}
+        </div>
+      )}
+      <button
+        style={{ width: "-webkit-fill-available" }}
+        className="capitalize px-2 py-1.5 my-3 mx-4 hover:bg-stone-200 text-sm flex justify-between font-light font-inter"
+        onClick={() =>
+          chrome.tabs.update({
+            url: "https://paritytech.github.io/substrate-connect/#extension",
+          })
+        }
+      >
+        <div>About</div>
+        <div>
+          <CallMadeIcon />
+        </div>
+      </button>
+    </div>
   )
 }
 
