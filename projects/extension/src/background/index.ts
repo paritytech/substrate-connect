@@ -100,7 +100,7 @@ const notifyAllChainsChangedListeners = () => {
     try {
       l()
     } catch (e) {
-      console.error("Uncaught exception in onChainsChanged callback:", e);
+      console.error("Uncaught exception in onChainsChanged callback:", e)
     }
   })
 }
@@ -112,7 +112,10 @@ const notifyAllSmoldotCrashErrorChangedListeners = () => {
     try {
       l()
     } catch (e) {
-      console.error("Uncaught exception in onSmoldotCrashErrorChanged callback:", e);
+      console.error(
+        "Uncaught exception in onSmoldotCrashErrorChanged callback:",
+        e,
+      )
     }
   })
 }
