@@ -99,7 +99,9 @@ const notifyAllChainsChangedListeners = () => {
   chainsChangedListeners.forEach((l) => {
     try {
       l()
-    } catch (e) {}
+    } catch (e) {
+      console.error("Uncaught exception in onChainsChanged callback:", e);
+    }
   })
 }
 // Listeners that must be notified when the `get smoldotCrashError()` getter would return a
@@ -109,7 +111,9 @@ const notifyAllSmoldotCrashErrorChangedListeners = () => {
   smoldotCrashErrorChangedListeners.forEach((l) => {
     try {
       l()
-    } catch (e) {}
+    } catch (e) {
+      console.error("Uncaught exception in onSmoldotCrashErrorChanged callback:", e);
+    }
   })
 }
 
