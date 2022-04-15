@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo, useState } from "react"
+import React, { FunctionComponent, useMemo } from "react"
 import { StatusCircle } from "."
 
 import { NetworkTabProps, App, OptionsNetworkTabHealthContent } from "../types"
@@ -70,8 +70,6 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
   health,
   apps,
 }: NetworkTabProps) => {
-  const [expanded, setExpanded] = useState<boolean>(false)
-
   return (
     <div className="w-full max-w-2xl mb-3 flex">
       <div className="flex items-center justify-center w-12 h-12">
@@ -94,7 +92,7 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
                   size="xl"
                   color={useMemo(
                     () => getChain(name.toLocaleLowerCase())?.color,
-                    [],
+                    [name],
                   )}
                 />
               </div>

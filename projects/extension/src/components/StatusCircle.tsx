@@ -33,7 +33,7 @@ const StatusCircle: FunctionComponent<Props> = ({
   return (
     <div
       data-testid="circle"
-      className="w-2.5 h-2.5 rounded-xl"
+      className={`"w-${s} h-${s} rounded-${r}"`}
       style={{
         backgroundColor: `${color || substrateGreen[400]}`,
         border: `1px solid ${borderColor || substrateGreen[400]}`,

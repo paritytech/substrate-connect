@@ -3,6 +3,7 @@ name: chain-specs-periodic-update
 on:
   schedule:
     - cron: '0 8 * * *'  # every day at 8am
+  workflow_dispatch: # allow triggering through the UI
 
 
 jobs:

@@ -66,6 +66,7 @@ package-lock.json
 
 # Project specifics
 .chains
+_site
 .github
 CONTRIBUTING*
 DEPLOY-RELEASE*

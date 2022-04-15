@@ -16,7 +16,7 @@ A good pull request and commit messages can often become the basis for developer
 
 ### Concrete guidance
 
-* **Make your pull request as small as possible** - a PR that takes 5 minutes to review is much more likely to be reviewed and merged quickly than one that needs to be scheduled for a review.  Small PRs are also much less likely to inadvertently introduce bugs.
+* **Make your pull request as small as possible** - a PR that takes 5 minutes to review is much more likely to be reviewed and merged quickly than one that needs to be scheduled for a review.  Small PRs are also much less likely to inadvertently introduce bugs.  All pull requests will be squashed and merged - if you don't want to lose the intermediate commits you need to create smaller pull requests.
 * **Only try to solve one problem** - implement the smallest piece of functionality possible.  There does not need to be a 1-2-1 correlation between issues and pull requests.  If you feel like you cannot implement a pull request without fixing multiple issues concurrently there is a problem with how the tickets are defined. You should discuss that with your peers. If a pull request introduces 3 changes A, B and C and a reviewer has questions or feedback on B then A and C, while they could very well be merged, are stuck waiting for a resolution to change B.
 * **Where possible do refactorings, whitespace changes, or linting fixes as separate commits** - these changes often introduce a lot of noise and make reviewing much harder.  Anything other than small refactorings probably ought to be a PR in it's own right.
 * **No leftover debug logging** unless it uses a configurable logger that is turned off for end users (I.E. no `console.log`) - this looks messy when the end user uses your code.
@@ -27,6 +27,7 @@ A good pull request and commit messages can often become the basis for developer
 * **Strive to format your commit messages properly** and take the time to add more detail on **why the code is the way it is** when this will be helpful for people in the future.
 * **Use draft pull requests** to get feedback early or help with specific problems.  While a pull request is in draft you do not necessarily need to follow all the guidance, but make sure you're clear when asking others for help that you know there are outstanding issues and what they are.
 * **GPG sign all your git commits** - if you are a Parity employee, follow the [yubikey gpg setup guide](https://www.notion.so/paritytechnologies/Yubikey-Guide-787b2f4e340a40369bbf3159fa3643de)
+* **Never force push a branch once a PR is in review** - this makes reviewing much harder as it disrupts the flow of the conversation.  When a reviewer returns to the conversation it's harder to see what's changed since they last looked.
 
 ### Tips for testing
 

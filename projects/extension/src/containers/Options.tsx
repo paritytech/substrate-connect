@@ -11,16 +11,11 @@ import FormControlLabel from "@mui/material/FormControlLabel"
 import FormControl from "@mui/material/FormControl"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
-import { makeStyles } from "@mui/styles"
 
 interface TabPanelProps {
   children?: React.ReactNode
   index: number
   value: number
-}
-
-interface StyledTabProps {
-  label: string
 }
 
 interface logStructure {
