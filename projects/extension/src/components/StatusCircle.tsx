@@ -17,21 +17,29 @@ const StatusCircle: FunctionComponent<Props> = ({
       ? "1.5"
       : size === "medium"
       ? "2.5"
-      : size === "large" && "3.5"
+      : size === "large"
+      ? "3.5"
+      : "1"
   const r =
     size === "small"
       ? "lg"
       : size === "medium"
       ? "xl"
-      : size === "large" && "2xl"
+      : size === "large"
+      ? "2xl"
+      : "base"
 
-  const styleObj = {
-    border: `${color || substrateGreen[400]}`,
-    backgroundColor: `"1px solid ${borderColor || substrateGreen[400]}"`,
-  }
-  const cName = `w-${s} h-${s} rounded-${r}`
-
-  return <div data-testid="circle" className={cName} style={styleObj} />
+  // TODO: FIX THE VARS
+  return (
+    <div
+      data-testid="circle"
+      className="w-2.5 h-2.5 rounded-xl"
+      style={{
+        backgroundColor: `${color || substrateGreen[400]}`,
+        border: `1px solid ${borderColor || substrateGreen[400]}`,
+      }}
+    />
+  )
 }
 
 export default StatusCircle

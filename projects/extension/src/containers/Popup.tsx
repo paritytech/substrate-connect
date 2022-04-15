@@ -66,7 +66,7 @@ const Popup: FunctionComponent = () => {
 
   return (
     <div className="w-80">
-      <div className="py-1.5 my-3 mx-6 text-sm flex justify-between border-neutral-200 border-b">
+      <div className="py-1.5 my-3 mx-6 flex justify-between border-neutral-200 border-b">
         <Logo />
         <SettingsOutlinedIcon
           onClick={goToOptions}
