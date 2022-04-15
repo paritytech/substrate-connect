@@ -1,32 +1,18 @@
 import React, { SetStateAction, useEffect, useState } from "react"
-import {
-  Button,
-  CircularProgress,
-  createTheme,
-  ThemeProvider,
-} from "@material-ui/core"
-import { makeStyles } from "@material-ui/core/styles"
-import Box from "@material-ui/core/Box"
-import Switch from "@material-ui/core/Switch"
-import FormGroup from "@material-ui/core/FormGroup"
-import FormControlLabel from "@material-ui/core/FormControlLabel"
-import FormControl from "@material-ui/core/FormControl"
-import { light, Logo, NetworkTab } from "../components/"
-import GlobalFonts from "../fonts/fonts"
+
+import { Logo, NetworkTab, Loader } from "../components/"
 import { Background } from "../background/"
-import { withStyles, Theme, createStyles } from "@material-ui/core/styles"
-import Tabs from "@material-ui/core/Tabs"
-import Tab from "@material-ui/core/Tab"
-import {
-  // DEACTIVATE FOR NOW - will be n./src/containers/Options.tsx once parachains will be integrated
-  //  Parachain,
-  NetworkTabProps,
-} from "../types"
-import {
-  PlayArrow,
-  Pause as PauseIcon,
-  FileCopy as FileCopyIcon,
-} from "@material-ui/icons"
+
+import { NetworkTabProps } from "../types"
+
+import Switch from "@mui/material/Switch"
+import FormGroup from "@mui/material/FormGroup"
+import FormControlLabel from "@mui/material/FormControlLabel"
+import FormControl from "@mui/material/FormControl"
+import Tabs from "@mui/material/Tabs"
+import Tab from "@mui/material/Tab"
+import { makeStyles } from "@mui/styles"
+
 interface TabPanelProps {
   children?: React.ReactNode
   index: number
@@ -44,78 +30,6 @@ interface logStructure {
   message: string
 }
 
-const MenuTabs = withStyles({
-  root: {
-    minHeight: 34,
-  },
-})(Tabs)
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    flexBasis: "33.33%",
-    flexShrink: 0,
-    fontWeight: "bold",
-  },
-  secondaryHeading: {
-    fontSize: theme.typography.pxToRem(15),
-    color: theme.palette.text.secondary,
-  },
-  logs: {
-    display: "block",
-  },
-  logContainer: {
-    maxHeight: "80vh",
-    overflowY: "auto",
-    display: "block",
-    width: "100%",
-  },
-  logTitle: {
-    margin: "20px 0",
-    display: "flex",
-  },
-  errCounter: {
-    borderRadius: "30px",
-    backgroundColor: "red",
-    padding: "10px 15px",
-    margin: "0 10px",
-  },
-  warnCounter: {
-    borderRadius: "30px",
-    backgroundColor: "yellow",
-    padding: "10px 15px",
-    margin: "0 10px",
-  },
-  copyClipboard: {
-    margin: "0 10px",
-  },
-}))
-
-const MenuTab = withStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      textTransform: "none",
-      minWidth: 110,
-      minHeight: 34,
-      marginRight: theme.spacing(3),
-      color: "#BDBDBD",
-      "&:hover": {
-        opacity: 1,
-      },
-      "&$selected": {
-        border: "1px solid #EEEEEE",
-        borderRadius: "5px",
-        color: "#000",
-        backgroundColor: "#F7F7F7",
-      },
-    },
-    selected: {},
-  }),
-)((props: StyledTabProps) => <Tab disableRipple {...props} />)
-
 const TabPanel = (props: TabPanelProps) => {
   const { children, value, index, ...other } = props
 
@@ -127,14 +41,12 @@ const TabPanel = (props: TabPanelProps) => {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box mt={4}>{children}</Box>}
+      {value === index && <div className="mt-4">{children}</div>}
     </div>
   )
 }
 
 const Options: React.FunctionComponent = () => {
-  const classes = useStyles()
-  const appliedTheme = createTheme(light)
   const [value, setValue] = useState<number>(0)
   const [networks, setNetworks] = useState<NetworkTabProps[]>([])
   const [notifications, setNotifications] = useState<boolean>(false)
@@ -257,24 +169,20 @@ const Options: React.FunctionComponent = () => {
   }
 
   return (
-    <ThemeProvider theme={appliedTheme}>
-      <GlobalFonts />
-      <Box pb={7}>
-        <Logo />
-      </Box>
-      <MenuTabs
+    <div className="font-roboto my-8 mx-12">
+      <div className="pb-10 text-base">
+        <Logo textSize="lg" />
+      </div>
+      <Tabs
         value={value}
         onChange={handleChange}
-        TabIndicatorProps={{
-          style: {
-            display: "none",
-          },
-        }}
+        indicatorColor="primary"
+        textColor="secondary"
       >
-        <MenuTab label="Networks"></MenuTab>
-        <MenuTab label="Settings"></MenuTab>
-        <MenuTab label="Logs"></MenuTab>
-      </MenuTabs>
+        <Tab disableRipple label="Networks"></Tab>
+        <Tab disableRipple label="Settings"></Tab>
+        <Tab disableRipple label="Logs"></Tab>
+      </Tabs>
       <TabPanel value={value} index={0}>
         {networks.length ? (
           networks.map((network: NetworkTabProps, i: number) => {
@@ -310,29 +218,31 @@ const Options: React.FunctionComponent = () => {
         </FormControl>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <div className={classes.logs}>
-          <div className={classes.logTitle}>
-            <Button
-              variant="contained"
-              startIcon={poolingLogs ? <PauseIcon /> : <PlayArrow />}
+        <div className="block">
+          <div className="my-5 flex">
+            <button
+              className="border rounded-md px-2 bg-stone-200	hover:bg-stone-400"
               onClick={() => setPoolingLogs(!poolingLogs)}
             >
               {poolingLogs ? "Pause" : "Retrieve "} logs
-            </Button>
-            <Button
-              className={classes.copyClipboard}
-              variant="contained"
-              startIcon={<FileCopyIcon />}
+            </button>
+            <button
+              className="my-0 mx-2 border rounded-md px-2 bg-stone-200	hover:bg-stone-400"
               onClick={() => navigator.clipboard.writeText(textifyLogs())}
             >
               Copy to clipboard
-            </Button>
-            <div className={classes.errCounter}>{errLogs.length} Errors</div>
-            <div className={classes.warnCounter}>
+            </button>
+            <div className="rounded-md bg-red-500	py-2.5 px-4">
+              {errLogs.length} Errors
+            </div>
+            <div className="rounded-md bg-yellow-300 py-2.5 px-4 ml-2">
               {warnLogs.length} Warnings
             </div>
           </div>
-          <div className={classes.logContainer}>
+          <div
+            style={{ maxHeight: "80vh" }}
+            className="overflow-y-auto block w-full"
+          >
             {allLogs.length > 0 ? (
               allLogs.map(
                 (
@@ -373,12 +283,14 @@ const Options: React.FunctionComponent = () => {
                 ),
               )
             ) : (
-              <CircularProgress />
+              <div className="h-56 items-center ml-40 mt-20">
+                <Loader />
+              </div>
             )}
           </div>
         </div>
       </TabPanel>
-    </ThemeProvider>
+    </div>
   )
 }
 
