@@ -6,7 +6,12 @@
       "roboto": ["Roboto", "sans-serif"],
       "inter": ["Inter", "sans-serif"]
     },
-    "extend": {}
+    "extend": {
+      "width": {
+        "128": "32rem",
+        "132": "39rem"
+      }
+    }
   },
   "plugins": []
 }

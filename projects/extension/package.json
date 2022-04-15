@@ -18,9 +18,6 @@
     "start:firefox": "web-ext run --source-dir ./dist -t firefox-desktop",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
   },
-  "resolutions": {
-    "styled-components": "^5"
-  },
   "keywords": [],
   "devDependencies": {
     "autoprefixer": "^10.4.4",
@@ -34,17 +31,14 @@
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
-    "@material-ui/core": "^4.12.4",
-    "@material-ui/icons": "^4.11.2",
-    "@material-ui/styles": "^4.11.4",
     "@mui/icons-material": "^5.6.1",
     "@mui/material": "^5.6.1",
+    "@mui/styles": "^5.6.1",
     "@substrate/connect-extension-protocol": "^1.0.0",
     "@substrate/smoldot-light": "0.6.15",
-    "mottled-library": "file:../../../../../parity/mottled-library/packages/library",
+    "mottled-library": "0.0.11",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-hot-loader": "^4.13.0",
-    "styled-components": "^5.3.5"
+    "react-hot-loader": "^4.13.0"
   }
 }
