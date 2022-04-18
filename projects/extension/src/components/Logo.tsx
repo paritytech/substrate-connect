@@ -1,4 +1,4 @@
-import * as React from "react"
+import React from "react"
 
 interface LogoProps {
   textSize?: "sm" | "base" | "lg" | "xl" | "2xl"
