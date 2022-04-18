@@ -14,11 +14,11 @@ const StatusCircle: FunctionComponent<Props> = ({
 }: Props) => {
   const s =
     size === "small"
-      ? "1.5"
+      ? "1"
       : size === "medium"
-      ? "2.5"
+      ? "2"
       : size === "large"
-      ? "3.5"
+      ? "3"
       : "1"
   const r =
     size === "small"
@@ -29,11 +29,11 @@ const StatusCircle: FunctionComponent<Props> = ({
       ? "2xl"
       : "base"
 
-  // TODO: FIX THE VARS
+  const cl = "w-" + s + " h-" + s + " rounded-" + r
   return (
     <div
       data-testid="circle"
-      className={`"w-${s} h-${s} rounded-${r}"`}
+      className={cl}
       style={{
         backgroundColor: `${color || substrateGreen[400]}`,
         border: `1px solid ${borderColor || substrateGreen[400]}`,

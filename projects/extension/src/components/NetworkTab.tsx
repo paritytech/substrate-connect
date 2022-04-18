@@ -2,10 +2,10 @@ import React, { FunctionComponent, useMemo } from "react"
 import { StatusCircle } from "."
 
 import { NetworkTabProps, App, OptionsNetworkTabHealthContent } from "../types"
-import { Accordion, AccordionItem } from "./Accordion"
-import { getChain, Network, NetworkIcon } from "mottled-library"
+import { getChain, Accordion, Network, NetworkIcon } from "mottled-library"
 import "mottled-library/css/core.css"
 import "mottled-library/css/NetworkIcon.css"
+import "mottled-library/css/Accordion.css"
 
 export const emojis = {
   chain: "🔗",
@@ -80,33 +80,31 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
           }
         />
       </div>
-      <Accordion>
-        <AccordionItem
-          title={
-            <>
-              <div className="flex rounded-md">
-                <NetworkIcon
-                  cName="text-black"
-                  network={name.toLowerCase() as Network}
-                  show="both"
-                  size="xl"
-                  color={useMemo(
-                    () => getChain(name.toLocaleLowerCase())?.color,
-                    [name],
-                  )}
-                />
-              </div>
-              <div className="text-base">
-                Peer{health && health.peers === 1 ? "" : "s"}:{" "}
-                {(health && health.peers) ?? ".."}
-              </div>
-            </>
-          }
-          value={name}
-        >
-          <NetworkContent health={health} apps={apps} network={name} />
-        </AccordionItem>
-      </Accordion>
+      <Accordion
+        titles={[
+          <>
+            <div className="flex rounded-md">
+              <NetworkIcon
+                cName="text-black"
+                network={name.toLowerCase() as Network}
+                show="both"
+                size="xl"
+                color={useMemo(
+                  () => getChain(name.toLocaleLowerCase())?.color,
+                  [name],
+                )}
+              />
+            </div>
+            <div className="text-base">
+              Peer{health && health.peers === 1 ? "" : "s"}:{" "}
+              {(health && health.peers) ?? ".."}
+            </div>
+          </>,
+        ]}
+        contents={[
+          <NetworkContent health={health} apps={apps} network={name} />,
+        ]}
+      ></Accordion>
     </div>
   )
 }
