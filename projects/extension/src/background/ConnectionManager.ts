@@ -101,7 +101,7 @@ export class ConnectionManager<SandboxId> {
   #smoldotClient: SmoldotClient
   #sandboxes: Map<SandboxId, Sandbox> = new Map()
   #wellKnownChains: Map<string, WellKnownChain> = new Map()
-  #hasCrashed: boolean = false
+  #hasCrashed: string | undefined
 
   constructor(smoldotClient: SmoldotClient) {
     this.#smoldotClient = smoldotClient
@@ -163,17 +163,21 @@ export class ConnectionManager<SandboxId> {
     } catch (error) {
       // If an exception is thrown, we kill all chains. This can only happen either in case of a
       // crash in smoldot or a bug in substrate-connect.
-      this.#hasCrashed = true
+      const errorMsg =
+        "Internal error in smoldot: " +
+        (error instanceof Error ? error.toString() : "(unknown)")
+      this.#hasCrashed = errorMsg
       return undefined
     }
   }
 
   /**
-   * Returns `true` if the underlying client has crashed in the past.
+   * Returns a string error message if the underlying client has crashed in the past. Returns
+   * `undefined` if it hasn't crashed.
    *
    * A crash is non-reversible. The only solution is to rebuild a new manager.
    */
-  get hasCrashed(): boolean {
+  get hasCrashed(): string | undefined {
     return this.#hasCrashed
   }
 
@@ -306,11 +310,11 @@ export class ConnectionManager<SandboxId> {
         try {
           chain.smoldotChain.sendJsonRpc(message.jsonRpcMessage)
         } catch (error) {
-          this.#resetAllNonWellKnownChains(
+          const errorMsg =
             "Internal error in smoldot: " +
-              (error instanceof Error ? error.toString() : "(unknown)"),
-          )
-          this.#hasCrashed = true
+            (error instanceof Error ? error.toString() : "(unknown)")
+          this.#resetAllNonWellKnownChains(errorMsg)
+          this.#hasCrashed = errorMsg
           return
         }
 
@@ -462,7 +466,7 @@ export class ConnectionManager<SandboxId> {
         chainId,
       })
     } catch (err) {
-      if (err instanceof CrashError) this.#hasCrashed = true
+      if (err instanceof CrashError) this.#hasCrashed = err.message
 
       const error =
         err instanceof Error ? err.message : "Unknown error when adding chain"
