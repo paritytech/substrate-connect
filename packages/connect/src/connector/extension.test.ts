@@ -89,11 +89,11 @@ describe("SmoldotConnect::Extension", () => {
         type: "error",
         origin: "substrate-connect-extension",
         chainId: addChainMessage.chainId,
-        errorMessage: "",
+        errorMessage: "test",
       })
 
       await expect(chainPromise).rejects.toThrow(
-        "There was an error creating the smoldot chain.",
+        "There was an error creating the smoldot chain: test",
       )
     })
 

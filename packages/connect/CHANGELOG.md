@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- The reason why the extension rejects a chain is now explained in the exception being thrown. ([#968](https://github.com/paritytech/substrate-connect/pull/968))
+
 ## 0.7.2 - 2022-04-07
 
 ### Changed
