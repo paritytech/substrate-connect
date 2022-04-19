@@ -27,11 +27,11 @@ const Popup: FunctionComponent = () => {
         if (!isActive) return
 
         const bg = backgroundPage as Background
-        disconnectTabRef.current = bg.manager.disconnectTab
+        disconnectTabRef.current = bg.uiInterface.disconnectTab
 
-        unsubscribe = bg.manager.onManagerStateChanged((apps) => {
+        const refresh = () => {
           const networksByTab: Map<number, Set<string>> = new Map()
-          apps.forEach((app) => {
+          bg.uiInterface.chains.forEach((app) => {
             if (!networksByTab.has(app.tabId))
               networksByTab.set(app.tabId, new Set())
             networksByTab.get(app.tabId)!.add(app.chainName)
@@ -50,7 +50,9 @@ const Popup: FunctionComponent = () => {
           })
 
           setOtherTabs(nextTabs)
-        })
+        }
+        unsubscribe = bg.uiInterface.onChainsChanged(refresh)
+        refresh()
       })
     })()
 
