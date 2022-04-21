@@ -3,7 +3,6 @@
 const webpack = require("webpack")
 const CopyPlugin = require("copy-webpack-plugin")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
-const TerserPlugin = require("terser-webpack-plugin")
 
 module.exports = {
   mode: "production",
@@ -75,12 +74,5 @@ module.exports = {
   ],
   optimization: {
     minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        // Use multi-process parallel running to improve the build speed
-        // Default number of concurrent runs: os.cpus().length - 1
-        parallel: true,
-      }),
-    ],
   },
 }
