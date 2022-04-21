@@ -203,11 +203,12 @@ export class ConnectionManagerWithHealth<SandboxId> {
   }
 
   /**
-   * Returns `true` if the underlying client has crashed in the past.
+   * Returns a string error message if the underlying client has crashed in the past. Returns
+   * `undefined` if it hasn't crashed.
    *
    * A crash is non-reversible. The only solution is to rebuild a new manager.
    */
-  get hasCrashed(): boolean {
+  get hasCrashed(): string | undefined {
     return this.#inner.hasCrashed
   }
 
