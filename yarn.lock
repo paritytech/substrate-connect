@@ -8649,11 +8649,6 @@ moment@^2.19.3:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.2.tgz#00910c60b20843bcba52d37d58c628b47b1f20e4"
   integrity sha512-UgzG4rvxYpN15jgCmVJwac49h9ly9NurikMWGPdVxm8GZD6XjkKPxDTjQQ43gtGgnV3X0cAyWDdP2Wexoquifg==
 
-mottled-library@0.0.12:
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/mottled-library/-/mottled-library-0.0.12.tgz#38192caba9fe109a0dc276162392e57a753f67c1"
-  integrity sha512-PttRwaHXRgvsNyiv8bPSb+xu9NxfLjR5hTtT4xq64fr2PPVavLk1avfD2RQrEOWr+uVvfzqK0EiM/8VpQA8UPg==
-
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"

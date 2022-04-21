@@ -1,11 +1,7 @@
 import React, { FunctionComponent, SetStateAction, Dispatch } from "react"
 import BlockIcon from "@mui/icons-material/Block"
 import { TabInterface } from "../types"
-import { Tooltip, Network, NetworkIcon } from "mottled-library"
-
-import "mottled-library/css/core.css"
-import "mottled-library/css/NetworkIcon.css"
-import "mottled-library/css/Tooltip.css"
+import "../main.css"
 
 interface TabProps {
   disconnectTab: (tabId: number) => void
@@ -46,23 +42,24 @@ const Tab: FunctionComponent<TabProps> = ({
           <div className="truncate py-1.5 my-1.5 ml-6 w-7/12">{tab.url}</div>
           <div className="flex items-center right-6 absolute">
             {tab?.networks.map((n) => (
-              <NetworkIcon
-                cName="text-neutral-500"
-                network={n.toLowerCase() as Network}
-                show="icon"
-                size="lg"
-              />
+              <div
+                className="networkicon_container"
+                style={{ color: "text-neutral-500" }}
+              >
+                <div className="icon txt-lg" style={{ marginRight: "0" }}>
+                  {n.toLowerCase()}
+                </div>
+              </div>
             ))}
-            <Tooltip
-              text={"Disconnect app"}
-              position={"left"}
-              cName="text-xs font-medium"
-            >
+            <div data-testid="Tooltip" className="tooltip">
+              <span className="tooltiptext text-xs font-medium rounded shadow-lg p-1 bg-gray-100 tooltip_left">
+                Disconnect app
+              </span>
               <BlockIcon
                 style={{ width: "1rem", marginLeft: "0.5rem", color: "red" }}
                 onClick={onDisconnect}
               />
-            </Tooltip>
+            </div>
           </div>
         </>
       )}

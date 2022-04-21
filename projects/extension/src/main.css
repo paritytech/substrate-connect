@@ -1,0 +1,124 @@
+@font-face {
+  font-family: "Web3-Regular";
+  src: url("./fonts/Web3-Regular.woff") format("woff"),
+    url("./fonts/Web3-Regular.woff2") format("woff2");
+}
+
+.networkicon_container {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  font-family: "Web3-Regular";
+  @apply text-center;
+}
+
+.cap {
+  @apply capitalize;
+}
+
+.txt-xs {
+  @apply text-xs;
+}
+.txt-sm {
+  @apply text-sm;
+}
+.txt-base {
+  @apply text-base;
+}
+.txt-xl {
+  @apply text-xl;
+}
+.txt-2xl {
+  @apply text-2xl;
+}
+.txt-3xl {
+  @apply text-3xl;
+}
+.txt-4xl {
+  @apply text-4xl;
+}
+.txt-5xl {
+  @apply text-5xl;
+}
+.txt-6xl {
+  @apply text-6xl;
+}
+.txt-7xl {
+  @apply text-7xl;
+}
+.txt-8xl {
+  @apply text-8xl;
+}
+.txt-9xl {
+  @apply text-9xl;
+}
+
+.accordion {
+  @apply items-center font-normal justify-between text-left;
+}
+
+.item_title {
+  @apply items-center w-full flex text-sm justify-between p-3 text-left border border-neutral-400 cursor-pointer;
+}
+
+.item_content {
+  @apply bg-neutral-700 p-4 text-white border border-neutral-400;
+}
+
+.item {
+  @apply w-full;
+}
+
+._mi__single button {
+  @apply rounded w-full;
+}
+
+._mi__first button {
+  @apply rounded-t-md w-full;
+}
+
+._mi__last button {
+  @apply rounded-b-md w-full;
+}
+
+.content_expanded {
+  @apply rounded-b-md;
+}
+
+.content_closed {
+  @apply rounded-b-none !important;
+}
+
+.tooltip {
+  @apply relative inline cursor-pointer;
+}
+
+.tooltip .tooltiptext {
+  @apply invisible bg-black text-white text-center rounded-md p-1.5 absolute z-50 w-max;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tooltip_top {
+  bottom: 150%;
+  margin-left: -5px;
+}
+
+.tooltip_left {
+  top: -5px;
+  right: 105%;
+}
+
+.tooltip_right {
+  top: -5px;
+  left: 105%;
+}
+
+.tooltip_bottom {
+  top: 150%;
+  margin-left: -5px;
+}

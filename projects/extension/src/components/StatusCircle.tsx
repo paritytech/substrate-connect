@@ -14,27 +14,21 @@ const StatusCircle: FunctionComponent<Props> = ({
 }: Props) => {
   const s =
     size === "small"
+      ? "0.35"
+      : size === "medium"
+      ? "0.5"
+      : size === "large"
       ? "1"
-      : size === "medium"
-      ? "2"
-      : size === "large"
-      ? "3"
-      : "1"
-  const r =
-    size === "small"
-      ? "lg"
-      : size === "medium"
-      ? "xl"
-      : size === "large"
-      ? "2xl"
-      : "base"
+      : "0.35"
 
-  const cl = "w-" + s + " h-" + s + " rounded-" + r
+  console.log("s", s, s.concat(" rem"))
   return (
     <div
       data-testid="circle"
-      className={cl}
       style={{
+        width: s.concat("rem"),
+        height: s.concat("rem"),
+        borderRadius: s.concat("rem"),
         backgroundColor: `${color || substrateGreen[400]}`,
         border: `1px solid ${borderColor || substrateGreen[400]}`,
       }}
