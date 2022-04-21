@@ -26,12 +26,19 @@ export const wellKnownChains: Map<string, string> = new Map<string, string>([
 ])
 
 export interface Background extends Window {
-  manager: {
-    onManagerStateChanged: (
-      listener: (state: ExposedChainConnection[]) => void,
-    ) => () => void
+  uiInterface: {
+    onChainsChanged: (listener: () => void) => () => void
+    onSmoldotCrashErrorChanged: (listener: () => void) => () => void
     disconnectTab: (tabId: number) => void
-    getLogger: () => LogKeeper
+    // List of all chains that are currently running.
+    // Use `onChainsChanged` to register a callback that is called when this list or its content
+    // might have changed.
+    get chains(): ExposedChainConnection[]
+    get logger(): LogKeeper
+    // If smoldot has crashed, contains a string containing a crash message.
+    // Use `onSmoldotCrashErrorChanged` to register a callback that is called when this crash
+    // message might have changed.
+    get smoldotCrashError(): string | undefined
   }
 }
 
@@ -86,59 +93,91 @@ const logger = (level: number, target: string, message: string) => {
   all.push(incLog)
 }
 
-const listeners: Set<(state: ExposedChainConnection[]) => void> = new Set()
-
-const notifyListener = (
-  manager: ConnectionManagerWithHealth<chrome.runtime.Port>,
-  listener: (state: ExposedChainConnection[]) => void,
-) => {
-  listener(
-    manager.allChains
-      .filter((info) => info.apiInfo)
-      .map((info) => {
-        return {
-          chainId: info.apiInfo!.chainId,
-          chainName: info.chainName,
-          tabId: info.apiInfo!.sandboxId.sender!.tab!.id!,
-          url: info.apiInfo!.sandboxId.sender!.tab!.url!,
-          isSyncing: info.isSyncing,
-          peers: info.peers,
-        }
-      }),
-  )
+// Listeners that must be notified when the `get chains()` getter would return a different value.
+const chainsChangedListeners: Set<() => void> = new Set()
+const notifyAllChainsChangedListeners = () => {
+  chainsChangedListeners.forEach((l) => {
+    try {
+      l()
+    } catch (e) {
+      console.error("Uncaught exception in onChainsChanged callback:", e)
+    }
+  })
+}
+// Listeners that must be notified when the `get smoldotCrashError()` getter would return a
+// different value.
+const smoldotCrashErrorChangedListeners: Set<() => void> = new Set()
+const notifyAllSmoldotCrashErrorChangedListeners = () => {
+  smoldotCrashErrorChangedListeners.forEach((l) => {
+    try {
+      l()
+    } catch (e) {
+      console.error(
+        "Uncaught exception in onSmoldotCrashErrorChanged callback:",
+        e,
+      )
+    }
+  })
 }
 
 declare let window: Background
-window.manager = {
-  onManagerStateChanged(listener) {
-    managerPromise.then((manager) => notifyListener(manager, listener))
-    listeners.add(listener)
+window.uiInterface = {
+  onChainsChanged(listener) {
+    chainsChangedListeners.add(listener)
     return () => {
-      listeners.delete(listener)
+      chainsChangedListeners.delete(listener)
+    }
+  },
+  onSmoldotCrashErrorChanged(listener) {
+    smoldotCrashErrorChangedListeners.add(listener)
+    return () => {
+      smoldotCrashErrorChangedListeners.delete(listener)
     }
   },
   disconnectTab: (tabId: number) => {
     // Note that the manager is always ready here, otherwise the caller wouldn't be aware of any
-    // `tabId`. However there is no API in JavaScript that allows assuming that a `Promise` is
-    // already ready.
-    managerPromise.then((manager) => {
-      // Note that multiple ports can share the same `tabId`
-      for (const port of manager.sandboxes) {
-        if (port.sender?.tab?.id === tabId) {
-          manager.deleteSandbox(port)
-          port.disconnect()
-        }
+    // `tabId`.
+    if (manager.state !== "ready") return
+    // Note that multiple ports can share the same `tabId`
+    for (const port of manager.manager.sandboxes) {
+      if (port.sender?.tab?.id === tabId) {
+        manager.manager.deleteSandbox(port)
+        port.disconnect()
       }
-    })
+    }
   },
-  getLogger: () => logKeeper,
+  get chains(): ExposedChainConnection[] {
+    if (manager.state === "ready") {
+      return manager.manager.allChains
+        .filter((info) => info.apiInfo)
+        .map((info) => {
+          return {
+            chainId: info.apiInfo!.chainId,
+            chainName: info.chainName,
+            tabId: info.apiInfo!.sandboxId.sender!.tab!.id!,
+            url: info.apiInfo!.sandboxId.sender!.tab!.url!,
+            isSyncing: info.isSyncing,
+            peers: info.peers,
+          }
+        })
+    } else {
+      return []
+    }
+  },
+  get logger() {
+    return logKeeper
+  },
+  get smoldotCrashError() {
+    if (manager.state === "crashed") return manager.error
+    else return undefined
+  },
 }
 
 const saveChainDbContent = async (
-  manager: ConnectionManagerWithHealth<chrome.runtime.Port>,
+  readyManager: ConnectionManagerWithHealth<chrome.runtime.Port>,
   key: string,
 ) => {
-  const db = await manager.wellKnownChainDatabaseContent(
+  const db = await readyManager.wellKnownChainDatabaseContent(
     key,
     chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
   )
@@ -146,43 +185,80 @@ const saveChainDbContent = async (
   // `db` can be `undefined` if the database content couldn't be obtained. In that case, we leave
   // the database as it was before.
   if (db) chrome.storage.local.set({ [key]: db })
+  else {
+    // `db` being undefined can mean that the manager might have crashed.
+    const error = readyManager.hasCrashed
+    if (error) {
+      manager = { state: "crashed", error }
+      notifyAllSmoldotCrashErrorChangedListeners()
+      notifyAllChainsChangedListeners()
+    }
+  }
 }
 
-// Start initializing a `ConnectionManagerWithHealth`.
-// This initialization operation shouldn't take more than a few dozen milliseconds, but we still
-// need to properly handle situations where initialization isn't finished yet.
-const managerPromise: Promise<
-  ConnectionManagerWithHealth<chrome.runtime.Port>
-> = (async () => {
-  const managerInit = new ConnectionManagerWithHealth<chrome.runtime.Port>(
-    smoldotStart({
-      maxLogLevel: 4,
-      logCallback: logger,
-      cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
-    }),
-  )
-  for (const [key, value] of wellKnownChains.entries()) {
-    const dbContent = await new Promise<string | undefined>((res) =>
-      chrome.storage.local.get([key], (val) => res(val[key] as string)),
-    )
-
-    await managerInit.addWellKnownChain(key, value, dbContent)
-    if (!dbContent) saveChainDbContent(managerInit, key)
-  }
-
-  // Create an alarm that will periodically save the content of the database of the well-known
-  // chains.
-  chrome.alarms.onAlarm.addListener((alarm) => {
-    if (alarm.name === "DatabaseContentAlarm") {
-      for (const [key] of wellKnownChains) saveChainDbContent(managerInit, key)
+// The manager can be in multiple different states: currently initializing, operational, or
+// crashed.
+// While initializing, the `whenInitFinished` promise can be used to know when the initialization
+// is over and the manager is now operational or crashed.
+let manager:
+  | { state: "initializing"; whenInitFinished: Promise<void> }
+  | {
+      state: "ready"
+      manager: ConnectionManagerWithHealth<chrome.runtime.Port>
     }
-  })
-  chrome.alarms.create("DatabaseContentAlarm", {
-    periodInMinutes: 5,
-  })
+  | { state: "crashed"; error: string } = {
+  state: "initializing",
+  whenInitFinished: (async () => {})(),
+}
 
-  return managerInit
-})()
+manager = {
+  state: "initializing",
+  whenInitFinished: (async () => {
+    try {
+      // Start initializing a `ConnectionManagerWithHealth`.
+      // This initialization operation shouldn't take more than a few dozen milliseconds, but we
+      // still need to properly handle situations where initialization isn't finished yet.
+      const managerInit = new ConnectionManagerWithHealth<chrome.runtime.Port>(
+        smoldotStart({
+          maxLogLevel: 4,
+          logCallback: logger,
+          cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
+        }),
+      )
+      for (const [key, value] of wellKnownChains.entries()) {
+        const dbContent = await new Promise<string | undefined>((res) =>
+          chrome.storage.local.get([key], (val) => res(val[key] as string)),
+        )
+
+        await managerInit.addWellKnownChain(key, value, dbContent)
+        if (!dbContent) saveChainDbContent(managerInit, key)
+      }
+
+      // Create an alarm that will periodically save the content of the database of the well-known
+      // chains.
+      chrome.alarms.onAlarm.addListener((alarm) => {
+        if (alarm.name === "DatabaseContentAlarm") {
+          for (const [key] of wellKnownChains)
+            saveChainDbContent(managerInit, key)
+        }
+      })
+      chrome.alarms.create("DatabaseContentAlarm", {
+        periodInMinutes: 5,
+      })
+
+      // Success. Update the state and notify listeners.
+      notifyAllChainsChangedListeners()
+      manager = { state: "ready", manager: managerInit }
+    } catch (error) {
+      notifyAllSmoldotCrashErrorChangedListeners()
+      const msg =
+        error instanceof Error
+          ? error.toString()
+          : "Unknown error at initialization"
+      manager = { state: "crashed", error: msg }
+    }
+  })(),
+}
 
 // Handle new port connections.
 //
@@ -201,23 +277,37 @@ chrome.runtime.onConnect.addListener((port) => {
   // initialization shouldn't take more than a few dozen milliseconds and it is actually unlikely
   // for any message to arrive at all.
 
-  let managerWithSandbox = managerPromise.then((manager) => {
-    manager.addSandbox(port)
+  let managerPromise = (async () => {
+    while (true) {
+      if (manager.state === "initializing") {
+        await manager.whenInitFinished
+      } else if (manager.state === "ready") {
+        return manager.manager
+      } else if (manager.state === "crashed") {
+        return undefined
+      }
+    }
+  })()
+
+  let managerWithSandbox = managerPromise.then((readyManager) => {
+    if (!readyManager) return readyManager
+
+    readyManager.addSandbox(port)
     ;(async () => {
       while (true) {
         let message
         try {
-          message = await manager.nextSandboxMessage(port)
+          message = await readyManager.nextSandboxMessage(port)
         } catch (error) {
           // An error is thrown by `nextSandboxMessage` if the sandbox is destroyed.
           break
         }
 
         if (message.type === "chains-status-changed") {
-          listeners.forEach((listener) => notifyListener(manager, listener))
+          notifyAllChainsChangedListeners()
         } else {
           if (message.type === "chain-ready" || message.type === "error")
-            listeners.forEach((listener) => notifyListener(manager, listener))
+            notifyAllChainsChangedListeners()
 
           // We make sure that the message is indeed of type `ToApplication`.
           const messageCorrectType: ToApplication = message
@@ -225,32 +315,59 @@ chrome.runtime.onConnect.addListener((port) => {
 
           // If an error happened, this might be an indication that the manager has crashed.
           // If that is the case, we need to notify the UI and restart everything.
-          // TODO: this isn't implemented yet
-          if (message.type === "error" && manager.hasCrashed) {
+          if (message.type === "error") {
+            const error = readyManager.hasCrashed
+            if (error) {
+              manager = { state: "crashed", error }
+              notifyAllSmoldotCrashErrorChangedListeners()
+              notifyAllChainsChangedListeners()
+            }
           }
         }
       }
     })()
 
-    return manager
+    return readyManager
   })
 
   port.onMessage.addListener((message: ToExtension) => {
     managerWithSandbox = managerWithSandbox.then((manager) => {
-      manager.sandboxMessage(port, message)
-      if (
-        message.type === "add-chain" ||
-        message.type === "add-well-known-chain"
-      )
-        listeners.forEach((listener) => notifyListener(manager, listener))
+      if (manager) {
+        manager.sandboxMessage(port, message)
+        if (
+          message.type === "add-chain" ||
+          message.type === "add-well-known-chain" ||
+          message.type === "remove-chain"
+        ) {
+          notifyAllChainsChangedListeners()
+        }
+      } else {
+        // If the page wants to send a message while the manager has crashed, we instantly
+        // return an error.
+        if (
+          message.type === "add-chain" ||
+          message.type === "add-well-known-chain"
+        ) {
+          const msg: ToApplication = {
+            origin: "substrate-connect-extension",
+            type: "error",
+            chainId: message.chainId,
+            errorMessage: "Smoldot has crashed",
+          }
+          port.postMessage(msg)
+        }
+      }
+
       return manager
     })
   })
 
   port.onDisconnect.addListener(() => {
     managerWithSandbox = managerWithSandbox.then((manager) => {
+      if (!manager) return manager
+
       manager.deleteSandbox(port)
-      listeners.forEach((listener) => notifyListener(manager, listener))
+      notifyAllChainsChangedListeners()
       return manager
     })
   })
