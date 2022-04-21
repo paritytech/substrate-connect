@@ -25,9 +25,9 @@ import {
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert"
 import { CardNetwork, CardProject } from "./components/Cards"
 
-import Burnr from "url:./assets/images/Burnr.png"
-import Extension from "url:./assets/images/Extension.png"
-import YourProject from "url:./assets/images/YourProject.png"
+import Burnr from "./assets/images/Burnr.png"
+import Extension from "./assets/images/Extension.png"
+import YourProject from "./assets/images/YourProject.png"
 
 const Alert = (props: AlertProps) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />
