@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const ThemeToggleProvider: FunctionComponent = ({ children }) => {
+const ThemeToggleProvider = ({ children }: { children: React.ReactNode }) => {
   const classes = useStyles()
   const [localTheme, setLocalTheme] = useLocalStorage("theme")
   const [theme, setTheme] = useState(localTheme === "false" ? false : true)

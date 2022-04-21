@@ -95,6 +95,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface CardLinkProps {
   href: string
+  children?: React.ReactNode
 }
 const CardLink: React.FunctionComponent<CardLinkProps> = ({
   href,
@@ -110,9 +111,11 @@ const CardLink: React.FunctionComponent<CardLinkProps> = ({
 }
 
 interface CardProjectProps extends GridProps {
+  children?: React.ReactNode
   title?: string
   subtitle?: string
   imageProps?: {
+    children?: React.ReactNode
     path: string
     position?: string
     fullWidth?: boolean
@@ -171,6 +174,7 @@ export const CardStatus: React.FunctionComponent<CardStatusProps> = ({
 }
 
 interface CardNetworkProps {
+  children: React.ReactNode
   title: string
   statusProps: CardStatusProps
   linkProps?: CardLinkProps

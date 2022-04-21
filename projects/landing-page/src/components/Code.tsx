@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 interface HeadingProps {
+  children: React.ReactNode
   heading?: string | number
 }
 export const Code: React.FunctionComponent<HeadingProps> = ({
