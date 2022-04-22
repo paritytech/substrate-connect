@@ -28,7 +28,7 @@
  *
  * As an important note - a light client only verifies the authenticity of blocks, but not their
  * correctness. For this reason, the block that is reported as being the best block might be
- * incorrect. In the context of a light client, only the finalised block can be assumed
+ * incorrect. For application built with a light client, only finalised blocks should be assumed
  * to be correct. Consequently, accessing the storage of any non-finalised block is also
  * not guaranteed to report correct values. This security concern is mostly relevant
  * to PolkadotJS, as PolkadotJS assumes best block by default.
