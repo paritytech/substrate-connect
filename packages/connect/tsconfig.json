@@ -18,8 +18,7 @@
     "jest.config*",
     "tsconfig*",
     "*node_modules*",
-    "../../node_modules*",
-    ".parcel*"
+    "../../node_modules*"
   ],
   "include": ["src/**/*", "src/**/*.json"],
   "references": [{ "path": "../connect-extension-protocol" }]
