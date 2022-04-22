@@ -625,8 +625,8 @@ interface WellKnownChain {
 function nameFromSpec(chainSpec: string): string {
   // TODO: consider using a streaming parser in order to avoid allocating the memory for the entire spec
   try {
-    return JSON.parse(chainSpec).name!
-  } catch (_error) {
-    return "Unknown"
-  }
+    const value = JSON.parse(chainSpec).name!
+    if (typeof value === "string") return value
+  } catch (_error) {}
+  return "Unknown"
 }
