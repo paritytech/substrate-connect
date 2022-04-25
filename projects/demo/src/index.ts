@@ -79,7 +79,7 @@ window.onload = () => {
         JSON.stringify(westmint),
         westendProvider,
       )
-      await westendProvider.connect()
+      await westmintProvider.connect()
       const api = await ApiPromise.create({ provider: westmintProvider })
 
       const [chain, nodeName, nodeVersion, properties] = await Promise.all([
