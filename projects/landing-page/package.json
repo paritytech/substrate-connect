@@ -6,10 +6,10 @@
   "license": "GPL-3.0-only",
   "scripts": {
     "prebuild": "yarn clean",
-    "build": "parcel build ./src/index.html --public-url ./",
+    "build": "webpack",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "dev": "tsc -b & parcel ./public/index.html",
+    "dev": "tsc -b & webpack serve --config webpack.config.js",
     "test": "exit 0; #No tests",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx",
     "predeploy": "yarn run build"
@@ -23,7 +23,10 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.61",
     "@material-ui/styles": "^4.11.4",
+    "copy-webpack-plugin": "^10.2.4",
+    "html-webpack-plugin": "^5.5.0",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "webpack": "^5.72.0"
   }
 }

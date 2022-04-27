@@ -3,7 +3,7 @@ import { Link, LinkProps, makeStyles, Typography } from "@material-ui/core"
 import { substrateGray } from "./theme"
 import { fade } from "@material-ui/core/styles/colorManipulator"
 
-interface SomeProps extends LinkProps {
+interface SidebarLinkProps extends LinkProps {
   children?: React.ReactNode
   href?: string
 }
@@ -57,7 +57,7 @@ export const Sidebar = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-export const SidebarLink: React.FunctionComponent<SomeProps> = ({
+export const SidebarLink: React.FunctionComponent<SidebarLinkProps> = ({
   children,
   ...props
 }) => {

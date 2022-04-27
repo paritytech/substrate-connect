@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   coverageReporters: ["text-summary", "lcov"],
   roots: ["<rootDir>/src"],
   reporters: ["jest-silent-reporter"],
