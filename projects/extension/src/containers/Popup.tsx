@@ -1,7 +1,6 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from "react"
 
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
-import CallMadeIcon from "@mui/icons-material/CallMade"
+import { MdOutlineSettings, MdCallMade } from "react-icons/md"
 
 import { Logo, Tab } from "../components"
 import { Background } from "../background"
@@ -70,9 +69,9 @@ const Popup: FunctionComponent = () => {
     <div className="w-80">
       <div className="py-1.5 my-3 mx-6 flex justify-between border-neutral-200 border-b">
         <Logo />
-        <SettingsOutlinedIcon
+        <MdOutlineSettings
           onClick={goToOptions}
-          className="cursor-pointer"
+          className="cursor-pointer text-base"
         />
       </div>
 
@@ -109,7 +108,7 @@ const Popup: FunctionComponent = () => {
       >
         <div>About</div>
         <div>
-          <CallMadeIcon />
+          <MdCallMade className="text-base" />
         </div>
       </button>
     </div>

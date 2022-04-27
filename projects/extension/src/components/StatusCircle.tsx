@@ -21,7 +21,6 @@ const StatusCircle: FunctionComponent<Props> = ({
       ? "1"
       : "0.35"
 
-  console.log("s", s, s.concat(" rem"))
   return (
     <div
       data-testid="circle"

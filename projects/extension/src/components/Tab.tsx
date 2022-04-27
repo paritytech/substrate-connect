@@ -1,5 +1,5 @@
 import React, { FunctionComponent, SetStateAction, Dispatch } from "react"
-import BlockIcon from "@mui/icons-material/Block"
+import { MdBlock } from "react-icons/md"
 import { TabInterface } from "../types"
 import "../main.css"
 
@@ -46,17 +46,15 @@ const Tab: FunctionComponent<TabProps> = ({
                 className="networkicon_container"
                 style={{ color: "text-neutral-500" }}
               >
-                <div className="icon txt-lg" style={{ marginRight: "0" }}>
-                  {n.toLowerCase()}
-                </div>
+                <div className="icon txt-lg mr-1">{n.toLowerCase()}</div>
               </div>
             ))}
             <div data-testid="Tooltip" className="tooltip">
               <span className="tooltiptext text-xs font-medium rounded shadow-lg p-1 bg-gray-100 tooltip_left">
                 Disconnect app
               </span>
-              <BlockIcon
-                style={{ width: "1rem", marginLeft: "0.5rem", color: "red" }}
+              <MdBlock
+                className="text-base text-red-500 ml-2"
                 onClick={onDisconnect}
               />
             </div>
