@@ -1,6 +1,6 @@
 import React, { SetStateAction, useEffect, useState } from "react"
 
-import { Logo, NetworkTab, Loader, Tabs, TabContent } from "../components/"
+import { Logo, NetworkTab, Loader, Tabs } from "../components/"
 import { Background } from "../background/"
 
 import { NetworkTabProps } from "../types"

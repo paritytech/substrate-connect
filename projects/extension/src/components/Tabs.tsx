@@ -45,7 +45,7 @@ const Tab = ({ activeTab, index, color, setOpenTab, title }: TabProps) => {
   )
 }
 
-export const TabContent = ({ child, index }: TabsPanel) => {
+const TabContent = ({ child, index }: TabsPanel) => {
   console.log("tabcontent", child)
   return (
     <div className={"block"} id={`"${"link".concat(index.toString())}"`}>
