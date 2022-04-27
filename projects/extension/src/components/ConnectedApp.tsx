@@ -10,6 +10,8 @@ interface ConnectedAppProps {
   setActiveTab?: Dispatch<SetStateAction<TabInterface | undefined>>
 }
 
+const knownChains = ["polkadot", "kusama", "westend", "rococo"]
+
 const ConnectedApp: FunctionComponent<ConnectedAppProps> = ({
   disconnectApp,
   tab,
@@ -40,13 +42,17 @@ const ConnectedApp: FunctionComponent<ConnectedAppProps> = ({
       {tab && (
         <>
           <div className="truncate py-1.5 my-1.5 ml-6 w-7/12">{tab.url}</div>
-          <div className="flex items-center right-6 absolute">
+          <div className="flex items-center right-6 absolute bg-white">
             {tab?.networks.map((n) => (
               <div
                 className="networkicon_container"
                 style={{ color: "text-neutral-500" }}
               >
-                <div className="icon txt-lg mr-1">{n.toLowerCase()}</div>
+                <div className="icon txt-lg mr-1">
+                  {knownChains.includes(n.toLowerCase())
+                    ? n.toLowerCase()
+                    : "?"}
+                </div>
               </div>
             ))}
             <div data-testid="Tooltip" className="tooltip">
