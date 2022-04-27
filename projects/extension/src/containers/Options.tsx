@@ -134,7 +134,7 @@ const Options: React.FunctionComponent = () => {
         <Logo textSize="lg" />
       </div>
       <Tabs tabTitles={["Networks", "Logs"]}>
-        <div>
+        <section>
           {networks.length ? (
             networks.map((network: NetworkTabProps, i: number) => {
               const { name, health, apps } = network
@@ -145,8 +145,8 @@ const Options: React.FunctionComponent = () => {
           ) : (
             <div>No networks or apps are connected to the extension.</div>
           )}
-        </div>
-        <div className="block">
+        </section>
+        <section className="block">
           <div className="my-5 flex">
             <button
               className="border rounded-md px-2 bg-stone-200	hover:bg-stone-400"
@@ -216,7 +216,7 @@ const Options: React.FunctionComponent = () => {
               </div>
             )}
           </div>
-        </div>
+        </section>
       </Tabs>
     </div>
   )

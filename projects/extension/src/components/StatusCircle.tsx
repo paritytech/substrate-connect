@@ -22,7 +22,7 @@ const StatusCircle: FunctionComponent<Props> = ({
       : "0.35"
 
   return (
-    <div
+    <section
       data-testid="circle"
       style={{
         width: s.concat("rem"),

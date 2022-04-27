@@ -3,28 +3,28 @@ import { MdBlock } from "react-icons/md"
 import { TabInterface } from "../types"
 import "../main.css"
 
-interface TabProps {
-  disconnectTab: (tabId: number) => void
+interface ConnectedAppProps {
+  disconnectApp: (tabId: number) => void
   current?: boolean
   tab?: TabInterface
   setActiveTab?: Dispatch<SetStateAction<TabInterface | undefined>>
 }
 
-const Tab: FunctionComponent<TabProps> = ({
-  disconnectTab,
+const ConnectedApp: FunctionComponent<ConnectedAppProps> = ({
+  disconnectApp,
   tab,
   current = false,
   setActiveTab,
 }) => {
   /**
-   * If Tab that initiated this function has a tabId (check for validity) then disconnectTab
+   * If Tab that initiated this function has a tabId (check for validity) then disconnectApp
    * function will be called to disconnect the tab. At the same time, in case the tan is marked as current
    * (meaning opened at the same window) - it is ensured that it will be removed from UI through passing setActiveTab
    * Dispatcher.
    **/
   const onDisconnect = (): void => {
     if (tab && tab.tabId) {
-      disconnectTab(tab.tabId)
+      disconnectApp(tab.tabId)
       if (setActiveTab && current) {
         setActiveTab(undefined)
       }
@@ -32,7 +32,7 @@ const Tab: FunctionComponent<TabProps> = ({
   }
 
   return (
-    <div
+    <section
       className={`flex items-center justify-between font-roboto ${
         current ? "text-sm font-bold" : "text-sm"
       }`}
@@ -61,8 +61,8 @@ const Tab: FunctionComponent<TabProps> = ({
           </div>
         </>
       )}
-    </div>
+    </section>
   )
 }
 
-export default Tab
+export default ConnectedApp
