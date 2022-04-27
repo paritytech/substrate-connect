@@ -96,8 +96,7 @@ const Popup: FunctionComponent = () => {
         </div>
       )}
       <button
-        style={{ width: "-webkit-fill-available" }}
-        className="capitalize px-2 py-1.5 my-3 mx-4 hover:bg-stone-200 text-sm flex justify-between font-light font-inter"
+        className="capitalize px-2 py-1.5 my-3 mx-4 hover:bg-stone-200 text-sm w-11/12 flex justify-between font-light font-inter"
         onClick={() =>
           chrome.tabs.update({
             url: "https://paritytech.github.io/substrate-connect/#extension",
