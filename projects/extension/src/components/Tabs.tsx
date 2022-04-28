@@ -20,7 +20,7 @@ interface TabsPanel {
 }
 
 const Tab = ({ activeTab, index, color, setOpenTab, title }: TabProps) => (
-  <li className="-mb-px mr-2 last:mr-0 text-center">
+  <li className="mr-2 -mb-px text-center last:mr-0">
     <a
       style={
         activeTab
@@ -28,7 +28,7 @@ const Tab = ({ activeTab, index, color, setOpenTab, title }: TabProps) => (
           : { color, backgroundColor: "white" }
       }
       className={
-        "text-xs font-bold uppercase px-5 py-3 rounded block leading-normal"
+        "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal"
       }
       onClick={(e) => {
         e.preventDefault()
@@ -55,7 +55,7 @@ export const Tabs = ({ tabTitles, children, color = "black" }: TabsProps) => {
     <div className="flex flex-wrap">
       <div className="w-full">
         <ul
-          className="flex mb-0 list-none flex-wrap pt-3 pb-4 flex-row"
+          className="flex flex-row flex-wrap pt-3 pb-4 mb-0 list-none"
           role="tablist"
         >
           {tabTitles.map((t, i) => (
@@ -70,8 +70,8 @@ export const Tabs = ({ tabTitles, children, color = "black" }: TabsProps) => {
             />
           ))}
         </ul>
-        <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 rounded">
-          <div className="px-4 py-5 flex-auto">
+        <div className="relative flex flex-col w-full min-w-0 mb-6 break-words bg-white rounded">
+          <div className="flex-auto px-4 py-5">
             <div className="tab-content tab-space">
               {React.Children.map(
                 children,

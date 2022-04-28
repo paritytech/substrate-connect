@@ -35,20 +35,20 @@ const ConnectedTab: FunctionComponent<ConnectedTabProps> = ({
 
   return (
     <section
-      className={`flex items-center justify-between font-roboto ${
+      className={`font-roboto flex items-center justify-between ${
         current ? "text-sm font-bold" : "text-sm"
       }`}
     >
       {tab && (
         <>
-          <div className="truncate py-1.5 my-1.5 ml-6 w-7/12">{tab.url}</div>
-          <div className="flex items-center right-6 absolute bg-white">
+          <div className="my-1.5 ml-6 w-7/12 truncate py-1.5">{tab.url}</div>
+          <div className="absolute flex items-center bg-white right-6">
             {tab?.networks.map((n) => (
               <div
                 className="networkicon_container"
                 style={{ color: "text-neutral-500" }}
               >
-                <div className="icon txt-lg mr-1">
+                <div className="mr-1 icon txt-lg">
                   {knownChains.includes(n.toLowerCase())
                     ? n.toLowerCase()
                     : "?"}
@@ -56,11 +56,11 @@ const ConnectedTab: FunctionComponent<ConnectedTabProps> = ({
               </div>
             ))}
             <div data-testid="Tooltip" className="tooltip">
-              <span className="tooltiptext text-xs font-medium rounded shadow-lg p-1 bg-gray-100 tooltip_left">
+              <span className="p-1 text-xs font-medium bg-gray-100 rounded shadow-lg tooltiptext tooltip_left">
                 Disconnect app
               </span>
               <MdBlock
-                className="text-base text-red-500 ml-2"
+                className="ml-2 text-base text-red-500"
                 onClick={onDisconnect}
               />
             </div>

@@ -67,11 +67,11 @@ const Popup: FunctionComponent = () => {
 
   return (
     <main className="w-80">
-      <header className="py-1.5 my-3 mx-6 flex justify-between border-neutral-200 border-b">
+      <header className="my-3 mx-6 flex justify-between border-b border-neutral-200 py-1.5">
         <Logo />
         <MdOutlineSettings
           onClick={goToOptions}
-          className="cursor-pointer text-base"
+          className="text-base cursor-pointer"
         />
       </header>
 
@@ -96,7 +96,7 @@ const Popup: FunctionComponent = () => {
         </div>
       )}
       <button
-        className="capitalize px-2 py-1.5 my-3 mx-4 hover:bg-stone-200 text-sm w-11/12 flex justify-between font-light font-inter"
+        className="font-inter my-3 mx-4 flex w-11/12 justify-between px-2 py-1.5 text-sm font-light capitalize hover:bg-stone-200"
         onClick={() =>
           chrome.tabs.update({
             url: "https://paritytech.github.io/substrate-connect/#extension",

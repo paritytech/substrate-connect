@@ -71,7 +71,7 @@ const useAccordionContext = () => {
 
 const NetworkContent = ({ network, health, apps }: NetworkContentProps) => {
   return (
-    <div className="text-md text-white w-full">
+    <div className="w-full text-white text-md">
       <div className="flex flex-row">
         <div className="basis-1/3">{emojis.seedling} Light Client</div>
         <div className="basis-2/3">
@@ -236,7 +236,7 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
   apps,
 }: NetworkTabProps) => {
   return (
-    <div className="w-full max-w-2xl mb-3 flex">
+    <div className="flex w-full max-w-2xl mb-3">
       <div className="flex items-center justify-center w-12 h-12">
         <StatusCircle
           size="medium"

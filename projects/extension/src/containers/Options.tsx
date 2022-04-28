@@ -129,7 +129,7 @@ const Options: React.FunctionComponent = () => {
   }
 
   return (
-    <div className="font-roboto my-8 mx-12">
+    <div className="mx-12 my-8 font-roboto">
       <div className="pb-10 text-base">
         <Logo textSize="lg" />
       </div>
@@ -147,29 +147,29 @@ const Options: React.FunctionComponent = () => {
           )}
         </section>
         <section className="block">
-          <div className="my-5 flex">
+          <div className="flex my-5">
             <button
-              className="border rounded-md px-2 bg-stone-200	hover:bg-stone-400"
+              className="px-2 border rounded-md bg-stone-200 hover:bg-stone-400"
               onClick={() => setPoolingLogs(!poolingLogs)}
             >
               {poolingLogs ? "Pause" : "Retrieve "} logs
             </button>
             <button
-              className="my-0 mx-2 border rounded-md px-2 bg-stone-200	hover:bg-stone-400"
+              className="px-2 mx-2 my-0 border rounded-md bg-stone-200 hover:bg-stone-400"
               onClick={() => navigator.clipboard.writeText(textifyLogs())}
             >
               Copy to clipboard
             </button>
-            <div className="rounded-md bg-red-500	py-2.5 px-4">
+            <div className="rounded-md bg-red-500 py-2.5 px-4">
               {errLogs.length} Errors
             </div>
-            <div className="rounded-md bg-yellow-300 py-2.5 px-4 ml-2">
+            <div className="ml-2 rounded-md bg-yellow-300 py-2.5 px-4">
               {warnLogs.length} Warnings
             </div>
           </div>
           <div
             style={{ maxHeight: "80vh" }}
-            className="overflow-y-auto block w-full"
+            className="block w-full overflow-y-auto"
           >
             {allLogs.length > 0 ? (
               allLogs.map(
@@ -211,7 +211,7 @@ const Options: React.FunctionComponent = () => {
                 ),
               )
             ) : (
-              <div className="h-56 items-center ml-40 mt-20">
+              <div className="items-center h-56 mt-20 ml-40">
                 <Loader />
               </div>
             )}

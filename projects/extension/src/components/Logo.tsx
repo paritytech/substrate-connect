@@ -9,7 +9,7 @@ const Logo = ({ textSize }: LogoProps) => {
     <div
       className={`${
         textSize ? `text-${textSize}` : ""
-      } font-semibold text-black font-poppins drop-shadow-lg`}
+      } font-poppins font-semibold text-black drop-shadow-lg`}
     >
       substrate
       <span className="text-green-500 drop-shadow-lg">_</span>&nbsp;
