@@ -2704,6 +2704,7 @@ __metadata:
     "@polkadot/util": ^8.6.1
     "@polkadot/util-crypto": ^8.6.1
     bn.js: ^5.2.0
+    eslint: ^8.14.0
     qrcode.react: ^2.0.0
     react: ^17.0.2
     react-dom: ^17.0.2
@@ -2718,6 +2719,8 @@ __metadata:
 "@substrate/connect-extension-protocol@^1.0.0, @substrate/connect-extension-protocol@workspace:packages/connect-extension-protocol":
   version: 0.0.0-use.local
   resolution: "@substrate/connect-extension-protocol@workspace:packages/connect-extension-protocol"
+  dependencies:
+    eslint: ^8.14.0
   languageName: unknown
   linkType: soft
 
@@ -2727,6 +2730,7 @@ __metadata:
   dependencies:
     "@substrate/connect-extension-protocol": ^1.0.0
     "@substrate/smoldot-light": 0.6.15
+    eslint: ^8.14.0
     eventemitter3: ^4.0.7
   languageName: unknown
   linkType: soft
@@ -2737,6 +2741,7 @@ __metadata:
   dependencies:
     "@polkadot/api": ^7.15.1
     "@polkadot/rpc-provider": ^7.15.1
+    eslint: ^8.14.0
     regenerator-runtime: ^0.13.9
   languageName: unknown
   linkType: soft
@@ -2750,6 +2755,7 @@ __metadata:
     "@material-ui/styles": ^4.11.4
     "@substrate/connect-extension-protocol": ^1.0.0
     "@substrate/smoldot-light": 0.6.15
+    eslint: ^8.14.0
     jest-chrome: ^0.7.2
     react: ^17.0.2
     react-dom: ^17.0.2
@@ -2768,6 +2774,7 @@ __metadata:
     "@material-ui/lab": ^4.0.0-alpha.61
     "@material-ui/styles": ^4.11.4
     copy-webpack-plugin: ^10.2.4
+    eslint: ^8.14.0
     html-webpack-plugin: ^5.5.0
     react: ^17.0.2
     react-dom: ^17.0.2

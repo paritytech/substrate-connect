@@ -39,5 +39,8 @@
     "react-router-dom": "^6.3.0",
     "regenerator-runtime": "^0.13.9",
     "unique-names-generator": "^4.7.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.14.0"
   }
 }

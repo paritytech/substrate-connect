@@ -23,6 +23,7 @@
   },
   "keywords": [],
   "devDependencies": {
+    "eslint": "^8.14.0",
     "jest-chrome": "^0.7.2",
     "web-ext": "^6.8.0"
   },

@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Protocol for connect message passing with the extension",
   "main": "dist/index.js",
+  "author": "Parity Team <admin@parity.io>",
+  "license": "GPL-3.0-only",
   "type": "module",
   "scripts": {
     "deep-clean": "yarn clean && rm -rf node_modules",
@@ -11,6 +13,7 @@
     "test": "exit 0; #This package is only types",
     "lint": "yarn eslint . --ext .js,.ts"
   },
-  "author": "Parity Team <admin@parity.io>",
-  "license": "GPL-3.0-only"
+  "devDependencies": {
+    "eslint": "^8.14.0"
+  }
 }

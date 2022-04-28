@@ -21,5 +21,8 @@
     "@polkadot/api": "^7.15.1",
     "@polkadot/rpc-provider": "^7.15.1",
     "regenerator-runtime": "^0.13.9"
+  },
+  "devDependencies": {
+    "eslint": "^8.14.0"
   }
 }
