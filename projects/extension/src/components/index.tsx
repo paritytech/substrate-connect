@@ -1,7 +1,7 @@
 export { default as Logo } from "./Logo"
 export { default as StatusCircle } from "./StatusCircle"
 export { default as light } from "./theme"
-export { default as ConnectedApp } from "./ConnectedApp"
+export { default as ConnectedTab } from "./ConnectedTab"
 export { default as NetworkTab } from "./NetworkTab"
 export { default as Loader } from "./Loader"
 export { Tabs } from "./Tabs"

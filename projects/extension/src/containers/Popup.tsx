@@ -2,12 +2,12 @@ import React, { FunctionComponent, useEffect, useRef, useState } from "react"
 
 import { MdOutlineSettings, MdCallMade } from "react-icons/md"
 
-import { Logo, ConnectedApp } from "../components"
+import { Logo, ConnectedTab } from "../components"
 import { Background } from "../background"
 import { TabInterface } from "../types"
 
 const Popup: FunctionComponent = () => {
-  const disconnectAppRef = useRef<(tapId: number) => void>((_: number) => {})
+  const disconnectTabRef = useRef<(tapId: number) => void>((_: number) => {})
   const [activeTab, setActiveTab] = useState<TabInterface | undefined>()
   const [otherTabs, setOtherTabs] = useState<TabInterface[]>([])
 
@@ -26,7 +26,7 @@ const Popup: FunctionComponent = () => {
         if (!isActive) return
 
         const bg = backgroundPage as Background
-        disconnectAppRef.current = bg.uiInterface.disconnectApp
+        disconnectTabRef.current = bg.uiInterface.disconnectTab
 
         const refresh = () => {
           const networksByTab: Map<number, Set<string>> = new Map()
@@ -76,8 +76,8 @@ const Popup: FunctionComponent = () => {
       </header>
 
       {activeTab && (
-        <ConnectedApp
-          disconnectApp={disconnectAppRef.current}
+        <ConnectedTab
+          disconnectTab={disconnectTabRef.current}
           current
           tab={activeTab}
           setActiveTab={setActiveTab}
@@ -87,8 +87,8 @@ const Popup: FunctionComponent = () => {
       {otherTabs.length > 0 && (
         <div className="my-1">
           {otherTabs.map((t) => (
-            <ConnectedApp
-              disconnectApp={disconnectAppRef.current}
+            <ConnectedTab
+              disconnectTab={disconnectTabRef.current}
               key={t.tabId}
               tab={t}
             />
