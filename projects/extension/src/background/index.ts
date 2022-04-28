@@ -6,7 +6,7 @@ import { start as smoldotStart } from "@substrate/smoldot-light"
 import westend2 from "../../public/assets/westend2.json"
 import ksmcc3 from "../../public/assets/ksmcc3.json"
 import polkadot from "../../public/assets/polkadot.json"
-import rococo_v2_1 from "../../public/assets/rococo_v2_1.json"
+import rococo_v2_2 from "../../public/assets/rococo_v2_2.json"
 import {
   ToApplication,
   ToExtension,
@@ -21,7 +21,7 @@ import {
 export const wellKnownChains: Map<string, string> = new Map<string, string>([
   [polkadot.id, JSON.stringify(polkadot)],
   [ksmcc3.id, JSON.stringify(ksmcc3)],
-  [rococo_v2_1.id, JSON.stringify(rococo_v2_1)],
+  [rococo_v2_2.id, JSON.stringify(rococo_v2_2)],
   [westend2.id, JSON.stringify(westend2)],
 ])
 
