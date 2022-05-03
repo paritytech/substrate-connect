@@ -168,8 +168,10 @@ window.uiInterface = {
     return logKeeper
   },
   get smoldotCrashError() {
-    if (manager.state === "crashed") return manager.error
-    else return undefined
+    if (manager.state === "crashed") {
+      logger(1, "smoldot", manager.error)
+      return manager.error
+    } else return undefined
   },
 }
 
