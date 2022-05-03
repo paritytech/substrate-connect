@@ -7,12 +7,12 @@ which provides a higher-level API built on top of it.
 Unless you are writting your own library, you probably want to use the
 PolkadotJS RPC provider.
 
-Provide a well-known chain name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_1'):
+Provide a well-known chain name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_2'):
 
 Note these names are the "real" names of the chains rather than the friendly 
 names (e.g. "kusama" or "rococo"). 'ksmcc3' is the name for kusama.  This
 matters for chains which have been hard forked. I.e. rococo - "rococo_v2" and 
-"rococo_v2_1" are two completely unrelated chains.
+"rococo_v2_2" are two completely unrelated chains.
 
 ```js
 import { ApiPromise } from "@polkadot/api";
@@ -74,7 +74,7 @@ await polkadotApi.rpc.chain.subscribeNewHeads((lastHeader) => {
 
 ## Using `@substrate/connect` for library authors
 
-Provide a well-known chain name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_1'):
+Provide a well-known chain name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_2'):
 
 ```js
 import { createScClient, WellKnownChain } from '@substrate/connect';
