@@ -10,3 +10,4 @@ polkadot
 zombienet-*
 polkadot-collator*
 init.sh
+.parcel*
