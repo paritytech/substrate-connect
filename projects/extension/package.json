@@ -21,6 +21,7 @@
   "keywords": [],
   "devDependencies": {
     "autoprefixer": "^10.4.4",
+    "eslint": "^8.14.0",
     "jest-chrome": "^0.7.2",
     "mini-css-extract-plugin": "^2.6.0",
     "postcss": "^8.4.12",
