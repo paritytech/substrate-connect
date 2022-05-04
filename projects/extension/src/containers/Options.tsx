@@ -1,41 +1,9 @@
 import React, { SetStateAction, useEffect, useState } from "react"
-import {
-  Button,
-  CircularProgress,
-  createTheme,
-  ThemeProvider,
-} from "@material-ui/core"
-import { makeStyles } from "@material-ui/core/styles"
-import Box from "@material-ui/core/Box"
-import Switch from "@material-ui/core/Switch"
-import FormGroup from "@material-ui/core/FormGroup"
-import FormControlLabel from "@material-ui/core/FormControlLabel"
-import FormControl from "@material-ui/core/FormControl"
-import { light, Logo, NetworkTab } from "../components/"
-import GlobalFonts from "../fonts/fonts"
-import { Background } from "../background/"
-import { withStyles, Theme, createStyles } from "@material-ui/core/styles"
-import Tabs from "@material-ui/core/Tabs"
-import Tab from "@material-ui/core/Tab"
-import {
-  // DEACTIVATE FOR NOW - will be n./src/containers/Options.tsx once parachains will be integrated
-  //  Parachain,
-  NetworkTabProps,
-} from "../types"
-import {
-  PlayArrow,
-  Pause as PauseIcon,
-  FileCopy as FileCopyIcon,
-} from "@material-ui/icons"
-interface TabPanelProps {
-  children?: React.ReactNode
-  index: number
-  value: number
-}
 
-interface StyledTabProps {
-  label: string
-}
+import { Logo, NetworkTab, Loader, Tabs } from "../components/"
+import { Background } from "../background/"
+
+import { NetworkTabProps } from "../types"
 
 interface logStructure {
   unix_timestamp: number
@@ -44,98 +12,7 @@ interface logStructure {
   message: string
 }
 
-const MenuTabs = withStyles({
-  root: {
-    minHeight: 34,
-  },
-})(Tabs)
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    flexBasis: "33.33%",
-    flexShrink: 0,
-    fontWeight: "bold",
-  },
-  secondaryHeading: {
-    fontSize: theme.typography.pxToRem(15),
-    color: theme.palette.text.secondary,
-  },
-  logs: {
-    display: "block",
-  },
-  logContainer: {
-    maxHeight: "80vh",
-    overflowY: "auto",
-    display: "block",
-    width: "100%",
-  },
-  logTitle: {
-    margin: "20px 0",
-    display: "flex",
-  },
-  errCounter: {
-    borderRadius: "30px",
-    backgroundColor: "red",
-    padding: "10px 15px",
-    margin: "0 10px",
-  },
-  warnCounter: {
-    borderRadius: "30px",
-    backgroundColor: "yellow",
-    padding: "10px 15px",
-    margin: "0 10px",
-  },
-  copyClipboard: {
-    margin: "0 10px",
-  },
-}))
-
-const MenuTab = withStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      textTransform: "none",
-      minWidth: 110,
-      minHeight: 34,
-      marginRight: theme.spacing(3),
-      color: "#BDBDBD",
-      "&:hover": {
-        opacity: 1,
-      },
-      "&$selected": {
-        border: "1px solid #EEEEEE",
-        borderRadius: "5px",
-        color: "#000",
-        backgroundColor: "#F7F7F7",
-      },
-    },
-    selected: {},
-  }),
-)((props: StyledTabProps) => <Tab disableRipple {...props} />)
-
-const TabPanel = (props: TabPanelProps) => {
-  const { children, value, index, ...other } = props
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box mt={4}>{children}</Box>}
-    </div>
-  )
-}
-
 const Options: React.FunctionComponent = () => {
-  const classes = useStyles()
-  const appliedTheme = createTheme(light)
-  const [value, setValue] = useState<number>(0)
   const [networks, setNetworks] = useState<NetworkTabProps[]>([])
   const [notifications, setNotifications] = useState<boolean>(false)
   const [allLogs, setAllLogs] = useState<logStructure[]>([])
@@ -226,13 +103,6 @@ const Options: React.FunctionComponent = () => {
     })
   }, [notifications])
 
-  const handleChange = (
-    event: React.ChangeEvent<unknown>,
-    newValue: number,
-  ) => {
-    setValue(newValue)
-  }
-
   const getLevelInfo = (level: number) => {
     let color: string = "#999"
     let desc: string = "Trace"
@@ -259,82 +129,48 @@ const Options: React.FunctionComponent = () => {
   }
 
   return (
-    <ThemeProvider theme={appliedTheme}>
-      <GlobalFonts />
-      <Box pb={7}>
-        <Logo />
-      </Box>
-      <MenuTabs
-        value={value}
-        onChange={handleChange}
-        TabIndicatorProps={{
-          style: {
-            display: "none",
-          },
-        }}
-      >
-        <MenuTab label="Networks"></MenuTab>
-        <MenuTab label="Settings"></MenuTab>
-        <MenuTab label="Logs"></MenuTab>
-      </MenuTabs>
-      <TabPanel value={value} index={0}>
-        {networks.length ? (
-          networks.map((network: NetworkTabProps, i: number) => {
-            const { name, health, apps } = network
-            return (
-              <NetworkTab key={i} name={name} health={health} apps={apps} />
-            )
-          })
-        ) : (
-          <div>No networks or apps are connected to the extension.</div>
-        )}
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <FormControl component="fieldset">
-          <FormGroup aria-label="position" row>
-            <FormControlLabel
-              value="Notifications:"
-              control={
-                <Switch
-                  checked={notifications}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setNotifications(e.target.checked)
-                  }
-                  color="primary"
-                  name="checkedB"
-                  inputProps={{ "aria-label": "primary checkbox" }}
-                />
-              }
-              label="Notifications:"
-              labelPlacement="start"
-            />
-          </FormGroup>
-        </FormControl>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <div className={classes.logs}>
-          <div className={classes.logTitle}>
-            <Button
-              variant="contained"
-              startIcon={poolingLogs ? <PauseIcon /> : <PlayArrow />}
+    <div className="mx-12 my-8 font-roboto">
+      <div className="pb-10 text-base">
+        <Logo textSize="lg" />
+      </div>
+      <Tabs tabTitles={["Networks", "Logs"]}>
+        <section>
+          {networks.length ? (
+            networks.map((network: NetworkTabProps, i: number) => {
+              const { name, health, apps } = network
+              return (
+                <NetworkTab key={i} name={name} health={health} apps={apps} />
+              )
+            })
+          ) : (
+            <div>No networks or apps are connected to the extension.</div>
+          )}
+        </section>
+        <section className="block">
+          <div className="flex my-5">
+            <button
+              className="px-2 border rounded-md bg-stone-200 hover:bg-stone-400"
               onClick={() => setPoolingLogs(!poolingLogs)}
             >
               {poolingLogs ? "Pause" : "Retrieve "} logs
-            </Button>
-            <Button
-              className={classes.copyClipboard}
-              variant="contained"
-              startIcon={<FileCopyIcon />}
+            </button>
+            <button
+              className="px-2 mx-2 my-0 border rounded-md bg-stone-200 hover:bg-stone-400"
               onClick={() => navigator.clipboard.writeText(textifyLogs())}
             >
               Copy to clipboard
-            </Button>
-            <div className={classes.errCounter}>{errLogs.length} Errors</div>
-            <div className={classes.warnCounter}>
+            </button>
+            <div className="rounded-md bg-red-500 py-2.5 px-4">
+              {errLogs.length} Errors
+            </div>
+            <div className="ml-2 rounded-md bg-yellow-300 py-2.5 px-4">
               {warnLogs.length} Warnings
             </div>
           </div>
-          <div className={classes.logContainer}>
+          <div
+            style={{ maxHeight: "80vh" }}
+            className="block w-full overflow-y-auto"
+          >
             {allLogs.length > 0 ? (
               allLogs.map(
                 (
@@ -375,12 +211,14 @@ const Options: React.FunctionComponent = () => {
                 ),
               )
             ) : (
-              <CircularProgress />
+              <div className="items-center h-56 mt-20 ml-40">
+                <Loader />
+              </div>
             )}
           </div>
-        </div>
-      </TabPanel>
-    </ThemeProvider>
+        </section>
+      </Tabs>
+    </div>
   )
 }
 

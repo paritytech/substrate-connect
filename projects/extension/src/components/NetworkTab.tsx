@@ -1,19 +1,16 @@
-import React, { FunctionComponent, useState } from "react"
-import { IconWeb3, StatusCircle } from "."
-import {
-  withStyles,
-  makeStyles,
-  Theme,
-  createStyles,
-} from "@material-ui/core/styles"
-import MuiAccordion from "@material-ui/core/Accordion"
-import MuiAccordionSummary from "@material-ui/core/AccordionSummary"
-import MuiAccordionDetails from "@material-ui/core/AccordionDetails"
-import Typography from "@material-ui/core/Typography"
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown"
+import React, {
+  createContext,
+  FunctionComponent,
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react"
+import { StatusCircle } from "."
 
 import { NetworkTabProps, App, OptionsNetworkTabHealthContent } from "../types"
-import { Box, Grid } from "@material-ui/core"
+import "../main.css"
 
 export const emojis = {
   chain: "🔗",
@@ -27,71 +24,12 @@ export const emojis = {
   seedling: "🌱",
 }
 
-const Accordion = withStyles((theme) => ({
-  root: {
-    border: `1px solid ${theme.palette.divider}`,
-    boxShadow: "none",
-    "&:not(:last-child)": {
-      borderBottom: 0,
-    },
-    "&:before": {
-      display: "none",
-    },
-    "&$expanded": {
-      margin: "auto",
-    },
-  },
-}))(MuiAccordion)
-
-const AccordionSummary = withStyles({
-  root: {
-    minHeight: 48,
-    "&$expanded": {
-      minHeight: 48,
-    },
-  },
-  content: {
-    justifyContent: "space-between",
-    alignItems: "center",
-    "&$expanded": {
-      margin: "12px 0",
-    },
-  },
-  expanded: {},
-})(MuiAccordionSummary)
-
-const AccordionDetails = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-    borderBottomLeftRadius: theme.spacing(),
-    borderBottomRightRadius: theme.spacing(),
-    backgroundColor: theme.palette.text.primary,
-    color: theme.palette.divider,
-  },
-}))(MuiAccordionDetails)
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%",
-      maxWidth: 640,
-      marginBottom: theme.spacing(),
-      display: "flex",
-    },
-    onlineIconBox: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      width: 48,
-      height: 48,
-    },
-    accordion: {
-      width: "100%",
-      border: `1px solid ${theme.palette.divider}`,
-      borderRadius: theme.spacing(),
-    },
-  }),
-)
+const networkColors: Record<string, string> = {
+  polkadot: "#E6007A",
+  kusama: "#2F2F2F",
+  westend: "#FF9C28",
+  rococo: "#696bff",
+}
 
 interface NetworkContentProps {
   health: OptionsNetworkTabHealthContent
@@ -99,45 +37,196 @@ interface NetworkContentProps {
   network: string
 }
 
+interface AccordionProps {
+  titles: ReactNode[] | string[]
+  titleClass?: string
+  contents: ReactNode[] | string[]
+  contentClass?: string
+  defaultExpanded?: number
+}
+
+interface AccItem {
+  value: string
+  title: ReactNode
+  children: ReactNode
+  titleClass?: string
+  contentClass?: string
+  status?: "first" | "last" | "single"
+}
+
+const AccordionContext = createContext({
+  activeItem: "",
+  setToggle: (val: string) => {
+    console.log(val)
+  },
+})
+
+const useAccordionContext = () => {
+  const context = useContext(AccordionContext)
+  if (!context) {
+    throw new Error("No context found for Accordion")
+  }
+  return context
+}
+
 const NetworkContent = ({ network, health, apps }: NetworkContentProps) => {
   return (
-    <Typography variant="subtitle2" component="div">
-      <Grid container>
-        <Grid item xs={3}>
-          {emojis.seedling} Light Client
-        </Grid>
-        <Grid item xs={9}>
+    <div className="w-full text-white text-md">
+      <div className="flex flex-row">
+        <div className="basis-1/3">{emojis.seedling} Light Client</div>
+        <div className="basis-2/3">
           {health.isSyncing ? "Synchronizing" : "Synchronized"}
-        </Grid>
-        <Grid item xs={3}>
-          {emojis.star} Network
-        </Grid>
-        <Grid item xs={9}>
-          {network}
-          <br /> Chain is {health.status}
-        </Grid>
-        <Grid item xs={3}>
-          {emojis.deal} Peers
-        </Grid>
-        <Grid item xs={9}>
-          {health.peers}
-        </Grid>
-        <Grid item xs={3}>
-          {emojis.apps} Apps
-        </Grid>
-        <Grid item xs={9}>
-          {apps.length}:
-        </Grid>
-        <Grid item xs={3}></Grid>
-        <Grid item xs={9}>
+        </div>
+      </div>
+      <div className="flex flex-row">
+        <div className="basis-1/3">{emojis.star} Network</div>
+        <div className="basis-2/3">Chain is {health.status}</div>
+      </div>
+
+      <div className="flex flex-row">
+        <div className="basis-1/3">{emojis.deal} Peers</div>
+        <div className="basis-2/3">{health.peers}</div>
+      </div>
+      <div className="flex flex-row">
+        <div className="basis-1/3">{emojis.apps} Apps</div>
+        <div className="basis-2/3">{apps.length}:</div>
+      </div>
+      <div className="flex flex-row">
+        <div className="basis-1/3"></div>
+        <div className="basis-2/3">
           {apps.map((app) => (
-            <Grid key={app.url} container>
+            <div className="flex" key={app.url}>
               {app.url}
-            </Grid>
+            </div>
           ))}
-        </Grid>
-      </Grid>
-    </Typography>
+        </div>
+      </div>
+      <div className="flex flex-row">
+        <div className="basis-1/3"></div>
+        <div className="basis-2/3"></div>
+      </div>
+    </div>
+  )
+}
+
+const AccordionItem = ({
+  value,
+  title,
+  children,
+  titleClass,
+  contentClass,
+  status,
+}: AccItem) => {
+  const { activeItem, setToggle } = useAccordionContext()
+
+  const expanded = activeItem === value
+
+  return (
+    <div className={status && `item _mi__${status}`}>
+      <button
+        className={`item_title `
+          .concat(
+            `${
+              expanded && (status === "single" || status === "last")
+                ? "content_closed "
+                : ""
+            }`,
+          )
+          .concat(titleClass || "")}
+        aria-controls={`${value}-panel`}
+        aria-disabled="false"
+        aria-expanded={expanded}
+        id={`${value}-header`}
+        onClick={() => setToggle(value)}
+        type="button"
+        value={value}
+      >
+        {title}
+      </button>
+      <section
+        className={`item_content `
+          .concat(
+            `${
+              expanded && (status === "single" || status === "last")
+                ? "content_expanded "
+                : ""
+            }`,
+          )
+          .concat(contentClass || "")}
+        aria-hidden={!expanded}
+        aria-labelledby={`${value}-header`}
+        hidden={!expanded}
+      >
+        {children}
+      </section>
+    </div>
+  )
+}
+
+const Accordion = ({
+  titles,
+  contents,
+  defaultExpanded,
+  titleClass,
+  contentClass,
+}: AccordionProps): JSX.Element => {
+  const [activeItem, setActiveItem] = useState<string | undefined>(
+    defaultExpanded?.toString(),
+  )
+  const setToggle = useCallback(
+    (value: string) => {
+      setActiveItem(() => {
+        if (activeItem !== value) return value
+        return ""
+      })
+    },
+    [setActiveItem, activeItem],
+  )
+
+  const value = useMemo(
+    () => ({
+      activeItem,
+      setToggle,
+      defaultExpanded,
+    }),
+    [setToggle, activeItem, defaultExpanded],
+  )
+
+  if (titles.length !== contents.length) {
+    console.error("Titles do not have same length as contents.")
+    return (
+      <div>
+        Titles given do not have same length as contents. Please check the input
+        parameters.
+      </div>
+    )
+  }
+
+  return (
+    // @ts-ignore
+    <AccordionContext.Provider value={value}>
+      {titles.map((title, index) => {
+        const stat =
+          titles.length === 1
+            ? "single"
+            : index === 0
+            ? "first"
+            : index === titles?.length - 1
+            ? "last"
+            : undefined
+        return (
+          <AccordionItem
+            title={title}
+            value={index.toString()}
+            titleClass={titleClass}
+            contentClass={contentClass}
+            status={stat}
+          >
+            {contents[index]}
+          </AccordionItem>
+        )
+      })}
+    </AccordionContext.Provider>
   )
 }
 
@@ -146,12 +235,9 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
   health,
   apps,
 }: NetworkTabProps) => {
-  const classes = useStyles()
-  const [expanded, setExpanded] = useState<boolean>(false)
-
   return (
-    <div className={classes.root}>
-      <div className={classes.onlineIconBox}>
+    <div className="flex w-full max-w-2xl mb-3">
+      <div className="flex items-center justify-center w-12 h-12">
         <StatusCircle
           size="medium"
           color={
@@ -160,26 +246,37 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
         />
       </div>
       <Accordion
-        TransitionProps={{ unmountOnExit: true }}
-        className={classes.accordion}
-        elevation={0}
-        onChange={() => setExpanded(!expanded)}
-        expanded={expanded}
-      >
-        <AccordionSummary expandIcon={<ArrowDropDownIcon color="secondary" />}>
-          <Box display="flex">
-            <IconWeb3 size={"20px"}>{name}</IconWeb3>
-            <Typography variant="h2">{name}</Typography>
-          </Box>
-          <Typography variant="body2">
-            Peer{health && health.peers === 1 ? "" : "s"}:{" "}
-            {(health && health.peers) ?? ".."}
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <NetworkContent health={health} apps={apps} network={name} />
-        </AccordionDetails>
-      </Accordion>
+        titles={[
+          <>
+            <div className="flex rounded-md">
+              <div
+                className="networkicon_container"
+                style={{ color: networkColors[name.toLowerCase()] }}
+              >
+                <div
+                  className="icon txt-xl"
+                  style={{ marginRight: "0.625rem" }}
+                >
+                  {name.toLowerCase()}
+                </div>
+                <div
+                  className="txt-xl cap"
+                  style={{ color: networkColors[name.toLowerCase()] }}
+                >
+                  {name.toLowerCase()}
+                </div>
+              </div>
+            </div>
+            <div className="text-base">
+              Peer{health && health.peers === 1 ? "" : "s"}:{" "}
+              {(health && health.peers) ?? ".."}
+            </div>
+          </>,
+        ]}
+        contents={[
+          <NetworkContent health={health} apps={apps} network={name} />,
+        ]}
+      ></Accordion>
     </div>
   )
 }

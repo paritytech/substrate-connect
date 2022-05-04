@@ -18,24 +18,23 @@
     "start:firefox": "web-ext run --source-dir ./dist -t firefox-desktop",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
   },
-  "resolutions": {
-    "styled-components": "^5"
-  },
   "keywords": [],
   "devDependencies": {
+    "autoprefixer": "^10.4.4",
     "eslint": "^8.14.0",
     "jest-chrome": "^0.7.2",
+    "mini-css-extract-plugin": "^2.6.0",
+    "postcss": "^8.4.12",
+    "postcss-loader": "^6.2.1",
+    "tailwindcss": "^3.0.24",
     "web-ext": "^6.8.0"
   },
   "dependencies": {
-    "@material-ui/core": "^4.12.4",
-    "@material-ui/icons": "^4.11.2",
-    "@material-ui/styles": "^4.11.4",
     "@substrate/connect-extension-protocol": "^1.0.0",
     "@substrate/smoldot-light": "0.6.15",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hot-loader": "^4.13.0",
-    "styled-components": "^5.3.5"
+    "react-icons": "^4.3.1"
   }
 }
