@@ -1,29 +1,20 @@
-import * as React from "react"
-import { makeStyles, Typography } from "@material-ui/core"
-import { substrateGreen } from "./theme"
+import React from "react"
 
-const useStyles = makeStyles({
-  root: {
-    fontWeight: 600,
-    lineHeight: 1,
-    "& .green": {
-      color: substrateGreen[300],
-    },
-    "& .lighter": {
-      fontWeight: 400,
-    },
-  },
-})
+interface LogoProps {
+  textSize?: "sm" | "base" | "lg" | "xl" | "2xl"
+}
 
-const Logo: React.FunctionComponent = () => {
-  const classes = useStyles()
-
+const Logo = ({ textSize }: LogoProps) => {
   return (
-    <Typography variant="h4" className={classes.root}>
+    <div
+      className={`${
+        textSize ? `text-${textSize}` : ""
+      } font-poppins font-semibold text-black drop-shadow-lg`}
+    >
       substrate
-      <span className="green">_</span>&nbsp;
-      <span className="lighter">connect</span>
-    </Typography>
+      <span className="text-green-500 drop-shadow-lg">_</span>&nbsp;
+      <span className="font-normal font-inter drop-shadow-lg">connect</span>
+    </div>
   )
 }
 

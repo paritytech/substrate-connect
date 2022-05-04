@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from "react"
-import styled from "styled-components"
 import { substrateGreen } from "./theme"
 
 export interface Props {
@@ -8,35 +7,32 @@ export interface Props {
   borderColor?: string
 }
 
-const SCircle = styled.div<Props>`
-  width: ${(props) =>
-    props.size === "small"
-      ? "5px"
-      : props.size === "medium"
-      ? "10px"
-      : props.size === "large" && "15px"};
-  height: ${(props) =>
-    props.size === "small"
-      ? "5px"
-      : props.size === "medium"
-      ? "10px"
-      : props.size === "large" && "15px"};
-  border-radius: ${(props) =>
-    props.size === "small"
-      ? "5px"
-      : props.size === "medium"
-      ? "10px"
-      : props.size === "large" && "15px"};
-  border: 1px solid ${(props) => props.borderColor || substrateGreen[400]};
-  background-color: ${(props) => props.color || substrateGreen[400]};
-`
-
 const StatusCircle: FunctionComponent<Props> = ({
   size = "medium",
   color,
   borderColor,
 }: Props) => {
-  return <SCircle data-testid="circle" {...{ size, color, borderColor }} />
+  const s =
+    size === "small"
+      ? "0.35"
+      : size === "medium"
+      ? "0.5"
+      : size === "large"
+      ? "1"
+      : "0.35"
+
+  return (
+    <section
+      data-testid="circle"
+      style={{
+        width: s.concat("rem"),
+        height: s.concat("rem"),
+        borderRadius: s.concat("rem"),
+        backgroundColor: `${color || substrateGreen[400]}`,
+        border: `1px solid ${borderColor || substrateGreen[400]}`,
+      }}
+    />
+  )
 }
 
 export default StatusCircle
