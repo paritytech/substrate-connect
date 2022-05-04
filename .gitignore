@@ -10,7 +10,6 @@ polkadot
 zombienet-*
 polkadot-collator*
 init.sh
-.parcel*
 .yarn/*
 !.yarn/patches
 !.yarn/releases
