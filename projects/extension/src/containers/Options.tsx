@@ -1,5 +1,5 @@
 import React, { SetStateAction, useEffect, useState } from "react"
-
+import pckg from "../../package.json"
 import { Logo, NetworkTab, Loader, Tabs } from "../components/"
 import { Background } from "../background/"
 
@@ -127,8 +127,9 @@ const Options: React.FunctionComponent = () => {
 
   return (
     <div className="mx-12 my-8 font-roboto">
-      <div className="pb-10 text-lg">
+      <div className="pb-3.5 text-base flex">
         <Logo textSize="lg" />
+        <div className="pl-4 text-sm leading-6">v{pckg.version}</div>
       </div>
       <Tabs tabTitles={["Networks", "Logs"]}>
         <section>
