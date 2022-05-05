@@ -156,10 +156,10 @@ export class ConnectionManager<SandboxId> {
     chainName: string,
     maxUtf8BytesSize?: number,
   ): Promise<string | undefined> {
+    const chain = this.#wellKnownChains.get(chainName)!.chain
+    if (!chain) return undefined
     try {
-      return await this.#wellKnownChains
-        .get(chainName)!
-        .chain.databaseContent(maxUtf8BytesSize)
+      return await chain.databaseContent(maxUtf8BytesSize)
     } catch (error) {
       // If an exception is thrown, we kill all chains. This can only happen either in case of a
       // crash in smoldot or a bug in substrate-connect.

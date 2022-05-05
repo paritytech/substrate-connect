@@ -149,7 +149,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
     spec: string,
     databaseContent?: string,
   ): Promise<void> {
-    this.#inner.addWellKnownChain(chainName, spec, databaseContent)
+    await this.#inner.addWellKnownChain(chainName, spec, databaseContent)
   }
 
   /**
