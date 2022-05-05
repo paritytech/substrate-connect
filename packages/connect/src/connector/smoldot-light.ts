@@ -22,7 +22,7 @@ const getStart = () => {
   return startPromise
 }
 
-const clientReferences: Set<Config> = new Set()
+const clientReferences: Config[] = []  // Note that this can't be a set, as the same config is added/removed multiple times
 let clientPromise: Promise<Client> | null = null
 let clientReferencesMaxLogLevel = 3;
 const getClientAndIncRef = (config: Config): Promise<Client> => {
@@ -30,7 +30,7 @@ const getClientAndIncRef = (config: Config): Promise<Client> => {
     clientReferencesMaxLogLevel = config.maxLogLevel;
 
   if (clientPromise) {
-    clientReferences.add(config)
+    clientReferences.push(config)
     return clientPromise
   }
 
@@ -61,13 +61,16 @@ const getClientAndIncRef = (config: Config): Promise<Client> => {
       }
     }),
   )
-  clientReferences.add(config)
+  clientReferences.push(config)
   return clientPromise
 }
 
 // Must be passed the exact same object as was passed to {getClientAndIncRef}
 const decRef = (config: Config) => {
-  clientReferences.delete(config);
+  const idx = clientReferences.indexOf(config);
+  if (idx === -1)
+    throw new Error("Internal error within smoldot-light")
+  clientReferences.splice(idx, 1);
 
   // Update `clientReferencesMaxLogLevel`
   // Note how it is set back to 3 if there is no reference anymore
@@ -77,7 +80,7 @@ const decRef = (config: Config) => {
       clientReferencesMaxLogLevel = cfg.maxLogLevel
   }
 
-  if (clientReferences.size === 0) {
+  if (clientReferences.length === 0) {
     if (clientPromise) clientPromise.then((client) => client.terminate())
     clientPromise = null
   }
