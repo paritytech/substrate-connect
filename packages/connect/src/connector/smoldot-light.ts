@@ -125,7 +125,7 @@ export interface Config {
    * In order to more easily debug problems, you can pass 4 (DEBUG) or more.
    *
    * This setting is only taken into account between the moment when you use this chain to add a
-   * chain for the first timen, and the moment when all the chains that you have added have been
+   * chain for the first time, and the moment when all the chains that you have added have been
    * removed.
    *
    * If {createScClient} is called multiple times with multiple different log levels, the highest
