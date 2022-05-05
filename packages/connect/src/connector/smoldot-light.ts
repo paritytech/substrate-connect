@@ -22,11 +22,11 @@ const getStart = () => {
   return startPromise
 }
 
-let clientNumReferences = 0
+const clientReferences: {}[] = []
 let clientPromise: Promise<Client> | null = null
 const getClientAndIncRef = (): Promise<Client> => {
   if (clientPromise) {
-    clientNumReferences += 1
+    clientReferences.push({})
     return clientPromise
   }
 
@@ -57,12 +57,13 @@ const getClientAndIncRef = (): Promise<Client> => {
       }
     }),
   )
-  clientNumReferences += 1
+  clientReferences.push({})
   return clientPromise
 }
 
 const decRef = () => {
-  if (--clientNumReferences === 0) {
+  clientReferences.pop()
+  if (clientReferences.length === 0) {
     if (clientPromise) clientPromise.then((client) => client.terminate())
     clientPromise = null
   }
