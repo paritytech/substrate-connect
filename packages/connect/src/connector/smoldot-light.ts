@@ -26,7 +26,7 @@ const clientReferences: Set<Config> = new Set()
 let clientPromise: Promise<Client> | null = null
 let clientReferencesMaxLogLevel = 3;
 const getClientAndIncRef = (config: Config): Promise<Client> => {
-  if (config.maxLogLevel > clientReferencesMaxLogLevel)
+  if (config.maxLogLevel && config.maxLogLevel > clientReferencesMaxLogLevel)
     clientReferencesMaxLogLevel = config.maxLogLevel;
 
   if (clientPromise) {
@@ -73,7 +73,7 @@ const decRef = (config: Config) => {
   // Note how it is set back to 3 if there is no reference anymore
   clientReferencesMaxLogLevel = 3;
   for (const cfg of clientReferences.values()) {
-    if (cfg.maxLogLevel > clientReferencesMaxLogLevel)
+    if (cfg.maxLogLevel && cfg.maxLogLevel > clientReferencesMaxLogLevel)
       clientReferencesMaxLogLevel = cfg.maxLogLevel
   }
 
@@ -115,7 +115,7 @@ export interface Config {
    * If {createScClient} is called multiple times with multiple different log levels, the highest
    * value will be used.
    */
-  maxLogLevel: number
+  maxLogLevel?: number
 }
 
 /**
