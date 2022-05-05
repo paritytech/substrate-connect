@@ -24,7 +24,7 @@ const getStart = () => {
 
 const clientReferences: {}[] = []
 let clientPromise: Promise<Client> | null = null
-const getClientAndIncRef = (): Promise<Client> => {
+const getClientAndIncRef = (config: Config): Promise<Client> => {
   if (clientPromise) {
     clientReferences.push({})
     return clientPromise
@@ -61,7 +61,7 @@ const getClientAndIncRef = (): Promise<Client> => {
   return clientPromise
 }
 
-const decRef = () => {
+const decRef = (config: Config) => {
   clientReferences.pop()
   if (clientReferences.length === 0) {
     if (clientPromise) clientPromise.then((client) => client.terminate())
@@ -98,13 +98,15 @@ export interface Config {
  * extension is not installed.
  */
 export const createScClient = (config?: Config): ScClient => {
+  const configOrDefault = config || {}
+
   const chains = new Map<Chain, SChain>()
 
   const addChain: AddChain = async (
     chainSpec: string,
     jsonRpcCallback?: (msg: string) => void,
   ): Promise<Chain> => {
-    const client = await getClientAndIncRef()
+    const client = await getClientAndIncRef(configOrDefault)
 
     try {
       const internalChain = await client.addChain({
@@ -126,7 +128,7 @@ export const createScClient = (config?: Config): ScClient => {
             })
           } finally {
             chains.delete(chain)
-            decRef()
+            decRef(configOrDefault)
           }
         },
       }
@@ -134,7 +136,7 @@ export const createScClient = (config?: Config): ScClient => {
       chains.set(chain, internalChain)
       return chain
     } catch (error) {
-      decRef()
+      decRef(configOrDefault)
       throw error
     }
   }
@@ -146,13 +148,13 @@ export const createScClient = (config?: Config): ScClient => {
     // the following line ensures that the http request for the dynamic import
     // of smoldot-light and the request for the dynamic import of the spec
     // happen in parallel
-    getClientAndIncRef()
+    getClientAndIncRef(configOrDefault)
 
     try {
       const spec = await getSpec(supposedChain)
       return await addChain(spec, jsonRpcCallback)
     } finally {
-      decRef()
+      decRef(configOrDefault)
     }
   }
   return { addChain, addWellKnownChain }
