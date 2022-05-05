@@ -156,10 +156,17 @@ export class ConnectionManager<SandboxId> {
     chainName: string,
     maxUtf8BytesSize?: number,
   ): Promise<string | undefined> {
+    let chain: SmoldotChain | undefined = undefined
     try {
-      return await this.#wellKnownChains
-        .get(chainName)!
-        .chain.databaseContent(maxUtf8BytesSize)
+      chain = this.#wellKnownChains.get(chainName)!.chain
+    } catch (error) {
+      // If an exception is thrown it means that the specific chainName is not among the
+      // #wellknownchains. This is separate from the error below as it does not show a
+      // crash in smoldot but that a chain does not exist
+      throw new Error("Chain does not exist in WellKnownChains")
+    }
+    try {
+      return await chain.databaseContent(maxUtf8BytesSize)
     } catch (error) {
       // If an exception is thrown, we kill all chains. This can only happen either in case of a
       // crash in smoldot or a bug in substrate-connect.

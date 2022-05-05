@@ -231,15 +231,15 @@ manager = {
         )
 
         await managerInit.addWellKnownChain(key, value, dbContent)
-        if (!dbContent) saveChainDbContent(managerInit, key)
+        if (!dbContent) await saveChainDbContent(managerInit, key)
       }
 
       // Create an alarm that will periodically save the content of the database of the well-known
       // chains.
-      chrome.alarms.onAlarm.addListener((alarm) => {
+      chrome.alarms.onAlarm.addListener(async (alarm) => {
         if (alarm.name === "DatabaseContentAlarm") {
           for (const [key] of wellKnownChains)
-            saveChainDbContent(managerInit, key)
+            await saveChainDbContent(managerInit, key)
         }
       })
       chrome.alarms.create("DatabaseContentAlarm", {
