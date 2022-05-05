@@ -34,8 +34,27 @@ const getClientAndIncRef = (): Promise<Client> => {
     start({
       forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
       forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
-      maxLogLevel: 4 /* no debug/trace messages */,
+      maxLogLevel: 9999999, // The actual level filtering is done in the logCallback
       cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
+      logCallback: (level, target, message) => {
+        if (level > 3)
+          return;
+
+        // The first parameter of the methods of `console` has some printf-like substitution
+        // capabilities. We don't really need to use this, but not using it means that the logs
+        // might not get printed correctly if they contain `%`.
+        if (level <= 1) {
+          console.error("[%s] %s", target, message);
+        } else if (level == 2) {
+          console.warn("[%s] %s", target, message);
+        } else if (level == 3) {
+          console.info("[%s] %s", target, message);
+        } else if (level == 4) {
+          console.debug("[%s] %s", target, message);
+        } else {
+          console.trace("[%s] %s", target, message);
+        }
+      }
     }),
   )
   clientNumReferences += 1
@@ -58,13 +77,19 @@ const transformErrors = (thunk: () => void) => {
 }
 
 /**
+ * Configuration that can be passed to {createScClient}.
+ */
+export interface Config {
+}
+
+/**
  * Returns a {ScClient} that connects to chains by executing a light client directly
  * from JavaScript.
  *
  * This is quite expensive in terms of CPU, but it is the only choice when the substrate-connect
  * extension is not installed.
  */
-export const createScClient = (): ScClient => {
+export const createScClient = (config?: Config): ScClient => {
   const chains = new Map<Chain, SChain>()
 
   const addChain: AddChain = async (
