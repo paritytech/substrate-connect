@@ -4,11 +4,11 @@
 
 ### Added
 
-- Added an optional configuration to `smoldot-light/createScClient` that allows customizing the maximum log level to use while the client is in use, allowing for better debuggability.
+- Added an optional configuration to `smoldot-light/createScClient` that allows customizing the maximum log level to use while the client is in use, allowing for better debuggability. ([#1027](https://github.com/paritytech/substrate-connect/pull/1027))
 
 ### Changed
 
-- Debug logs are no longer printed in the console. This should considerably decrease the number of messages being printed.
+- Debug logs are no longer printed in the console. This should considerably decrease the number of messages being printed. ([#1027](https://github.com/paritytech/substrate-connect/pull/1027))
 
 ## 0.7.3 - 2022-05-02
 
