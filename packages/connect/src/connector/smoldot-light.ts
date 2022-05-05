@@ -70,6 +70,7 @@ const decRef = (config: Config) => {
   clientReferences.delete(config);
 
   // Update `clientReferencesMaxLogLevel`
+  // Note how it is set back to 3 if there is no reference anymore
   clientReferencesMaxLogLevel = 3;
   for (const cfg of clientReferences.values()) {
     if (cfg.maxLogLevel > clientReferencesMaxLogLevel)
@@ -101,6 +102,19 @@ const transformErrors = (thunk: () => void) => {
  * Configuration that can be passed to {createScClient}.
  */
 export interface Config {
+  /**
+   * The client prints logs in the console. By default, only log levels 1, 2, and 3 (corresponding
+   * respectively to ERROR, WARN, and INFO) are printed.
+   *
+   * In order to more easily debug problems, you can pass 4 (DEBUG) or more.
+   *
+   * This setting is only taken into account between the moment when you use this chain to add a
+   * chain for the first timen, and the moment when all the chains that you have added have been
+   * removed.
+   *
+   * If {createScClient} is called multiple times with multiple different log levels, the highest
+   * value will be used.
+   */
   maxLogLevel: number
 }
 
