@@ -5,8 +5,6 @@
 ### Changed
 
 - Replace the `rococo_v2_1` well-known chain with `rococo_v2_2` ([#1010](https://github.com/paritytech/substrate-connect/pull/1010))
-- Bump react to version 18 ([#988](https://github.com/paritytech/substrate-connect/pull/988))
-- Remove MaterialUI and styled components dependencies and replace with TailWindCss and PostCSS for cleaner code and less dependencies ([#984](https://github.com/paritytech/substrate-connect/pull/984))
 
 ## 0.1.3 - 2022-04-11
 
