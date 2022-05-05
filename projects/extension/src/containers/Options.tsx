@@ -117,9 +117,12 @@ const Options: React.FunctionComponent = () => {
         desc = "Warn"
         break
       case 3:
-      case 4:
         color = "#fff"
-        desc = "Info/Debug"
+        desc = "Info"
+        break
+      case 4:
+        color = "#ccc"
+        desc = "Debug"
         break
     }
     return [desc, color]
