@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix a bug that was not saving the database content of each chain in the extension's localStorage upon first initialization of the extension. Also added an `await` from `async addWellKnownChain` that was missing. ([#1025](https://github.com/paritytech/substrate-connect/pull/1025))
+
 ### Changed
 
 - Replace the `rococo_v2_1` well-known chain with `rococo_v2_2` ([#1010](https://github.com/paritytech/substrate-connect/pull/1010))
