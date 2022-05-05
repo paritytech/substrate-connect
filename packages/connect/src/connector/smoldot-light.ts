@@ -22,11 +22,15 @@ const getStart = () => {
   return startPromise
 }
 
-const clientReferences: {}[] = []
+const clientReferences: Set<Config> = new Set()
 let clientPromise: Promise<Client> | null = null
+let clientReferencesMaxLogLevel = 3;
 const getClientAndIncRef = (config: Config): Promise<Client> => {
+  if (config.maxLogLevel > clientReferencesMaxLogLevel)
+    clientReferencesMaxLogLevel = config.maxLogLevel;
+
   if (clientPromise) {
-    clientReferences.push({})
+    clientReferences.add(config)
     return clientPromise
   }
 
@@ -37,7 +41,7 @@ const getClientAndIncRef = (config: Config): Promise<Client> => {
       maxLogLevel: 9999999, // The actual level filtering is done in the logCallback
       cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
       logCallback: (level, target, message) => {
-        if (level > 3)
+        if (level > clientReferencesMaxLogLevel)
           return;
 
         // The first parameter of the methods of `console` has some printf-like substitution
@@ -57,13 +61,22 @@ const getClientAndIncRef = (config: Config): Promise<Client> => {
       }
     }),
   )
-  clientReferences.push({})
+  clientReferences.add(config)
   return clientPromise
 }
 
+// Must be passed the exact same object as was passed to {getClientAndIncRef}
 const decRef = (config: Config) => {
-  clientReferences.pop()
-  if (clientReferences.length === 0) {
+  clientReferences.delete(config);
+
+  // Update `clientReferencesMaxLogLevel`
+  clientReferencesMaxLogLevel = 3;
+  for (const cfg of clientReferences.values()) {
+    if (cfg.maxLogLevel > clientReferencesMaxLogLevel)
+      clientReferencesMaxLogLevel = cfg.maxLogLevel
+  }
+
+  if (clientReferences.size === 0) {
     if (clientPromise) clientPromise.then((client) => client.terminate())
     clientPromise = null
   }
@@ -88,6 +101,7 @@ const transformErrors = (thunk: () => void) => {
  * Configuration that can be passed to {createScClient}.
  */
 export interface Config {
+  maxLogLevel: number
 }
 
 /**
@@ -98,7 +112,7 @@ export interface Config {
  * extension is not installed.
  */
 export const createScClient = (config?: Config): ScClient => {
-  const configOrDefault = config || {}
+  const configOrDefault = config || { maxLogLevel: 3 }
 
   const chains = new Map<Chain, SChain>()
 
