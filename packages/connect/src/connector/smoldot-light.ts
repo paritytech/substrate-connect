@@ -61,6 +61,13 @@ const getClientAndIncRef = (): Promise<Client> => {
   return clientPromise
 }
 
+const decRef = () => {
+  if (--clientNumReferences === 0) {
+    if (clientPromise) clientPromise.then((client) => client.terminate())
+    clientPromise = null
+  }
+}
+
 const transformErrors = (thunk: () => void) => {
   try {
     thunk()
@@ -112,27 +119,21 @@ export const createScClient = (config?: Config): ScClient => {
           })
         },
         remove: () => {
-          if (chains.has(chain)) {
+          try {
+            transformErrors(() => {
+              internalChain.remove()
+            })
+          } finally {
             chains.delete(chain)
-            if (--clientNumReferences === 0) {
-              clientPromise = null
-              client.terminate()
-              return
-            }
+            decRef()
           }
-          transformErrors(() => {
-            internalChain.remove()
-          })
         },
       }
 
       chains.set(chain, internalChain)
       return chain
     } catch (error) {
-      if (--clientNumReferences === 0) {
-        clientPromise = null
-        client.terminate()
-      }
+      decRef()
       throw error
     }
   }
@@ -150,10 +151,7 @@ export const createScClient = (config?: Config): ScClient => {
       const spec = await getSpec(supposedChain)
       return await addChain(spec, jsonRpcCallback)
     } finally {
-      if (--clientNumReferences === 0) {
-        clientPromise?.then((client) => client.terminate())
-        clientPromise = null
-      }
+      decRef()
     }
   }
   return { addChain, addWellKnownChain }
