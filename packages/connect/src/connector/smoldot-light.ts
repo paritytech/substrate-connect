@@ -22,12 +22,12 @@ const getStart = () => {
   return startPromise
 }
 
-const clientReferences: Config[] = []  // Note that this can't be a set, as the same config is added/removed multiple times
+const clientReferences: Config[] = [] // Note that this can't be a set, as the same config is added/removed multiple times
 let clientPromise: Promise<Client> | null = null
-let clientReferencesMaxLogLevel = 3;
+let clientReferencesMaxLogLevel = 3
 const getClientAndIncRef = (config: Config): Promise<Client> => {
   if (config.maxLogLevel && config.maxLogLevel > clientReferencesMaxLogLevel)
-    clientReferencesMaxLogLevel = config.maxLogLevel;
+    clientReferencesMaxLogLevel = config.maxLogLevel
 
   if (clientPromise) {
     clientReferences.push(config)
@@ -41,24 +41,23 @@ const getClientAndIncRef = (config: Config): Promise<Client> => {
       maxLogLevel: 9999999, // The actual level filtering is done in the logCallback
       cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
       logCallback: (level, target, message) => {
-        if (level > clientReferencesMaxLogLevel)
-          return;
+        if (level > clientReferencesMaxLogLevel) return
 
         // The first parameter of the methods of `console` has some printf-like substitution
         // capabilities. We don't really need to use this, but not using it means that the logs
         // might not get printed correctly if they contain `%`.
         if (level <= 1) {
-          console.error("[%s] %s", target, message);
-        } else if (level == 2) {
-          console.warn("[%s] %s", target, message);
-        } else if (level == 3) {
-          console.info("[%s] %s", target, message);
-        } else if (level == 4) {
-          console.debug("[%s] %s", target, message);
+          console.error("[%s] %s", target, message)
+        } else if (level === 2) {
+          console.warn("[%s] %s", target, message)
+        } else if (level === 3) {
+          console.info("[%s] %s", target, message)
+        } else if (level === 4) {
+          console.debug("[%s] %s", target, message)
         } else {
-          console.trace("[%s] %s", target, message);
+          console.trace("[%s] %s", target, message)
         }
-      }
+      },
     }),
   )
   clientReferences.push(config)
@@ -67,14 +66,13 @@ const getClientAndIncRef = (config: Config): Promise<Client> => {
 
 // Must be passed the exact same object as was passed to {getClientAndIncRef}
 const decRef = (config: Config) => {
-  const idx = clientReferences.indexOf(config);
-  if (idx === -1)
-    throw new Error("Internal error within smoldot-light")
-  clientReferences.splice(idx, 1);
+  const idx = clientReferences.indexOf(config)
+  if (idx === -1) throw new Error("Internal error within smoldot-light")
+  clientReferences.splice(idx, 1)
 
   // Update `clientReferencesMaxLogLevel`
   // Note how it is set back to 3 if there is no reference anymore
-  clientReferencesMaxLogLevel = 3;
+  clientReferencesMaxLogLevel = 3
   for (const cfg of clientReferences.values()) {
     if (cfg.maxLogLevel && cfg.maxLogLevel > clientReferencesMaxLogLevel)
       clientReferencesMaxLogLevel = cfg.maxLogLevel
