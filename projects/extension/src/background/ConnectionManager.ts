@@ -163,8 +163,7 @@ export class ConnectionManager<SandboxId> {
       // If an exception is thrown it means that the specific chainName is not among the
       // #wellknownchains (either did not start or was disconnected). This is separated from
       // the error below as it does not show a crash in smoldot but that a chain does not exist
-      this.#hasCrashed = "Chain does not exist in WellKnownChains"
-      return undefined
+      throw new Error("Chain does not exist in WellKnownChains")
     }
     try {
       return await chain.databaseContent(maxUtf8BytesSize)
