@@ -23,7 +23,7 @@ const getStart = () => {
 }
 
 const clientReferences: Config[] = [] // Note that this can't be a set, as the same config is added/removed multiple times
-let clientPromise: Promise<Client> | null = null
+let clientPromise: Promise<Client> | Client | null = null
 let clientReferencesMaxLogLevel = 3
 const getClientAndIncRef = (config: Config): Promise<Client> => {
   if (config.maxLogLevel && config.maxLogLevel > clientReferencesMaxLogLevel)
@@ -31,10 +31,11 @@ const getClientAndIncRef = (config: Config): Promise<Client> => {
 
   if (clientPromise) {
     clientReferences.push(config)
-    return clientPromise
+    if (clientPromise instanceof Promise) return clientPromise
+    else return Promise.resolve(clientPromise)
   }
 
-  clientPromise = getStart().then((start) =>
+  const newClientPromise = getStart().then((start) =>
     start({
       forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
       forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
@@ -60,6 +61,19 @@ const getClientAndIncRef = (config: Config): Promise<Client> => {
       },
     }),
   )
+
+  clientPromise = newClientPromise
+
+  newClientPromise.then((client) => {
+    // Make sure that the client we have just created is still desired
+    if (clientPromise === newClientPromise) clientPromise = client
+    else client.terminate()
+    // Note that if clientPromise != newClientPromise we know for sure that the client that we
+    // return isn't going to be used. We would rather not return a terminated client, but this
+    // isn't possible for type check reasons.
+    return client
+  })
+
   clientReferences.push(config)
   return clientPromise
 }
@@ -79,7 +93,8 @@ const decRef = (config: Config) => {
   }
 
   if (clientReferences.length === 0) {
-    if (clientPromise) clientPromise.then((client) => client.terminate())
+    if (clientPromise && !(clientPromise instanceof Promise))
+      clientPromise.terminate()
     clientPromise = null
   }
 }
