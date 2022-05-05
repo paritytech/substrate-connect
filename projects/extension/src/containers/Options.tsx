@@ -1,5 +1,5 @@
 import React, { SetStateAction, useEffect, useState } from "react"
-
+import pckg from "../../package.json"
 import { Logo, NetworkTab, Loader, Tabs } from "../components/"
 import { Background } from "../background/"
 
@@ -113,15 +113,15 @@ const Options: React.FunctionComponent = () => {
         desc = "Error"
         break
       case 2:
-        color = "#f99602"
+        color = "#fde047"
         desc = "Warn"
         break
       case 3:
-        color = "#000"
+        color = "#fff"
         desc = "Info"
         break
       case 4:
-        color = "#5e5e5e"
+        color = "#ccc"
         desc = "Debug"
         break
     }
@@ -130,8 +130,9 @@ const Options: React.FunctionComponent = () => {
 
   return (
     <div className="mx-12 my-8 font-roboto">
-      <div className="pb-10 text-base">
+      <div className="pb-3.5 text-base flex">
         <Logo textSize="lg" />
+        <div className="pl-4 text-sm leading-6">v{pckg.version}</div>
       </div>
       <Tabs tabTitles={["Networks", "Logs"]}>
         <section>
@@ -168,8 +169,8 @@ const Options: React.FunctionComponent = () => {
             </div>
           </div>
           <div
-            style={{ maxHeight: "80vh" }}
-            className="block w-full overflow-y-auto"
+            style={{ maxHeight: "70vh" }}
+            className="block w-full overflow-y-auto px-2 bg-black text-white text-base border border-black font-mono font"
           >
             {allLogs.length > 0 ? (
               allLogs.map(
@@ -177,34 +178,25 @@ const Options: React.FunctionComponent = () => {
                   { unix_timestamp, level, target, message }: logStructure,
                   i: number,
                 ) => (
-                  <p key={"all_" + i} style={{ lineHeight: "1.2rem" }}>
+                  <p
+                    key={"all_" + i}
+                    style={{
+                      color: getLevelInfo(level)[1],
+                    }}
+                  >
                     <span
                       style={{
-                        color: getLevelInfo(level)[1],
-                        fontSize: "0.8rem",
                         fontWeight: "bold",
                       }}
                     >
-                      {getTime(unix_timestamp)}
+                      [{getTime(unix_timestamp)}]
                     </span>
                     <span
                       style={{
-                        color: getLevelInfo(level)[1],
-                        fontSize: "0.8rem",
-                        fontWeight: "bold",
                         margin: "0 0.5rem",
                       }}
                     >
-                      {getLevelInfo(level)[0]}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "0.8rem",
-                        fontStyle: "oblique",
-                        margin: "0 0.5rem",
-                      }}
-                    >
-                      {target}
+                      [{target}]
                     </span>
                     <span>{message}</span>
                   </p>
