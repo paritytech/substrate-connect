@@ -156,8 +156,16 @@ export class ConnectionManager<SandboxId> {
     chainName: string,
     maxUtf8BytesSize?: number,
   ): Promise<string | undefined> {
-    const chain = this.#wellKnownChains.get(chainName)!.chain
-    if (!chain) return undefined
+    let chain: SmoldotChain | undefined = undefined
+    try {
+      chain = this.#wellKnownChains.get(chainName)!.chain
+    } catch (error) {
+      // If an exception is thrown it means that the specific chainName is not among the
+      // #wellknownchains (either did not start or was disconnected). This is separated from
+      // the error below as it does not show a crash in smoldot but that a chain does not exist
+      this.#hasCrashed = "Chain does not exist in WellKnownChains"
+      return undefined
+    }
     try {
       return await chain.databaseContent(maxUtf8BytesSize)
     } catch (error) {
