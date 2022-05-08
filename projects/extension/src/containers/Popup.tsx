@@ -68,11 +68,11 @@ const Popup: FunctionComponent = () => {
 
   return (
     <main className="w-80">
-      <header className="my-3 mx-6 flex justify-between border-b border-neutral-200 py-1.5">
-        <Logo />
+      <header className="my-3 mx-6 flex justify-between border-b border-neutral-200 pt-1.5 pb-4 leading-4">
+        <Logo textSize="xl" cName={"leading-4"} />
         <MdOutlineSettings
           onClick={goToOptions}
-          className="text-base cursor-pointer"
+          className="text-xl leading-5 cursor-pointer hover:color-neutral-200"
         />
       </header>
 
@@ -104,7 +104,7 @@ const Popup: FunctionComponent = () => {
           })
         }
       >
-        <div>About</div>
+        <div className="text-xl">About</div>
         <div>
           <MdCallMade className="text-base" />
         </div>
