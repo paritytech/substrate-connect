@@ -1,0 +1,77 @@
+name: Publish
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # check-extension-versions:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - id: package-version
+  #     run: echo "::set-output name=version::`jq .version ./projects/extension/package.json`"
+  #   - id: webpack-version
+  #     run: echo "::set-output name=version::`grep -rnw './projects/extension/webpack.config.js' -e 'PKG_VERSION' | grep -o '".*"'`"
+  #   - id: manifest-version
+  #     run: echo "::set-output name=version::`jq .version ./projects/extension/public/manifest.json`"
+  #   - run: exit 1
+  #     if: ${{ steps.package-version.outputs.version != steps.webpack-version.outputs.version }}
+  #   - run: exit 1
+  #     if: ${{ steps.package-version.outputs.version != steps.manifest-version.outputs.version }}
+  #   - run: exit 1
+  #     if: ${{ steps.package-version.outputs.version != steps.manifest-version.outputs.version }}
+  #   - run: exit 1
+  #     if: ${{steps.package-version.outputs.version == '' || steps.webpack-version.outputs.version == ''  || steps.manifest-version.outputs.version == '' }}
+    
+  # build:
+  #   runs-on: ubuntu-latest
+
+  #   strategy:
+  #     matrix:
+  #       node-version: [14.x, 16.x, 17.x, 18.x]
+
+  #   steps:
+  #   - uses: actions/checkout@v1
+  #   - name: Use Node.js ${{ matrix.node-version }}
+  #     uses: actions/setup-node@v1
+  #     with:
+  #       node-version: ${{ matrix.node-version }}
+  #   - run: yarn install --immutable
+  #   - run: yarn checkResolutions
+  #   - run: yarn build
+  #   - run: yarn lint
+  #   - run: yarn test
+
+  npm-publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 17.x, 18.x]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+      - run: yarn install --immutable
+      - run: yarn build
+        working-directory: ./packages/connect
+      - run: npm publish --unsafe-perm --dry-run
+      #   working-directory: ./packages/connect
+      # - uses: JS-DevTools/npm-publish@v1
+      #   if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      #   # Warning: this GitHub action doesn't seem to run prepublish scripts, hence
+      #   # the `npm publish --dry-run` done right above is important to ensure this.
+      #   with:
+      #     token: ${{ secrets.NPM_TOKEN }}
+      #     package: ./packages/connect/package.json
+      #     access: public
+
+  all:
+    # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
+    # are successful.
+    needs: [check-extension-versions, build]
+    runs-on: ubuntu-latest
+    steps:
+     - run: echo Success
