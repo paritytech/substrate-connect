@@ -18,11 +18,14 @@ import {
 // between versions of the extension. For this reason, we don't use the `WellKnownChain`
 // enum from `@substrate/connect` but instead manually make the list in that enum match
 // the list present here.
-export const wellKnownChains: Map<string, string> = new Map<string, string>([
-  [polkadot.id, JSON.stringify(polkadot)],
-  [ksmcc3.id, JSON.stringify(ksmcc3)],
-  [rococo_v2_2.id, JSON.stringify(rococo_v2_2)],
-  [westend2.id, JSON.stringify(westend2)],
+export const wellKnownChains: Map<string, [string, string]> = new Map<
+  string,
+  [string, string]
+>([
+  [polkadot.id, [polkadot.name, JSON.stringify(polkadot)]],
+  [ksmcc3.id, [ksmcc3.name, JSON.stringify(ksmcc3)]],
+  [rococo_v2_2.id, [rococo_v2_2.name, JSON.stringify(rococo_v2_2)]],
+  [westend2.id, [westend2.name, JSON.stringify(westend2)]],
 ])
 
 export interface Background extends Window {
@@ -34,6 +37,8 @@ export interface Background extends Window {
     // Use `onChainsChanged` to register a callback that is called when this list or its content
     // might have changed.
     get chains(): ExposedChainConnection[]
+    // List of WellKnown chains shipped with the extension and sync in the background.
+    get integratedChains(): string[]
     get logger(): LogKeeper
     // If smoldot has crashed, contains a string containing a crash message.
     // Use `onSmoldotCrashErrorChanged` to register a callback that is called when this crash
@@ -166,6 +171,13 @@ window.uiInterface = {
       return []
     }
   },
+  get integratedChains() {
+    const s: string[] = []
+    for (let value of wellKnownChains.values()) {
+      s.push(value[0])
+    }
+    return s
+  },
   get logger() {
     return logKeeper
   },
@@ -213,7 +225,9 @@ manager = {
 
       for (const key of wellKnownChains.keys()) {
         const dbContent = await new Promise<string | undefined>((res) =>
-          chrome.storage.local.get([key], (val) => res(val[key] as string)),
+          chrome.storage.local.get([key], (val) => {
+            return res(val[key] as string)
+          }),
         )
 
         managerInit.sandboxMessage(null, {

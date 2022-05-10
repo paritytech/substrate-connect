@@ -121,7 +121,7 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
         contents={[
           <NetworkContent health={health} apps={apps} network={name} />,
         ]}
-      ></Accordion>
+      />
     </div>
   )
 }

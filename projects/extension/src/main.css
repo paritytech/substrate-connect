@@ -9,6 +9,14 @@
   align-items: center;
 }
 
+.popup-accordion-title {
+  @apply rounded-none border-0 py-2 pl-2 !important;
+}
+
+.popup-accordion-content {
+  @apply pl-10 text-lg bg-white text-black border-0 rounded-none !important;
+}
+
 .icon {
   font-family: "Web3-Regular";
   @apply text-center;

@@ -1,15 +1,22 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react"
+import React, {
+  FunctionComponent,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 
 import { MdOutlineSettings, MdCallMade } from "react-icons/md"
 
-import { Logo, ConnectedTab } from "../components"
+import { Accordion, ConnectedTab, Logo } from "../components"
 import { Background } from "../background"
 import { TabInterface } from "../types"
 
 const Popup: FunctionComponent = () => {
   const disconnectTabRef = useRef<(tapId: number) => void>((_: number) => {})
-  const [activeTab, setActiveTab] = useState<TabInterface | undefined>()
-  const [otherTabs, setOtherTabs] = useState<TabInterface[]>([])
+  const [tabs, setTabs] = useState<TabInterface[]>([])
+  const [knownChains, setKnownChains] = useState<string[]>([])
+  const [connChains, setConnChains] = useState<string[]>([])
 
   useEffect(() => {
     let isActive = true
@@ -26,6 +33,16 @@ const Popup: FunctionComponent = () => {
         if (!isActive) return
 
         const bg = backgroundPage as Background
+        setKnownChains(bg.uiInterface.integratedChains)
+        const totalChains = bg.uiInterface.integratedChains
+        bg.uiInterface.chains.forEach((c) => {
+          if (!totalChains.includes(c.chainName)) {
+            totalChains.push(c.chainName)
+          }
+        })
+
+        setConnChains(totalChains)
+
         disconnectTabRef.current = bg.uiInterface.disconnectTab
 
         const refresh = () => {
@@ -45,11 +62,10 @@ const Popup: FunctionComponent = () => {
               url: tab.url,
               networks: [...networksByTab.get(tab.id!)!],
             }
-            if (tab.active) setActiveTab(result)
-            else nextTabs.push(result)
+            nextTabs.push(result)
           })
 
-          setOtherTabs(nextTabs)
+          setTabs(nextTabs)
         }
         unsubscribe = bg.uiInterface.onChainsChanged(refresh)
         refresh()
@@ -66,6 +82,15 @@ const Popup: FunctionComponent = () => {
     chrome.runtime.openOptionsPage()
   }
 
+  const networkIcon = (icon: string) => {
+    return (
+      <div className="pl-2 flex text-xl">
+        <div className="icon w-7">{icon.toLowerCase()}</div>
+        <div className="pl-2">{icon}</div>
+      </div>
+    )
+  }
+
   return (
     <main className="w-80">
       <header className="my-3 mx-6 flex justify-between border-b border-neutral-200 pt-1.5 pb-4 leading-4">
@@ -75,19 +100,32 @@ const Popup: FunctionComponent = () => {
           className="text-xl leading-5 cursor-pointer hover:color-neutral-200"
         />
       </header>
+      {connChains.map((w) => {
+        const contents: ReactNode[] = []
+        tabs.filter((t) => {
+          if (t.networks.includes(w)) {
+            contents.push(
+              <div>
+                {t.url} - {t.tabId}
+              </div>,
+            )
+          }
+        })
 
-      {activeTab && (
-        <ConnectedTab
-          disconnectTab={disconnectTabRef.current}
-          current
-          tab={activeTab}
-          setActiveTab={setActiveTab}
-        />
-      )}
+        return (
+          <Accordion
+            titleClass="popup-accordion-title"
+            contentClass="popup-accordion-content"
+            titles={[networkIcon(w)]}
+            contents={[<div>{contents}</div>]}
+          />
+        )
+      })}
 
-      {otherTabs.length > 0 && (
+      {/* This is the "old" way */}
+      {/* tabs.length > 0 && (
         <div className="my-1">
-          {otherTabs.map((t) => (
+          {tabs.map((t) => (
             <ConnectedTab
               disconnectTab={disconnectTabRef.current}
               key={t.tabId}
@@ -95,9 +133,9 @@ const Popup: FunctionComponent = () => {
             />
           ))}
         </div>
-      )}
+      ) */}
       <button
-        className="font-inter my-3 mx-4 flex w-11/12 justify-between px-2 py-1.5 text-sm font-light capitalize hover:bg-stone-200"
+        className="font-inter my-3 mx-4 flex w-11/12 justify-between px-2 py-1.5 text-sm font-light capitalize hover:bg-stone-200  border-t border-neutral-200 pt-4"
         onClick={() =>
           chrome.tabs.update({
             url: "https://paritytech.github.io/substrate-connect/#extension",
@@ -106,7 +144,7 @@ const Popup: FunctionComponent = () => {
       >
         <div className="text-xl">About</div>
         <div>
-          <MdCallMade className="text-base" />
+          <MdCallMade className="text-2xl" />
         </div>
       </button>
     </main>
