@@ -22,10 +22,11 @@ jobs:
         with:
           path: './packages/connect'
           npm_package_name: '@substrate/connect'
-      - name: Check versions
+      - name: Local/NPM versions
         if: steps.package_version.outputs.npm_is_greater == 'true'
         run: |
-          echo "Local version is ${{ steps.package_version.outputs.version }}. NPM version is ${{ steps.package_version.outputs.pkg_npm_version }} - Package will not be deployed due to version number must increase"
+          echo "Local version is ${{ steps.package_version.outputs.version }}."
+          echo "NPM version is ${{ steps.package_version.outputs.pkg_npm_version }}."
       - name: Publish Dry Run
         working-directory: './packages/connect'
         run: npm publish --unsafe-perm --dry-run
