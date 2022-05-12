@@ -13,6 +13,8 @@ import { Accordion, ConnectedTab, Logo } from "../components"
 import { Background } from "../background"
 import { TabInterface } from "../types"
 
+const knownChains = ["polkadot", "kusama", "westend", "rococo"]
+
 const Popup: FunctionComponent = () => {
   const disconnectTabRef = useRef<(tapId: number) => void>((_: number) => {})
   const [tabs, setTabs] = useState<TabInterface[]>([])
@@ -81,11 +83,14 @@ const Popup: FunctionComponent = () => {
     chrome.runtime.openOptionsPage()
   }
 
-  const networkIcon = (icon: string) => {
+  const networkIcon = (network: string) => {
+    const icon = network.replace(new RegExp(" ", "g"), "").toLowerCase()
     return (
       <>
-        <div className="icon w-7">{icon.toLowerCase()}</div>
-        <div className="pl-2">{icon}</div>
+        <div className="icon w-7">
+          {knownChains.includes(icon) ? icon : "?"}
+        </div>
+        <div className="pl-2">{network}</div>
       </>
     )
   }
