@@ -7,6 +7,7 @@ import React, {
 } from "react"
 
 import { MdOutlineSettings, MdCallMade } from "react-icons/md"
+import { BiDotsHorizontalRounded } from "react-icons/bi"
 
 import { Accordion, ConnectedTab, Logo } from "../components"
 import { Background } from "../background"
@@ -15,7 +16,6 @@ import { TabInterface } from "../types"
 const Popup: FunctionComponent = () => {
   const disconnectTabRef = useRef<(tapId: number) => void>((_: number) => {})
   const [tabs, setTabs] = useState<TabInterface[]>([])
-  const [knownChains, setKnownChains] = useState<string[]>([])
   const [connChains, setConnChains] = useState<string[]>([])
 
   useEffect(() => {
@@ -33,19 +33,18 @@ const Popup: FunctionComponent = () => {
         if (!isActive) return
 
         const bg = backgroundPage as Background
-        setKnownChains(bg.uiInterface.integratedChains)
-        const totalChains = bg.uiInterface.integratedChains
-        bg.uiInterface.chains.forEach((c) => {
-          if (!totalChains.includes(c.chainName)) {
-            totalChains.push(c.chainName)
-          }
-        })
-
-        setConnChains(totalChains)
 
         disconnectTabRef.current = bg.uiInterface.disconnectTab
 
         const refresh = () => {
+          const totalChains = bg.uiInterface.integratedChains
+          bg.uiInterface.chains.forEach((c) => {
+            if (!totalChains.includes(c.chainName)) {
+              totalChains.push(c.chainName)
+            }
+          })
+
+          setConnChains(totalChains)
           const networksByTab: Map<number, Set<string>> = new Map()
           bg.uiInterface.chains.forEach((app) => {
             if (!app.tab) return
@@ -84,11 +83,22 @@ const Popup: FunctionComponent = () => {
 
   const networkIcon = (icon: string) => {
     return (
-      <div className="pl-2 flex text-xl">
+      <>
         <div className="icon w-7">{icon.toLowerCase()}</div>
         <div className="pl-2">{icon}</div>
-      </div>
+      </>
     )
+  }
+
+  const onDisconnect = (tabId: number): void => {
+    if (tabId) {
+      disconnectTabRef.current(tabId)
+      setTabs(
+        tabs.filter((t) => {
+          if (t.tabId !== tabId) return t
+        }),
+      )
+    }
   }
 
   return (
@@ -105,48 +115,64 @@ const Popup: FunctionComponent = () => {
         tabs.filter((t) => {
           if (t.networks.includes(w)) {
             contents.push(
-              <div>
-                {t.url} - {t.tabId}
+              <div className="flex justify-between">
+                <div className="ml-6 w-full truncate text-base underline text-blue-500">
+                  {t.url}
+                </div>
+                <div>
+                  <div data-testid="Tooltip" className="tooltip">
+                    <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
+                      <div
+                        onClick={() => t && t.tabId && onDisconnect(t.tabId)}
+                      >
+                        Disconnect app
+                      </div>
+                      {/* <div onClick={() => console.log("ban")}>Ban app</div> */}
+                    </span>
+                    <BiDotsHorizontalRounded className="ml-2 text-base text-red-500" />
+                  </div>
+                </div>
               </div>,
             )
           }
         })
 
-        return (
-          <Accordion
-            titleClass="popup-accordion-title"
-            contentClass="popup-accordion-content"
-            titles={[networkIcon(w)]}
-            contents={[<div>{contents}</div>]}
-          />
-        )
+        if (contents.length) {
+          return (
+            <Accordion
+              titleClass="popup-accordion-title"
+              contentClass="popup-accordion-content"
+              titles={[
+                <div className="flex justify-between items-center w-full">
+                  <div className="pl-4 flex text-lg justify-start">
+                    {networkIcon(w)}
+                  </div>
+                </div>,
+              ]}
+              contents={[<>{contents}</>]}
+              showTitleIcon
+            />
+          )
+        } else {
+          return <div className="pl-6 py-2 flex text-lg">{networkIcon(w)}</div>
+        }
       })}
 
-      {/* This is the "old" way */}
-      {/* tabs.length > 0 && (
-        <div className="my-1">
-          {tabs.map((t) => (
-            <ConnectedTab
-              disconnectTab={disconnectTabRef.current}
-              key={t.tabId}
-              tab={t}
-            />
-          ))}
-        </div>
-      ) */}
-      <button
-        className="font-inter my-3 mx-4 flex w-11/12 justify-between px-2 py-1.5 text-sm font-light capitalize hover:bg-stone-200  border-t border-neutral-200 pt-4"
-        onClick={() =>
-          chrome.tabs.update({
-            url: "https://paritytech.github.io/substrate-connect/#extension",
-          })
-        }
-      >
-        <div className="text-xl">About</div>
-        <div>
-          <MdCallMade className="text-2xl" />
-        </div>
-      </button>
+      <div className="border-t border-neutral-200 pt-2 mt-2 mx-8">
+        <button
+          className="font-inter mb-3 mt-1.5 flex w-full justify-between py-1.5 text-sm font-light capitalize hover:bg-stone-200"
+          onClick={() =>
+            chrome.tabs.update({
+              url: "https://paritytech.github.io/substrate-connect/#extension",
+            })
+          }
+        >
+          <div className="text-lg">About</div>
+          <div>
+            <MdCallMade className="text-xl" />
+          </div>
+        </button>
+      </div>
     </main>
   )
 }

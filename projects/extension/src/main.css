@@ -14,7 +14,7 @@
 }
 
 .popup-accordion-content {
-  @apply pl-10 text-lg bg-white text-black border-0 rounded-none !important;
+  @apply pl-10 pr-8 py-0 text-lg bg-white text-black border-0 rounded-none !important;
 }
 
 .icon {
@@ -104,11 +104,16 @@
 }
 
 .tooltip .tooltiptext {
-  @apply invisible bg-black text-white text-center rounded-md p-1.5 absolute z-50 w-max;
+  @apply invisible text-black bg-white border border-neutral-200 text-center p-1.5 absolute z-50 w-max;
+  line-height: 1.5rem;
 }
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+
+.tooltip:hover .tooltiptext div:hover {
+  @apply bg-gray-100;
 }
 
 .tooltip_top {

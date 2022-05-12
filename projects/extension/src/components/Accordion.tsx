@@ -1,5 +1,12 @@
-import React, { ReactNode, useCallback, useMemo, useState } from "react"
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react"
 import { useContext, createContext } from "react"
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io"
 
 interface AccItem {
   value: string
@@ -8,6 +15,7 @@ interface AccItem {
   titleClass?: string
   contentClass?: string
   status?: "first" | "last" | "single"
+  showTitleIcon?: boolean
 }
 
 interface AccordionProps {
@@ -16,6 +24,7 @@ interface AccordionProps {
   contents: ReactNode[] | string[]
   contentClass?: string
   defaultExpanded?: number
+  showTitleIcon?: boolean
 }
 
 const useAccordionContext = () => {
@@ -40,6 +49,7 @@ const AccordionItem = ({
   titleClass,
   contentClass,
   status,
+  showTitleIcon,
 }: AccItem) => {
   const { activeItem, setToggle } = useAccordionContext()
 
@@ -66,6 +76,11 @@ const AccordionItem = ({
         value={value}
       >
         {title}
+        {showTitleIcon && (
+          <div className="pr-4">
+            {activeItem !== value ? <IoIosArrowDown /> : <IoIosArrowUp />}
+          </div>
+        )}
       </button>
       <section
         className={`item_content `
@@ -93,6 +108,7 @@ export const Accordion = ({
   defaultExpanded,
   titleClass,
   contentClass,
+  showTitleIcon,
 }: AccordionProps): JSX.Element => {
   const [activeItem, setActiveItem] = useState<string | undefined>(
     defaultExpanded?.toString(),
@@ -145,6 +161,7 @@ export const Accordion = ({
             titleClass={titleClass}
             contentClass={contentClass}
             status={stat}
+            showTitleIcon={showTitleIcon}
           >
             {contents[index]}
           </AccordionItem>
