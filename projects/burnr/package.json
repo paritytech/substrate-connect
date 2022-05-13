@@ -28,7 +28,7 @@
     "@polkadot/react-identicon": "^1.4.1",
     "@polkadot/rpc-provider": "^7.15.1",
     "@polkadot/types": "^7.15.1",
-    "@polkadot/util": "^8.6.1",
+    "@polkadot/util": "^9.2.1",
     "@polkadot/util-crypto": "^8.6.1",
     "bn.js": "^5.2.0",
     "qrcode.react": "^2.0.0",
