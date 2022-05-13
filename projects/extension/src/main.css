@@ -104,8 +104,8 @@
 }
 
 .tooltip .tooltiptext {
-  @apply invisible text-black bg-white border border-neutral-200 text-center p-1.5 absolute z-50 w-max;
-  line-height: 1.5rem;
+  @apply invisible text-black bg-white border border-neutral-200 text-left p-2 right-5 absolute z-50 w-max leading-6;
+  top: -100%;
 }
 
 .tooltip:hover .tooltiptext {

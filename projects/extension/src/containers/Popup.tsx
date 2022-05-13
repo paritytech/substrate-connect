@@ -11,14 +11,72 @@ import { BiDotsHorizontalRounded } from "react-icons/bi"
 
 import { Accordion, ConnectedTab, Logo } from "../components"
 import { Background } from "../background"
-import { TabInterface } from "../types"
 
 const knownChains = ["polkadot", "kusama", "westend", "rococo"]
 
+interface PoupChains {
+  chainName: string
+  details?: ChainDetails[]
+}
+
+interface ChainDetails {
+  tabId: number
+  url: string
+  peers: number
+  isSyncing: boolean
+  chainId: string
+}
+
 const Popup: FunctionComponent = () => {
-  const disconnectTabRef = useRef<(tapId: number) => void>((_: number) => {})
-  const [tabs, setTabs] = useState<TabInterface[]>([])
-  const [connChains, setConnChains] = useState<string[]>([])
+  const disconnectTabOrChain = useRef<
+    (tabId: number, chainId?: string) => void
+  >((_: number, __?: string) => {})
+  const [connChains, setConnChains] = useState<PoupChains[] | undefined>()
+
+  const refresh = () => {
+    chrome.runtime.getBackgroundPage((backgroundPage) => {
+      const bg = backgroundPage as Background
+      const allChains: PoupChains[] = bg.uiInterface.integratedChains.map(
+        (ic) => ({ chainName: ic }),
+      )
+
+      bg.uiInterface.chains.forEach((c) => {
+        const i = allChains.findIndex((i) => i.chainName === c.chainName)
+        if (i === -1) {
+          allChains.push({ chainName: c.chainName })
+          allChains[allChains.length].details?.push({
+            tabId: c.tabId,
+            url: c.url,
+            peers: c.peers,
+            isSyncing: c.isSyncing,
+            chainId: c.chainId,
+          })
+        } else {
+          const details = allChains[i].details
+          if (!details) {
+            allChains[i].details = [
+              {
+                tabId: c.tabId,
+                url: c.url,
+                peers: c.peers,
+                isSyncing: c.isSyncing,
+                chainId: c.chainId,
+              },
+            ]
+          } else if (!details.map((d) => d.tabId).includes(c.tabId)) {
+            details.push({
+              tabId: c.tabId,
+              url: c.url,
+              peers: c.peers,
+              isSyncing: c.isSyncing,
+              chainId: c.chainId,
+            })
+          }
+        }
+      })
+      setConnChains([...allChains])
+    })
+  }
 
   useEffect(() => {
     let isActive = true
@@ -33,41 +91,8 @@ const Popup: FunctionComponent = () => {
 
       chrome.runtime.getBackgroundPage((backgroundPage) => {
         if (!isActive) return
-
         const bg = backgroundPage as Background
-
-        disconnectTabRef.current = bg.uiInterface.disconnectTab
-
-        const refresh = () => {
-          const totalChains = bg.uiInterface.integratedChains
-          bg.uiInterface.chains.forEach((c) => {
-            if (!totalChains.includes(c.chainName)) {
-              totalChains.push(c.chainName)
-            }
-          })
-
-          setConnChains(totalChains)
-          const networksByTab: Map<number, Set<string>> = new Map()
-          bg.uiInterface.chains.forEach((app) => {
-            if (!app.tab) return
-            if (!networksByTab.has(app.tab.id))
-              networksByTab.set(app.tab.id, new Set())
-            networksByTab.get(app.tab.id)!.add(app.chainName)
-          })
-
-          const nextTabs: TabInterface[] = []
-          browserTabs.forEach((tab) => {
-            if (!networksByTab.has(tab.id!)) return
-            const result = {
-              tabId: tab.id!,
-              url: tab.url,
-              networks: [...networksByTab.get(tab.id!)!],
-            }
-            nextTabs.push(result)
-          })
-
-          setTabs(nextTabs)
-        }
+        disconnectTabOrChain.current = bg.uiInterface.disconnectTabOrChain
         unsubscribe = bg.uiInterface.onChainsChanged(refresh)
         refresh()
       })
@@ -75,9 +100,9 @@ const Popup: FunctionComponent = () => {
 
     return () => {
       isActive = false
-      unsubscribe()
+      unsubscribe && unsubscribe()
     }
-  }, [])
+  }, [refresh])
 
   const goToOptions = (): void => {
     chrome.runtime.openOptionsPage()
@@ -96,14 +121,8 @@ const Popup: FunctionComponent = () => {
   }
 
   const onDisconnect = (tabId: number): void => {
-    if (tabId) {
-      disconnectTabRef.current(tabId)
-      setTabs(
-        tabs.filter((t) => {
-          if (t.tabId !== tabId) return t
-        }),
-      )
-    }
+    disconnectTabOrChain.current(tabId)
+    refresh()
   }
 
   return (
@@ -115,52 +134,56 @@ const Popup: FunctionComponent = () => {
           className="text-xl leading-5 cursor-pointer hover:color-neutral-200"
         />
       </header>
-      {connChains.map((w) => {
-        const contents: ReactNode[] = []
-        tabs.filter((t) => {
-          if (t.networks.includes(w)) {
-            contents.push(
-              <div className="flex justify-between">
-                <div className="ml-6 w-full truncate text-base underline text-blue-500">
-                  {t.url}
-                </div>
-                <div>
-                  <div data-testid="Tooltip" className="tooltip">
-                    <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
-                      <div
-                        onClick={() => t && t.tabId && onDisconnect(t.tabId)}
-                      >
-                        Disconnect app
-                      </div>
-                      {/* <div onClick={() => console.log("ban")}>Ban app</div> */}
-                    </span>
-                    <BiDotsHorizontalRounded className="ml-2 text-base" />
+      {connChains?.map((w) => {
+        if (!w.details) {
+          return (
+            <div className="pl-6 py-2 flex text-lg">
+              {networkIcon(w.chainName)}
+            </div>
+          )
+        }
+        const contents: ReactNode[] = w.details.map((t) => (
+          <div className="flex justify-between">
+            <div className="ml-6 w-full truncate text-base underline text-blue-500">
+              {t.url}
+            </div>
+            <div>
+              <div data-testid="Tooltip" className="tooltip">
+                <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
+                  <div onClick={() => t && t.tabId && onDisconnect(t.tabId)}>
+                    Disconnect tab
                   </div>
+                  <div
+                    onClick={() =>
+                      t &&
+                      t.tabId &&
+                      disconnectTabOrChain.current(t.tabId, t.chainId)
+                    }
+                  >
+                    Disconnect network
+                  </div>
+                </span>
+                <BiDotsHorizontalRounded className="ml-2 text-base" />
+              </div>
+            </div>
+          </div>
+        ))
+
+        return (
+          <Accordion
+            titleClass="popup-accordion-title"
+            contentClass="popup-accordion-content"
+            titles={[
+              <div className="flex justify-between items-center w-full">
+                <div className="pl-4 flex text-lg justify-start">
+                  {networkIcon(w.chainName)}
                 </div>
               </div>,
-            )
-          }
-        })
-
-        if (contents.length) {
-          return (
-            <Accordion
-              titleClass="popup-accordion-title"
-              contentClass="popup-accordion-content"
-              titles={[
-                <div className="flex justify-between items-center w-full">
-                  <div className="pl-4 flex text-lg justify-start">
-                    {networkIcon(w)}
-                  </div>
-                </div>,
-              ]}
-              contents={[<>{contents}</>]}
-              showTitleIcon
-            />
-          )
-        } else {
-          return <div className="pl-6 py-2 flex text-lg">{networkIcon(w)}</div>
-        }
+            ]}
+            contents={[<>{contents}</>]}
+            showTitleIcon
+          />
+        )
       })}
 
       <div className="border-t border-neutral-200 pt-2 mt-2 mx-8">
