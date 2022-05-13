@@ -134,7 +134,7 @@ const Popup: FunctionComponent = () => {
                       </div>
                       {/* <div onClick={() => console.log("ban")}>Ban app</div> */}
                     </span>
-                    <BiDotsHorizontalRounded className="ml-2 text-base text-red-500" />
+                    <BiDotsHorizontalRounded className="ml-2 text-base" />
                   </div>
                 </div>
               </div>,
