@@ -44,7 +44,7 @@ const Popup: FunctionComponent = () => {
         const i = allChains.findIndex((i) => i.chainName === c.chainName)
         if (i === -1) {
           allChains.push({ chainName: c.chainName })
-          allChains[allChains.length].details?.push({
+          allChains[allChains.length]?.details?.push({
             tabId: c.tabId,
             url: c.url,
             peers: c.peers,
@@ -52,7 +52,7 @@ const Popup: FunctionComponent = () => {
             chainId: c.chainId,
           })
         } else {
-          const details = allChains[i].details
+          const details = allChains[i]?.details
           if (!details) {
             allChains[i].details = [
               {
@@ -135,15 +135,15 @@ const Popup: FunctionComponent = () => {
         />
       </header>
       {connChains?.map((w) => {
-        if (!w.details) {
+        if (!w?.details) {
           return (
-            <div className="pl-6 py-2 flex text-lg">
+            <div key={w.chainName} className="pl-6 py-2 flex text-lg">
               {networkIcon(w.chainName)}
             </div>
           )
         }
-        const contents: ReactNode[] = w.details.map((t) => (
-          <div className="flex justify-between">
+        const contents: ReactNode[] = w?.details.map((t) => (
+          <div key={t.url} className="flex justify-between">
             <div className="ml-6 w-full truncate text-base underline text-blue-500">
               {t.url}
             </div>
