@@ -153,8 +153,10 @@ window.uiInterface = {
           return {
             chainId: info.chainId,
             chainName: info.chainName,
-            tabId: info.sandboxId!.sender!.tab!.id!,  // TODO: sandboxId could be null; fix
-            url: info.sandboxId!.sender!.tab!.url!,  // TODO: sandboxId could be null; fix
+            tab: info.sandboxId ? {
+              id: info.sandboxId.sender!.tab!.id!,
+              url: info.sandboxId.sender!.tab!.url!,
+            } : undefined,
             isSyncing: info.isSyncing,
             peers: info.peers,
           }
