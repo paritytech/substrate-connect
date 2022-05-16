@@ -219,6 +219,7 @@ manager = {
       // This initialization operation shouldn't take more than a few dozen milliseconds, but we
       // still need to properly handle situations where initialization isn't finished yet.
       const managerInit = new ConnectionManagerWithHealth<chrome.runtime.Port>(
+        wellKnownChains,
         smoldotStart({
           maxLogLevel: 4,
           logCallback: logger,

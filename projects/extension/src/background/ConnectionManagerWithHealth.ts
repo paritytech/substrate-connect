@@ -129,8 +129,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
   #pingInterval: ReturnType<typeof globalThis.setInterval>
   #nextHealthCheckRqId: number = 0
 
-  constructor(smoldotClient: SmoldotClient) {
-    this.#inner = new ConnectionManager(smoldotClient)
+  constructor(wellKnownChainSpecs: Map<string, string>, smoldotClient: SmoldotClient) {
+    this.#inner = new ConnectionManager(wellKnownChainSpecs, smoldotClient)
     this.#pingInterval = globalThis.setInterval(() => {
       this.#sendPings()
     }, 10000)

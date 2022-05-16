@@ -101,9 +101,11 @@ export class ConnectionManager<SandboxId> {
   #smoldotClient: SmoldotClient
   #sandboxes: Map<SandboxId, Sandbox> = new Map()
   #wellKnownChains: Map<string, WellKnownChain> = new Map()
+  #wellKnownChainSpecs: Map<string, string> = new Map()
   #hasCrashed: string | undefined
 
-  constructor(smoldotClient: SmoldotClient) {
+  constructor(wellKnownChainSpecs: Map<string, string>, smoldotClient: SmoldotClient) {
+    this.#wellKnownChainSpecs = wellKnownChainSpecs
     this.#smoldotClient = smoldotClient
   }
 
