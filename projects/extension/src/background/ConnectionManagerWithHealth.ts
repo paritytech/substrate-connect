@@ -35,25 +35,17 @@ export interface ChainInfo<SandboxId> {
   peers: number
 
   /**
-   * Information about how the chain was inserted in the {ConnectionManager}.
+   * Identifier of the chain obtained through the initial `add-chain`.
    *
-   * If this field is not set, it means that the chain was added with
-   * {ConnectionManager.addWellKnownChain}.
+   * Important: this name is untrusted user input! It could be extremely long, contain weird
+   * characters (e.g. HTML tags), etc. Do not make any assumption about its content.
    */
-  apiInfo?: {
-    /**
-     * Identifier of the chain obtained through the initial `add-chain`.
-     *
-     * Important: this name is untrusted user input! It could be extremely long, contain weird
-     * characters (e.g. HTML tags), etc. Do not make any assumption about its content.
-     */
-    chainId: string
+  chainId: string
 
-    /**
-     * The identifier for the sandbox that has received the message that requests to add a chain.
-     */
-    sandboxId: SandboxId
-  }
+  /**
+   * The identifier for the sandbox that has received the message that requests to add a chain.
+   */
+  sandboxId: SandboxId
 }
 
 /**
@@ -79,9 +71,8 @@ export interface ChainsStatusChanged {
  * of this module. You can add and remove sandboxes using {ConnectionManager.addSandbox} and
  * {ConnectionManager.deleteSandbox}.
  *
- * - A list of trusted "well-known" chains, outside of any sandbox. Well-known chains can be added
- * by calling {ConnectionManager.addWellKnownChain}. Once added, a well-known chain cannot be
- * removed. Chains within sandboxes can interact with all well-known chains.
+ * - A list of "well-known" chains specifications. Well-known chain specifications are passed to
+ * the constructor and cannot be modified afterwards.
  *
  * # Sandboxes usage
  *
@@ -107,18 +98,17 @@ export interface ChainsStatusChanged {
  * At any point, information about all the chains contained within the {ConnectionManager} can
  * be retrieved using {ConnectionManager.allChains}. This can be used for display purposes.
  *
- * When {ConnectionManager.sandboxMessage} produces a {ChainsStatusChanged} or when a chain is
- * added or removed by the user or the {ConnectionManager}, the fields within the value returned
- * by {ConnectionManager.allChains} has potentially been modified.
- *
  * # Database
  *
- * The {ConnectionManager.wellKnownChainDatabaseContent} method can be used to retrieve the
- * content of the so-called "database" of a well-known chain. The string returned by this function
- * is opaque and shouldn't be interpreted in any way by the API user.
+ * In addition to {@link ToExtension} messages, one can also inject {@link ToConnectionManager}
+ * messages.
  *
- * The {ConnectionManager.addWellKnownChain} accepts a `databaseContent` parameter that can be used
- * to pass the "database" that was grabbed the last time the well-known chain was running.
+ * This can be used to retrieve the content of the so-called "database" of a chain.
+ * The string sent back in the {@link ToOutsideDatabaseContent} is opaque and shouldn't be
+ * interpreted in any way by the API user.
+ *
+ * The {@link ToConnectionManagerAddWellKnownChain} accepts a `databaseContent` field that can
+ * be used to pass the "database" that was grabbed the last time the chain was running.
  *
  */
 export class ConnectionManagerWithHealth<SandboxId> {
@@ -139,66 +129,17 @@ export class ConnectionManagerWithHealth<SandboxId> {
   }
 
   /**
-   * Adds a new well-known chain to this state machine.
-   *
-   * While it is not strictly mandatory, you are strongly encouraged to call this at the
-   * beginning and before adding any sandbox.
-   *
-   * @throws Throws an exception if a well-known chain with that name has been added in the past.
-   */
-  async addWellKnownChain(
-    chainName: string,
-    spec: string,
-    databaseContent?: string,
-  ): Promise<void> {
-    await this.#inner.addWellKnownChain(chainName, spec, databaseContent)
-  }
-
-  /**
-   * Returns the content of the database of the well-known chain with the given name.
-   *
-   * Returns `undefined` if the database content couldn't be obtained.
-   *
-   * The `maxUtf8BytesSize` parameter is the maximum number of bytes that the string must occupy
-   * in its UTF-8 encoding. The returned string is guaranteed to not be larger than this number.
-   * If not provided, "infinite" is implied.
-   *
-   * @throws Throws an exception if the `chainName` isn't the name of a chain that has been
-   *         added by a call to `addWellKnownChain`.
-   */
-  async wellKnownChainDatabaseContent(
-    chainName: string,
-    maxUtf8BytesSize?: number,
-  ): Promise<string | undefined> {
-    return await this.#inner.wellKnownChainDatabaseContent(
-      chainName,
-      maxUtf8BytesSize,
-    )
-  }
-
-  /**
    * Returns a list of all chains, for display purposes only.
-   *
-   * This includes both well-known chains and chains added by sandbox messages.
    */
   get allChains(): ChainInfo<SandboxId>[] {
     return this.#inner.allChains.map((chainInfo) => {
-      // TODO: fill for well-known chains; would be solved by https://github.com/paritytech/substrate-connect/issues/855
-      let peers = 0
-      let isSyncing = true
-
-      if (chainInfo.apiInfo) {
-        const chain = this.#sandboxesChains
-          .get(chainInfo.apiInfo.sandboxId)!
-          .get(chainInfo.apiInfo.chainId)!
-
-        peers = chain.peers
-        isSyncing = chain.isSyncing
-      }
+      const chain = this.#sandboxesChains
+        .get(chainInfo.sandboxId)!
+        .get(chainInfo.chainId)!
 
       return {
-        peers,
-        isSyncing,
+        peers: chain.peers,
+        isSyncing: chain.isSyncing,
         ...chainInfo,
       }
     })
@@ -415,7 +356,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
   sandboxMessage(sandboxId: SandboxId, message: ToExtension | ToConnectionManager) {
     switch (message.type) {
       case "add-chain":
-      case "add-well-known-chain": {
+      case "add-well-known-chain":
+      case "add-well-known-chain-with-db": {
         // Note that chains that are still initializing are also kept within `this`, otherwise it
         // isn't possible to keep the list of chains synchronized with the list in the underlying
         // machine without being subject to race conditions.

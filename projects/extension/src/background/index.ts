@@ -149,13 +149,12 @@ window.uiInterface = {
   get chains(): ExposedChainConnection[] {
     if (manager.state === "ready") {
       return manager.manager.allChains
-        .filter((info) => info.apiInfo)
         .map((info) => {
           return {
-            chainId: info.apiInfo!.chainId,
+            chainId: info.chainId,
             chainName: info.chainName,
-            tabId: info.apiInfo!.sandboxId!.sender!.tab!.id!,  // TODO: sandboxId could be null; fix
-            url: info.apiInfo!.sandboxId!.sender!.tab!.url!,  // TODO: sandboxId could be null; fix
+            tabId: info.sandboxId!.sender!.tab!.id!,  // TODO: sandboxId could be null; fix
+            url: info.sandboxId!.sender!.tab!.url!,  // TODO: sandboxId could be null; fix
             isSyncing: info.isSyncing,
             peers: info.peers,
           }
