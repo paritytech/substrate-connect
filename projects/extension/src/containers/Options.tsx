@@ -71,6 +71,8 @@ const Options: React.FunctionComponent = () => {
       const refresh = () => {
         const networks = new Map<string, NetworkTabProps>()
         bg.uiInterface.chains.forEach((app) => {
+          if (!app.tab) return
+
           const network = networks.get(app.chainName)
           if (!network) {
             return networks.set(app.chainName, {
@@ -80,11 +82,11 @@ const Options: React.FunctionComponent = () => {
                 peers: app.peers,
                 status: "connected",
               },
-              apps: [{ name: app.url, url: app.url }],
+              apps: [{ name: app.tab.url, url: app.tab.url }],
             })
           }
 
-          network.apps.push({ name: app.url, url: app.url })
+          network.apps.push({ name: app.tab.url, url: app.tab.url })
         })
         setNetworks([...networks.values()])
       }

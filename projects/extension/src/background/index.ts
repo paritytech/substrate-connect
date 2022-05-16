@@ -140,7 +140,7 @@ window.uiInterface = {
     if (manager.state !== "ready") return
     // Note that multiple ports can share the same `tabId`
     for (const port of manager.manager.sandboxes) {
-      if (port.sender?.tab?.id === tabId) {
+      if (port?.sender?.tab?.id === tabId) {
         manager.manager.deleteSandbox(port)
         port.disconnect()
       }
@@ -148,18 +148,20 @@ window.uiInterface = {
   },
   get chains(): ExposedChainConnection[] {
     if (manager.state === "ready") {
-      return manager.manager.allChains
-        .filter((info) => info.apiInfo)
-        .map((info) => {
-          return {
-            chainId: info.apiInfo!.chainId,
-            chainName: info.chainName,
-            tabId: info.apiInfo!.sandboxId.sender!.tab!.id!,
-            url: info.apiInfo!.sandboxId.sender!.tab!.url!,
-            isSyncing: info.isSyncing,
-            peers: info.peers,
-          }
-        })
+      return manager.manager.allChains.map((info) => {
+        return {
+          chainId: info.chainId,
+          chainName: info.chainName,
+          tab: info.sandboxId
+            ? {
+                id: info.sandboxId.sender!.tab!.id!,
+                url: info.sandboxId.sender!.tab!.url!,
+              }
+            : undefined,
+          isSyncing: info.isSyncing,
+          peers: info.peers,
+        }
+      })
     } else {
       return []
     }
@@ -173,29 +175,6 @@ window.uiInterface = {
   },
 }
 
-const saveChainDbContent = async (
-  readyManager: ConnectionManagerWithHealth<chrome.runtime.Port>,
-  key: string,
-) => {
-  const db = await readyManager.wellKnownChainDatabaseContent(
-    key,
-    chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
-  )
-
-  // `db` can be `undefined` if the database content couldn't be obtained. In that case, we leave
-  // the database as it was before.
-  if (db) chrome.storage.local.set({ [key]: db })
-  else {
-    // `db` being undefined can mean that the manager might have crashed.
-    const error = readyManager.hasCrashed
-    if (error) {
-      manager = { state: "crashed", error }
-      notifyAllSmoldotCrashErrorChangedListeners()
-      notifyAllChainsChangedListeners()
-    }
-  }
-}
-
 // The manager can be in multiple different states: currently initializing, operational, or
 // crashed.
 // While initializing, the `whenInitFinished` promise can be used to know when the initialization
@@ -204,7 +183,7 @@ let manager:
   | { state: "initializing"; whenInitFinished: Promise<void> }
   | {
       state: "ready"
-      manager: ConnectionManagerWithHealth<chrome.runtime.Port>
+      manager: ConnectionManagerWithHealth<chrome.runtime.Port | null>
     }
   | { state: "crashed"; error: string } = {
   state: "initializing",
@@ -218,28 +197,89 @@ manager = {
       // Start initializing a `ConnectionManagerWithHealth`.
       // This initialization operation shouldn't take more than a few dozen milliseconds, but we
       // still need to properly handle situations where initialization isn't finished yet.
-      const managerInit = new ConnectionManagerWithHealth<chrome.runtime.Port>(
-        smoldotStart({
-          maxLogLevel: 4,
-          logCallback: logger,
-          cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
-        }),
-      )
-      for (const [key, value] of wellKnownChains.entries()) {
+      const managerInit =
+        new ConnectionManagerWithHealth<chrome.runtime.Port | null>(
+          wellKnownChains,
+          smoldotStart({
+            maxLogLevel: 4,
+            logCallback: logger,
+            cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
+          }),
+        )
+
+      managerInit.addSandbox(null)
+
+      const startDbQueries = []
+
+      for (const key of wellKnownChains.keys()) {
         const dbContent = await new Promise<string | undefined>((res) =>
           chrome.storage.local.get([key], (val) => res(val[key] as string)),
         )
 
-        await managerInit.addWellKnownChain(key, value, dbContent)
-        if (!dbContent) await saveChainDbContent(managerInit, key)
+        managerInit.sandboxMessage(null, {
+          origin: "trusted-user",
+          chainId: key,
+          chainName: key,
+          type: "add-well-known-chain-with-db",
+          databaseContent: dbContent,
+        })
+        // Wait for the manager to confirm the chain creation.
+        while (true) {
+          const msg = await managerInit.nextSandboxMessage(null)
+          if (msg.type === "error" && msg.chainId === key) {
+            throw new Error(
+              "Failed to initialize well-known chain: " + msg.errorMessage,
+            )
+          }
+          if (msg.type === "chain-ready" && msg.chainId === key) {
+            break
+          }
+        }
+
+        if (!dbContent) startDbQueries.push(key)
       }
+
+      // Query the databases of chains whose database was unknown.
+      // This needs to be done after all well-known chains are initialized, otherwise the code
+      // right above that waits for chains to be ready might catch the response to the database
+      // query.
+      for (const key of startDbQueries)
+        managerInit.sandboxMessage(null, {
+          origin: "trusted-user",
+          type: "database-content",
+          chainId: key,
+          sizeLimit: chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
+        })
+
+        // TODO: stop this task if the manager crashes?
+      ;(async () => {
+        while (true) {
+          const message = await managerInit.nextSandboxMessage(null)
+          if (
+            message.type === "chains-status-changed" ||
+            message.type === "error"
+          ) {
+            notifyAllChainsChangedListeners()
+          } else if (message.type === "database-content") {
+            chrome.storage.local.set({
+              [message.chainId]: message.databaseContent,
+            })
+          }
+        }
+      })()
 
       // Create an alarm that will periodically save the content of the database of the well-known
       // chains.
       chrome.alarms.onAlarm.addListener(async (alarm) => {
         if (alarm.name === "DatabaseContentAlarm") {
           for (const [key] of wellKnownChains)
-            await saveChainDbContent(managerInit, key)
+            managerInit.sandboxMessage(null, {
+              origin: "trusted-user",
+              type: "database-content",
+              chainId: key,
+              sizeLimit:
+                chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
+            })
         }
       })
       chrome.alarms.create("DatabaseContentAlarm", {
@@ -305,6 +345,8 @@ chrome.runtime.onConnect.addListener((port) => {
 
         if (message.type === "chains-status-changed") {
           notifyAllChainsChangedListeners()
+        } else if (message.type === "database-content") {
+          // We never ask for the database content of a chain added through a port.
         } else {
           if (message.type === "chain-ready" || message.type === "error")
             notifyAllChainsChangedListeners()
