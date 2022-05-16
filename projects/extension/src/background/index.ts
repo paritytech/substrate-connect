@@ -306,6 +306,8 @@ chrome.runtime.onConnect.addListener((port) => {
 
         if (message.type === "chains-status-changed") {
           notifyAllChainsChangedListeners()
+        } else if (message.type === "database-content") {
+          // We never ask for the database content of a chain added through a port.
         } else {
           if (message.type === "chain-ready" || message.type === "error")
             notifyAllChainsChangedListeners()

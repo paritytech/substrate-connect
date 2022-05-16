@@ -48,6 +48,40 @@ export interface ChainInfo<SandboxId> {
   }
 }
 
+export type ToConnectionManager = ToConnectionManagerAddWellKnownChain | ToConnectionManagerDatabaseContent;
+
+export interface ToConnectionManagerAddWellKnownChain {
+  origin: "trusted-user"
+  type: "add-well-known-chain-with-db"
+  chainId: string
+  chainName: string
+  databaseContent?: string
+}
+
+/**
+ * Query the database content of the given chain.
+ *
+ * Must not be sent before a {@link ToApplicationChainReady} message has been received.
+ *
+ * If the chain isn't known by the connection manager, this message is silently discarded. This is
+ * necessary in order to avoid race conditions, as the connection manager might have sent a
+ * {@link ToApplicationError} message at the same time as this message has been sent.
+ */
+export interface ToConnectionManagerDatabaseContent {
+  origin: "trusted-user"
+  type: "database-content"
+  chainId: string
+}
+
+export type ToOutside = ToOutsideDatabaseContent;
+
+export interface ToOutsideDatabaseContent {
+  origin: "connection-manager"
+  type: "database-content"
+  chainId: string
+  databaseContent: string
+}
+
 /**
  * # Overview
  *
@@ -276,7 +310,7 @@ export class ConnectionManager<SandboxId> {
    *
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
-  async nextSandboxMessage(sandboxId: SandboxId): Promise<ToApplication> {
+  async nextSandboxMessage(sandboxId: SandboxId): Promise<ToApplication | ToOutside> {
     const sandbox = this.#sandboxes.get(sandboxId)!
     const message = await sandbox.pullMessagesQueue()
     if (message === null) throw new Error("Sandbox has been destroyed")
@@ -290,7 +324,7 @@ export class ConnectionManager<SandboxId> {
    *
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
-  sandboxMessage(sandboxId: SandboxId, message: ToExtension) {
+  sandboxMessage(sandboxId: SandboxId, message: ToExtension | ToConnectionManager) {
     // It is illegal to call this function with an invalid `sandboxId`.
     const sandbox = this.#sandboxes.get(sandboxId)!
 
@@ -331,7 +365,8 @@ export class ConnectionManager<SandboxId> {
       }
 
       case "add-chain":
-      case "add-well-known-chain": {
+      case "add-well-known-chain":
+      case "add-well-known-chain-with-db": {
         // Refuse the chain addition if the `chainId` is already in use.
         if (sandbox.chains.has(message.chainId)) {
           sandbox.pushMessagesQueue({
@@ -362,9 +397,11 @@ export class ConnectionManager<SandboxId> {
           message.type === "add-chain"
             ? message.chainSpec
             : this.#wellKnownChainSpecs.get(message.chainName)!
+        const databaseContent = message.type === "add-well-known-chain-with-db" ? message.databaseContent : undefined;
         const chainInitialization: Promise<SmoldotChain> =
           this.#smoldotClient.addChain({
             chainSpec,
+            databaseContent,
             jsonRpcCallback: (jsonRpcMessage) => {
               // This JSON-RPC callback will never be called after we call `remove()` on the
               // chain. When we remove a sandbox, we call `remove()` on all of its chains.
@@ -424,6 +461,17 @@ export class ConnectionManager<SandboxId> {
         // initialization being finished will remove it.
 
         sandbox.chains.delete(message.chainId)
+        break
+      }
+
+      case "database-content": {
+        const chain = sandbox.chains.get(message.chainId)
+        // As documented, messages concerning an invalid chainId are simply ignored.
+        if (!chain) return
+
+        if (chain.isReady)
+          chain.smoldotChain.databaseContent()
+        // TODO: /!\ finish /!\
         break
       }
     }

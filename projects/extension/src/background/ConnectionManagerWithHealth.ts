@@ -5,7 +5,9 @@ import {
   ToExtension,
 } from "@substrate/connect-extension-protocol"
 
-import { ConnectionManager } from "./ConnectionManager"
+import { ConnectionManager, ToConnectionManager, ToOutsideDatabaseContent } from "./ConnectionManager"
+
+export { ToConnectionManager, ToOutsideDatabaseContent }
 
 /**
  * Information about a chain that the {ConnectionManager} manages.
@@ -260,7 +262,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
    */
   async nextSandboxMessage(
     sandboxId: SandboxId,
-  ): Promise<ToApplication | ChainsStatusChanged> {
+  ): Promise<ToApplication | ToOutsideDatabaseContent | ChainsStatusChanged> {
     while (true) {
       const toApplication = await this.#inner.nextSandboxMessage(sandboxId)
 
@@ -410,7 +412,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
    *
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
-  sandboxMessage(sandboxId: SandboxId, message: ToExtension) {
+  sandboxMessage(sandboxId: SandboxId, message: ToExtension | ToConnectionManager) {
     switch (message.type) {
       case "add-chain":
       case "add-well-known-chain": {
