@@ -32,7 +32,7 @@ export interface Background extends Window {
   uiInterface: {
     onChainsChanged: (listener: () => void) => () => void
     onSmoldotCrashErrorChanged: (listener: () => void) => () => void
-    disconnectTabOrChain: (tabId: number, chainId?: string) => void
+    disconnectTab: (tabId: number) => void
     // List of all chains that are currently running.
     // Use `onChainsChanged` to register a callback that is called when this list or its content
     // might have changed.
@@ -139,7 +139,7 @@ window.uiInterface = {
       smoldotCrashErrorChangedListeners.delete(listener)
     }
   },
-  disconnectTabOrChain: (tabId: number, chainId?: string) => {
+  disconnectTab: (tabId: number) => {
     // Note that the manager is always ready here, otherwise the caller wouldn't be aware of any
     // `tabId`.
     if (manager.state !== "ready") return

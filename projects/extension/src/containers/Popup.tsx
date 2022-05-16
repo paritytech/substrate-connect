@@ -28,9 +28,9 @@ interface ChainDetails {
 }
 
 const Popup: FunctionComponent = () => {
-  const disconnectTabOrChain = useRef<
-    (tabId: number, chainId?: string) => void
-  >((_: number, __?: string) => {})
+  const disconnectTab = useRef<(tabId: number, chainId?: string) => void>(
+    (_: number, __?: string) => {},
+  )
   const [connChains, setConnChains] = useState<PoupChains[] | undefined>()
 
   const refresh = () => {
@@ -92,7 +92,7 @@ const Popup: FunctionComponent = () => {
       chrome.runtime.getBackgroundPage((backgroundPage) => {
         if (!isActive) return
         const bg = backgroundPage as Background
-        disconnectTabOrChain.current = bg.uiInterface.disconnectTabOrChain
+        disconnectTab.current = bg.uiInterface.disconnectTab
         unsubscribe = bg.uiInterface.onChainsChanged(refresh)
         refresh()
       })
@@ -121,7 +121,7 @@ const Popup: FunctionComponent = () => {
   }
 
   const onDisconnect = (tabId: number): void => {
-    disconnectTabOrChain.current(tabId)
+    disconnectTab.current(tabId)
     refresh()
   }
 
@@ -152,15 +152,6 @@ const Popup: FunctionComponent = () => {
                 <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
                   <div onClick={() => t && t.tabId && onDisconnect(t.tabId)}>
                     Disconnect tab
-                  </div>
-                  <div
-                    onClick={() =>
-                      t &&
-                      t.tabId &&
-                      disconnectTabOrChain.current(t.tabId, t.chainId)
-                    }
-                  >
-                    Disconnect network
                   </div>
                 </span>
                 <BiDotsHorizontalRounded className="ml-2 text-base" />
