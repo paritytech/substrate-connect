@@ -174,7 +174,7 @@ export class ConnectionManager<SandboxId> {
   addSandbox(sandboxId: SandboxId) {
     if (this.#sandboxes.has(sandboxId)) throw new Error("Duplicate sandboxId")
 
-    const queue = createAsyncFifoQueue<ToApplication | null>()
+    const queue = createAsyncFifoQueue<ToApplication | ToOutside | null>()
     this.#sandboxes.set(sandboxId, {
       pushMessagesQueue: queue.push,
       pullMessagesQueue: queue.pull,
@@ -385,9 +385,32 @@ export class ConnectionManager<SandboxId> {
         // As documented, messages concerning an invalid chainId are simply ignored.
         if (!chain) return
 
-        if (chain.isReady)
-          chain.smoldotChain.databaseContent(message.sizeLimit)
-        // TODO: /!\ finish /!\
+        // Check whether chain is ready yet
+        if (!chain.isReady) {
+          sandbox.pushMessagesQueue({
+            origin: "substrate-connect-extension",
+            type: "error",
+            chainId: message.chainId,
+            errorMessage: "Received database-content message while chain isn't ready yet",
+          })
+          return
+        }
+
+        chain
+          .smoldotChain.databaseContent(message.sizeLimit)
+          .then((databaseContent) => {
+            // Make sure that the chain hasn't been removed in between.
+            if (!sandbox.chains.has(message.chainId))
+              return;
+
+            sandbox.pushMessagesQueue({
+              origin: "connection-manager",
+              type: "database-content",
+              chainId: message.chainId,
+              databaseContent,
+            })
+          })
+          .catch((_error) => {})
         break
       }
     }
@@ -503,12 +526,12 @@ interface Sandbox {
    * Function that pulls a message from the queue of messages, to give it to the API user. Used
    * by {ConnectionManager.nextSandboxMessage}.
    */
-  pullMessagesQueue: () => Promise<ToApplication | null>
+  pullMessagesQueue: () => Promise<ToApplication | ToOutside | null>
 
   /**
    * Function that adds a message to the queue in {Sandbox.pullMessagesQueue}.
    */
-  pushMessagesQueue: (message: ToApplication | null) => void
+  pushMessagesQueue: (message: ToApplication | ToOutside | null) => void
 }
 
 interface InitializingChain {
