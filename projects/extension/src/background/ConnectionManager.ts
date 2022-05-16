@@ -345,7 +345,7 @@ export class ConnectionManager<SandboxId> {
 
         // Refuse the chain addition for invalid well-known chain names.
         if (message.type === "add-well-known-chain") {
-          if (!this.#wellKnownChains.has(message.chainName)) {
+          if (!this.#wellKnownChainSpecs.has(message.chainName)) {
             sandbox.pushMessagesQueue({
               origin: "substrate-connect-extension",
               type: "error",
@@ -361,7 +361,7 @@ export class ConnectionManager<SandboxId> {
         const chainSpec =
           message.type === "add-chain"
             ? message.chainSpec
-            : this.#wellKnownChains.get(message.chainName)!.spec
+            : this.#wellKnownChainSpecs.get(message.chainName)!
         const chainInitialization: Promise<SmoldotChain> =
           this.#smoldotClient.addChain({
             chainSpec,
