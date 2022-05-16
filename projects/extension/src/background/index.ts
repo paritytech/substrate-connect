@@ -208,6 +208,9 @@ manager = {
         )
 
       managerInit.addSandbox(null)
+
+      const startDbQueries = []
+
       for (const key of wellKnownChains.keys()) {
         const dbContent = await new Promise<string | undefined>((res) =>
           chrome.storage.local.get([key], (val) => res(val[key] as string)),
@@ -233,16 +236,22 @@ manager = {
           }
         }
 
-        if (!dbContent)
-          managerInit.sandboxMessage(null, {
-            origin: "trusted-user",
-            type: "database-content",
-            chainId: key,
-            sizeLimit: chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
-          })
+        if (!dbContent) startDbQueries.push(key)
       }
 
-      // TODO: stop this task if the manager crashes?
+      // Query the databases of chains whose database was unknown.
+      // This needs to be done after all well-known chains are initialized, otherwise the code
+      // right above that waits for chains to be ready might catch the response to the database
+      // query.
+      for (const key of startDbQueries)
+        managerInit.sandboxMessage(null, {
+          origin: "trusted-user",
+          type: "database-content",
+          chainId: key,
+          sizeLimit: chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
+        })
+
+        // TODO: stop this task if the manager crashes?
       ;(async () => {
         while (true) {
           const message = await managerInit.nextSandboxMessage(null)
