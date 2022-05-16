@@ -59,5 +59,5 @@ export function createScClient(config?: Config) {
   const forceEmbedded = config?.forceEmbeddedNode
 
   if (!forceEmbedded && isExtensionPresent) return extensionScClient()
-  else return smoldotScClient(config?.embeddedNodeConfig)
+  return smoldotScClient(config?.embeddedNodeConfig)
 }
