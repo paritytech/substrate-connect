@@ -71,6 +71,7 @@ export interface ToConnectionManagerDatabaseContent {
   origin: "trusted-user"
   type: "database-content"
   chainId: string
+  sizeLimit?: number
 }
 
 export type ToOutside = ToOutsideDatabaseContent;
@@ -470,7 +471,7 @@ export class ConnectionManager<SandboxId> {
         if (!chain) return
 
         if (chain.isReady)
-          chain.smoldotChain.databaseContent()
+          chain.smoldotChain.databaseContent(message.sizeLimit)
         // TODO: /!\ finish /!\
         break
       }

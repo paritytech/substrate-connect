@@ -173,29 +173,6 @@ window.uiInterface = {
   },
 }
 
-const saveChainDbContent = async (
-  readyManager: ConnectionManagerWithHealth<chrome.runtime.Port | null>,
-  key: string,
-) => {
-  const db = await readyManager.wellKnownChainDatabaseContent(
-    key,
-    chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
-  )
-
-  // `db` can be `undefined` if the database content couldn't be obtained. In that case, we leave
-  // the database as it was before.
-  if (db) chrome.storage.local.set({ [key]: db })
-  else {
-    // `db` being undefined can mean that the manager might have crashed.
-    const error = readyManager.hasCrashed
-    if (error) {
-      manager = { state: "crashed", error }
-      notifyAllSmoldotCrashErrorChangedListeners()
-      notifyAllChainsChangedListeners()
-    }
-  }
-}
-
 // The manager can be in multiple different states: currently initializing, operational, or
 // crashed.
 // While initializing, the `whenInitFinished` promise can be used to know when the initialization
@@ -226,21 +203,47 @@ manager = {
           cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
         }),
       )
+
+      managerInit.addSandbox(null);
       for (const [key, value] of wellKnownChains.entries()) {
         const dbContent = await new Promise<string | undefined>((res) =>
           chrome.storage.local.get([key], (val) => res(val[key] as string)),
         )
 
-        await managerInit.addWellKnownChain(key, value, dbContent)
-        if (!dbContent) await saveChainDbContent(managerInit, key)
+        managerInit.sandboxMessage(null, { origin: "trusted-user", chainId: key, chainName: key, type: "add-well-known-chain-with-db", databaseContent: dbContent })
+        // Wait for the manager to confirm the chain creation.
+        while(true) {
+          const msg = await managerInit.nextSandboxMessage(null);
+          if (msg.type === "error" && msg.chainId === key) {
+            throw new Error("Failed to initialize well-known chain: " + msg.errorMessage);
+          }
+          if (msg.type === "chain-ready" && msg.chainId === key) {
+            break;
+          }
+        }
+
+        if (!dbContent)
+          managerInit.sandboxMessage(null, { origin: "trusted-user", type: "database-content", chainId: key, sizeLimit: chrome.storage.local.QUOTA_BYTES / wellKnownChains.size })
       }
+
+      // TODO: stop this task if the manager crashes?
+      ;(async () => {
+        while(true) {
+          const message = await managerInit.nextSandboxMessage(null);
+          if (message.type === "chains-status-changed" || message.type === "error") {
+            notifyAllChainsChangedListeners()
+          } else if (message.type === "database-content") {
+            chrome.storage.local.set({ [message.chainId]: message.databaseContent })
+          }
+        }
+      })()
 
       // Create an alarm that will periodically save the content of the database of the well-known
       // chains.
       chrome.alarms.onAlarm.addListener(async (alarm) => {
         if (alarm.name === "DatabaseContentAlarm") {
           for (const [key] of wellKnownChains)
-            await saveChainDbContent(managerInit, key)
+            managerInit.sandboxMessage(null, { origin: "trusted-user", type: "database-content", chainId: key, sizeLimit: chrome.storage.local.QUOTA_BYTES / wellKnownChains.size })
         }
       })
       chrome.alarms.create("DatabaseContentAlarm", {
