@@ -11,7 +11,7 @@ import {
   ToOutsideDatabaseContent,
 } from "./ConnectionManager"
 
-export { ToConnectionManager, ToOutsideDatabaseContent }
+export type { ToConnectionManager, ToOutsideDatabaseContent }
 
 /**
  * Information about a chain that the {ConnectionManager} manages.
