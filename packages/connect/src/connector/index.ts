@@ -1,4 +1,7 @@
-import { createScClient as smoldotScClient, Config as EmbeddedNodeConfig } from "./smoldot-light.js"
+import {
+  createScClient as smoldotScClient,
+  Config as EmbeddedNodeConfig,
+} from "./smoldot-light.js"
 import { createScClient as extensionScClient } from "./extension.js"
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 
@@ -53,10 +56,8 @@ export interface Config {
  * extension is installed and available.
  */
 export function createScClient(config?: Config) {
-  const forceEmbedded = (config?.forceEmbeddedNode);
+  const forceEmbedded = config?.forceEmbeddedNode
 
-  if (!forceEmbedded && isExtensionPresent)
-    return extensionScClient()
-  else
-    return smoldotScClient(config?.embeddedNodeConfig)
+  if (!forceEmbedded && isExtensionPresent) return extensionScClient()
+  else return smoldotScClient(config?.embeddedNodeConfig)
 }
