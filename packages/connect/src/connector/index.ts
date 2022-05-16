@@ -30,6 +30,9 @@ export const isExtensionPresent =
  * extension or by executing a light client directly from JavaScript, depending on whether the
  * extension is installed and available.
  */
-export const createScClient = isExtensionPresent
-  ? extensionScClient
-  : smoldotScClient
+export function createScClient() {
+  if (isExtensionPresent)
+    return extensionScClient()
+  else
+    return smoldotScClient()
+}
