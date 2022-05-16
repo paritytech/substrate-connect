@@ -269,7 +269,7 @@ export class ConnectionManager<SandboxId> {
           const errorMsg =
             "Internal error in smoldot: " +
             (error instanceof Error ? error.toString() : "(unknown)")
-          this.#resetAllNonWellKnownChains(errorMsg)
+          this.#resetAllChains(errorMsg)
           this.#hasCrashed = errorMsg
           return
         }
@@ -465,10 +465,8 @@ export class ConnectionManager<SandboxId> {
   /**
    * Destroys all the chains of all the sandboxes. The error message passed as parameter will be
    * sent to indicate what happened.
-   *
-   * Well-known chains aren't touched.
    */
-  #resetAllNonWellKnownChains(errorMessage: string) {
+  #resetAllChains(errorMessage: string) {
     for (const sandboxTuple of this.#sandboxes) {
       const sandbox = sandboxTuple[1] // A stupid lint prevents us from doing `[_, sandbox]` above
       for (const [chainId, chain] of sandbox.chains) {
