@@ -40,7 +40,9 @@ export interface ChainInfo<SandboxId> {
   sandboxId: SandboxId
 }
 
-export type ToConnectionManager = ToConnectionManagerAddWellKnownChain | ToConnectionManagerDatabaseContent;
+export type ToConnectionManager =
+  | ToConnectionManagerAddWellKnownChain
+  | ToConnectionManagerDatabaseContent
 
 export interface ToConnectionManagerAddWellKnownChain {
   origin: "trusted-user"
@@ -66,7 +68,7 @@ export interface ToConnectionManagerDatabaseContent {
   sizeLimit?: number
 }
 
-export type ToOutside = ToOutsideDatabaseContent;
+export type ToOutside = ToOutsideDatabaseContent
 
 export interface ToOutsideDatabaseContent {
   origin: "connection-manager"
@@ -132,7 +134,10 @@ export class ConnectionManager<SandboxId> {
   #wellKnownChainSpecs: Map<string, string> = new Map()
   #hasCrashed: string | undefined
 
-  constructor(wellKnownChainSpecs: Map<string, string>, smoldotClient: SmoldotClient) {
+  constructor(
+    wellKnownChainSpecs: Map<string, string>,
+    smoldotClient: SmoldotClient,
+  ) {
     this.#wellKnownChainSpecs = wellKnownChainSpecs
     this.#smoldotClient = smoldotClient
   }
@@ -225,7 +230,9 @@ export class ConnectionManager<SandboxId> {
    *
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
-  async nextSandboxMessage(sandboxId: SandboxId): Promise<ToApplication | ToOutside> {
+  async nextSandboxMessage(
+    sandboxId: SandboxId,
+  ): Promise<ToApplication | ToOutside> {
     const sandbox = this.#sandboxes.get(sandboxId)!
     const message = await sandbox.pullMessagesQueue()
     if (message === null) throw new Error("Sandbox has been destroyed")
@@ -240,7 +247,10 @@ export class ConnectionManager<SandboxId> {
    *
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
-  sandboxMessage(sandboxId: SandboxId, message: ToExtension | ToConnectionManager) {
+  sandboxMessage(
+    sandboxId: SandboxId,
+    message: ToExtension | ToConnectionManager,
+  ) {
     // It is illegal to call this function with an invalid `sandboxId`.
     const sandbox = this.#sandboxes.get(sandboxId)!
 
@@ -295,7 +305,10 @@ export class ConnectionManager<SandboxId> {
         }
 
         // Refuse the chain addition for invalid well-known chain names.
-        if (message.type === "add-well-known-chain" || message.type === "add-well-known-chain-with-db") {
+        if (
+          message.type === "add-well-known-chain" ||
+          message.type === "add-well-known-chain-with-db"
+        ) {
           if (!this.#wellKnownChainSpecs.has(message.chainName)) {
             sandbox.pushMessagesQueue({
               origin: "substrate-connect-extension",
@@ -313,7 +326,10 @@ export class ConnectionManager<SandboxId> {
           message.type === "add-chain"
             ? message.chainSpec
             : this.#wellKnownChainSpecs.get(message.chainName)!
-        const databaseContent = message.type === "add-well-known-chain-with-db" ? message.databaseContent : undefined;
+        const databaseContent =
+          message.type === "add-well-known-chain-with-db"
+            ? message.databaseContent
+            : undefined
         const chainInitialization: Promise<SmoldotChain> =
           this.#smoldotClient.addChain({
             chainSpec,
@@ -391,17 +407,17 @@ export class ConnectionManager<SandboxId> {
             origin: "substrate-connect-extension",
             type: "error",
             chainId: message.chainId,
-            errorMessage: "Received database-content message while chain isn't ready yet",
+            errorMessage:
+              "Received database-content message while chain isn't ready yet",
           })
           return
         }
 
-        chain
-          .smoldotChain.databaseContent(message.sizeLimit)
+        chain.smoldotChain
+          .databaseContent(message.sizeLimit)
           .then((databaseContent) => {
             // Make sure that the chain hasn't been removed in between.
-            if (!sandbox.chains.has(message.chainId))
-              return;
+            if (!sandbox.chains.has(message.chainId)) return
 
             sandbox.pushMessagesQueue({
               origin: "connection-manager",

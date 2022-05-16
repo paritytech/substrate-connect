@@ -5,7 +5,11 @@ import {
   ToExtension,
 } from "@substrate/connect-extension-protocol"
 
-import { ConnectionManager, ToConnectionManager, ToOutsideDatabaseContent } from "./ConnectionManager"
+import {
+  ConnectionManager,
+  ToConnectionManager,
+  ToOutsideDatabaseContent,
+} from "./ConnectionManager"
 
 export { ToConnectionManager, ToOutsideDatabaseContent }
 
@@ -121,7 +125,10 @@ export class ConnectionManagerWithHealth<SandboxId> {
   #pingInterval: ReturnType<typeof globalThis.setInterval>
   #nextHealthCheckRqId: number = 0
 
-  constructor(wellKnownChainSpecs: Map<string, string>, smoldotClient: SmoldotClient) {
+  constructor(
+    wellKnownChainSpecs: Map<string, string>,
+    smoldotClient: SmoldotClient,
+  ) {
     this.#inner = new ConnectionManager(wellKnownChainSpecs, smoldotClient)
     this.#pingInterval = globalThis.setInterval(() => {
       this.#sendPings()
@@ -355,7 +362,10 @@ export class ConnectionManagerWithHealth<SandboxId> {
    *
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
-  sandboxMessage(sandboxId: SandboxId, message: ToExtension | ToConnectionManager) {
+  sandboxMessage(
+    sandboxId: SandboxId,
+    message: ToExtension | ToConnectionManager,
+  ) {
     switch (message.type) {
       case "add-chain":
       case "add-well-known-chain":

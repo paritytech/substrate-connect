@@ -148,19 +148,20 @@ window.uiInterface = {
   },
   get chains(): ExposedChainConnection[] {
     if (manager.state === "ready") {
-      return manager.manager.allChains
-        .map((info) => {
-          return {
-            chainId: info.chainId,
-            chainName: info.chainName,
-            tab: info.sandboxId ? {
-              id: info.sandboxId.sender!.tab!.id!,
-              url: info.sandboxId.sender!.tab!.url!,
-            } : undefined,
-            isSyncing: info.isSyncing,
-            peers: info.peers,
-          }
-        })
+      return manager.manager.allChains.map((info) => {
+        return {
+          chainId: info.chainId,
+          chainName: info.chainName,
+          tab: info.sandboxId
+            ? {
+                id: info.sandboxId.sender!.tab!.id!,
+                url: info.sandboxId.sender!.tab!.url!,
+              }
+            : undefined,
+          isSyncing: info.isSyncing,
+          peers: info.peers,
+        }
+      })
     } else {
       return []
     }
@@ -196,45 +197,64 @@ manager = {
       // Start initializing a `ConnectionManagerWithHealth`.
       // This initialization operation shouldn't take more than a few dozen milliseconds, but we
       // still need to properly handle situations where initialization isn't finished yet.
-      const managerInit = new ConnectionManagerWithHealth<chrome.runtime.Port | null>(
-        wellKnownChains,
-        smoldotStart({
-          maxLogLevel: 4,
-          logCallback: logger,
-          cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
-        }),
-      )
+      const managerInit =
+        new ConnectionManagerWithHealth<chrome.runtime.Port | null>(
+          wellKnownChains,
+          smoldotStart({
+            maxLogLevel: 4,
+            logCallback: logger,
+            cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
+          }),
+        )
 
-      managerInit.addSandbox(null);
+      managerInit.addSandbox(null)
       for (const [key, value] of wellKnownChains.entries()) {
         const dbContent = await new Promise<string | undefined>((res) =>
           chrome.storage.local.get([key], (val) => res(val[key] as string)),
         )
 
-        managerInit.sandboxMessage(null, { origin: "trusted-user", chainId: key, chainName: key, type: "add-well-known-chain-with-db", databaseContent: dbContent })
+        managerInit.sandboxMessage(null, {
+          origin: "trusted-user",
+          chainId: key,
+          chainName: key,
+          type: "add-well-known-chain-with-db",
+          databaseContent: dbContent,
+        })
         // Wait for the manager to confirm the chain creation.
-        while(true) {
-          const msg = await managerInit.nextSandboxMessage(null);
+        while (true) {
+          const msg = await managerInit.nextSandboxMessage(null)
           if (msg.type === "error" && msg.chainId === key) {
-            throw new Error("Failed to initialize well-known chain: " + msg.errorMessage);
+            throw new Error(
+              "Failed to initialize well-known chain: " + msg.errorMessage,
+            )
           }
           if (msg.type === "chain-ready" && msg.chainId === key) {
-            break;
+            break
           }
         }
 
         if (!dbContent)
-          managerInit.sandboxMessage(null, { origin: "trusted-user", type: "database-content", chainId: key, sizeLimit: chrome.storage.local.QUOTA_BYTES / wellKnownChains.size })
+          managerInit.sandboxMessage(null, {
+            origin: "trusted-user",
+            type: "database-content",
+            chainId: key,
+            sizeLimit: chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
+          })
       }
 
       // TODO: stop this task if the manager crashes?
       ;(async () => {
-        while(true) {
-          const message = await managerInit.nextSandboxMessage(null);
-          if (message.type === "chains-status-changed" || message.type === "error") {
+        while (true) {
+          const message = await managerInit.nextSandboxMessage(null)
+          if (
+            message.type === "chains-status-changed" ||
+            message.type === "error"
+          ) {
             notifyAllChainsChangedListeners()
           } else if (message.type === "database-content") {
-            chrome.storage.local.set({ [message.chainId]: message.databaseContent })
+            chrome.storage.local.set({
+              [message.chainId]: message.databaseContent,
+            })
           }
         }
       })()
@@ -244,7 +264,13 @@ manager = {
       chrome.alarms.onAlarm.addListener(async (alarm) => {
         if (alarm.name === "DatabaseContentAlarm") {
           for (const [key] of wellKnownChains)
-            managerInit.sandboxMessage(null, { origin: "trusted-user", type: "database-content", chainId: key, sizeLimit: chrome.storage.local.QUOTA_BYTES / wellKnownChains.size })
+            managerInit.sandboxMessage(null, {
+              origin: "trusted-user",
+              type: "database-content",
+              chainId: key,
+              sizeLimit:
+                chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
+            })
         }
       })
       chrome.alarms.create("DatabaseContentAlarm", {
