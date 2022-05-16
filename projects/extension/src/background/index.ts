@@ -140,7 +140,7 @@ window.uiInterface = {
     if (manager.state !== "ready") return
     // Note that multiple ports can share the same `tabId`
     for (const port of manager.manager.sandboxes) {
-      if (port.sender?.tab?.id === tabId) {
+      if (port?.sender?.tab?.id === tabId) {
         manager.manager.deleteSandbox(port)
         port.disconnect()
       }
@@ -154,8 +154,8 @@ window.uiInterface = {
           return {
             chainId: info.apiInfo!.chainId,
             chainName: info.chainName,
-            tabId: info.apiInfo!.sandboxId.sender!.tab!.id!,
-            url: info.apiInfo!.sandboxId.sender!.tab!.url!,
+            tabId: info.apiInfo!.sandboxId!.sender!.tab!.id!,  // TODO: sandboxId could be null; fix
+            url: info.apiInfo!.sandboxId!.sender!.tab!.url!,  // TODO: sandboxId could be null; fix
             isSyncing: info.isSyncing,
             peers: info.peers,
           }
@@ -174,7 +174,7 @@ window.uiInterface = {
 }
 
 const saveChainDbContent = async (
-  readyManager: ConnectionManagerWithHealth<chrome.runtime.Port>,
+  readyManager: ConnectionManagerWithHealth<chrome.runtime.Port | null>,
   key: string,
 ) => {
   const db = await readyManager.wellKnownChainDatabaseContent(
@@ -204,7 +204,7 @@ let manager:
   | { state: "initializing"; whenInitFinished: Promise<void> }
   | {
       state: "ready"
-      manager: ConnectionManagerWithHealth<chrome.runtime.Port>
+      manager: ConnectionManagerWithHealth<chrome.runtime.Port | null>
     }
   | { state: "crashed"; error: string } = {
   state: "initializing",
@@ -218,7 +218,7 @@ manager = {
       // Start initializing a `ConnectionManagerWithHealth`.
       // This initialization operation shouldn't take more than a few dozen milliseconds, but we
       // still need to properly handle situations where initialization isn't finished yet.
-      const managerInit = new ConnectionManagerWithHealth<chrome.runtime.Port>(
+      const managerInit = new ConnectionManagerWithHealth<chrome.runtime.Port | null>(
         wellKnownChains,
         smoldotStart({
           maxLogLevel: 4,
