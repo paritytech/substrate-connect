@@ -4,6 +4,7 @@ on:
   schedule:
     - cron: '0 8 * * *'  # every day at 8am
   workflow_dispatch: # allow triggering through the UI
+  push:
 
 
 jobs:
@@ -32,10 +33,12 @@ jobs:
         chmod +x websocat_linux64
     - run: |
         echo '{"id":1,"jsonrpc":"2.0","method":"sync_state_genSyncSpec","params":[true]}' |
-          ./websocat_linux64 -n1 -B 99999999 ${{ matrix.rpc-node-address }} |
-          jq .result > chain_spec.json
+          ./websocat_linux64 -n1 -B 99999999 ${{ matrix.rpc-node-address }} > rpc_answer.json
+    - run: cat ./rpc_answer.json | jq .result > chain_spec.json
     - id: get-chain-id  # Reads the `id` field in the newly-downloaded chain spec
       run: echo "::set-output name=id::`jq -r .id ./chain_spec.json`"
+    - if: ${{ steps.get-chain-id.outputs.id == '' }}
+      run: cat ./rpc_answer.json
     - run: |  # Overwrite the `lightSyncState` field of the existing chain spec with the value of spec that's been downloaded.
         tmp=$(mktemp)
         output=./repo/packages/connect/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json
