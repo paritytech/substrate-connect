@@ -196,7 +196,7 @@ const App: React.FunctionComponent = () => {
               <Code heading="Parachains usage">
                 <Box>{`import { ScProvider, WellKnownChain } from '@polkadot/rpc-provider/substrate-connect';`}</Box>
                 <Box>{`import { ApiPromise } from '@polkadot/api';`}</Box>
-                <Box>{`import jsonParachainSpec from from './jsonParachainSpec.json';`}</Box>
+                <Box>{`import jsonParachainSpec from './jsonParachainSpec.json';`}</Box>
 
                 <Box mt={2}>{`// Create the provider for the relay chain`}</Box>
                 <Box>{`const relayProvider = new ScProvider(WellKnownChain.westend2);`}</Box>
@@ -259,7 +259,7 @@ const App: React.FunctionComponent = () => {
 
               <Code heading="Connecting to a parachain">
                 <Box>{`import { WellKnownChain, createScClient } from '@substrate/connect';`}</Box>
-                <Box>{`import jsonParachainSpec from from './jsonParachainSpec.json';`}</Box>
+                <Box>{`import jsonParachainSpec from './jsonParachainSpec.json';`}</Box>
 
                 <Box mt={2}>{`// Create the client`}</Box>
                 <Box>{`const client = createScClient();`}</Box>
