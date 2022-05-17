@@ -173,7 +173,7 @@ const App: React.FunctionComponent = () => {
                 <Box
                   mt={2}
                 >{`// Create the provider for the custom chain`}</Box>
-                <Box>{`const customSpec = JSON.stringify(customSpec);`}</Box>
+                <Box>{`const customSpec = JSON.stringify(jsonCustomSpec);`}</Box>
                   <Box>{`const provider = new ScProvider(customSpec);`}</Box>
 
                 <Box
