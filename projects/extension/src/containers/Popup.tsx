@@ -31,9 +31,10 @@ const Popup: FunctionComponent = () => {
         const refresh = () => {
           const networksByTab: Map<number, Set<string>> = new Map()
           bg.uiInterface.chains.forEach((app) => {
-            if (!networksByTab.has(app.tabId))
-              networksByTab.set(app.tabId, new Set())
-            networksByTab.get(app.tabId)!.add(app.chainName)
+            if (!app.tab) return
+            if (!networksByTab.has(app.tab.id))
+              networksByTab.set(app.tab.id, new Set())
+            networksByTab.get(app.tab.id)!.add(app.chainName)
           })
 
           const nextTabs: TabInterface[] = []

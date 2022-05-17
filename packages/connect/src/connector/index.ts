@@ -1,8 +1,12 @@
-import { createScClient as smoldotScClient } from "./smoldot-light.js"
+import {
+  createScClient as smoldotScClient,
+  Config as EmbeddedNodeConfig,
+} from "./smoldot-light.js"
 import { createScClient as extensionScClient } from "./extension.js"
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 
 export * from "./types.js"
+export { EmbeddedNodeConfig }
 
 /**
  * `true` if the substrate-connect extension is installed and available.
@@ -26,10 +30,34 @@ export const isExtensionPresent =
   !!document.getElementById(DOM_ELEMENT_ID)
 
 /**
+ * Configuration that can be passed to {createScClient}.
+ */
+export interface Config {
+  /**
+   * If `true`, then the client will always use a node embedded within the page and never use
+   * the substrate-connect extension.
+   *
+   * Defaults to `false`.
+   */
+  forceEmbeddedNode?: boolean
+
+  /**
+   * Configuration to use for the embedded node. Ignored if the extension is present.
+   *
+   * If you want to make sure that this configuration isn't ignored, use this option in
+   * conjunction with {Config.forceEmbeddedNode}.
+   */
+  embeddedNodeConfig?: EmbeddedNodeConfig
+}
+
+/**
  * Returns a {@link ScClient} that connects to chains, either through the substrate-connect
  * extension or by executing a light client directly from JavaScript, depending on whether the
  * extension is installed and available.
  */
-export const createScClient = isExtensionPresent
-  ? extensionScClient
-  : smoldotScClient
+export function createScClient(config?: Config) {
+  const forceEmbedded = config?.forceEmbeddedNode
+
+  if (!forceEmbedded && isExtensionPresent) return extensionScClient()
+  return smoldotScClient(config?.embeddedNodeConfig)
+}

@@ -27,25 +27,54 @@ export interface ChainInfo<SandboxId> {
   chainName: string
 
   /**
-   * Information about how the chain was inserted in the {ConnectionManager}.
+   * Identifier of the chain obtained through the initial `add-chain`.
    *
-   * If this field is not set, it means that the chain was added with
-   * {ConnectionManager.addWellKnownChain}.
+   * Important: this name is untrusted user input! It could be extremely long, contain weird
+   * characters (e.g. HTML tags), etc. Do not make any assumption about its content.
    */
-  apiInfo?: {
-    /**
-     * Identifier of the chain obtained through the initial `add-chain`.
-     *
-     * Important: this name is untrusted user input! It could be extremely long, contain weird
-     * characters (e.g. HTML tags), etc. Do not make any assumption about its content.
-     */
-    chainId: string
+  chainId: string
 
-    /**
-     * The identifier for the sandbox that has received the message that requests to add a chain.
-     */
-    sandboxId: SandboxId
-  }
+  /**
+   * The identifier for the sandbox that has received the message that requests to add a chain.
+   */
+  sandboxId: SandboxId
+}
+
+export type ToConnectionManager =
+  | ToConnectionManagerAddWellKnownChain
+  | ToConnectionManagerDatabaseContent
+
+export interface ToConnectionManagerAddWellKnownChain {
+  origin: "trusted-user"
+  type: "add-well-known-chain-with-db"
+  chainId: string
+  chainName: string
+  databaseContent?: string
+}
+
+/**
+ * Query the database content of the given chain.
+ *
+ * Must not be sent before a {@link ToApplicationChainReady} message has been received.
+ *
+ * If the chain isn't known by the connection manager, this message is silently discarded. This is
+ * necessary in order to avoid race conditions, as the connection manager might have sent a
+ * {@link ToApplicationError} message at the same time as this message has been sent.
+ */
+export interface ToConnectionManagerDatabaseContent {
+  origin: "trusted-user"
+  type: "database-content"
+  chainId: string
+  sizeLimit?: number
+}
+
+export type ToOutside = ToOutsideDatabaseContent
+
+export interface ToOutsideDatabaseContent {
+  origin: "connection-manager"
+  type: "database-content"
+  chainId: string
+  databaseContent: string
 }
 
 /**
@@ -59,9 +88,8 @@ export interface ChainInfo<SandboxId> {
  * of this module. You can add and remove sandboxes using {ConnectionManager.addSandbox} and
  * {ConnectionManager.deleteSandbox}.
  *
- * - A list of trusted "well-known" chains, outside of any sandbox. Well-known chains can be added
- * by calling {ConnectionManager.addWellKnownChain}. Once added, a well-known chain cannot be
- * removed. Chains within sandboxes can interact with all well-known chains.
+ * - A list of "well-known" chains specifications. Well-known chain specifications are passed to
+ * the constructor and cannot be modified afterwards.
  *
  * # Sandboxes usage
  *
@@ -89,93 +117,29 @@ export interface ChainInfo<SandboxId> {
  *
  * # Database
  *
- * The {ConnectionManager.wellKnownChainDatabaseContent} method can be used to retrieve the
- * content of the so-called "database" of a well-known chain. The string returned by this function
- * is opaque and shouldn't be interpreted in any way by the API user.
+ * In addition to {@link ToExtension} messages, one can also inject {@link ToConnectionManager}
+ * messages.
  *
- * The {ConnectionManager.addWellKnownChain} accepts a `databaseContent` parameter that can be used
- * to pass the "database" that was grabbed the last time the well-known chain was running.
+ * This can be used to retrieve the content of the so-called "database" of a chain.
+ * The string sent back in the {@link ToOutsideDatabaseContent} is opaque and shouldn't be
+ * interpreted in any way by the API user.
+ *
+ * The {@link ToConnectionManagerAddWellKnownChain} accepts a `databaseContent` field that can
+ * be used to pass the "database" that was grabbed the last time the chain was running.
  *
  */
 export class ConnectionManager<SandboxId> {
   #smoldotClient: SmoldotClient
   #sandboxes: Map<SandboxId, Sandbox> = new Map()
-  #wellKnownChains: Map<string, WellKnownChain> = new Map()
+  #wellKnownChainSpecs: Map<string, string> = new Map()
   #hasCrashed: string | undefined
 
-  constructor(smoldotClient: SmoldotClient) {
+  constructor(
+    wellKnownChainSpecs: Map<string, string>,
+    smoldotClient: SmoldotClient,
+  ) {
+    this.#wellKnownChainSpecs = wellKnownChainSpecs
     this.#smoldotClient = smoldotClient
-  }
-
-  /**
-   * Adds a new well-known chain to this state machine.
-   *
-   * While it is not strictly mandatory, you are strongly encouraged to call this at the
-   * beginning and before adding any sandbox.
-   *
-   * @throws Throws an exception if a well-known chain with that name has been added in the past.
-   */
-  async addWellKnownChain(
-    chainName: string,
-    spec: string,
-    databaseContent?: string,
-  ): Promise<void> {
-    if (this.#wellKnownChains.has(chainName)) {
-      throw new Error("Duplicate well-known chain")
-    }
-
-    const chain = await this.#smoldotClient.addChain({
-      chainSpec: spec,
-      databaseContent,
-      potentialRelayChains: [],
-    })
-
-    const wellKnownChain: WellKnownChain = {
-      chain,
-      spec,
-      isSyncing: true,
-      peers: 0,
-    }
-
-    this.#wellKnownChains.set(chainName, wellKnownChain)
-  }
-
-  /**
-   * Returns the content of the database of the well-known chain with the given name.
-   *
-   * Returns `undefined` if the database content couldn't be obtained.
-   *
-   * The `maxUtf8BytesSize` parameter is the maximum number of bytes that the string must occupy
-   * in its UTF-8 encoding. The returned string is guaranteed to not be larger than this number.
-   * If not provided, "infinite" is implied.
-   *
-   * @throws Throws an exception if the `chainName` isn't the name of a chain that has been
-   *         added by a call to `addWellKnownChain`.
-   */
-  async wellKnownChainDatabaseContent(
-    chainName: string,
-    maxUtf8BytesSize?: number,
-  ): Promise<string | undefined> {
-    let chain: SmoldotChain | undefined = undefined
-    try {
-      chain = this.#wellKnownChains.get(chainName)!.chain
-    } catch (error) {
-      // If an exception is thrown it means that the specific chainName is not among the
-      // #wellknownchains. This is separate from the error below as it does not show a
-      // crash in smoldot but that a chain does not exist
-      throw new Error("Chain does not exist in WellKnownChains")
-    }
-    try {
-      return await chain.databaseContent(maxUtf8BytesSize)
-    } catch (error) {
-      // If an exception is thrown, we kill all chains. This can only happen either in case of a
-      // crash in smoldot or a bug in substrate-connect.
-      const errorMsg =
-        "Internal error in smoldot: " +
-        (error instanceof Error ? error.toString() : "(unknown)")
-      this.#hasCrashed = errorMsg
-      return undefined
-    }
   }
 
   /**
@@ -190,26 +154,16 @@ export class ConnectionManager<SandboxId> {
 
   /**
    * Returns a list of all chains, for display purposes only.
-   *
-   * This includes both well-known chains and chains added by sandbox messages.
    */
   get allChains(): ChainInfo<SandboxId>[] {
     let output: ChainInfo<SandboxId>[] = []
-
-    for (const [chainName] of this.#wellKnownChains) {
-      output.push({
-        chainName,
-      })
-    }
 
     for (const [sandboxId, sandbox] of this.#sandboxes) {
       for (const [chainId, chain] of sandbox.chains) {
         output.push({
           chainName: chain.name,
-          apiInfo: {
-            chainId,
-            sandboxId,
-          },
+          chainId,
+          sandboxId,
         })
       }
     }
@@ -225,7 +179,7 @@ export class ConnectionManager<SandboxId> {
   addSandbox(sandboxId: SandboxId) {
     if (this.#sandboxes.has(sandboxId)) throw new Error("Duplicate sandboxId")
 
-    const queue = createAsyncFifoQueue<ToApplication | null>()
+    const queue = createAsyncFifoQueue<ToApplication | ToOutside | null>()
     this.#sandboxes.set(sandboxId, {
       pushMessagesQueue: queue.push,
       pullMessagesQueue: queue.pull,
@@ -267,14 +221,18 @@ export class ConnectionManager<SandboxId> {
   }
 
   /**
-   * Returns the next {ToApplication} message that is generated spontaneously or in response to
-   * `sandboxMessage`.
+   * Returns the next {@link ToApplication} message that is generated spontaneously or in
+   * response to {@link ConnectionManager.sandboxMessage}.
+   *
+   * Alternatively, can also generate a {@link ToOutside}.
    *
    * If a message is generated by a sandbox before this function is called, the message is queued.
    *
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
-  async nextSandboxMessage(sandboxId: SandboxId): Promise<ToApplication> {
+  async nextSandboxMessage(
+    sandboxId: SandboxId,
+  ): Promise<ToApplication | ToOutside> {
     const sandbox = this.#sandboxes.get(sandboxId)!
     const message = await sandbox.pullMessagesQueue()
     if (message === null) throw new Error("Sandbox has been destroyed")
@@ -284,11 +242,15 @@ export class ConnectionManager<SandboxId> {
   /**
    * Injects a message into the given sandbox.
    *
-   * The message and the behaviour of this function conform to the `connect-extension-protocol`.
+   * The message and the behaviour of this function conform to the `connect-extension-protocol` or
+   * to the {@link ToConnectionManager} extension defined in this module.
    *
    * @throws Throws an exception if the ̀`sandboxId` isn't valid.
    */
-  sandboxMessage(sandboxId: SandboxId, message: ToExtension) {
+  sandboxMessage(
+    sandboxId: SandboxId,
+    message: ToExtension | ToConnectionManager,
+  ) {
     // It is illegal to call this function with an invalid `sandboxId`.
     const sandbox = this.#sandboxes.get(sandboxId)!
 
@@ -320,7 +282,7 @@ export class ConnectionManager<SandboxId> {
           const errorMsg =
             "Internal error in smoldot: " +
             (error instanceof Error ? error.toString() : "(unknown)")
-          this.#resetAllNonWellKnownChains(errorMsg)
+          this.#resetAllChains(errorMsg)
           this.#hasCrashed = errorMsg
           return
         }
@@ -329,7 +291,8 @@ export class ConnectionManager<SandboxId> {
       }
 
       case "add-chain":
-      case "add-well-known-chain": {
+      case "add-well-known-chain":
+      case "add-well-known-chain-with-db": {
         // Refuse the chain addition if the `chainId` is already in use.
         if (sandbox.chains.has(message.chainId)) {
           sandbox.pushMessagesQueue({
@@ -342,8 +305,11 @@ export class ConnectionManager<SandboxId> {
         }
 
         // Refuse the chain addition for invalid well-known chain names.
-        if (message.type === "add-well-known-chain") {
-          if (!this.#wellKnownChains.has(message.chainName)) {
+        if (
+          message.type === "add-well-known-chain" ||
+          message.type === "add-well-known-chain-with-db"
+        ) {
+          if (!this.#wellKnownChainSpecs.has(message.chainName)) {
             sandbox.pushMessagesQueue({
               origin: "substrate-connect-extension",
               type: "error",
@@ -359,10 +325,15 @@ export class ConnectionManager<SandboxId> {
         const chainSpec =
           message.type === "add-chain"
             ? message.chainSpec
-            : this.#wellKnownChains.get(message.chainName)!.spec
+            : this.#wellKnownChainSpecs.get(message.chainName)!
+        const databaseContent =
+          message.type === "add-well-known-chain-with-db"
+            ? message.databaseContent
+            : undefined
         const chainInitialization: Promise<SmoldotChain> =
           this.#smoldotClient.addChain({
             chainSpec,
+            databaseContent,
             jsonRpcCallback: (jsonRpcMessage) => {
               // This JSON-RPC callback will never be called after we call `remove()` on the
               // chain. When we remove a sandbox, we call `remove()` on all of its chains.
@@ -422,6 +393,40 @@ export class ConnectionManager<SandboxId> {
         // initialization being finished will remove it.
 
         sandbox.chains.delete(message.chainId)
+        break
+      }
+
+      case "database-content": {
+        const chain = sandbox.chains.get(message.chainId)
+        // As documented, messages concerning an invalid chainId are simply ignored.
+        if (!chain) return
+
+        // Check whether chain is ready yet
+        if (!chain.isReady) {
+          sandbox.pushMessagesQueue({
+            origin: "substrate-connect-extension",
+            type: "error",
+            chainId: message.chainId,
+            errorMessage:
+              "Received database-content message while chain isn't ready yet",
+          })
+          return
+        }
+
+        chain.smoldotChain
+          .databaseContent(message.sizeLimit)
+          .then((databaseContent) => {
+            // Make sure that the chain hasn't been removed in between.
+            if (!sandbox.chains.has(message.chainId)) return
+
+            sandbox.pushMessagesQueue({
+              origin: "connection-manager",
+              type: "database-content",
+              chainId: message.chainId,
+              databaseContent,
+            })
+          })
+          .catch((_error) => {})
         break
       }
     }
@@ -502,10 +507,8 @@ export class ConnectionManager<SandboxId> {
   /**
    * Destroys all the chains of all the sandboxes. The error message passed as parameter will be
    * sent to indicate what happened.
-   *
-   * Well-known chains aren't touched.
    */
-  #resetAllNonWellKnownChains(errorMessage: string) {
+  #resetAllChains(errorMessage: string) {
     for (const sandboxTuple of this.#sandboxes) {
       const sandbox = sandboxTuple[1] // A stupid lint prevents us from doing `[_, sandbox]` above
       for (const [chainId, chain] of sandbox.chains) {
@@ -539,12 +542,12 @@ interface Sandbox {
    * Function that pulls a message from the queue of messages, to give it to the API user. Used
    * by {ConnectionManager.nextSandboxMessage}.
    */
-  pullMessagesQueue: () => Promise<ToApplication | null>
+  pullMessagesQueue: () => Promise<ToApplication | ToOutside | null>
 
   /**
    * Function that adds a message to the queue in {Sandbox.pullMessagesQueue}.
    */
-  pushMessagesQueue: (message: ToApplication | null) => void
+  pushMessagesQueue: (message: ToApplication | ToOutside | null) => void
 }
 
 interface InitializingChain {
@@ -591,28 +594,6 @@ interface ReadyChain {
    * Chain stored within the {ConnectionManager.#client}.
    */
   smoldotChain: SmoldotChain
-
-  /**
-   * Whether the chain is still in its syncing phase.
-   */
-  isSyncing: boolean
-
-  /**
-   * Latest known number of peers the chain is connected to.
-   */
-  peers: number
-}
-
-interface WellKnownChain {
-  /**
-   * Chain stored within the {ConnectionManager.#client}.
-   */
-  chain: SmoldotChain
-
-  /**
-   * Chain specification of the well-known chain.
-   */
-  spec: string
 
   /**
    * Whether the chain is still in its syncing phase.
