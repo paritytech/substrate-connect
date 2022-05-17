@@ -174,7 +174,7 @@ const App: React.FunctionComponent = () => {
                   mt={2}
                 >{`// Create the provider for the custom chain`}</Box>
                 <Box>{`const customSpec = JSON.stringify(jsonCustomSpec);`}</Box>
-                  <Box>{`const provider = new ScProvider(customSpec);`}</Box>
+                <Box>{`const provider = new ScProvider(customSpec);`}</Box>
 
                 <Box
                   mt={2}
@@ -206,7 +206,7 @@ const App: React.FunctionComponent = () => {
                 >{`// Create the provider for the parachain. Notice that`}</Box>
                 <Box>{`// we must pass the provider of the relay chain as the`}</Box>
                 <Box>{`// second argument`}</Box>
-                <Box>{`const parachainSpec = JSON.stringify(jsonParachainSpec);`</Box>
+                <Box>{`const parachainSpec = JSON.stringify(jsonParachainSpec);`}</Box>
                 <Box>{`const provider = new ScProvider(parachainSpec, relayProvider);`}</Box>
 
                 <Box
