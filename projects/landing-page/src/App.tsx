@@ -168,12 +168,13 @@ const App: React.FunctionComponent = () => {
               <Code heading="Simple usage (custom chain)">
                 <Box>{`import { ScProvider } from '@polkadot/rpc-provider/substrate-connect';`}</Box>
                 <Box>{`import { ApiPromise } from '@polkadot/api';`}</Box>
-                <Box>{`import customSpec from './customSpec.json';`}</Box>
+                <Box>{`import jsonCustomSpec from './jsonCustomSpec.json';`}</Box>
 
                 <Box
                   mt={2}
                 >{`// Create the provider for the custom chain`}</Box>
-                <Box>{`const provider = new ScProvider(customSpec);`}</Box>
+                <Box>{`const customSpec = JSON.stringify(customSpec);`}</Box>
+                  <Box>{`const provider = new ScProvider(customSpec);`}</Box>
 
                 <Box
                   mt={2}
@@ -195,7 +196,7 @@ const App: React.FunctionComponent = () => {
               <Code heading="Parachains usage">
                 <Box>{`import { ScProvider, WellKnownChain } from '@polkadot/rpc-provider/substrate-connect';`}</Box>
                 <Box>{`import { ApiPromise } from '@polkadot/api';`}</Box>
-                <Box>{`import parachainSpec from from './parachainSpec.json';`}</Box>
+                <Box>{`import jsonParachainSpec from from './jsonParachainSpec.json';`}</Box>
 
                 <Box mt={2}>{`// Create the provider for the relay chain`}</Box>
                 <Box>{`const relayProvider = new ScProvider(WellKnownChain.westend2);`}</Box>
@@ -205,6 +206,7 @@ const App: React.FunctionComponent = () => {
                 >{`// Create the provider for the parachain. Notice that`}</Box>
                 <Box>{`// we must pass the provider of the relay chain as the`}</Box>
                 <Box>{`// second argument`}</Box>
+                <Box>{`const parachainSpec = JSON.stringify(jsonParachainSpec);`</Box>
                 <Box>{`const provider = new ScProvider(parachainSpec, relayProvider);`}</Box>
 
                 <Box
@@ -257,7 +259,7 @@ const App: React.FunctionComponent = () => {
 
               <Code heading="Connecting to a parachain">
                 <Box>{`import { WellKnownChain, createScClient } from '@substrate/connect';`}</Box>
-                <Box>{`import parachainSpec from from './parachainSpec.json';`}</Box>
+                <Box>{`import jsonParachainSpec from from './jsonParachainSpec.json';`}</Box>
 
                 <Box mt={2}>{`// Create the client`}</Box>
                 <Box>{`const client = createScClient();`}</Box>
@@ -270,6 +272,7 @@ const App: React.FunctionComponent = () => {
                 <Box>{`await client.addWellKnownChain(WellKnownChain.westend2);`}</Box>
 
                 <Box mt={2}>{`// Create the parachain connection.`}</Box>
+                <Box>{`const parachainSpec = JSON.stringify(jsonParachainSpec);`}</Box>
                 <Box>{`const chain = await client.addChain(`}</Box>
                 <Box pl={2}>{`  parachainSpec,`}</Box>
                 <Box pl={2}>{`  function jsonRpcCallback(response) {`}</Box>
@@ -390,7 +393,6 @@ const App: React.FunctionComponent = () => {
           <SidebarLink href="#extension">Browser Extension</SidebarLink>
           <SidebarLink href="#projects">Projects</SidebarLink>
         </Sidebar>
-        {/* TODO: Footer */}
       </UIContainer>
     </ThemeProvider>
   )
