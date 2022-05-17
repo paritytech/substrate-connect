@@ -40,7 +40,7 @@ jobs:
     - if: ${{ steps.get-chain-id.outputs.id == '' }}
       uses: actions/upload-artifact@v3
       with:
-        name: failed-response-${{ matrix.rpc-node-address }}
+        name: failed-response-${{ github.run_id }}
         path: |
           rpc_answer.json
     - run: |  # Overwrite the `lightSyncState` field of the existing chain spec with the value of spec that's been downloaded.
