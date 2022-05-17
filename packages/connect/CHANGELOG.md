@@ -6,6 +6,10 @@
 
 - Added an optional configuration to `createScClient` that allows forcing the use of the embedded client, and customizing the maximum log level to use while the embedded client client is in use, allowing for better debuggability. ([#1027](https://github.com/paritytech/substrate-connect/pull/1027), [#1044](https://github.com/paritytech/substrate-connect/pull/1044))
 
+### Changed
+
+- Update @substrate/smoldot-light to [version 0.6.16](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#0616---2022-05-16) ([#1048](https://github.com/paritytech/substrate-connect/pull/1048))
+
 ## 0.7.4 - 2022-05-05
 
 ### Changed
