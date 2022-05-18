@@ -27,7 +27,7 @@ deployGhPages() {
   echo "Place burnr wallet demo's files."
   cp -r ./projects/burnr/dist/* ./$directory/burnr/.
   echo "Place Substrate-connect extension's zip."
-  cp ./projects/extension/dist/substrate-connect.zip ./$directory/extension/substrate-connect.zip
+  cp ./projects/extension/dist/packed-extension.zip ./$directory/extension/packed-extension.zip
   echo "Place landing page's files."
   cp -r ./projects/landing-page/dist/* ./$directory/.
   echo "Generate API docs."

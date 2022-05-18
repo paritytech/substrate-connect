@@ -327,7 +327,7 @@ const App: React.FunctionComponent = () => {
             <SectionRef href="https://addons.mozilla.org/en-US/firefox/addon/substrate-connect/">
               Download for Firefox
             </SectionRef>
-            <SectionRef href="./extension/substrate-connect.zip">
+            <SectionRef href="./extension/packed-extension.zip">
               Download zip
             </SectionRef>
           </Section>
