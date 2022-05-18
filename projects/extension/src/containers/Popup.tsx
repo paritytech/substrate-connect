@@ -20,8 +20,8 @@ interface PoupChains {
 }
 
 interface ChainDetails {
-  tabId: number
-  url: string
+  tabId?: number
+  url?: string
   peers: number
   isSyncing: boolean
   chainId: string
@@ -36,17 +36,15 @@ const Popup: FunctionComponent = () => {
   const refresh = () => {
     chrome.runtime.getBackgroundPage((backgroundPage) => {
       const bg = backgroundPage as Background
-      const allChains: PoupChains[] = bg.uiInterface.integratedChains.map(
-        (ic) => ({ chainName: ic }),
-      )
+      const allChains: PoupChains[] = []
 
       bg.uiInterface.chains.forEach((c) => {
         const i = allChains.findIndex((i) => i.chainName === c.chainName)
         if (i === -1) {
           allChains.push({ chainName: c.chainName })
           allChains[allChains.length]?.details?.push({
-            tabId: c.tabId,
-            url: c.url,
+            tabId: c.tab?.id,
+            url: c.tab?.url,
             peers: c.peers,
             isSyncing: c.isSyncing,
             chainId: c.chainId,
@@ -56,17 +54,17 @@ const Popup: FunctionComponent = () => {
           if (!details) {
             allChains[i].details = [
               {
-                tabId: c.tabId,
-                url: c.url,
+                tabId: c.tab?.id,
+                url: c.tab?.url,
                 peers: c.peers,
                 isSyncing: c.isSyncing,
                 chainId: c.chainId,
               },
             ]
-          } else if (!details.map((d) => d.tabId).includes(c.tabId)) {
+          } else if (!details.map((d) => d.tabId).includes(c.tab?.id)) {
             details.push({
-              tabId: c.tabId,
-              url: c.url,
+              tabId: c.tab?.id,
+              url: c.tab?.url,
               peers: c.peers,
               isSyncing: c.isSyncing,
               chainId: c.chainId,
@@ -102,7 +100,7 @@ const Popup: FunctionComponent = () => {
       isActive = false
       unsubscribe && unsubscribe()
     }
-  }, [refresh])
+  }, [])
 
   const goToOptions = (): void => {
     chrome.runtime.openOptionsPage()
@@ -124,6 +122,8 @@ const Popup: FunctionComponent = () => {
     disconnectTab.current(tabId)
     refresh()
   }
+
+  console.log("connChains", connChains)
 
   return (
     <main className="w-80">
