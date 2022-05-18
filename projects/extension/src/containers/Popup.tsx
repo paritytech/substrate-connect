@@ -28,9 +28,7 @@ interface ChainDetails {
 }
 
 const Popup: FunctionComponent = () => {
-  const disconnectTab = useRef<(tabId: number, chainId?: string) => void>(
-    (_: number, __?: string) => {},
-  )
+  const disconnectTab = useRef<(tabId: number) => void>((_: number) => {})
   const [connChains, setConnChains] = useState<PoupChains[] | undefined>()
 
   const refresh = () => {
