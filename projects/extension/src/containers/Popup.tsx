@@ -40,13 +40,15 @@ const Popup: FunctionComponent = () => {
         const i = allChains.findIndex((i) => i.chainName === c.chainName)
         if (i === -1) {
           allChains.push({ chainName: c.chainName })
-          allChains[allChains.length]?.details?.push({
-            tabId: c.tab?.id,
-            url: c.tab?.url,
-            peers: c.peers,
-            isSyncing: c.isSyncing,
-            chainId: c.chainId,
-          })
+          allChains[allChains.length - 1].details = [
+            {
+              tabId: c.tab?.id,
+              url: c.tab?.url,
+              peers: c.peers,
+              isSyncing: c.isSyncing,
+              chainId: c.chainId,
+            },
+          ]
         } else {
           const details = allChains[i]?.details
           if (!details) {
@@ -121,8 +123,6 @@ const Popup: FunctionComponent = () => {
     refresh()
   }
 
-  console.log("connChains", connChains)
-
   return (
     <main className="w-80">
       <header className="my-3 mx-6 flex justify-between border-b border-neutral-200 pt-1.5 pb-4 leading-4">
@@ -133,30 +133,37 @@ const Popup: FunctionComponent = () => {
         />
       </header>
       {connChains?.map((w) => {
-        if (!w?.details) {
+        console.log("w?.details", w?.details)
+        if (w?.details?.length === 1 && !w?.details[0].tabId)
           return (
             <div key={w.chainName} className="pl-6 py-2 flex text-lg">
               {networkIcon(w.chainName)}
             </div>
           )
-        }
-        const contents: ReactNode[] = w?.details.map((t) => (
-          <div key={t.url} className="flex justify-between">
-            <div className="ml-6 w-full truncate text-base underline text-blue-500">
-              {t.url}
-            </div>
-            <div>
-              <div data-testid="Tooltip" className="tooltip">
-                <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
-                  <div onClick={() => t && t.tabId && onDisconnect(t.tabId)}>
-                    Disconnect tab
+        const contents: ReactNode[] = []
+        w?.details?.forEach((t) => {
+          if (t.tabId) {
+            contents.push(
+              <div key={t.url} className="flex justify-between">
+                <div className="ml-6 w-full truncate text-base underline text-blue-500">
+                  {t.url}
+                </div>
+                <div>
+                  <div data-testid="Tooltip" className="tooltip">
+                    <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
+                      <div
+                        onClick={() => t && t.tabId && onDisconnect(t.tabId)}
+                      >
+                        Disconnect tab
+                      </div>
+                    </span>
+                    <BiDotsHorizontalRounded className="ml-2 text-base" />
                   </div>
-                </span>
-                <BiDotsHorizontalRounded className="ml-2 text-base" />
-              </div>
-            </div>
-          </div>
-        ))
+                </div>
+              </div>,
+            )
+          }
+        })
 
         return (
           <Accordion
@@ -170,7 +177,7 @@ const Popup: FunctionComponent = () => {
               </div>,
             ]}
             contents={[<>{contents}</>]}
-            showTitleIcon
+            showTitleIcon={!!contents.length}
           />
         )
       })}
