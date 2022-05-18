@@ -20,7 +20,7 @@ interface TabsPanel {
 }
 
 const Tab = ({ activeTab, index, color, setOpenTab, title }: TabProps) => (
-  <li className="mr-2 -mb-px text-center last:mr-0">
+  <li className="mr-2 -mb-px text-center last:mr-0 bg-white">
     <a
       style={
         activeTab
@@ -57,7 +57,7 @@ interface TabsContentProps {
 }
 
 export const TabsContent = ({ activeTab = 0, children }: TabsContentProps) => (
-  <div className="relative flex flex-col w-full min-w-0 mb-6 break-words bg-white rounded">
+  <div className="relative flex flex-col w-full min-w-0 mb-6 break-words rounded">
     <div className="flex-auto px-4 py-5">
       <div className="tab-content tab-space">
         {React.Children.map(

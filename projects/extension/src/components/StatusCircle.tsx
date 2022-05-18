@@ -2,24 +2,35 @@ import React, { FunctionComponent } from "react"
 import { substrateGreen } from "./theme"
 
 export interface Props {
-  size?: "small" | "medium" | "large"
+  size?: "s" | "sm" | "m" | "ml" | "l"
   color?: string
   borderColor?: string
 }
 
 const StatusCircle: FunctionComponent<Props> = ({
-  size = "medium",
+  size = "m",
   color,
   borderColor,
 }: Props) => {
-  const s =
-    size === "small"
-      ? "0.35"
-      : size === "medium"
-      ? "0.5"
-      : size === "large"
-      ? "1"
-      : "0.35"
+  let s: string
+
+  switch (size) {
+    case "s":
+      s = "0.1"
+      break
+    case "sm":
+      s = "0.25"
+      break
+    case "m":
+      s = "0.5"
+      break
+    case "ml":
+      s = "0.75"
+      break
+    case "l":
+      s = "1"
+      break
+  }
 
   return (
     <section

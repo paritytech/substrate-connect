@@ -32,7 +32,7 @@ const Options: React.FunctionComponent = () => {
     ).slice(-3)}`
   }
 
-  const textifyLogs = () => {
+  const stringifyLogs = () => {
     return allLogs
       .map(
         (a: logStructure) =>
@@ -134,7 +134,7 @@ const Options: React.FunctionComponent = () => {
   }
 
   return (
-    <div className="mt-6 mb-4 font-roboto">
+    <div className="mb-4 font-roboto">
       <div className="options-container">
         <div className="px-12 pb-3.5 text-base flex items-center">
           <div>
@@ -173,7 +173,7 @@ const Options: React.FunctionComponent = () => {
               </button>
               <button
                 className="px-2 mx-2 my-0 border rounded-md bg-stone-200 hover:bg-stone-400"
-                onClick={() => navigator.clipboard.writeText(textifyLogs())}
+                onClick={() => navigator.clipboard.writeText(stringifyLogs())}
               >
                 Copy to clipboard
               </button>
@@ -185,8 +185,8 @@ const Options: React.FunctionComponent = () => {
               </div>
             </div>
             <div
-              style={{ maxHeight: "70vh" }}
-              className="block w-full overflow-y-auto px-2 bg-black text-white text-base border border-black font-mono font"
+              style={{ maxHeight: "75vh" }}
+              className="block w-full overflow-y-auto px-2 bg-black text-white text-xs border border-black font-mono font"
             >
               {allLogs.length > 0 ? (
                 allLogs.map(
