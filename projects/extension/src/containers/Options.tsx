@@ -4,6 +4,7 @@ import { Logo, NetworkTab, Loader, Tabs } from "../components/"
 import { Background } from "../background/"
 
 import { NetworkTabProps } from "../types"
+import { TabsContent } from "../components/Tabs"
 
 interface logStructure {
   unix_timestamp: number
@@ -19,6 +20,8 @@ const Options: React.FunctionComponent = () => {
   const [warnLogs, setWarnLogs] = useState<logStructure[]>([])
   const [errLogs, setErrLogs] = useState<logStructure[]>([])
   const [poolingLogs, setPoolingLogs] = useState<boolean>(true)
+
+  const [activeTab, setActiveTab] = useState<number>(0)
 
   const getTime = (d: number) => {
     const date = new Date(d)
@@ -131,87 +134,99 @@ const Options: React.FunctionComponent = () => {
   }
 
   return (
-    <div className="mx-12 my-8 font-roboto">
-      <div className="pb-3.5 text-base flex">
-        <Logo textSize="lg" />
-        <div className="pl-4 text-sm leading-6">v{pckg.version}</div>
+    <div className="mt-6 mb-4 font-roboto">
+      <div className="options-container">
+        <div className="px-12 pb-3.5 text-base flex items-center">
+          <div>
+            <Logo textSize="lg" />
+            <div className="text-sm">v{pckg.version}</div>
+          </div>
+          <div className="w-full ml-[10%]">
+            <Tabs
+              setActiveTab={(n: number) => setActiveTab(n)}
+              tabTitles={["Networks", "Logs"]}
+            />
+          </div>
+        </div>
       </div>
-      <Tabs tabTitles={["Networks", "Logs"]}>
-        <section>
-          {networks.length ? (
-            networks.map((network: NetworkTabProps, i: number) => {
-              const { name, health, apps } = network
-              return (
-                <NetworkTab key={i} name={name} health={health} apps={apps} />
-              )
-            })
-          ) : (
-            <div>No networks or apps are connected to the extension.</div>
-          )}
-        </section>
-        <section className="block">
-          <div className="flex my-5">
-            <button
-              className="px-2 border rounded-md bg-stone-200 hover:bg-stone-400"
-              onClick={() => setPoolingLogs(!poolingLogs)}
-            >
-              {poolingLogs ? "Pause" : "Retrieve "} logs
-            </button>
-            <button
-              className="px-2 mx-2 my-0 border rounded-md bg-stone-200 hover:bg-stone-400"
-              onClick={() => navigator.clipboard.writeText(textifyLogs())}
-            >
-              Copy to clipboard
-            </button>
-            <div className="rounded-md bg-red-500 py-2.5 px-4">
-              {errLogs.length} Errors
-            </div>
-            <div className="ml-2 rounded-md bg-yellow-300 py-2.5 px-4">
-              {warnLogs.length} Warnings
-            </div>
-          </div>
-          <div
-            style={{ maxHeight: "70vh" }}
-            className="block w-full overflow-y-auto px-2 bg-black text-white text-base border border-black font-mono font"
-          >
-            {allLogs.length > 0 ? (
-              allLogs.map(
-                (
-                  { unix_timestamp, level, target, message }: logStructure,
-                  i: number,
-                ) => (
-                  <p
-                    key={"all_" + i}
-                    style={{
-                      color: getLevelInfo(level)[1],
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontWeight: "bold",
-                      }}
-                    >
-                      [{getTime(unix_timestamp)}]
-                    </span>
-                    <span
-                      style={{
-                        margin: "0 0.5rem",
-                      }}
-                    >
-                      [{target}]
-                    </span>
-                    <span>{message}</span>
-                  </p>
-                ),
-              )
+      <div className="mx-[15%] pt-2">
+        <TabsContent activeTab={activeTab}>
+          <section>
+            {networks.length ? (
+              networks.map((network: NetworkTabProps, i: number) => {
+                const { name, health, apps } = network
+                return (
+                  <NetworkTab key={i} name={name} health={health} apps={apps} />
+                )
+              })
             ) : (
-              <div className="items-center h-56 mt-20 ml-40">
-                <Loader />
-              </div>
+              <div>No networks or apps are connected to the extension.</div>
             )}
-          </div>
-        </section>
-      </Tabs>
+          </section>
+          <section className="block">
+            <div className="flex my-5">
+              <button
+                className="px-2 border rounded-md bg-stone-200 hover:bg-stone-400"
+                onClick={() => setPoolingLogs(!poolingLogs)}
+              >
+                {poolingLogs ? "Pause" : "Retrieve "} logs
+              </button>
+              <button
+                className="px-2 mx-2 my-0 border rounded-md bg-stone-200 hover:bg-stone-400"
+                onClick={() => navigator.clipboard.writeText(textifyLogs())}
+              >
+                Copy to clipboard
+              </button>
+              <div className="rounded-md bg-red-500 py-2.5 px-4">
+                {errLogs.length} Errors
+              </div>
+              <div className="ml-2 rounded-md bg-yellow-300 py-2.5 px-4">
+                {warnLogs.length} Warnings
+              </div>
+            </div>
+            <div
+              style={{ maxHeight: "70vh" }}
+              className="block w-full overflow-y-auto px-2 bg-black text-white text-base border border-black font-mono font"
+            >
+              {allLogs.length > 0 ? (
+                allLogs.map(
+                  (
+                    { unix_timestamp, level, target, message }: logStructure,
+                    i: number,
+                  ) => (
+                    <p
+                      key={"all_" + i}
+                      style={{
+                        color: getLevelInfo(level)[1],
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                        }}
+                      >
+                        [{getTime(unix_timestamp)}]
+                      </span>
+                      <span
+                        style={{
+                          margin: "0 0.5rem",
+                        }}
+                      >
+                        [{target}]
+                      </span>
+                      <span>{message}</span>
+                    </p>
+                  ),
+                )
+              ) : (
+                <div className="items-center h-56 mt-20 ml-40">
+                  <Loader />
+                </div>
+              )}
+            </div>
+          </section>
+        </TabsContent>
+      </div>
     </div>
   )
 }

@@ -2,8 +2,8 @@ import React, { useState } from "react"
 
 interface TabsProps {
   tabTitles: string[]
-  children: React.ReactNode
   color?: string
+  setActiveTab: (n: number) => void
 }
 
 interface TabProps {
@@ -24,12 +24,14 @@ const Tab = ({ activeTab, index, color, setOpenTab, title }: TabProps) => (
     <a
       style={
         activeTab
-          ? { color: "white", backgroundColor: color }
-          : { color, backgroundColor: "white" }
+          ? {
+              color: "#24CC85",
+              textDecoration: "underline",
+              fontWeight: "700",
+            }
+          : { color, fontWeight: "normal" }
       }
-      className={
-        "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal"
-      }
+      className={"block rounded px-5 py-3 text-xl leading-normal capitalize"}
       onClick={(e) => {
         e.preventDefault()
         setOpenTab(index)
@@ -49,7 +51,29 @@ const TabContent = ({ child, index }: TabsPanel) => (
   </div>
 )
 
-export const Tabs = ({ tabTitles, children, color = "black" }: TabsProps) => {
+interface TabsContentProps {
+  activeTab: number
+  children: React.ReactNode
+}
+
+export const TabsContent = ({ activeTab = 0, children }: TabsContentProps) => (
+  <div className="relative flex flex-col w-full min-w-0 mb-6 break-words bg-white rounded">
+    <div className="flex-auto px-4 py-5">
+      <div className="tab-content tab-space">
+        {React.Children.map(
+          children,
+          (c, i) => activeTab === i && <TabContent child={c} index={i} />,
+        )}
+      </div>
+    </div>
+  </div>
+)
+
+export const Tabs = ({
+  tabTitles,
+  color = "black",
+  setActiveTab,
+}: TabsProps) => {
   const [openTab, setOpenTab] = useState<number>(0)
   return (
     <div className="flex flex-wrap">
@@ -65,21 +89,12 @@ export const Tabs = ({ tabTitles, children, color = "black" }: TabsProps) => {
               color={color}
               setOpenTab={(i) => {
                 setOpenTab(i)
+                setActiveTab(i)
               }}
               title={t}
             />
           ))}
         </ul>
-        <div className="relative flex flex-col w-full min-w-0 mb-6 break-words bg-white rounded">
-          <div className="flex-auto px-4 py-5">
-            <div className="tab-content tab-space">
-              {React.Children.map(
-                children,
-                (c, i) => openTab === i && <TabContent child={c} index={i} />,
-              )}
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )
