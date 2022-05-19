@@ -14,9 +14,9 @@ import { Background } from "../background"
 
 const knownChains = ["polkadot", "kusama", "westend", "rococo"]
 
-interface PoupChains {
+interface PopupChains {
   chainName: string
-  details?: ChainDetails[]
+  details: ChainDetails[]
 }
 
 interface ChainDetails {
@@ -29,30 +29,19 @@ interface ChainDetails {
 
 const Popup: FunctionComponent = () => {
   const disconnectTab = useRef<(tabId: number) => void>((_: number) => {})
-  const [connChains, setConnChains] = useState<PoupChains[] | undefined>()
+  const [connChains, setConnChains] = useState<PopupChains[] | undefined>()
 
   const refresh = () => {
     chrome.runtime.getBackgroundPage((backgroundPage) => {
       const bg = backgroundPage as Background
-      const allChains: PoupChains[] = []
+      const allChains: PopupChains[] = []
 
       bg.uiInterface.chains.forEach((c) => {
         const i = allChains.findIndex((i) => i.chainName === c.chainName)
         if (i === -1) {
-          allChains.push({ chainName: c.chainName })
-          allChains[allChains.length - 1].details = [
-            {
-              tabId: c.tab?.id,
-              url: c.tab?.url,
-              peers: c.peers,
-              isSyncing: c.isSyncing,
-              chainId: c.chainId,
-            },
-          ]
-        } else {
-          const details = allChains[i]?.details
-          if (!details) {
-            allChains[i].details = [
+          allChains.push({
+            chainName: c.chainName,
+            details: [
               {
                 tabId: c.tab?.id,
                 url: c.tab?.url,
@@ -60,9 +49,12 @@ const Popup: FunctionComponent = () => {
                 isSyncing: c.isSyncing,
                 chainId: c.chainId,
               },
-            ]
-          } else if (!details.map((d) => d.tabId).includes(c.tab?.id)) {
-            details.push({
+            ],
+          })
+        } else {
+          const details = allChains[i]?.details
+          if (!details?.map((d) => d.tabId).includes(c.tab?.id)) {
+            details?.push({
               tabId: c.tab?.id,
               url: c.tab?.url,
               peers: c.peers,
@@ -107,7 +99,7 @@ const Popup: FunctionComponent = () => {
   }
 
   const networkIcon = (network: string) => {
-    const icon = network.replace(new RegExp(" ", "g"), "").toLowerCase()
+    const icon = network.toLowerCase()
     return (
       <>
         <div className="icon w-7">
@@ -133,7 +125,6 @@ const Popup: FunctionComponent = () => {
         />
       </header>
       {connChains?.map((w) => {
-        console.log("w?.details", w?.details)
         if (w?.details?.length === 1 && !w?.details[0].tabId)
           return (
             <div key={w.chainName} className="pl-6 py-2 flex text-lg">
