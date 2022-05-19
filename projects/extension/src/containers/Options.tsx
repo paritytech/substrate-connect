@@ -73,23 +73,23 @@ const Options: React.FunctionComponent = () => {
       const bg = backgroundPage as Background
       const refresh = () => {
         const networks = new Map<string, NetworkTabProps>()
-        bg.uiInterface.chains.forEach((app) => {
-          if (!app.tab) return
+        bg.uiInterface.chains.forEach((chain) => {
+          if (!chain.tab) return
 
-          const network = networks.get(app.chainName)
+          const network = networks.get(chain.chainName)
           if (!network) {
-            return networks.set(app.chainName, {
-              name: app.chainName,
+            return networks.set(chain.chainName, {
+              name: chain.chainName,
               health: {
-                isSyncing: app.isSyncing,
-                peers: app.peers,
+                isSyncing: chain.isSyncing,
+                peers: chain.peers,
                 status: "connected",
               },
-              apps: [{ name: app.tab.url, url: app.tab.url }],
+              apps: [{ name: chain.tab.url, url: chain.tab.url }],
             })
           }
 
-          network.apps.push({ name: app.tab.url, url: app.tab.url })
+          network.apps.push({ name: chain.tab.url, url: chain.tab.url })
         })
         setNetworks([...networks.values()])
       }
