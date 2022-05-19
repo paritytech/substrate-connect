@@ -9,12 +9,12 @@ import React, {
 import { MdOutlineSettings, MdCallMade } from "react-icons/md"
 import { BiDotsHorizontalRounded } from "react-icons/bi"
 
-import { Accordion, ConnectedTab, Logo } from "../components"
+import { Accordion, Logo } from "../components"
 import { Background } from "../background"
 
 const knownChains = ["polkadot", "kusama", "westend", "rococo"]
 
-interface PopupChains {
+interface PopupChain {
   chainName: string
   details: ChainDetails[]
 }
@@ -29,12 +29,12 @@ interface ChainDetails {
 
 const Popup: FunctionComponent = () => {
   const disconnectTab = useRef<(tabId: number) => void>((_: number) => {})
-  const [connChains, setConnChains] = useState<PopupChains[] | undefined>()
+  const [connChains, setConnChains] = useState<PopupChain[] | undefined>()
 
   const refresh = () => {
     chrome.runtime.getBackgroundPage((backgroundPage) => {
       const bg = backgroundPage as Background
-      const allChains: PopupChains[] = []
+      const allChains: PopupChain[] = []
 
       bg.uiInterface.chains.forEach((c) => {
         const i = allChains.findIndex((i) => i.chainName === c.chainName)
@@ -53,8 +53,8 @@ const Popup: FunctionComponent = () => {
           })
         } else {
           const details = allChains[i]?.details
-          if (!details?.map((d) => d.tabId).includes(c.tab?.id)) {
-            details?.push({
+          if (!details.map((d) => d.tabId).includes(c.tab?.id)) {
+            details.push({
               tabId: c.tab?.id,
               url: c.tab?.url,
               peers: c.peers,
