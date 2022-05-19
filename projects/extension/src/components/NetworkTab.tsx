@@ -1,13 +1,11 @@
 import React, {
-  createContext,
   FunctionComponent,
   ReactNode,
   useCallback,
-  useContext,
   useMemo,
   useState,
 } from "react"
-import { StatusCircle } from "."
+import { Accordion, StatusCircle } from "."
 
 import { NetworkTabProps, App, OptionsNetworkTabHealthContent } from "../types"
 import "../main.css"
@@ -35,38 +33,6 @@ interface NetworkContentProps {
   health: OptionsNetworkTabHealthContent
   apps: App[]
   network: string
-}
-
-interface AccordionProps {
-  titles: ReactNode[] | string[]
-  titleClass?: string
-  contents: ReactNode[] | string[]
-  contentClass?: string
-  defaultExpanded?: number
-}
-
-interface AccItem {
-  value: string
-  title: ReactNode
-  children: ReactNode
-  titleClass?: string
-  contentClass?: string
-  status?: "first" | "last" | "single"
-}
-
-const AccordionContext = createContext({
-  activeItem: "",
-  setToggle: (val: string) => {
-    console.log(val)
-  },
-})
-
-const useAccordionContext = () => {
-  const context = useContext(AccordionContext)
-  if (!context) {
-    throw new Error("No context found for Accordion")
-  }
-  return context
 }
 
 const NetworkContent = ({ network, health, apps }: NetworkContentProps) => {
@@ -258,7 +224,7 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
         contents={[
           <NetworkContent health={health} apps={apps} network={name} />,
         ]}
-      ></Accordion>
+      />
     </div>
   )
 }

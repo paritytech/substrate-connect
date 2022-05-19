@@ -1,15 +1,72 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react"
+import React, {
+  FunctionComponent,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 
 import { MdOutlineSettings, MdCallMade } from "react-icons/md"
+import { BiDotsHorizontalRounded } from "react-icons/bi"
 
-import { Logo, ConnectedTab } from "../components"
+import { Accordion, Logo } from "../components"
 import { Background } from "../background"
-import { TabInterface } from "../types"
+
+const knownChains = ["polkadot", "kusama", "westend", "rococo"]
+
+interface PopupChain {
+  chainName: string
+  details: ChainDetails[]
+}
+
+interface ChainDetails {
+  tabId?: number
+  url?: string
+  peers: number
+  isSyncing: boolean
+  chainId: string
+}
 
 const Popup: FunctionComponent = () => {
-  const disconnectTabRef = useRef<(tapId: number) => void>((_: number) => {})
-  const [activeTab, setActiveTab] = useState<TabInterface | undefined>()
-  const [otherTabs, setOtherTabs] = useState<TabInterface[]>([])
+  const disconnectTab = useRef<(tabId: number) => void>((_: number) => {})
+  const [connChains, setConnChains] = useState<PopupChain[] | undefined>()
+
+  const refresh = () => {
+    chrome.runtime.getBackgroundPage((backgroundPage) => {
+      const bg = backgroundPage as Background
+      const allChains: PopupChain[] = []
+
+      bg.uiInterface.chains.forEach((c) => {
+        const i = allChains.findIndex((i) => i.chainName === c.chainName)
+        if (i === -1) {
+          allChains.push({
+            chainName: c.chainName,
+            details: [
+              {
+                tabId: c.tab?.id,
+                url: c.tab?.url,
+                peers: c.peers,
+                isSyncing: c.isSyncing,
+                chainId: c.chainId,
+              },
+            ],
+          })
+        } else {
+          const details = allChains[i]?.details
+          if (!details.map((d) => d.tabId).includes(c.tab?.id)) {
+            details.push({
+              tabId: c.tab?.id,
+              url: c.tab?.url,
+              peers: c.peers,
+              isSyncing: c.isSyncing,
+              chainId: c.chainId,
+            })
+          }
+        }
+      })
+      setConnChains([...allChains])
+    })
+  }
 
   useEffect(() => {
     let isActive = true
@@ -24,33 +81,8 @@ const Popup: FunctionComponent = () => {
 
       chrome.runtime.getBackgroundPage((backgroundPage) => {
         if (!isActive) return
-
         const bg = backgroundPage as Background
-        disconnectTabRef.current = bg.uiInterface.disconnectTab
-
-        const refresh = () => {
-          const networksByTab: Map<number, Set<string>> = new Map()
-          bg.uiInterface.chains.forEach((app) => {
-            if (!app.tab) return
-            if (!networksByTab.has(app.tab.id))
-              networksByTab.set(app.tab.id, new Set())
-            networksByTab.get(app.tab.id)!.add(app.chainName)
-          })
-
-          const nextTabs: TabInterface[] = []
-          browserTabs.forEach((tab) => {
-            if (!networksByTab.has(tab.id!)) return
-            const result = {
-              tabId: tab.id!,
-              url: tab.url,
-              networks: [...networksByTab.get(tab.id!)!],
-            }
-            if (tab.active) setActiveTab(result)
-            else nextTabs.push(result)
-          })
-
-          setOtherTabs(nextTabs)
-        }
+        disconnectTab.current = bg.uiInterface.disconnectTab
         unsubscribe = bg.uiInterface.onChainsChanged(refresh)
         refresh()
       })
@@ -58,7 +90,7 @@ const Popup: FunctionComponent = () => {
 
     return () => {
       isActive = false
-      unsubscribe()
+      unsubscribe && unsubscribe()
     }
   }, [])
 
@@ -66,49 +98,96 @@ const Popup: FunctionComponent = () => {
     chrome.runtime.openOptionsPage()
   }
 
+  const networkIcon = (network: string) => {
+    const icon = network.toLowerCase()
+    return (
+      <>
+        <div className="icon w-7">
+          {knownChains.includes(icon) ? icon : "?"}
+        </div>
+        <div className="pl-2">{network}</div>
+      </>
+    )
+  }
+
+  const onDisconnect = (tabId: number): void => {
+    disconnectTab.current(tabId)
+    refresh()
+  }
+
   return (
     <main className="w-80">
-      <header className="my-3 mx-6 flex justify-between border-b border-neutral-200 py-1.5">
-        <Logo />
+      <header className="my-3 mx-6 flex justify-between border-b border-neutral-200 pt-1.5 pb-4 leading-4">
+        <Logo textSize="xl" cName={"leading-4"} />
         <MdOutlineSettings
           onClick={goToOptions}
-          className="text-base cursor-pointer"
+          className="text-xl leading-5 cursor-pointer hover:color-neutral-200"
         />
       </header>
+      {connChains?.map((w) => {
+        if (w?.details?.length === 1 && !w?.details[0].tabId)
+          return (
+            <div key={w.chainName} className="pl-6 py-2 flex text-lg">
+              {networkIcon(w.chainName)}
+            </div>
+          )
+        const contents: ReactNode[] = []
+        w?.details?.forEach((t) => {
+          if (t.tabId) {
+            contents.push(
+              <div key={t.url} className="flex justify-between">
+                <div className="ml-6 w-full truncate text-base underline text-blue-500">
+                  {t.url}
+                </div>
+                <div>
+                  <div data-testid="Tooltip" className="tooltip">
+                    <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
+                      <div
+                        onClick={() => t && t.tabId && onDisconnect(t.tabId)}
+                      >
+                        Disconnect tab
+                      </div>
+                    </span>
+                    <BiDotsHorizontalRounded className="ml-2 text-base" />
+                  </div>
+                </div>
+              </div>,
+            )
+          }
+        })
 
-      {activeTab && (
-        <ConnectedTab
-          disconnectTab={disconnectTabRef.current}
-          current
-          tab={activeTab}
-          setActiveTab={setActiveTab}
-        />
-      )}
+        return (
+          <Accordion
+            titleClass="popup-accordion-title"
+            contentClass="popup-accordion-content"
+            titles={[
+              <div className="flex justify-between items-center w-full">
+                <div className="pl-4 flex text-lg justify-start">
+                  {networkIcon(w.chainName)}
+                </div>
+              </div>,
+            ]}
+            contents={[<>{contents}</>]}
+            showTitleIcon={!!contents.length}
+          />
+        )
+      })}
 
-      {otherTabs.length > 0 && (
-        <div className="my-1">
-          {otherTabs.map((t) => (
-            <ConnectedTab
-              disconnectTab={disconnectTabRef.current}
-              key={t.tabId}
-              tab={t}
-            />
-          ))}
-        </div>
-      )}
-      <button
-        className="font-inter my-3 mx-4 flex w-11/12 justify-between px-2 py-1.5 text-sm font-light capitalize hover:bg-stone-200"
-        onClick={() =>
-          chrome.tabs.update({
-            url: "https://paritytech.github.io/substrate-connect/#extension",
-          })
-        }
-      >
-        <div>About</div>
-        <div>
-          <MdCallMade className="text-base" />
-        </div>
-      </button>
+      <div className="border-t border-neutral-200 pt-2 mt-2 mx-8">
+        <button
+          className="font-inter mb-3 mt-1.5 flex w-full justify-between py-1.5 text-sm font-light capitalize hover:bg-stone-200"
+          onClick={() =>
+            chrome.tabs.update({
+              url: "https://paritytech.github.io/substrate-connect/#extension",
+            })
+          }
+        >
+          <div className="text-lg">About</div>
+          <div>
+            <MdCallMade className="text-xl" />
+          </div>
+        </button>
+      </div>
     </main>
   )
 }
