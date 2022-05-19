@@ -1,3 +1,7 @@
+html {
+  background-color: #f9f9f9;
+}
+
 @font-face {
   font-family: "Web3-Regular";
   src: url("./fonts/Web3-Regular.woff") format("woff"),
@@ -68,11 +72,12 @@
 }
 
 .item_title {
-  @apply items-center w-full flex text-sm justify-between p-3 text-left border border-neutral-400 cursor-pointer;
+  @apply items-center w-full flex text-sm justify-between p-3 text-left border border-neutral-200 cursor-pointer;
 }
 
 .item_content {
-  @apply bg-neutral-700 p-4 text-white border border-neutral-400;
+  font-weight: 400;
+  @apply bg-[#21262A] p-4 text-white;
 }
 
 .item {
@@ -134,4 +139,9 @@
 .tooltip_bottom {
   top: 150%;
   margin-left: -5px;
+}
+
+.options-container {
+  background: #ffffff;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
 }
