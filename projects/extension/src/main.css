@@ -9,6 +9,14 @@
   align-items: center;
 }
 
+.popup-accordion-title {
+  @apply rounded-none border-0 py-2 pl-2 !important;
+}
+
+.popup-accordion-content {
+  @apply pl-10 pr-8 py-0 text-lg bg-white text-black border-0 rounded-none !important;
+}
+
 .icon {
   font-family: "Web3-Regular";
   @apply text-center;
@@ -96,11 +104,16 @@
 }
 
 .tooltip .tooltiptext {
-  @apply invisible bg-black text-white text-center rounded-md p-1.5 absolute z-50 w-max;
+  @apply invisible text-black bg-white border border-neutral-200 text-left p-2 right-5 absolute z-50 w-max leading-6;
+  top: -100%;
 }
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+
+.tooltip:hover .tooltiptext div:hover {
+  @apply bg-gray-100;
 }
 
 .tooltip_top {
