@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.1.4 - 2022-05-23
+
 ### Fixed
 
 - Fix a bug that was not saving the database content of each chain in the extension's localStorage upon first initialization of the extension. Also added an `await` from `async addWellKnownChain` that was missing. ([#1025](https://github.com/paritytech/substrate-connect/pull/1025))
