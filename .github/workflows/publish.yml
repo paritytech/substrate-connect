@@ -3,8 +3,6 @@ name: Publish
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   npm-publish:
@@ -33,7 +31,7 @@ jobs:
       - name: Publish
         uses: JS-DevTools/npm-publish@v1
         # merge only if version is greater than the one in npm and only after merge
-        if: steps.package_version.outputs.npm_is_greater == 'false' && github.event.pull_request.merged == 'true'
+        if: steps.package_version.outputs.npm_is_greater == 'false'
         # Warning: this GitHub action doesn't seem to run prepublish scripts, hence
         # the `npm publish --dry-run` done right above is important to ensure this.
         with:
@@ -42,7 +40,7 @@ jobs:
           access: public
       - name: Deploy
         # merge only if version is greater than the one in npm and only after merge
-        if: steps.package_version.outputs.npm_is_greater == 'false' && github.event.pull_request.merged == 'true'
+        if: steps.package_version.outputs.npm_is_greater == 'false'
         run: yarn run deploy
 
   all:

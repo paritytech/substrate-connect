@@ -1,6 +1,6 @@
 {
   "name": "@substrate/extension",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Browser extension to manage substrate-based blockchain light clients",
   "main": "dist/src/index.js",
   "author": "Parity Technologies",
@@ -12,7 +12,7 @@
     "compile": "tsc -b",
     "test": "node --no-warnings --experimental-vm-modules ../../node_modules/jest/bin/jest.js --colors --coverage",
     "prebuild": "yarn clean",
-    "build": "webpack --config webpack.prod.js && zip -r ./dist/substrate-connect.zip ./dist/*",
+    "build": "webpack --config webpack.prod.js && cd dist && zip -r packed-extension.zip .",
     "dev": "yarn run prebuild && webpack --node-env development --config webpack.dev.js",
     "start": "web-ext run --source-dir ./dist -t chromium",
     "start:firefox": "web-ext run --source-dir ./dist -t firefox-desktop",

@@ -213,7 +213,9 @@ manager = {
 
       for (const key of wellKnownChains.keys()) {
         const dbContent = await new Promise<string | undefined>((res) =>
-          chrome.storage.local.get([key], (val) => res(val[key] as string)),
+          chrome.storage.local.get([key], (val) => {
+            return res(val[key] as string)
+          }),
         )
 
         managerInit.sandboxMessage(null, {
