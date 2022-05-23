@@ -48,7 +48,7 @@
     "@hot-loader/react-dom": "^17.0.2",
     "@jest/globals": "^27.5.1",
     "@types/asap": "^2.0.0",
-    "@types/chrome": "^0.0.180",
+    "@types/chrome": "^0.0.188",
     "@types/copy-webpack-plugin": "^10.1.0",
     "@types/jest": "^27.4.1",
     "@types/jsdom": "^16.2.14",
