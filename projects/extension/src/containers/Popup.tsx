@@ -129,59 +129,61 @@ const Popup: FunctionComponent = () => {
           />
         </div>
       </header>
-      {connChains?.map((w) => {
-        if (w?.details?.length === 1 && !w?.details[0].tabId)
-          return (
-            <div key={w.chainName} className="pl-6 py-2 flex text-lg">
-              {networkIcon(w.chainName)}
-            </div>
-          )
-        const contents: ReactNode[] = []
-        w?.details?.forEach((t) => {
-          if (t.tabId) {
-            contents.push(
-              <div key={t.url} className="flex justify-between">
-                <div className="ml-6 w-full truncate text-base underline text-blue-500">
-                  {t.url}
-                </div>
-                <div>
-                  <div data-testid="Tooltip" className="tooltip">
-                    <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
-                      <div
-                        onClick={() => t && t.tabId && onDisconnect(t.tabId)}
-                      >
-                        Disconnect tab
-                      </div>
-                    </span>
-                    <BiDotsHorizontalRounded className="ml-2 text-base" />
-                  </div>
-                </div>
-              </div>,
+      <div className="pb-3.5">
+        {connChains?.map((w) => {
+          if (w?.details?.length === 1 && !w?.details[0].tabId)
+            return (
+              <div key={w.chainName} className="pl-6 py-2 flex text-lg">
+                {networkIcon(w.chainName)}
+              </div>
             )
-          }
-        })
+          const contents: ReactNode[] = []
+          w?.details?.forEach((t) => {
+            if (t.tabId) {
+              contents.push(
+                <div key={t.url} className="flex justify-between">
+                  <div className="ml-6 w-full truncate text-base underline text-blue-500">
+                    {t.url}
+                  </div>
+                  <div>
+                    <div data-testid="Tooltip" className="tooltip">
+                      <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
+                        <div
+                          onClick={() => t && t.tabId && onDisconnect(t.tabId)}
+                        >
+                          Disconnect tab
+                        </div>
+                      </span>
+                      <BiDotsHorizontalRounded className="ml-2 text-base" />
+                    </div>
+                  </div>
+                </div>,
+              )
+            }
+          })
 
-        return (
-          <Accordion
-            defaultAllExpanded={true}
-            titleClass="popup-accordion-title"
-            contentClass="popup-accordion-content"
-            titles={[
-              <div className="flex justify-between items-center w-full">
-                <div className="pl-4 flex text-lg justify-start">
-                  {networkIcon(w.chainName)}
-                </div>
-              </div>,
-            ]}
-            contents={[<>{contents}</>]}
-            showTitleIcon={!!contents.length}
-          />
-        )
-      })}
-
-      <div className="border-t border-neutral-200 pt-2 mt-2 mx-8">
+          return (
+            <Accordion
+              defaultAllExpanded={true}
+              titleClass="popup-accordion-title"
+              contentClass="popup-accordion-content"
+              titles={[
+                <div className="flex justify-between items-center w-full">
+                  <div className="pl-4 flex text-lg justify-start">
+                    {networkIcon(w.chainName)}
+                  </div>
+                </div>,
+              ]}
+              contents={[<>{contents}</>]}
+              showTitleIcon={!!contents.length}
+            />
+          )
+        })}
+      </div>
+      <div className="border-t border-neutral-200 mx-8" />
+      <div className="px-8 hover:bg-stone-200">
         <button
-          className="font-inter mb-3 mt-1.5 flex w-full justify-between py-1.5 text-sm font-light capitalize hover:bg-stone-200"
+          className="font-inter flex w-full justify-between py-3.5 text-sm font-light capitalize"
           onClick={() =>
             window.open(
               "https://paritytech.github.io/substrate-connect/#extension",
