@@ -14,7 +14,9 @@
 }
 
 .popup-accordion-content {
-  @apply pl-10 pr-8 py-0 text-lg bg-white text-black border-0 rounded-none !important;
+  @apply py-0 text-lg bg-white text-black border-0 rounded-none !important;
+  padding-right: 1.75rem !important;
+  padding-left: 2.35rem !important;
 }
 
 .icon {

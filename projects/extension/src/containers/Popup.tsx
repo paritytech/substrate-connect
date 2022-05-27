@@ -6,8 +6,7 @@ import React, {
   useState,
 } from "react"
 
-import { MdOutlineSettings, MdCallMade } from "react-icons/md"
-import { BiDotsHorizontalRounded } from "react-icons/bi"
+import { MdOutlineSettings, MdCallMade, MdLinkOff } from "react-icons/md"
 
 import { Accordion, Logo } from "../components"
 import { Background } from "../background"
@@ -119,7 +118,7 @@ const Popup: FunctionComponent = () => {
     <main className="w-80">
       <header className="my-3 mx-6 flex justify-between border-b border-neutral-200 pt-1.5 pb-4 leading-4">
         <Logo textSize="xl" cName={"leading-4"} />
-        <div data-testid="Tooltip" className="tooltip">
+        <div className="tooltip">
           <span className="p-4 text-xs shadow-lg tooltipDark tooltip_left">
             Go to Options
           </span>
@@ -145,17 +144,15 @@ const Popup: FunctionComponent = () => {
                   <div className="ml-6 w-full truncate text-base underline text-blue-500">
                     {t.url}
                   </div>
-                  <div>
-                    <div data-testid="Tooltip" className="tooltip">
-                      <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
-                        <div
-                          onClick={() => t && t.tabId && onDisconnect(t.tabId)}
-                        >
-                          Disconnect tab
-                        </div>
-                      </span>
-                      <BiDotsHorizontalRounded className="ml-2 text-base" />
-                    </div>
+
+                  <div
+                    className="tooltip"
+                    onClick={() => t && t.tabId && onDisconnect(t.tabId)}
+                  >
+                    <span className="p-4 text-xs shadow-lg tooltipDark tooltip_left">
+                      Disconnect tab
+                    </span>
+                    <MdLinkOff className="ml-2 text-base" />
                   </div>
                 </div>,
               )
@@ -191,7 +188,7 @@ const Popup: FunctionComponent = () => {
           }
         >
           <div className="text-lg">About</div>
-          <div data-testid="Tooltip" className="tooltip">
+          <div className="tooltip">
             <span className="p-4 text-xs shadow-lg tooltipDark tooltip_left">
               Go to Landing Page
             </span>
