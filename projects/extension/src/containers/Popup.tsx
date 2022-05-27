@@ -141,9 +141,7 @@ const Popup: FunctionComponent = () => {
             if (t.tabId) {
               contents.push(
                 <div key={t.url} className="flex justify-between">
-                  <div className="ml-6 w-full truncate text-base underline text-blue-500">
-                    {t.url}
-                  </div>
+                  <div className="ml-6 w-full truncate text-base">{t.url}</div>
 
                   <div
                     className="tooltip"
@@ -178,7 +176,7 @@ const Popup: FunctionComponent = () => {
         })}
       </div>
       <div className="border-t border-neutral-200 mx-8" />
-      <div className="px-8 hover:bg-stone-200">
+      <div className="pl-8 pr-6 hover:bg-stone-200">
         <button
           className="font-inter flex w-full justify-between py-3.5 text-sm font-light capitalize"
           onClick={() =>
