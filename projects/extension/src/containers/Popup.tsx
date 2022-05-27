@@ -163,6 +163,7 @@ const Popup: FunctionComponent = () => {
 
         return (
           <Accordion
+            defaultAllExpanded={true}
             titleClass="popup-accordion-title"
             contentClass="popup-accordion-content"
             titles={[
