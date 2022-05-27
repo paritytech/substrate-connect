@@ -121,6 +121,19 @@ html {
   @apply bg-gray-100;
 }
 
+.tooltip .tooltipDark {
+  @apply invisible text-white bg-black rounded-lg border border-neutral-200 text-left py-1 px-2 right-5 absolute z-50 w-max leading-6;
+  top: -50%;
+}
+
+.tooltip:hover .tooltipDark {
+  visibility: visible;
+}
+
+.tooltip:hover .tooltipDark div:hover {
+  @apply bg-gray-100;
+}
+
 .tooltip_top {
   bottom: 150%;
   margin-left: -5px;

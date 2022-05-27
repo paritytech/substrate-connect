@@ -119,10 +119,15 @@ const Popup: FunctionComponent = () => {
     <main className="w-80">
       <header className="my-3 mx-6 flex justify-between border-b border-neutral-200 pt-1.5 pb-4 leading-4">
         <Logo textSize="xl" cName={"leading-4"} />
-        <MdOutlineSettings
-          onClick={goToOptions}
-          className="text-xl leading-5 cursor-pointer hover:color-neutral-200"
-        />
+        <div data-testid="Tooltip" className="tooltip">
+          <span className="p-4 text-xs shadow-lg tooltipDark tooltip_left">
+            Go to Options
+          </span>
+          <MdOutlineSettings
+            onClick={goToOptions}
+            className="text-xl leading-5 cursor-pointer hover:color-neutral-200"
+          />
+        </div>
       </header>
       {connChains?.map((w) => {
         if (w?.details?.length === 1 && !w?.details[0].tabId)
@@ -183,7 +188,10 @@ const Popup: FunctionComponent = () => {
           }
         >
           <div className="text-lg">About</div>
-          <div>
+          <div data-testid="Tooltip" className="tooltip">
+            <span className="p-4 text-xs shadow-lg tooltipDark tooltip_left">
+              Go to Landing Page
+            </span>
             <MdCallMade className="text-xl" />
           </div>
         </button>
