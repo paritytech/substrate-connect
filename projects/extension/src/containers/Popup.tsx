@@ -177,9 +177,9 @@ const Popup: FunctionComponent = () => {
         <button
           className="font-inter mb-3 mt-1.5 flex w-full justify-between py-1.5 text-sm font-light capitalize hover:bg-stone-200"
           onClick={() =>
-            chrome.tabs.update({
-              url: "https://paritytech.github.io/substrate-connect/#extension",
-            })
+            window.open(
+              "https://paritytech.github.io/substrate-connect/#extension",
+            )
           }
         >
           <div className="text-lg">About</div>
