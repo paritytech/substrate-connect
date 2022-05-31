@@ -160,7 +160,7 @@ const App: React.FunctionComponent = () => {
                   mt={2}
                 >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
-                <Box>{`);`}</Box>
+                <Box>{`});`}</Box>
 
                 <Box>{`await api.disconnect();`}</Box>
               </Code>
@@ -188,7 +188,7 @@ const App: React.FunctionComponent = () => {
                   mt={2}
                 >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
-                <Box>{`);`}</Box>
+                <Box>{`});`}</Box>
 
                 <Box>{`await api.disconnect();`}</Box>
               </Code>
@@ -221,7 +221,7 @@ const App: React.FunctionComponent = () => {
                   mt={2}
                 >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
-                <Box>{`);`}</Box>
+                <Box>{`});`}</Box>
 
                 <Box>{`await api.disconnect();`}</Box>
               </Code>
