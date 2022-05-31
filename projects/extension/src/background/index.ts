@@ -12,6 +12,39 @@ import {
   ToExtension,
 } from "@substrate/connect-extension-protocol"
 
+const setupStorageBootnodes = () => {
+  let p = localStorage.getItem(polkadot.id)?.split(",")
+  let k = localStorage.getItem(ksmcc3.id)?.split(",")
+  let w = localStorage.getItem(westend2.id)?.split(",")
+  let r = localStorage.getItem(rococo_v2_2.id)?.split(",")
+  if (!p) {
+    const { id, bootNodes } = polkadot
+    localStorage.setItem(id, bootNodes.join(","))
+    p = bootNodes
+  }
+  if (!k) {
+    const { id, bootNodes } = ksmcc3
+    localStorage.setItem(id, bootNodes.join(","))
+    k = bootNodes
+  }
+  if (!w) {
+    const { id, bootNodes } = westend2
+    localStorage.setItem(id, bootNodes.join(","))
+    w = bootNodes
+  }
+  if (!r) {
+    const { id, bootNodes } = rococo_v2_2
+    localStorage.setItem(id, bootNodes.join(","))
+    r = bootNodes
+  }
+  polkadot.bootNodes = p
+  ksmcc3.bootNodes = k
+  westend2.bootNodes = w
+  rococo_v2_2.bootNodes = r
+}
+
+setupStorageBootnodes()
+
 // Note that this list doesn't necessarily always have to match the list of well-known
 // chains in `@substrate/connect`. The list of well-known chains is not part of the stability
 // guarantees of the connect <-> extension protocol and is thus allowed to change
@@ -39,7 +72,13 @@ export interface Background extends Window {
     // Use `onSmoldotCrashErrorChanged` to register a callback that is called when this crash
     // message might have changed.
     get smoldotCrashError(): string | undefined
+    // Get the bootnodes of the wellKnownChains
+    get wellKnownChainBootnodes(): ChainBootnodes
   }
+}
+
+interface ChainBootnodes {
+  [id: string]: string[]
 }
 
 interface logStructure {
@@ -172,6 +211,14 @@ window.uiInterface = {
   get smoldotCrashError() {
     if (manager.state === "crashed") return manager.error
     else return undefined
+  },
+  get wellKnownChainBootnodes() {
+    return {
+      [polkadot.id]: polkadot.bootNodes,
+      [ksmcc3.id]: ksmcc3.bootNodes,
+      [westend2.id]: westend2.bootNodes,
+      [rococo_v2_2.id]: rococo_v2_2.bootNodes,
+    }
   },
 }
 
