@@ -172,7 +172,7 @@ const Popup: FunctionComponent = () => {
                   <div className="pl-4 flex text-lg justify-start">
                     {networkIcon(w.chainName)}
                     <span className="pl-2 text-[#616161]">
-                      ({w?.details?.length - 1})
+                      ({contents.length})
                     </span>
                   </div>
                 </div>,
