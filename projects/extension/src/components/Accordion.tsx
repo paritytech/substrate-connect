@@ -76,7 +76,11 @@ const AccordionItem = ({
         {title}
         {showTitleIcon && (
           <div className="pr-4">
-            {activeItem !== value ? <IoIosArrowDown /> : <IoIosArrowUp />}
+            {activeItem !== value ? (
+              <IoIosArrowDown className="cursor-pointer hover:bg-gray-200" />
+            ) : (
+              <IoIosArrowUp className="cursor-pointer hover:bg-gray-200" />
+            )}
           </div>
         )}
       </button>

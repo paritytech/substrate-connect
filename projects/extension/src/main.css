@@ -107,8 +107,8 @@
 }
 
 .tooltip .tooltiptext {
-  @apply invisible text-black bg-white border border-neutral-200 text-left p-2 right-5 absolute z-50 w-max leading-6;
-  top: -100%;
+  @apply invisible text-black bg-stone-200 border border-neutral-200 text-left p-2 right-5 absolute z-50 w-max leading-6;
+  top: -60%;
 }
 
 .tooltip:hover .tooltiptext {
@@ -121,7 +121,7 @@
 
 .tooltip .tooltipDark {
   @apply invisible text-white bg-black rounded-lg border border-neutral-200 text-left py-1 px-2 right-5 absolute z-50 w-max leading-6;
-  top: -50%;
+  top: -60%;
 }
 
 .tooltip:hover .tooltipDark {
@@ -138,12 +138,12 @@
 }
 
 .tooltip_left {
-  top: -5px;
+  top: -10px;
   right: 105%;
 }
 
 .tooltip_right {
-  top: -5px;
+  top: -10px;
   left: 105%;
 }
 

@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react"
 
-import { MdOutlineSettings, MdCallMade, MdLinkOff } from "react-icons/md"
+import { MdOutlineSettings, MdOutlineEast, MdLinkOff } from "react-icons/md"
 
 import { Accordion, Logo } from "../components"
 import { Background } from "../background"
@@ -119,12 +119,12 @@ const Popup: FunctionComponent = () => {
       <header className="my-3 mx-6 flex justify-between border-b border-neutral-200 pt-1.5 pb-4 leading-4">
         <Logo textSize="xl" cName={"leading-4"} />
         <div className="tooltip">
-          <span className="p-4 text-xs shadow-lg tooltipDark tooltip_left">
+          <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
             Go to Options
           </span>
           <MdOutlineSettings
             onClick={goToOptions}
-            className="text-xl leading-5 cursor-pointer hover:color-neutral-200"
+            className="text-xl leading-5 cursor-pointer hover:bg-gray-200"
           />
         </div>
       </header>
@@ -132,9 +132,14 @@ const Popup: FunctionComponent = () => {
         {connChains?.map((w) => {
           if (w?.details?.length === 1 && !w?.details[0].tabId)
             return (
-              <div key={w.chainName} className="pl-6 py-2 flex text-lg">
-                {networkIcon(w.chainName)}
-              </div>
+              <>
+                <div key={w.chainName} className="pl-6 flex text-lg">
+                  {networkIcon(w.chainName)}
+                </div>
+                <div className="pl-16 flex pb-4 text-[#616161]">
+                  No apps connected
+                </div>
+              </>
             )
           const contents: ReactNode[] = []
           w?.details?.forEach((t) => {
@@ -147,10 +152,10 @@ const Popup: FunctionComponent = () => {
                     className="tooltip"
                     onClick={() => t && t.tabId && onDisconnect(t.tabId)}
                   >
-                    <span className="p-4 text-xs shadow-lg tooltipDark tooltip_left">
+                    <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
                       Disconnect tab
                     </span>
-                    <MdLinkOff className="ml-2 text-base" />
+                    <MdLinkOff className="ml-2 text-base cursor-pointer hover:bg-gray-200" />
                   </div>
                 </div>,
               )
@@ -166,6 +171,9 @@ const Popup: FunctionComponent = () => {
                 <div className="flex justify-between items-center w-full">
                   <div className="pl-4 flex text-lg justify-start">
                     {networkIcon(w.chainName)}
+                    <span className="pl-2 text-[#616161]">
+                      ({w?.details?.length - 1})
+                    </span>
                   </div>
                 </div>,
               ]}
@@ -185,12 +193,12 @@ const Popup: FunctionComponent = () => {
             )
           }
         >
-          <div className="text-lg">About</div>
+          <div className="text-lg font-inter font-normal">About</div>
           <div className="tooltip">
-            <span className="p-4 text-xs shadow-lg tooltipDark tooltip_left">
+            <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
               Go to Landing Page
             </span>
-            <MdCallMade className="text-xl" />
+            <MdOutlineEast className="text-xl" />
           </div>
         </button>
       </div>
