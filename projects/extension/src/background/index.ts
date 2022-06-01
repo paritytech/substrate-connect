@@ -243,7 +243,6 @@ manager = {
   whenInitFinished: (async () => {
     try {
       const wellKnownChains = setupStorageBootnodes()
-      console.log("wellKnownChains", wellKnownChains)
       // Start initializing a `ConnectionManagerWithHealth`.
       // This initialization operation shouldn't take more than a few dozen milliseconds, but we
       // still need to properly handle situations where initialization isn't finished yet.
