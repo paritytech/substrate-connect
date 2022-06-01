@@ -20,35 +20,27 @@ const setupStorageBootnodes = (): Map<string, string> => {
 
   chrome.storage.local.get(
     [
-      "bootNode_".concat(polkadot_cp.id),
-      "bootNode_".concat(ksmcc3_cp.id),
-      "bootNode_".concat(westend2_cp.id),
-      "bootNode_".concat(rococo_cp.id),
+      "bootNodes_".concat(polkadot_cp.id),
+      "bootNodes_".concat(ksmcc3_cp.id),
+      "bootNodes_".concat(westend2_cp.id),
+      "bootNodes_".concat(rococo_cp.id),
     ],
     (result) => {
-      let i = "bootNode_".concat(polkadot_cp.id)
+      let i = "bootNodes_".concat(polkadot_cp.id)
       if (result[i]) {
         polkadot_cp.bootNodes = result[i]
-      } else {
-        chrome.storage.local.set({ [i]: polkadot_cp.bootNodes })
       }
-      i = "bootNode_".concat(ksmcc3_cp.id)
+      i = "bootNodes_".concat(ksmcc3_cp.id)
       if (result[i]) {
         ksmcc3_cp.bootNodes = result[i]
-      } else {
-        chrome.storage.local.set({ [i]: ksmcc3_cp.bootNodes })
       }
-      i = "bootNode_".concat(westend2_cp.id)
+      i = "bootNodes_".concat(westend2_cp.id)
       if (result[i]) {
         westend2_cp.bootNodes = result[i]
-      } else {
-        chrome.storage.local.set({ [i]: westend2_cp.bootNodes })
       }
-      i = "bootNode_".concat(rococo_cp.id)
+      i = "bootNodes_".concat(rococo_cp.id)
       if (result[i]) {
         rococo_cp.bootNodes = result[i]
-      } else {
-        chrome.storage.local.set({ [i]: rococo_cp.bootNodes })
       }
     },
   )
