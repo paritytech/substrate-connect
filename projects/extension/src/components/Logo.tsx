@@ -8,12 +8,12 @@ interface LogoProps {
 const Logo = ({ textSize, cName }: LogoProps) => {
   const c = `${
     textSize ? `text-${textSize}` : ""
-  } font-poppins font-semibold text-black drop-shadow-lg `
+  } font-poppins font-semibold text-black `
   return (
     <div className={cName ? c.concat(cName) : c}>
       substrate
-      <span className="text-green-500 drop-shadow-lg">_</span>&nbsp;
-      <span className="font-normal font-inter drop-shadow-lg">connect</span>
+      <span className="text-green-500">_</span>&nbsp;
+      <span className="font-normal font-inter">connect</span>
     </div>
   )
 }
