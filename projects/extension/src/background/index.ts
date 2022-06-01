@@ -12,35 +12,40 @@ import {
   ToExtension,
 } from "@substrate/connect-extension-protocol"
 
+const polkadot_cp = Object.assign({}, polkadot)
+const ksmcc3_cp = Object.assign({}, ksmcc3)
+const westend2_cp = Object.assign({}, westend2)
+const rococo_cp = Object.assign({}, rococo_v2_2)
+
 const setupStorageBootnodes = () => {
-  let p = localStorage.getItem(polkadot.id)?.split(",")
-  let k = localStorage.getItem(ksmcc3.id)?.split(",")
-  let w = localStorage.getItem(westend2.id)?.split(",")
-  let r = localStorage.getItem(rococo_v2_2.id)?.split(",")
+  let p = localStorage.getItem(polkadot_cp.id)?.split(",")
+  let k = localStorage.getItem(ksmcc3_cp.id)?.split(",")
+  let w = localStorage.getItem(westend2_cp.id)?.split(",")
+  let r = localStorage.getItem(rococo_cp.id)?.split(",")
   if (!p) {
-    const { id, bootNodes } = polkadot
+    const { id, bootNodes } = polkadot_cp
     localStorage.setItem(id, bootNodes.join(","))
     p = bootNodes
   }
   if (!k) {
-    const { id, bootNodes } = ksmcc3
+    const { id, bootNodes } = ksmcc3_cp
     localStorage.setItem(id, bootNodes.join(","))
     k = bootNodes
   }
   if (!w) {
-    const { id, bootNodes } = westend2
+    const { id, bootNodes } = westend2_cp
     localStorage.setItem(id, bootNodes.join(","))
     w = bootNodes
   }
   if (!r) {
-    const { id, bootNodes } = rococo_v2_2
+    const { id, bootNodes } = rococo_cp
     localStorage.setItem(id, bootNodes.join(","))
     r = bootNodes
   }
-  polkadot.bootNodes = p
-  ksmcc3.bootNodes = k
-  westend2.bootNodes = w
-  rococo_v2_2.bootNodes = r
+  polkadot_cp.bootNodes = p
+  ksmcc3_cp.bootNodes = k
+  westend2_cp.bootNodes = w
+  rococo_cp.bootNodes = r
 }
 
 setupStorageBootnodes()
@@ -52,10 +57,10 @@ setupStorageBootnodes()
 // enum from `@substrate/connect` but instead manually make the list in that enum match
 // the list present here.
 export const wellKnownChains: Map<string, string> = new Map<string, string>([
-  [polkadot.id, JSON.stringify(polkadot)],
-  [ksmcc3.id, JSON.stringify(ksmcc3)],
-  [rococo_v2_2.id, JSON.stringify(rococo_v2_2)],
-  [westend2.id, JSON.stringify(westend2)],
+  [polkadot.id, JSON.stringify(polkadot_cp)],
+  [ksmcc3.id, JSON.stringify(ksmcc3_cp)],
+  [rococo_v2_2.id, JSON.stringify(rococo_cp)],
+  [westend2.id, JSON.stringify(westend2_cp)],
 ])
 
 export interface Background extends Window {
