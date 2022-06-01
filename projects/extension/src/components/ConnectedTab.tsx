@@ -55,7 +55,7 @@ const ConnectedTab: FunctionComponent<ConnectedTabProps> = ({
                 </div>
               </div>
             ))}
-            <div data-testid="Tooltip" className="tooltip">
+            <div className="tooltip">
               <span className="p-1 text-xs font-medium bg-gray-100 rounded shadow-lg tooltiptext tooltip_left">
                 Disconnect app
               </span>
