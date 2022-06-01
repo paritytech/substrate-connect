@@ -19,6 +19,7 @@ interface AccordionProps {
   contentClass?: string
   defaultExpanded?: number
   showTitleIcon?: boolean
+  defaultAllExpanded?: boolean
 }
 
 const useAccordionContext = () => {
@@ -31,6 +32,7 @@ const useAccordionContext = () => {
 
 const AccordionContext = createContext({
   activeItem: "",
+  defaultAllExpanded: false,
   setToggle: (val: string) => {
     console.log(val)
   },
@@ -45,9 +47,11 @@ const AccordionItem = ({
   status,
   showTitleIcon,
 }: AccItem) => {
-  const { activeItem, setToggle } = useAccordionContext()
+  const { activeItem, setToggle, defaultAllExpanded } = useAccordionContext()
 
-  const expanded = activeItem === value
+  const expanded = defaultAllExpanded
+    ? activeItem !== value
+    : activeItem === value
 
   return (
     <div className={status && `item _mi__${status}`}>
@@ -72,7 +76,11 @@ const AccordionItem = ({
         {title}
         {showTitleIcon && (
           <div className="pr-4">
-            {activeItem !== value ? <IoIosArrowDown /> : <IoIosArrowUp />}
+            {activeItem !== value ? (
+              <IoIosArrowDown className="cursor-pointer hover:bg-gray-200" />
+            ) : (
+              <IoIosArrowUp className="cursor-pointer hover:bg-gray-200" />
+            )}
           </div>
         )}
       </button>
@@ -103,6 +111,7 @@ export const Accordion = ({
   titleClass,
   contentClass,
   showTitleIcon,
+  defaultAllExpanded,
 }: AccordionProps): JSX.Element => {
   const [activeItem, setActiveItem] = useState<string | undefined>(
     defaultExpanded?.toString(),
@@ -122,8 +131,9 @@ export const Accordion = ({
       activeItem,
       setToggle,
       defaultExpanded,
+      defaultAllExpanded,
     }),
-    [setToggle, activeItem, defaultExpanded],
+    [setToggle, activeItem, defaultExpanded, defaultAllExpanded],
   )
 
   if (titles.length !== contents.length) {

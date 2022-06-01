@@ -34,7 +34,6 @@ const StatusCircle: FunctionComponent<Props> = ({
 
   return (
     <section
-      data-testid="circle"
       style={{
         width: s.concat("rem"),
         height: s.concat("rem"),
