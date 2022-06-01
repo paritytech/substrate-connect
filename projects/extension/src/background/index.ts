@@ -12,56 +12,60 @@ import {
   ToExtension,
 } from "@substrate/connect-extension-protocol"
 
-const polkadot_cp = Object.assign({}, polkadot)
-const ksmcc3_cp = Object.assign({}, ksmcc3)
-const westend2_cp = Object.assign({}, westend2)
-const rococo_cp = Object.assign({}, rococo_v2_2)
+const setupStorageBootnodes = (): Map<string, string> => {
+  const polkadot_cp = Object.assign({}, polkadot)
+  const ksmcc3_cp = Object.assign({}, ksmcc3)
+  const westend2_cp = Object.assign({}, westend2)
+  const rococo_cp = Object.assign({}, rococo_v2_2)
 
-const setupStorageBootnodes = () => {
-  let p = localStorage.getItem(polkadot_cp.id)?.split(",")
-  let k = localStorage.getItem(ksmcc3_cp.id)?.split(",")
-  let w = localStorage.getItem(westend2_cp.id)?.split(",")
-  let r = localStorage.getItem(rococo_cp.id)?.split(",")
-  if (!p) {
-    const { id, bootNodes } = polkadot_cp
-    localStorage.setItem(id, bootNodes.join(","))
-    p = bootNodes
-  }
-  if (!k) {
-    const { id, bootNodes } = ksmcc3_cp
-    localStorage.setItem(id, bootNodes.join(","))
-    k = bootNodes
-  }
-  if (!w) {
-    const { id, bootNodes } = westend2_cp
-    localStorage.setItem(id, bootNodes.join(","))
-    w = bootNodes
-  }
-  if (!r) {
-    const { id, bootNodes } = rococo_cp
-    localStorage.setItem(id, bootNodes.join(","))
-    r = bootNodes
-  }
-  polkadot_cp.bootNodes = p
-  ksmcc3_cp.bootNodes = k
-  westend2_cp.bootNodes = w
-  rococo_cp.bootNodes = r
+  chrome.storage.local.get(
+    [
+      "bootNode_".concat(polkadot_cp.id),
+      "bootNode_".concat(ksmcc3_cp.id),
+      "bootNode_".concat(westend2_cp.id),
+      "bootNode_".concat(rococo_cp.id),
+    ],
+    (result) => {
+      let i = "bootNode_".concat(polkadot_cp.id)
+      if (result[i]) {
+        polkadot_cp.bootNodes = result[i]
+      } else {
+        chrome.storage.local.set({ [i]: polkadot_cp.bootNodes })
+      }
+      i = "bootNode_".concat(ksmcc3_cp.id)
+      if (result[i]) {
+        ksmcc3_cp.bootNodes = result[i]
+      } else {
+        chrome.storage.local.set({ [i]: ksmcc3_cp.bootNodes })
+      }
+      i = "bootNode_".concat(westend2_cp.id)
+      if (result[i]) {
+        westend2_cp.bootNodes = result[i]
+      } else {
+        chrome.storage.local.set({ [i]: westend2_cp.bootNodes })
+      }
+      i = "bootNode_".concat(rococo_cp.id)
+      if (result[i]) {
+        rococo_cp.bootNodes = result[i]
+      } else {
+        chrome.storage.local.set({ [i]: rococo_cp.bootNodes })
+      }
+    },
+  )
+
+  // Note that this list doesn't necessarily always have to match the list of well-known
+  // chains in `@substrate/connect`. The list of well-known chains is not part of the stability
+  // guarantees of the connect <-> extension protocol and is thus allowed to change
+  // between versions of the extension. For this reason, we don't use the `WellKnownChain`
+  // enum from `@substrate/connect` but instead manually make the list in that enum match
+  // the list present here.
+  return new Map<string, string>([
+    [polkadot_cp.id, JSON.stringify(polkadot_cp)],
+    [ksmcc3_cp.id, JSON.stringify(ksmcc3_cp)],
+    [rococo_cp.id, JSON.stringify(rococo_cp)],
+    [westend2_cp.id, JSON.stringify(westend2_cp)],
+  ])
 }
-
-setupStorageBootnodes()
-
-// Note that this list doesn't necessarily always have to match the list of well-known
-// chains in `@substrate/connect`. The list of well-known chains is not part of the stability
-// guarantees of the connect <-> extension protocol and is thus allowed to change
-// between versions of the extension. For this reason, we don't use the `WellKnownChain`
-// enum from `@substrate/connect` but instead manually make the list in that enum match
-// the list present here.
-export const wellKnownChains: Map<string, string> = new Map<string, string>([
-  [polkadot.id, JSON.stringify(polkadot_cp)],
-  [ksmcc3.id, JSON.stringify(ksmcc3_cp)],
-  [rococo_v2_2.id, JSON.stringify(rococo_cp)],
-  [westend2.id, JSON.stringify(westend2_cp)],
-])
 
 export interface Background extends Window {
   uiInterface: {
@@ -246,6 +250,8 @@ manager = {
   state: "initializing",
   whenInitFinished: (async () => {
     try {
+      const wellKnownChains = setupStorageBootnodes()
+      console.log("wellKnownChains", wellKnownChains)
       // Start initializing a `ConnectionManagerWithHealth`.
       // This initialization operation shouldn't take more than a few dozen milliseconds, but we
       // still need to properly handle situations where initialization isn't finished yet.
