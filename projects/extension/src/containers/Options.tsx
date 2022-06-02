@@ -137,9 +137,9 @@ const Options: React.FunctionComponent = () => {
     <div className="mb-4 font-roboto">
       <div className="options-container">
         <div className="px-12 pb-3.5 text-base flex items-center">
-          <div>
+          <div className="flex items-baseline">
             <Logo textSize="lg" />
-            <div className="text-sm">v{pckg.version}</div>
+            <div className="text-sm pl-4">v{pckg.version}</div>
           </div>
           <div className="w-full ml-[10%]">
             <Tabs
@@ -150,6 +150,7 @@ const Options: React.FunctionComponent = () => {
         </div>
       </div>
       <div className="mx-[15%] pt-2">
+        {/** Networks section */}
         <TabsContent activeTab={activeTab}>
           <section>
             {networks.length ? (
@@ -163,6 +164,7 @@ const Options: React.FunctionComponent = () => {
               <div>No networks or apps are connected to the extension.</div>
             )}
           </section>
+          {/** Logs section */}
           <section className="block">
             <div className="flex my-5">
               <button

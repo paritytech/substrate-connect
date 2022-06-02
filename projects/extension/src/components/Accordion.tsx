@@ -60,7 +60,7 @@ const AccordionItem = ({
           .concat(
             `${
               expanded && (status === "single" || status === "last")
-                ? "content_closed "
+                ? "content_opened "
                 : ""
             }`,
           )
