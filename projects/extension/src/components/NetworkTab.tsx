@@ -23,7 +23,9 @@ const NetworkContent = ({ network, health, apps }: NetworkContentProps) => {
     <div className="w-full text-[#171717] text-xs">
       <div className="flex flex-row pb-2">
         <div className="basis-1/5 font-bold">Last block:</div>
-        <div className="basis-4/5">12,824,996</div>
+        <div className="basis-4/5">
+          {health?.lastBlock?.toLocaleString("en-US")}
+        </div>
       </div>
       <div className="flex flex-row pb-2 border-b-[1px] border-[#e7e7e7]">
         <div className="basis-1/5 font-bold">Light Client</div>
@@ -67,6 +69,9 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
   health,
   apps,
 }: NetworkTabProps) => {
+  const contents = [
+    <NetworkContent health={health} apps={apps} network={name} />,
+  ]
   return (
     <div className="flex w-full max-w-2xl mb-3 items-baseline">
       <Accordion
@@ -81,9 +86,8 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
             </div>
           </div>,
         ]}
-        contents={[
-          <NetworkContent health={health} apps={apps} network={name} />,
-        ]}
+        contents={contents}
+        showTitleIcon={!!contents.length}
       />
     </div>
   )
