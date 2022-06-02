@@ -333,7 +333,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
                   break
                 }
               }
-            } else if (jsonRpcMessage.method == "chain_newHead") {
+            } else if (jsonRpcMessage.method === "chain_newHead") {
               chain.lastBlock = parseInt(jsonRpcMessage.params.result.number)
             } else {
               return toApplication

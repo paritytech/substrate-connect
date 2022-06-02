@@ -11,8 +11,6 @@ interface ConnectedTabProps {
   setActiveTab?: Dispatch<SetStateAction<TabInterface | undefined>>
 }
 
-const knownChains = ["polkadot", "kusama", "westend", "rococo"]
-
 const ConnectedTab: FunctionComponent<ConnectedTabProps> = ({
   disconnectTab,
   tab,

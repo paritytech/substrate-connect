@@ -1,11 +1,11 @@
 import React, { FunctionComponent } from "react"
+import "../main.css"
+
 interface Props {
   size?: string
   color?: string
   children?: string
 }
-
-import "../main.css"
 
 const hasGlyph = (string: string) =>
   ["kusama", "polkadot", "westend", "kulupu", "rococo"].indexOf(string) > -1

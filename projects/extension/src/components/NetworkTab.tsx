@@ -5,13 +5,6 @@ import { NetworkTabProps, App, OptionsNetworkTabHealthContent } from "../types"
 import "../main.css"
 import IconWeb3 from "./IconWeb3"
 
-const networkColors: Record<string, string> = {
-  polkadot: "#E6007A",
-  kusama: "#2F2F2F",
-  westend: "#FF9C28",
-  rococo: "#696bff",
-}
-
 interface NetworkContentProps {
   health?: OptionsNetworkTabHealthContent
   apps: App[]
