@@ -233,7 +233,6 @@ export class ConnectionManagerWithHealth<SandboxId> {
               "Internal error: inconsistency between lists of chains",
             )
 
-          // TODO: we don't unpin blocks :-/
           this.#inner.sandboxMessage(sandboxId, {
             origin: "substrate-connect-client",
             type: "rpc",
@@ -284,6 +283,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
               }
             } else if (jsonRpcMessageId.startsWith("ready-sub:")) {
               chain.readySubscriptionId = jsonRpcMessage.result
+            } else if (jsonRpcMessageId.startsWith("block-unpin:")) {
             } else if (jsonRpcMessageId.startsWith("best-block-header:")) {
               // We might receive responses to header requests concerning blocks that were but are
               // no longer the best block of the chain. Ignore these responses.
@@ -315,6 +315,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
                 case "initialized": {
                   // The chain is now in sync and has downloaded the runtime.
                   chain.isSyncing = false
+                  chain.finalizedBlockHashHex =
+                    jsonRpcMessage.params.result.finalizedBlockHash
 
                   // Immediately send a single health request to the chain.
                   this.#inner.sandboxMessage(sandboxId, {
@@ -339,7 +341,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
                       jsonrpc: "2.0",
                       id: "best-block-header:" + this.#nextRpcRqId,
                       method: "chainHead_unstable_header",
-                      params: [jsonRpcMessage.params.result.finalizedBlockHash],
+                      params: [chain.finalizedBlockHashHex],
                     }),
                   })
                   chain.bestBlockHeaderRequestId =
@@ -357,6 +359,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
                   // happen for example if the client is overloaded. Restart the subscription.
                   delete chain.readySubscriptionId
                   delete chain.bestBlockHeaderRequestId
+                  delete chain.finalizedBlockHashHex
+                  delete chain.bestBlockHeight
                   this.#inner.sandboxMessage(sandboxId, {
                     origin: "substrate-connect-client",
                     type: "rpc",
@@ -391,6 +395,35 @@ export class ConnectionManagerWithHealth<SandboxId> {
                   chain.bestBlockHeaderRequestId =
                     "best-block-header:" + this.#nextRpcRqId
                   this.#nextRpcRqId += 1
+                  break
+                }
+                case "finalized": {
+                  // When one or more new blocks get finalized, we unpin all blocks except for
+                  // the new current finalized.
+                  let finalized = jsonRpcMessage.params.result
+                    .finalizedBlockHashes as [string]
+                  let pruned = jsonRpcMessage.params.result
+                    .prunedBlocksHashes as [string]
+                  let newCurrentFinalized = finalized.pop()
+                  ;[
+                    chain.finalizedBlockHashHex,
+                    ...pruned,
+                    ...finalized,
+                  ].forEach((blockHash) => {
+                    this.#inner.sandboxMessage(sandboxId, {
+                      origin: "substrate-connect-client",
+                      type: "rpc",
+                      chainId: toApplication.chainId,
+                      jsonRpcMessage: JSON.stringify({
+                        jsonrpc: "2.0",
+                        id: "block-unpin:" + this.#nextRpcRqId,
+                        method: "chainHead_unstable_unpin",
+                        params: [blockHash],
+                      }),
+                    })
+                    this.#nextRpcRqId += 1
+                    chain.finalizedBlockHashHex = newCurrentFinalized
+                  })
                   break
                 }
               }
@@ -493,9 +526,12 @@ export class ConnectionManagerWithHealth<SandboxId> {
 }
 
 interface Chain {
-  // Note that once subscribed, we never unsubscribe. Unsubscribing adds a lot of complexity, and
-  // having an active subscription might be useful in the future if we want to display, say, the
-  // current block or the runtime version.
+  // Note that once subscribed, we never unsubscribe.
+  //
+  // Blocks get unpinned when they become ancestor of the current finalized block. In other words,
+  // the current finalized block and all its descendants are kept pinned. This is necessary in
+  // order to be able to query the header of the best block, as the best block can be the
+  // current finalized block or any of its descendants.
   readySubscriptionId?: string
   isSyncing: boolean
   peers: number
@@ -505,6 +541,9 @@ interface Chain {
   // If defined, contains the id of the RPC request whose response contains the header of the
   // best block of the chain.
   bestBlockHeaderRequestId?: string
+  // Hash of the current finalized block of the chain in hexadecimal, or undefined if not known
+  // yet.
+  finalizedBlockHashHex?: string
 }
 
 // TODO: this code uses `system_health` at the moment, because there's no alternative, even in the new JSON-RPC API, to get the number of peers
