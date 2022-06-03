@@ -324,6 +324,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
                       params: [true],
                     }),
                   })
+                  this.#nextHealthCheckRqId += 1
                   break
                 }
               }
