@@ -1,7 +1,7 @@
 import { ConnectionManagerWithHealth } from "./ConnectionManagerWithHealth"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
-import { start as smoldotStart } from "@substrate/smoldot-light"
+import { Chain, start as smoldotStart } from "@substrate/smoldot-light"
 
 import westend2 from "../../public/assets/westend2.json"
 import ksmcc3 from "../../public/assets/ksmcc3.json"
@@ -12,12 +12,12 @@ import {
   ToExtension,
 } from "@substrate/connect-extension-protocol"
 
-const setupStorageBootnodes = (): Map<string, string> => {
-  const polkadot_cp = Object.assign({}, polkadot)
-  const ksmcc3_cp = Object.assign({}, ksmcc3)
-  const westend2_cp = Object.assign({}, westend2)
-  const rococo_cp = Object.assign({}, rococo_v2_2)
+const polkadot_cp = Object.assign({}, polkadot)
+const ksmcc3_cp = Object.assign({}, ksmcc3)
+const westend2_cp = Object.assign({}, westend2)
+const rococo_cp = Object.assign({}, rococo_v2_2)
 
+const storageBootnodes = (): Map<string, string> => {
   chrome.storage.local.get(
     [
       "bootNodes_".concat(polkadot_cp.id),
@@ -215,10 +215,10 @@ window.uiInterface = {
   },
   get wellKnownChainBootnodes() {
     return {
-      [polkadot.id]: polkadot.bootNodes,
-      [ksmcc3.id]: ksmcc3.bootNodes,
-      [westend2.id]: westend2.bootNodes,
-      [rococo_v2_2.id]: rococo_v2_2.bootNodes,
+      [polkadot_cp.id]: polkadot_cp.bootNodes,
+      [ksmcc3_cp.id]: ksmcc3_cp.bootNodes,
+      [westend2_cp.id]: westend2_cp.bootNodes,
+      [rococo_cp.id]: rococo_cp.bootNodes,
     }
   },
 }
@@ -242,7 +242,7 @@ manager = {
   state: "initializing",
   whenInitFinished: (async () => {
     try {
-      const wellKnownChains = setupStorageBootnodes()
+      const wellKnownChains = storageBootnodes()
       // Start initializing a `ConnectionManagerWithHealth`.
       // This initialization operation shouldn't take more than a few dozen milliseconds, but we
       // still need to properly handle situations where initialization isn't finished yet.
