@@ -50,6 +50,13 @@ export interface ChainInfo<SandboxId> {
    * The identifier for the sandbox that has received the message that requests to add a chain.
    */
   sandboxId: SandboxId
+
+  /**
+   * Height of the current best block of the chain. Undefined if the best block isn't known yet
+   * or if its height couldn't be determined, which can happen for example because the chain
+   * doesn't have a concept of block height.
+   */
+ latestBestBlockHeight?: number
 }
 
 /**
@@ -273,6 +280,16 @@ export class ConnectionManagerWithHealth<SandboxId> {
               }
             } else if (jsonRpcMessageId.startsWith("ready-sub:")) {
               chain.readySubscriptionId = jsonRpcMessage.result
+            } else if (jsonRpcMessageId.startsWith("best-block-header:")) {
+              // We might receive responses to header requests concerning blocks that were but are
+              // no longer the best block of the chain. Ignore these responses.
+              if (jsonRpcMessageId == chain.bestBlockHeaderRequestId) {
+                delete chain.bestBlockHeaderRequestId
+                // The RPC call might return `null` if the subscription is dead.
+                if (jsonRpcMessage.result) {
+                  chain.bestBlockHeight = headerToHeight(jsonRpcMessage.result)
+                }
+              }
             } else {
               // Never supposed to happen. Indicates a bug somewhere.
               throw new Error()
@@ -303,6 +320,21 @@ export class ConnectionManagerWithHealth<SandboxId> {
                   })
                   this.#nextRpcRqId += 1
 
+                  // Also immediately request the header of the finalized block.
+                  this.#inner.sandboxMessage(sandboxId, {
+                    origin: "substrate-connect-client",
+                    type: "rpc",
+                    chainId: toApplication.chainId,
+                    jsonRpcMessage: JSON.stringify({
+                      jsonrpc: "2.0",
+                      id: "best-block-header:" + this.#nextRpcRqId,
+                      method: "chainHead_unstable_header",
+                      params: [jsonRpcMessage.params.result.finalizedBlockHash],
+                    }),
+                  })
+                  chain.bestBlockHeaderRequestId = "best-block-header:" + this.#nextRpcRqId;
+                  this.#nextRpcRqId += 1
+
                   // Notify of the change in status.
                   return {
                     origin: "connection-manager",
@@ -313,6 +345,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
                   // Our subscription has been force-killed by the client. This is normal and can
                   // happen for example if the client is overloaded. Restart the subscription.
                   delete chain.readySubscriptionId
+                  delete chain.bestBlockHeaderRequestId
                   this.#inner.sandboxMessage(sandboxId, {
                     origin: "substrate-connect-client",
                     type: "rpc",
@@ -324,6 +357,24 @@ export class ConnectionManagerWithHealth<SandboxId> {
                       params: [true],
                     }),
                   })
+                  this.#nextRpcRqId += 1
+                  break
+                }
+                case "bestBlockChanged": {
+                  // The best block has changed. Request the header of this new best block in
+                  // order to know its height.
+                  this.#inner.sandboxMessage(sandboxId, {
+                    origin: "substrate-connect-client",
+                    type: "rpc",
+                    chainId: toApplication.chainId,
+                    jsonRpcMessage: JSON.stringify({
+                      jsonrpc: "2.0",
+                      id: "best-block-header:" + this.#nextRpcRqId,
+                      method: "chainHead_unstable_header",
+                      params: [chain.readySubscriptionId, jsonRpcMessage.params.result.bestBlockHash],
+                    }),
+                  })
+                  chain.bestBlockHeaderRequestId = "best-block-header:" + this.#nextRpcRqId;
                   this.#nextRpcRqId += 1
                   break
                 }
@@ -433,6 +484,17 @@ interface Chain {
   readySubscriptionId?: string
   isSyncing: boolean
   peers: number
+  // Height of the current best block of the chain, or undefined if not known yet or if the
+  // height couldn't be defined.
+  bestBlockHeight?: number,
+  // If defined, contains the id of the RPC request whose response contains the header of the
+  // best block of the chain.
+  bestBlockHeaderRequestId?: string
 }
 
 // TODO: this code uses `system_health` at the moment, because there's no alternative, even in the new JSON-RPC API, to get the number of peers
+
+// Converts a block header, as a hexadecimal string, to a block height. Returns undefined
+function headerToHeight(hexHeader: String): number | undefined {
+  return 0;
+}
