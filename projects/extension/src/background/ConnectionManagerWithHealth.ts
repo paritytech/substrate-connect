@@ -123,7 +123,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
   // that the underlying `ConnectionManager` has already removed.
   #sandboxesChains: Map<SandboxId, Map<string, Chain>> = new Map()
   #pingInterval: ReturnType<typeof globalThis.setInterval>
-  #nextHealthCheckRqId: number = 0
+  #nextRpcRqId: number = 0
 
   constructor(
     wellKnownChainSpecs: Map<string, string>,
@@ -229,12 +229,12 @@ export class ConnectionManagerWithHealth<SandboxId> {
             chainId: toApplication.chainId,
             jsonRpcMessage: JSON.stringify({
               jsonrpc: "2.0",
-              id: "ready-sub:" + this.#nextHealthCheckRqId,
+              id: "ready-sub:" + this.#nextRpcRqId,
               method: "chainHead_unstable_follow",
               params: [true],
             }),
           })
-          this.#nextHealthCheckRqId += 1
+          this.#nextRpcRqId += 1
           return toApplication
         }
 
@@ -296,12 +296,12 @@ export class ConnectionManagerWithHealth<SandboxId> {
                     chainId: toApplication.chainId,
                     jsonRpcMessage: JSON.stringify({
                       jsonrpc: "2.0",
-                      id: "health-check:" + this.#nextHealthCheckRqId,
+                      id: "health-check:" + this.#nextRpcRqId,
                       method: "system_health",
                       params: [],
                     }),
                   })
-                  this.#nextHealthCheckRqId += 1
+                  this.#nextRpcRqId += 1
 
                   // Notify of the change in status.
                   return {
@@ -319,12 +319,12 @@ export class ConnectionManagerWithHealth<SandboxId> {
                     chainId: toApplication.chainId,
                     jsonRpcMessage: JSON.stringify({
                       jsonrpc: "2.0",
-                      id: "ready-sub:" + this.#nextHealthCheckRqId,
+                      id: "ready-sub:" + this.#nextRpcRqId,
                       method: "chainHead_unstable_follow",
                       params: [true],
                     }),
                   })
-                  this.#nextHealthCheckRqId += 1
+                  this.#nextRpcRqId += 1
                   break
                 }
               }
@@ -415,12 +415,12 @@ export class ConnectionManagerWithHealth<SandboxId> {
           chainId,
           jsonRpcMessage: JSON.stringify({
             jsonrpc: "2.0",
-            id: "health-check:" + this.#nextHealthCheckRqId,
+            id: "health-check:" + this.#nextRpcRqId,
             method: "system_health",
             params: [],
           }),
         })
-        this.#nextHealthCheckRqId += 1
+        this.#nextRpcRqId += 1
       }
     }
   }
