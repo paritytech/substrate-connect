@@ -230,6 +230,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
               "Internal error: inconsistency between lists of chains",
             )
 
+          // TODO: we don't unpin blocks :-/
           this.#inner.sandboxMessage(sandboxId, {
             origin: "substrate-connect-client",
             type: "rpc",
