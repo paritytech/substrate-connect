@@ -567,9 +567,9 @@ function headerToHeight(hexHeader: String): number {
     throw new Error("Not a hexadecimal number")
   hexHeader = hexHeader.slice(2)
 
-  // The header should start with 4 bytes containing the parent hash.
-  if (hexHeader.length < 8) throw new Error("Too short")
-  hexHeader = hexHeader.slice(8)
+  // The header should start with 32 bytes containing the parent hash.
+  if (hexHeader.length < 64) throw new Error("Too short")
+  hexHeader = hexHeader.slice(64)
 
   // The next field is the block number (which is what interests us) encoded in SCALE compact.
   // Unfortunately this format is a bit complicated to decode.
