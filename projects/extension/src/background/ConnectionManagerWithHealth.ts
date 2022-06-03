@@ -401,7 +401,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
                   // When one or more new blocks get finalized, we unpin all blocks except for
                   // the new current finalized.
                   let finalized = jsonRpcMessage.params.result
-                    .finalizedBlockHashes as [string]
+                    .finalizedBlocksHashes as [string]
                   let pruned = jsonRpcMessage.params.result
                     .prunedBlocksHashes as [string]
                   let newCurrentFinalized = finalized.pop()
