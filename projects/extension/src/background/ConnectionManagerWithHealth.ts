@@ -287,7 +287,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
             } else if (jsonRpcMessageId.startsWith("best-block-header:")) {
               // We might receive responses to header requests concerning blocks that were but are
               // no longer the best block of the chain. Ignore these responses.
-              if (jsonRpcMessageId == chain.bestBlockHeaderRequestId) {
+              if (jsonRpcMessageId === chain.bestBlockHeaderRequestId) {
                 delete chain.bestBlockHeaderRequestId
                 // The RPC call might return `null` if the subscription is dead.
                 if (jsonRpcMessage.result) {
