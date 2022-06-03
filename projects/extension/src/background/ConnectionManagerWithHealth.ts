@@ -495,7 +495,67 @@ interface Chain {
 
 // TODO: this code uses `system_health` at the moment, because there's no alternative, even in the new JSON-RPC API, to get the number of peers
 
-// Converts a block header, as a hexadecimal string, to a block height. Returns undefined
+// Converts a block header, as a hexadecimal string, to a block height.
+//
+// This function assumes that the block header is a block header generated using Substrate. This
+// is not necessarily always true. When that happens, we return undefined.
+//
+// Additionally, this function assumes that the block height is 32bits, which is the case for the
+// vast majority of the chains. There is currently no way to know the size of the block height.
+// This is a huge flaw in Substrate that we can't do much about here. Fortuntely, since the block
+// height is implemented in compact SCALE encoding, as long as the field containing the number is
+// at least 32 bits and the value is less than 2^32, it will encode the same regardless.
 function headerToHeight(hexHeader: String): number | undefined {
+  // Remove the initial prefix.
+  if (!(hexHeader.startsWith("0x") || hexHeader.startsWith("0X")))
+    return undefined;
+  hexHeader = hexHeader.slice(2)
+
+  // The header should start with 4 bytes containing the parent hash.
+  if (hexHeader.length < 8)
+    return undefined;
+  hexHeader = hexHeader.slice(8)
+
+  // The next field is the block number (which is what interests us) encoded in SCALE compact.
+  // Unfortunately this format is a bit complicated to decode.
+  // See https://docs.substrate.io/v3/advanced/scale-codec/#compactgeneral-integers
+  const b0 = parseInt(hexHeader.slice(0, 2), 16);
+
+  switch ((b0 & 3) as 0 | 1 | 2 | 3) {
+      case 0: {
+        return b0 >> 2;
+      }
+      case 1: {
+        const b1 = parseInt(hexHeader.slice(2, 4), 16);
+        return (b0 >> 2) + b1 * 2 ** 6;
+      }
+      case 2: {
+        return (b0 >> 2) + u8._decode(buffer) * 2 ** 6 + u8._decode(buffer) * 2 ** 14
+          + u8._decode(buffer) * 2 ** 22;
+      }
+      case 3: {
+        const decodedU32 = u32._decode(buffer);
+        let len = b0 >> 2;
+        switch (len) {
+          case 0: {
+            return decodedU32;
+          }
+          case 1: {
+            return decodedU32 + u8._decode(buffer) * 2 ** 32;
+          }
+          case 2: {
+            return decodedU32 + u8._decode(buffer) * 2 ** 32 + u8._decode(buffer) * 2 ** 40;
+          }
+        }
+        let decodedU32AsBigint = BigInt(decodedU32);
+        let base = 32n;
+        while (len--) {
+          decodedU32AsBigint += BigInt(u8._decode(buffer)) << base;
+          base += 8n;
+        }
+        return decodedU32AsBigint;
+      }
+    }
+
   return 0;
 }
