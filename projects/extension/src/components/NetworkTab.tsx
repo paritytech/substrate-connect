@@ -17,7 +17,7 @@ const NetworkContent = ({ network, health, apps }: NetworkContentProps) => {
       <div className="flex flex-row pb-2">
         <div className="basis-1/5 font-bold">Last block:</div>
         <div className="basis-4/5">
-          {health?.lastBlock?.toLocaleString("en-US")}
+          {health?.latestBestBlock?.toLocaleString("en-US")}
         </div>
       </div>
       <div className="flex flex-row pb-2 border-b-[1px] border-[#e7e7e7]">

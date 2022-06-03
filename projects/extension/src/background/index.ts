@@ -160,7 +160,7 @@ window.uiInterface = {
             : undefined,
           isSyncing: info.isSyncing,
           peers: info.peers,
-          lastBlock: info.lastBlock,
+          latestBestBlock: info.latestBestBlock,
         }
       })
     } else {

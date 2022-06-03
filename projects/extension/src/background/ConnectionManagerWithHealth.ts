@@ -52,9 +52,9 @@ export interface ChainInfo<SandboxId> {
   sandboxId: SandboxId
 
   /**
-   * Last block of the chain
+   * Height of the current best block of the chain
    */
-  lastBlock: number
+  latestBestBlock: number
 }
 
 /**
@@ -152,7 +152,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
       return {
         peers: chain.peers,
         isSyncing: chain.isSyncing,
-        lastBlock: chain.lastBlock,
+        latestBestBlock: chain.latestBestBlock,
         ...chainInfo,
       }
     })
@@ -334,7 +334,9 @@ export class ConnectionManagerWithHealth<SandboxId> {
                 }
               }
             } else if (jsonRpcMessage.method === "chain_newHead") {
-              chain.lastBlock = parseInt(jsonRpcMessage.params.result.number)
+              chain.latestBestBlock = parseInt(
+                jsonRpcMessage.params.result.number,
+              )
             } else {
               return toApplication
             }
@@ -440,7 +442,7 @@ interface Chain {
   readySubscriptionId?: string
   isSyncing: boolean
   peers: number
-  lastBlock?: number
+  latestBestBlock?: number
 }
 
 // TODO: this code uses `system_health` at the moment, because there's no alternative, even in the new JSON-RPC API, to get the number of peers

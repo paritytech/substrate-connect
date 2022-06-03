@@ -84,7 +84,7 @@ const Options: React.FunctionComponent = () => {
                 isSyncing: chain.isSyncing,
                 peers: chain.peers,
                 status: "connected",
-                lastBlock: chain.lastBlock,
+                latestBestBlock: chain.latestBestBlock,
               },
               apps: [{ name: chain.tab.url, url: chain.tab.url }],
             })
