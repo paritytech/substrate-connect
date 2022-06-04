@@ -129,9 +129,16 @@ const App: React.FunctionComponent = () => {
                 Cumulus and HRMP
               </CardNetwork>
             </Grid>
-            <SectionRef href="https://github.com/paritytech/substrate-connect/tree/13bd26a1ca2904f8e0b5d04dfa35e82364d37d99/packages/connect/assets">
+            <SectionRef href="https://github.com/paritytech/substrate-connect/tree/main/packages/connect/src/connector/specs">
               Github repo with chainspecs
             </SectionRef>
+            <SectionText>
+            You have to provide a well-known chain name (polkadot, ksmcc3, westend2, rococo_v2_2).
+            Note that these are the "real" names of the chains rather than the
+            intuitive names (e.g. "kusama" or "rococo"). For example, "ksmcc3" is the name
+            for kusama. This matters for chains which have been hard forked. For example,
+            "rococo_v2" and "rococo_v2_2" are two different chains.
+            </SectionText>
           </Section>
 
           <Section>
@@ -156,7 +163,7 @@ const App: React.FunctionComponent = () => {
                   mt={2}
                 >{`await api1.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
-                <Box>{`);`}</Box>
+                <Box>{`});`}</Box>
 
                 <Box
                   mt={2}
@@ -185,7 +192,7 @@ const App: React.FunctionComponent = () => {
                   mt={2}
                 >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
-                <Box>{`);`}</Box>
+                <Box>{`});`}</Box>
                 <Box mt={2}>{`await myChain.disconnect();`}</Box>
               </Code>
 
@@ -201,7 +208,7 @@ const App: React.FunctionComponent = () => {
                   mt={2}
                 >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
-                <Box>{`);`}</Box>
+                <Box>{`});`}</Box>
                 <Box mt={2}>{`await api.disconnect();`}</Box>
               </Code>
 
@@ -220,7 +227,7 @@ const App: React.FunctionComponent = () => {
                   mt={2}
                 >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
-                <Box>{`);`}</Box>
+                <Box>{`});`}</Box>
 
                 <Box mt={2}>{`await api.disconnect();`}</Box>
               </Code>
@@ -241,7 +248,7 @@ const App: React.FunctionComponent = () => {
                   mt={2}
                 >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
-                <Box>{`);`}</Box>
+                <Box>{`});`}</Box>
 
                 <Box mt={2}>{`await api.disconnect();`}</Box>
               </Code>
