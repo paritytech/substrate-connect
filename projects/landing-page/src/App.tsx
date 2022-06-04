@@ -136,7 +136,7 @@ const App: React.FunctionComponent = () => {
             You have to provide a well-known chain name (polkadot, ksmcc3, westend2, rococo_v2_2).
             Note that these are the "real" names of the chains rather than the
             intuitive names (e.g. "kusama" or "rococo"). For example, "ksmcc3" is the name
-            for kusama. This matters for chains which have been hard forked. For example,
+            for kusama. This is important for chains which have been hard forked. For example,
             "rococo_v2" and "rococo_v2_2" are two different chains.
             </SectionText>
           </Section>
