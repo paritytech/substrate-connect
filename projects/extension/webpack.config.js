@@ -2,6 +2,7 @@ import path from "path"
 import HtmlMinimizerPlugin from "html-minimizer-webpack-plugin"
 import CopyPlugin from "copy-webpack-plugin"
 import webpack from "webpack"
+import MiniCssExtractPlugin from "mini-css-extract-plugin"
 
 const config = {
   entry: {
@@ -31,8 +32,11 @@ const config = {
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
-        exclude: /\.module\.css$/,
+        use: [
+          "style-loader",
+          { loader: "css-loader", options: { importLoaders: 1 } },
+          "postcss-loader",
+        ],
       },
       {
         test: /\.ts(x)?$/,
@@ -45,25 +49,18 @@ const config = {
       },
       {
         test: /\.css$/,
-        use: [
-          "style-loader",
-          {
-            loader: "css-loader",
-            options: {
-              importLoaders: 1,
-              modules: true,
-            },
-          },
-        ],
-        include: /\.module\.css$/,
+        use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
       },
       {
         test: /\.svg$/,
         use: "file-loader",
       },
       {
-        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        use: "file-loader",
+        test: /\.(woff(2)?|ttf|eot)$/,
+        type: "asset/resource",
+        generator: {
+          filename: "./[name][ext]",
+        },
       },
       {
         test: /\.png$/,
@@ -85,6 +82,9 @@ const config = {
     },
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
+    }),
     new CopyPlugin({
       patterns: [{ from: "public", to: "." }],
     }),
@@ -93,7 +93,7 @@ const config = {
     }),
     new webpack.EnvironmentPlugin({
       PKG_NAME: "@substrate/extension",
-      PKG_VERSION: "0.1.1",
+      PKG_VERSION: "0.1.4",
     }),
   ],
   optimization: {

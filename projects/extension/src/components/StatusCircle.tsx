@@ -1,42 +1,48 @@
 import React, { FunctionComponent } from "react"
-import styled from "styled-components"
 import { substrateGreen } from "./theme"
 
 export interface Props {
-  size?: "small" | "medium" | "large"
+  size?: "s" | "sm" | "m" | "ml" | "l"
   color?: string
   borderColor?: string
 }
 
-const SCircle = styled.div<Props>`
-  width: ${(props) =>
-    props.size === "small"
-      ? "5px"
-      : props.size === "medium"
-      ? "10px"
-      : props.size === "large" && "15px"};
-  height: ${(props) =>
-    props.size === "small"
-      ? "5px"
-      : props.size === "medium"
-      ? "10px"
-      : props.size === "large" && "15px"};
-  border-radius: ${(props) =>
-    props.size === "small"
-      ? "5px"
-      : props.size === "medium"
-      ? "10px"
-      : props.size === "large" && "15px"};
-  border: 1px solid ${(props) => props.borderColor || substrateGreen[400]};
-  background-color: ${(props) => props.color || substrateGreen[400]};
-`
-
 const StatusCircle: FunctionComponent<Props> = ({
-  size = "medium",
+  size = "m",
   color,
   borderColor,
 }: Props) => {
-  return <SCircle data-testid="circle" {...{ size, color, borderColor }} />
+  let s: string
+
+  switch (size) {
+    case "s":
+      s = "0.1"
+      break
+    case "sm":
+      s = "0.25"
+      break
+    case "m":
+      s = "0.5"
+      break
+    case "ml":
+      s = "0.75"
+      break
+    case "l":
+      s = "1"
+      break
+  }
+
+  return (
+    <section
+      style={{
+        width: s.concat("rem"),
+        height: s.concat("rem"),
+        borderRadius: s.concat("rem"),
+        backgroundColor: `${color || substrateGreen[400]}`,
+        border: `1px solid ${borderColor || substrateGreen[400]}`,
+      }}
+    />
+  )
 }
 
 export default StatusCircle

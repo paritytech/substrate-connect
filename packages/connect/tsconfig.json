@@ -14,11 +14,12 @@
     "module": "ES2020"
   },
   "exclude": [
+    "**/*.test.ts",
     "jest.config*",
     "tsconfig*",
     "*node_modules*",
     "../../node_modules*",
-    ".parcel*"
+    "src/connector/specs/*.json"
   ],
   "include": ["src/**/*", "src/**/*.json"],
   "references": [{ "path": "../connect-extension-protocol" }]

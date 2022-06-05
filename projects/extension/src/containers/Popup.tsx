@@ -1,18 +1,71 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from "react"
-import * as material from "@material-ui/core"
-import GlobalFonts from "../fonts/fonts"
-import { light, MenuButton, Tab, Logo } from "../components"
-import CallMadeIcon from "@material-ui/icons/CallMade"
-import { Background } from "../background/"
-import { TabInterface } from "../types"
+import React, {
+  FunctionComponent,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 
-const { createTheme, ThemeProvider, Box, Divider } = material
+import { MdOutlineSettings, MdOutlineEast, MdLinkOff } from "react-icons/md"
+
+import { Accordion, Logo } from "../components"
+import { Background } from "../background"
+
+const knownChains = ["polkadot", "kusama", "westend", "rococo"]
+
+interface PopupChain {
+  chainName: string
+  details: ChainDetails[]
+}
+
+interface ChainDetails {
+  tabId?: number
+  url?: string
+  peers: number
+  isSyncing: boolean
+  chainId: string
+}
 
 const Popup: FunctionComponent = () => {
-  const disconnectTabRef = useRef<(tapId: number) => void>((_: number) => {})
-  const [activeTab, setActiveTab] = useState<TabInterface | undefined>()
-  const [otherTabs, setOtherTabs] = useState<TabInterface[]>([])
-  const appliedTheme = createTheme(light)
+  const disconnectTab = useRef<(tabId: number) => void>((_: number) => {})
+  const [connChains, setConnChains] = useState<PopupChain[] | undefined>()
+
+  const refresh = () => {
+    chrome.runtime.getBackgroundPage((backgroundPage) => {
+      const bg = backgroundPage as Background
+      const allChains: PopupChain[] = []
+
+      bg.uiInterface.chains.forEach((c) => {
+        const i = allChains.findIndex((i) => i.chainName === c.chainName)
+        if (i === -1) {
+          allChains.push({
+            chainName: c.chainName,
+            details: [
+              {
+                tabId: c.tab?.id,
+                url: c.tab?.url,
+                peers: c.peers,
+                isSyncing: c.isSyncing,
+                chainId: c.chainId,
+              },
+            ],
+          })
+        } else {
+          const details = allChains[i]?.details
+          if (!details.map((d) => d.tabId).includes(c.tab?.id)) {
+            details.push({
+              tabId: c.tab?.id,
+              url: c.tab?.url,
+              peers: c.peers,
+              isSyncing: c.isSyncing,
+              chainId: c.chainId,
+            })
+          }
+        }
+      })
+      setConnChains([...allChains])
+    })
+  }
 
   useEffect(() => {
     let isActive = true
@@ -27,38 +80,16 @@ const Popup: FunctionComponent = () => {
 
       chrome.runtime.getBackgroundPage((backgroundPage) => {
         if (!isActive) return
-
         const bg = backgroundPage as Background
-        disconnectTabRef.current = bg.manager.disconnectTab
-
-        unsubscribe = bg.manager.onManagerStateChanged((apps) => {
-          const networksByTab: Map<number, Set<string>> = new Map()
-          apps.forEach((app) => {
-            if (!networksByTab.has(app.tabId))
-              networksByTab.set(app.tabId, new Set())
-            networksByTab.get(app.tabId)!.add(app.chainName)
-          })
-
-          const nextTabs: TabInterface[] = []
-          browserTabs.forEach((tab) => {
-            if (!networksByTab.has(tab.id!)) return
-            const result = {
-              tabId: tab.id!,
-              url: tab.url,
-              networks: [...networksByTab.get(tab.id!)!],
-            }
-            if (tab.active) setActiveTab(result)
-            else nextTabs.push(result)
-          })
-
-          setOtherTabs(nextTabs)
-        })
+        disconnectTab.current = bg.uiInterface.disconnectTab
+        unsubscribe = bg.uiInterface.onChainsChanged(refresh)
+        refresh()
       })
     })()
 
     return () => {
       isActive = false
-      unsubscribe()
+      unsubscribe && unsubscribe()
     }
   }, [])
 
@@ -66,60 +97,112 @@ const Popup: FunctionComponent = () => {
     chrome.runtime.openOptionsPage()
   }
 
+  const networkIcon = (network: string) => {
+    const icon = network.toLowerCase()
+    return (
+      <>
+        <div className="icon w-7">
+          {knownChains.includes(icon) ? icon : "?"}
+        </div>
+        <div className="pl-2">{network}</div>
+      </>
+    )
+  }
+
+  const onDisconnect = (tabId: number): void => {
+    disconnectTab.current(tabId)
+    refresh()
+  }
+
   return (
-    <ThemeProvider theme={appliedTheme}>
-      <Box width={"320px"} pl={1.5} pr={1.5}>
-        <GlobalFonts />
-        <Box pt={2} pb={1} pl={1} pr={1}>
-          <Logo />
-        </Box>
-
-        {activeTab && (
-          <Tab
-            disconnectTab={disconnectTabRef.current}
-            current
-            tab={activeTab}
-            setActiveTab={setActiveTab}
+    <main className="w-80">
+      <header className="my-3 mx-6 flex justify-between border-b border-neutral-200 pt-1.5 pb-4 leading-4">
+        <Logo textSize="xl" cName={"leading-4"} />
+        <div className="tooltip">
+          <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
+            Go to Options
+          </span>
+          <MdOutlineSettings
+            onClick={goToOptions}
+            className="text-xl leading-5 cursor-pointer hover:bg-gray-200"
           />
-        )}
-
-        {otherTabs.length > 0 && (
-          <Box marginY={1}>
-            {otherTabs.map((t) => (
+        </div>
+      </header>
+      <div className="pb-3.5">
+        {connChains?.map((w) => {
+          if (w?.details?.length === 1 && !w?.details[0].tabId)
+            return (
               <>
-                <Tab
-                  disconnectTab={disconnectTabRef.current}
-                  key={t.tabId}
-                  tab={t}
-                />
-                <Divider />
+                <div key={w.chainName} className="pl-6 flex text-lg">
+                  {networkIcon(w.chainName)}
+                </div>
+                <div className="pl-16 flex pb-4 text-[#616161]">
+                  No apps connected
+                </div>
               </>
-            ))}
-          </Box>
-        )}
-        <MenuButton fullWidth onClick={goToOptions}>
-          Options
-        </MenuButton>
-        <Divider />
-        <MenuButton
-          fullWidth
-          endIcon={<CallMadeIcon />}
+            )
+          const contents: ReactNode[] = []
+          w?.details?.forEach((t) => {
+            if (t.tabId) {
+              contents.push(
+                <div key={t.url} className="flex justify-between">
+                  <div className="ml-6 w-full truncate text-base">{t.url}</div>
+
+                  <div
+                    className="tooltip"
+                    onClick={() => t && t.tabId && onDisconnect(t.tabId)}
+                  >
+                    <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
+                      Disconnect tab
+                    </span>
+                    <MdLinkOff className="ml-2 text-base cursor-pointer hover:bg-gray-200" />
+                  </div>
+                </div>,
+              )
+            }
+          })
+
+          return (
+            <Accordion
+              defaultAllExpanded={true}
+              titleClass="popup-accordion-title"
+              contentClass="popup-accordion-content"
+              titles={[
+                <div className="flex justify-between items-center w-full">
+                  <div className="pl-4 flex text-lg justify-start">
+                    {networkIcon(w.chainName)}
+                    <span className="pl-2 text-[#616161]">
+                      ({contents.length})
+                    </span>
+                  </div>
+                </div>,
+              ]}
+              contents={[<>{contents}</>]}
+              showTitleIcon={!!contents.length}
+            />
+          )
+        })}
+      </div>
+      <div className="border-t border-neutral-200 mx-8" />
+      <div className="pl-8 pr-6 hover:bg-stone-200">
+        <button
+          className="font-inter flex w-full justify-between py-3.5 text-sm font-light capitalize"
           onClick={() =>
-            chrome.tabs.update({
-              url: "https://paritytech.github.io/substrate-connect/#extension",
-            })
+            window.open(
+              "https://paritytech.github.io/substrate-connect/#extension",
+            )
           }
         >
-          About
-        </MenuButton>
-        {/* 
-        /**
-         * If "Stop all connections" button is pressed then disconnectAll 
-         * function will be called to disconnect all apps.
-          <MenuButton fullWidth className='danger' onClick={(): void => { manager?.disconnectAll(); }}>Stop all connections</MenuButton>
-        */}
-      </Box>
-    </ThemeProvider>
+          <div className="text-lg font-inter font-normal">About</div>
+          <div className="tooltip">
+            <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
+              Go to Landing Page
+            </span>
+            <MdOutlineEast className="text-xl" />
+          </div>
+        </button>
+      </div>
+    </main>
   )
 }
 

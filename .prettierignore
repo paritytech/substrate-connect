@@ -42,9 +42,7 @@ node_modules/
 .env.test.local
 .env.production.local
 
-# parcel-bundler cache (https://parceljs.org/)
 .cache
-.parcel-cache
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
@@ -66,6 +64,7 @@ package-lock.json
 
 # Project specifics
 .chains
+_site
 .github
 CONTRIBUTING*
 DEPLOY-RELEASE*
@@ -76,4 +75,4 @@ polkadot.json*
 ksmcc3.json*
 westend2.json*
 *westmint*.json*
-rococo_v2_1.json*
+rococo_v2_2.json*

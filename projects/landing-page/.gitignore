@@ -3,7 +3,6 @@
 .idea
 .vscode
 .cache/
-.parcel-cache/
 yarn-error.log*
 
 # dependencies

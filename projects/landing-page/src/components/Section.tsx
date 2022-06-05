@@ -77,6 +77,7 @@ export const Section: React.FunctionComponent<BoxProps> = ({
 }
 
 interface HeadingProps {
+  children: React.ReactNode
   prefix?: string | number
   id?: string
 }
@@ -98,11 +99,15 @@ export const SectionHeading: React.FunctionComponent<HeadingProps> = ({
   )
 }
 
-export const SectionText: React.FunctionComponent = ({ children }) => (
+export const SectionText = ({ children }: { children: React.ReactNode }) => (
   <Typography variant="body1">{children}</Typography>
 )
 
-export const SectionHeroText: React.FunctionComponent = ({ children }) => {
+export const SectionHeroText = ({
+  children,
+}: {
+  children: React.ReactNode
+}) => {
   const classes = useStyles()
   return (
     <Typography

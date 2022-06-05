@@ -2,9 +2,6 @@
   "name": "@substrate/demo",
   "version": "1.0.0",
   "author": "Parity Team <admin@parity.io>",
-  "contributors": [
-    "Nikolaos Kontakis <nikolaos@parity.io>"
-  ],
   "license": "GPL-3.0-only",
   "browserslist": [
     "last 2 versions"
@@ -21,8 +18,11 @@
     "lint": "yarn eslint . --ext .ts,.tsx"
   },
   "dependencies": {
-    "@polkadot/api": "^7.12.1",
-    "@substrate/connect": "^0.6.2",
+    "@polkadot/api": "^8.3.2",
+    "@polkadot/rpc-provider": "^8.3.2",
     "regenerator-runtime": "^0.13.9"
+  },
+  "devDependencies": {
+    "eslint": "^8.14.0"
   }
 }

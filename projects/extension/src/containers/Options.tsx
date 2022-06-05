@@ -1,41 +1,10 @@
 import React, { SetStateAction, useEffect, useState } from "react"
-import {
-  Button,
-  CircularProgress,
-  createTheme,
-  ThemeProvider,
-} from "@material-ui/core"
-import { makeStyles } from "@material-ui/core/styles"
-import Box from "@material-ui/core/Box"
-import Switch from "@material-ui/core/Switch"
-import FormGroup from "@material-ui/core/FormGroup"
-import FormControlLabel from "@material-ui/core/FormControlLabel"
-import FormControl from "@material-ui/core/FormControl"
-import { light, Logo, NetworkTab } from "../components/"
-import GlobalFonts from "../fonts/fonts"
+import pckg from "../../package.json"
+import { Logo, NetworkTab, Loader, Tabs } from "../components/"
 import { Background } from "../background/"
-import { withStyles, Theme, createStyles } from "@material-ui/core/styles"
-import Tabs from "@material-ui/core/Tabs"
-import Tab from "@material-ui/core/Tab"
-import {
-  // DEACTIVATE FOR NOW - will be n./src/containers/Options.tsx once parachains will be integrated
-  //  Parachain,
-  NetworkTabProps,
-} from "../types"
-import {
-  PlayArrow,
-  Pause as PauseIcon,
-  FileCopy as FileCopyIcon,
-} from "@material-ui/icons"
-interface TabPanelProps {
-  children?: React.ReactNode
-  index: number
-  value: number
-}
 
-interface StyledTabProps {
-  label: string
-}
+import { NetworkTabProps } from "../types"
+import { TabsContent } from "../components/Tabs"
 
 interface logStructure {
   unix_timestamp: number
@@ -44,104 +13,15 @@ interface logStructure {
   message: string
 }
 
-const MenuTabs = withStyles({
-  root: {
-    minHeight: 34,
-  },
-})(Tabs)
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    flexBasis: "33.33%",
-    flexShrink: 0,
-    fontWeight: "bold",
-  },
-  secondaryHeading: {
-    fontSize: theme.typography.pxToRem(15),
-    color: theme.palette.text.secondary,
-  },
-  logs: {
-    display: "block",
-  },
-  logContainer: {
-    maxHeight: "80vh",
-    overflowY: "auto",
-    display: "block",
-    width: "100%",
-  },
-  logTitle: {
-    margin: "20px 0",
-    display: "flex",
-  },
-  errCounter: {
-    borderRadius: "30px",
-    backgroundColor: "red",
-    padding: "10px 15px",
-    margin: "0 10px",
-  },
-  warnCounter: {
-    borderRadius: "30px",
-    backgroundColor: "yellow",
-    padding: "10px 15px",
-    margin: "0 10px",
-  },
-  copyClipboard: {
-    margin: "0 10px",
-  },
-}))
-
-const MenuTab = withStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      textTransform: "none",
-      minWidth: 110,
-      minHeight: 34,
-      marginRight: theme.spacing(3),
-      color: "#BDBDBD",
-      "&:hover": {
-        opacity: 1,
-      },
-      "&$selected": {
-        border: "1px solid #EEEEEE",
-        borderRadius: "5px",
-        color: "#000",
-        backgroundColor: "#F7F7F7",
-      },
-    },
-    selected: {},
-  }),
-)((props: StyledTabProps) => <Tab disableRipple {...props} />)
-
-const TabPanel = (props: TabPanelProps) => {
-  const { children, value, index, ...other } = props
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box mt={4}>{children}</Box>}
-    </div>
-  )
-}
-
 const Options: React.FunctionComponent = () => {
-  const classes = useStyles()
-  const appliedTheme = createTheme(light)
-  const [value, setValue] = useState<number>(0)
   const [networks, setNetworks] = useState<NetworkTabProps[]>([])
   const [notifications, setNotifications] = useState<boolean>(false)
   const [allLogs, setAllLogs] = useState<logStructure[]>([])
   const [warnLogs, setWarnLogs] = useState<logStructure[]>([])
   const [errLogs, setErrLogs] = useState<logStructure[]>([])
   const [poolingLogs, setPoolingLogs] = useState<boolean>(true)
+
+  const [activeTab, setActiveTab] = useState<number>(0)
 
   const getTime = (d: number) => {
     const date = new Date(d)
@@ -152,7 +32,7 @@ const Options: React.FunctionComponent = () => {
     ).slice(-3)}`
   }
 
-  const textifyLogs = () => {
+  const stringifyLogs = () => {
     return allLogs
       .map(
         (a: logStructure) =>
@@ -171,7 +51,7 @@ const Options: React.FunctionComponent = () => {
     const interval = setInterval(() => {
       if (poolingLogs) {
         chrome.runtime.getBackgroundPage((bg) => {
-          const logs = (bg as Background).manager.getLogger()
+          const logs = (bg as Background).uiInterface.logger
           setAllLogs([...logs.all])
           setWarnLogs([...logs.warn])
           setErrLogs([...logs.error])
@@ -191,26 +71,30 @@ const Options: React.FunctionComponent = () => {
     let cb: () => void = () => {}
     chrome.runtime.getBackgroundPage((backgroundPage) => {
       const bg = backgroundPage as Background
-      cb = bg.manager.onManagerStateChanged((apps) => {
+      const refresh = () => {
         const networks = new Map<string, NetworkTabProps>()
-        apps.forEach((app) => {
-          const network = networks.get(app.chainName)
+        bg.uiInterface.chains.forEach((chain) => {
+          if (!chain.tab) return
+
+          const network = networks.get(chain.chainName)
           if (!network) {
-            return networks.set(app.chainName, {
-              name: app.chainName,
+            return networks.set(chain.chainName, {
+              name: chain.chainName,
               health: {
-                isSyncing: app.isSyncing,
-                peers: app.peers,
+                isSyncing: chain.isSyncing,
+                peers: chain.peers,
                 status: "connected",
               },
-              apps: [{ name: app.url, url: app.url }],
+              apps: [{ name: chain.tab.url, url: chain.tab.url }],
             })
           }
 
-          network.apps.push({ name: app.url, url: app.url })
+          network.apps.push({ name: chain.tab.url, url: chain.tab.url })
         })
         setNetworks([...networks.values()])
-      })
+      }
+      cb = bg.uiInterface.onChainsChanged(refresh)
+      refresh()
     })
 
     return () => cb()
@@ -224,13 +108,6 @@ const Options: React.FunctionComponent = () => {
     })
   }, [notifications])
 
-  const handleChange = (
-    event: React.ChangeEvent<unknown>,
-    newValue: number,
-  ) => {
-    setValue(newValue)
-  }
-
   const getLevelInfo = (level: number) => {
     let color: string = "#999"
     let desc: string = "Trace"
@@ -241,15 +118,15 @@ const Options: React.FunctionComponent = () => {
         desc = "Error"
         break
       case 2:
-        color = "#f99602"
+        color = "#fde047"
         desc = "Warn"
         break
       case 3:
-        color = "#000"
+        color = "#fff"
         desc = "Info"
         break
       case 4:
-        color = "#5e5e5e"
+        color = "#ccc"
         desc = "Debug"
         break
     }
@@ -257,128 +134,100 @@ const Options: React.FunctionComponent = () => {
   }
 
   return (
-    <ThemeProvider theme={appliedTheme}>
-      <GlobalFonts />
-      <Box pb={7}>
-        <Logo />
-      </Box>
-      <MenuTabs
-        value={value}
-        onChange={handleChange}
-        TabIndicatorProps={{
-          style: {
-            display: "none",
-          },
-        }}
-      >
-        <MenuTab label="Networks"></MenuTab>
-        <MenuTab label="Settings"></MenuTab>
-        <MenuTab label="Logs"></MenuTab>
-      </MenuTabs>
-      <TabPanel value={value} index={0}>
-        {networks.length ? (
-          networks.map((network: NetworkTabProps, i: number) => {
-            const { name, health, apps } = network
-            return (
-              <NetworkTab key={i} name={name} health={health} apps={apps} />
-            )
-          })
-        ) : (
-          <div>No networks or apps are connected to the extension.</div>
-        )}
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <FormControl component="fieldset">
-          <FormGroup aria-label="position" row>
-            <FormControlLabel
-              value="Notifications:"
-              control={
-                <Switch
-                  checked={notifications}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setNotifications(e.target.checked)
-                  }
-                  color="primary"
-                  name="checkedB"
-                  inputProps={{ "aria-label": "primary checkbox" }}
-                />
-              }
-              label="Notifications:"
-              labelPlacement="start"
-            />
-          </FormGroup>
-        </FormControl>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <div className={classes.logs}>
-          <div className={classes.logTitle}>
-            <Button
-              variant="contained"
-              startIcon={poolingLogs ? <PauseIcon /> : <PlayArrow />}
-              onClick={() => setPoolingLogs(!poolingLogs)}
-            >
-              {poolingLogs ? "Pause" : "Retrieve "} logs
-            </Button>
-            <Button
-              className={classes.copyClipboard}
-              variant="contained"
-              startIcon={<FileCopyIcon />}
-              onClick={() => navigator.clipboard.writeText(textifyLogs())}
-            >
-              Copy to clipboard
-            </Button>
-            <div className={classes.errCounter}>{errLogs.length} Errors</div>
-            <div className={classes.warnCounter}>
-              {warnLogs.length} Warnings
-            </div>
+    <div className="mb-4 font-roboto">
+      <div className="options-container">
+        <div className="px-12 pb-3.5 text-base flex items-center">
+          <div>
+            <Logo textSize="lg" />
+            <div className="text-sm">v{pckg.version}</div>
           </div>
-          <div className={classes.logContainer}>
-            {allLogs.length > 0 ? (
-              allLogs.map(
-                (
-                  { unix_timestamp, level, target, message }: logStructure,
-                  i: number,
-                ) => (
-                  <p key={"all_" + i} style={{ lineHeight: "1.2rem" }}>
-                    <span
-                      style={{
-                        color: getLevelInfo(level)[1],
-                        fontSize: "0.8rem",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {getTime(unix_timestamp)}
-                    </span>
-                    <span
-                      style={{
-                        color: getLevelInfo(level)[1],
-                        fontSize: "0.8rem",
-                        fontWeight: "bold",
-                        margin: "0 0.5rem",
-                      }}
-                    >
-                      {getLevelInfo(level)[0]}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "0.8rem",
-                        fontStyle: "oblique",
-                        margin: "0 0.5rem",
-                      }}
-                    >
-                      {target}
-                    </span>
-                    <span>{message}</span>
-                  </p>
-                ),
-              )
-            ) : (
-              <CircularProgress />
-            )}
+          <div className="w-full ml-[10%]">
+            <Tabs
+              setActiveTab={(n: number) => setActiveTab(n)}
+              tabTitles={["Networks", "Logs"]}
+            />
           </div>
         </div>
-      </TabPanel>
-    </ThemeProvider>
+      </div>
+      <div className="mx-[15%] pt-2">
+        <TabsContent activeTab={activeTab}>
+          <section>
+            {networks.length ? (
+              networks.map((network: NetworkTabProps, i: number) => {
+                const { name, health, apps } = network
+                return (
+                  <NetworkTab key={i} name={name} health={health} apps={apps} />
+                )
+              })
+            ) : (
+              <div>No networks or apps are connected to the extension.</div>
+            )}
+          </section>
+          <section className="block">
+            <div className="flex my-5">
+              <button
+                className="px-2 border rounded-md bg-stone-200 hover:bg-stone-400"
+                onClick={() => setPoolingLogs(!poolingLogs)}
+              >
+                {poolingLogs ? "Pause" : "Retrieve "} logs
+              </button>
+              <button
+                className="px-2 mx-2 my-0 border rounded-md bg-stone-200 hover:bg-stone-400"
+                onClick={() => navigator.clipboard.writeText(stringifyLogs())}
+              >
+                Copy to clipboard
+              </button>
+              <div className="rounded-md bg-red-500 py-2.5 px-4">
+                {errLogs.length} Errors
+              </div>
+              <div className="ml-2 rounded-md bg-yellow-300 py-2.5 px-4">
+                {warnLogs.length} Warnings
+              </div>
+            </div>
+            <div
+              style={{ maxHeight: "75vh" }}
+              className="block w-full overflow-y-auto px-2 bg-black text-white text-xs border border-black font-mono font"
+            >
+              {allLogs.length > 0 ? (
+                allLogs.map(
+                  (
+                    { unix_timestamp, level, target, message }: logStructure,
+                    i: number,
+                  ) => (
+                    <p
+                      key={"all_" + i}
+                      style={{
+                        color: getLevelInfo(level)[1],
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                        }}
+                      >
+                        [{getTime(unix_timestamp)}]
+                      </span>
+                      <span
+                        style={{
+                          margin: "0 0.5rem",
+                        }}
+                      >
+                        [{target}]
+                      </span>
+                      <span>{message}</span>
+                    </p>
+                  ),
+                )
+              ) : (
+                <div className="items-center h-56 mt-20 ml-40">
+                  <Loader />
+                </div>
+              )}
+            </div>
+          </section>
+        </TabsContent>
+      </div>
+    </div>
   )
 }
 

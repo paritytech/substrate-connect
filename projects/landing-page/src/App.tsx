@@ -25,9 +25,9 @@ import {
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert"
 import { CardNetwork, CardProject } from "./components/Cards"
 
-import Burnr from "url:./assets/images/Burnr.png"
-import Extension from "url:./assets/images/Extension.png"
-import YourProject from "url:./assets/images/YourProject.png"
+import Burnr from "./assets/images/Burnr.png"
+import Extension from "./assets/images/Extension.png"
+import YourProject from "./assets/images/YourProject.png"
 
 const Alert = (props: AlertProps) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />
@@ -143,84 +143,24 @@ const App: React.FunctionComponent = () => {
 
           <Section>
             <SectionHeading id="getting-started" prefix="4">
-              Getting Started
+              Getting Started - Usage through the PolkadotJS Provider
             </SectionHeading>
             <ThemeProvider theme={createTheme(dark)}>
-              <Code>yarn add @substrate/substrate-connect</Code>
+              <Code>yarn add @polkadot/rpc-provider</Code>
+              <Code>yarn add @polkadot/api</Code>
               <Code heading="Simple usage (suported chain)">
-                <Box>{`import { createPolkadotJsScClient, WellKnownChain } from '@substrate/connect';`}</Box>
+                <Box>{`import { ScProvider, WellKnownChain } from '@polkadot/rpc-provider/substrate-connect';`}</Box>
+                <Box>{`import { ApiPromise } from '@polkadot/api';`}</Box>
 
-                <Box mt={2}>{`// Create a client for our App`}</Box>
-                <Box>{`const scClient = createPolkadotJsScClient();`}</Box>
-
-                <Box mt={2}>{`// Create providers for known chains`}</Box>
-                <Box>{`const westendProvider = await scClient.addWellKnownChain(WellKnownChain.westend2);`}</Box>
-                <Box>{`const api1 = await ApiPromise.create({ provider: westendProvider });`}</Box>
-                <Box>{`const kusamaProvider = await scClient.addWellKnownChain(WellKnownChain.ksmcc3);`}</Box>
-                <Box>{`const api2 = await ApiPromise.create({ provider: kusamaProvider });`}</Box>
+                <Box mt={2}>{`// Create the provider for a known chain`}</Box>
+                <Box>{`const provider = new ScProvider(WellKnownChain.westend2);`}</Box>
 
                 <Box
                   mt={2}
-                >{`await api1.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
-                <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
-                <Box>{`});`}</Box>
+                >{`// Stablish the connection (and catch possible errors)`}</Box>
+                <Box>{`await provider.connect()`}</Box>
 
-                <Box
-                  mt={2}
-                >{`await api2.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
-                <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
-                <Box>{`});`}</Box>
-
-                <Box mt={2}>{`// etc ...`}</Box>
-
-                <Box mt={2}>{`await api1.disconnect();`}</Box>
-                <Box>{`await api2.disconnect();`}</Box>
-              </Code>
-
-              <Code heading="Simple usage (custom chain)">
-                <Box>{`import { createPolkadotJsScClient } from '@substrate/connect';`}</Box>
-                <Box>{`import customSpecs from './customSpecs.json';`}</Box>
-
-                <Box>{`const scClient = createPolkadotJsScClient();`}</Box>
-                <Box
-                  mt={2}
-                >{`await scClient.addWellKnownChain(WellKnownChain.westend2);`}</Box>
-                <Box>{`const myChain = await scClient.addChain(JSON.stringify(customSpecs));`}</Box>
-                <Box>{`const api = await ApiPromise.create({ provider: myChain });`}</Box>
-
-                <Box
-                  mt={2}
-                >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
-                <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
-                <Box>{`});`}</Box>
-                <Box mt={2}>{`await myChain.disconnect();`}</Box>
-              </Code>
-
-              <Code heading="Simple usage with options">
-                <Box>{`import { createPolkadotJsScClient, WellKnownChain } from '@substrate/connect';`}</Box>
-                <Box>{`const scClient = createPolkadotJsScClient();`}</Box>
-                <Box
-                  mt={2}
-                >{`const provider = await scClient.addWellKnownChain(WellKnownChain.westend2);`}</Box>
-                <Box>{`const apiOptions = {types: customTypes}`}</Box>
-                <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>
-                <Box
-                  mt={2}
-                >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
-                <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
-                <Box>{`});`}</Box>
-                <Box mt={2}>{`await api.disconnect();`}</Box>
-              </Code>
-
-              <Code heading="Parachains usage">
-                <Box>{`import { createPolkadotJsScClient, WellKnownChain } from '@substrate/connect';`}</Box>
-                <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
-
-                <Box>{`const scClient = createPolkadotJsScClient();`}</Box>
-                <Box
-                  mt={2}
-                >{`await scClient.addWellKnownChain(WellKnownChain.westend2);`}</Box>
-                <Box>{`const provider = await scClient.addChain(JSON.stringify(parachainSpecs));`}</Box>
+                <Box mt={2}>{`// Create the PolkadotJS api instance`}</Box>
                 <Box>{`const api = await ApiPromise.create({ provider });`}</Box>
 
                 <Box
@@ -229,20 +169,27 @@ const App: React.FunctionComponent = () => {
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`});`}</Box>
 
-                <Box mt={2}>{`await api.disconnect();`}</Box>
+                <Box>{`await api.disconnect();`}</Box>
               </Code>
 
-              <Code heading="Parachains usage with options">
-                <Box>{`import { createPolkadotJsScClient, WellKnownChain } from '@substrate/connect';`}</Box>
-                <Box>{`import parachainSpecs from from './parachainSpecs.json';`}</Box>
+              <Code heading="Simple usage (custom chain)">
+                <Box>{`import { ScProvider } from '@polkadot/rpc-provider/substrate-connect';`}</Box>
+                <Box>{`import { ApiPromise } from '@polkadot/api';`}</Box>
+                <Box>{`import jsonCustomSpec from './jsonCustomSpec.json';`}</Box>
 
-                <Box>{`const scClient = createPolkadotJsScClient();`}</Box>
                 <Box
                   mt={2}
-                >{`await scClient.addWellKnownChain(WellKnownChain.westend2);`}</Box>
-                <Box>{`const provider = await scClient.addChain(JSON.stringify(parachainSpecs));`}</Box>
-                <Box>{`const apiOptions = {types: customTypes}`}</Box>
-                <Box>{`const api = await ApiPromise.create({ provider, options: apiOptions });`}</Box>
+                >{`// Create the provider for the custom chain`}</Box>
+                <Box>{`const customSpec = JSON.stringify(jsonCustomSpec);`}</Box>
+                <Box>{`const provider = new ScProvider(customSpec);`}</Box>
+
+                <Box
+                  mt={2}
+                >{`// Stablish the connection (and catch possible errors)`}</Box>
+                <Box>{`await provider.connect()`}</Box>
+
+                <Box mt={2}>{`// Create the PolkadotJS api instance`}</Box>
+                <Box>{`const api = await ApiPromise.create({ provider });`}</Box>
 
                 <Box
                   mt={2}
@@ -250,12 +197,108 @@ const App: React.FunctionComponent = () => {
                 <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
                 <Box>{`});`}</Box>
 
-                <Box mt={2}>{`await api.disconnect();`}</Box>
+                <Box>{`await api.disconnect();`}</Box>
+              </Code>
+
+              <Code heading="Parachains usage">
+                <Box>{`import { ScProvider, WellKnownChain } from '@polkadot/rpc-provider/substrate-connect';`}</Box>
+                <Box>{`import { ApiPromise } from '@polkadot/api';`}</Box>
+                <Box>{`import jsonParachainSpec from './jsonParachainSpec.json';`}</Box>
+
+                <Box mt={2}>{`// Create the provider for the relay chain`}</Box>
+                <Box>{`const relayProvider = new ScProvider(WellKnownChain.westend2);`}</Box>
+
+                <Box
+                  mt={2}
+                >{`// Create the provider for the parachain. Notice that`}</Box>
+                <Box>{`// we must pass the provider of the relay chain as the`}</Box>
+                <Box>{`// second argument`}</Box>
+                <Box>{`const parachainSpec = JSON.stringify(jsonParachainSpec);`}</Box>
+                <Box>{`const provider = new ScProvider(parachainSpec, relayProvider);`}</Box>
+
+                <Box
+                  mt={2}
+                >{`// Stablish the connection (and catch possible errors)`}</Box>
+                <Box>{`await provider.connect()`}</Box>
+
+                <Box mt={2}>{`// Create the PolkadotJS api instance`}</Box>
+                <Box>{`const api = await ApiPromise.create({ provider });`}</Box>
+
+                <Box
+                  mt={2}
+                >{`await api.rpc.chain.subscribeNewHeads((lastHeader) => {`}</Box>
+                <Box pl={3}>{`console.log(lastHeader.hash);`}</Box>
+                <Box>{`});`}</Box>
+
+                <Box>{`await api.disconnect();`}</Box>
               </Code>
             </ThemeProvider>
           </Section>
           <Section>
-            <SectionHeading id="api-docs" prefix="5">
+            <SectionHeading id="advanced-usage" prefix="5">
+              Advanced usage (for library authors)
+            </SectionHeading>
+            <ThemeProvider theme={createTheme(dark)}>
+              <Code>yarn add @substrate/connect</Code>
+              <Code heading="Connecting to a `WellKnownChain`">
+                <Box>{`import { WellKnownChain, createScClient } from '@substrate/connect';`}</Box>
+
+                <Box mt={2}>{`// Create the client`}</Box>
+                <Box>{`const client = createScClient();`}</Box>
+
+                <Box
+                  mt={2}
+                >{`// Create the chain connection, while passing the \`jsonRpcCallback\` function. `}</Box>
+                <Box>{`const chain = await client.addWellKnownChain(`}</Box>
+                <Box pl={2}>{`  WellKnownChain.polkadot,`}</Box>
+                <Box pl={2}>{`  function jsonRpcCallback(response) {`}</Box>
+                <Box pl={4}>{`    console.log('response', response);`}</Box>
+                <Box pl={2}>{`  }`}</Box>
+                <Box>{`);`}</Box>
+
+                <Box mt={2}>{`// send a RpcRequest`}</Box>
+                <Box>{`chain.sendJsonRpc(`}</Box>
+                <Box
+                  pl={2}
+                >{`  '{"jsonrpc":"2.0","id":"1","method":"system_health","params":[]}'`}</Box>
+                <Box>{`);`}</Box>
+              </Code>
+
+              <Code heading="Connecting to a parachain">
+                <Box>{`import { WellKnownChain, createScClient } from '@substrate/connect';`}</Box>
+                <Box>{`import jsonParachainSpec from './jsonParachainSpec.json';`}</Box>
+
+                <Box mt={2}>{`// Create the client`}</Box>
+                <Box>{`const client = createScClient();`}</Box>
+
+                <Box
+                  mt={2}
+                >{`// Create the relay chain connection. There is no need to pass a callback`}</Box>
+                <Box>{`// function because we will sending and receiving messages through`}</Box>
+                <Box>{`// the parachain connection.`}</Box>
+                <Box>{`await client.addWellKnownChain(WellKnownChain.westend2);`}</Box>
+
+                <Box mt={2}>{`// Create the parachain connection.`}</Box>
+                <Box>{`const parachainSpec = JSON.stringify(jsonParachainSpec);`}</Box>
+                <Box>{`const chain = await client.addChain(`}</Box>
+                <Box pl={2}>{`  parachainSpec,`}</Box>
+                <Box pl={2}>{`  function jsonRpcCallback(response) {`}</Box>
+                <Box pl={4}>{`    console.log('response', response);`}</Box>
+                <Box pl={2}>{`  }`}</Box>
+                <Box>{`);`}</Box>
+
+                <Box mt={2}>{`// send a request`}</Box>
+                <Box>{`chain.sendJsonRpc(`}</Box>
+                <Box
+                  pl={2}
+                >{`  '{"jsonrpc":"2.0","id":"1","method":"system_health","params":[]}'`}</Box>
+                <Box>{`);`}</Box>
+              </Code>
+            </ThemeProvider>
+          </Section>
+
+          <Section>
+            <SectionHeading id="api-docs" prefix="6">
               API Documentation
             </SectionHeading>
             <SectionText>
@@ -267,7 +310,7 @@ const App: React.FunctionComponent = () => {
             </SectionRef>
           </Section>
           <Section>
-            <SectionHeading id="extension" prefix="6">
+            <SectionHeading id="extension" prefix="7">
               Browser Extension
             </SectionHeading>
             <SectionText>
@@ -294,12 +337,12 @@ const App: React.FunctionComponent = () => {
             <SectionRef href="https://addons.mozilla.org/en-US/firefox/addon/substrate-connect/">
               Download for Firefox
             </SectionRef>
-            <SectionRef href="./extension/substrate-connect.zip">
+            <SectionRef href="./extension/packed-extension.zip">
               Download zip
             </SectionRef>
           </Section>
           <Section>
-            <SectionHeading id="projects" prefix="7">
+            <SectionHeading id="projects" prefix="8">
               Projects
             </SectionHeading>
             <CardProject
@@ -352,11 +395,11 @@ const App: React.FunctionComponent = () => {
             Well known Networks
           </SidebarLink>
           <SidebarLink href="#getting-started">Getting Started</SidebarLink>
+          <SidebarLink href="#advanced-usage">Advanced usage</SidebarLink>
           <SidebarLink href="#api-docs">API Documentation</SidebarLink>
           <SidebarLink href="#extension">Browser Extension</SidebarLink>
           <SidebarLink href="#projects">Projects</SidebarLink>
         </Sidebar>
-        {/* TODO: Footer */}
       </UIContainer>
     </ThemeProvider>
   )

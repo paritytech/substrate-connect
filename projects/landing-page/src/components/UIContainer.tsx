@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const UIContainer: React.FunctionComponent = ({ children }) => {
+const UIContainer = ({ children }: { children: React.ReactNode }) => {
   const classes = useStyles()
   return <div className={classes.root}>{children}</div>
 }

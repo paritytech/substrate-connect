@@ -1,6 +1,6 @@
 {
   "name": "@substrate/extension",
-  "version": "0.1.1",
+  "version": "0.1.4",
   "description": "Browser extension to manage substrate-based blockchain light clients",
   "main": "dist/src/index.js",
   "author": "Parity Technologies",
@@ -10,34 +10,31 @@
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "compile": "tsc -b",
-    "test": "node --no-warnings --experimental-vm-modules $(yarn bin)/jest --colors --coverage",
+    "test": "node --no-warnings --experimental-vm-modules ../../node_modules/jest/bin/jest.js --colors --coverage",
     "prebuild": "yarn clean",
-    "build": "webpack --config webpack.prod.js && zip -r ./dist/substrate-connect.zip ./dist/*",
+    "build": "webpack --config webpack.prod.js && cd dist && zip -r packed-extension.zip .",
     "dev": "yarn run prebuild && webpack --node-env development --config webpack.dev.js",
     "start": "web-ext run --source-dir ./dist -t chromium",
     "start:firefox": "web-ext run --source-dir ./dist -t firefox-desktop",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx"
   },
-  "resolutions": {
-    "styled-components": "^5"
-  },
   "keywords": [],
   "devDependencies": {
-    "@jest/globals": "^27.5.1",
-    "jest": "^27.5.1",
+    "autoprefixer": "^10.4.4",
+    "eslint": "^8.14.0",
     "jest-chrome": "^0.7.2",
-    "web-ext": "^6.7.0"
+    "mini-css-extract-plugin": "^2.6.0",
+    "postcss": "^8.4.12",
+    "postcss-loader": "^6.2.1",
+    "tailwindcss": "^3.0.24",
+    "web-ext": "^6.8.0"
   },
   "dependencies": {
-    "@material-ui/core": "^4.11.3",
-    "@material-ui/icons": "^4.11.2",
-    "@material-ui/styles": "^4.11.4",
-    "@polkadot/rpc-provider": "^7.12.1",
     "@substrate/connect-extension-protocol": "^1.0.0",
-    "@substrate/smoldot-light": "0.6.4",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "@substrate/smoldot-light": "0.6.16",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
     "react-hot-loader": "^4.13.0",
-    "styled-components": "^5.3.3"
+    "react-icons": "^4.3.1"
   }
 }

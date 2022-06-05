@@ -16,7 +16,7 @@ jobs:
           yarn build
       - name: Get zombienet
         run: |
-          curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.2.21/zombienet-linux
+          curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.2.26/zombienet-linux
           chmod +x zombienet-linux
       - name: Get polkadot
         run: |
