@@ -52,9 +52,14 @@ export interface ChainInfo<SandboxId> {
   sandboxId: SandboxId
 
   /**
-   * Height of the current best block of the chain
+   * Height of the current best block of the chain. Undefined if the best block isn't known yet
+   * or if its height couldn't be determined, which can happen for example because the chain
+   * doesn't have a concept of block height.
+   *
+   * This value should be treated as a hint, and not a strong information. It is possible for
+   * the value to be erroneous, for example for chains that have tweaked their header format.
    */
-  latestBestBlock: number
+  latestBestBlockHeight?: number
 }
 
 /**
@@ -128,7 +133,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
   // that the underlying `ConnectionManager` has already removed.
   #sandboxesChains: Map<SandboxId, Map<string, Chain>> = new Map()
   #pingInterval: ReturnType<typeof globalThis.setInterval>
-  #nextHealthCheckRqId: number = 0
+  #nextRpcRqId: number = 0
 
   constructor(
     wellKnownChainSpecs: Map<string, string>,
@@ -235,12 +240,12 @@ export class ConnectionManagerWithHealth<SandboxId> {
             chainId: toApplication.chainId,
             jsonRpcMessage: JSON.stringify({
               jsonrpc: "2.0",
-              id: "ready-sub:" + this.#nextHealthCheckRqId,
+              id: "ready-sub:" + this.#nextRpcRqId,
               method: "chainHead_unstable_follow",
               params: [true],
             }),
           })
-          this.#nextHealthCheckRqId += 1
+          this.#nextRpcRqId += 1
           return toApplication
         }
 
@@ -279,6 +284,23 @@ export class ConnectionManagerWithHealth<SandboxId> {
               }
             } else if (jsonRpcMessageId.startsWith("ready-sub:")) {
               chain.readySubscriptionId = jsonRpcMessage.result
+            } else if (jsonRpcMessageId.startsWith("block-unpin:")) {
+            } else if (jsonRpcMessageId.startsWith("best-block-header:")) {
+              // We might receive responses to header requests concerning blocks that were but are
+              // no longer the best block of the chain. Ignore these responses.
+              if (jsonRpcMessageId === chain.bestBlockHeaderRequestId) {
+                delete chain.bestBlockHeaderRequestId
+                // The RPC call might return `null` if the subscription is dead.
+                if (jsonRpcMessage.result) {
+                  try {
+                    chain.bestBlockHeight = headerToHeight(
+                      jsonRpcMessage.result,
+                    )
+                  } catch (error) {
+                    delete chain.bestBlockHeight
+                  }
+                }
+              }
             } else {
               // Never supposed to happen. Indicates a bug somewhere.
               throw new Error()
@@ -294,6 +316,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
                 case "initialized": {
                   // The chain is now in sync and has downloaded the runtime.
                   chain.isSyncing = false
+                  chain.finalizedBlockHashHex =
+                    jsonRpcMessage.params.result.finalizedBlockHash
 
                   // Immediately send a single health request to the chain.
                   this.#inner.sandboxMessage(sandboxId, {
@@ -302,12 +326,28 @@ export class ConnectionManagerWithHealth<SandboxId> {
                     chainId: toApplication.chainId,
                     jsonRpcMessage: JSON.stringify({
                       jsonrpc: "2.0",
-                      id: "health-check:" + this.#nextHealthCheckRqId,
+                      id: "health-check:" + this.#nextRpcRqId,
                       method: "system_health",
                       params: [],
                     }),
                   })
-                  this.#nextHealthCheckRqId += 1
+                  this.#nextRpcRqId += 1
+
+                  // Also immediately request the header of the finalized block.
+                  this.#inner.sandboxMessage(sandboxId, {
+                    origin: "substrate-connect-client",
+                    type: "rpc",
+                    chainId: toApplication.chainId,
+                    jsonRpcMessage: JSON.stringify({
+                      jsonrpc: "2.0",
+                      id: "best-block-header:" + this.#nextRpcRqId,
+                      method: "chainHead_unstable_header",
+                      params: [chain.finalizedBlockHashHex],
+                    }),
+                  })
+                  chain.bestBlockHeaderRequestId =
+                    "best-block-header:" + this.#nextRpcRqId
+                  this.#nextRpcRqId += 1
 
                   // Notify of the change in status.
                   return {
@@ -319,16 +359,71 @@ export class ConnectionManagerWithHealth<SandboxId> {
                   // Our subscription has been force-killed by the client. This is normal and can
                   // happen for example if the client is overloaded. Restart the subscription.
                   delete chain.readySubscriptionId
+                  delete chain.bestBlockHeaderRequestId
+                  delete chain.finalizedBlockHashHex
+                  delete chain.bestBlockHeight
                   this.#inner.sandboxMessage(sandboxId, {
                     origin: "substrate-connect-client",
                     type: "rpc",
                     chainId: toApplication.chainId,
                     jsonRpcMessage: JSON.stringify({
                       jsonrpc: "2.0",
-                      id: "ready-sub:" + this.#nextHealthCheckRqId,
+                      id: "ready-sub:" + this.#nextRpcRqId,
                       method: "chainHead_unstable_follow",
                       params: [true],
                     }),
+                  })
+                  this.#nextRpcRqId += 1
+                  break
+                }
+                case "bestBlockChanged": {
+                  // The best block has changed. Request the header of this new best block in
+                  // order to know its height.
+                  this.#inner.sandboxMessage(sandboxId, {
+                    origin: "substrate-connect-client",
+                    type: "rpc",
+                    chainId: toApplication.chainId,
+                    jsonRpcMessage: JSON.stringify({
+                      jsonrpc: "2.0",
+                      id: "best-block-header:" + this.#nextRpcRqId,
+                      method: "chainHead_unstable_header",
+                      params: [
+                        chain.readySubscriptionId,
+                        jsonRpcMessage.params.result.bestBlockHash,
+                      ],
+                    }),
+                  })
+                  chain.bestBlockHeaderRequestId =
+                    "best-block-header:" + this.#nextRpcRqId
+                  this.#nextRpcRqId += 1
+                  break
+                }
+                case "finalized": {
+                  // When one or more new blocks get finalized, we unpin all blocks except for
+                  // the new current finalized.
+                  let finalized = jsonRpcMessage.params.result
+                    .finalizedBlocksHashes as [string]
+                  let pruned = jsonRpcMessage.params.result
+                    .prunedBlocksHashes as [string]
+                  let newCurrentFinalized = finalized.pop()
+                  ;[
+                    chain.finalizedBlockHashHex,
+                    ...pruned,
+                    ...finalized,
+                  ].forEach((blockHash) => {
+                    this.#inner.sandboxMessage(sandboxId, {
+                      origin: "substrate-connect-client",
+                      type: "rpc",
+                      chainId: toApplication.chainId,
+                      jsonRpcMessage: JSON.stringify({
+                        jsonrpc: "2.0",
+                        id: "block-unpin:" + this.#nextRpcRqId,
+                        method: "chainHead_unstable_unpin",
+                        params: [blockHash],
+                      }),
+                    })
+                    this.#nextRpcRqId += 1
+                    chain.finalizedBlockHashHex = newCurrentFinalized
                   })
                   break
                 }
@@ -424,25 +519,98 @@ export class ConnectionManagerWithHealth<SandboxId> {
           chainId,
           jsonRpcMessage: JSON.stringify({
             jsonrpc: "2.0",
-            id: "health-check:" + this.#nextHealthCheckRqId,
+            id: "health-check:" + this.#nextRpcRqId,
             method: "system_health",
             params: [],
           }),
         })
-        this.#nextHealthCheckRqId += 1
+        this.#nextRpcRqId += 1
       }
     }
   }
 }
 
 interface Chain {
-  // Note that once subscribed, we never unsubscribe. Unsubscribing adds a lot of complexity, and
-  // having an active subscription might be useful in the future if we want to display, say, the
-  // current block or the runtime version.
+  // Note that once subscribed, we never unsubscribe.
+  //
+  // Blocks get unpinned when they become ancestor of the current finalized block. In other words,
+  // the current finalized block and all its descendants are kept pinned. This is necessary in
+  // order to be able to query the header of the best block, as the best block can be the
+  // current finalized block or any of its descendants.
   readySubscriptionId?: string
   isSyncing: boolean
   peers: number
-  latestBestBlock?: number
+  // Height of the current best block of the chain, or undefined if not known yet or if the
+  // height couldn't be defined.
+  bestBlockHeight?: number
+  // If defined, contains the id of the RPC request whose response contains the header of the
+  // best block of the chain.
+  bestBlockHeaderRequestId?: string
+  // Hash of the current finalized block of the chain in hexadecimal, or undefined if not known
+  // yet.
+  finalizedBlockHashHex?: string
 }
 
 // TODO: this code uses `system_health` at the moment, because there's no alternative, even in the new JSON-RPC API, to get the number of peers
+
+// Converts a block header, as a hexadecimal string, to a block height.
+//
+// This function should give the accurate block height in most situations, but it is possible that
+// the value is erroneous.
+//
+// This function assumes that the block header is a block header generated using Substrate. This
+// is not necessarily always true. When that happens, an error is thrown.
+//
+// Additionally, this function assumes that the block height is 32bits, which is the case for the
+// vast majority of the chains. There is currently no way to know the size of the block height.
+// This is a huge flaw in Substrate that we can't do much about here. Fortuntely, since the block
+// height is implemented in compact SCALE encoding, as long as the field containing the number is
+// at least 32 bits and the value is less than 2^32, it will encode the same regardless.
+function headerToHeight(hexHeader: String): number {
+  // Remove the initial prefix.
+  if (!(hexHeader.startsWith("0x") || hexHeader.startsWith("0X")))
+    throw new Error("Not a hexadecimal number")
+  hexHeader = hexHeader.slice(2)
+
+  // The header should start with 32 bytes containing the parent hash.
+  if (hexHeader.length < 64) throw new Error("Too short")
+  hexHeader = hexHeader.slice(64)
+
+  // The next field is the block number (which is what interests us) encoded in SCALE compact.
+  // Unfortunately this format is a bit complicated to decode.
+  // See https://docs.substrate.io/v3/advanced/scale-codec/#compactgeneral-integers
+  if (hexHeader.length < 2) throw new Error("Too short")
+  const b0 = parseInt(hexHeader.slice(0, 2), 16)
+
+  switch ((b0 & 3) as 0 | 1 | 2 | 3) {
+    case 0: {
+      return b0 >> 2
+    }
+    case 1: {
+      if (hexHeader.length < 4) throw new Error("Too short")
+      const b1 = parseInt(hexHeader.slice(2, 4), 16)
+      return (b0 >> 2) + b1 * 2 ** 6
+    }
+    case 2: {
+      if (hexHeader.length < 8) throw new Error("Too short")
+      const b1 = parseInt(hexHeader.slice(2, 4), 16)
+      const b2 = parseInt(hexHeader.slice(4, 6), 16)
+      const b3 = parseInt(hexHeader.slice(6, 8), 16)
+      return (b0 >> 2) + b1 * 2 ** 6 + b2 * 2 ** 14 + b3 * 2 ** 22
+    }
+    case 3: {
+      hexHeader = hexHeader.slice(2)
+      let len = (4 + b0) >> 2
+      let output = 0
+      let base = 0
+      while (len--) {
+        if (hexHeader.length < 2) throw new Error("Too short")
+        // Note that we assume that value can't overflow. This function is a helper and not.
+        output += parseInt(hexHeader.slice(0, 2)) << base
+        hexHeader = hexHeader.slice(2)
+        base += 8
+      }
+      return output
+    }
+  }
+}
