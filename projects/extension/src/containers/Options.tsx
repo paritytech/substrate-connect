@@ -74,23 +74,24 @@ const Options: React.FunctionComponent = () => {
       const refresh = () => {
         const networks = new Map<string, NetworkTabProps>()
         bg.uiInterface.chains.forEach((chain) => {
-          if (!chain.tab) return
+          const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
+          if (!tab) return
 
-          const network = networks.get(chain.chainName)
+          const network = networks.get(chainName)
           if (!network) {
-            return networks.set(chain.chainName, {
-              name: chain.chainName,
+            return networks.set(chainName, {
+              name: chainName,
               health: {
-                isSyncing: chain.isSyncing,
-                peers: chain.peers,
+                isSyncing,
+                peers,
                 status: "connected",
-                latestBestBlock: chain.latestBestBlock,
+                bestBlockHeight,
               },
-              apps: [{ name: chain.tab.url, url: chain.tab.url }],
+              apps: [{ name: tab.url, url: tab.url }],
             })
           }
 
-          network.apps.push({ name: chain.tab.url, url: chain.tab.url })
+          network.apps.push({ name: tab.url, url: tab.url })
         })
         setNetworks([...networks.values()])
       }

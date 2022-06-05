@@ -59,7 +59,7 @@ export interface ChainInfo<SandboxId> {
    * This value should be treated as a hint, and not a strong information. It is possible for
    * the value to be erroneous, for example for chains that have tweaked their header format.
    */
-  latestBestBlockHeight?: number
+  bestBlockHeight?: number
 }
 
 /**
@@ -157,7 +157,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
       return {
         peers: chain.peers,
         isSyncing: chain.isSyncing,
-        latestBestBlock: chain.latestBestBlock,
+        bestBlockHeight: chain.bestBlockHeight,
         ...chainInfo,
       }
     })
@@ -429,7 +429,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
                 }
               }
             } else if (jsonRpcMessage.method === "chain_newHead") {
-              chain.latestBestBlock = parseInt(
+              chain.bestBlockHeight = parseInt(
                 jsonRpcMessage.params.result.number,
               )
             } else {

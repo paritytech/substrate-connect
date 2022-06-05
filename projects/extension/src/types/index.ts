@@ -17,7 +17,7 @@ export interface OptionsNetworkTabHealthContent {
   isSyncing: boolean
   peers: number
   status: NetworkStatus
-  latestBestBlock?: number
+  bestBlockHeight?: number
 }
 export interface App {
   name: string

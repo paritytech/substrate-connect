@@ -4,7 +4,7 @@ export interface ExposedChainConnection {
   tab?: ExposedChainConnectionTabInfo
   isSyncing: boolean
   peers: number
-  latestBestBlock?: number
+  bestBlockHeight?: number
 }
 
 export interface ExposedChainConnectionTabInfo {
