@@ -129,8 +129,8 @@ const App: React.FunctionComponent = () => {
                 Cumulus and HRMP
               </CardNetwork>
             </Grid>
-            <SectionRef href="https://github.com/paritytech/substrate-connect/tree/main/packages/connect/src/connector/specs">
-              Github repo with chainspecs
+            <SectionRef href="https://paritytech.github.io/substrate-connect/api/enums/connect_src.WellKnownChain.html">
+              WellKnownChain enumeration docs
             </SectionRef>
             <SectionText>
             You have to provide a well-known chain name (polkadot, ksmcc3, westend2, rococo_v2_2).
