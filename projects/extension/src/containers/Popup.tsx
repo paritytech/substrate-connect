@@ -73,16 +73,12 @@ const Popup: FunctionComponent = () => {
   }, [])
 
   useEffect(() => {
-    let unsubscribe = () => {}
-
     if (!bg) return
     disconnectTab.current = bg.uiInterface.disconnectTab
-    unsubscribe = bg.uiInterface.onChainsChanged(() => refresh())
+    const unsubscribe = bg.uiInterface.onChainsChanged(() => refresh())
     refresh()
 
-    return () => {
-      unsubscribe && unsubscribe()
-    }
+    return unsubscribe && unsubscribe()
   }, [bg])
 
   const goToOptions = (): void => {
