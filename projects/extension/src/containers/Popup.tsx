@@ -73,16 +73,14 @@ const Popup: FunctionComponent = () => {
   }, [])
 
   useEffect(() => {
-    let isActive = true
     let unsubscribe = () => {}
 
-    if (!isActive || !bg) return
+    if (!bg) return
     disconnectTab.current = bg.uiInterface.disconnectTab
     unsubscribe = bg.uiInterface.onChainsChanged(() => refresh())
     refresh()
 
     return () => {
-      isActive = false
       unsubscribe && unsubscribe()
     }
   }, [bg])
