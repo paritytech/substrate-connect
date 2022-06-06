@@ -428,10 +428,6 @@ export class ConnectionManagerWithHealth<SandboxId> {
                   break
                 }
               }
-            } else if (jsonRpcMessage.method === "chain_newHead") {
-              chain.bestBlockHeight = parseInt(
-                jsonRpcMessage.params.result.number,
-              )
             } else {
               return toApplication
             }
