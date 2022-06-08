@@ -74,7 +74,7 @@ export interface Background extends Window {
     // message might have changed.
     get smoldotCrashError(): string | undefined
     // Get the bootnodes of the wellKnownChains
-    get wellKnownChainBootnodes(): ChainBootnodes
+    get wellKnownChainBootnodes(): Promise<ChainBootnodes>
   }
 }
 
@@ -214,12 +214,48 @@ window.uiInterface = {
     else return undefined
   },
   get wellKnownChainBootnodes() {
-    return {
-      [polkadot_cp.id]: polkadot_cp.bootNodes,
-      [ksmcc3_cp.id]: ksmcc3_cp.bootNodes,
-      [westend2_cp.id]: westend2_cp.bootNodes,
-      [rococo_cp.id]: rococo_cp.bootNodes,
-    }
+    return new Promise<ChainBootnodes>((res, rej) => {
+      chrome.storage.local.get(
+        [
+          "bootNodes_".concat(polkadot_cp.id),
+          "bootNodes_".concat(ksmcc3_cp.id),
+          "bootNodes_".concat(westend2_cp.id),
+          "bootNodes_".concat(rococo_cp.id),
+        ],
+        (result) => {
+          if (chrome.runtime.lastError) {
+            rej(
+              "Error during fetching local storage items:" +
+                chrome.runtime.lastError.message,
+            )
+          }
+
+          let i = "bootNodes_".concat(polkadot_cp.id)
+          if (result[i]) {
+            polkadot_cp.bootNodes = result[i]
+          }
+          i = "bootNodes_".concat(ksmcc3_cp.id)
+          if (result[i]) {
+            ksmcc3_cp.bootNodes = result[i]
+          }
+          i = "bootNodes_".concat(westend2_cp.id)
+          if (result[i]) {
+            westend2_cp.bootNodes = result[i]
+          }
+          i = "bootNodes_".concat(rococo_cp.id)
+          if (result[i]) {
+            rococo_cp.bootNodes = result[i]
+          }
+        },
+      )
+
+      res({
+        [polkadot_cp.id]: polkadot_cp.bootNodes || polkadot.bootNodes,
+        [ksmcc3_cp.id]: ksmcc3_cp.bootNodes || ksmcc3.bootNodes,
+        [westend2_cp.id]: westend2_cp.bootNodes || westend2.bootNodes,
+        [rococo_cp.id]: rococo_cp.bootNodes || rococo_v2_2.bootNodes,
+      })
+    })
   },
 }
 
