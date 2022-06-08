@@ -58,16 +58,6 @@ export const createScClient = (): ScClient => {
     potentialRelayChainIds = [] as string[],
   ): Promise<Chain> => {
     const chainId = getRandomChainId()
-    const postToExtension = (msg: HeaderlessToExtension) => {
-      window.postMessage(
-        {
-          ...msg,
-          origin: "substrate-connect-client",
-          chainId,
-        },
-        "*",
-      )
-    }
 
     const createChain = (
       msg: HeaderlessToExtension & {
@@ -89,7 +79,7 @@ export const createScClient = (): ScClient => {
           )
         })
 
-        postToExtension(msg)
+        postToExtension({ ...msg, origin: "substrate-connect-client", chainId })
       })
 
     try {
@@ -121,14 +111,23 @@ export const createScClient = (): ScClient => {
         if (crashError) throw crashError
         if (!chains.has(chain)) throw new AlreadyDestroyedError()
         if (!jsonRpcCallback) throw new JsonRpcDisabledError()
-        postToExtension({ type: "rpc", jsonRpcMessage })
+        postToExtension({
+          origin: "substrate-connect-client",
+          chainId,
+          type: "rpc",
+          jsonRpcMessage,
+        })
       },
       remove: () => {
         if (crashError) throw crashError
         if (!chains.has(chain)) throw new AlreadyDestroyedError()
         listeners.delete(chainId)
         chains.delete(chain)
-        postToExtension({ type: "remove-chain" })
+        postToExtension({
+          origin: "substrate-connect-client",
+          chainId,
+          type: "remove-chain",
+        })
       },
     }
     chains.set(chain, chainId)
@@ -157,4 +156,10 @@ export const createScClient = (): ScClient => {
       jsonRpcCallback?: JsonRpcCallback,
     ) => internalAddChain(true, name, jsonRpcCallback),
   }
+}
+
+// Sends a message to the extension. This function primarly exists in order to provide strong
+// typing for the message.
+function postToExtension(msg: ToExtension) {
+  window.postMessage(msg, "*")
 }
