@@ -12,12 +12,17 @@ import {
   ToExtension,
 } from "@substrate/connect-extension-protocol"
 
-const polkadot_cp = Object.assign({}, polkadot)
-const ksmcc3_cp = Object.assign({}, ksmcc3)
-const westend2_cp = Object.assign({}, westend2)
-const rococo_cp = Object.assign({}, rococo_v2_2)
+// Loads the well-known chains bootnodes from the local storage and returns the well-known
+// chains.
+const loadWellKnownChains = (): Promise<Map<string, string>> => {
+  let resolve: undefined | ((list: Map<string, string>) => void)
+  const promise = new Promise<Map<string, string>>((r) => (resolve = r))
 
-const storageBootnodes = (): Map<string, string> => {
+  let polkadot_cp = Object.assign({}, polkadot)
+  let ksmcc3_cp = Object.assign({}, ksmcc3)
+  let westend2_cp = Object.assign({}, westend2)
+  let rococo_cp = Object.assign({}, rococo_v2_2)
+
   chrome.storage.local.get(
     [
       "bootNodes_".concat(polkadot_cp.id),
@@ -42,21 +47,25 @@ const storageBootnodes = (): Map<string, string> => {
       if (result[i]) {
         rococo_cp.bootNodes = result[i]
       }
+
+      // Note that this list doesn't necessarily always have to match the list of well-known
+      // chains in `@substrate/connect`. The list of well-known chains is not part of the stability
+      // guarantees of the connect <-> extension protocol and is thus allowed to change
+      // between versions of the extension. For this reason, we don't use the `WellKnownChain`
+      // enum from `@substrate/connect` but instead manually make the list in that enum match
+      // the list present here.
+      resolve!(
+        new Map<string, string>([
+          [polkadot_cp.id, JSON.stringify(polkadot_cp)],
+          [ksmcc3_cp.id, JSON.stringify(ksmcc3_cp)],
+          [rococo_cp.id, JSON.stringify(rococo_cp)],
+          [westend2_cp.id, JSON.stringify(westend2_cp)],
+        ]),
+      )
     },
   )
 
-  // Note that this list doesn't necessarily always have to match the list of well-known
-  // chains in `@substrate/connect`. The list of well-known chains is not part of the stability
-  // guarantees of the connect <-> extension protocol and is thus allowed to change
-  // between versions of the extension. For this reason, we don't use the `WellKnownChain`
-  // enum from `@substrate/connect` but instead manually make the list in that enum match
-  // the list present here.
-  return new Map<string, string>([
-    [polkadot_cp.id, JSON.stringify(polkadot_cp)],
-    [ksmcc3_cp.id, JSON.stringify(ksmcc3_cp)],
-    [rococo_cp.id, JSON.stringify(rococo_cp)],
-    [westend2_cp.id, JSON.stringify(westend2_cp)],
-  ])
+  return promise
 }
 
 export interface Background extends Window {
@@ -74,12 +83,8 @@ export interface Background extends Window {
     // message might have changed.
     get smoldotCrashError(): string | undefined
     // Get the bootnodes of the wellKnownChains
-    get wellKnownChainBootnodes(): Promise<ChainBootnodes>
+    get wellKnownChainBootnodes(): Promise<Record<string, string[]>>
   }
-}
-
-interface ChainBootnodes {
-  [id: string]: string[]
 }
 
 interface logStructure {
@@ -215,47 +220,13 @@ window.uiInterface = {
     else return undefined
   },
   get wellKnownChainBootnodes() {
-    return new Promise<ChainBootnodes>((res, rej) => {
-      chrome.storage.local.get(
-        [
-          "bootNodes_".concat(polkadot_cp.id),
-          "bootNodes_".concat(ksmcc3_cp.id),
-          "bootNodes_".concat(westend2_cp.id),
-          "bootNodes_".concat(rococo_cp.id),
-        ],
-        (result) => {
-          if (chrome.runtime.lastError) {
-            rej(
-              "Error during fetching local storage items:" +
-                chrome.runtime.lastError.message,
-            )
-          }
-
-          let i = "bootNodes_".concat(polkadot_cp.id)
-          if (result[i]) {
-            polkadot_cp.bootNodes = result[i]
-          }
-          i = "bootNodes_".concat(ksmcc3_cp.id)
-          if (result[i]) {
-            ksmcc3_cp.bootNodes = result[i]
-          }
-          i = "bootNodes_".concat(westend2_cp.id)
-          if (result[i]) {
-            westend2_cp.bootNodes = result[i]
-          }
-          i = "bootNodes_".concat(rococo_cp.id)
-          if (result[i]) {
-            rococo_cp.bootNodes = result[i]
-          }
-        },
-      )
-
-      res({
-        [polkadot_cp.id]: polkadot_cp.bootNodes || polkadot.bootNodes,
-        [ksmcc3_cp.id]: ksmcc3_cp.bootNodes || ksmcc3.bootNodes,
-        [westend2_cp.id]: westend2_cp.bootNodes || westend2.bootNodes,
-        [rococo_cp.id]: rococo_cp.bootNodes || rococo_v2_2.bootNodes,
-      })
+    return loadWellKnownChains().then((list) => {
+      let output: Record<string, string[]> = {}
+      for (const [_, chainSpec] of list) {
+        const parsed = JSON.parse(chainSpec)
+        output[parsed.id as string] = parsed.bootNodes as string[]
+      }
+      return output
     })
   },
 }
@@ -279,7 +250,8 @@ manager = {
   state: "initializing",
   whenInitFinished: (async () => {
     try {
-      const wellKnownChains = storageBootnodes()
+      const wellKnownChains = await loadWellKnownChains()
+
       // Start initializing a `ConnectionManagerWithHealth`.
       // This initialization operation shouldn't take more than a few dozen milliseconds, but we
       // still need to properly handle situations where initialization isn't finished yet.
