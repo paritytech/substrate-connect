@@ -58,7 +58,7 @@ export const createScClient = (): ScClient => {
       | {
           state: "ok"
         }
-      | { state: "dead"; error: CrashError }
+      | { state: "dead"; error: AlreadyDestroyedError | CrashError }
 
     let resolve: undefined | (() => void)
     const initFinished = new Promise((res) => {
@@ -89,7 +89,7 @@ export const createScClient = (): ScClient => {
             case "error": {
               chainState.state = {
                 state: "dead",
-                error: new CrashError(msg.errorMessage),
+                error: new CrashError("Error while creating the chain: " + msg.errorMessage),
               }
               break
             }
@@ -111,7 +111,7 @@ export const createScClient = (): ScClient => {
             case "error": {
               chainState.state = {
                 state: "dead",
-                error: new CrashError(msg.errorMessage),
+                error: new CrashError("Extension has killed the chain: " + msg.errorMessage),
               }
               break
             }
@@ -221,9 +221,14 @@ export const createScClient = (): ScClient => {
           throw chainState.state.error
         }
 
-        if (!chains.has(chain)) throw new AlreadyDestroyedError()
+        chainState.state = {
+          state: "dead",
+          error: new AlreadyDestroyedError()
+        };
+
         listeners.delete(chainState.id)
         chains.delete(chain)
+
         postToExtension({
           origin: "substrate-connect-client",
           chainId: chainState.id,
