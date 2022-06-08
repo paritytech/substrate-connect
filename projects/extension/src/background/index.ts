@@ -200,6 +200,7 @@ window.uiInterface = {
             : undefined,
           isSyncing: info.isSyncing,
           peers: info.peers,
+          bestBlockHeight: info.bestBlockHeight,
         }
       })
     } else {

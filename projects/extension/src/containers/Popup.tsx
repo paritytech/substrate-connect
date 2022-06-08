@@ -7,11 +7,9 @@ import React, {
 } from "react"
 
 import { MdOutlineSettings, MdOutlineEast, MdLinkOff } from "react-icons/md"
-
 import { Accordion, Logo } from "../components"
 import { Background } from "../background"
-
-const knownChains = ["polkadot", "kusama", "westend", "rococo"]
+import IconWeb3 from "../components/IconWeb3"
 
 interface PopupChain {
   chainName: string
@@ -72,10 +70,6 @@ const Popup: FunctionComponent = () => {
     let unsubscribe = () => {}
 
     ;(async () => {
-      // retrieve open tabs and assign to local state
-      const browserTabs = await new Promise<chrome.tabs.Tab[]>((res) =>
-        chrome.tabs.query({ currentWindow: true }, res),
-      )
       if (!isActive) return
 
       chrome.runtime.getBackgroundPage((backgroundPage) => {
@@ -101,9 +95,7 @@ const Popup: FunctionComponent = () => {
     const icon = network.toLowerCase()
     return (
       <>
-        <div className="icon w-7">
-          {knownChains.includes(icon) ? icon : "?"}
-        </div>
+        <IconWeb3>{icon}</IconWeb3>
         <div className="pl-2">{network}</div>
       </>
     )

@@ -74,12 +74,13 @@
 }
 
 .item_content {
+  border: 1px solid #ececec;
   font-weight: 400;
-  @apply bg-[#21262A] p-4 text-white;
+  @apply p-4 text-[#171717];
 }
 
 .item {
-  @apply w-full;
+  @apply w-full bg-white;
 }
 
 ._mi__single button {
@@ -95,10 +96,14 @@
 }
 
 .content_expanded {
+  border: 1px solid #ececec;
+  border-top: 0 !important;
   @apply rounded-b-md;
 }
 
-.content_closed {
+.content_opened {
+  border: 1px solid #ececec;
+  border-bottom: 0 !important;
   @apply rounded-b-none !important;
 }
 

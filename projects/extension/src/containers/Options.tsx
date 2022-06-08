@@ -74,22 +74,24 @@ const Options: React.FunctionComponent = () => {
       const refresh = () => {
         const networks = new Map<string, NetworkTabProps>()
         bg.uiInterface.chains.forEach((chain) => {
-          if (!chain.tab) return
+          const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
+          if (!tab) return
 
-          const network = networks.get(chain.chainName)
+          const network = networks.get(chainName)
           if (!network) {
-            return networks.set(chain.chainName, {
-              name: chain.chainName,
+            return networks.set(chainName, {
+              name: chainName,
               health: {
-                isSyncing: chain.isSyncing,
-                peers: chain.peers,
+                isSyncing,
+                peers,
                 status: "connected",
+                bestBlockHeight,
               },
-              apps: [{ name: chain.tab.url, url: chain.tab.url }],
+              apps: [{ name: tab.url, url: tab.url }],
             })
           }
 
-          network.apps.push({ name: chain.tab.url, url: chain.tab.url })
+          network.apps.push({ name: tab.url, url: tab.url })
         })
         setNetworks([...networks.values()])
       }
@@ -137,9 +139,9 @@ const Options: React.FunctionComponent = () => {
     <div className="mb-4 font-roboto">
       <div className="options-container">
         <div className="px-12 pb-3.5 text-base flex items-center">
-          <div>
+          <div className="flex items-baseline">
             <Logo textSize="lg" />
-            <div className="text-sm">v{pckg.version}</div>
+            <div className="text-sm pl-4">v{pckg.version}</div>
           </div>
           <div className="w-full ml-[10%]">
             <Tabs
@@ -150,6 +152,7 @@ const Options: React.FunctionComponent = () => {
         </div>
       </div>
       <div className="mx-[15%] pt-2">
+        {/** Networks section */}
         <TabsContent activeTab={activeTab}>
           <section>
             {networks.length ? (
@@ -163,6 +166,7 @@ const Options: React.FunctionComponent = () => {
               <div>No networks or apps are connected to the extension.</div>
             )}
           </section>
+          {/** Logs section */}
           <section className="block">
             <div className="flex my-5">
               <button
