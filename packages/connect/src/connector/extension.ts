@@ -89,7 +89,9 @@ export const createScClient = (): ScClient => {
             case "error": {
               chainState.state = {
                 state: "dead",
-                error: new CrashError("Error while creating the chain: " + msg.errorMessage),
+                error: new CrashError(
+                  "Error while creating the chain: " + msg.errorMessage,
+                ),
               }
               break
             }
@@ -111,7 +113,9 @@ export const createScClient = (): ScClient => {
             case "error": {
               chainState.state = {
                 state: "dead",
-                error: new CrashError("Extension has killed the chain: " + msg.errorMessage),
+                error: new CrashError(
+                  "Extension has killed the chain: " + msg.errorMessage,
+                ),
               }
               break
             }
@@ -223,8 +227,8 @@ export const createScClient = (): ScClient => {
 
         chainState.state = {
           state: "dead",
-          error: new AlreadyDestroyedError()
-        };
+          error: new AlreadyDestroyedError(),
+        }
 
         listeners.delete(chainState.id)
         chains.delete(chain)

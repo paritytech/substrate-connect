@@ -311,8 +311,12 @@ describe("SmoldotConnect::Extension", () => {
         setTimeout(res, 100)
       })
 
-      expect(() => chain.sendJsonRpc("")).toThrow(new CrashError("Extension has killed the chain: Boom!"))
-      expect(() => chain.remove()).toThrow(new CrashError("Extension has killed the chain: Boom!"))
+      expect(() => chain.sendJsonRpc("")).toThrow(
+        new CrashError("Extension has killed the chain: Boom!"),
+      )
+      expect(() => chain.remove()).toThrow(
+        new CrashError("Extension has killed the chain: Boom!"),
+      )
     })
   })
 
