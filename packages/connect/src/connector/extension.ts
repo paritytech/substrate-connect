@@ -52,7 +52,7 @@ export const createScClient = (): ScClient => {
   ): Promise<Chain> => {
     type ChainState =
       | {
-          state: "wait-ack-or-err"
+          state: "pending"
           waitFinished: () => void
         }
       | {
@@ -67,7 +67,7 @@ export const createScClient = (): ScClient => {
     const chainState: { id: string; state: ChainState } = {
       id: getRandomChainId(),
       state: {
-        state: "wait-ack-or-err",
+        state: "pending",
         waitFinished: resolve!,
       },
     }
@@ -82,7 +82,7 @@ export const createScClient = (): ScClient => {
     // Removing then re-adding the listener could cause messages to be missed.
     listeners.set(chainState.id, (msg) => {
       switch (chainState.state.state) {
-        case "wait-ack-or-err": {
+        case "pending": {
           const waitFinished = chainState.state.waitFinished
           switch (msg.type) {
             case "chain-ready": {
@@ -189,7 +189,7 @@ export const createScClient = (): ScClient => {
         resolve = () => res(null)
       })
       chainState.state = {
-        state: "wait-ack-or-err",
+        state: "pending",
         waitFinished: resolve!,
       }
 
