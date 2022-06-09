@@ -211,7 +211,6 @@ export const createScClient = (): ScClient => {
           throw chainState.state.error
         }
 
-        if (!chains.has(chain)) throw new AlreadyDestroyedError()
         if (!jsonRpcCallback) throw new JsonRpcDisabledError()
         postToExtension({
           origin: "substrate-connect-client",
@@ -241,6 +240,7 @@ export const createScClient = (): ScClient => {
       },
     }
 
+    // This mapping of chains is kept just for the `potentialRelayChainIds` field.
     chains.set(chain, chainState.id)
 
     return chain
