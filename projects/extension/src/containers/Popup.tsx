@@ -76,7 +76,7 @@ const Popup: FunctionComponent = () => {
     const unsubscribe = bg.uiInterface.onChainsChanged(() => refresh())
     refresh()
 
-    return unsubscribe && unsubscribe()
+    return unsubscribe
   }, [bg])
 
   const goToOptions = (): void => {
