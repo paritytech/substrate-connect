@@ -133,11 +133,13 @@ const App: React.FunctionComponent = () => {
               WellKnownChain enumeration docs
             </SectionRef>
             <SectionText>
-            You have to provide a well-known chain name (polkadot, ksmcc3, westend2, rococo_v2_2).
-            Note that these are the "real" names of the chains rather than the
-            names they are more commonly known as (such as Kusama or Rococo). For example, "ksmcc3" is the name
-            of Kusama. This is important for chains which have been hard forked. For example,
-            "rococo_v2" and "rococo_v2_2" are two different chains.
+              You have to provide a well-known chain name (polkadot, ksmcc3,
+              westend2, rococo_v2_2). Note that these are the "real" names of
+              the chains rather than the names they are more commonly known as
+              (such as Kusama or Rococo). For example, "ksmcc3" is the name of
+              Kusama. This is important for chains which have been hard forked.
+              For example, "rococo_v2" and "rococo_v2_2" are two different
+              chains.
             </SectionText>
           </Section>
 
