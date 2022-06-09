@@ -72,6 +72,11 @@ export const createScClient = (): ScClient => {
       },
     }
 
+    if (listeners.has(chainState.id))
+      throw new Error(
+        "Unexpectedly randomly generated the same chain ID twice despite 64bits of entropy",
+      )
+
     // Setup the listener for this chain.
     // This listener should never be removed until we are no longer interested in this chain.
     // Removing then re-adding the listener could cause messages to be missed.
