@@ -7,11 +7,9 @@ import React, {
 } from "react"
 
 import { MdOutlineSettings, MdOutlineEast, MdLinkOff } from "react-icons/md"
-
 import { Accordion, Logo } from "../components"
 import { Background } from "../background"
-
-const knownChains = ["polkadot", "kusama", "westend", "rococo"]
+import IconWeb3 from "../components/IconWeb3"
 
 interface PopupChain {
   chainName: string
@@ -30,68 +28,56 @@ const Popup: FunctionComponent = () => {
   const disconnectTab = useRef<(tabId: number) => void>((_: number) => {})
   const [connChains, setConnChains] = useState<PopupChain[] | undefined>()
 
-  const refresh = () => {
-    chrome.runtime.getBackgroundPage((backgroundPage) => {
-      const bg = backgroundPage as Background
-      const allChains: PopupChain[] = []
+  const [bg, setBg] = useState<Background | undefined>()
 
-      bg.uiInterface.chains.forEach((c) => {
-        const i = allChains.findIndex((i) => i.chainName === c.chainName)
-        if (i === -1) {
-          allChains.push({
-            chainName: c.chainName,
-            details: [
-              {
-                tabId: c.tab?.id,
-                url: c.tab?.url,
-                peers: c.peers,
-                isSyncing: c.isSyncing,
-                chainId: c.chainId,
-              },
-            ],
-          })
-        } else {
-          const details = allChains[i]?.details
-          if (!details.map((d) => d.tabId).includes(c.tab?.id)) {
-            details.push({
+  const refresh = () => {
+    const allChains: PopupChain[] = []
+
+    bg?.uiInterface.chains.forEach((c) => {
+      const i = allChains.findIndex((i) => i.chainName === c.chainName)
+      if (i === -1) {
+        allChains.push({
+          chainName: c.chainName,
+          details: [
+            {
               tabId: c.tab?.id,
               url: c.tab?.url,
               peers: c.peers,
               isSyncing: c.isSyncing,
               chainId: c.chainId,
-            })
-          }
+            },
+          ],
+        })
+      } else {
+        const details = allChains[i]?.details
+        if (!details.map((d) => d.tabId).includes(c.tab?.id)) {
+          details.push({
+            tabId: c.tab?.id,
+            url: c.tab?.url,
+            peers: c.peers,
+            isSyncing: c.isSyncing,
+            chainId: c.chainId,
+          })
         }
-      })
-      setConnChains([...allChains])
+      }
     })
+    setConnChains([...allChains])
   }
 
   useEffect(() => {
-    let isActive = true
-    let unsubscribe = () => {}
-
-    ;(async () => {
-      // retrieve open tabs and assign to local state
-      const browserTabs = await new Promise<chrome.tabs.Tab[]>((res) =>
-        chrome.tabs.query({ currentWindow: true }, res),
-      )
-      if (!isActive) return
-
-      chrome.runtime.getBackgroundPage((backgroundPage) => {
-        if (!isActive) return
-        const bg = backgroundPage as Background
-        disconnectTab.current = bg.uiInterface.disconnectTab
-        unsubscribe = bg.uiInterface.onChainsChanged(refresh)
-        refresh()
-      })
-    })()
-
-    return () => {
-      isActive = false
-      unsubscribe && unsubscribe()
-    }
+    chrome.runtime.getBackgroundPage((backgroundPage) => {
+      setBg(backgroundPage as Background)
+    })
   }, [])
+
+  useEffect(() => {
+    if (!bg) return
+    disconnectTab.current = bg.uiInterface.disconnectTab
+    const unsubscribe = bg.uiInterface.onChainsChanged(() => refresh())
+    refresh()
+
+    return unsubscribe
+  }, [bg])
 
   const goToOptions = (): void => {
     chrome.runtime.openOptionsPage()
@@ -101,9 +87,7 @@ const Popup: FunctionComponent = () => {
     const icon = network.toLowerCase()
     return (
       <>
-        <div className="icon w-7">
-          {knownChains.includes(icon) ? icon : "?"}
-        </div>
+        <IconWeb3>{icon}</IconWeb3>
         <div className="pl-2">{network}</div>
       </>
     )

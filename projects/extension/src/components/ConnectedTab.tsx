@@ -2,6 +2,7 @@ import React, { FunctionComponent, SetStateAction, Dispatch } from "react"
 import { MdBlock } from "react-icons/md"
 import { TabInterface } from "../types"
 import "../main.css"
+import IconWeb3 from "./IconWeb3"
 
 interface ConnectedTabProps {
   disconnectTab: (tabId: number) => void
@@ -9,8 +10,6 @@ interface ConnectedTabProps {
   tab?: TabInterface
   setActiveTab?: Dispatch<SetStateAction<TabInterface | undefined>>
 }
-
-const knownChains = ["polkadot", "kusama", "westend", "rococo"]
 
 const ConnectedTab: FunctionComponent<ConnectedTabProps> = ({
   disconnectTab,
@@ -48,11 +47,7 @@ const ConnectedTab: FunctionComponent<ConnectedTabProps> = ({
                 className="networkicon_container"
                 style={{ color: "text-neutral-500" }}
               >
-                <div className="mr-1 icon txt-lg">
-                  {knownChains.includes(n.toLowerCase())
-                    ? n.toLowerCase()
-                    : "?"}
-                </div>
+                <IconWeb3>n.toLowerCase()</IconWeb3>
               </div>
             ))}
             <div className="tooltip">
