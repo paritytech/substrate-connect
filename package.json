@@ -18,6 +18,7 @@
     "packages/connect-extension-protocol",
     "packages/connect",
     "projects/extension",
+    "projects/tester",
     "projects/burnr",
     "projects/demo",
     "projects/landing-page"
@@ -34,6 +35,7 @@
     "dev:api-docs": "concurrently -n typedoc,http-server 'nodemon -e ts --watch ./packages/connect --watch ./packages/connect-extension-protocol --exec typedoc --entryPoints ./packages/connect/src/index.ts --entryPoints ./packages/connect-extension-protocol/src/index.ts' 'http-server _site/api'",
     "dev:burnr": "yarn workspace @substrate/burnr run dev",
     "dev:demo": "yarn workspace @substrate/demo run dev",
+    "dev:tester": "yarn workspace @substrate/tester run dev",
     "dev:landing-page": "yarn workspace @substrate/landing-page run dev",
     "dev:extension": "yarn workspace @substrate/extension run dev",
     "deploy": "./deploy.sh",

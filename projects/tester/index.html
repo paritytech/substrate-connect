@@ -1,0 +1,130 @@
+<html>
+  <body>
+    <div id="root"></div>
+    <style>
+      body {
+        margin: 0;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
+          monospace;
+        font-size: 14px;
+        background-color: black;
+        color: #18ffb2;
+      }
+      #mn_title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin: 3rem 0 0 6rem;
+      }
+      #r_label {
+        font-weight: bold;
+        color: #ccc;
+      }
+      .table {
+        margin: 0.1rem 10rem;
+      }
+      #messages {
+        margin: 0 auto;
+        padding: 0.5rem;
+      }
+      .message {
+        padding: 0.5rem;
+      }
+      .message time {
+        display: inline-block;
+        opacity: 0.5;
+        width: 10rem;
+      }
+      .error {
+        color: red;
+      }
+      @keyframes pulse_animation {
+        0% {
+          opacity: 0.1;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.1;
+        }
+      }
+      .pulse {
+        animation-name: pulse_animation;
+        animation-duration: 5000ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+      }
+    </style>
+    <div id="mn_title">Polkadot</div>
+    <table class="table">
+      <tr>
+        <td id="polkadot">
+          <div id="polkadotInfo">
+            <p>
+              <span id="r_label">Authoring Version:</span
+              ><span id="polkadotAuth"></span>
+            </p>
+            <p>
+              <span id="r_label">Spec Version:</span
+              ><span id="polkadotSpec"></span>
+            </p>
+            <p>
+              <span id="r_label">Transaction Version:</span
+              ><span id="polkadotTrans"></span>
+            </p>
+          </div>
+          <div id="polkadotNewBlock"></div>
+          <div>
+            <p>
+              <span id="r_label">-- New Block Hash: </span
+              ><span id="polkadotNew"></span>
+            </p>
+            <p>
+              <span id="r_label">-- Best Block Hash: </span
+              ><span id="polkadotBest"></span>
+            </p>
+            <p>
+              <span id="r_label">-- Finalized Hash: </span
+              ><span id="polkadotFinalized"></span>
+            </p>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <div id="mn_title">Westend</div>
+    <table class="table">
+      <tr>
+        <td id="westend">
+          <div id="westendInfo">
+            <p>
+              <span id="r_label">Authoring Version: </span
+              ><span id="westendAuth"></span>
+            </p>
+            <p>
+              <span id="r_label">Spec Version: </span
+              ><span id="westendSpec"></span>
+            </p>
+            <p>
+              <span id="r_label">Transaction Version: </span
+              ><span id="westendTrans"></span>
+            </p>
+          </div>
+          <p>
+            <span id="r_label">-- New Block Hash: </span
+            ><span id="westendNew"></span>
+          </p>
+          <p>
+            <span id="r_label">-- Best Block Hash: </span
+            ><span id="westendBest"></span>
+          </p>
+          <p>
+            <span id="r_label">-- Finalized Hash: </span
+            ><span id="westendFinalized"></span>
+          </p>
+        </td>
+      </tr>
+    </table>
+    <section id="messages"></section>
+    <script type="module" src="./src/index.ts"></script>
+  </body>
+</html>
