@@ -3157,7 +3157,7 @@ __metadata:
   resolution: "@substrate/tester@workspace:projects/tester"
   dependencies:
     "@polkadot/api": ^8.3.2
-    "@substrate/connect": 0.7.5
+    "@substrate/connect": ^0.7.5
     eslint: ^8.14.0
     regenerator-runtime: ^0.13.9
   languageName: unknown
