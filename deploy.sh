@@ -17,6 +17,7 @@ branch=gh-pages
 initDirs() {
   rm -rf ./$directory/*
   mkdir -p ./$directory/burnr
+  mkdir -p ./$directory/demo
   mkdir -p ./$directory/extension
   touch ./$directory/.nojekyll
 }
@@ -26,6 +27,8 @@ deployGhPages() {
   initDirs
   echo "Place burnr wallet demo's files."
   cp -r ./projects/burnr/dist/* ./$directory/burnr/.
+  echo "Place multi-demo's files."
+  cp -r ./projects/demo/dist/* ./$directory/demo/.
   echo "Place Substrate-connect extension's zip."
   cp ./projects/extension/dist/packed-extension.zip ./$directory/extension/packed-extension.zip
   echo "Place landing page's files."

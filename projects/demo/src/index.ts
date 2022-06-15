@@ -16,16 +16,14 @@ window.onload = () => {
       const westendProvider = new ScProvider(WellKnownChain.westend2)
       const kusamaProvider = new ScProvider(WellKnownChain.ksmcc3)
       const polkadotProvider = new ScProvider(WellKnownChain.polkadot)
-      const rococoProvider = new ScProvider(WellKnownChain.rococo_v2_2)
       await Promise.all(
-        [westendProvider, kusamaProvider, polkadotProvider, rococoProvider].map(
-          (p) => p.connect(),
+        [westendProvider, kusamaProvider, polkadotProvider].map((p) =>
+          p.connect(),
         ),
       )
       const westend = await ApiPromise.create({ provider: westendProvider })
       const kusama = await ApiPromise.create({ provider: kusamaProvider })
       const polkadot = await ApiPromise.create({ provider: polkadotProvider })
-      const rococo = await ApiPromise.create({ provider: rococoProvider })
 
       const westendFnc = async () => {
         const westendUI = document.getElementById("westend")
@@ -62,18 +60,7 @@ window.onload = () => {
         }
       }
 
-      const rococoFnc = async () => {
-        const rococoUI = document.getElementById("rococo")
-        const rococoHead = await rococo.rpc.chain.getHeader()
-        if (rococoUI) {
-          rococoUI.innerText = rococoHead?.number.toString()
-          await rococo.rpc.chain.subscribeNewHeads((lastHeader) => {
-            rococoUI.innerText = "#" + lastHeader?.number.toString()
-          })
-        }
-      }
-
-      await Promise.all([westendFnc(), kusamaFnc(), polkadotFnc(), rococoFnc()])
+      await Promise.all([westendFnc(), kusamaFnc(), polkadotFnc()])
 
       const westmintProvider = new ScProvider(
         JSON.stringify(westmint),
