@@ -13,13 +13,6 @@ import {
 import { WellKnownChain } from "../WellKnownChain.js"
 import { getSpec } from "./specs/index.js"
 
-type HeaderlessToExtensionGeneric<T extends ToExtension> = T extends {
-  origin: "substrate-connect-client"
-} & infer V
-  ? Omit<V, "chainId">
-  : unknown
-type HeaderlessToExtension = HeaderlessToExtensionGeneric<ToExtension>
-
 const listeners = new Map<string, (msg: ToApplication) => void>()
 if (typeof window === "object") {
   window.addEventListener(
@@ -57,95 +50,204 @@ export const createScClient = (): ScClient => {
     jsonRpcCallback?: JsonRpcCallback,
     potentialRelayChainIds = [] as string[],
   ): Promise<Chain> => {
-    const chainId = getRandomChainId()
-    const postToExtension = (msg: HeaderlessToExtension) => {
-      window.postMessage(
-        {
-          ...msg,
-          origin: "substrate-connect-client",
-          chainId,
-        },
-        "*",
-      )
+    type ChainState =
+      | {
+          state: "pending"
+          waitFinished: () => void
+        }
+      | {
+          state: "ok"
+        }
+      | { state: "dead"; error: AlreadyDestroyedError | CrashError }
+
+    let resolve: undefined | (() => void)
+    const initFinished = new Promise((res) => {
+      resolve = () => res(null)
+    })
+    const chainState: { id: string; state: ChainState } = {
+      id: getRandomChainId(),
+      state: {
+        state: "pending",
+        waitFinished: resolve!,
+      },
     }
 
-    const createChain = (
-      msg: HeaderlessToExtension & {
-        type: "add-chain" | "add-well-known-chain"
-      },
-    ) =>
-      new Promise<void>((res, rej) => {
-        listeners.set(chainId, (msg) => {
-          listeners.delete(chainId)
-          if (msg.type === "chain-ready") return res()
-          const errMsg =
-            msg.type === "error"
-              ? msg.errorMessage
-              : "Unexpected message from the extension"
-          rej(
-            new Error(
-              "There was an error creating the smoldot chain: " + errMsg,
-            ),
-          )
-        })
-
-        postToExtension(msg)
-      })
-
-    try {
-      await createChain(
-        isWellKnown
-          ? {
-              type: "add-well-known-chain",
-              chainName: chainSpecOrWellKnownName,
-            }
-          : {
-              type: "add-chain",
-              chainSpec: chainSpecOrWellKnownName,
-              potentialRelayChainIds,
-            },
+    if (listeners.has(chainState.id))
+      throw new Error(
+        "Unexpectedly randomly generated the same chain ID twice despite 64bits of entropy",
       )
-    } catch (e) {
-      if (!isWellKnown) throw e
 
-      const chainSpec = await getSpec(chainSpecOrWellKnownName)
-      await createChain({
+    // Setup the listener for this chain.
+    // This listener should never be removed until we are no longer interested in this chain.
+    // Removing then re-adding the listener could cause messages to be missed.
+    listeners.set(chainState.id, (msg) => {
+      switch (chainState.state.state) {
+        case "pending": {
+          const waitFinished = chainState.state.waitFinished
+          switch (msg.type) {
+            case "chain-ready": {
+              chainState.state = {
+                state: "ok",
+              }
+              break
+            }
+            case "error": {
+              chainState.state = {
+                state: "dead",
+                error: new CrashError(
+                  "Error while creating the chain: " + msg.errorMessage,
+                ),
+              }
+              break
+            }
+            default: {
+              // Unexpected message. We ignore it.
+              // While it could be tempting to switch the chain to `dead`, the extension might
+              // think that the chain is still alive, and the state mismatch could have
+              // unpredictable and confusing consequences.
+              console.warn(
+                "Unexpected message of type `msg.type` received from substrate-connect extension",
+              )
+            }
+          }
+          waitFinished()
+          break
+        }
+        case "ok": {
+          switch (msg.type) {
+            case "error": {
+              chainState.state = {
+                state: "dead",
+                error: new CrashError(
+                  "Extension has killed the chain: " + msg.errorMessage,
+                ),
+              }
+              break
+            }
+            case "rpc": {
+              if (jsonRpcCallback) {
+                jsonRpcCallback(msg.jsonRpcMessage)
+              } else {
+                console.warn(
+                  "Unexpected message of type `msg.type` received from substrate-connect extension",
+                )
+              }
+              break
+            }
+            default: {
+              // Unexpected message. We ignore it.
+              // While it could be tempting to switch the chain to `dead`, the extension might
+              // think that the chain is still alive, and the state mismatch could have
+              // unpredictable and confusing consequences.
+              console.warn(
+                "Unexpected message of type `msg.type` received from substrate-connect extension",
+              )
+            }
+          }
+          break
+        }
+        case "dead": {
+          // We don't expect any message anymore.
+          break
+        }
+      }
+    })
+
+    // Now that everything is ready to receive messages back from the extension, send the
+    // add-chain message.
+    if (isWellKnown) {
+      postToExtension({
+        origin: "substrate-connect-client",
+        chainId: chainState.id,
+        type: "add-well-known-chain",
+        chainName: chainSpecOrWellKnownName,
+      })
+    } else {
+      postToExtension({
+        origin: "substrate-connect-client",
+        chainId: chainState.id,
         type: "add-chain",
-        chainSpec,
+        chainSpec: chainSpecOrWellKnownName,
+        potentialRelayChainIds,
+      })
+    }
+
+    // Wait for the extension to send back either a confirmation or an error.
+    // Note that `initFinished` becomes ready when `chainState` has been modified. The outcome
+    // can be known by looking into `chainState`.
+    await initFinished
+
+    // In the situation where we tried to create a well-known chain, the extension isn't supposed
+    // to ever return an error. There is however one situation where errors can happen: if the
+    // extension doesn't recognize the desired well-known chain because it uses a different list
+    // of well-known chains than this code. To handle this, we download the chain spec of the
+    // desired well-known chain and try again but this time as a non-well-known chain.
+    if (isWellKnown && chainState.state.state === "dead") {
+      // Note that we keep the same id for the chain for convenience.
+      let resolve: undefined | (() => void)
+      const initFinished = new Promise((res) => {
+        resolve = () => res(null)
+      })
+      chainState.state = {
+        state: "pending",
+        waitFinished: resolve!,
+      }
+
+      postToExtension({
+        origin: "substrate-connect-client",
+        chainId: chainState.id,
+        type: "add-chain",
+        chainSpec: await getSpec(chainSpecOrWellKnownName),
         potentialRelayChainIds: [],
       })
+
+      await initFinished
     }
 
+    // Now check the `chainState` to know if things have succeeded.
+    if (chainState.state.state === "dead") {
+      throw chainState.state.error
+    }
+
+    // Everything is successful.
     const chain: Chain = {
       sendJsonRpc: (jsonRpcMessage) => {
-        if (crashError) throw crashError
-        if (!chains.has(chain)) throw new AlreadyDestroyedError()
+        if (chainState.state.state === "dead") {
+          throw chainState.state.error
+        }
+
         if (!jsonRpcCallback) throw new JsonRpcDisabledError()
-        postToExtension({ type: "rpc", jsonRpcMessage })
+        postToExtension({
+          origin: "substrate-connect-client",
+          chainId: chainState.id,
+          type: "rpc",
+          jsonRpcMessage,
+        })
       },
       remove: () => {
-        if (crashError) throw crashError
-        if (!chains.has(chain)) throw new AlreadyDestroyedError()
-        listeners.delete(chainId)
+        if (chainState.state.state === "dead") {
+          throw chainState.state.error
+        }
+
+        chainState.state = {
+          state: "dead",
+          error: new AlreadyDestroyedError(),
+        }
+
+        listeners.delete(chainState.id)
         chains.delete(chain)
-        postToExtension({ type: "remove-chain" })
+
+        postToExtension({
+          origin: "substrate-connect-client",
+          chainId: chainState.id,
+          type: "remove-chain",
+        })
       },
     }
-    chains.set(chain, chainId)
 
-    let crashError: CrashError | null = null
-    listeners.set(chainId, (msg) => {
-      if (msg.type !== "rpc" || !jsonRpcCallback) {
-        chain.remove()
-        crashError = new CrashError(
-          msg.type === "error"
-            ? msg.errorMessage
-            : "Unexpected message received from the Extension",
-        )
-        return
-      }
-      jsonRpcCallback(msg.jsonRpcMessage)
-    })
+    // This mapping of chains is kept just for the `potentialRelayChainIds` field.
+    chains.set(chain, chainState.id)
+
     return chain
   }
 
@@ -157,4 +259,10 @@ export const createScClient = (): ScClient => {
       jsonRpcCallback?: JsonRpcCallback,
     ) => internalAddChain(true, name, jsonRpcCallback),
   }
+}
+
+// Sends a message to the extension. This function primarly exists in order to provide strong
+// typing for the message.
+function postToExtension(msg: ToExtension) {
+  window.postMessage(msg, "*")
 }

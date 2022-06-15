@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed race condition causing failure to detect when the chain initialization fails when the extension is present ([#1093](https://github.com/paritytech/substrate-connect/pull/1093)).
+
 ## 0.7.5 - 2022-05-17
 
 ### Added

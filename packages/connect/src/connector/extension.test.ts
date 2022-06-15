@@ -93,7 +93,7 @@ describe("SmoldotConnect::Extension", () => {
       })
 
       await expect(chainPromise).rejects.toThrow(
-        "There was an error creating the smoldot chain: test",
+        "Error while creating the chain: test",
       )
     })
 
@@ -306,87 +306,16 @@ describe("SmoldotConnect::Extension", () => {
         errorMessage: "Boom!",
       })
 
-      const clientMsg = await getClientMessage()
-
-      const expectedMsg: ToExtension = {
-        origin: "substrate-connect-client",
-        chainId: addChainMsg.chainId,
-        type: "remove-chain",
-      }
-      expect(clientMsg).toEqual(expectedMsg)
-
-      expect(() => chain.sendJsonRpc("")).toThrow(new CrashError("Boom!"))
-      expect(() => chain.remove()).toThrow(new CrashError("Boom!"))
-    })
-
-    it("procudes a CrashError when receiving an unexpected message", async () => {
-      const { addChain } = createScClient()
-      const chainPromise = addChain("", () => {})
-      const addChainMsg = await getClientMessage()
-      postToClient({
-        type: "chain-ready",
-        origin: "substrate-connect-extension",
-        chainId: addChainMsg.chainId,
+      // Wait for message to be delivered.
+      await new Promise<void>((res) => {
+        setTimeout(res, 100)
       })
-
-      const chain = await chainPromise
-
-      postToClient({
-        type: "chain-ready",
-        origin: "substrate-connect-extension",
-        chainId: addChainMsg.chainId,
-      })
-
-      const clientMsg = await getClientMessage()
-
-      const expectedMsg: ToExtension = {
-        origin: "substrate-connect-client",
-        chainId: addChainMsg.chainId,
-        type: "remove-chain",
-      }
-      expect(clientMsg).toEqual(expectedMsg)
 
       expect(() => chain.sendJsonRpc("")).toThrow(
-        new CrashError("Unexpected message received from the Extension"),
+        new CrashError("Extension has killed the chain: Boom!"),
       )
       expect(() => chain.remove()).toThrow(
-        new CrashError("Unexpected message received from the Extension"),
-      )
-    })
-
-    it("procudes a CrashError when receiving an rpc message when no jsonRpcCallback was provided", async () => {
-      const { addChain } = createScClient()
-      const chainPromise = addChain("")
-      const addChainMsg = await getClientMessage()
-      postToClient({
-        type: "chain-ready",
-        origin: "substrate-connect-extension",
-        chainId: addChainMsg.chainId,
-      })
-
-      const chain = await chainPromise
-
-      postToClient({
-        type: "rpc",
-        origin: "substrate-connect-extension",
-        chainId: addChainMsg.chainId,
-        jsonRpcMessage: "",
-      })
-
-      const clientMsg = await getClientMessage()
-
-      const expectedMsg: ToExtension = {
-        origin: "substrate-connect-client",
-        chainId: addChainMsg.chainId,
-        type: "remove-chain",
-      }
-      expect(clientMsg).toEqual(expectedMsg)
-
-      expect(() => chain.sendJsonRpc("")).toThrow(
-        new CrashError("Unexpected message received from the Extension"),
-      )
-      expect(() => chain.remove()).toThrow(
-        new CrashError("Unexpected message received from the Extension"),
+        new CrashError("Extension has killed the chain: Boom!"),
       )
     })
   })
