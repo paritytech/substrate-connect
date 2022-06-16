@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.1.5 - 2022-06-16
+
 ### Changed
 
 - Improve the UI of the popup and options page. ([#1075](https://github.com/paritytech/substrate-connect/pull/1075))
