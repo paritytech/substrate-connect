@@ -7,7 +7,7 @@
   "license": "GPL-3.0-only",
   "type": "module",
   "scripts": {
-    "bundle-source-code": "zip -r substrate-connect_source-code.zip . -x \"./node_modules/*\" -x \"./dist/*\"",
+    "bundle-source-code": "cp tsconfig.json tsconfig_bkp.json && sed -i '26d' tsconfig.json && sed -i '2d' tsconfig.json && zip -r substrate-connect_source-code.zip . -x \"./node_modules/*\" -x \"./dist/*\" && mv tsconfig_bkp.json tsconfig.json",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "compile": "tsc -b",
