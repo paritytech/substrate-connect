@@ -52,7 +52,7 @@ deployGhPages
 echo -e "\033[0;32mDeploying $branch branch...\033[0m"
 cd $directory &&
   git add --all &&
-  git commit -m "Deploy updates" &&
+  git commit --author "docsbuilder <info@parity.io>" -m "Deploy updates" &&
   git push origin $branch
 
 echo -e "\033[0;32mCleaning up...\033[0m"
