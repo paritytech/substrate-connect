@@ -47,7 +47,6 @@ echo -e "\033[0;32mRebuilding everything...\033[0m"
 yarn build
 
 echo -e "\033[0;32mGenerating site...\033[0m"
-
 deployGhPages
 
 echo -e "\033[0;32mDeploying $branch branch...\033[0m"
