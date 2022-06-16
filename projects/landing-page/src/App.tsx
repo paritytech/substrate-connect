@@ -27,7 +27,7 @@ import { CardNetwork, CardProject } from "./components/Cards"
 
 import Burnr from "./assets/images/Burnr.png"
 import MultiDemo from "./assets/images/MultiDemo.png"
-import Extension from "./assets/images/Extension.png"
+import Extension from "./assets/images/NewExtension1.png"
 import YourProject from "./assets/images/YourProject.png"
 
 const Alert = (props: AlertProps) => {
