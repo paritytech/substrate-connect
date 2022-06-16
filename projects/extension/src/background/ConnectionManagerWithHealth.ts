@@ -411,6 +411,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
                     ...pruned,
                     ...finalized,
                   ].forEach((blockHash) => {
+                    // `chain.finalizedBlockHashHex` can be null
+                    if (blockHash === null) return
                     this.#inner.sandboxMessage(sandboxId, {
                       origin: "substrate-connect-client",
                       type: "rpc",
