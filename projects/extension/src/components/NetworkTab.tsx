@@ -15,7 +15,7 @@ const NetworkContent = ({ network, health, apps }: NetworkContentProps) => {
   return (
     <div className="w-full text-[#171717] text-xs">
       <div className="flex flex-row pb-2">
-        <div className="basis-1/5 font-bold">Last block:</div>
+        <div className="basis-1/5 font-bold">Latest block:</div>
         <div className="basis-4/5">
           {health?.bestBlockHeight?.toLocaleString("en-US")}
         </div>
