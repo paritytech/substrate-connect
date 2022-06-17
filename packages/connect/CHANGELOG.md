@@ -6,7 +6,7 @@
 
 ### Changed
 
-- Update Rococo chain specs ([#1107][https://github.com/paritytech/substrate-connect/pull/1107])
+- Update the Rococo chain specification to go start after a forced authorities change. ([#1107](https://github.com/paritytech/substrate-connect/pull/1107))
 
 ## 0.7.6 - 2022-06-16
 
