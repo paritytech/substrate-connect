@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# deploy burnr wallet and smoldot browser demo to gh-pages
-set -euo pipefail
+set -euxo pipefail
 
 die() {
   local msg="$*"
@@ -52,7 +51,7 @@ deployGhPages
 echo -e "\033[0;32mDeploying $branch branch...\033[0m"
 cd $directory &&
   git add --all &&
-  git commit --author "docsbuilder <info@parity.io>" -m "Deploy updates" &&
+  GIT_COMMITTER_NAME='Docs builder' GIT_COMMITTER_EMAIL='info@parity.io' git commit --author "Docs builder <info@parity.io>" -m "Deploy updates" &&
   git push origin $branch
 
 echo -e "\033[0;32mCleaning up...\033[0m"
