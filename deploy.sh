@@ -13,29 +13,6 @@ readonly -f die
 directory=_site
 branch=gh-pages
 
-initDirs() {
-  rm -rf ./$directory/*
-  mkdir -p ./$directory/burnr
-  mkdir -p ./$directory/demo
-  mkdir -p ./$directory/extension
-  touch ./$directory/.nojekyll
-}
-
-deployGhPages() {
-  echo "Init demo for github pages process..."
-  initDirs
-  echo "Place burnr wallet demo's files."
-  cp -r ./projects/burnr/dist/* ./$directory/burnr/.
-  echo "Place multi-demo's files."
-  cp -r ./projects/demo/dist/* ./$directory/demo/.
-  echo "Place Substrate-connect extension's zip."
-  cp ./projects/extension/dist/packed-extension.zip ./$directory/extension/packed-extension.zip
-  echo "Place landing page's files."
-  cp -r ./projects/landing-page/dist/* ./$directory/.
-  echo "Generate API docs."
-  yarn api-docs
- }
-
 echo -e "\033[0;32mDeleting old content...\033[0m"
 rm -rf $directory
 
@@ -46,7 +23,22 @@ echo -e "\033[0;32mRebuilding everything...\033[0m"
 yarn build
 
 echo -e "\033[0;32mGenerating site...\033[0m"
-deployGhPages
+echo "Init demo for github pages process..."
+rm -rf ./$directory/*
+mkdir -p ./$directory/burnr
+mkdir -p ./$directory/demo
+mkdir -p ./$directory/extension
+touch ./$directory/.nojekyll
+echo "Place burnr wallet demo's files."
+cp -r ./projects/burnr/dist/* ./$directory/burnr/.
+echo "Place multi-demo's files."
+cp -r ./projects/demo/dist/* ./$directory/demo/.
+echo "Place Substrate-connect extension's zip."
+cp ./projects/extension/dist/packed-extension.zip ./$directory/extension/packed-extension.zip
+echo "Place landing page's files."
+cp -r ./projects/landing-page/dist/* ./$directory/.
+echo "Generate API docs."
+yarn api-docs
 
 echo -e "\033[0;32mDeploying $branch branch...\033[0m"
 cd $directory &&
