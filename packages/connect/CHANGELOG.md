@@ -2,7 +2,13 @@
 
 ## [Unreleased]
 
-## 0.7.7 - 2022-06-16
+## 0.7.7 - 2022-06-17
+
+### Changed
+
+- Update Rococo chain specs ([#1107][https://github.com/paritytech/substrate-connect/pull/1107])
+
+## 0.7.6 - 2022-06-16
 
 ### Changed
 
