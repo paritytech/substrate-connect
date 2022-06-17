@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix errors appearing in the logs about calling `chainHead_unstable_header` with `null` as parameter. ([#1119](https://github.com/paritytech/substrate-connect/pull/1119))
+
 ## 0.1.6 - 2022-06-17
 
 ### Fixed
