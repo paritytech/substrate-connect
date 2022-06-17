@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.1.7 - 2022-06-17
+
 ### Fixed
 
 - Fix errors appearing in the logs about calling `chainHead_unstable_unpin` (again) and `chainHead_unstable_header` with `null` as parameter. ([#1119](https://github.com/paritytech/substrate-connect/pull/1119), [#1120](https://github.com/paritytech/substrate-connect/pull/1120), [#1122](https://github.com/paritytech/substrate-connect/pull/1122))
