@@ -342,7 +342,10 @@ export class ConnectionManagerWithHealth<SandboxId> {
                       jsonrpc: "2.0",
                       id: "best-block-header:" + this.#nextRpcRqId,
                       method: "chainHead_unstable_header",
-                      params: [chain.finalizedBlockHashHex],
+                      params: [
+                        chain.readySubscriptionId,
+                        chain.finalizedBlockHashHex,
+                      ],
                     }),
                   })
                   chain.bestBlockHeaderRequestId =
