@@ -424,7 +424,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
                         jsonrpc: "2.0",
                         id: "block-unpin:" + this.#nextRpcRqId,
                         method: "chainHead_unstable_unpin",
-                        params: [blockHash],
+                        params: [chain.readySubscriptionId, blockHash],
                       }),
                     })
                     this.#nextRpcRqId += 1
