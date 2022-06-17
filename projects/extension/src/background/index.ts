@@ -1,7 +1,7 @@
 import { ConnectionManagerWithHealth } from "./ConnectionManagerWithHealth"
 import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
-import { Chain, start as smoldotStart } from "@substrate/smoldot-light"
+import { start as smoldotStart } from "@substrate/smoldot-light"
 
 import westend2 from "../../public/assets/westend2.json"
 import ksmcc3 from "../../public/assets/ksmcc3.json"
@@ -222,7 +222,7 @@ window.uiInterface = {
   get wellKnownChainBootnodes() {
     return loadWellKnownChains().then((list) => {
       let output: Record<string, string[]> = {}
-      for (const [_, chainSpec] of list) {
+      for (const chainSpec of list.values()) {
         const parsed = JSON.parse(chainSpec)
         output[parsed.id as string] = parsed.bootNodes as string[]
       }
