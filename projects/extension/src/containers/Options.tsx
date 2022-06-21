@@ -1,6 +1,6 @@
 import React, { SetStateAction, useEffect, useState } from "react"
 import pckg from "../../package.json"
-import { Logo, NetworkTab, Loader, Tabs } from "../components/"
+import { Logo, NetworkTab, Loader, Tabs, Settings } from "../components/"
 import { Background } from "../background/"
 
 import { NetworkTabProps } from "../types"
@@ -146,7 +146,7 @@ const Options: React.FunctionComponent = () => {
           <div className="w-full ml-[10%]">
             <Tabs
               setActiveTab={(n: number) => setActiveTab(n)}
-              tabTitles={["Networks", "Logs"]}
+              tabTitles={["Networks", "Settings", "Logs"]}
             />
           </div>
         </div>
@@ -165,6 +165,10 @@ const Options: React.FunctionComponent = () => {
             ) : (
               <div>No networks or apps are connected to the extension.</div>
             )}
+          </section>
+          {/**Settings section */}
+          <section>
+            <Settings />
           </section>
           {/** Logs section */}
           <section className="block">
