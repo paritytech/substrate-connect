@@ -73,6 +73,8 @@ export interface Background extends Window {
     onChainsChanged: (listener: () => void) => () => void
     onSmoldotCrashErrorChanged: (listener: () => void) => () => void
     disconnectTab: (tabId: number) => void
+    getDefaultBootnodes: (chain: string) => string[]
+    updateBootnodes: (chain: string, bootnodes?: string[]) => void
     // List of all chains that are currently running.
     // Use `onChainsChanged` to register a callback that is called when this list or its content
     // might have changed.
@@ -189,6 +191,22 @@ window.uiInterface = {
         manager.manager.deleteSandbox(port)
         port.disconnect()
       }
+    }
+  },
+  getDefaultBootnodes: (chain: string) => {
+    if (chain === "polkadot") return polkadot.bootNodes
+    if (chain === "ksmcc3") return ksmcc3.bootNodes
+    if (chain === "westend2") return westend2.bootNodes
+    if (chain === "rococo_v2_2") return rococo_v2_2.bootNodes
+    return []
+  },
+  updateBootnodes: (chain: string, bootnodes?: string[]) => {
+    if (!bootnodes) {
+      chrome.storage.local.remove(["bootNodes_".concat(chain)])
+    } else {
+      chrome.storage.local.set({
+        ["bootNodes_".concat(chain)]: bootnodes,
+      })
     }
   },
   get chains(): ExposedChainConnection[] {
