@@ -207,6 +207,19 @@ window.uiInterface = {
       chrome.storage.local.set({
         ["bootNodes_".concat(chain)]: bootnodes,
       })
+      bootnodes.forEach((b) => {
+        if (manager.state !== "ready") return
+        manager.manager.sandboxMessage(null, {
+          origin: "substrate-connect-client",
+          type: "rpc",
+          chainId: chain,
+          jsonRpcMessage: JSON.stringify({
+            jsonrpc: "2.0",
+            method: "sudo_unstable_p2pDiscover",
+            params: [b],
+          }),
+        })
+      })
     }
   },
   get chains(): ExposedChainConnection[] {
