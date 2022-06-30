@@ -74,7 +74,10 @@ export interface Background extends Window {
     onSmoldotCrashErrorChanged: (listener: () => void) => () => void
     disconnectTab: (tabId: number) => void
     getDefaultBootnodes: (chain: string) => string[]
-    updateBootnodes: (chain: string, bootnodes?: string[]) => void
+    validateAndAddBootnode: (
+      chain: string,
+      bootnode: string,
+    ) => Promise<p2pDiscoverResp | undefined>
     // List of all chains that are currently running.
     // Use `onChainsChanged` to register a callback that is called when this list or its content
     // might have changed.
@@ -89,17 +92,22 @@ export interface Background extends Window {
   }
 }
 
-interface logStructure {
+interface LogStructure {
   unix_timestamp: number
   level: number
   target: string
   message: string
 }
 
+interface p2pDiscoverResp {
+  message: string
+  error: boolean
+}
+
 interface LogKeeper {
-  all: logStructure[]
-  warn: logStructure[]
-  error: logStructure[]
+  all: LogStructure[]
+  warn: LogStructure[]
+  error: LogStructure[]
 }
 
 const logKeeper: LogKeeper = {
@@ -167,6 +175,8 @@ const notifyAllSmoldotCrashErrorChangedListeners = () => {
   })
 }
 
+let extConfigRpcRqId = 0
+
 declare let window: Background
 window.uiInterface = {
   onChainsChanged(listener) {
@@ -200,26 +210,35 @@ window.uiInterface = {
     if (chain === "rococo_v2_2") return rococo_v2_2.bootNodes
     return []
   },
-  updateBootnodes: (chain: string, bootnodes?: string[]) => {
-    if (!bootnodes) {
-      chrome.storage.local.remove(["bootNodes_".concat(chain)])
-    } else {
-      chrome.storage.local.set({
-        ["bootNodes_".concat(chain)]: bootnodes,
-      })
-      bootnodes.forEach((b) => {
-        if (manager.state !== "ready") return
-        manager.manager.sandboxMessage(null, {
-          origin: "substrate-connect-client",
-          type: "rpc",
-          chainId: chain,
-          jsonRpcMessage: JSON.stringify({
-            jsonrpc: "2.0",
-            method: "sudo_unstable_p2pDiscover",
-            params: [b],
-          }),
-        })
-      })
+  validateAndAddBootnode: async (
+    chain: string,
+    bootnode: string,
+  ): Promise<p2pDiscoverResp | undefined> => {
+    if (manager.state !== "ready") return
+    manager.manager.sandboxMessage(null, {
+      origin: "trusted-user",
+      chainId: chain,
+      chainName: chain,
+      type: "ext-config",
+      jsonRpcMessage: JSON.stringify({
+        id: "extension:" + extConfigRpcRqId++,
+        jsonrpc: "2.0",
+        method: "sudo_unstable_p2pDiscover",
+        params: [bootnode],
+      }),
+    })
+
+    while (true) {
+      const msg = await manager.manager.nextSandboxMessage(null)
+      if (
+        msg.type === "extension-config" &&
+        msg.origin === "connection-manager"
+      ) {
+        return {
+          message: msg.error || "Successfully added.",
+          error: !!msg.error,
+        }
+      }
     }
   },
   get chains(): ExposedChainConnection[] {

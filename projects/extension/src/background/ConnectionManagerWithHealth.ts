@@ -74,6 +74,13 @@ export interface ChainsStatusChanged {
   type: "chains-status-changed"
 }
 
+// Configuration of extension
+export interface ExtensionConfig {
+  origin: "connection-manager"
+  type: "extension-config"
+  error: string
+}
+
 /**
  * # Overview
  *
@@ -222,7 +229,12 @@ export class ConnectionManagerWithHealth<SandboxId> {
    */
   async nextSandboxMessage(
     sandboxId: SandboxId,
-  ): Promise<ToApplication | ToOutsideDatabaseContent | ChainsStatusChanged> {
+  ): Promise<
+    | ToApplication
+    | ToOutsideDatabaseContent
+    | ChainsStatusChanged
+    | ExtensionConfig
+  > {
     while (true) {
       const toApplication = await this.#inner.nextSandboxMessage(sandboxId)
 
@@ -300,6 +312,12 @@ export class ConnectionManagerWithHealth<SandboxId> {
                     delete chain.bestBlockHeight
                   }
                 }
+              }
+            } else if (jsonRpcMessageId.startsWith("extension:")) {
+              return {
+                origin: "connection-manager",
+                type: "extension-config",
+                error: jsonRpcMessage.error?.message,
               }
             } else {
               // Never supposed to happen. Indicates a bug somewhere.
@@ -505,6 +523,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
         }
         break
       }
+      // ext-config just passes the message
+      case "ext-config":
       default: {
         this.#inner.sandboxMessage(sandboxId, message)
       }

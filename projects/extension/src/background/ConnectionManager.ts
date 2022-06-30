@@ -43,6 +43,7 @@ export interface ChainInfo<SandboxId> {
 export type ToConnectionManager =
   | ToConnectionManagerAddWellKnownChain
   | ToConnectionManagerDatabaseContent
+  | ToConnectionManagerExtConfig
 
 export interface ToConnectionManagerAddWellKnownChain {
   origin: "trusted-user"
@@ -50,6 +51,14 @@ export interface ToConnectionManagerAddWellKnownChain {
   chainId: string
   chainName: string
   databaseContent?: string
+}
+
+export interface ToConnectionManagerExtConfig {
+  origin: "trusted-user"
+  type: "ext-config"
+  chainId: string
+  chainName: string
+  jsonRpcMessage: string
 }
 
 /**
@@ -239,6 +248,30 @@ export class ConnectionManager<SandboxId> {
     return message
   }
 
+  sandboxChainCommonChecks = (
+    chain: any,
+    sandbox: Sandbox,
+    message: ToExtension | ToConnectionManager,
+  ) => {
+    // As documented in the protocol, RPC messages concerning an invalid chainId are simply
+    // ignored.
+    if (!chain) return
+
+    // Check whether chain is ready yet
+    if (!chain.isReady) {
+      sandbox.pushMessagesQueue({
+        origin: "substrate-connect-extension",
+        type: "error",
+        chainId: message.chainId,
+        errorMessage: "Received RPC message while chain isn't ready yet",
+      })
+      return
+    }
+    // Everything is green for this JSON-RPC message
+    // return the sendJsonRpc to be used
+    return chain.smoldotChain.sendJsonRpc
+  }
+
   /**
    * Injects a message into the given sandbox.
    *
@@ -257,27 +290,12 @@ export class ConnectionManager<SandboxId> {
     switch (message.type) {
       case "rpc": {
         const chain = sandbox.chains.get(message.chainId)
-        // As documented in the protocol, RPC messages concerning an invalid chainId are simply
-        // ignored.
-        if (!chain) return
-
-        // Check whether chain is ready yet
-        if (!chain.isReady) {
-          sandbox.pushMessagesQueue({
-            origin: "substrate-connect-extension",
-            type: "error",
-            chainId: message.chainId,
-            errorMessage: "Received RPC message while chain isn't ready yet",
-          })
-          return
-        }
-
-        // Everything is green for this JSON-RPC message
+        const jsonRpc = this.sandboxChainCommonChecks(chain, sandbox, message)
 
         // If `sendJsonRpc` throws an exception, we kill all chains. This can only happen either
         // in case of a crash in smoldot or a bug in substrate-connect.
         try {
-          chain.smoldotChain.sendJsonRpc(message.jsonRpcMessage)
+          jsonRpc(message.jsonRpcMessage)
         } catch (error) {
           const errorMsg =
             "Internal error in smoldot: " +
@@ -287,6 +305,18 @@ export class ConnectionManager<SandboxId> {
           return
         }
 
+        break
+      }
+
+      case "ext-config": {
+        const chain = sandbox.chains.get(message.chainId)
+        const jsonRpc = this.sandboxChainCommonChecks(chain, sandbox, message)
+        try {
+          jsonRpc(message.jsonRpcMessage)
+        } catch (error) {
+          console.error("Erro while validating/adding bootnodes", error)
+          return
+        }
         break
       }
 
