@@ -1,7 +1,6 @@
-import React, { ReactNode, useEffect, useRef, useState } from "react"
+import React, { ReactNode, useEffect, useState } from "react"
 import { BsThreeDots } from "react-icons/bs"
 import { Background } from "../background"
-import Loader from "./Loader"
 
 import "./Settings.css"
 
@@ -27,14 +26,6 @@ interface CheckBoxProps {
 interface BootnodesType {
   checked: boolean
   bootnode: string
-}
-
-const usePrevious = (v: any) => {
-  const ref = useRef()
-  useEffect(() => {
-    ref.current = v
-  }, [v])
-  return ref.current
 }
 
 const Title = ({
@@ -64,18 +55,18 @@ const CheckBox = ({
 }: CheckBoxProps) => {
   const [checked, setChecked] = useState<boolean>(isChecked)
 
-  const prevBootnode = usePrevious(bootnode)
-
   useEffect(() => {
-    prevBootnode !== bootnode && setChecked(true)
-  }, [bootnode])
+    setChecked(isChecked)
+  }, [isChecked])
 
   return (
     <input
+      readOnly
       className="w-4 h-4 text-green-600 bg-gray-100 rounded border-gray-300 focus:ring-green-500
       focus:ring-green-600 ring-offset-gray-800 focus:ring-2 bg-gray-700 border-gray-600 cursor-pointer
       mr-4 leading-3 accent-[#24cc85]"
       type="checkbox"
+      defaultChecked={checked}
       checked={checked}
       onChange={() => {
         alterBootnodes(bootnode, !checked, defaultBootnode)
@@ -96,14 +87,36 @@ export const Settings = () => {
   const [defaultWellKnownChainBn, setDefaultWellKnownChainBn] =
     useState<string[]>()
 
+  const [addMessage, setAddMessage] = useState<any>(undefined)
+  const [loaderAdd, setLoaderAdd] = useState<boolean>(false)
+  const [bootnodeMsgClass, setBootnodeMsgClass] = useState<string>()
+
+  useEffect(() => {
+    if (addMessage && !addMessage?.error) {
+      setBootnodeMsgClass("pb-2 text-green-600")
+      alterBootnodes(
+        customBnInput,
+        true,
+        defaultBn.findIndex((b) => b.bootnode === customBnInput) > -1,
+      )
+      setCustomBnInput("")
+    } else {
+      setBootnodeMsgClass("pb-2 text-red-600")
+    }
+    setLoaderAdd(false)
+  }, [addMessage, customBnInput, defaultBn])
+
   useEffect(() => {
     // If BackgroundPage is called multiple times in the same page, the extension's context will become invalidated
     // thus its called only during page construction and is saved in a state variable
     chrome.runtime.getBackgroundPage((backgroundPage) => {
       const background = backgroundPage as Background
       setBg(background)
+      setDefaultWellKnownChainBn(
+        background?.uiInterface.getDefaultBootnodes(selectedChain),
+      )
     })
-  }, [])
+  }, [selectedChain])
 
   useEffect(() => {
     const getBootnodes = async () => {
@@ -128,9 +141,6 @@ export const Settings = () => {
       setDefaultBn(tmpDef)
       setCustomBn(tmpCust)
     }
-    setDefaultWellKnownChainBn(
-      bg?.uiInterface.getDefaultBootnodes(selectedChain),
-    )
   }, [bg, bootnodes, selectedChain])
 
   const alterBootnodes = (
@@ -138,23 +148,15 @@ export const Settings = () => {
     add: boolean,
     defaultBootnode?: boolean,
   ) => {
-    if (defaultBootnode) {
-      const tmpDef = [...defaultBn]
-      const i = defaultBn.findIndex((b) => b.bootnode === bootnode)
-      tmpDef[i].checked = add
-      setDefaultBn(tmpDef)
-      disabledSaveButton && setDisabledSaveButton(false)
+    const tmp = defaultBootnode ? [...defaultBn] : [...customBn]
+    const i = tmp.findIndex((b) => b.bootnode === bootnode)
+    if (i !== -1) {
+      tmp[i].checked = add
     } else {
-      const custTmp = [...customBn]
-      const i = custTmp.findIndex((b) => b.bootnode === bootnode)
-      if (i !== -1) {
-        custTmp[i].checked = add
-      } else {
-        custTmp.push({ bootnode, checked: true })
-      }
-      setCustomBn(custTmp)
-      disabledSaveButton && setDisabledSaveButton(false)
+      tmp.push({ bootnode, checked: true })
     }
+    defaultBootnode ? setDefaultBn(tmp) : setCustomBn(tmp)
+    disabledSaveButton && setDisabledSaveButton(false)
   }
 
   return (
@@ -181,37 +183,17 @@ export const Settings = () => {
       <Title>Network Bootnodes</Title>
       <Title titleType="small">Default</Title>
       <div className="mb-8">
-        {defaultBn.map((d) => (
+        {defaultWellKnownChainBn?.map((bn) => (
           <div className="leading-4 flex items-center mb-2">
             <CheckBox
-              bootnode={d.bootnode}
+              bootnode={bn}
               alterBootnodes={alterBootnodes}
               defaultBootnode={true}
-              isChecked={
-                defaultWellKnownChainBn?.includes(d.bootnode) || d.checked
-              }
+              isChecked={defaultBn.map((d) => d.bootnode).includes(bn)}
             />
-            <div>{d.bootnode}</div>
+            <div>{bn}</div>
           </div>
         ))}
-        {JSON.stringify(defaultWellKnownChainBn?.sort()) !==
-          JSON.stringify(defaultBn.map((a) => a.bootnode).sort()) && (
-          <button
-            className="py-3 text-xs px-8 font-bold border border-[#24cc85] rounded text-white bg-[#24cc85]
-            hover:text-[#24cc85] hover:bg-white capitalize disabled:border-gray-200 disabled:text-white
-            disabled:bg-gray-200"
-            onClick={() => {
-              const defaults: BootnodesType[] = []
-              defaultWellKnownChainBn?.forEach((bootnode) => {
-                defaults.push({ bootnode, checked: true })
-              })
-              setDefaultBn(defaults)
-              setDisabledSaveButton(false)
-            }}
-          >
-            Restore Default Bootnodes
-          </button>
-        )}
       </div>
       <Title titleType="small">Custom</Title>
       <div className="mb-8">
@@ -238,32 +220,50 @@ export const Settings = () => {
             focus:outline-none"
             placeholder="Enter bootnode address"
             value={customBnInput}
-            onChange={(v) => setCustomBnInput(v.target.value)}
+            onChange={(v) => {
+              addMessage && setAddMessage(undefined)
+              setCustomBnInput(v.target.value)
+            }}
           />
           <button
             className="py-1.5 text-sm px-8 border border-[#24cc85] rounded text-[#24cc85] hover:text-white
             hover:bg-[#24cc85] capitalize ml-4 disabled:border-gray-200 disabled:text-white disabled:bg-gray-200"
-            disabled={!customBnInput}
-            onClick={() => {
-              alterBootnodes(customBnInput, true)
-              setCustomBnInput("")
+            disabled={!customBnInput || loaderAdd}
+            onClick={async () => {
+              if (defaultWellKnownChainBn?.includes(customBnInput)) {
+                setAddMessage({
+                  error: true,
+                  message: "Bootnode exists in the default list.",
+                })
+              } else {
+                setLoaderAdd(true)
+                setAddMessage(
+                  await bg?.uiInterface.validateAndAddBootnode(
+                    selectedChain,
+                    customBnInput,
+                  ),
+                )
+              }
             }}
           >
-            Add
+            {loaderAdd ? "Loading..." : "Add"}
           </button>
         </div>
+        <p className={bootnodeMsgClass}>
+          {addMessage && Object.keys(addMessage) ? addMessage.message : ""}
+        </p>
         <button
           disabled={disabledSaveButton}
           className="py-3 text-xs px-8 font-bold border border-[#24cc85] rounded text-white bg-[#24cc85]
           hover:text-[#24cc85] hover:bg-white capitalize w-28 disabled:border-gray-200 disabled:text-white
           disabled:bg-gray-200"
-          onClick={() => {
+          onClick={async () => {
             const tmpDefault = [...defaultBn].filter((a) => a.checked)
             const tmpCustom = [...customBn].filter((a) => a.checked)
             const bn = [...tmpDefault, ...tmpCustom].map((b) => {
               if (b.checked) return b.bootnode
             }) as string[]
-            bg?.uiInterface.updateBootnodes(selectedChain, bn)
+            bg?.uiInterface.saveBootnodes(selectedChain, bn)
             setDefaultBn(tmpDefault)
             setCustomBn(tmpCustom)
             setDisabledSaveButton(true)
