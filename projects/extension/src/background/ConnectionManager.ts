@@ -314,7 +314,7 @@ export class ConnectionManager<SandboxId> {
         try {
           jsonRpc(message.jsonRpcMessage)
         } catch (error) {
-          console.error("Erro while validating/adding bootnodes", error)
+          console.error("Error while validating/adding bootnodes", error)
           return
         }
         break

@@ -74,6 +74,7 @@ export interface Background extends Window {
     onSmoldotCrashErrorChanged: (listener: () => void) => () => void
     disconnectTab: (tabId: number) => void
     getDefaultBootnodes: (chain: string) => string[]
+    saveBootnodes: (chain_id: string, bootnodes: string[]) => void
     validateAndAddBootnode: (
       chain: string,
       bootnode: string,
@@ -203,13 +204,26 @@ window.uiInterface = {
       }
     }
   },
-  getDefaultBootnodes: (chain: string) => {
+  // Based on the chain provided, it returns the default bootnodes of given chain
+  // bootnodes are retrieved from the chainspecs that exist in the extension.
+  getDefaultBootnodes: (chain: string): string[] => {
     if (chain === "polkadot") return polkadot.bootNodes
     if (chain === "ksmcc3") return ksmcc3.bootNodes
     if (chain === "westend2") return westend2.bootNodes
     if (chain === "rococo_v2_2") return rococo_v2_2.bootNodes
     return []
   },
+  // Saves thhe given bootnodes asynchronously
+  saveBootnodes: (chain_id: string, bootnodes: string[]): void => {
+    chrome.storage.local.set({
+      ["bootNodes_".concat(chain_id)]: bootnodes,
+    })
+  },
+  // Sends an message through rpc to smoldot in order to validate the given bootnode.
+  // This will return to the caller the response once received from rpc with the "extension-config"
+  // type and the "connection-manager" origin. Message's id is prefixed with "extension:" in order
+  // to be differentiated from the rest and be able to reply specific message at nextSandboxMessage
+  // to the caller.
   validateAndAddBootnode: async (
     chain: string,
     bootnode: string,

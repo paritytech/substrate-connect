@@ -74,7 +74,8 @@ export interface ChainsStatusChanged {
   type: "chains-status-changed"
 }
 
-// Configuration of extension
+// Configuration of extension. If error field contains a message then error exists and message
+// describes that message.
 export interface ExtensionConfig {
   origin: "connection-manager"
   type: "extension-config"
@@ -313,6 +314,8 @@ export class ConnectionManagerWithHealth<SandboxId> {
                   }
                 }
               }
+              // If jsonRpcMessageId starts with "extension:" then this message is a response to one
+              // initiated from extension's pages (Options page).
             } else if (jsonRpcMessageId.startsWith("extension:")) {
               return {
                 origin: "connection-manager",
