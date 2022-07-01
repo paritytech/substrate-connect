@@ -176,8 +176,6 @@ const notifyAllSmoldotCrashErrorChangedListeners = () => {
   })
 }
 
-let extConfigRpcRqId = 0
-
 declare let window: Background
 window.uiInterface = {
   onChainsChanged(listener) {
@@ -213,29 +211,27 @@ window.uiInterface = {
     if (chain === "rococo_v2_2") return rococo_v2_2.bootNodes
     return []
   },
-  // Saves thhe given bootnodes asynchronously
+  // Saves the given string[] bootnodes asynchronously  into the localStorage
   saveBootnodes: (chain_id: string, bootnodes: string[]): void => {
     chrome.storage.local.set({
       ["bootNodes_".concat(chain_id)]: bootnodes,
     })
   },
   // Sends an message through rpc to smoldot in order to validate the given bootnode.
-  // This will return to the caller the response once received from rpc with the "extension-config"
-  // type and the "connection-manager" origin. Message's id is prefixed with "extension:" in order
-  // to be differentiated from the rest and be able to reply specific message at nextSandboxMessage
-  // to the caller.
+  // This will return to the caller the response once received from rpc.
+  // Message's id is prefixed with "extension:" in order to be differentiated from the rest
+  // and be able to reply specific message at nextSandboxMessage to the caller.
   validateAndAddBootnode: async (
     chain: string,
     bootnode: string,
   ): Promise<p2pDiscoverResp | undefined> => {
     if (manager.state !== "ready") return
     manager.manager.sandboxMessage(null, {
-      origin: "trusted-user",
       chainId: chain,
-      chainName: chain,
-      type: "ext-config",
+      type: "rpc",
+      origin: "substrate-connect-client",
       jsonRpcMessage: JSON.stringify({
-        id: "extension:" + extConfigRpcRqId++,
+        id: "extension:" + manager.manager.nextRpcRqId,
         jsonrpc: "2.0",
         method: "sudo_unstable_p2pDiscover",
         params: [bootnode],

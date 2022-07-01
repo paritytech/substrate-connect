@@ -148,15 +148,17 @@ export const Settings = () => {
     add: boolean,
     defaultBootnode?: boolean,
   ) => {
-    const tmp = defaultBootnode ? [...defaultBn] : [...customBn]
-    const i = tmp.findIndex((b) => b.bootnode === bootnode)
-    if (i !== -1) {
-      tmp[i].checked = add
-    } else {
-      tmp.push({ bootnode, checked: true })
+    if (!!bootnode) {
+      const tmp = defaultBootnode ? [...defaultBn] : [...customBn]
+      const i = tmp.findIndex((b) => b.bootnode === bootnode)
+      if (i !== -1) {
+        tmp[i].checked = add
+      } else {
+        tmp.push({ bootnode, checked: true })
+      }
+      defaultBootnode ? setDefaultBn(tmp) : setCustomBn(tmp)
+      disabledSaveButton && setDisabledSaveButton(false)
     }
-    defaultBootnode ? setDefaultBn(tmp) : setCustomBn(tmp)
-    disabledSaveButton && setDisabledSaveButton(false)
   }
 
   return (
@@ -166,10 +168,12 @@ export const Settings = () => {
       <Title>Network</Title>
       <div className="networkSelect">
         <select
+          disabled={loaderAdd}
           onChange={(v) => {
             setSelectedChain(v.target.value)
             setDisabledSaveButton(true)
             setCustomBnInput("")
+            setAddMessage(undefined)
           }}
         >
           <option value="polkadot">Polkadot</option>
@@ -267,6 +271,7 @@ export const Settings = () => {
             setDefaultBn(tmpDefault)
             setCustomBn(tmpCustom)
             setDisabledSaveButton(true)
+            setAddMessage(undefined)
           }}
         >
           Save

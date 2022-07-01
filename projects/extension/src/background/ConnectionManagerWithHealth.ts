@@ -153,6 +153,11 @@ export class ConnectionManagerWithHealth<SandboxId> {
     }, 10000)
   }
 
+  nextRpcRqId(): number {
+    this.#nextRpcRqId += 1
+    return this.#nextRpcRqId
+  }
+
   /**
    * Returns a list of all chains, for display purposes only.
    */
@@ -518,16 +523,16 @@ export class ConnectionManagerWithHealth<SandboxId> {
         // All incoming JSON-RPC requests are modified to add `extern:` in front of their id.
         try {
           let parsedJsonRpcMessage = JSON.parse(message.jsonRpcMessage)
-          parsedJsonRpcMessage.id =
-            "extern:" + JSON.stringify(parsedJsonRpcMessage.id)
+          if (!parsedJsonRpcMessage.id.startsWith("extension:")) {
+            parsedJsonRpcMessage.id =
+              "extern:" + JSON.stringify(parsedJsonRpcMessage.id)
+          }
           message.jsonRpcMessage = JSON.stringify(parsedJsonRpcMessage)
         } finally {
           this.#inner.sandboxMessage(sandboxId, message)
         }
         break
       }
-      // ext-config just passes the message
-      case "ext-config":
       default: {
         this.#inner.sandboxMessage(sandboxId, message)
       }
