@@ -77,7 +77,6 @@ const CheckBox = ({
 }
 
 export const Settings = () => {
-  const [disabledSaveButton, setDisabledSaveButton] = useState<boolean>(true)
   const [bg, setBg] = useState<Background>()
   const [bootnodes, setBootnodes] = useState<Record<string, string[]>>()
   const [selectedChain, setSelectedChain] = useState<string>("polkadot")
@@ -122,12 +121,7 @@ export const Settings = () => {
     const getBootnodes = async () => {
       setBootnodes(await bg?.uiInterface.wellKnownChainBootnodes)
     }
-    // Whenever the save Button gets disabled (meaning it was called or upon init)
-    // reload the bootnodes from the background script
-    disabledSaveButton && getBootnodes()
-  }, [bg, disabledSaveButton])
-
-  useEffect(() => {
+    getBootnodes()
     const tmpDef: BootnodesType[] = []
     const tmpCust: BootnodesType[] = []
     if (bootnodes) {
@@ -143,12 +137,14 @@ export const Settings = () => {
     }
   }, [bg, bootnodes, selectedChain])
 
-  const alterBootnodes = (
+  const alterBootnodes = async (
     bootnode: string,
     add: boolean,
     defaultBootnode?: boolean,
   ) => {
     if (!!bootnode) {
+      // When checkbox is unclicked then the bootnode needs to be removed from the localStorage
+      await bg?.uiInterface.updateBootnode(selectedChain, bootnode, add)
       const tmp = defaultBootnode ? [...defaultBn] : [...customBn]
       const i = tmp.findIndex((b) => b.bootnode === bootnode)
       if (i !== -1) {
@@ -157,7 +153,7 @@ export const Settings = () => {
         tmp.push({ bootnode, checked: true })
       }
       defaultBootnode ? setDefaultBn(tmp) : setCustomBn(tmp)
-      disabledSaveButton && setDisabledSaveButton(false)
+      // disabledSaveButton && setDisabledSaveButton(false)
     }
   }
 
@@ -171,7 +167,6 @@ export const Settings = () => {
           disabled={loaderAdd}
           onChange={(v) => {
             setSelectedChain(v.target.value)
-            setDisabledSaveButton(true)
             setCustomBnInput("")
             setAddMessage(undefined)
           }}
@@ -242,9 +237,10 @@ export const Settings = () => {
               } else {
                 setLoaderAdd(true)
                 setAddMessage(
-                  await bg?.uiInterface.validateAndAddBootnode(
+                  await bg?.uiInterface.updateBootnode(
                     selectedChain,
                     customBnInput,
+                    true,
                   ),
                 )
               }
@@ -256,26 +252,6 @@ export const Settings = () => {
         <p className={bootnodeMsgClass}>
           {addMessage && Object.keys(addMessage) ? addMessage.message : ""}
         </p>
-        <button
-          disabled={disabledSaveButton}
-          className="py-3 text-xs px-8 font-bold border border-[#24cc85] rounded text-white bg-[#24cc85]
-          hover:text-[#24cc85] hover:bg-white capitalize w-28 disabled:border-gray-200 disabled:text-white
-          disabled:bg-gray-200"
-          onClick={async () => {
-            const tmpDefault = [...defaultBn].filter((a) => a.checked)
-            const tmpCustom = [...customBn].filter((a) => a.checked)
-            const bn = [...tmpDefault, ...tmpCustom].map((b) => {
-              if (b.checked) return b.bootnode
-            }) as string[]
-            bg?.uiInterface.saveBootnodes(selectedChain, bn)
-            setDefaultBn(tmpDefault)
-            setCustomBn(tmpCustom)
-            setDisabledSaveButton(true)
-            setAddMessage(undefined)
-          }}
-        >
-          Save
-        </button>
       </div>
     </div>
   )

@@ -74,10 +74,10 @@ export interface Background extends Window {
     onSmoldotCrashErrorChanged: (listener: () => void) => () => void
     disconnectTab: (tabId: number) => void
     getDefaultBootnodes: (chain: string) => string[]
-    saveBootnodes: (chain_id: string, bootnodes: string[]) => void
-    validateAndAddBootnode: (
+    updateBootnode: (
       chain: string,
       bootnode: string,
+      add: boolean,
     ) => Promise<p2pDiscoverResp | undefined>
     // List of all chains that are currently running.
     // Use `onChainsChanged` to register a callback that is called when this list or its content
@@ -211,42 +211,57 @@ window.uiInterface = {
     if (chain === "rococo_v2_2") return rococo_v2_2.bootNodes
     return []
   },
-  // Saves the given string[] bootnodes asynchronously  into the localStorage
-  saveBootnodes: (chain_id: string, bootnodes: string[]): void => {
-    chrome.storage.local.set({
-      ["bootNodes_".concat(chain_id)]: bootnodes,
-    })
-  },
   // Sends an message through rpc to smoldot in order to validate the given bootnode.
   // This will return to the caller the response once received from rpc.
   // Message's id is prefixed with "extension:" in order to be differentiated from the rest
   // and be able to reply specific message at nextSandboxMessage to the caller.
-  validateAndAddBootnode: async (
+  updateBootnode: async (
     chain: string,
     bootnode: string,
+    add: boolean,
   ): Promise<p2pDiscoverResp | undefined> => {
-    if (manager.state !== "ready") return
-    manager.manager.sandboxMessage(null, {
-      chainId: chain,
-      type: "rpc",
-      origin: "substrate-connect-client",
-      jsonRpcMessage: JSON.stringify({
-        id: "extension:" + manager.manager.nextRpcRqId,
-        jsonrpc: "2.0",
-        method: "sudo_unstable_p2pDiscover",
-        params: [bootnode],
-      }),
-    })
+    if (!add) {
+      // removing from localstorage if exist
+      chrome.storage.local.get(["bootNodes_".concat(chain)], (result) => {
+        const res = [...result["bootNodes_".concat(chain)]]
+        const idx = res.findIndex((a) => a === bootnode)
+        if (idx > -1) {
+          res.splice(idx, 1)
+          chrome.storage.local.set({ ["bootNodes_".concat(chain)]: [...res] })
+        }
+      })
+    } else {
+      // validate and add to localstorage
+      if (manager.state !== "ready") return
+      manager.manager.sandboxMessage(null, {
+        chainId: chain,
+        type: "rpc",
+        origin: "substrate-connect-client",
+        jsonRpcMessage: JSON.stringify({
+          id: "extension:" + manager.manager.nextRpcRqId,
+          jsonrpc: "2.0",
+          method: "sudo_unstable_p2pDiscover",
+          params: [bootnode],
+        }),
+      })
 
-    while (true) {
-      const msg = await manager.manager.nextSandboxMessage(null)
-      if (
-        msg.type === "extension-config" &&
-        msg.origin === "connection-manager"
-      ) {
-        return {
-          message: msg.error || "Successfully added.",
-          error: !!msg.error,
+      while (true) {
+        const msg = await manager.manager.nextSandboxMessage(null)
+        if (
+          msg.type === "extension-config" &&
+          msg.origin === "connection-manager"
+        ) {
+          if (!msg.error) {
+            chrome.storage.local.get(["bootNodes_".concat(chain)], (result) => {
+              const res = [...result["bootNodes_".concat(chain)]]
+              res.push(bootnode)
+              chrome.storage.local.set({ ["bootNodes_".concat(chain)]: res })
+            })
+          }
+          return {
+            message: msg.error || "Successfully added.",
+            error: !!msg.error,
+          }
         }
       }
     }
