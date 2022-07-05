@@ -93,17 +93,12 @@ export const Settings = () => {
   useEffect(() => {
     if (addMessage && !addMessage?.error) {
       setBootnodeMsgClass("pb-2 text-green-600")
-      alterBootnodes(
-        customBnInput,
-        true,
-        defaultBn.findIndex((b) => b.bootnode === customBnInput) > -1,
-      )
       setCustomBnInput("")
     } else {
       setBootnodeMsgClass("pb-2 text-red-600")
     }
     setLoaderAdd(false)
-  }, [addMessage, customBnInput, defaultBn])
+  }, [addMessage])
 
   useEffect(() => {
     // If BackgroundPage is called multiple times in the same page, the extension's context will become invalidated
@@ -153,7 +148,6 @@ export const Settings = () => {
         tmp.push({ bootnode, checked: true })
       }
       defaultBootnode ? setDefaultBn(tmp) : setCustomBn(tmp)
-      // disabledSaveButton && setDisabledSaveButton(false)
     }
   }
 
@@ -178,7 +172,6 @@ export const Settings = () => {
         </select>
         <span className="focus"></span>
       </div>
-      {/* Bootnodes selection */}
       <Title>Network Bootnodes</Title>
       <Title titleType="small">Default</Title>
       <div className="mb-8">
@@ -208,7 +201,6 @@ export const Settings = () => {
           </div>
         ))}
       </div>
-      {/* Add custom Bootnodes */}
       <Title>Add custom Bootnode</Title>
       <div className="flex flex-col">
         <div className="flex flex-row mb-4">
@@ -236,13 +228,12 @@ export const Settings = () => {
                 })
               } else {
                 setLoaderAdd(true)
-                setAddMessage(
-                  await bg?.uiInterface.updateBootnode(
-                    selectedChain,
-                    customBnInput,
-                    true,
-                  ),
+                const res = await bg?.uiInterface.updateBootnode(
+                  selectedChain,
+                  customBnInput,
+                  true,
                 )
+                setAddMessage(res)
               }
             }}
           >
