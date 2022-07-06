@@ -235,12 +235,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
    */
   async nextSandboxMessage(
     sandboxId: SandboxId,
-  ): Promise<
-    | ToApplication
-    | ToOutsideDatabaseContent
-    | ChainsStatusChanged
-    | ExtensionConfig
-  > {
+  ): Promise<ToApplication | ToOutsideDatabaseContent | ChainsStatusChanged> {
     while (true) {
       const toApplication = await this.#inner.nextSandboxMessage(sandboxId)
 
@@ -322,11 +317,23 @@ export class ConnectionManagerWithHealth<SandboxId> {
               // If jsonRpcMessageId starts with "extension:" then this message is a response to one
               // initiated from extension's pages (Options page).
             } else if (jsonRpcMessageId.startsWith("extension:")) {
-              return {
-                origin: "connection-manager",
-                type: "extension-config",
-                error: jsonRpcMessage.error?.message,
-              }
+              chrome.storage.local.get(["customBootnode"], (res) => {
+                if (
+                  res["customBootnode"].id ===
+                  parseInt(jsonRpcMessageId.replace("extension:", ""), 0)
+                ) {
+                  const { id, chain, bootnode } = res["customBootnode"]
+                  chrome.storage.local.set({
+                    ["customBootnode"]: {
+                      id,
+                      chain,
+                      bootnode,
+                      result: jsonRpcMessage?.result,
+                      error: jsonRpcMessage?.error,
+                    },
+                  })
+                }
+              })
             } else {
               // Never supposed to happen. Indicates a bug somewhere.
               throw new Error()

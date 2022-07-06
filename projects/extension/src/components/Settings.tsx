@@ -83,12 +83,65 @@ export const Settings = () => {
   const [defaultBn, setDefaultBn] = useState<BootnodesType[]>([])
   const [customBn, setCustomBn] = useState<BootnodesType[]>([])
   const [customBnInput, setCustomBnInput] = useState<string>("")
-  const [defaultWellKnownChainBn, setDefaultWellKnownChainBn] =
-    useState<string[]>()
+  const [defaultWellKnownChainBn, setDefaultWellKnownChainBn] = useState<
+    string[]
+  >([])
 
   const [addMessage, setAddMessage] = useState<any>(undefined)
   const [loaderAdd, setLoaderAdd] = useState<boolean>(false)
   const [bootnodeMsgClass, setBootnodeMsgClass] = useState<string>()
+
+  // Add to localstorage the given bootnode for the given chain
+  const saveToLocalStorage = (
+    chain: string,
+    bootnode: string,
+    add: boolean,
+    def: string[],
+  ) => {
+    chrome.storage.local.get(["bootNodes_".concat(chain)], (result) => {
+      let res: string[]
+      if (def.length === 0) throw new Error("Default Bootnodes should exist.")
+      res =
+        result && Object.keys(result).length > 0
+          ? [...result["bootNodes_".concat(chain)]]
+          : [...def]
+      add ? res.push(bootnode) : res.splice(res.indexOf(bootnode), 1)
+      chrome.storage.local.set({
+        ["bootNodes_".concat(chain)]: res,
+      })
+    })
+  }
+
+  // Creates a listener that listens to local storage changes when customBootnode is found on
+  // status other than -1 (means pending) then that updates the localStorage based on outcome
+  // if there is no error. In case of error only the message appears in the UI.
+  // At the end the item `customBootnode` is removed from the localStorage.
+  useEffect(() => {
+    defaultWellKnownChainBn.length > 0 &&
+      chrome.storage.onChanged.addListener((changes, namespace) => {
+        if (namespace === "local") {
+          for (let [key, { newValue }] of Object.entries(changes)) {
+            if (key === "customBootnode") {
+              if (newValue?.result !== -1) {
+                if (!newValue?.error) {
+                  saveToLocalStorage(
+                    newValue.chain,
+                    newValue.bootnode,
+                    true,
+                    defaultWellKnownChainBn,
+                  )
+                }
+                setAddMessage({
+                  error: !!newValue?.error?.message,
+                  message: newValue?.error?.message || "Successfully added.",
+                })
+                chrome.storage.local.remove("customBootnode")
+              }
+            }
+          }
+        }
+      })
+  }, [defaultWellKnownChainBn])
 
   useEffect(() => {
     if (addMessage && !addMessage?.error) {
@@ -135,11 +188,21 @@ export const Settings = () => {
   const alterBootnodes = async (
     bootnode: string,
     add: boolean,
-    defaultBootnode?: boolean,
+    defaultBootnode: boolean,
   ) => {
     if (!!bootnode) {
-      // When checkbox is unclicked then the bootnode needs to be removed from the localStorage
-      await bg?.uiInterface.updateBootnode(selectedChain, bootnode, add)
+      // if bootnode belongs to the list (default) then it does not need to be validated as it
+      // comes from the chainspecs. It can be saved to the local storage at once.
+      if (defaultBootnode) {
+        saveToLocalStorage(
+          selectedChain,
+          bootnode,
+          add,
+          defaultWellKnownChainBn,
+        )
+      } else {
+        bg?.uiInterface.updateBootnode(selectedChain, bootnode, add)
+      }
       const tmp = defaultBootnode ? [...defaultBn] : [...customBn]
       const i = tmp.findIndex((b) => b.bootnode === bootnode)
       if (i !== -1) {
@@ -221,19 +284,21 @@ export const Settings = () => {
             hover:bg-[#24cc85] capitalize ml-4 disabled:border-gray-200 disabled:text-white disabled:bg-gray-200"
             disabled={!customBnInput || loaderAdd}
             onClick={async () => {
-              if (defaultWellKnownChainBn?.includes(customBnInput)) {
+              if (
+                defaultWellKnownChainBn?.includes(customBnInput) ||
+                customBn.map((c) => c.bootnode).includes(customBnInput)
+              ) {
                 setAddMessage({
                   error: true,
-                  message: "Bootnode exists in the default list.",
+                  message: "Bootnode already exists in the list.",
                 })
               } else {
                 setLoaderAdd(true)
-                const res = await bg?.uiInterface.updateBootnode(
+                bg?.uiInterface.updateBootnode(
                   selectedChain,
                   customBnInput,
                   true,
                 )
-                setAddMessage(res)
               }
             }}
           >
