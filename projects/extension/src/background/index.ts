@@ -143,8 +143,6 @@ const logger = (level: number, target: string, message: string) => {
   all.push(incLog)
 }
 
-const bootnodeRequest = new Map<number, { chain: string; bootnode: string }>()
-
 // Listeners that must be notified when the `get chains()` getter would return a different value.
 const chainsChangedListeners: Set<() => void> = new Set()
 const notifyAllChainsChangedListeners = () => {
@@ -249,10 +247,7 @@ window.uiInterface = {
     } else {
       // if bootnode does not exist, send for validation
       if (manager.state !== "ready") return
-      const id = await manager.manager.validateBootnode(null, chain, bootnode)
-      // id is saved in map with chain and bootnode information, as these will be needed for saving
-      // the bootnode along with the rest to the correct entry of the localStorage.
-      bootnodeRequest.set(id, { chain, bootnode })
+      await manager.manager.validateBootnode(null, chain, bootnode)
     }
   },
   get chains(): ExposedChainConnection[] {
@@ -390,22 +385,9 @@ manager = {
             })
           } else if (message.type === "extension-config") {
             const { id, error } = JSON.parse(message.jsonRpcMessage)
-            // bootnodeRequest.delete(id)
-            if (bootnodeRequest.has(id)) {
-              const res = bootnodeRequest.get(id)!
-              verifyBootnode(res.chain, res.bootnode, error?.message)
-              // cleanup
-              bootnodeRequest.delete(id)
-            } else {
-              verifyBootnode(
-                "",
-                "",
-                "Unexpected Error: Request/Response mismatch.",
-              )
-              throw Error(
-                "Unexpected Error: Response id was not found in bootnode request map.",
-              )
-            }
+            const res = managerInit.getBootnode(id)
+            const { chain, bootnode, err } = res!
+            verifyBootnode(chain!, bootnode!, err || error?.message || "")
           }
         }
       })()

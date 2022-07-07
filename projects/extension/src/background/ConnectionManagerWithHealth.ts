@@ -82,6 +82,12 @@ export interface ExtensionConfig {
   jsonRpcMessage: string
 }
 
+interface BootnodeResp {
+  chain?: string
+  bootnode?: string
+  err?: string
+}
+
 /**
  * # Overview
  *
@@ -142,6 +148,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
   #sandboxesChains: Map<SandboxId, Map<string, Chain>> = new Map()
   #pingInterval: ReturnType<typeof globalThis.setInterval>
   #nextRpcRqId: number = 0
+  #bootnodeRequest = new Map<number, { chain: string; bootnode: string }>()
 
   constructor(
     wellKnownChainSpecs: Map<string, string>,
@@ -171,25 +178,45 @@ export class ConnectionManagerWithHealth<SandboxId> {
     })
   }
 
+  getBootnode(id: number): BootnodeResp {
+    let resp: BootnodeResp
+    if (this.#bootnodeRequest.has(id)) {
+      const { chain, bootnode } = this.#bootnodeRequest.get(id)!
+      resp = { chain, bootnode }
+    } else {
+      // This should never happen
+      resp = {
+        chain: "",
+        bootnode: "",
+        err: "Unexpected Error: Request/Response mismatch.",
+      }
+      throw Error(
+        "Unexpected Error: Response id was not found in bootnode request map.",
+      )
+    }
+    // cleanup Map
+    this.#bootnodeRequest.delete(id)
+    return resp
+  }
+
   async validateBootnode(
     sandboxId: SandboxId,
     chain: string,
     bootnode: string,
-  ): Promise<number> {
-    const id: number = this.#nextRpcRqId
+  ): Promise<void> {
     this.#inner.sandboxMessage(sandboxId, {
       chainId: chain,
       type: "rpc",
       origin: "substrate-connect-client",
       jsonRpcMessage: JSON.stringify({
-        id: "extension:" + id,
+        id: "extension:" + this.#nextRpcRqId,
         jsonrpc: "2.0",
         method: "sudo_unstable_p2pDiscover",
         params: [bootnode],
       }),
     })
+    this.#bootnodeRequest.set(this.#nextRpcRqId, { chain, bootnode })
     this.#nextRpcRqId++
-    return id
   }
 
   /**
