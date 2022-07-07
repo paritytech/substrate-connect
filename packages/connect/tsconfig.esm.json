@@ -5,13 +5,14 @@
     "baseUrl": ".",
     "rootDir": "./src",
     "esModuleInterop": true,
-    "outDir": "./dist",
+    "outDir": "./dist/esm",
     "target": "ES2018",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "module": "ES2020"
+    "module": "ES2020",
+    "declarationDir": "dist/types"
   },
   "exclude": [
     "**/*.test.ts",

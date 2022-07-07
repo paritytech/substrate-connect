@@ -20,7 +20,7 @@ const processFile = async (fileName) => {
   const fileStr = `export default \`${JSON.stringify(JSON.parse(rawStr))}\``
   await writeFile(
     `${path.join(
-      "./dist/esm/connector/specs/generated/",
+      "./dist/cjs/connector/specs/generated/",
       fileName.slice(0, -5),
     )}.js`,
     fileStr,
@@ -28,8 +28,8 @@ const processFile = async (fileName) => {
   )
 }
 
-if (!existsSync("./dist/esm/connector/specs/generated")) {
-  mkdirSync("./dist/esm/connector/specs/generated", { resursive: true })
+if (!existsSync("./dist/cjs/connector/specs/generated")) {
+  mkdirSync("./dist/cjs/connector/specs/generated", { resursive: true })
 }
 
 Promise.all(files.filter((file) => file.endsWith(".json")).map(processFile))

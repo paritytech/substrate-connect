@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "rootDir": "./src",
+    "esModuleInterop": true,
+    "outDir": "./dist/cjs",
+    "target": "ES5",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "module": "CommonJS",
+    "downlevelIteration": true,
+    "declarationDir": "dist/types"
+  },
+  "exclude": [
+    "**/*.test.ts",
+    "jest.config*",
+    "tsconfig*",
+    "*node_modules*",
+    "../../node_modules*",
+    "src/connector/specs/*.json"
+  ],
+  "include": ["src/**/*", "src/**/*.json"],
+  "references": [{ "path": "../connect-extension-protocol" }]
+}

@@ -8,8 +8,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/paritytech/substrate-connect.git"
@@ -24,7 +24,9 @@
     "test": "node --no-warnings --experimental-vm-modules ../../node_modules/jest/bin/jest.js --colors --coverage",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "build": "tsc -b && node ./src/connector/specs/generate-specs.js",
+    "build": "yarn run build:esm && yarn run build:cjs",
+    "build:esm": "tsc -b tsconfig.esm.json && node ./src/connector/specs/generate-specs.js",
+    "build:cjs": "tsc -b tsconfig.cjs.json && node ./src/connector/specs/generate-specs.cjs.js",
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "dependencies": {
