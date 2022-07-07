@@ -79,7 +79,7 @@ export interface ChainsStatusChanged {
 export interface ExtensionConfig {
   origin: "connection-manager"
   type: "extension-config"
-  error: string
+  jsonRpcMessage: string
 }
 
 /**
@@ -153,11 +153,6 @@ export class ConnectionManagerWithHealth<SandboxId> {
     }, 10000)
   }
 
-  nextRpcRqId(): number {
-    this.#nextRpcRqId += 1
-    return this.#nextRpcRqId
-  }
-
   /**
    * Returns a list of all chains, for display purposes only.
    */
@@ -174,6 +169,27 @@ export class ConnectionManagerWithHealth<SandboxId> {
         ...chainInfo,
       }
     })
+  }
+
+  async validateBootnode(
+    sandboxId: SandboxId,
+    chain: string,
+    bootnode: string,
+  ): Promise<number> {
+    const id: number = this.#nextRpcRqId
+    this.#inner.sandboxMessage(sandboxId, {
+      chainId: chain,
+      type: "rpc",
+      origin: "substrate-connect-client",
+      jsonRpcMessage: JSON.stringify({
+        id: "extension:" + id,
+        jsonrpc: "2.0",
+        method: "sudo_unstable_p2pDiscover",
+        params: [bootnode],
+      }),
+    })
+    this.#nextRpcRqId++
+    return id
   }
 
   /**
@@ -235,7 +251,12 @@ export class ConnectionManagerWithHealth<SandboxId> {
    */
   async nextSandboxMessage(
     sandboxId: SandboxId,
-  ): Promise<ToApplication | ToOutsideDatabaseContent | ChainsStatusChanged> {
+  ): Promise<
+    | ToApplication
+    | ToOutsideDatabaseContent
+    | ChainsStatusChanged
+    | ExtensionConfig
+  > {
     while (true) {
       const toApplication = await this.#inner.nextSandboxMessage(sandboxId)
 
@@ -315,25 +336,18 @@ export class ConnectionManagerWithHealth<SandboxId> {
                 }
               }
               // If jsonRpcMessageId starts with "extension:" then this message is a response to one
-              // initiated from extension's pages (Options page).
+              // initiated from extension's pages (Options page). It needs to have a different
+              // return type to the extension, in order to identify it and retrieve information from
+              // created Map and save to the localStorage
             } else if (jsonRpcMessageId.startsWith("extension:")) {
-              chrome.storage.local.get(["customBootnode"], (res) => {
-                if (
-                  res["customBootnode"].id ===
-                  parseInt(jsonRpcMessageId.replace("extension:", ""), 0)
-                ) {
-                  const { id, chain, bootnode } = res["customBootnode"]
-                  chrome.storage.local.set({
-                    ["customBootnode"]: {
-                      id,
-                      chain,
-                      bootnode,
-                      result: jsonRpcMessage?.result,
-                      error: jsonRpcMessage?.error,
-                    },
-                  })
-                }
-              })
+              jsonRpcMessage.id = JSON.parse(
+                (jsonRpcMessage.id as string).slice("extension:".length),
+              )
+              return {
+                origin: "connection-manager",
+                type: "extension-config",
+                jsonRpcMessage: JSON.stringify(jsonRpcMessage),
+              }
             } else {
               // Never supposed to happen. Indicates a bug somewhere.
               throw new Error()

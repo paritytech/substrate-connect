@@ -71,6 +71,9 @@ const loadWellKnownChains = (): Promise<Map<string, string>> => {
 export interface Background extends Window {
   uiInterface: {
     onChainsChanged: (listener: () => void) => () => void
+    onBootnodeVerification: (
+      listener: (chain: string, bootnode: string, result: string) => void,
+    ) => void
     onSmoldotCrashErrorChanged: (listener: () => void) => () => void
     disconnectTab: (tabId: number) => void
     getDefaultBootnodes: (chain: string) => string[]
@@ -140,6 +143,8 @@ const logger = (level: number, target: string, message: string) => {
   all.push(incLog)
 }
 
+const bootnodeRequest = new Map<number, { chain: string; bootnode: string }>()
+
 // Listeners that must be notified when the `get chains()` getter would return a different value.
 const chainsChangedListeners: Set<() => void> = new Set()
 const notifyAllChainsChangedListeners = () => {
@@ -151,6 +156,20 @@ const notifyAllChainsChangedListeners = () => {
     }
   })
 }
+
+// Listeners that must be notified when there is an RPC response concerning bootnode verification
+let bootnodeVerifyListener: Set<(c: string, b: string, res: string) => void> =
+  new Set()
+const verifyBootnode = (c: string, b: string, res: string) => {
+  bootnodeVerifyListener.forEach((l) => {
+    try {
+      l(c, b, res)
+    } catch (e) {
+      console.error("Uncaught exception in onChainsChanged callback:", e)
+    }
+  })
+}
+
 // Listeners that must be notified when the `get smoldotCrashError()` getter would return a
 // different value.
 const smoldotCrashErrorChangedListeners: Set<() => void> = new Set()
@@ -173,6 +192,12 @@ window.uiInterface = {
     chainsChangedListeners.add(listener)
     return () => {
       chainsChangedListeners.delete(listener)
+    }
+  },
+  onBootnodeVerification(listener) {
+    bootnodeVerifyListener.add(listener)
+    return () => {
+      bootnodeVerifyListener.delete(listener)
     }
   },
   onSmoldotCrashErrorChanged(listener) {
@@ -206,7 +231,11 @@ window.uiInterface = {
   // This will return to the caller the response once received from rpc.
   // Message's id is prefixed with "extension:" in order to be differentiated from the rest
   // and be able to reply specific message at nextSandboxMessage to the caller.
-  updateBootnode: (chain: string, bootnode: string, add: boolean): void => {
+  updateBootnode: async (
+    chain: string,
+    bootnode: string,
+    add: boolean,
+  ): Promise<void> => {
     if (!add) {
       // remove bootnode from localstorage if it already exists
       chrome.storage.local.get(["bootNodes_".concat(chain)], (result) => {
@@ -218,28 +247,12 @@ window.uiInterface = {
         }
       })
     } else {
-      // if it does not exist, then send for validation
+      // if bootnode does not exist, send for validation
       if (manager.state !== "ready") return
-      const nextId = manager.manager.nextRpcRqId()
-      chrome.storage.local.set({
-        ["customBootnode"]: {
-          id: nextId,
-          chain,
-          bootnode,
-          result: -1,
-        },
-      })
-      manager.manager.sandboxMessage(null, {
-        chainId: chain,
-        type: "rpc",
-        origin: "substrate-connect-client",
-        jsonRpcMessage: JSON.stringify({
-          id: "extension:" + nextId,
-          jsonrpc: "2.0",
-          method: "sudo_unstable_p2pDiscover",
-          params: [bootnode],
-        }),
-      })
+      const id = await manager.manager.validateBootnode(null, chain, bootnode)
+      // id is saved in map with chain and bootnode information, as these will be needed for saving
+      // the bootnode along with the rest to the correct entry of the localStorage.
+      bootnodeRequest.set(id, { chain, bootnode })
     }
   },
   get chains(): ExposedChainConnection[] {
@@ -375,6 +388,24 @@ manager = {
             chrome.storage.local.set({
               [message.chainId]: message.databaseContent,
             })
+          } else if (message.type === "extension-config") {
+            const { id, error } = JSON.parse(message.jsonRpcMessage)
+            // bootnodeRequest.delete(id)
+            if (bootnodeRequest.has(id)) {
+              const res = bootnodeRequest.get(id)!
+              verifyBootnode(res.chain, res.bootnode, error?.message)
+              // cleanup
+              bootnodeRequest.delete(id)
+            } else {
+              verifyBootnode(
+                "",
+                "",
+                "Unexpected Error: Request/Response mismatch.",
+              )
+              throw Error(
+                "Unexpected Error: Response id was not found in bootnode request map.",
+              )
+            }
           }
         }
       })()

@@ -112,37 +112,6 @@ export const Settings = () => {
     })
   }
 
-  // Creates a listener that listens to local storage changes when customBootnode is found on
-  // status other than -1 (means pending) then that updates the localStorage based on outcome
-  // if there is no error. In case of error only the message appears in the UI.
-  // At the end the item `customBootnode` is removed from the localStorage.
-  useEffect(() => {
-    defaultWellKnownChainBn.length > 0 &&
-      chrome.storage.onChanged.addListener((changes, namespace) => {
-        if (namespace === "local") {
-          for (let [key, { newValue }] of Object.entries(changes)) {
-            if (key === "customBootnode") {
-              if (newValue?.result !== -1) {
-                if (!newValue?.error) {
-                  saveToLocalStorage(
-                    newValue.chain,
-                    newValue.bootnode,
-                    true,
-                    defaultWellKnownChainBn,
-                  )
-                }
-                setAddMessage({
-                  error: !!newValue?.error?.message,
-                  message: newValue?.error?.message || "Successfully added.",
-                })
-                chrome.storage.local.remove("customBootnode")
-              }
-            }
-          }
-        }
-      })
-  }, [defaultWellKnownChainBn])
-
   useEffect(() => {
     if (addMessage && !addMessage?.error) {
       setBootnodeMsgClass("pb-2 text-green-600")
@@ -164,6 +133,20 @@ export const Settings = () => {
       )
     })
   }, [selectedChain])
+
+  useEffect(() => {
+    const result = (c: string, b: string, res: string) => {
+      if (!res) {
+        saveToLocalStorage(c, b, true, defaultWellKnownChainBn)
+      }
+      setAddMessage({
+        error: !!res,
+        message: res || "Successfully added.",
+      })
+    }
+    if (!bg || !defaultWellKnownChainBn) return
+    bg.uiInterface.onBootnodeVerification(result)
+  }, [bg, defaultWellKnownChainBn])
 
   useEffect(() => {
     const getBootnodes = async () => {
