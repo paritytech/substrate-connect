@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- New Settings screen in Options page, that allows user to enable/disable/add/remove the bootnodes per integrated chain. ([#1128](https://github.com/paritytech/substrate-connect/pull/1128))
+
 ### Changed
 
 - Update @substrate/smoldot-light to [version 0.6.21](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#0621---2022-06-30). ([#2448](https://github.com/paritytech/smoldot/pull/2448))
