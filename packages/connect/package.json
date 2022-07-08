@@ -4,12 +4,18 @@
   "description": "Substrate-connect to Smoldot clients. Using either substrate extension with predefined clients or an internal smoldot client based on chainSpecs provided.",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
-  "type": "module",
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/esm/index.js",
-  "types": "dist/types/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/mjs/index.js",
+  "types": "dist/mjs/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/mjs/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/paritytech/substrate-connect.git"
@@ -24,9 +30,9 @@
     "test": "node --no-warnings --experimental-vm-modules ../../node_modules/jest/bin/jest.js --colors --coverage",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "build": "yarn run build:esm && yarn run build:cjs",
-    "build:esm": "tsc -b tsconfig.esm.json && node ./src/connector/specs/generate-specs.js esm",
-    "build:cjs": "tsc -b tsconfig.cjs.json && node ./src/connector/specs/generate-specs.js cjs",
+    "build": "yarn run build:mjs && yarn run build:cjs && bash ./fix-package-type",
+    "build:mjs": "tsc -b tsconfig.mjs.json && node ./src/connector/specs/generate-specs.mjs mjs",
+    "build:cjs": "tsc -b tsconfig.cjs.json && node ./src/connector/specs/generate-specs.mjs cjs",
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "dependencies": {

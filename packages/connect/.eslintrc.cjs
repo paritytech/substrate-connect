@@ -18,9 +18,6 @@
 module.exports = {
   parserOptions: {
     EXPERIMENTAL_useSourceOfProjectReferenceRedirect: true,
-    project: [
-      "../connect-extension-protocol/tsconfig.json",
-      "./tsconfig.esm.json",
-    ],
+    project: ["../connect-extension-protocol/tsconfig.json", "./tsconfig.json"],
   },
 }

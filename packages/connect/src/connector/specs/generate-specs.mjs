@@ -17,13 +17,16 @@ const files = readdirSync(BASE_PATH)
 
 const type = process.argv.slice(2)
 
-if (!type || (type[0] !== "esm" && type[0] !== "cjs"))
-  throw new Error("Type `esm` or `cjs` must be provided.")
+if (!type || (type[0] !== "mjs" && type[0] !== "cjs"))
+  throw new Error("Type `mjs` or `cjs` must be provided.")
 const url = "./dist/" + type[0] + "/connector/specs/generated/"
 
 const processFile = async (fileName) => {
   const rawStr = await readFile(path.join(BASE_PATH, fileName), "utf8")
-  const fileStr = `export default \`${JSON.stringify(JSON.parse(rawStr))}\``
+  const fileStr =
+    type[0] === "mjs"
+      ? `export default \`${JSON.stringify(JSON.parse(rawStr))}\``
+      : `module.exports = \`${JSON.stringify(JSON.parse(rawStr))}\``
   await writeFile(
     `${path.join(url, fileName.slice(0, -5))}.js`,
     fileStr,
