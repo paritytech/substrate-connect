@@ -23,3 +23,7 @@
     "test": "exit 0; #This package is only types",
     "lint": "yarn eslint . --ext .js,.ts"
   },
+  "devDependencies": {
+    "eslint": "^8.14.0"
+  }
+}
