@@ -23,5 +23,7 @@
     "package.json"
   ],
   "exclude": ["*node_modules*", "../../node_modules*", "**/*.test.ts"],
-  "references": [{ "path": "../connect-extension-protocol/tsconfig-mjs.json" }]
+  "references": [
+    { "path": "../../packages/connect-extension-protocol/tsconfig-mjs.json" }
+  ]
 }
