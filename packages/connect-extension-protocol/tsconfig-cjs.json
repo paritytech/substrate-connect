@@ -1,8 +1,16 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "dist/cjs",
-    "target": "es2015"
+    "target": "es2015",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "rootDir": "./src",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true
   }
 }

@@ -1,8 +1,16 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "module": "es2020",
     "outDir": "./dist/mjs",
-    "target": "es2018"
+    "target": "es2018",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "rootDir": "./src",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true
   }
 }
