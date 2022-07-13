@@ -1,4 +1,4 @@
 tsconfig.json
 tsconfig.*.json
 /src
-fix-package-type
+fix-package-type.sh
