@@ -22,5 +22,5 @@
     "src/connector/specs/*.json"
   ],
   "include": ["src/**/*", "src/**/*.json"],
-  "references": [{ "path": "../connect-extension-protocol" }]
+  "references": [{ "path": "../connect-extension-protocol/tsconfig-mjs.json" }]
 }
