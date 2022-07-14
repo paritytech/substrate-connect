@@ -9,4 +9,4 @@ extension-resolver.cjs
 jest.config*
 
 src/**/*
-fix-package-type
+fix-package-type.sh
