@@ -30,7 +30,7 @@
     "web-ext": "^6.8.0"
   },
   "dependencies": {
-    "@substrate/connect-extension-protocol": "^1.0.0",
+    "@substrate/connect-extension-protocol": "^1.0.1",
     "@substrate/smoldot-light": "0.6.23",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
