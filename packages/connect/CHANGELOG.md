@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Alter configuration for supporting both ESM and CommonJS (CJS) ([#1142](https://github.com/paritytech/substrate-connect/pull/1142))
+
 ## 0.7.8 - 2022-07-11
 
 ### Changed
