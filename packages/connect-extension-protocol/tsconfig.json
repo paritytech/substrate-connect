@@ -5,12 +5,9 @@
     "baseUrl": ".",
     "rootDir": "./src",
     "esModuleInterop": true,
-    "outDir": "./dist",
-    "target": "ES2018",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true,
-    "module": "ES2020"
+    "strict": true
   }
 }
