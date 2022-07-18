@@ -3129,7 +3129,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/connect-extension-protocol@^1.0.0, @substrate/connect-extension-protocol@workspace:packages/connect-extension-protocol":
+"@substrate/connect-extension-protocol@^1.0.1, @substrate/connect-extension-protocol@workspace:packages/connect-extension-protocol":
   version: 0.0.0-use.local
   resolution: "@substrate/connect-extension-protocol@workspace:packages/connect-extension-protocol"
   dependencies:
@@ -3148,7 +3148,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@substrate/connect@workspace:packages/connect"
   dependencies:
-    "@substrate/connect-extension-protocol": ^1.0.0
+    "@substrate/connect-extension-protocol": ^1.0.1
     "@substrate/smoldot-light": 0.6.25
     eslint: ^8.14.0
     eventemitter3: ^4.0.7
