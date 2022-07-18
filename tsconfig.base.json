@@ -8,9 +8,9 @@
     "sourceMap": true,
     "paths": {
       "@substrate/connect-extension-protocol": [
-        "./packages/connect-extension-protocol"
+        "./packages/connect-extension-protocol/tsconfig-mjs.json"
       ],
-      "@substrate/connect": ["./packages/connect"]
+      "@substrate/connect": ["./packages/connect/tsconfig-mjs.json"]
     }
   }
 }
