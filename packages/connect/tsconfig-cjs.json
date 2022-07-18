@@ -4,5 +4,6 @@
     "module": "commonjs",
     "outDir": "./dist/cjs",
     "target": "es2015"
-  }
+  },
+  "references": [{ "path": "../connect-extension-protocol/tsconfig-cjs.json" }]
 }

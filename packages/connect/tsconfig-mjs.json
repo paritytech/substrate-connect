@@ -1,8 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "esnext",
+    "module": "es2020",
     "outDir": "./dist/mjs",
-    "target": "esnext"
-  }
+    "target": "ES2018"
+  },
+  "references": [{ "path": "../connect-extension-protocol/tsconfig-mjs.json" }]
 }
