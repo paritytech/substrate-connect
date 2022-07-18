@@ -1,8 +1,8 @@
 {
   "files": [],
   "references": [
-    { "path": "./packages/connect-extension-protocol/tsconfig-mjs.json" },
-    { "path": "./packages/connect/tsconfig-mjs.json" },
+    { "path": "./packages/connect-extension-protocol" },
+    { "path": "./packages/connect" },
     { "path": "./projects/burnr" },
     { "path": "./projects/extension" },
     { "path": "./projects/landing-page" }

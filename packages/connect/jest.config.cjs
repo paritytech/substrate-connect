@@ -5,7 +5,6 @@ module.exports = {
   testURL: "http://localhost/",
   globals: {
     "ts-jest": {
-      tsconfig: "tsconfig-mjs.json",
       useESM: true,
     },
   },
