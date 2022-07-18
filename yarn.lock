@@ -3142,7 +3142,7 @@ __metadata:
   resolution: "@substrate/connect@workspace:packages/connect"
   dependencies:
     "@substrate/connect-extension-protocol": ^1.0.1
-    "@substrate/smoldot-light": 0.6.23
+    "@substrate/smoldot-light": 0.6.25
     eslint: ^8.14.0
     eventemitter3: ^4.0.7
   languageName: unknown
@@ -3196,17 +3196,6 @@ __metadata:
     webpack: ^5.72.0
   languageName: unknown
   linkType: soft
-
-"@substrate/smoldot-light@npm:0.6.23":
-  version: 0.6.23
-  resolution: "@substrate/smoldot-light@npm:0.6.23"
-  dependencies:
-    buffer: ^6.0.1
-    pako: ^2.0.4
-    websocket: ^1.0.32
-  checksum: 62cdb17e360f14f6964a8e304745a4da5e75a963cf1daa47d543008a225d9fce6448b1ca8ff27611bf47842c3b9c347824456a49893d839cddac778a813e42c5
-  languageName: node
-  linkType: hard
 
 "@substrate/smoldot-light@npm:0.6.25":
   version: 0.6.25
@@ -5359,7 +5348,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"buffer@npm:^6.0.1, buffer@npm:^6.0.3":
+"buffer@npm:^6.0.3":
   version: 6.0.3
   resolution: "buffer@npm:6.0.3"
   dependencies:
@@ -11710,13 +11699,6 @@ __metadata:
     registry-url: ^5.0.0
     semver: ^6.2.0
   checksum: cc9f890d3667d7610e6184decf543278b87f657d1ace0deb4a9c9155feca738ef88f660c82200763d3348010f4e42e9c7adc91e96ab0f86a770955995b5351e2
-  languageName: node
-  linkType: hard
-
-"pako@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "pako@npm:2.0.4"
-  checksum: 82b9b0b99dd830c9103856a6dbd10f0cb2c8c32b9768184727ea381a99666de9a47a069d2e6efe6acf09336f363956b50835c196ef9311b34b7274d420eb0d88
   languageName: node
   linkType: hard
 
