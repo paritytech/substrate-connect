@@ -15,5 +15,5 @@
     "jsx": "react-jsx"
   },
   "include": ["src/**/*"],
-  "references": [{ "path": "../../packages/connect" }]
+  "references": [{ "path": "../../packages/connect/tsconfig-mjs.json" }]
 }

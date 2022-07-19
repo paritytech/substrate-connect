@@ -15,21 +15,27 @@ const BASE_PATH = "./src/connector/specs"
 
 const files = readdirSync(BASE_PATH)
 
+const type = process.argv.slice(2)
+
+if (!type || (type[0] !== "mjs" && type[0] !== "cjs"))
+  throw new Error("Type `mjs` or `cjs` must be provided.")
+const url = "./dist/" + type[0] + "/connector/specs/generated/"
+
 const processFile = async (fileName) => {
   const rawStr = await readFile(path.join(BASE_PATH, fileName), "utf8")
-  const fileStr = `export default \`${JSON.stringify(JSON.parse(rawStr))}\``
+  const fileStr =
+    type[0] === "mjs"
+      ? `export default \`${JSON.stringify(JSON.parse(rawStr))}\``
+      : `module.exports = \`${JSON.stringify(JSON.parse(rawStr))}\``
   await writeFile(
-    `${path.join(
-      "./dist/connector/specs/generated/",
-      fileName.slice(0, -5),
-    )}.js`,
+    `${path.join(url, fileName.slice(0, -5))}.js`,
     fileStr,
     "utf8",
   )
 }
 
-if (!existsSync("./dist/connector/specs/generated")) {
-  mkdirSync("./dist/connector/specs/generated", { resursive: true })
+if (!existsSync(url)) {
+  mkdirSync(url, { resursive: true })
 }
 
 Promise.all(files.filter((file) => file.endsWith(".json")).map(processFile))

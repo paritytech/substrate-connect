@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@substrate/connect-extension-protocol": "^1.0.1",
-    "@substrate/smoldot-light": "0.6.23",
+    "@substrate/smoldot-light": "0.6.25",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-hot-loader": "^4.13.0",
