@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "es2020",
+    "outDir": "./dist/mjs",
+    "target": "ES2018"
+  },
+  "references": [{ "path": "../connect-extension-protocol/tsconfig-mjs.json" }]
+}
