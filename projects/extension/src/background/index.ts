@@ -226,9 +226,7 @@ window.uiInterface = {
     return []
   },
   // Sends an message through rpc to smoldot in order to validate the given bootnode.
-  // This will return to the caller the response once received from rpc.
-  // Message's id is prefixed with "extension:" in order to be differentiated from the rest
-  // and be able to reply specific message at nextSandboxMessage to the caller.
+  // This passes a callback (verifyBootnode) that will be called once rpc response is received.
   updateBootnode: async (
     chain: string,
     bootnode: string,
@@ -247,7 +245,12 @@ window.uiInterface = {
     } else {
       // if bootnode does not exist, send for validation
       if (manager.state !== "ready") return
-      await manager.manager.validateBootnode(null, chain, bootnode)
+      await manager.manager.validateBootnode(
+        null,
+        chain,
+        bootnode,
+        verifyBootnode,
+      )
     }
   },
   get chains(): ExposedChainConnection[] {
@@ -383,11 +386,6 @@ manager = {
             chrome.storage.local.set({
               [message.chainId]: message.databaseContent,
             })
-          } else if (message.type === "extension-config") {
-            const { id, error } = JSON.parse(message.jsonRpcMessage)
-            const res = managerInit.getBootnode(id)
-            const { chain, bootnode, err } = res!
-            verifyBootnode(chain!, bootnode!, err || error?.message || "")
           }
         }
       })()

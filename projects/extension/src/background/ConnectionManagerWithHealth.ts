@@ -74,14 +74,6 @@ export interface ChainsStatusChanged {
   type: "chains-status-changed"
 }
 
-// Configuration of extension. If error field contains a message then error exists and message
-// describes that message.
-export interface ExtensionConfig {
-  origin: "connection-manager"
-  type: "extension-config"
-  jsonRpcMessage: string
-}
-
 interface BootnodeResp {
   chain?: string
   bootnode?: string
@@ -148,7 +140,14 @@ export class ConnectionManagerWithHealth<SandboxId> {
   #sandboxesChains: Map<SandboxId, Map<string, Chain>> = new Map()
   #pingInterval: ReturnType<typeof globalThis.setInterval>
   #nextRpcRqId: number = 0
-  #bootnodeRequest = new Map<number, { chain: string; bootnode: string }>()
+  #bootnodeRequest = new Map<
+    string,
+    {
+      chain: string
+      bootnode: string
+      cb: (c: string, b: string, res: string) => void
+    }
+  >()
 
   constructor(
     wellKnownChainSpecs: Map<string, string>,
@@ -178,44 +177,25 @@ export class ConnectionManagerWithHealth<SandboxId> {
     })
   }
 
-  getBootnode(id: number): BootnodeResp {
-    let resp: BootnodeResp
-    if (this.#bootnodeRequest.has(id)) {
-      const { chain, bootnode } = this.#bootnodeRequest.get(id)!
-      resp = { chain, bootnode }
-    } else {
-      // This should never happen
-      resp = {
-        chain: "",
-        bootnode: "",
-        err: "Unexpected Error: Request/Response mismatch.",
-      }
-      throw Error(
-        "Unexpected Error: Response id was not found in bootnode request map.",
-      )
-    }
-    // cleanup Map
-    this.#bootnodeRequest.delete(id)
-    return resp
-  }
-
   async validateBootnode(
     sandboxId: SandboxId,
     chain: string,
     bootnode: string,
+    cb: (c: string, b: string, res: string) => void,
   ): Promise<void> {
+    const id = "extension:" + this.#nextRpcRqId
     this.#inner.sandboxMessage(sandboxId, {
       chainId: chain,
       type: "rpc",
       origin: "substrate-connect-client",
       jsonRpcMessage: JSON.stringify({
-        id: "extension:" + this.#nextRpcRqId,
+        id,
         jsonrpc: "2.0",
         method: "sudo_unstable_p2pDiscover",
         params: [bootnode],
       }),
     })
-    this.#bootnodeRequest.set(this.#nextRpcRqId, { chain, bootnode })
+    this.#bootnodeRequest.set(id, { chain, bootnode, cb })
     this.#nextRpcRqId++
   }
 
@@ -278,12 +258,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
    */
   async nextSandboxMessage(
     sandboxId: SandboxId,
-  ): Promise<
-    | ToApplication
-    | ToOutsideDatabaseContent
-    | ChainsStatusChanged
-    | ExtensionConfig
-  > {
+  ): Promise<ToApplication | ToOutsideDatabaseContent | ChainsStatusChanged> {
     while (true) {
       const toApplication = await this.#inner.nextSandboxMessage(sandboxId)
 
@@ -363,17 +338,16 @@ export class ConnectionManagerWithHealth<SandboxId> {
                 }
               }
               // If jsonRpcMessageId starts with "extension:" then this message is a response to one
-              // initiated from extension's pages (Options page). It needs to have a different
-              // return type to the extension, in order to identify it and retrieve information from
-              // created Map and save to the localStorage
+              // initiated from extension's pages (Options page) and thus callback that is saved
+              // in Map should be called and message removed from this.#bootnodeRequest
             } else if (jsonRpcMessageId.startsWith("extension:")) {
-              jsonRpcMessage.id = JSON.parse(
-                (jsonRpcMessage.id as string).slice("extension:".length),
-              )
-              return {
-                origin: "connection-manager",
-                type: "extension-config",
-                jsonRpcMessage: JSON.stringify(jsonRpcMessage),
+              const { error } = jsonRpcMessage
+              if (this.#bootnodeRequest.has(jsonRpcMessage.id)) {
+                const { chain, bootnode, cb } = this.#bootnodeRequest.get(
+                  jsonRpcMessage.id,
+                )!
+                cb(chain, bootnode, error?.message || "")
+                this.#bootnodeRequest.delete(jsonRpcMessage.id)
               }
             } else {
               // Never supposed to happen. Indicates a bug somewhere.
