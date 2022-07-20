@@ -30,6 +30,6 @@
     "webpack": "^5.72.0"
   },
   "devDependencies": {
-    "eslint": "^8.14.0"
+    "eslint": "^8.20.0"
   }
 }
