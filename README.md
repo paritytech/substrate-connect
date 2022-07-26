@@ -82,5 +82,10 @@ yarn dev:burnr
 
 (Make sure to run `$ yarn install` before.)
 
+## Supporting most known bundlers
+
+1. [Webpack](https://github.com/wirednkod/substrate-connect-webpack) (v.5)
+2. [Vite](https://github.com/wirednkod/substrate-connect-vite) (v.3)
+3. [Parcel](https://github.com/wirednkod/substrate-connect-parcel) (v.2)
 
 ## [Deployments and releases](./DEPLOY-RELEASE.md)
