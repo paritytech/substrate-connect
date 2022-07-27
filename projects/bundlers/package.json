@@ -1,0 +1,36 @@
+{
+  "name": "@substrate/bundlers",
+  "version": "0.0.1",
+  "browserslist": [
+    "last 2 versions"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist && rm -rf node_modules",
+    "testbuild": "yarn run parcel && yarn run webpack && yarn run vite",
+    "webpack": "webpack",
+    "parcel": "parcel build ./index.html",
+    "vite": "tsc && vite build"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.8",
+    "@babel/preset-env": "^7.16.11",
+    "@vitejs/plugin-react": "^2.0.0",
+    "babel-loader": "^8.2.4",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "html-webpack-plugin": "^5.5.0",
+    "parcel": "2.6.0",
+    "regenerator-runtime": "^0.13.9",
+    "stream-browserify": "^3.0.0",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.7.4",
+    "vite": "^3.0.3",
+    "webpack": "^5.71.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.8.0"
+  },
+  "dependencies": {
+    "@substrate/connect": "0.7.9"
+  }
+}
