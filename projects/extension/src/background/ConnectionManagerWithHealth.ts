@@ -181,7 +181,7 @@ export class ConnectionManagerWithHealth<SandboxId> {
     sandboxId: SandboxId,
     chain: string,
     bootnode: string,
-    cb: (c: string, b: string, res: string) => void,
+    cb: (c: string, b: string, res: string) => Promise<void>,
   ): Promise<void> {
     const id = "extension:" + this.#nextRpcRqId
     this.#inner.sandboxMessage(sandboxId, {

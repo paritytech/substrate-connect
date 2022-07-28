@@ -158,15 +158,18 @@ const notifyAllChainsChangedListeners = () => {
 // Listeners that must be notified when there is an RPC response concerning bootnode verification
 let bootnodeVerifyListener: Set<(c: string, b: string, res: string) => void> =
   new Set()
-const verifyBootnode = (c: string, b: string, res: string) => {
-  bootnodeVerifyListener.forEach((l) => {
-    try {
-      l(c, b, res)
-    } catch (e) {
-      console.error("Uncaught exception in onChainsChanged callback:", e)
-    }
+const verifyBootnode = (c: string, b: string, res: string): Promise<void> =>
+  new Promise((resolve, reject) => {
+    bootnodeVerifyListener.forEach((l) => {
+      try {
+        l(c, b, res)
+      } catch (e) {
+        console.error("Uncaught exception while verifying bootnodes:", e)
+        reject(e)
+      }
+    })
+    resolve
   })
-}
 
 // Listeners that must be notified when the `get smoldotCrashError()` getter would return a
 // different value.
