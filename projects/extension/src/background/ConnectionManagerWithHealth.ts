@@ -74,12 +74,6 @@ export interface ChainsStatusChanged {
   type: "chains-status-changed"
 }
 
-interface BootnodeResp {
-  chain?: string
-  bootnode?: string
-  err?: string
-}
-
 /**
  * # Overview
  *
