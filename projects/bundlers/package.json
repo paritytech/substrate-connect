@@ -9,7 +9,8 @@
     "testbuild": "yarn run parcel && yarn run webpack && yarn run vite",
     "webpack": "webpack",
     "parcel": "parcel build ./index.html",
-    "vite": "tsc && vite build"
+    "vite": "tsc && vite build",
+    "lint": "yarn eslint . --ext .ts,.tsx"
   },
   "devDependencies": {
     "@babel/core": "^7.17.8",
@@ -18,6 +19,7 @@
     "babel-loader": "^8.2.4",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
+    "eslint": "^8.20.0",
     "html-webpack-plugin": "^5.5.0",
     "parcel": "2.6.0",
     "regenerator-runtime": "^0.13.9",
