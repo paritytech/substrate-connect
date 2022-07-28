@@ -168,7 +168,7 @@ const verifyBootnode = (c: string, b: string, res: string): Promise<void> =>
         reject(e)
       }
     })
-    resolve
+    resolve()
   })
 
 // Listeners that must be notified when the `get smoldotCrashError()` getter would return a
