@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Update @substrate/smoldot-light to [version 0.6.27](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#0627---2022-07-29). ([#1182](https://github.com/paritytech/substrate-connect/pull/1182))
+
 ## 0.7.9 - 2022-07-19
 
 - Alter configuration for supporting both ESM and CommonJS (CJS) ([#1160](https://github.com/paritytech/substrate-connect/pull/1160))
