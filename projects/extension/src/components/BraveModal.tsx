@@ -5,6 +5,11 @@ interface Props {
   show: boolean
 }
 
+const openInNewTab = (url: string): void => {
+  const newWindow = window.open(url, "_blank", "noopener,noreferrer")
+  if (newWindow) newWindow.opener = null
+}
+
 export const BraveModal = ({ show, isOptions }: Props) => {
   const [showModal, setShowModal] = useState<boolean>(show)
 
@@ -85,6 +90,11 @@ export const BraveModal = ({ show, isOptions }: Props) => {
               Dismiss
             </button>
             <button
+              onClick={() => {
+                openInNewTab(
+                  "https://paritytech.github.io/substrate-connect/#troubleshooting",
+                )
+              }}
               type="button"
               className="text-gray-500 bg-white hover:bg-gray-100 focus:outline-none rounded-lg border border-gray-200 text-xs font-medium px-2.5 py-1.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
             >
