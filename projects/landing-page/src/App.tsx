@@ -388,7 +388,7 @@ const App: React.FunctionComponent = () => {
               of Brave browser).
             </SectionText>
             <SectionText>
-              If an issue is identified concerning web sockets, this setting can
+              If an issue is identified concerning WebSockets, this setting can
               be disabled following the next steps:
               <ol>
                 <li>
