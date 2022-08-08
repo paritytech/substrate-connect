@@ -1,8 +1,5 @@
 {
-  "badBlocks": [
-    "0x2563260209012232649ab9dc003f62e274c684037de499a23062f8e0e816c605",
-    "0x15b1b925b0aa5cfe43c88cd024f74258cb5cfe3af424882c901014e8acd0d241"
-  ],
+  "badBlocks": [],
   "bootNodes": [
     "/dns/kusama-connect-0.parity.io/tcp/443/wss/p2p/12D3KooWBjxpFhVNM9poSsMEfdnXJaSWSZQ7otK9aV1SPA9zJp5W",
     "/dns/kusama-connect-1.parity.io/tcp/443/wss/p2p/12D3KooWAJRVca93jLm4zft4rtTLLxNV4ZrHPMBkbGy5XkXooBFt",
