@@ -444,7 +444,7 @@ const App: React.FunctionComponent = () => {
           <SidebarLink href="#extension">Browser Extension</SidebarLink>
           <SidebarLink href="#projects">Projects</SidebarLink>
           <SidebarLink href="#troubleshooting">
-            Brave browser web-sockets issue
+            Brave browser WebSocket issue
           </SidebarLink>
         </Sidebar>
       </UIContainer>
