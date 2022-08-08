@@ -371,7 +371,7 @@ const App: React.FunctionComponent = () => {
           </Section>
           <Section>
             <SectionHeading id="troubleshooting" prefix="9">
-              Brave browser web-sockets issue
+              Brave browser WebSocket issue
             </SectionHeading>
             <SectionText>
               As of <b>Brave v1.36</b>, extensions and web pages are limited to
