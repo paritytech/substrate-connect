@@ -375,7 +375,7 @@ const App: React.FunctionComponent = () => {
             </SectionHeading>
             <SectionText>
               As of <b>Brave v1.36</b>, extensions and web pages are limited to
-              a maximum of 10 active web socket connections(More details
+              a maximum of 10 active WebSocket connections (more details
               concerning this change can be found at the
               <a
                 href="https://github.com/brave/brave-browser/issues/19990"
