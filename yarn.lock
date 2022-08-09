@@ -3967,12 +3967,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/connect@0.7.9, @substrate/connect@workspace:packages/connect":
+"@substrate/connect@0.7.10, @substrate/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@substrate/connect@workspace:packages/connect"
   dependencies:
     "@substrate/connect-extension-protocol": ^1.0.1
-    "@substrate/smoldot-light": 0.6.25
+    "@substrate/smoldot-light": 0.6.28
     eslint: ^8.20.0
     eventemitter3: ^4.0.7
   languageName: unknown
@@ -3994,7 +3994,7 @@ __metadata:
   resolution: "@substrate/extension@workspace:projects/extension"
   dependencies:
     "@substrate/connect-extension-protocol": ^1.0.1
-    "@substrate/smoldot-light": 0.6.25
+    "@substrate/smoldot-light": 0.6.28
     autoprefixer: ^10.4.7
     eslint: ^8.20.0
     jest-chrome: ^0.7.2
@@ -4027,12 +4027,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/smoldot-light@npm:0.6.25":
-  version: 0.6.25
-  resolution: "@substrate/smoldot-light@npm:0.6.25"
+"@substrate/smoldot-light@npm:0.6.28":
+  version: 0.6.28
+  resolution: "@substrate/smoldot-light@npm:0.6.28"
   dependencies:
-    websocket: ^1.0.32
-  checksum: ce4fb82fcbbb05fb764d316e30b86cd9cc2fe75ad850404403751f6db5b5e130443e54cbae3f0c4b32abaed7668ea3e0d80c11d5e67d47190ea502543ed68143
+    pako: ^2.0.4
+    ws: ^8.8.1
+  checksum: 8a0eedb24b7521efdcc8b335ab73828cdb3e8599aefb17300eabbb56aea4452b42062103b16174ea93c5b7202596953bbec06cec6e12c9791f70ef163887b525
   languageName: node
   linkType: hard
 
@@ -12843,6 +12844,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pako@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "pako@npm:2.0.4"
+  checksum: 82b9b0b99dd830c9103856a6dbd10f0cb2c8c32b9768184727ea381a99666de9a47a069d2e6efe6acf09336f363956b50835c196ef9311b34b7274d420eb0d88
+  languageName: node
+  linkType: hard
+
 "pako@npm:~1.0.2":
   version: 1.0.11
   resolution: "pako@npm:1.0.11"
@@ -16402,7 +16410,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"websocket@npm:^1.0.32, websocket@npm:^1.0.34":
+"websocket@npm:^1.0.34":
   version: 1.0.34
   resolution: "websocket@npm:1.0.34"
   dependencies:
@@ -16634,6 +16642,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 4369caaac8d1092a73871f5cf1d87fcbb995dc4183a1bc48e4f451bc2d02d0a8bf7c17edf1da18e2be3c773b09262275356b256d1c55bc7ca096154293ba2a8c
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.8.1":
+  version: 8.8.1
+  resolution: "ws@npm:8.8.1"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ^5.0.2
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 2152cf862cae0693f3775bc688a6afb2e989d19d626d215e70f5fcd8eb55b1c3b0d3a6a4052905ec320e2d7734e20aeedbf9744496d62f15a26ad79cf4cf7dae
   languageName: node
   linkType: hard
 

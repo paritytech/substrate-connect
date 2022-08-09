@@ -13,16 +13,16 @@ readonly -f die
 directory=_site
 branch=gh-pages
 
-echo -e "\033[0;32mDeleting old content...\033[0m"
+echo -e "Deleting old content..."
 rm -rf $directory
 
-echo -e "\033[0;32mChecking out $branch....\033[0m"
+echo -e "Checking out $branch...."
 git worktree add $directory -f $branch
 
-echo -e "\033[0;32mRebuilding everything...\033[0m"
+echo -e "Rebuilding everything..."
 yarn build
 
-echo -e "\033[0;32mGenerating site...\033[0m"
+echo -e "Generating site..."
 echo "Init demo for github pages process..."
 rm -rf ./$directory/*
 mkdir -p ./$directory/burnr
@@ -40,11 +40,11 @@ cp -r ./projects/landing-page/dist/* ./$directory/.
 echo "Generate API docs."
 yarn api-docs
 
-echo -e "\033[0;32mDeploying $branch branch...\033[0m"
+echo -e "Deploying $branch branch..."
 cd $directory &&
   git add --all &&
   GIT_COMMITTER_NAME='Docs builder' GIT_COMMITTER_EMAIL='info@parity.io' git commit --author "Docs builder <info@parity.io>" -m "Deploy updates" &&
   git push origin $branch
 
-echo -e "\033[0;32mCleaning up...\033[0m"
+echo -e "Cleaning up..."
 git worktree remove -f $directory

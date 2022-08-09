@@ -14,7 +14,8 @@
     "strict": true,
     "module": "es6",
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "downlevelIteration": true
   },
   "include": [
     "src/**/*",
