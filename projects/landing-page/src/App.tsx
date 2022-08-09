@@ -369,6 +369,41 @@ const App: React.FunctionComponent = () => {
               </SectionRef>
             </CardProject>
           </Section>
+          <Section>
+            <SectionHeading id="troubleshooting" prefix="9">
+              Brave browser WebSocket issue
+            </SectionHeading>
+            <SectionText>
+              As of <b>Brave v1.36</b>, extensions and web pages are limited to
+              a maximum of 10 active WebSocket connections (more details
+              concerning this change can be found at the
+              <a
+                href="https://github.com/brave/brave-browser/issues/19990"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {" "}
+                respective repository{" "}
+              </a>
+              of Brave browser).
+            </SectionText>
+            <SectionText>
+              If an issue is identified concerning WebSockets, this setting can
+              be disabled following the next steps:
+              <ol>
+                <li>
+                  Visit the brave settings (paste{" "}
+                  <i>brave://flags/#restrict-websockets-pool</i> in a new tab);
+                </li>
+                <li>
+                  Locate the setting: <b>Restrict WebSockets pool</b>;
+                </li>
+                <li>Switch the setting to `Disabled`;</li>
+                <li>Relaunch the browser.</li>
+              </ol>
+            </SectionText>
+          </Section>
+
           <ThemeProvider theme={createTheme(dark)}>
             <Section pt={5} pb={5}>
               {/* TODO: Playground */}
@@ -408,6 +443,9 @@ const App: React.FunctionComponent = () => {
           <SidebarLink href="#api-docs">API Documentation</SidebarLink>
           <SidebarLink href="#extension">Browser Extension</SidebarLink>
           <SidebarLink href="#projects">Projects</SidebarLink>
+          <SidebarLink href="#troubleshooting">
+            Brave browser WebSocket issue
+          </SidebarLink>
         </Sidebar>
       </UIContainer>
     </ThemeProvider>
