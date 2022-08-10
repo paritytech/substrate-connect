@@ -23,6 +23,7 @@ const Options: React.FunctionComponent = () => {
   const [poolingLogs, setPoolingLogs] = useState<boolean>(true)
   const [activeTab, setActiveTab] = useState<number>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
+  const [bg, setBg] = useState<Background | undefined>()
 
   const getTime = (d: number) => {
     const date = new Date(d)
@@ -49,73 +50,82 @@ const Options: React.FunctionComponent = () => {
   }
 
   useEffect(() => {
+    chrome.runtime.getBackgroundPage((backgroundPage) => {
+      setBg(backgroundPage as Background)
+    })
+  }, [])
+
+  useEffect(() => {
+    if (!bg) return
     const interval = setInterval(() => {
       if (poolingLogs) {
-        chrome.runtime.getBackgroundPage((bg) => {
-          const logs = (bg as Background).uiInterface.logger
-          setAllLogs([...logs.all])
-          setWarnLogs([...logs.warn])
-          setErrLogs([...logs.error])
-        })
+        const logs = bg.uiInterface.logger
+        setAllLogs([...logs.all])
+        setWarnLogs([...logs.warn])
+        setErrLogs([...logs.error])
       }
     }, 5000)
     return () => {
       clearInterval(interval)
     }
-  }, [poolingLogs])
+  }, [bg, poolingLogs])
 
   useEffect(() => {
-    window.navigator?.brave?.isBrave().then((isBrave: any) => {
-      chrome.storage.local.get(["braveSetting"], ({ braveSetting }) => {
-        setShowModal(isBrave && !braveSetting)
-      })
-    })
+    if (!bg) return
 
-    chrome.storage.local.get(["notifications"], ({ notifications }) => {
-      setNotifications(notifications as SetStateAction<boolean>)
-    })
+    const getNotifications = async () => {
+      const result = await bg?.uiInterface.getChromeStorageLocalSetting(
+        "notifications",
+      )
+      setNotifications(result?.notifications as SetStateAction<boolean>)
+    }
+
+    getNotifications()
 
     let cb: () => void = () => {}
-    chrome.runtime.getBackgroundPage((backgroundPage) => {
-      const bg = backgroundPage as Background
-      const refresh = () => {
-        const networks = new Map<string, NetworkTabProps>()
-        bg.uiInterface.chains.forEach((chain) => {
-          const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
-          if (!tab) return
 
-          const network = networks.get(chainName)
-          if (!network) {
-            return networks.set(chainName, {
-              name: chainName,
-              health: {
-                isSyncing,
-                peers,
-                status: "connected",
-                bestBlockHeight,
-              },
-              apps: [{ name: tab.url, url: tab.url }],
-            })
-          }
-
-          network.apps.push({ name: tab.url, url: tab.url })
-        })
-        setNetworks([...networks.values()])
-      }
-      cb = bg.uiInterface.onChainsChanged(refresh)
-      refresh()
+    window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
+      const { braveSetting } =
+        await bg.uiInterface.getChromeStorageLocalSetting("braveSetting")
+      setShowModal(isBrave && !braveSetting)
     })
+
+    const refresh = () => {
+      const networks = new Map<string, NetworkTabProps>()
+      bg.uiInterface.chains.forEach((chain) => {
+        const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
+        if (!tab) return
+
+        const network = networks.get(chainName)
+        if (!network) {
+          return networks.set(chainName, {
+            name: chainName,
+            health: {
+              isSyncing,
+              peers,
+              status: "connected",
+              bestBlockHeight,
+            },
+            apps: [{ name: tab.url, url: tab.url }],
+          })
+        }
+
+        network.apps.push({ name: tab.url, url: tab.url })
+      })
+      setNetworks([...networks.values()])
+    }
+
+    cb = bg.uiInterface.onChainsChanged(refresh)
+    refresh()
 
     return () => cb()
-  }, [])
+  }, [bg])
 
   useEffect(() => {
-    chrome.storage.local.set({ notifications: notifications }, () => {
-      if (chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError)
-      }
+    bg?.uiInterface.setChromeStorageLocalSetting({
+      notifications: notifications,
     })
-  }, [notifications])
+  }, [bg, notifications])
 
   const getLevelInfo = (level: number) => {
     let color: string = "#999"

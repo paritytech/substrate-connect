@@ -70,16 +70,18 @@ const Popup: FunctionComponent = () => {
     chrome.runtime.getBackgroundPage((backgroundPage) => {
       setBg(backgroundPage as Background)
     })
-    // Identify Brave browser and show Popup
-    window.navigator?.brave?.isBrave().then((isBrave: any) => {
-      chrome.storage.local.get(["braveSetting"], ({ braveSetting }) => {
-        setShowModal(isBrave && !braveSetting)
-      })
-    })
   }, [])
 
   useEffect(() => {
     if (!bg) return
+
+    // Identify Brave browser and show Popup
+    window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
+      const { braveSetting } =
+        await bg.uiInterface.getChromeStorageLocalSetting("braveSetting")
+      setShowModal(isBrave && !braveSetting)
+    })
+
     disconnectTab.current = bg.uiInterface.disconnectTab
     const unsubscribe = bg.uiInterface.onChainsChanged(() => refresh())
     refresh()

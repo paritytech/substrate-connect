@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import { Background } from "../background"
 
 interface Props {
   isOptions?: boolean
@@ -12,6 +13,13 @@ const openInNewTab = (url: string): void => {
 
 export const BraveModal = ({ show, isOptions }: Props) => {
   const [showModal, setShowModal] = useState<boolean>(show)
+  const [bg, setBg] = useState<Background | undefined>()
+
+  useEffect(() => {
+    chrome.runtime.getBackgroundPage((backgroundPage) => {
+      setBg(backgroundPage as Background)
+    })
+  }, [])
 
   useEffect(() => {
     setShowModal(show)
@@ -83,7 +91,9 @@ export const BraveModal = ({ show, isOptions }: Props) => {
               type="button"
               onClick={() => {
                 setShowModal(false)
-                chrome.storage.local.set({ braveSetting: true })
+                bg?.uiInterface.setChromeStorageLocalSetting({
+                  braveSetting: true,
+                })
               }}
               className="text-gray-500 bg-white hover:bg-gray-100 focus:outline-none rounded-lg border border-gray-200 text-xs font-medium px-2.5 py-1.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
             >
