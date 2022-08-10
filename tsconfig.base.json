@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "composite": true,
-    "inlineSources": true,
+    "declaration": true,
     "inlineSourceMap": true,
     "paths": {
       "@substrate/connect-extension-protocol": [
