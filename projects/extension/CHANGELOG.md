@@ -10,7 +10,7 @@
 
 ### Changed
 
-- Update @substrate/smoldot-light to [version 0.6.23](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#0623---2022-07-11). ([#2493](https://github.com/paritytech/smoldot/pull/2493))
+- Update @substrate/smoldot-light to [version 0.6.23](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#0623---2022-07-11). ([#1146](https://github.com/paritytech/substrate-connect/pull/1146))
 
 ## 0.1.7 - 2022-06-17
 
