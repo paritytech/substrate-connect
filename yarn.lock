@@ -3972,7 +3972,7 @@ __metadata:
   resolution: "@substrate/connect@workspace:packages/connect"
   dependencies:
     "@substrate/connect-extension-protocol": ^1.0.1
-    "@substrate/smoldot-light": 0.6.28
+    "@substrate/smoldot-light": 0.6.29
     eslint: ^8.20.0
     eventemitter3: ^4.0.7
   languageName: unknown
@@ -3994,7 +3994,7 @@ __metadata:
   resolution: "@substrate/extension@workspace:projects/extension"
   dependencies:
     "@substrate/connect-extension-protocol": ^1.0.1
-    "@substrate/smoldot-light": 0.6.28
+    "@substrate/smoldot-light": 0.6.29
     autoprefixer: ^10.4.7
     eslint: ^8.20.0
     jest-chrome: ^0.7.2
@@ -4027,13 +4027,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/smoldot-light@npm:0.6.28":
-  version: 0.6.28
-  resolution: "@substrate/smoldot-light@npm:0.6.28"
+"@substrate/smoldot-light@npm:0.6.29":
+  version: 0.6.29
+  resolution: "@substrate/smoldot-light@npm:0.6.29"
   dependencies:
     pako: ^2.0.4
     ws: ^8.8.1
-  checksum: 8a0eedb24b7521efdcc8b335ab73828cdb3e8599aefb17300eabbb56aea4452b42062103b16174ea93c5b7202596953bbec06cec6e12c9791f70ef163887b525
+  checksum: 85eb7b88e7d85cfefb77c128205a8f47f6f5508eda5ed5fdf34c16c2c12223cc8b28986df475e45c3fbd3ccdcef15ee70ada2294d738a89552ac155928ebcd18
   languageName: node
   linkType: hard
 
