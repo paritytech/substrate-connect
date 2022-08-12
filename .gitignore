@@ -8,7 +8,7 @@ _site
 *.tsbuildinfo
 polkadot
 zombienet-*
-polkadot-collator*
+polkadot-parachain*
 init.sh
 .yarn/*
 !.yarn/patches
