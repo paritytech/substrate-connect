@@ -2,7 +2,9 @@ module.exports = {
   preset: "ts-jest",
   testEnvironment: "jsdom",
   extensionsToTreatAsEsm: [".ts"],
-  testURL: "http://localhost/",
+  testEnvironmentOptions: {
+    url: "http://localhost/",
+  },
   globals: {
     "ts-jest": {
       useESM: true,
