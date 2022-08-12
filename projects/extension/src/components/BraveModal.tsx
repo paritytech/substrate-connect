@@ -69,6 +69,7 @@ export const BraveModal = ({ show, isOptions }: Props) => {
             <p className="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
               Due to a{" "}
               <a
+                rel="noreferrer"
                 target="_blank"
                 className="font-bold underline hover:color-gray"
                 href="https://github.com/brave/brave-browser/issues/19990"
