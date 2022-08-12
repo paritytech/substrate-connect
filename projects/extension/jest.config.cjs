@@ -5,7 +5,9 @@ module.exports = {
   testEnvironment: "jsdom",
   setupFilesAfterEnv: ["./jest-setup.js"],
   verbose: true,
-  testURL: "http://localhost/",
+  testEnvironmentOptions: {
+    url: "http://localhost/",
+  },
   preset: "ts-jest/presets/js-with-babel-esm",
   globals: {
     "ts-jest": {
