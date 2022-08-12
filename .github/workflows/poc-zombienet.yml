@@ -16,16 +16,16 @@ jobs:
           yarn build
       - name: Get zombienet
         run: |
-          curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.2.26/zombienet-linux
+          curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.2.54/zombienet-linux
           chmod +x zombienet-linux
       - name: Get polkadot
         run: |
-          curl -L -O https://github.com/paritytech/polkadot/releases/download/v0.9.17-rc4/polkadot
+          curl -L -O https://github.com/paritytech/polkadot/releases/download/v0.9.27/polkadot
           chmod +x polkadot
-      - name: Get polkadot-collator
+      - name: Get polkadot-parachain
         run: |
-          curl -L -O https://github.com/paritytech/cumulus/releases/download/polkadot-v0.9.17/polkadot-collator
-          chmod +x polkadot-collator
+          curl -L -O https://github.com/paritytech/cumulus/releases/download/v0.9.230/polkadot-parachain
+          chmod +x polkadot-parachain
       - name: Run test
         run: |
           export PATH=$(pwd):$PATH
