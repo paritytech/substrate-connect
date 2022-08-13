@@ -4223,13 +4223,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chrome@npm:^0.0.180":
-  version: 0.0.180
-  resolution: "@types/chrome@npm:0.0.180"
+"@types/chrome@npm:^0.0.193":
+  version: 0.0.193
+  resolution: "@types/chrome@npm:0.0.193"
   dependencies:
     "@types/filesystem": "*"
     "@types/har-format": "*"
-  checksum: b564442488cfceb18069ead55148762c392761a2174f1a5d3fb6077bfd7b9067b6008c1f41c0b0f118bf2155bbdd81d214723f2dddff15905c706f485d945090
+  checksum: f01205376becff1a229443473c697b0ab42d87af00dc2a52f7a16bce2ad223875fd95ebee12ab1598f2669eb1af26953863c37aace7e87551f68ff73eaaedba5
   languageName: node
   linkType: hard
 
@@ -4408,17 +4408,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsdom@npm:^16.2.14":
-  version: 16.2.14
-  resolution: "@types/jsdom@npm:16.2.14"
-  dependencies:
-    "@types/node": "*"
-    "@types/parse5": "*"
-    "@types/tough-cookie": "*"
-  checksum: 12bb926fa74ea07c0ba0bfd5bf185ac0fd771b28666a5e8784b9af4bb96bb0c51fc5f494eff7da1d3cd804e4757f640a23c344c1cd5d188f95ab0ab51770d88b
-  languageName: node
-  linkType: hard
-
 "@types/jsdom@npm:^16.2.4":
   version: 16.2.15
   resolution: "@types/jsdom@npm:16.2.15"
@@ -4427,6 +4416,17 @@ __metadata:
     "@types/parse5": ^6.0.3
     "@types/tough-cookie": "*"
   checksum: e038335321bef42ebf220aaf597e186e2eec8de6107ce7a70de1c046a84c1fbb42d454e195a20383a6870b18c7ef6fa6b73812a626f88a4a2ef1f711d2e2e13c
+  languageName: node
+  linkType: hard
+
+"@types/jsdom@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "@types/jsdom@npm:20.0.0"
+  dependencies:
+    "@types/node": "*"
+    "@types/tough-cookie": "*"
+    parse5: ^7.0.0
+  checksum: 13e67d31347e02d46ec6a23919b3ce39d86136665922a2a6cb977e216a2f46c22d2f025d0586a64ab492ebaa5f43da669b6f173a5a8cfd3e3bb7c9d19b6cfa9e
   languageName: node
   linkType: hard
 
@@ -4484,10 +4484,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^17.0.23":
+"@types/node@npm:*":
   version: 17.0.23
   resolution: "@types/node@npm:17.0.23"
   checksum: a3517554737cbb042e76c30d0e5482192ac4d9bea0eeb086e2622d9cabf460a0eb52a696b99fcd18e7fcc93c96db6cc7ae507f6608f256ef0b5c1d8c87a5a470
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^18.7.2":
+  version: 18.7.2
+  resolution: "@types/node@npm:18.7.2"
+  checksum: 422cf95dea09959d0e809d24280b76948f60ea805e20d38f07bf9eeafeb413513b9cc365404766f7752bef9cafb8301a882d9d097f780e13f2bedf507459ebc5
   languageName: node
   linkType: hard
 
@@ -4498,7 +4505,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/parse5@npm:*, @types/parse5@npm:^6.0.3":
+"@types/parse5@npm:^6.0.3":
   version: 6.0.3
   resolution: "@types/parse5@npm:6.0.3"
   checksum: ddb59ee4144af5dfcc508a8dcf32f37879d11e12559561e65788756b95b33e6f03ea027d88e1f5408f9b7bfb656bf630ace31a2169edf44151daaf8dd58df1b7
@@ -4601,14 +4608,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^18.0.15":
-  version: 18.0.15
-  resolution: "@types/react@npm:18.0.15"
+"@types/react@npm:^18.0.17":
+  version: 18.0.17
+  resolution: "@types/react@npm:18.0.17"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: e22cc388d1c145aa184787e44dc28db4789976c704cd5db475c170bb76a560eb81def5f346cfe750949bb3d43ad88822b8cbb9f19b1286e3795892a8263e7715
+  checksum: 18cae64f5bfd6bb58fbd8ee2ba52ec82de844f114254e26de7b513e4b86621f643f9b71d7066958cd571b0d78cb86cbceda449c5289f9349ca573df29ab69252
   languageName: node
   linkType: hard
 
@@ -15089,13 +15096,13 @@ __metadata:
     "@hot-loader/react-dom": ^17.0.2
     "@jest/globals": ^28.1.3
     "@types/asap": ^2.0.0
-    "@types/chrome": ^0.0.180
+    "@types/chrome": ^0.0.193
     "@types/copy-webpack-plugin": ^10.1.0
     "@types/jest": ^28.1.6
-    "@types/jsdom": ^16.2.14
-    "@types/node": ^17.0.23
+    "@types/jsdom": ^20.0.0
+    "@types/node": ^18.7.2
     "@types/qrcode.react": ^1.0.2
-    "@types/react": ^18.0.15
+    "@types/react": ^18.0.17
     "@types/react-dom": ^18.0.6
     "@types/react-hot-loader": ^4.1.1
     "@types/react-router-dom": ^5.3.3
