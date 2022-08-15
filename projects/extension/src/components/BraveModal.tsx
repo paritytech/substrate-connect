@@ -92,7 +92,7 @@ export const BraveModal = ({ show, isOptions }: Props) => {
               type="button"
               onClick={() => {
                 setShowModal(false)
-                bg?.uiInterface.setChromeStorageLocalSetting({
+                bg?.uiInterface.setSetting({
                   braveSetting: true,
                 })
               }}

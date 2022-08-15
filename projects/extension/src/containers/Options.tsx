@@ -73,21 +73,16 @@ const Options: React.FunctionComponent = () => {
   useEffect(() => {
     if (!bg) return
 
-    const getNotifications = async () => {
-      const result = await bg?.uiInterface.getChromeStorageLocalSetting(
-        "notifications",
+    const extensionSettings = bg.uiInterface.extSettings
+    extensionSettings?.notifications &&
+      setNotifications(
+        extensionSettings.notifications as SetStateAction<boolean>,
       )
-      setNotifications(result?.notifications as SetStateAction<boolean>)
-    }
-
-    getNotifications()
 
     let cb: () => void = () => {}
 
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
-      const { braveSetting } =
-        await bg.uiInterface.getChromeStorageLocalSetting("braveSetting")
-      setShowModal(isBrave && !braveSetting)
+      setShowModal(isBrave && !extensionSettings.braveSetting)
     })
 
     const refresh = () => {
@@ -120,12 +115,6 @@ const Options: React.FunctionComponent = () => {
 
     return () => cb()
   }, [bg])
-
-  useEffect(() => {
-    bg?.uiInterface.setChromeStorageLocalSetting({
-      notifications: notifications,
-    })
-  }, [bg, notifications])
 
   const getLevelInfo = (level: number) => {
     let color: string = "#999"

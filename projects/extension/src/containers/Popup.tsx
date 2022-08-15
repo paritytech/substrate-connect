@@ -77,9 +77,7 @@ const Popup: FunctionComponent = () => {
 
     // Identify Brave browser and show Popup
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
-      const { braveSetting } =
-        await bg.uiInterface.getChromeStorageLocalSetting("braveSetting")
-      setShowModal(isBrave && !braveSetting)
+      setShowModal(isBrave && !bg.uiInterface.extSettings.braveSetting)
     })
 
     disconnectTab.current = bg.uiInterface.disconnectTab

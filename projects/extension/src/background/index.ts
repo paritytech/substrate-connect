@@ -1,5 +1,4 @@
 import { ConnectionManagerWithHealth } from "./ConnectionManagerWithHealth"
-import settings from "./settings.json"
 import { ExposedChainConnection } from "./types"
 import { start as smoldotStart } from "@substrate/smoldot-light"
 
@@ -11,6 +10,8 @@ import {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"
+
+const settingKeys = ["braveSetting", "notifications"]
 
 // Loads the well-known chains bootnodes from the local storage and returns the well-known
 // chains.
@@ -73,10 +74,7 @@ export interface Background extends Window {
     onChainsChanged: (listener: () => void) => () => void
     onSmoldotCrashErrorChanged: (listener: () => void) => () => void
     disconnectTab: (tabId: number) => void
-    setChromeStorageLocalSetting: (obj: any) => void
-    getChromeStorageLocalSetting(
-      setting: string,
-    ): Promise<{ [key: string]: any }>
+    setSetting: (obj: any) => void
     // List of all chains that are currently running.
     // Use `onChainsChanged` to register a callback that is called when this list or its content
     // might have changed.
@@ -88,6 +86,7 @@ export interface Background extends Window {
     get smoldotCrashError(): string | undefined
     // Get the bootnodes of the wellKnownChains
     get wellKnownChainBootnodes(): Promise<Record<string, string[]>>
+    get extSettings(): ExtensionSettings
   }
 }
 
@@ -102,6 +101,10 @@ interface LogKeeper {
   all: logStructure[]
   warn: logStructure[]
   error: logStructure[]
+}
+
+interface ExtensionSettings {
+  [key: string]: boolean
 }
 
 const logKeeper: LogKeeper = {
@@ -195,19 +198,15 @@ window.uiInterface = {
       }
     }
   },
-  setChromeStorageLocalSetting: (obj: any) => {
+  setSetting: (obj: any) => {
     chrome.storage.local.set(obj, () => {
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError)
       }
     })
   },
-  getChromeStorageLocalSetting(setting: string) {
-    return new Promise((resolve, reject) => {
-      chrome.storage.local.get([setting], (res) => {
-        resolve(res)
-      })
-    })
+  get extSettings() {
+    return extensionSettings
   },
   get chains(): ExposedChainConnection[] {
     if (manager.state === "ready") {
@@ -247,6 +246,21 @@ window.uiInterface = {
       return output
     })
   },
+}
+
+let extensionSettings: ExtensionSettings = {}
+
+// Initiates the state of the extension from the storage
+const initExtensionSettings = (): void => {
+  chrome.storage.local.get(["notifications"], ({ notifications }) => {
+    extensionSettings.notifications = !!notifications
+  })
+  window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
+    isBrave &&
+      chrome.storage.local.get(["braveSetting"], ({ braveSetting }) => {
+        extensionSettings.braveSetting = !!braveSetting
+      })
+  })
 }
 
 // The manager can be in multiple different states: currently initializing, operational, or
@@ -377,6 +391,16 @@ manager = {
     }
   })(),
 }
+
+initExtensionSettings()
+
+// Listener that updates the state of the settings in  extension  when storage changes
+chrome.storage.onChanged.addListener((val) => {
+  const updatedEntry = Object.entries(val)[0]
+  if (settingKeys.includes(updatedEntry[0])) {
+    extensionSettings[updatedEntry[0]] = updatedEntry[1].newValue
+  }
+})
 
 // Handle new port connections.
 //
