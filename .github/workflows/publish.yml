@@ -8,30 +8,30 @@ jobs:
   npm-publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
         with:
           node-version: 18
       - run: yarn install --immutable
       - run: yarn build
       - name: Compare versions of npm with local
-        uses: Rober19/compare-npm-versions-ci@a38b02a14bbee73badddf83e13ebcb3e674c6df5 # latest from original maintainer
+        uses: PostHog/check-package-version@v2
         id: package_version
         with:
           path: './packages/connect'
           npm_package_name: '@substrate/connect'
       - name: Local/NPM versions
-        if: steps.package_version.outputs.npm_is_greater == 'true'
+        if: steps.package_version.outputs.is-new-version
         run: |
-          echo "Local version is ${{ steps.package_version.outputs.version }}."
-          echo "NPM version is ${{ steps.package_version.outputs.pkg_npm_version }}."
+          echo "Local version is ${{ steps.package_version.outputs.committed-version }}."
+          echo "NPM version is ${{ steps.package_version.outputs.published-version }}."
       - name: Publish Dry Run
         working-directory: './packages/connect'
         run: npm publish --unsafe-perm --dry-run
       - name: Publish
         uses: JS-DevTools/npm-publish@v1
         # merge only if version is greater than the one in npm and only after merge
-        if: steps.package_version.outputs.npm_is_greater == 'false'
+        if: steps.package_version.outputs.is-new-version
         # Warning: this GitHub action doesn't seem to run prepublish scripts, hence
         # the `npm publish --dry-run` done right above is important to ensure this.
         with:
@@ -40,7 +40,7 @@ jobs:
           access: public
       - name: Deploy
         # merge only if version is greater than the one in npm and only after merge
-        if: steps.package_version.outputs.npm_is_greater == 'false'
+        if: steps.package_version.outputs.is-new-version
         run: yarn run deploy
 
   all:
