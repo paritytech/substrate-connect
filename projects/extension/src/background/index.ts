@@ -78,7 +78,6 @@ export interface Background extends Window {
     disconnectTab: (tabId: number) => void
     getDefaultBootnodes: (chain: string) => string[]
     updateBootnode: (chain: string, bootnode: string, add: boolean) => void
-
     setChromeStorageLocalSetting: (obj: any) => void
     getChromeStorageLocalSetting(
       setting: string,
@@ -260,6 +259,7 @@ window.uiInterface = {
         verifyBootnode,
       )
     }
+  },
   setChromeStorageLocalSetting: (obj: any) => {
     chrome.storage.local.set(obj, () => {
       if (chrome.runtime.lastError) {
