@@ -27,24 +27,23 @@ jobs:
         run: |
           echo "Local version is ${{ steps.package_version.outputs.committed-version }}."
           echo "NPM version is ${{ steps.package_version.outputs.published-version }}."
-          echo "NPM version is ${{ steps.package_version.outputs.is-new-version }}." # test
       - name: Publish Dry Run
         working-directory: './packages/connect'
         run: npm publish --unsafe-perm --dry-run
-      # - name: Publish
-      #   uses: JS-DevTools/npm-publish@v1
-      #   # merge only if version is greater than the one in npm and only after merge
-      #   if: steps.package_version.outputs.is-new-version
-      #   # Warning: this GitHub action doesn't seem to run prepublish scripts, hence
-      #   # the `npm publish --dry-run` done right above is important to ensure this.
-      #   with:
-      #     token: ${{ secrets.NPM_TOKEN }}
-      #     package: ./packages/connect/package.json
-      #     access: public
-      # - name: Deploy
-      #   # merge only if version is greater than the one in npm and only after merge
-      #   if: steps.package_version.outputs.is-new-version
-      #   run: yarn run deploy
+      - name: Publish
+        uses: JS-DevTools/npm-publish@v1
+        # merge only if version is greater than the one in npm and only after merge
+        if: steps.package_version.outputs.is-new-version
+        # Warning: this GitHub action doesn't seem to run prepublish scripts, hence
+        # the `npm publish --dry-run` done right above is important to ensure this.
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./packages/connect/package.json
+          access: public
+      - name: Deploy
+        # merge only if version is greater than the one in npm and only after merge
+        if: steps.package_version.outputs.is-new-version
+        run: yarn run deploy
 
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
