@@ -1,6 +1,8 @@
 name: Publish
 
 on:
+  pull_request:
+    branches: [ main ]
   push:
     branches: [ main ]
 
@@ -34,14 +36,16 @@ jobs:
         if: steps.package_version.outputs.is-new-version
         # Warning: this GitHub action doesn't seem to run prepublish scripts, hence
         # the `npm publish --dry-run` done right above is important to ensure this.
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: ./packages/connect/package.json
-          access: public
-      - name: Deploy
-        # merge only if version is greater than the one in npm and only after merge
-        if: steps.package_version.outputs.is-new-version
-        run: yarn run deploy
+        run: |
+          echo "steps.package_version.outputs.is-new-version" 
+        # with:
+        #   token: ${{ secrets.NPM_TOKEN }}
+        #   package: ./packages/connect/package.json
+        #   access: public
+      # - name: Deploy
+      #   # merge only if version is greater than the one in npm and only after merge
+      #   if: steps.package_version.outputs.is-new-version
+      #   run: yarn run deploy
 
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
