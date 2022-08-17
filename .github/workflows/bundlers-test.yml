@@ -20,8 +20,9 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+        path: './projects/bundlers'
     - run: yarn install
-    - run: yarn run test-bundlers
+    - run: yarn run testbuild
     
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks

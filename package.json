@@ -37,7 +37,6 @@
     "dev:demo": "yarn workspace @substrate/demo run dev",
     "dev:landing-page": "yarn workspace @substrate/landing-page run dev",
     "dev:extension": "yarn workspace @substrate/extension run dev",
-    "test-bundlers": "yarn workspace @substrate/bundlers run testbuild",
     "deploy": "./deploy.sh",
     "format": "prettier --write .",
     "checkResolutions": "node ./.ensure-resolution.mjs"
