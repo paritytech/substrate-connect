@@ -15,14 +15,15 @@ jobs:
         node-version: [14.x, 16.x, 17.x]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v1 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        path: './projects/bundlers'
     - run: yarn install
+      working-directory: './projects/bundlers'
     - run: yarn run testbuild
+      working-directory: './projects/bundlers'
     
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
