@@ -36,8 +36,8 @@ const mockSmoldotLightFactory = () => {
       addChainOptions: AddChainOptions,
       isClientTerminated: () => boolean,
     ) => {
-      let _remove = jest.fn<void, []>()
-      let _sendJsonRpc = jest.fn<void, [rpc: string]>()
+      let _remove = jest.fn<() => []>()
+      let _sendJsonRpc = jest.fn<(rpc: string) => void>()
       return {
         _addChainOptions: addChainOptions,
         remove() {
