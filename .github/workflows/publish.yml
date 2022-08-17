@@ -30,11 +30,8 @@ jobs:
           access: public
       - name: Deploy
         # merge only if version is greater than the one in npm and only after merge
-        # if: steps.package_version.outputs.npm_is_greater == 'false'
-        # run: yarn run deploy
-        run: |
-          echo "Should be deployed? ${{ steps.publish.outputs.type != 'none' }}."
-          echo "Version changed: ${{ steps.publish.outputs.old-version }} => ${{ steps.publish.outputs.version }}"
+        if: steps.publish.outputs.type == 'none'
+        run: yarn run deploy
 
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
