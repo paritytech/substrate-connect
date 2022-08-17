@@ -10,27 +10,18 @@ jobs:
   npm-publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
       - uses: actions/setup-node@v3
         with:
           node-version: 18
       - run: yarn install --immutable
       - run: yarn build
-      - name: Compare versions of npm with local
-        uses: PostHog/check-package-version@v2
-        id: package_version
-        # Print out the local and npm versions 
-      - name: Local/NPM versions
-        run: |
-          echo "Local version is ${{ steps.package_version.outputs.committed-version }}."
-          echo "NPM version is ${{ steps.package_version.outputs.published-version }}."
       - name: Publish Dry Run
+        id: publish
         working-directory: './packages/connect'
         run: npm publish --unsafe-perm --dry-run
       - name: Publish
         uses: JS-DevTools/npm-publish@v1
-        # merge only if version is greater than the one in npm and only after merge
-        if: steps.package_version.outputs.is-new-version == 'true'
         # Warning: this GitHub action doesn't seem to run prepublish scripts, hence
         # the `npm publish --dry-run` done right above is important to ensure this.
         with:
@@ -39,8 +30,11 @@ jobs:
           access: public
       - name: Deploy
         # merge only if version is greater than the one in npm and only after merge
-        if: steps.package_version.outputs.is-new-version == 'true'
-        run: yarn run deploy
+        # if: steps.package_version.outputs.npm_is_greater == 'false'
+        # run: yarn run deploy
+        run: |
+          echo "Should be deployed? ${{ steps.publish.outputs.type != 'none' }}."
+          echo "Version changed: ${{ steps.publish.outputs.old-version }} => ${{ steps.publish.outputs.version }}"
 
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
