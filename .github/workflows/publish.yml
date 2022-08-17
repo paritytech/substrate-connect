@@ -15,10 +15,10 @@ jobs:
       - run: yarn install --immutable
       - run: yarn build
       - name: Publish Dry Run
-        id: publish
         working-directory: './packages/connect'
         run: npm publish --unsafe-perm --dry-run
       - name: Publish
+        id: publish
         uses: JS-DevTools/npm-publish@v1
         # Warning: this GitHub action doesn't seem to run prepublish scripts, hence
         # the `npm publish --dry-run` done right above is important to ensure this.
@@ -27,9 +27,10 @@ jobs:
           package: ./packages/connect/package.json
           access: public
       - name: Deploy
-        # merge only if version is greater than the one in npm and only after merge
-        if: steps.publish.outputs.type == 'none'
-        run: yarn run deploy
+        if: steps.publish.outputs.type != 'none'
+        # run: yarn run deploy
+        run: |
+        echo "This should be not published"
 
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
