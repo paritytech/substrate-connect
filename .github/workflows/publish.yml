@@ -32,7 +32,9 @@ jobs:
         if: steps.publish.outputs.type != 'none'
         # run: yarn run deploy
         run: |
-        echo "This should be not published"
+          echo "This should be not published"
+          echo "!= 'none' ${{ steps.publish.outputs.type != 'none' }}."
+          echo "== 'none' ${{ steps.publish.outputs.type == 'none' }}."
 
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
