@@ -1,8 +1,6 @@
 name: Publish
 
 on:
-  pull_request:
-    branches: [ main ]
   push:
     branches: [ main ]
 
@@ -30,9 +28,7 @@ jobs:
           access: public
       - name: Deploy
         if: steps.publish.outputs.type != 'none'
-        # run: yarn run deploy
-        run: |
-          echo "This should not run"
+        run: yarn run deploy
 
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
