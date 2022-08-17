@@ -19,8 +19,8 @@ jobs:
       - name: Compare versions of npm with local
         uses: PostHog/check-package-version@v2
         id: package_version
+        # Print out the local and npm versions 
       - name: Local/NPM versions
-        if: steps.package_version.outputs.is-new-version == 'true'
         run: |
           echo "Local version is ${{ steps.package_version.outputs.committed-version }}."
           echo "NPM version is ${{ steps.package_version.outputs.published-version }}."
