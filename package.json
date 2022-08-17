@@ -20,8 +20,7 @@
     "projects/extension",
     "projects/burnr",
     "projects/demo",
-    "projects/landing-page",
-    "projects/bundlers"
+    "projects/landing-page"
   ],
   "scripts": {
     "downloadSpecs": "node bin/downloadSpecs.js",
