@@ -15,7 +15,7 @@ jobs:
       - run: yarn install --immutable
       - run: yarn build
       - name: Compare versions of npm with local
-        uses: Rober19/compare-npm-versions-ci@a38b02a14bbee73badddf83e13ebcb3e674c6df5 # latest from original maintainer
+        uses: Rober19/compare-npm-versions-ci@eea9dab124be9214bd32356f32f7d8945173db13 # latest from original maintainer
         id: package_version
         with:
           path: './packages/connect'
