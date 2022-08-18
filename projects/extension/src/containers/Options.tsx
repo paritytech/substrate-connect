@@ -7,6 +7,9 @@ import { NetworkTabProps } from "../types"
 import { TabsContent } from "../components/Tabs"
 import { BraveModal } from "../components/BraveModal"
 
+import { ImPause, ImPlay2 } from "react-icons/im"
+import { TbCopy } from "react-icons/tb"
+
 interface logStructure {
   unix_timestamp: number
   level: number
@@ -24,6 +27,7 @@ const Options: React.FunctionComponent = () => {
   const [activeTab, setActiveTab] = useState<number>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [bg, setBg] = useState<Background | undefined>()
+  const [actionResult, setActionResult] = useState<string>("")
 
   const getTime = (d: number) => {
     const date = new Date(d)
@@ -127,7 +131,14 @@ const Options: React.FunctionComponent = () => {
     })
   }, [bg, notifications])
 
-  const getLevelInfo = (level: number) => {
+  useEffect(() => {
+    const resetText = setTimeout(() => {
+      setActionResult("")
+    }, 4000)
+    return () => clearTimeout(resetText)
+  }, [actionResult])
+
+  const getLevelInfo = (level: number): [string, string] => {
     let color: string = "#999"
     let desc: string = "Trace"
     switch (level) {
@@ -150,6 +161,23 @@ const Options: React.FunctionComponent = () => {
         break
     }
     return [desc, color]
+  }
+
+  const getClassPerLevel = (level: number): string => {
+    let classList: string
+    switch (level) {
+      case 0:
+      case 1:
+      case 2:
+        classList = "pl-2 font-bold uppercase"
+        break
+      case 3:
+      case 4:
+      default:
+        classList = "pl-2 capitalize"
+        break
+    }
+    return classList
   }
 
   return (
@@ -191,66 +219,80 @@ const Options: React.FunctionComponent = () => {
               )}
             </section>
             {/** Logs section */}
-            <section className="block">
-              <div className="flex my-5">
-                <button
-                  className="px-2 border rounded-md bg-stone-200 hover:bg-stone-400"
-                  onClick={() => setPoolingLogs(!poolingLogs)}
-                >
-                  {poolingLogs ? "Pause" : "Retrieve "} logs
-                </button>
-                <button
-                  className="px-2 mx-2 my-0 border rounded-md bg-stone-200 hover:bg-stone-400"
-                  onClick={() => navigator.clipboard.writeText(stringifyLogs())}
-                >
-                  Copy to clipboard
-                </button>
-                <div className="rounded-md bg-red-500 py-2.5 px-4">
-                  {errLogs.length} Errors
+            <section className="block border border-[#ECECEC] bg-white rounded-lg px-5 py-2">
+              <div className="flex mt-5">
+                <div className="py-2.5 px-2 text-xl font-bold">
+                  {errLogs.length} Errors,
                 </div>
-                <div className="ml-2 rounded-md bg-yellow-300 py-2.5 px-4">
+                <div className="py-2.5 px-2 text-xl font-bold">
                   {warnLogs.length} Warnings
                 </div>
               </div>
               <div
-                style={{ maxHeight: "75vh" }}
-                className="block w-full overflow-y-auto px-2 bg-black text-white text-xs border border-black font-mono font"
+                style={{ height: "70vh" }}
+                className="block w-full overflow-y-auto px-2 text-black text-xs"
               >
                 {allLogs.length > 0 ? (
                   allLogs.map(
                     (
                       { unix_timestamp, level, target, message }: logStructure,
                       i: number,
-                    ) => (
-                      <p
-                        key={"all_" + i}
-                        style={{
-                          color: getLevelInfo(level)[1],
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontWeight: "bold",
-                          }}
-                        >
-                          [{getTime(unix_timestamp)}]
-                        </span>
-                        <span
-                          style={{
-                            margin: "0 0.5rem",
-                          }}
-                        >
-                          [{target}]
-                        </span>
-                        <span>{message}</span>
-                      </p>
-                    ),
+                    ) => {
+                      return (
+                        <p key={"all_" + i}>
+                          <span>{getTime(unix_timestamp)}</span>
+                          <span className={getClassPerLevel(level)}>
+                            {getLevelInfo(level)[0]}
+                          </span>
+                          <span className="my-[0rem] mx-[0.5rem]">
+                            [{target}]
+                          </span>
+                          <span>{message}</span>
+                        </p>
+                      )
+                    },
                   )
                 ) : (
-                  <div className="items-center h-56 mt-20 ml-40">
+                  <div
+                    style={{ height: "50vh" }}
+                    className="items-center flex justify-center"
+                  >
                     <Loader />
                   </div>
                 )}
+              </div>
+              <div className="flex justify-center">
+                <div className="px-5 py-2 border border-[#ECECEC] rounded-md mt-5 mb-2 self-center flex justify-center w-64">
+                  <button
+                    className="p-2 text-black	hover:text-green-500"
+                    onClick={() => {
+                      setPoolingLogs(!poolingLogs)
+                      setActionResult(
+                        poolingLogs ? "Logs paused" : "Logs running",
+                      )
+                    }}
+                  >
+                    {poolingLogs ? (
+                      <ImPause className="w-7 h-7 mx-7" />
+                    ) : (
+                      <ImPlay2 className="w-7 h-7 mx-7" />
+                    )}
+                  </button>
+                  <button
+                    className="p-2 text-black	hover:text-green-500"
+                    onClick={() => {
+                      navigator.clipboard.writeText(stringifyLogs())
+                      setActionResult("Copied to clipboard")
+                    }}
+                  >
+                    <TbCopy className="w-7 h-7 mx-7" />
+                  </button>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <div className="self-center flex justify-center w-64 text-green-500 font-bold">
+                  {actionResult}
+                </div>
               </div>
             </section>
           </TabsContent>
