@@ -233,13 +233,23 @@ const Options: React.FunctionComponent = () => {
                 className="block w-full overflow-y-auto px-2 text-black text-xs"
               >
                 {allLogs.length > 0 ? (
-                  allLogs.map(
-                    (
-                      { unix_timestamp, level, target, message }: logStructure,
-                      i: number,
-                    ) => {
-                      return (
-                        <p key={"all_" + i}>
+                  allLogs
+                    .map(
+                      (
+                        {
+                          unix_timestamp,
+                          level,
+                          target,
+                          message,
+                        }: logStructure,
+                        i: number,
+                      ) => (
+                        <p
+                          key={"all_" + i}
+                          className={
+                            i === allLogs.length - 1 ? "font-bold" : ""
+                          }
+                        >
                           <span>{getTime(unix_timestamp)}</span>
                           <span className={getClassPerLevel(level)}>
                             {getLevelInfo(level)[0]}
@@ -249,9 +259,9 @@ const Options: React.FunctionComponent = () => {
                           </span>
                           <span>{message}</span>
                         </p>
-                      )
-                    },
-                  )
+                      ),
+                    )
+                    .reverse()
                 ) : (
                   <div
                     style={{ height: "50vh" }}
