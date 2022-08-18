@@ -27,7 +27,7 @@
     "@polkadot/keyring": "^10.1.1",
     "@polkadot/react-identicon": "^2.8.2",
     "@polkadot/rpc-provider": "^8.13.1",
-    "@polkadot/types": "^8.13.1",
+    "@polkadot/types": "^9.2.2",
     "@polkadot/util": "^10.1.1",
     "@polkadot/util-crypto": "^10.1.1",
     "bn.js": "^5.2.1",
