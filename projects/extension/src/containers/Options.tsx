@@ -183,9 +183,9 @@ const Options: React.FunctionComponent = () => {
   return (
     <>
       <BraveModal show={showModal} isOptions={true} />
-      <div className="mb-4 font-roboto">
+      <div className="mb-4">
         <div className="options-container">
-          <div className="px-12 pb-3.5 text-base flex items-center">
+          <div className="px-12 pb-3.5 text-base flex items-center font-roboto">
             <div className="flex items-baseline">
               <Logo textSize="lg" />
               <div className="text-sm pl-4">v{pckg.version}</div>
@@ -201,7 +201,7 @@ const Options: React.FunctionComponent = () => {
         <div className="mx-[15%] pt-2">
           {/** Networks section */}
           <TabsContent activeTab={activeTab}>
-            <section>
+            <section className="font-roboto">
               {networks.length ? (
                 networks.map((network: NetworkTabProps, i: number) => {
                   const { name, health, apps } = network
@@ -220,7 +220,7 @@ const Options: React.FunctionComponent = () => {
             </section>
             {/** Logs section */}
             <section className="block border border-[#ECECEC] bg-white rounded-lg px-5 py-2">
-              <div className="flex mt-5">
+              <div className="flex mt-5 font-roboto">
                 <div className="py-2.5 px-2 text-xl font-bold">
                   {errLogs.length} Errors,
                 </div>
@@ -230,7 +230,7 @@ const Options: React.FunctionComponent = () => {
               </div>
               <div
                 style={{ height: "70vh" }}
-                className="block w-full overflow-y-auto px-2 text-black text-xs"
+                className="block w-full overflow-y-auto px-2 text-black text-xs !font-monospace"
               >
                 {allLogs.length > 0 ? (
                   allLogs
@@ -244,12 +244,7 @@ const Options: React.FunctionComponent = () => {
                         }: logStructure,
                         i: number,
                       ) => (
-                        <p
-                          key={"all_" + i}
-                          className={
-                            i === allLogs.length - 1 ? "font-bold" : ""
-                          }
-                        >
+                        <p key={"all_" + i}>
                           <span>{getTime(unix_timestamp)}</span>
                           <div className={getClassPerLevel(level)}>
                             {getLevelInfo(level)[0]}
