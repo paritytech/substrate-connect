@@ -164,17 +164,17 @@ const Options: React.FunctionComponent = () => {
   }
 
   const getClassPerLevel = (level: number): string => {
-    let classList: string
+    let classList: string = "px-2 w-[3rem] inline-flex "
     switch (level) {
       case 0:
       case 1:
       case 2:
-        classList = "pl-2 font-bold uppercase"
+        classList += "font-bold uppercase"
         break
       case 3:
       case 4:
       default:
-        classList = "pl-2 capitalize"
+        classList += "capitalize"
         break
     }
     return classList
@@ -251,9 +251,9 @@ const Options: React.FunctionComponent = () => {
                           }
                         >
                           <span>{getTime(unix_timestamp)}</span>
-                          <span className={getClassPerLevel(level)}>
+                          <div className={getClassPerLevel(level)}>
                             {getLevelInfo(level)[0]}
-                          </span>
+                          </div>
                           <span className="my-[0rem] mx-[0.5rem]">
                             [{target}]
                           </span>
