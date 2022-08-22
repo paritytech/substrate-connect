@@ -20,3 +20,10 @@ pull_request_rules:
         name: default
         method: squash
 
+  - name: automatic approval
+    conditions:
+      - author~=^wirednkod$
+    actions:
+      review:
+        type: APPROVE
+        message: Automatically approving wirednkod's pull requests. This auto-approval will be removed once more maintainers are active.
