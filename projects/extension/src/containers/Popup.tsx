@@ -1,6 +1,7 @@
 import React, {
   FunctionComponent,
   ReactNode,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -32,10 +33,17 @@ const Popup: FunctionComponent = () => {
   const [bg, setBg] = useState<Background | undefined>()
   const [showModal, setShowModal] = useState<boolean>(false)
 
-  const refresh = () => {
+  useEffect(() => {
+    chrome.runtime.getBackgroundPage((backgroundPage) => {
+      setBg(backgroundPage as Background)
+    })
+  }, [])
+
+  const refresh = useCallback(() => {
+    if (!bg) return
     const allChains: PopupChain[] = []
 
-    bg?.uiInterface.chains.forEach((c) => {
+    bg.uiInterface.chains.forEach((c) => {
       const i = allChains.findIndex((i) => i.chainName === c.chainName)
       if (i === -1) {
         allChains.push({
@@ -64,13 +72,7 @@ const Popup: FunctionComponent = () => {
       }
     })
     setConnChains([...allChains])
-  }
-
-  useEffect(() => {
-    chrome.runtime.getBackgroundPage((backgroundPage) => {
-      setBg(backgroundPage as Background)
-    })
-  }, [])
+  }, [bg])
 
   useEffect(() => {
     if (!bg) return
@@ -87,7 +89,7 @@ const Popup: FunctionComponent = () => {
     refresh()
 
     return unsubscribe
-  }, [bg])
+  }, [bg, refresh])
 
   const goToOptions = (): void => {
     chrome.runtime.openOptionsPage()
