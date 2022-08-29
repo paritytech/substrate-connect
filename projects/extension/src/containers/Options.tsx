@@ -6,6 +6,7 @@ import { Background } from "../background/"
 import { NetworkTabProps } from "../types"
 import { TabsContent } from "../components/Tabs"
 import { BraveModal } from "../components/BraveModal"
+import { ChainsError } from "../components/ChainsError"
 
 interface logStructure {
   unix_timestamp: number
@@ -152,6 +153,8 @@ const Options: React.FunctionComponent = () => {
     return [desc, color]
   }
 
+  console.log("--> bg.uiInterface.chains", bg?.uiInterface.chains?.length === 0)
+
   return (
     <>
       <BraveModal show={showModal} isOptions={true} />
@@ -186,6 +189,8 @@ const Options: React.FunctionComponent = () => {
                     />
                   )
                 })
+              ) : bg?.uiInterface.chains?.length === 0 ? (
+                <ChainsError />
               ) : (
                 <div>No networks or apps are connected to the extension.</div>
               )}

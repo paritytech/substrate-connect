@@ -12,6 +12,7 @@ import { Accordion, Logo } from "../components"
 import { Background } from "../background"
 import IconWeb3 from "../components/IconWeb3"
 import { BraveModal } from "../components/BraveModal"
+import { ChainsError } from "../components/ChainsError"
 
 interface PopupChain {
   chainName: string
@@ -110,6 +111,8 @@ const Popup: FunctionComponent = () => {
     refresh()
   }
 
+  console.log("connChains", connChains)
+
   return (
     <>
       <BraveModal show={showModal} />
@@ -127,61 +130,65 @@ const Popup: FunctionComponent = () => {
           </div>
         </header>
         <div className="pb-3.5">
-          {connChains?.map((w) => {
-            if (w?.details?.length === 1 && !w?.details[0].tabId)
-              return (
-                <>
-                  <div key={w.chainName} className="pl-6 flex text-lg">
-                    {networkIcon(w.chainName)}
-                  </div>
-                  <div className="pl-16 flex pb-4 text-[#616161]">
-                    No apps connected
-                  </div>
-                </>
-              )
-            const contents: ReactNode[] = []
-            w?.details?.forEach((t) => {
-              if (t.tabId) {
-                contents.push(
-                  <div key={t.url} className="flex justify-between">
-                    <div className="ml-6 w-full truncate text-base">
-                      {t.url}
-                    </div>
-
-                    <div
-                      className="tooltip"
-                      onClick={() => t && t.tabId && onDisconnect(t.tabId)}
-                    >
-                      <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
-                        Disconnect tab
-                      </span>
-                      <MdLinkOff className="ml-2 text-base cursor-pointer hover:bg-gray-200" />
-                    </div>
-                  </div>,
-                )
-              }
-            })
-
-            return (
-              <Accordion
-                defaultAllExpanded={true}
-                titleClass="popup-accordion-title"
-                contentClass="popup-accordion-content"
-                titles={[
-                  <div className="flex justify-between items-center w-full">
-                    <div className="pl-4 flex text-lg justify-start">
+          {connChains?.length === 0 ? (
+            <ChainsError />
+          ) : (
+            connChains?.map((w) => {
+              if (w?.details?.length === 1 && !w?.details[0].tabId)
+                return (
+                  <>
+                    <div key={w.chainName} className="pl-6 flex text-lg">
                       {networkIcon(w.chainName)}
-                      <span className="pl-2 text-[#616161]">
-                        ({contents.length})
-                      </span>
                     </div>
-                  </div>,
-                ]}
-                contents={[<>{contents}</>]}
-                showTitleIcon={!!contents.length}
-              />
-            )
-          })}
+                    <div className="pl-16 flex pb-4 text-[#616161]">
+                      No apps connected
+                    </div>
+                  </>
+                )
+              const contents: ReactNode[] = []
+              w?.details?.forEach((t) => {
+                if (t.tabId) {
+                  contents.push(
+                    <div key={t.url} className="flex justify-between">
+                      <div className="ml-6 w-full truncate text-base">
+                        {t.url}
+                      </div>
+
+                      <div
+                        className="tooltip"
+                        onClick={() => t && t.tabId && onDisconnect(t.tabId)}
+                      >
+                        <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
+                          Disconnect tab
+                        </span>
+                        <MdLinkOff className="ml-2 text-base cursor-pointer hover:bg-gray-200" />
+                      </div>
+                    </div>,
+                  )
+                }
+              })
+
+              return (
+                <Accordion
+                  defaultAllExpanded={true}
+                  titleClass="popup-accordion-title"
+                  contentClass="popup-accordion-content"
+                  titles={[
+                    <div className="flex justify-between items-center w-full">
+                      <div className="pl-4 flex text-lg justify-start">
+                        {networkIcon(w.chainName)}
+                        <span className="pl-2 text-[#616161]">
+                          ({contents.length})
+                        </span>
+                      </div>
+                    </div>,
+                  ]}
+                  contents={[<>{contents}</>]}
+                  showTitleIcon={!!contents.length}
+                />
+              )
+            })
+          )}
         </div>
         <div className="border-t border-neutral-200 mx-8" />
         <div className="pl-8 pr-6 hover:bg-stone-200">
