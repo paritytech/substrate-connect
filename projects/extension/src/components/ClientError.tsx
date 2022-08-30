@@ -6,7 +6,7 @@ interface Props {
 
 export const ClientError = ({ error }: Props) => {
   return (
-    <div className="text-base break-words block my-3 mx-6 justify-between pt-1.5 leading-4">
+    <div className="break-words block my-3 mx-6 justify-between pt-1.5 leading-4">
       Smoldot light client has panicked with error:{" "}
       <span
         onClick={() => navigator.clipboard.writeText(error)}
