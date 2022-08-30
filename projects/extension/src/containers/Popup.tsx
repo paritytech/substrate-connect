@@ -34,7 +34,7 @@ const Popup: FunctionComponent = () => {
   const [bg, setBg] = useState<Background | undefined>()
   const [showModal, setShowModal] = useState<boolean>(false)
 
-  const [clientError, setClientError] = useState<string>("")
+  const [clientError, setClientError] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     chrome.runtime.getBackgroundPage((backgroundPage) => {
@@ -80,11 +80,6 @@ const Popup: FunctionComponent = () => {
   useEffect(() => {
     if (!bg) return
 
-    const errorOccured = () => {
-      const { smoldotCrashError } = bg?.uiInterface
-      setClientError(smoldotCrashError || "")
-    }
-
     // Identify Brave browser and show Popup
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
       const { braveSetting } =
@@ -94,7 +89,9 @@ const Popup: FunctionComponent = () => {
 
     disconnectTab.current = bg.uiInterface.disconnectTab
     const cb = bg.uiInterface.onChainsChanged(refresh)
-    const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(errorOccured)
+    const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(() =>
+      setClientError(bg?.uiInterface.smoldotCrashError),
+    )
     refresh()
 
     return () => {
@@ -139,67 +136,66 @@ const Popup: FunctionComponent = () => {
           </div>
         </header>
         <div className="pb-3.5">
-          {clientError || bg?.uiInterface.smoldotCrashError ? (
+          {(clientError || bg?.uiInterface.smoldotCrashError) && (
             <ClientError
-              error={clientError || bg?.uiInterface.smoldotCrashError || ""}
+              error={clientError || bg?.uiInterface.smoldotCrashError}
             />
-          ) : (
-            connChains?.map((w) => {
-              if (w?.details?.length === 1 && !w?.details[0].tabId)
-                return (
-                  <>
-                    <div key={w.chainName} className="pl-6 flex text-lg">
-                      {networkIcon(w.chainName)}
-                    </div>
-                    <div className="pl-16 flex pb-4 text-[#616161]">
-                      No apps connected
-                    </div>
-                  </>
-                )
-              const contents: ReactNode[] = []
-              w?.details?.forEach((t) => {
-                if (t.tabId) {
-                  contents.push(
-                    <div key={t.url} className="flex justify-between">
-                      <div className="ml-6 w-full truncate text-base">
-                        {t.url}
-                      </div>
-
-                      <div
-                        className="tooltip"
-                        onClick={() => t && t.tabId && onDisconnect(t.tabId)}
-                      >
-                        <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
-                          Disconnect tab
-                        </span>
-                        <MdLinkOff className="ml-2 text-base cursor-pointer hover:bg-gray-200" />
-                      </div>
-                    </div>,
-                  )
-                }
-              })
-
-              return (
-                <Accordion
-                  defaultAllExpanded={true}
-                  titleClass="popup-accordion-title"
-                  contentClass="popup-accordion-content"
-                  titles={[
-                    <div className="flex justify-between items-center w-full">
-                      <div className="pl-4 flex text-lg justify-start">
-                        {networkIcon(w.chainName)}
-                        <span className="pl-2 text-[#616161]">
-                          ({contents.length})
-                        </span>
-                      </div>
-                    </div>,
-                  ]}
-                  contents={[<>{contents}</>]}
-                  showTitleIcon={!!contents.length}
-                />
-              )
-            })
           )}
+          {connChains?.map((w) => {
+            if (w?.details?.length === 1 && !w?.details[0].tabId)
+              return (
+                <>
+                  <div key={w.chainName} className="pl-6 flex text-lg">
+                    {networkIcon(w.chainName)}
+                  </div>
+                  <div className="pl-16 flex pb-4 text-[#616161]">
+                    No apps connected
+                  </div>
+                </>
+              )
+            const contents: ReactNode[] = []
+            w?.details?.forEach((t) => {
+              if (t.tabId) {
+                contents.push(
+                  <div key={t.url} className="flex justify-between">
+                    <div className="ml-6 w-full truncate text-base">
+                      {t.url}
+                    </div>
+
+                    <div
+                      className="tooltip"
+                      onClick={() => t && t.tabId && onDisconnect(t.tabId)}
+                    >
+                      <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
+                        Disconnect tab
+                      </span>
+                      <MdLinkOff className="ml-2 text-base cursor-pointer hover:bg-gray-200" />
+                    </div>
+                  </div>,
+                )
+              }
+            })
+
+            return (
+              <Accordion
+                defaultAllExpanded={true}
+                titleClass="popup-accordion-title"
+                contentClass="popup-accordion-content"
+                titles={[
+                  <div className="flex justify-between items-center w-full">
+                    <div className="pl-4 flex text-lg justify-start">
+                      {networkIcon(w.chainName)}
+                      <span className="pl-2 text-[#616161]">
+                        ({contents.length})
+                      </span>
+                    </div>
+                  </div>,
+                ]}
+                contents={[<>{contents}</>]}
+                showTitleIcon={!!contents.length}
+              />
+            )
+          })}
         </div>
         <div className="border-t border-neutral-200 mx-8" />
         <div className="pl-8 pr-6 hover:bg-stone-200">

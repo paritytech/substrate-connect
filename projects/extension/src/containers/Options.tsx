@@ -26,7 +26,7 @@ const Options: React.FunctionComponent = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [bg, setBg] = useState<Background | undefined>()
 
-  const [clientError, setClientError] = useState<string>("")
+  const [clientError, setClientError] = useState<string | undefined>(undefined)
 
   const getTime = (d: number) => {
     const date = new Date(d)
@@ -91,11 +91,6 @@ const Options: React.FunctionComponent = () => {
       setShowModal(isBrave && !braveSetting)
     })
 
-    const errorOccured = () => {
-      const { smoldotCrashError } = bg?.uiInterface
-      setClientError(smoldotCrashError || "")
-    }
-
     const refresh = () => {
       const networks = new Map<string, NetworkTabProps>()
       bg.uiInterface.chains.forEach((chain) => {
@@ -122,7 +117,9 @@ const Options: React.FunctionComponent = () => {
     }
 
     const cb = bg.uiInterface.onChainsChanged(refresh)
-    const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(errorOccured)
+    const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(() =>
+      setClientError(bg?.uiInterface.smoldotCrashError),
+    )
     refresh()
 
     return () => {
@@ -184,11 +181,12 @@ const Options: React.FunctionComponent = () => {
           {/** Networks section */}
           <TabsContent activeTab={activeTab}>
             <section>
-              {clientError || bg?.uiInterface.smoldotCrashError ? (
+              {(clientError || bg?.uiInterface.smoldotCrashError) && (
                 <ClientError
-                  error={clientError || bg?.uiInterface.smoldotCrashError || ""}
+                  error={clientError || bg?.uiInterface.smoldotCrashError}
                 />
-              ) : networks.length ? (
+              )}
+              {networks.length ? (
                 networks.map((network: NetworkTabProps, i: number) => {
                   const { name, health, apps } = network
                   return (
