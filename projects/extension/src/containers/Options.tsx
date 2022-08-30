@@ -6,7 +6,7 @@ import { Background } from "../background/"
 import { NetworkTabProps } from "../types"
 import { TabsContent } from "../components/Tabs"
 import { BraveModal } from "../components/BraveModal"
-import { ChainsError } from "../components/ChainsError"
+import { ClientError } from "../components/ClientError"
 
 interface logStructure {
   unix_timestamp: number
@@ -153,8 +153,6 @@ const Options: React.FunctionComponent = () => {
     return [desc, color]
   }
 
-  console.log("--> bg.uiInterface.chains", bg?.uiInterface.chains?.length === 0)
-
   return (
     <>
       <BraveModal show={showModal} isOptions={true} />
@@ -177,7 +175,9 @@ const Options: React.FunctionComponent = () => {
           {/** Networks section */}
           <TabsContent activeTab={activeTab}>
             <section>
-              {networks.length ? (
+              {bg?.uiInterface?.smoldotCrashError ? (
+                <ClientError error={bg?.uiInterface?.smoldotCrashError} />
+              ) : networks.length ? (
                 networks.map((network: NetworkTabProps, i: number) => {
                   const { name, health, apps } = network
                   return (
@@ -189,8 +189,6 @@ const Options: React.FunctionComponent = () => {
                     />
                   )
                 })
-              ) : bg?.uiInterface.chains?.length === 0 ? (
-                <ChainsError />
               ) : (
                 <div>No networks or apps are connected to the extension.</div>
               )}

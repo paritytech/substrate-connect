@@ -12,7 +12,7 @@ import { Accordion, Logo } from "../components"
 import { Background } from "../background"
 import IconWeb3 from "../components/IconWeb3"
 import { BraveModal } from "../components/BraveModal"
-import { ChainsError } from "../components/ChainsError"
+import { ClientError } from "../components/ClientError"
 
 interface PopupChain {
   chainName: string
@@ -111,8 +111,6 @@ const Popup: FunctionComponent = () => {
     refresh()
   }
 
-  console.log("connChains", connChains)
-
   return (
     <>
       <BraveModal show={showModal} />
@@ -130,8 +128,8 @@ const Popup: FunctionComponent = () => {
           </div>
         </header>
         <div className="pb-3.5">
-          {connChains?.length === 0 ? (
-            <ChainsError />
+          {bg?.uiInterface.smoldotCrashError ? (
+            <ClientError error={bg?.uiInterface.smoldotCrashError} />
           ) : (
             connChains?.map((w) => {
               if (w?.details?.length === 1 && !w?.details[0].tabId)
