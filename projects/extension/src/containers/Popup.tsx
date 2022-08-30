@@ -34,6 +34,8 @@ const Popup: FunctionComponent = () => {
   const [bg, setBg] = useState<Background | undefined>()
   const [showModal, setShowModal] = useState<boolean>(false)
 
+  const [clientError, setClientError] = useState<string>("")
+
   useEffect(() => {
     chrome.runtime.getBackgroundPage((backgroundPage) => {
       setBg(backgroundPage as Background)
@@ -78,6 +80,11 @@ const Popup: FunctionComponent = () => {
   useEffect(() => {
     if (!bg) return
 
+    const errorOccured = () => {
+      const { smoldotCrashError } = bg?.uiInterface
+      setClientError(smoldotCrashError || "")
+    }
+
     // Identify Brave browser and show Popup
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
       const { braveSetting } =
@@ -86,10 +93,14 @@ const Popup: FunctionComponent = () => {
     })
 
     disconnectTab.current = bg.uiInterface.disconnectTab
-    const unsubscribe = bg.uiInterface.onChainsChanged(() => refresh())
+    const cb = bg.uiInterface.onChainsChanged(refresh)
+    const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(errorOccured)
     refresh()
 
-    return unsubscribe
+    return () => {
+      cb()
+      errCb()
+    }
   }, [bg, refresh])
 
   const goToOptions = (): void => {
@@ -128,8 +139,10 @@ const Popup: FunctionComponent = () => {
           </div>
         </header>
         <div className="pb-3.5">
-          {bg?.uiInterface.smoldotCrashError ? (
-            <ClientError error={bg?.uiInterface.smoldotCrashError} />
+          {clientError || bg?.uiInterface.smoldotCrashError ? (
+            <ClientError
+              error={clientError || bg?.uiInterface.smoldotCrashError || ""}
+            />
           ) : (
             connChains?.map((w) => {
               if (w?.details?.length === 1 && !w?.details[0].tabId)

@@ -26,6 +26,8 @@ const Options: React.FunctionComponent = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [bg, setBg] = useState<Background | undefined>()
 
+  const [clientError, setClientError] = useState<string>("")
+
   const getTime = (d: number) => {
     const date = new Date(d)
     return `${("0" + date.getHours()).slice(-2)}:${(
@@ -83,13 +85,16 @@ const Options: React.FunctionComponent = () => {
 
     getNotifications()
 
-    let cb: () => void = () => {}
-
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
       const { braveSetting } =
         await bg.uiInterface.getChromeStorageLocalSetting("braveSetting")
       setShowModal(isBrave && !braveSetting)
     })
+
+    const errorOccured = () => {
+      const { smoldotCrashError } = bg?.uiInterface
+      setClientError(smoldotCrashError || "")
+    }
 
     const refresh = () => {
       const networks = new Map<string, NetworkTabProps>()
@@ -116,10 +121,14 @@ const Options: React.FunctionComponent = () => {
       setNetworks([...networks.values()])
     }
 
-    cb = bg.uiInterface.onChainsChanged(refresh)
+    const cb = bg.uiInterface.onChainsChanged(refresh)
+    const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(errorOccured)
     refresh()
 
-    return () => cb()
+    return () => {
+      cb()
+      errCb()
+    }
   }, [bg])
 
   useEffect(() => {
@@ -175,8 +184,10 @@ const Options: React.FunctionComponent = () => {
           {/** Networks section */}
           <TabsContent activeTab={activeTab}>
             <section>
-              {bg?.uiInterface?.smoldotCrashError ? (
-                <ClientError error={bg?.uiInterface?.smoldotCrashError} />
+              {clientError || bg?.uiInterface.smoldotCrashError ? (
+                <ClientError
+                  error={clientError || bg?.uiInterface.smoldotCrashError || ""}
+                />
               ) : networks.length ? (
                 networks.map((network: NetworkTabProps, i: number) => {
                   const { name, health, apps } = network
