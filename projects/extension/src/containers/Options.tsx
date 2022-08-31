@@ -6,6 +6,7 @@ import { Background } from "../background/"
 import { NetworkTabProps } from "../types"
 import { TabsContent } from "../components/Tabs"
 import { BraveModal } from "../components/BraveModal"
+import { ClientError } from "../components/ClientError"
 
 interface logStructure {
   unix_timestamp: number
@@ -24,6 +25,8 @@ const Options: React.FunctionComponent = () => {
   const [activeTab, setActiveTab] = useState<number>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [bg, setBg] = useState<Background | undefined>()
+
+  const [clientError, setClientError] = useState<string | undefined>(undefined)
 
   const getTime = (d: number) => {
     const date = new Date(d)
@@ -82,8 +85,6 @@ const Options: React.FunctionComponent = () => {
 
     getNotifications()
 
-    let cb: () => void = () => {}
-
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
       const { braveSetting } =
         await bg.uiInterface.getChromeStorageLocalSetting("braveSetting")
@@ -115,10 +116,17 @@ const Options: React.FunctionComponent = () => {
       setNetworks([...networks.values()])
     }
 
-    cb = bg.uiInterface.onChainsChanged(refresh)
+    const cb = bg.uiInterface.onChainsChanged(refresh)
+    const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(() =>
+      setClientError(bg.uiInterface.smoldotCrashError),
+    )
+    setClientError(bg.uiInterface.smoldotCrashError)
     refresh()
 
-    return () => cb()
+    return () => {
+      cb()
+      errCb()
+    }
   }, [bg])
 
   useEffect(() => {
@@ -174,6 +182,7 @@ const Options: React.FunctionComponent = () => {
           {/** Networks section */}
           <TabsContent activeTab={activeTab}>
             <section>
+              {clientError && <ClientError error={clientError} />}
               {networks.length ? (
                 networks.map((network: NetworkTabProps, i: number) => {
                   const { name, health, apps } = network
