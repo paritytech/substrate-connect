@@ -60,6 +60,7 @@ const Options: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (!bg) return
+    setClientError(bg?.uiInterface.smoldotCrashError)
     const interval = setInterval(() => {
       if (poolingLogs) {
         const logs = bg.uiInterface.logger
@@ -181,11 +182,7 @@ const Options: React.FunctionComponent = () => {
           {/** Networks section */}
           <TabsContent activeTab={activeTab}>
             <section>
-              {(clientError || bg?.uiInterface.smoldotCrashError) && (
-                <ClientError
-                  error={clientError || bg?.uiInterface.smoldotCrashError}
-                />
-              )}
+              {clientError && <ClientError error={clientError} />}
               {networks.length ? (
                 networks.map((network: NetworkTabProps, i: number) => {
                   const { name, health, apps } = network
