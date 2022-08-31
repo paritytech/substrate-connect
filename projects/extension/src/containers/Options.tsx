@@ -60,7 +60,6 @@ const Options: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (!bg) return
-    setClientError(bg?.uiInterface.smoldotCrashError)
     const interval = setInterval(() => {
       if (poolingLogs) {
         const logs = bg.uiInterface.logger
@@ -119,8 +118,9 @@ const Options: React.FunctionComponent = () => {
 
     const cb = bg.uiInterface.onChainsChanged(refresh)
     const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(() =>
-      setClientError(bg?.uiInterface.smoldotCrashError),
+      setClientError(bg.uiInterface.smoldotCrashError),
     )
+    setClientError(bg.uiInterface.smoldotCrashError)
     refresh()
 
     return () => {

@@ -79,7 +79,6 @@ const Popup: FunctionComponent = () => {
 
   useEffect(() => {
     if (!bg) return
-    setClientError(bg?.uiInterface.smoldotCrashError)
 
     // Identify Brave browser and show Popup
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
@@ -91,8 +90,9 @@ const Popup: FunctionComponent = () => {
     disconnectTab.current = bg.uiInterface.disconnectTab
     const cb = bg.uiInterface.onChainsChanged(refresh)
     const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(() =>
-      setClientError(bg?.uiInterface.smoldotCrashError),
+      setClientError(bg.uiInterface.smoldotCrashError),
     )
+    setClientError(bg.uiInterface.smoldotCrashError)
     refresh()
 
     return () => {
