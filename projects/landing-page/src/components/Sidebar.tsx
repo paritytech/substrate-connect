@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Link, LinkProps, makeStyles, Typography } from "@material-ui/core"
 import { substrateGray } from "./theme"
-import { fade } from "@material-ui/core/styles/colorManipulator"
+import { alpha } from "@material-ui/core/styles/colorManipulator"
 
 interface SidebarLinkProps extends LinkProps {
   children?: React.ReactNode
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
         top: theme.spacing(0.5),
         padding: theme.spacing(),
         paddingLeft: theme.spacing(5),
-        backgroundColor: fade(theme.palette.background.default, 0.95),
+        backgroundColor: alpha(theme.palette.background.default, 0.95),
         borderBottom: `1px solid ${substrateGray[200]}`,
       },
     },

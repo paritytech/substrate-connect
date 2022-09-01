@@ -14,24 +14,12 @@ jobs:
           node-version: 18
       - run: yarn install --immutable
       - run: yarn build
-      - name: Compare versions of npm with local
-        uses: Rober19/compare-npm-versions-ci@a38b02a14bbee73badddf83e13ebcb3e674c6df5 # latest from original maintainer
-        id: package_version
-        with:
-          path: './packages/connect'
-          npm_package_name: '@substrate/connect'
-      - name: Local/NPM versions
-        if: steps.package_version.outputs.npm_is_greater == 'true'
-        run: |
-          echo "Local version is ${{ steps.package_version.outputs.version }}."
-          echo "NPM version is ${{ steps.package_version.outputs.pkg_npm_version }}."
       - name: Publish Dry Run
         working-directory: './packages/connect'
         run: npm publish --unsafe-perm --dry-run
       - name: Publish
+        id: publish
         uses: JS-DevTools/npm-publish@v1
-        # merge only if version is greater than the one in npm and only after merge
-        if: steps.package_version.outputs.npm_is_greater == 'false'
         # Warning: this GitHub action doesn't seem to run prepublish scripts, hence
         # the `npm publish --dry-run` done right above is important to ensure this.
         with:
@@ -39,8 +27,7 @@ jobs:
           package: ./packages/connect/package.json
           access: public
       - name: Deploy
-        # merge only if version is greater than the one in npm and only after merge
-        if: steps.package_version.outputs.npm_is_greater == 'false'
+        if: steps.publish.outputs.type != 'none'
         run: yarn run deploy
 
   all:
