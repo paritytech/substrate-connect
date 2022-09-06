@@ -7,7 +7,6 @@ module.exports = {
     createDefaultProgram: true,
   },
   extends: ["react-app", "react-app/jest", "prettier"],
-  plugins: ["import"],
   rules: {
     "import/no-extraneous-dependencies": [
       "error",
