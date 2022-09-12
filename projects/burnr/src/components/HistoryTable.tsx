@@ -8,7 +8,7 @@ import {
   TableRow,
   Theme,
   makeStyles,
-  fade,
+  alpha,
 } from "@material-ui/core"
 
 import { AccountContext } from "../utils/contexts"
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     "& td, & th": {
       padding: theme.spacing(0.5),
-      borderBottom: `1px solid ${fade(theme.palette.divider, 0.5)}`,
+      borderBottom: `1px solid ${alpha(theme.palette.divider, 0.5)}`,
     },
     "& td:last-child, & th:last-child": {
       textAlign: "center",

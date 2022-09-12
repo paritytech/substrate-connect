@@ -12,6 +12,7 @@ import { Accordion, Logo } from "../components"
 import { Background } from "../background"
 import IconWeb3 from "../components/IconWeb3"
 import { BraveModal } from "../components/BraveModal"
+import { ClientError } from "../components/ClientError"
 
 interface PopupChain {
   chainName: string
@@ -32,6 +33,8 @@ const Popup: FunctionComponent = () => {
 
   const [bg, setBg] = useState<Background | undefined>()
   const [showModal, setShowModal] = useState<boolean>(false)
+
+  const [clientError, setClientError] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     chrome.runtime.getBackgroundPage((backgroundPage) => {
@@ -85,10 +88,17 @@ const Popup: FunctionComponent = () => {
     })
 
     disconnectTab.current = bg.uiInterface.disconnectTab
-    const unsubscribe = bg.uiInterface.onChainsChanged(() => refresh())
+    const cb = bg.uiInterface.onChainsChanged(refresh)
+    const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(() =>
+      setClientError(bg.uiInterface.smoldotCrashError),
+    )
+    setClientError(bg.uiInterface.smoldotCrashError)
     refresh()
 
-    return unsubscribe
+    return () => {
+      cb()
+      errCb()
+    }
   }, [bg, refresh])
 
   const goToOptions = (): void => {
@@ -127,6 +137,7 @@ const Popup: FunctionComponent = () => {
           </div>
         </header>
         <div className="pb-3.5">
+          {clientError && <ClientError error={clientError} />}
           {connChains?.map((w) => {
             if (w?.details?.length === 1 && !w?.details[0].tabId)
               return (

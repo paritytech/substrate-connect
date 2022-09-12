@@ -20,20 +20,20 @@
   },
   "keywords": [],
   "devDependencies": {
-    "autoprefixer": "^10.4.7",
-    "eslint": "^8.20.0",
+    "autoprefixer": "^10.4.8",
+    "eslint": "^8.23.0",
     "jest-chrome": "^0.7.2",
     "mini-css-extract-plugin": "^2.6.1",
-    "postcss": "^8.4.14",
+    "postcss": "^8.4.16",
     "postcss-loader": "^7.0.1",
-    "tailwindcss": "^3.1.6",
-    "web-ext": "^7.1.1"
+    "tailwindcss": "^3.1.8",
+    "web-ext": "^7.2.0"
   },
   "dependencies": {
     "@substrate/connect-extension-protocol": "^1.0.1",
-    "@substrate/smoldot-light": "0.6.30",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
+    "@substrate/smoldot-light": "0.6.32",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-hot-loader": "^4.13.0",
     "react-icons": "^4.4.0"
   }

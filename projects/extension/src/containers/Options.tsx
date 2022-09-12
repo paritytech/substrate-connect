@@ -6,6 +6,7 @@ import { Background } from "../background/"
 import { NetworkTabProps } from "../types"
 import { TabsContent } from "../components/Tabs"
 import { BraveModal } from "../components/BraveModal"
+import { ClientError } from "../components/ClientError"
 
 import { ImPause, ImPlay2 } from "react-icons/im"
 import { TbCopy } from "react-icons/tb"
@@ -28,6 +29,8 @@ const Options: React.FunctionComponent = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [bg, setBg] = useState<Background | undefined>()
   const [actionResult, setActionResult] = useState<string>("")
+
+  const [clientError, setClientError] = useState<string | undefined>(undefined)
 
   const getTime = (d: number) => {
     const date = new Date(d)
@@ -86,8 +89,6 @@ const Options: React.FunctionComponent = () => {
 
     getNotifications()
 
-    let cb: () => void = () => {}
-
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
       const { braveSetting } =
         await bg.uiInterface.getChromeStorageLocalSetting("braveSetting")
@@ -119,10 +120,17 @@ const Options: React.FunctionComponent = () => {
       setNetworks([...networks.values()])
     }
 
-    cb = bg.uiInterface.onChainsChanged(refresh)
+    const cb = bg.uiInterface.onChainsChanged(refresh)
+    const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(() =>
+      setClientError(bg.uiInterface.smoldotCrashError),
+    )
+    setClientError(bg.uiInterface.smoldotCrashError)
     refresh()
 
-    return () => cb()
+    return () => {
+      cb()
+      errCb()
+    }
   }, [bg])
 
   useEffect(() => {
@@ -202,6 +210,7 @@ const Options: React.FunctionComponent = () => {
           {/** Networks section */}
           <TabsContent activeTab={activeTab}>
             <section className="font-roboto">
+              {clientError && <ClientError error={clientError} />}
               {networks.length ? (
                 networks.map((network: NetworkTabProps, i: number) => {
                   const { name, health, apps } = network
