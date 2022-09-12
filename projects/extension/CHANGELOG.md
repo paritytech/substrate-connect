@@ -5,7 +5,7 @@
 ### Changed
 
 - Show error message when smoldot crashes in both Popup and Options page. ([#1128](https://github.com/paritytech/substrate-connect/pull/1228))
-- Update @substrate/smoldot-light to [version 0.6.31](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#0631---2022-08-30). ([#1235](https://github.com/paritytech/substrate-connect/pull/1235))
+- Update @substrate/smoldot-light to [version 0.6.32](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#0632---2022-09-07). ([#1244](https://github.com/paritytech/substrate-connect/pull/1244))
 
 ## 0.1.8 - 2022-07-12
 
