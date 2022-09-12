@@ -8,6 +8,9 @@ import { TabsContent } from "../components/Tabs"
 import { BraveModal } from "../components/BraveModal"
 import { ClientError } from "../components/ClientError"
 
+import { ImPause, ImPlay2 } from "react-icons/im"
+import { TbCopy } from "react-icons/tb"
+
 interface logStructure {
   unix_timestamp: number
   level: number
@@ -25,6 +28,7 @@ const Options: React.FunctionComponent = () => {
   const [activeTab, setActiveTab] = useState<number>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [bg, setBg] = useState<Background | undefined>()
+  const [actionResult, setActionResult] = useState<string>("")
 
   const [clientError, setClientError] = useState<string | undefined>(undefined)
 
@@ -135,37 +139,49 @@ const Options: React.FunctionComponent = () => {
     })
   }, [bg, notifications])
 
-  const getLevelInfo = (level: number) => {
+  useEffect(() => {
+    const resetText = setTimeout(() => {
+      setActionResult("")
+    }, 4000)
+    return () => clearTimeout(resetText)
+  }, [actionResult])
+
+  const getLevelInfo = (level: number): [string, string, string] => {
     let color: string = "#999"
     let desc: string = "Trace"
+    let classList: string = "px-2 w-[3rem] inline-flex font-bold"
     switch (level) {
       case 0:
       case 1:
         color = "#c90a00"
+        classList += " capitalize text-[#c90a00]"
         desc = "Error"
         break
       case 2:
-        color = "#fde047"
+        color = "#fb8500"
+        classList += " capitalize text-[#fb8500]"
         desc = "Warn"
         break
       case 3:
-        color = "#fff"
+        color = "#000"
+        classList += " text-[#000]"
         desc = "Info"
         break
       case 4:
-        color = "#ccc"
+        color = "#8a817c"
+        classList += " text-[#8a817c]"
         desc = "Debug"
         break
     }
-    return [desc, color]
+    return [desc, color, classList]
   }
 
   return (
     <>
       <BraveModal show={showModal} isOptions={true} />
-      <div className="mb-4 font-roboto">
+      <div className="mb-4">
         <div className="options-container">
-          <div className="px-12 pb-3.5 text-base flex items-center">
+          <div className="px-12 pb-3.5 text-base flex items-center font-roboto">
             <div className="flex items-baseline">
               <Logo textSize="lg" />
               <div className="text-sm pl-4">v{pckg.version}</div>
@@ -181,7 +197,7 @@ const Options: React.FunctionComponent = () => {
         <div className="mx-[15%] pt-2">
           {/** Networks section */}
           <TabsContent activeTab={activeTab}>
-            <section>
+            <section className="font-roboto">
               {clientError && <ClientError error={clientError} />}
               {networks.length ? (
                 networks.map((network: NetworkTabProps, i: number) => {
@@ -200,66 +216,85 @@ const Options: React.FunctionComponent = () => {
               )}
             </section>
             {/** Logs section */}
-            <section className="block">
-              <div className="flex my-5">
-                <button
-                  className="px-2 border rounded-md bg-stone-200 hover:bg-stone-400"
-                  onClick={() => setPoolingLogs(!poolingLogs)}
-                >
-                  {poolingLogs ? "Pause" : "Retrieve "} logs
-                </button>
-                <button
-                  className="px-2 mx-2 my-0 border rounded-md bg-stone-200 hover:bg-stone-400"
-                  onClick={() => navigator.clipboard.writeText(stringifyLogs())}
-                >
-                  Copy to clipboard
-                </button>
-                <div className="rounded-md bg-red-500 py-2.5 px-4">
-                  {errLogs.length} Errors
+            <section className="block border border-[#ECECEC] bg-white rounded-lg px-5 py-2">
+              <div className="flex mt-5 font-roboto">
+                <div className="py-2.5 px-2 text-xl font-bold">
+                  {errLogs.length} Errors,
                 </div>
-                <div className="ml-2 rounded-md bg-yellow-300 py-2.5 px-4">
+                <div className="py-2.5 px-2 text-xl font-bold">
                   {warnLogs.length} Warnings
                 </div>
               </div>
               <div
-                style={{ maxHeight: "75vh" }}
-                className="block w-full overflow-y-auto px-2 bg-black text-white text-xs border border-black font-mono font"
+                style={{ height: "70vh" }}
+                className="block w-full overflow-y-auto px-2 text-black text-xs !font-monospace"
               >
                 {allLogs.length > 0 ? (
-                  allLogs.map(
-                    (
-                      { unix_timestamp, level, target, message }: logStructure,
-                      i: number,
-                    ) => (
-                      <p
-                        key={"all_" + i}
-                        style={{
-                          color: getLevelInfo(level)[1],
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontWeight: "bold",
-                          }}
-                        >
-                          [{getTime(unix_timestamp)}]
-                        </span>
-                        <span
-                          style={{
-                            margin: "0 0.5rem",
-                          }}
-                        >
-                          [{target}]
-                        </span>
-                        <span>{message}</span>
-                      </p>
-                    ),
-                  )
+                  allLogs
+                    .map(
+                      (
+                        {
+                          unix_timestamp,
+                          level,
+                          target,
+                          message,
+                        }: logStructure,
+                        i: number,
+                      ) => (
+                        <p key={"all_" + i}>
+                          <span>{getTime(unix_timestamp)}</span>
+                          <div className={getLevelInfo(level)[2]}>
+                            {getLevelInfo(level)[0]}
+                          </div>
+                          <span className="my-[0rem] mx-[0.5rem]">
+                            [{target}]
+                          </span>
+                          <span>{message}</span>
+                        </p>
+                      ),
+                    )
+                    .reverse()
                 ) : (
-                  <div className="items-center h-56 mt-20 ml-40">
+                  <div
+                    style={{ height: "50vh" }}
+                    className="items-center flex justify-center"
+                  >
                     <Loader />
                   </div>
                 )}
+              </div>
+              <div className="flex justify-center">
+                <div className="px-5 py-2 border border-[#ECECEC] rounded-md mt-5 mb-2 self-center flex justify-center w-64">
+                  <button
+                    className="p-2 text-black	hover:text-green-500"
+                    onClick={() => {
+                      setPoolingLogs(!poolingLogs)
+                      setActionResult(
+                        poolingLogs ? "Logs paused" : "Logs running",
+                      )
+                    }}
+                  >
+                    {poolingLogs ? (
+                      <ImPause className="w-7 h-7 mx-7" />
+                    ) : (
+                      <ImPlay2 className="w-7 h-7 mx-7" />
+                    )}
+                  </button>
+                  <button
+                    className="p-2 text-black	hover:text-green-500"
+                    onClick={() => {
+                      navigator.clipboard.writeText(stringifyLogs())
+                      setActionResult("Copied to clipboard")
+                    }}
+                  >
+                    <TbCopy className="w-7 h-7 mx-7" />
+                  </button>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <div className="self-center flex justify-center w-64 text-green-500 font-bold">
+                  {actionResult}
+                </div>
               </div>
             </section>
           </TabsContent>

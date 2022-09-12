@@ -2,6 +2,7 @@
   "content": ["./src/**/*.{js,jsx,ts,tsx}"],
   "theme": {
     "fontFamily": {
+      "monospace": ["Menlo", "Monaco", "Consolas", "monospace"],
       "poppins": ["Poppins", "sans-serif"],
       "roboto": ["Roboto", "sans-serif"],
       "inter": ["Inter", "sans-serif"]
