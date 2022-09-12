@@ -146,46 +146,34 @@ const Options: React.FunctionComponent = () => {
     return () => clearTimeout(resetText)
   }, [actionResult])
 
-  const getLevelInfo = (level: number): [string, string] => {
+  const getLevelInfo = (level: number): [string, string, string] => {
     let color: string = "#999"
     let desc: string = "Trace"
+    let classList: string = "px-2 w-[3rem] inline-flex font-bold"
     switch (level) {
       case 0:
       case 1:
         color = "#c90a00"
+        classList += " capitalize text-[#c90a00]"
         desc = "Error"
         break
       case 2:
-        color = "#fde047"
+        color = "#fb8500"
+        classList += " capitalize text-[#fb8500]"
         desc = "Warn"
         break
       case 3:
-        color = "#fff"
+        color = "#000"
+        classList += " text-[#000]"
         desc = "Info"
         break
       case 4:
-        color = "#ccc"
+        color = "#8a817c"
+        classList += " text-[#8a817c]"
         desc = "Debug"
         break
     }
-    return [desc, color]
-  }
-
-  const getClassPerLevel = (level: number): string => {
-    let classList: string = "px-2 w-[3rem] inline-flex "
-    switch (level) {
-      case 0:
-      case 1:
-      case 2:
-        classList += "font-bold uppercase"
-        break
-      case 3:
-      case 4:
-      default:
-        classList += "capitalize"
-        break
-    }
-    return classList
+    return [desc, color, classList]
   }
 
   return (
@@ -255,7 +243,7 @@ const Options: React.FunctionComponent = () => {
                       ) => (
                         <p key={"all_" + i}>
                           <span>{getTime(unix_timestamp)}</span>
-                          <div className={getClassPerLevel(level)}>
+                          <div className={getLevelInfo(level)[2]}>
                             {getLevelInfo(level)[0]}
                           </div>
                           <span className="my-[0rem] mx-[0.5rem]">
