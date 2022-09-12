@@ -140,7 +140,6 @@ const logger = (level: number, target: string, message: string) => {
 
   if (all.length >= 1000) all.shift()
   all.push(incLog)
-  return { all, warn, error }
 }
 
 // Listeners that must be notified when the `get chains()` getter would return a different value.
