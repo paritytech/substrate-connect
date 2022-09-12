@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.1.9 - 2022-09-12
+
 ### Changed
 
 - Show error message when smoldot crashes in both Popup and Options page. ([#1128](https://github.com/paritytech/substrate-connect/pull/1228))
