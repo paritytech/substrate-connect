@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@polkadot/api": "^9.3.2",
-    "@polkadot/rpc-provider": "^9.3.2",
+    "@polkadot/rpc-provider": "^9.3.3",
     "regenerator-runtime": "^0.13.9"
   },
   "devDependencies": {
