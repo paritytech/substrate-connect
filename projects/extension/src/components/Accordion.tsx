@@ -75,7 +75,7 @@ const AccordionItem = ({
       >
         {title}
         {showTitleIcon && (
-          <div className="pr-4 top-6 right-2 absolute">
+          <div className="pr-4 top-8 right-2 absolute">
             {activeItem !== value ? (
               <IoIosArrowDown className="cursor-pointer hover:bg-gray-200" />
             ) : (

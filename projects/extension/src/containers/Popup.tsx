@@ -128,7 +128,7 @@ const Popup: FunctionComponent = () => {
     <>
       <BraveModal show={showModal} />
       <main className="w-80">
-        <header className="my-3 mx-6 flex justify-between border-b border-neutral-200 pt-1.5 pb-4 leading-4">
+        <header className="mt-3 mx-6 flex justify-between border-b border-neutral-200 pt-1.5 pb-4 leading-4">
           <Logo textSize="xl" cName={"leading-4"} />
           <div className="tooltip">
             <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
