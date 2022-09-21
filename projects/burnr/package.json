@@ -22,25 +22,25 @@
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.61",
-    "@polkadot/api": "^9.3.2",
-    "@polkadot/api-augment": "^9.3.2",
-    "@polkadot/keyring": "^10.1.7",
-    "@polkadot/react-identicon": "^2.9.8",
-    "@polkadot/rpc-provider": "^9.3.2",
-    "@polkadot/types": "^9.3.2",
-    "@polkadot/util": "^10.1.7",
-    "@polkadot/util-crypto": "^10.1.7",
+    "@polkadot/api": "^9.4.1",
+    "@polkadot/api-augment": "^9.4.1",
+    "@polkadot/keyring": "^10.1.8",
+    "@polkadot/react-identicon": "^2.9.9",
+    "@polkadot/rpc-provider": "^9.4.1",
+    "@polkadot/types": "^9.4.1",
+    "@polkadot/util": "^10.1.8",
+    "@polkadot/util-crypto": "^10.1.8",
     "bn.js": "^5.2.1",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "^18.2.0",
-    "react-router": "^6.3.0",
-    "react-router-dom": "^6.3.0",
+    "react-router": "^6.4.0",
+    "react-router-dom": "^6.4.0",
     "regenerator-runtime": "^0.13.9",
     "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
-    "eslint": "^8.23.0"
+    "eslint": "^8.23.1"
   }
 }
