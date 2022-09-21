@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Multiple versions of the extension can now be installed at the same time without them conflicting with each other.
+
 ## 0.1.10 - 2022-09-15
 
 ### Changed
