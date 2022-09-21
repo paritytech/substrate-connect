@@ -10,8 +10,7 @@ window.document.addEventListener("readystatechange", () => {
     // If there is already a DOM element inject, don't create another element and don't listen.
     // This way, if multiple extensions are installed, only one will actually be active on any
     // given page.
-    if (document.getElementById(DOM_ELEMENT_ID) !== null)
-      return;
+    if (document.getElementById(DOM_ELEMENT_ID) !== null) return
 
     const s = document.createElement("span")
     s.id = DOM_ELEMENT_ID
