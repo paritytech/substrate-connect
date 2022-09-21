@@ -20,8 +20,8 @@
   },
   "keywords": [],
   "devDependencies": {
-    "autoprefixer": "^10.4.8",
-    "eslint": "^8.23.0",
+    "autoprefixer": "^10.4.12",
+    "eslint": "^8.23.1",
     "jest-chrome": "^0.7.2",
     "mini-css-extract-plugin": "^2.6.1",
     "postcss": "^8.4.16",
