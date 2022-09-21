@@ -9,7 +9,7 @@
  * If a web page wants to use the features of the substrate-connect extension,
  * it must first check whether the extension is available by checking whether
  * there exists an element on the DOM whose `id` is equal to
- * {@link ToExtensionAddChain}. This DOM element is automatically inserted by
+ * {@link DOM_ELEMENT_ID}. This DOM element is automatically inserted by
  * the extension when the page loads.
  *
  * If so, the web page can make use of the extension by sending messages on
@@ -86,6 +86,17 @@
  * either before of after the chain is ready, the corresponding `chainId` is
  * immediately considered dead/removed, and the web page doesn't need to send
  * a {@link ToExtensionRemoveChain} message.
+ *
+ * # Other extensions implementing this protocol
+ *
+ * While the documentation above refers to the substrate-connect extension in
+ * particular, any other browser extension is free to implement this protocol
+ * in order to pretend to be the substrate-connect extension.
+ *
+ * In order to avoid conflicts when multiple different extensions implement
+ * this protocol, extensions must check whether there already exists an element
+ * on the DOM whose `id` is equal to {@link DOM_ELEMENT_ID} before
+ * creating one and listening for events.
  *
  * @packageDocumentation
  */
