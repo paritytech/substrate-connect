@@ -56,7 +56,7 @@ const AccordionItem = ({
   return (
     <div className={status && `item _mi__${status}`}>
       <button
-        className={`item_title `
+        className={`item_title relative `
           .concat(
             `${
               expanded && (status === "single" || status === "last")
@@ -75,7 +75,7 @@ const AccordionItem = ({
       >
         {title}
         {showTitleIcon && (
-          <div className="pr-4">
+          <div className="pr-4 top-8 right-2 absolute">
             {activeItem !== value ? (
               <IoIosArrowDown className="cursor-pointer hover:bg-gray-200" />
             ) : (

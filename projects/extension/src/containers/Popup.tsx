@@ -12,6 +12,7 @@ import { Accordion, Logo } from "../components"
 import { Background } from "../background"
 import IconWeb3 from "../components/IconWeb3"
 import { BraveModal } from "../components/BraveModal"
+import { ClientError } from "../components/ClientError"
 
 interface PopupChain {
   chainName: string
@@ -24,6 +25,7 @@ interface ChainDetails {
   peers: number
   isSyncing: boolean
   chainId: string
+  bestBlockHeight: number | undefined
 }
 
 const Popup: FunctionComponent = () => {
@@ -32,6 +34,8 @@ const Popup: FunctionComponent = () => {
 
   const [bg, setBg] = useState<Background | undefined>()
   const [showModal, setShowModal] = useState<boolean>(false)
+
+  const [clientError, setClientError] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     chrome.runtime.getBackgroundPage((backgroundPage) => {
@@ -45,6 +49,7 @@ const Popup: FunctionComponent = () => {
 
     bg.uiInterface.chains.forEach((c) => {
       const i = allChains.findIndex((i) => i.chainName === c.chainName)
+      const { peers, isSyncing, chainId, bestBlockHeight } = c
       if (i === -1) {
         allChains.push({
           chainName: c.chainName,
@@ -52,9 +57,10 @@ const Popup: FunctionComponent = () => {
             {
               tabId: c.tab?.id,
               url: c.tab?.url,
-              peers: c.peers,
-              isSyncing: c.isSyncing,
-              chainId: c.chainId,
+              peers,
+              isSyncing,
+              chainId,
+              bestBlockHeight,
             },
           ],
         })
@@ -64,9 +70,10 @@ const Popup: FunctionComponent = () => {
           details.push({
             tabId: c.tab?.id,
             url: c.tab?.url,
-            peers: c.peers,
-            isSyncing: c.isSyncing,
-            chainId: c.chainId,
+            peers,
+            isSyncing,
+            chainId,
+            bestBlockHeight,
           })
         }
       }
@@ -85,10 +92,17 @@ const Popup: FunctionComponent = () => {
     })
 
     disconnectTab.current = bg.uiInterface.disconnectTab
-    const unsubscribe = bg.uiInterface.onChainsChanged(() => refresh())
+    const cb = bg.uiInterface.onChainsChanged(refresh)
+    const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(() =>
+      setClientError(bg.uiInterface.smoldotCrashError),
+    )
+    setClientError(bg.uiInterface.smoldotCrashError)
     refresh()
 
-    return unsubscribe
+    return () => {
+      cb()
+      errCb()
+    }
   }, [bg, refresh])
 
   const goToOptions = (): void => {
@@ -114,7 +128,7 @@ const Popup: FunctionComponent = () => {
     <>
       <BraveModal show={showModal} />
       <main className="w-80">
-        <header className="my-3 mx-6 flex justify-between border-b border-neutral-200 pt-1.5 pb-4 leading-4">
+        <header className="mt-3 mx-6 flex justify-between border-b border-neutral-200 pt-1.5 pb-4 leading-4">
           <Logo textSize="xl" cName={"leading-4"} />
           <div className="tooltip">
             <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
@@ -127,14 +141,25 @@ const Popup: FunctionComponent = () => {
           </div>
         </header>
         <div className="pb-3.5">
+          {clientError && <ClientError error={clientError} />}
           {connChains?.map((w) => {
             if (w?.details?.length === 1 && !w?.details[0].tabId)
               return (
                 <>
-                  <div key={w.chainName} className="pl-6 flex text-lg">
-                    {networkIcon(w.chainName)}
+                  <div className="block mt-4">
+                    <div key={w.chainName} className="pl-6 flex text-lg">
+                      {networkIcon(w.chainName)}
+                    </div>
+                    <div className="pl-[4.5rem] text-sm flex pt-2">
+                      <span className="text-[#323232]">Latest block</span>
+                      <span className="pl-2 text-[#24CC85]">
+                        {w?.details[0].bestBlockHeight?.toLocaleString(
+                          "en-US",
+                        ) || "Syncing..."}
+                      </span>
+                    </div>
                   </div>
-                  <div className="pl-16 flex pb-4 text-[#616161]">
+                  <div className="pl-[4.5rem] flex pt-2 pb-4 text-[#616161]">
                     No apps connected
                   </div>
                 </>
@@ -144,7 +169,7 @@ const Popup: FunctionComponent = () => {
               if (t.tabId) {
                 contents.push(
                   <div key={t.url} className="flex justify-between">
-                    <div className="ml-6 w-full truncate text-base">
+                    <div className="ml-8 text-sm w-full truncate text-base">
                       {t.url}
                     </div>
 
@@ -168,11 +193,19 @@ const Popup: FunctionComponent = () => {
                 titleClass="popup-accordion-title"
                 contentClass="popup-accordion-content"
                 titles={[
-                  <div className="flex justify-between items-center w-full">
+                  <div className="block mt-4">
                     <div className="pl-4 flex text-lg justify-start">
                       {networkIcon(w.chainName)}
                       <span className="pl-2 text-[#616161]">
                         ({contents.length})
+                      </span>
+                    </div>
+                    <div className="pl-16 flex pt-2">
+                      <span className="text-[#323232]">Latest block</span>
+                      <span className="pl-2 text-[#24CC85]">
+                        {w?.details[0].bestBlockHeight?.toLocaleString(
+                          "en-US",
+                        ) || "Syncing..."}
                       </span>
                     </div>
                   </div>,
