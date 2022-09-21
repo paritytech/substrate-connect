@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Multiple versions of the extension can now be installed at the same time without them conflicting with each other.
+- Multiple versions of the extension can now be installed at the same time without them conflicting with each other. ([#1255](https://github.com/paritytech/substrate-connect/pull/1255))
 
 ## 0.1.10 - 2022-09-15
 
