@@ -151,7 +151,7 @@ const Popup: FunctionComponent = () => {
                       {networkIcon(w.chainName)}
                     </div>
                     <div className="pl-[4.5rem] text-sm flex pt-2">
-                      <span className="text-[#323232]">Last block</span>
+                      <span className="text-[#323232]">Latest block</span>
                       <span className="pl-2 text-[#24CC85]">
                         {w?.details[0].bestBlockHeight?.toLocaleString(
                           "en-US",
@@ -201,7 +201,7 @@ const Popup: FunctionComponent = () => {
                       </span>
                     </div>
                     <div className="pl-16 flex pt-2">
-                      <span className="text-[#323232]">Last block</span>
+                      <span className="text-[#323232]">Latest block</span>
                       <span className="pl-2 text-[#24CC85]">
                         {w?.details[0].bestBlockHeight?.toLocaleString(
                           "en-US",
