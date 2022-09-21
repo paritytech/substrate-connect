@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- The latest block number of each chain is now displayed in the extension popup. ([#1254](https://github.com/paritytech/substrate-connect/pull/1254))
+
 ### Changed
 
 - Multiple versions of the extension can now be installed at the same time without them conflicting with each other. ([#1255](https://github.com/paritytech/substrate-connect/pull/1255))
