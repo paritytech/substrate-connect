@@ -21,7 +21,7 @@ The substrate connect [API documentation is published here](https://paritytech.g
 
 ## Building an app with @substrate/connect and installing the extension
 
-**[The most up-to-date usage instructions for app builders can be found here](https://paritytech.github.io/substrate-connect/)**
+**[The most up-to-date usage instructions for app builders can be found here](https://docs.substrate.io/fundamentals/light-clients-in-substrate-connect/)**
 
 ## Development
 
