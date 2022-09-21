@@ -40,6 +40,7 @@ export const ClientError = ({ error }: Props) => {
       </span>
       . Please open a new bug issue in the
       <a
+        rel="noopener noreferrer"
         className="underline inline pl-2 font-bold"
         href="https://github.com/paritytech/smoldot/issues/new"
         target="_blank"
