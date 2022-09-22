@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.1.11 - 2022-09-21
+
 ### Added
 
 - The latest block number of each chain is now displayed in the extension popup. ([#1254](https://github.com/paritytech/substrate-connect/pull/1254))
