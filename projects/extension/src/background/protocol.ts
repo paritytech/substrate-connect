@@ -33,7 +33,7 @@ export interface ToExtensionChainInfoUpdate {
   type: 'chain-info-update',
   chainId: string,
   peers: number,
-  bestBlockNumber: number,
+  bestBlockNumber?: number,
 }
 
 // Report to the extension that a chain previously added with {ToExtensionAddChain} has been

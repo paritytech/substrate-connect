@@ -20,8 +20,10 @@ export class SmoldotClientWithExtension {
   #client: SmoldotClient
   #port: chrome.runtime.Port
   #chains: WeakMap<ChainWithExtension, SmoldotChain>
+  #nextRpcRqId: number
 
   constructor() {
+    this.#nextRpcRqId = 0;
     this.#chains = new WeakMap()
     this.#port = chrome.runtime.connect()
     this.#client = startSmoldotClient({
@@ -90,6 +92,30 @@ export class SmoldotClientWithExtension {
     // callback, it doesn't make sense to give the possibility for the user to disable the
     // JSON-RPC service.
 
+    const chainInfo: {
+      // Note that once subscribed, we never unsubscribe.
+      //
+      // Blocks get unpinned when they become ancestor of the current finalized block. In other words,
+      // the current finalized block and all its descendants are kept pinned. This is necessary in
+      // order to be able to query the header of the best block, as the best block can be the
+      // current finalized block or any of its descendants.
+      readySubscriptionId?: string
+      isSyncing: boolean
+      peers: number
+      // Height of the current best block of the chain, or undefined if not known yet or if the
+      // height couldn't be defined.
+      bestBlockHeight?: number
+      // If defined, contains the id of the RPC request whose response contains the header of the
+      // best block of the chain.
+      bestBlockHeaderRequestId?: string
+      // Hash of the current finalized block of the chain in hexadecimal, or undefined if not known
+      // yet.
+      finalizedBlockHashHex?: string
+    } = {
+      isSyncing: false,
+      peers: 0,
+    };
+
     const userJsonRpcCallback = options.jsonRpcCallback;
     options.jsonRpcCallback = (response: string) => {
       // Do the opposite of what is done when a JSON-RPC request arrives by removing the
@@ -107,6 +133,156 @@ export class SmoldotClientWithExtension {
         if (jsonRpcMessageId.startsWith("extern:")) {
           parsed.id = JSON.parse(jsonRpcMessageId.slice("extern:".length))
           response = JSON.stringify(parsed)
+        } else if (jsonRpcMessageId.startsWith("health-check:")) {
+          // TODO: send the periodic health requests
+          // Store the health status in the locally-held information.
+          const result: { peers: number } = parsed.result
+          chainInfo.peers = result.peers
+          this.#sendPort({
+            type: 'chain-info-update',
+            chainId,
+            bestBlockNumber: chainInfo.bestBlockHeight,
+            peers: chainInfo.peers
+          })
+          return
+        } else if (jsonRpcMessageId.startsWith("ready-sub:")) {
+          chainInfo.readySubscriptionId = parsed.result
+          return;
+        } else if (jsonRpcMessageId.startsWith("block-unpin:")) {
+          return;
+        } else if (jsonRpcMessageId.startsWith("best-block-header:")) {
+          // We might receive responses to header requests concerning blocks that were but are
+          // no longer the best block of the chain. Ignore these responses.
+          if (jsonRpcMessageId === chainInfo.bestBlockHeaderRequestId) {
+            delete chainInfo.bestBlockHeaderRequestId
+            // The RPC call might return `null` if the subscription is dead.
+            if (parsed.result) {
+              try {
+                chainInfo.bestBlockHeight = headerToHeight(
+                  parsed.result,
+                )
+              } catch (error) {
+                delete chainInfo.bestBlockHeight
+              }
+              this.#sendPort({
+                type: 'chain-info-update',
+                chainId,
+                bestBlockNumber: chainInfo.bestBlockHeight,
+                peers: chainInfo.peers
+              })
+            }
+          }
+          return;
+        } else {
+          // Never supposed to happen. Indicates a bug somewhere.
+          console.assert(false, parsed)
+          return;
+        }
+      } else {
+        if (
+          parsed.method === "chainHead_unstable_followEvent" &&
+          parsed.params.subscription === chainInfo.readySubscriptionId
+        ) {
+          // We've received a notification on our `chainHead_unstable_followEvent`
+          // subscription.
+          switch (parsed.params.result.event) {
+            case "initialized": {
+              // The chain is now in sync and has downloaded the runtime.
+              chainInfo.isSyncing = false
+              chainInfo.finalizedBlockHashHex =
+              parsed.params.result.finalizedBlockHash
+
+              // Immediately send a single health request to the chain.
+              smoldotChain.sendJsonRpc(JSON.stringify({
+                jsonrpc: "2.0",
+                id: "health-check:" + this.#nextRpcRqId,
+                method: "system_health",
+                params: [],
+              }))
+              this.#nextRpcRqId += 1
+
+              // Also immediately request the header of the finalized block.
+              smoldotChain.sendJsonRpc(JSON.stringify({
+                jsonrpc: "2.0",
+                id: "best-block-header:" + this.#nextRpcRqId,
+                method: "chainHead_unstable_header",
+                params: [
+                  chainInfo.readySubscriptionId,
+                  chainInfo.finalizedBlockHashHex,
+                ],
+              }))
+              chainInfo.bestBlockHeaderRequestId =
+                "best-block-header:" + this.#nextRpcRqId
+              this.#nextRpcRqId += 1
+
+              return
+            }
+            case "stop": {
+              // Our subscription has been force-killed by the client. This is normal and can
+              // happen for example if the client is overloaded. Restart the subscription.
+              delete chainInfo.readySubscriptionId
+              delete chainInfo.bestBlockHeaderRequestId
+              delete chainInfo.finalizedBlockHashHex
+              delete chainInfo.bestBlockHeight
+              this.#sendPort({
+                type: 'chain-info-update',
+                chainId,
+                bestBlockNumber: chainInfo.bestBlockHeight,
+                peers: chainInfo.peers
+              })
+              smoldotChain.sendJsonRpc(JSON.stringify({
+                jsonrpc: "2.0",
+                id: "ready-sub:" + this.#nextRpcRqId,
+                method: "chainHead_unstable_follow",
+                params: [true],
+              }))
+              this.#nextRpcRqId += 1
+              return
+            }
+            case "bestBlockChanged": {
+              // The best block has changed. Request the header of this new best block in
+              // order to know its height.
+              smoldotChain.sendJsonRpc(JSON.stringify({
+                jsonrpc: "2.0",
+                id: "best-block-header:" + this.#nextRpcRqId,
+                method: "chainHead_unstable_header",
+                params: [
+                  chainInfo.readySubscriptionId,
+                  parsed.params.result.bestBlockHash,
+                ],
+              }))
+              chainInfo.bestBlockHeaderRequestId =
+                "best-block-header:" + this.#nextRpcRqId
+              this.#nextRpcRqId += 1
+              return
+            }
+            case "finalized": {
+              // When one or more new blocks get finalized, we unpin all blocks except for
+              // the new current finalized.
+              let finalized = parsed.params.result
+                .finalizedBlocksHashes as [string]
+              let pruned = parsed.params.result
+                .prunedBlocksHashes as [string]
+              let newCurrentFinalized = finalized.pop()
+              ;[
+                chainInfo.finalizedBlockHashHex,
+                ...pruned,
+                ...finalized,
+              ].forEach((blockHash) => {
+                // `chain.finalizedBlockHashHex` can be undefined
+                if (blockHash === undefined) return
+                smoldotChain.sendJsonRpc(JSON.stringify({
+                  jsonrpc: "2.0",
+                  id: "block-unpin:" + this.#nextRpcRqId,
+                  method: "chainHead_unstable_unpin",
+                  params: [chainInfo.readySubscriptionId, blockHash],
+                }))
+                this.#nextRpcRqId += 1
+                chainInfo.finalizedBlockHashHex = newCurrentFinalized
+              })
+              return
+            }
+          }
         }
       }
 
@@ -115,6 +291,15 @@ export class SmoldotClientWithExtension {
     };
 
     const smoldotChain = await this.#client.addChain(options);
+  
+    smoldotChain.sendJsonRpc(JSON.stringify({
+      jsonrpc: "2.0",
+      id: "ready-sub:" + this.#nextRpcRqId,
+      method: "chainHead_unstable_follow",
+      params: [false],
+    }))
+    this.#nextRpcRqId += 1
+  
     const chainId = getRandomChainId();
     const client = this;
 
@@ -189,4 +374,66 @@ function getRandomChainId(): string {
   crypto.getRandomValues(arr)
   const result = (arr[1] << BigInt(64)) | arr[0]
   return result.toString(36)
+}
+
+// Converts a block header, as a hexadecimal string, to a block height.
+//
+// This function should give the accurate block height in most situations, but it is possible that
+// the value is erroneous.
+//
+// This function assumes that the block header is a block header generated using Substrate. This
+// is not necessarily always true. When that happens, an error is thrown.
+//
+// Additionally, this function assumes that the block height is 32bits, which is the case for the
+// vast majority of the chains. There is currently no way to know the size of the block height.
+// This is a huge flaw in Substrate that we can't do much about here. Fortuntely, since the block
+// height is implemented in compact SCALE encoding, as long as the field containing the number is
+// at least 32 bits and the value is less than 2^32, it will encode the same regardless.
+function headerToHeight(hexHeader: String): number {
+  // Remove the initial prefix.
+  if (!(hexHeader.startsWith("0x") || hexHeader.startsWith("0X")))
+    throw new Error("Not a hexadecimal number")
+  hexHeader = hexHeader.slice(2)
+
+  // The header should start with 32 bytes containing the parent hash.
+  if (hexHeader.length < 64) throw new Error("Too short")
+  hexHeader = hexHeader.slice(64)
+
+  // The next field is the block number (which is what interests us) encoded in SCALE compact.
+  // Unfortunately this format is a bit complicated to decode.
+  // See https://docs.substrate.io/v3/advanced/scale-codec/#compactgeneral-integers
+  if (hexHeader.length < 2) throw new Error("Too short")
+  const b0 = parseInt(hexHeader.slice(0, 2), 16)
+
+  switch ((b0 & 3) as 0 | 1 | 2 | 3) {
+    case 0: {
+      return b0 >> 2
+    }
+    case 1: {
+      if (hexHeader.length < 4) throw new Error("Too short")
+      const b1 = parseInt(hexHeader.slice(2, 4), 16)
+      return (b0 >> 2) + b1 * 2 ** 6
+    }
+    case 2: {
+      if (hexHeader.length < 8) throw new Error("Too short")
+      const b1 = parseInt(hexHeader.slice(2, 4), 16)
+      const b2 = parseInt(hexHeader.slice(4, 6), 16)
+      const b3 = parseInt(hexHeader.slice(6, 8), 16)
+      return (b0 >> 2) + b1 * 2 ** 6 + b2 * 2 ** 14 + b3 * 2 ** 22
+    }
+    case 3: {
+      hexHeader = hexHeader.slice(2)
+      let len = (4 + b0) >> 2
+      let output = 0
+      let base = 0
+      while (len--) {
+        if (hexHeader.length < 2) throw new Error("Too short")
+        // Note that we assume that value can't overflow. This function is a helper and not.
+        output += parseInt(hexHeader.slice(0, 2)) << base
+        hexHeader = hexHeader.slice(2)
+        base += 8
+      }
+      return output
+    }
+  }
 }

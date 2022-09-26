@@ -103,7 +103,7 @@ interface LogKeeper {
   error: logStructure[]
 }
 
-const chains: Map<chrome.runtime.Port, Map<string, [string, number, number]>> = new Map()
+const chains: Map<chrome.runtime.Port, Map<string, [string, number, number?]>> = new Map()
 
 // Listeners that must be notified when the `get chains()` getter would return a different value.
 const chainsChangedListeners: Set<() => void> = new Set()
@@ -226,7 +226,15 @@ chrome.runtime.onConnect.addListener((port) => {
       }
 
       case "add-chain": {
-        chains.get(port)!.set(message.chainId, [message.chainSpecChainName, 0, 0]) // TODO:
+        chains.get(port)!.set(message.chainId, [message.chainSpecChainName, 0])
+        notifyAllChainsChangedListeners()
+        break;
+      }
+
+      case "chain-info-update": {
+        const info = chains.get(port)!.get(message.chainId)!;
+        info[1] = message.peers;
+        info[2] = message.bestBlockNumber;
         notifyAllChainsChangedListeners()
         break;
       }
