@@ -103,6 +103,8 @@ interface LogKeeper {
   error: logStructure[]
 }
 
+const chains: Map<chrome.runtime.Port, Map<string, [string, number, number]>> = new Map()
+
 // Listeners that must be notified when the `get chains()` getter would return a different value.
 const chainsChangedListeners: Set<() => void> = new Set()
 const notifyAllChainsChangedListeners = () => {
@@ -161,7 +163,16 @@ window.uiInterface = {
     })
   },
   get chains(): ExposedChainConnection[] {
-    return []
+    return Array.from(chains.values()).flatMap((list) => Array.from(list.entries())).map(([chainId, [chainSpecChainName, peers, bestBlockNumber]]) => {
+      // TODO: tab info
+      return {
+        chainId,
+        chainName: chainSpecChainName,
+        isSyncing: false,
+        peers,
+        bestBlockHeight: bestBlockNumber,
+      }
+    })
   },
   get logger() {
     return {
@@ -190,6 +201,8 @@ window.uiInterface = {
 // Whenever a tab starts using the substrate-connect extension, it will open a port. This is caught
 // here.
 chrome.runtime.onConnect.addListener((port) => {
+  chains.set(port, new Map())
+
   port.onMessage.addListener((message: ToExtension) => {
     switch (message.type) {
       case "get-well-known-chain": {
@@ -209,8 +222,26 @@ chrome.runtime.onConnect.addListener((port) => {
             } as ToContentScript)
           }
         })
+        break;
+      }
+
+      case "add-chain": {
+        chains.get(port)!.set(message.chainId, [message.chainSpecChainName, 0, 0]) // TODO:
+        notifyAllChainsChangedListeners()
+        break;
+      }
+
+      case "remove-chain": {
+        chains.get(port)!.delete(message.chainId)
+        notifyAllChainsChangedListeners()
+        break;
       }
     }
+  })
+
+  port.onDisconnect.addListener(() => {
+    chains.delete(port)
+    notifyAllChainsChangedListeners()
   })
 })
 

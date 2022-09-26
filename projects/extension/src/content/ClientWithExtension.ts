@@ -13,6 +13,8 @@ import {
   ToContentScript,
 } from "../background/protocol"
 
+// TODO: implement the chain info updates and database uploads
+
 export class SmoldotClientWithExtension {
   #client: SmoldotClient
   #port: chrome.runtime.Port
@@ -81,16 +83,26 @@ export class SmoldotClientWithExtension {
 
   async #addChainWithOptions(options: SmoldotAddChainOptions): Promise<ChainWithExtension> {
     const smoldotChain = await this.#client.addChain(options);
+    const chainId = getRandomChainId();
+    const client = this;
+
+    // Given that smoldot has managed to add the chain, it means that the chain spec should
+    // successfully parse.
+    const chainSpecChainName = JSON.parse(options.chainSpec)!.name as string;
 
     const chain = {
       sendJsonRpc(rpc: string) {
         return smoldotChain.sendJsonRpc(rpc)
       },
       remove() {
-        return smoldotChain.remove();
+        smoldotChain.remove();
+        // TODO: correct chainId
+        client.#sendPort({ type: 'remove-chain', chainId })
       }
     };
 
+    // TODO: correct chainId
+    this.#sendPort({ type: 'add-chain', chainId, chainSpecChainName })
     this.#chains.set(chain, smoldotChain)
     return chain
   }
@@ -98,6 +110,11 @@ export class SmoldotClientWithExtension {
   async terminate(): Promise<void> {
     await this.#client.terminate()
     this.#port.disconnect()
+  }
+
+  // Sends a message to the extension. No response is expected.
+  #sendPort(message: ToExtension) {
+    this.#port.postMessage(message)
   }
 
   // Sends a message to the extension. The closure passed as parameter then gets passed every
@@ -126,4 +143,13 @@ export class SmoldotClientWithExtension {
 export interface ChainWithExtension {
   sendJsonRpc(rpc: string): void
   remove(): void
+}
+
+// Generate a random string.
+function getRandomChainId(): string {
+  const arr = new BigUint64Array(2)
+  // It can only be used from the browser, so this is fine.
+  crypto.getRandomValues(arr)
+  const result = (arr[1] << BigInt(64)) | arr[0]
+  return result.toString(36)
 }
