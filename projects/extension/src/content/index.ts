@@ -1,4 +1,4 @@
-import { ExtensionMessageRouter } from "./ExtensionMessageRouter"
+import { ExtensionMessageRouter } from "./ExtensionMessageHandler"
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 
 const router = new ExtensionMessageRouter()
