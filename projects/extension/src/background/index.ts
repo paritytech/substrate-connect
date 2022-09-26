@@ -209,15 +209,18 @@ chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((message: ToExtension) => {
     switch (message.type) {
       case "get-well-known-chain": {
-        // TODO: don't load every time
+        // TODO: don't load the list every time
         loadWellKnownChains().then((map) => {
           const chainSpec = map.get(message.chainName);
           if (chainSpec) {
-            port.postMessage({
-              type: "get-well-known-chain",
-              chainName: message.chainName,
-              found: { chainSpec, databaseContent: "" }  // TODO: correct database
-            } as ToContentScript)
+            chrome.storage.local.get([message.chainName], (storageGetResult) => {
+              const databaseContent = storageGetResult[message.chainName] as string;
+              port.postMessage({
+                type: "get-well-known-chain",
+                chainName: message.chainName,
+                found: { chainSpec, databaseContent }
+              } as ToContentScript)
+            })
           } else { 
             port.postMessage({
               type: "get-well-known-chain",
@@ -243,7 +246,9 @@ chrome.runtime.onConnect.addListener((port) => {
       }
 
       case "database-content": {
-        // TODO: handle
+        chrome.storage.local.set({
+          [message.chainName]: message.databaseContent,
+        })
         break;
       }
 
