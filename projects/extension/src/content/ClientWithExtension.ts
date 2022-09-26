@@ -2,6 +2,7 @@ import {
   Client as SmoldotClient,
   Chain as SmoldotChain,
   AddChainOptions as SmoldotAddChainOptions,
+  AddChainError,
   JsonRpcCallback,
   CrashError,
   start as startSmoldotClient,
@@ -21,7 +22,14 @@ export class SmoldotClientWithExtension {
     this.#chains = new WeakMap()
     this.#port = chrome.runtime.connect()
     this.#client = startSmoldotClient({
+      // Because we are in the context of a web page, trying to open TCP connections or non-secure
+      // WebSocket connections to addresses other than localhost will lead to errors. As such, we
+      // disable these types of connections ahead of time.
+      forbidTcp: true,
+      forbidNonLocalWs: true,
+
       cpuRateLimit: 0.5,
+
       maxLogLevel: 3, // TODO:
       logCallback: (level, target, message) => {
         // These logs are shown directly in the web page's console.
@@ -40,7 +48,6 @@ export class SmoldotClientWithExtension {
           console.trace("[substrate-connect-extension] [%s] %s", target, message);
         }
       }
-      // TODO: more options?
     })
   }
 
@@ -61,10 +68,13 @@ export class SmoldotClientWithExtension {
       }
     );
 
+    if (!response.found)
+      throw new AddChainError("Couldn't find well-known chain");
+
     // TODO: other options
     return this.#addChainWithOptions({
-      chainSpec: response.chainSpec,
-      databaseContent: response.databaseContent,
+      chainSpec: response.found.chainSpec,
+      databaseContent: response.found.databaseContent,
       jsonRpcCallback: options.jsonRpcCallback
     })
   }
