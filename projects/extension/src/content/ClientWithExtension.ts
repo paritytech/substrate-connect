@@ -19,7 +19,7 @@ import {
 export class SmoldotClientWithExtension {
   #client: SmoldotClient
   #port: chrome.runtime.Port
-  #chains: Map<ChainWithExtension, SmoldotChain>
+  #chains: Map<ChainWithExtension, { inner: SmoldotChain, wellKnownName?: string }>
   #nextRpcRqId: number
 
   constructor() {
@@ -58,8 +58,8 @@ export class SmoldotClientWithExtension {
 
     // At a periodic interval, we ask each chain for its number of peers.
     setInterval(() => {
-      for (const smoldotChain of this.#chains.values()) {
-        smoldotChain.sendJsonRpc(JSON.stringify({
+      for (const { inner } of this.#chains.values()) {
+        inner.sendJsonRpc(JSON.stringify({
           jsonrpc: "2.0",
           id: "health-check:" + this.#nextRpcRqId,
           method: "system_health",
@@ -68,6 +68,19 @@ export class SmoldotClientWithExtension {
         this.#nextRpcRqId += 1
       }
     }, 3000)
+
+    // At a periodic interval, we ask each well-known chain for its database.
+    setInterval(() => {
+      for (const { inner } of this.#chains.values()) {
+        inner.sendJsonRpc(JSON.stringify({
+          jsonrpc: "2.0",
+          id: "database-content:" + this.#nextRpcRqId,
+          method: "chainHead_unstable_finalizedDatabase",
+          params: [],   // TODO: pass a max value? tricky
+        }))
+        this.#nextRpcRqId += 1
+      }
+    }, 15000)
   }
 
   async addChain(
@@ -75,7 +88,7 @@ export class SmoldotClientWithExtension {
   ): Promise<ChainWithExtension> {
     const potentialRelayChainsAdj = options.potentialRelayChains
       .filter((c) => this.#chains.has(c))
-      .map((c) => this.#chains.get(c)!);
+      .map((c) => this.#chains.get(c)!.inner);
 
     return this.#addChainWithOptions({
       chainSpec: options.chainSpec,
@@ -97,7 +110,7 @@ export class SmoldotClientWithExtension {
 
     const potentialRelayChainsAdj = options.potentialRelayChains
       .filter((c) => this.#chains.has(c))
-      .map((c) => this.#chains.get(c)!);
+      .map((c) => this.#chains.get(c)!.inner);
 
     // Given that the chain name is user input, we have no guarantee that it is correct. The
     // extension might report that it doesn't know about this well-known chain.
@@ -109,10 +122,10 @@ export class SmoldotClientWithExtension {
       databaseContent: response.found.databaseContent,
       jsonRpcCallback: options.jsonRpcCallback,
       potentialRelayChains: potentialRelayChainsAdj,
-    })
+    }, options.chainName)
   }
 
-  async #addChainWithOptions(options: SmoldotAddChainOptions): Promise<ChainWithExtension> {
+  async #addChainWithOptions(options: SmoldotAddChainOptions, wellKnownName?: string): Promise<ChainWithExtension> {
     // Note that `options.jsonRpcCallback` is always defined. Because we override the JSON-RPC
     // callback, it doesn't make sense to give the possibility for the user to disable the
     // JSON-RPC service.
@@ -196,6 +209,14 @@ export class SmoldotClientWithExtension {
               })
             }
           }
+          return;
+        } else if (jsonRpcMessageId.startsWith("database-content:")) {
+          console.assert(wellKnownName);
+          this.#sendPort({
+            type: 'database-content',
+            chainName: wellKnownName!,
+            databaseContent: parsed.result as string,
+          })
           return;
         } else {
           // Never supposed to happen. Indicates a bug somewhere.
@@ -350,7 +371,7 @@ export class SmoldotClientWithExtension {
     };
 
     this.#sendPort({ type: 'add-chain', chainId, chainSpecChainName })
-    this.#chains.set(chain, smoldotChain)
+    this.#chains.set(chain, { inner: smoldotChain, wellKnownName })
     return chain
   }
 
