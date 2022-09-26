@@ -4,8 +4,6 @@ import {
   AddChainOptions as SmoldotAddChainOptions,
   AddChainError,
   JsonRpcCallback,
-  JsonRpcDisabledError,
-  CrashError,
   start as startSmoldotClient,
 } from "@substrate/smoldot-light"
 
@@ -13,8 +11,6 @@ import {
   ToExtension,
   ToContentScript,
 } from "../background/protocol"
-
-// TODO: implement the chain info updates and database uploads
 
 export class SmoldotClientWithExtension {
   #client: SmoldotClient
