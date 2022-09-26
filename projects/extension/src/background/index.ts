@@ -103,12 +103,6 @@ interface LogKeeper {
   error: logStructure[]
 }
 
-const logKeeper: LogKeeper = {
-  all: [],
-  warn: [],
-  error: [],
-}
-
 // Listeners that must be notified when the `get chains()` getter would return a different value.
 const chainsChangedListeners: Set<() => void> = new Set()
 const notifyAllChainsChangedListeners = () => {
@@ -150,7 +144,7 @@ window.uiInterface = {
       smoldotCrashErrorChangedListeners.delete(listener)
     }
   },
-  disconnectTab: (tabId: number) => {
+  disconnectTab: (_tabId: number) => {
   },
   setChromeStorageLocalSetting: (obj: any) => {
     chrome.storage.local.set(obj, () => {
@@ -170,7 +164,11 @@ window.uiInterface = {
     return []
   },
   get logger() {
-    return logKeeper
+    return {
+      all: [],
+      warn: [],
+      error: [],
+    }
   },
   get smoldotCrashError() {
     return undefined
