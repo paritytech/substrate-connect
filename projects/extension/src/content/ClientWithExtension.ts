@@ -70,6 +70,8 @@ export class SmoldotClientWithExtension {
       }
     );
 
+    // Given that the chain name is user input, we have no guarantee that it is correct. The
+    // extension might report that it doesn't know about this well-known chain.
     if (!response.found)
       throw new AddChainError("Couldn't find well-known chain");
 
