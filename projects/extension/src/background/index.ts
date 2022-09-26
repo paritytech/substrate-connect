@@ -116,21 +116,6 @@ const notifyAllChainsChangedListeners = () => {
     }
   })
 }
-// Listeners that must be notified when the `get smoldotCrashError()` getter would return a
-// different value.
-const smoldotCrashErrorChangedListeners: Set<() => void> = new Set()
-const notifyAllSmoldotCrashErrorChangedListeners = () => {
-  smoldotCrashErrorChangedListeners.forEach((l) => {
-    try {
-      l()
-    } catch (e) {
-      console.error(
-        "Uncaught exception in onSmoldotCrashErrorChanged callback:",
-        e,
-      )
-    }
-  })
-}
 
 declare let window: Background
 window.uiInterface = {
@@ -140,13 +125,12 @@ window.uiInterface = {
       chainsChangedListeners.delete(listener)
     }
   },
-  onSmoldotCrashErrorChanged(listener) {
-    smoldotCrashErrorChangedListeners.add(listener)
-    return () => {
-      smoldotCrashErrorChangedListeners.delete(listener)
-    }
+  onSmoldotCrashErrorChanged(_listener) {
+    // TODO: remove
+    return () => {}
   },
   disconnectTab: (_tabId: number) => {
+    // TODO: remove
   },
   setChromeStorageLocalSetting: (obj: any) => {
     chrome.storage.local.set(obj, () => {
