@@ -19,12 +19,12 @@ import {
 export class SmoldotClientWithExtension {
   #client: SmoldotClient
   #port: chrome.runtime.Port
-  #chains: WeakMap<ChainWithExtension, SmoldotChain>
+  #chains: Map<ChainWithExtension, SmoldotChain>
   #nextRpcRqId: number
 
   constructor() {
     this.#nextRpcRqId = 0;
-    this.#chains = new WeakMap()
+    this.#chains = new Map()
     this.#port = chrome.runtime.connect()
     this.#client = startSmoldotClient({
       // Because we are in the context of a web page, trying to open TCP connections or non-secure
@@ -55,6 +55,19 @@ export class SmoldotClientWithExtension {
         }
       }
     })
+
+    // At a periodic interval, we ask each chain for its number of peers.
+    setInterval(() => {
+      for (const smoldotChain of this.#chains.values()) {
+        smoldotChain.sendJsonRpc(JSON.stringify({
+          jsonrpc: "2.0",
+          id: "health-check:" + this.#nextRpcRqId,
+          method: "system_health",
+          params: [],
+        }))
+        this.#nextRpcRqId += 1
+      }
+    }, 3000)
   }
 
   async addChain(
@@ -146,7 +159,6 @@ export class SmoldotClientWithExtension {
           parsed.id = JSON.parse(jsonRpcMessageId.slice("extern:".length))
           response = JSON.stringify(parsed)
         } else if (jsonRpcMessageId.startsWith("health-check:")) {
-          // TODO: send the periodic health requests
           // Store the health status in the locally-held information.
           const result: { peers: number } = parsed.result
           chainInfo.peers = result.peers
@@ -331,8 +343,9 @@ export class SmoldotClientWithExtension {
         }
       },
       remove() {
-        smoldotChain.remove();
+        smoldotChain.remove()
         client.#sendPort({ type: 'remove-chain', chainId })
+        client.#chains.delete(this)
       }
     };
 
