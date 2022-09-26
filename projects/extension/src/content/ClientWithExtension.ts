@@ -4,6 +4,7 @@ import {
   AddChainOptions as SmoldotAddChainOptions,
   AddChainError,
   JsonRpcCallback,
+  JsonRpcDisabledError,
   CrashError,
   start as startSmoldotClient,
 } from "@substrate/smoldot-light"
@@ -85,6 +86,34 @@ export class SmoldotClientWithExtension {
   }
 
   async #addChainWithOptions(options: SmoldotAddChainOptions): Promise<ChainWithExtension> {
+    // Note that `options.jsonRpcCallback` is always defined. Because we override the JSON-RPC
+    // callback, it doesn't make sense to give the possibility for the user to disable the
+    // JSON-RPC service.
+
+    const userJsonRpcCallback = options.jsonRpcCallback;
+    options.jsonRpcCallback = (response: string) => {
+      // Do the opposite of what is done when a JSON-RPC request arrives by removing the
+      // prefix in front of the response.
+      // Because smoldot always sends back correct answers, we can just assume that all the
+      // fields are present.
+      const parsed = JSON.parse(response);
+
+      // The JSON-RPC message might not contain an id if it is a notification.
+      if (parsed.id) {
+        // We know that the `id` is always a string, because all the requests that we send are
+        // rewritten to use a string `id`.
+        const jsonRpcMessageId = parsed.id as string
+
+        if (jsonRpcMessageId.startsWith("extern:")) {
+          parsed.id = JSON.parse(jsonRpcMessageId.slice("extern:".length))
+          response = JSON.stringify(parsed)
+        }
+      }
+
+      if (userJsonRpcCallback)
+        userJsonRpcCallback(response)
+    };
+
     const smoldotChain = await this.#client.addChain(options);
     const chainId = getRandomChainId();
     const client = this;
@@ -95,7 +124,14 @@ export class SmoldotClientWithExtension {
 
     const chain = {
       sendJsonRpc(rpc: string) {
-        return smoldotChain.sendJsonRpc(rpc)
+        // All incoming JSON-RPC requests are modified to add `extern:` in front of their id.
+        try {
+          const parsed = JSON.parse(rpc);
+          parsed.id = 'extern:' + JSON.stringify(parsed.id);
+          rpc = JSON.stringify(parsed)
+        } finally {
+          return smoldotChain.sendJsonRpc(rpc)
+        }
       },
       remove() {
         smoldotChain.remove();
