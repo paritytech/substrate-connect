@@ -30,9 +30,10 @@ export class SmoldotClientWithExtension {
       forbidTcp: true,
       forbidNonLocalWs: true,
 
+      // In order to be polite, we limit smoldot to 50% CPU consumption.
       cpuRateLimit: 0.5,
 
-      maxLogLevel: 3, // TODO:
+      maxLogLevel: 3,
       logCallback: (level, target, message) => {
         // These logs are shown directly in the web page's console.
         // The first parameter of the methods of `console` has some printf-like substitution
@@ -98,12 +99,10 @@ export class SmoldotClientWithExtension {
       },
       remove() {
         smoldotChain.remove();
-        // TODO: correct chainId
         client.#sendPort({ type: 'remove-chain', chainId })
       }
     };
 
-    // TODO: correct chainId
     this.#sendPort({ type: 'add-chain', chainId, chainSpecChainName })
     this.#chains.set(chain, smoldotChain)
     return chain
