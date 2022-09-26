@@ -57,16 +57,24 @@ export class SmoldotClientWithExtension {
     })
   }
 
-  async addChain(options: { chainSpec: string, jsonRpcCallback: JsonRpcCallback }): Promise<ChainWithExtension> {
-    // TODO: other options
+  async addChain(
+    options: { chainSpec: string, potentialRelayChains: ChainWithExtension[], jsonRpcCallback: JsonRpcCallback }
+  ): Promise<ChainWithExtension> {
+    const potentialRelayChainsAdj = options.potentialRelayChains
+      .filter((c) => this.#chains.has(c))
+      .map((c) => this.#chains.get(c)!);
+
     return this.#addChainWithOptions({
       chainSpec: options.chainSpec,
       jsonRpcCallback: options.jsonRpcCallback,
+      potentialRelayChains: potentialRelayChainsAdj,
       databaseContent: undefined,
     })
   }
 
-  async addWellKnownChain(options: { chainName: string, jsonRpcCallback: JsonRpcCallback }) {
+  async addWellKnownChain(
+    options: { chainName: string, potentialRelayChains: ChainWithExtension[], jsonRpcCallback: JsonRpcCallback }
+  ) {
     const response = await this.#sendPortThenWaitResponse(
       { type: 'get-well-known-chain', chainName: options.chainName },
       (msg: ToContentScript) => {
@@ -74,16 +82,20 @@ export class SmoldotClientWithExtension {
       }
     );
 
+    const potentialRelayChainsAdj = options.potentialRelayChains
+      .filter((c) => this.#chains.has(c))
+      .map((c) => this.#chains.get(c)!);
+
     // Given that the chain name is user input, we have no guarantee that it is correct. The
     // extension might report that it doesn't know about this well-known chain.
     if (!response.found)
       throw new AddChainError("Couldn't find well-known chain");
 
-    // TODO: other options
     return this.#addChainWithOptions({
       chainSpec: response.found.chainSpec,
       databaseContent: response.found.databaseContent,
-      jsonRpcCallback: options.jsonRpcCallback
+      jsonRpcCallback: options.jsonRpcCallback,
+      potentialRelayChains: potentialRelayChainsAdj,
     })
   }
 

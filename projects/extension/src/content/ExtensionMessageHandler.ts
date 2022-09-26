@@ -90,13 +90,16 @@ export class ExtensionMessageHandler {
           })
         };
 
+        const potentialRelayChains = data.type !== 'add-chain' ? [] :
+          data.potentialRelayChainIds.filter((c) => this.#chains.has(c)).map((c) => this.#chains.get(c)!);
+
         let createChainPromise;
         if (data.type === "add-well-known-chain") {
           createChainPromise = this.#clientWithExtension
-            .addWellKnownChain({ chainName: data.chainName, jsonRpcCallback });
+            .addWellKnownChain({ chainName: data.chainName, jsonRpcCallback, potentialRelayChains });
         } else {
           createChainPromise = this.#clientWithExtension
-            .addChain({ chainSpec: data.chainSpec, jsonRpcCallback });
+            .addChain({ chainSpec: data.chainSpec, jsonRpcCallback, potentialRelayChains });
         }
 
         createChainPromise
