@@ -103,7 +103,15 @@ interface LogKeeper {
   error: logStructure[]
 }
 
-const chains: Map<chrome.runtime.Port, Map<string, [string, number, number?]>> = new Map()
+const chains: Map<chrome.runtime.Port, {
+  tabId: number,
+  tabUrl: string,
+  chains: Map<string, {
+    chainName: string,
+    peers: number,
+    bestBlockNumber?: number
+  }>
+}> = new Map()
 
 // Listeners that must be notified when the `get chains()` getter would return a different value.
 const chainsChangedListeners: Set<() => void> = new Set()
@@ -147,16 +155,23 @@ window.uiInterface = {
     })
   },
   get chains(): ExposedChainConnection[] {
-    return Array.from(chains.values()).flatMap((list) => Array.from(list.entries())).map(([chainId, [chainSpecChainName, peers, bestBlockNumber]]) => {
-      // TODO: tab info
-      return {
-        chainId,
-        chainName: chainSpecChainName,
-        isSyncing: false,
-        peers,
-        bestBlockHeight: bestBlockNumber,
+    const out: ExposedChainConnection[] = [];
+    for (const tab of Array.from(chains.values())) {
+      for (const [chainId, info] of Array.from(tab.chains.entries())) {
+        out.push({
+          chainId,
+          chainName: info.chainName,
+          isSyncing: false,
+          peers: info.peers,
+          bestBlockHeight: info.bestBlockNumber,
+          tab: {
+            id: tab.tabId,
+            url: tab.tabUrl,
+          }
+        })
       }
-    })
+    }
+    return out
   },
   get logger() {
     return {
@@ -185,7 +200,11 @@ window.uiInterface = {
 // Whenever a tab starts using the substrate-connect extension, it will open a port. This is caught
 // here.
 chrome.runtime.onConnect.addListener((port) => {
-  chains.set(port, new Map())
+  chains.set(port, {
+    tabId: port.sender!.tab!.id!,
+    tabUrl: port.sender!.tab!.url!,
+    chains: new Map()
+  })
 
   port.onMessage.addListener((message: ToExtension) => {
     switch (message.type) {
@@ -210,15 +229,15 @@ chrome.runtime.onConnect.addListener((port) => {
       }
 
       case "add-chain": {
-        chains.get(port)!.set(message.chainId, [message.chainSpecChainName, 0])
+        chains.get(port)!.chains.set(message.chainId, { chainName: message.chainSpecChainName, peers: 0 })
         notifyAllChainsChangedListeners()
         break;
       }
 
       case "chain-info-update": {
-        const info = chains.get(port)!.get(message.chainId)!;
-        info[1] = message.peers;
-        info[2] = message.bestBlockNumber;
+        const info = chains.get(port)!.chains.get(message.chainId)!;
+        info.peers = message.peers;
+        info.bestBlockNumber = message.bestBlockNumber;
         notifyAllChainsChangedListeners()
         break;
       }
@@ -229,7 +248,7 @@ chrome.runtime.onConnect.addListener((port) => {
       }
 
       case "remove-chain": {
-        chains.get(port)!.delete(message.chainId)
+        chains.get(port)!.chains.delete(message.chainId)
         notifyAllChainsChangedListeners()
         break;
       }
