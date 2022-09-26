@@ -1,7 +1,7 @@
-import { ExtensionMessageRouter } from "./ExtensionMessageHandler"
+import { ExtensionMessageHandler } from "./ExtensionMessageHandler"
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 
-const router = new ExtensionMessageRouter()
+const router = new ExtensionMessageHandler()
 
 // inject as soon as possible the DOM element necessary for web pages to know that the extension
 // is available

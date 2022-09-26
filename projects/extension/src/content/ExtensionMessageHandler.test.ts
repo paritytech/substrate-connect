@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from "@jest/globals"
-import { ExtensionMessageRouter } from "./ExtensionMessageRouter"
+import { ExtensionMessageHandler } from "./ExtensionMessageHandler"
 import {
   ToExtension,
   ToApplication,
@@ -8,7 +8,7 @@ import {
 import { MockPort } from "../mocks"
 import { chrome } from "jest-chrome"
 
-let router: ExtensionMessageRouter
+let router: ExtensionMessageHandler
 let port: MockPort
 
 const waitForMessageToBePosted = (): Promise<null> => {
@@ -26,7 +26,7 @@ describe("Disconnect and incorrect cases", () => {
     chrome.runtime.connect.mockClear()
     port = new MockPort("test", 0)
     chrome.runtime.connect.mockImplementation(() => port)
-    router = new ExtensionMessageRouter()
+    router = new ExtensionMessageHandler()
     router.listen()
   })
 
@@ -73,7 +73,7 @@ describe("Connection and forward cases", () => {
     chrome.runtime.connect.mockClear()
     port = new MockPort("test", 0)
     chrome.runtime.connect.mockImplementation(() => port)
-    router = new ExtensionMessageRouter()
+    router = new ExtensionMessageHandler()
     router.listen()
   })
 

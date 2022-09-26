@@ -21,7 +21,7 @@ const sendMessage = (msg: ToApplication): void => {
  * This router exists because the app does not have access to the chrome APIs
  * to establish the connection with the background itself.
  */
-export class ExtensionMessageRouter {
+export class ExtensionMessageHandler {
   #port?: chrome.runtime.Port
   #chainIds: Set<string> = new Set()
 
