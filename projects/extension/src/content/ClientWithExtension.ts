@@ -67,14 +67,16 @@ export class SmoldotClientWithExtension {
 
     // At a periodic interval, we ask each well-known chain for its database.
     setInterval(() => {
-      for (const { inner } of this.#chains.values()) {
-        inner.sendJsonRpc(JSON.stringify({
-          jsonrpc: "2.0",
-          id: "database-content:" + this.#nextRpcRqId,
-          method: "chainHead_unstable_finalizedDatabase",
-          params: [],   // TODO: pass a max value? tricky
-        }))
-        this.#nextRpcRqId += 1
+      for (const { inner, wellKnownName } of this.#chains.values()) {
+        if (wellKnownName) {
+          inner.sendJsonRpc(JSON.stringify({
+            jsonrpc: "2.0",
+            id: "database-content:" + this.#nextRpcRqId,
+            method: "chainHead_unstable_finalizedDatabase",
+            params: [],   // TODO: pass a max value? tricky
+          }))
+          this.#nextRpcRqId += 1
+        }
       }
     }, 60000)
   }
