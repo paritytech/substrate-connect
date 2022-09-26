@@ -22,7 +22,25 @@ export class SmoldotClientWithExtension {
     this.#port = chrome.runtime.connect()
     this.#client = startSmoldotClient({
       cpuRateLimit: 0.5,
-      // TODO: more options
+      maxLogLevel: 3, // TODO:
+      logCallback: (level, target, message) => {
+        // These logs are shown directly in the web page's console.
+        // The first parameter of the methods of `console` has some printf-like substitution
+        // capabilities. We don't really need to use this, but not using it means that the logs
+        // might not get printed correctly if they contain `%`.
+        if (level <= 1) {
+          console.error("[substrate-connect-extension] [%s] %s", target, message);
+        } else if (level == 2) {
+          console.warn("[substrate-connect-extension] [%s] %s", target, message);
+        } else if (level == 3) {
+          console.info("[substrate-connect-extension] [%s] %s", target, message);
+        } else if (level == 4) {
+          console.debug("[substrate-connect-extension] [%s] %s", target, message);
+        } else {
+          console.trace("[substrate-connect-extension] [%s] %s", target, message);
+        }
+      }
+      // TODO: more options?
     })
   }
 
