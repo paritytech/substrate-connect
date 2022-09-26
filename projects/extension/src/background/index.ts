@@ -223,6 +223,11 @@ chrome.runtime.onConnect.addListener((port) => {
         break;
       }
 
+      case "database-content": {
+        // TODO: handle
+        break;
+      }
+
       case "remove-chain": {
         chains.get(port)!.delete(message.chainId)
         notifyAllChainsChangedListeners()
