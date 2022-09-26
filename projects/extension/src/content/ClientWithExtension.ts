@@ -216,7 +216,7 @@ export class SmoldotClientWithExtension {
           return;
         } else {
           // Never supposed to happen. Indicates a bug somewhere.
-          console.assert(false, parsed)
+          console.assert(false)
           return;
         }
       } else {
