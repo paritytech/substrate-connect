@@ -80,7 +80,7 @@ export class SmoldotClientWithExtension {
         }))
         this.#nextRpcRqId += 1
       }
-    }, 15000)
+    }, 60000)
   }
 
   async addChain(
