@@ -1,8 +1,12 @@
 import {
   ToApplication,
-  ToExtension,
 } from "@substrate/connect-extension-protocol"
 import checkMessage from "./checkMessage"
+
+import {
+  SmoldotClientWithExtension,
+  ChainWithExtension
+} from "./ClientWithExtension"
 
 const EXTENSION_PROVIDER_ORIGIN = "substrate-connect-client"
 
@@ -10,20 +14,9 @@ const sendMessage = (msg: ToApplication): void => {
   window.postMessage(msg, "*")
 }
 
-/* ExtensionMessageRouter is the part of the content script that listens for
- * messages that the ExtensionProvider in an app sends using `window.postMessage`.
- * It establishes a connection to the extension background on behalf of the app,
- * and forwards RPC requests for the app to the extension background.
- *
- * Conversely it listens for messages sent through the port from the extension
- * background and forwards them to the app via `window.postMessage`
- *
- * This router exists because the app does not have access to the chrome APIs
- * to establish the connection with the background itself.
- */
 export class ExtensionMessageHandler {
-  #port?: chrome.runtime.Port
-  #chainIds: Set<string> = new Set()
+  #clientWithExtension?: SmoldotClientWithExtension
+  #chains: Map<string, ChainWithExtension> = new Map()
 
   /**
    * connections returns the names of all the ports this `ExtensionMessageRouter`
@@ -32,7 +25,7 @@ export class ExtensionMessageHandler {
    * @returns A list of strings
    */
   get connections(): string[] {
-    return [...this.#chainIds.keys()]
+    return [...this.#chains.keys()]
   }
 
   /** listen starts listening for messages sent by an app.  */
@@ -57,41 +50,88 @@ export class ExtensionMessageHandler {
       return
     }
 
-    if (data.type === "add-well-known-chain" || data.type === "add-chain") {
-      this.#chainIds.add(data.chainId)
+    if (!this.#clientWithExtension) {
+      this.#clientWithExtension = new SmoldotClientWithExtension()
     }
 
-    if (data.type === "remove-chain") this.#chainIds.delete(data.chainId)
+    // TODO: must handles smoldot crashes
 
-    this.#postMessage(data)
-  }
+    switch (data.type) {
+      case "rpc": {
+        const chain = this.#chains.get(data.chainId);
 
-  #postMessage(message: ToExtension): void {
-    if (!this.#port) {
-      this.#port = chrome.runtime.connect()
+        // If the chainId is invalid, the message is silently discarded, as documented.
+        if (!chain)
+          return;
 
-      // forward any messages: extension -> page
-      this.#port.onMessage.addListener((data: ToApplication): void => {
-        if (data.type === "error") this.#chainIds.delete(data.chainId)
+        chain.sendJsonRpc(data.jsonRpcMessage)
+        break;
+      }
 
-        sendMessage(data)
-      })
-
-      // tell the page when the port disconnects
-      this.#port.onDisconnect.addListener(() => {
-        this.#chainIds.forEach((chainId) => {
+      case "add-chain":
+      case "add-well-known-chain": {
+        if (this.#chains.has(data.chainId)) {
           sendMessage({
             origin: "substrate-connect-extension",
-            chainId,
             type: "error",
-            errorMessage: "Lost communication with substrate-connect extension",
+            chainId: data.chainId,
+            errorMessage: "ChainId already in use",
           })
-        })
+          return;
+        }
 
-        this.#chainIds.clear()
-      })
+        const jsonRpcCallback = (jsonRpcMessage: string) => {
+          console.assert(this.#chains.has(data.chainId));
+          sendMessage({
+            origin: "substrate-connect-extension",
+            type: "rpc",
+            chainId: data.chainId,
+            jsonRpcMessage,
+          })
+        };
+
+        let createChainPromise;
+        if (data.type === "add-well-known-chain") {
+          createChainPromise = this.#clientWithExtension
+            .addWellKnownChain({ chainName: data.chainName, jsonRpcCallback });
+        } else {
+          createChainPromise = this.#clientWithExtension
+            .addChain({ chainSpec: data.chainSpec, jsonRpcCallback });
+        }
+
+        createChainPromise
+          .then((chain) => {
+            this.#chains.set(data.chainId, chain);
+            sendMessage({
+              origin: "substrate-connect-extension",
+              type: "chain-ready",
+              chainId: data.chainId,
+            })
+          },
+          (error) => {
+            sendMessage({
+              origin: "substrate-connect-extension",
+              type: "error",
+              chainId: data.chainId,
+              errorMessage: error.toString(),
+            })
+          })
+
+        break;
+      }
+
+      case "remove-chain": {
+        const chain = this.#chains.get(data.chainId);
+
+        // If the chainId is invalid, the message is silently discarded, as documented.
+        if (!chain)
+          return;
+
+        chain.remove();
+        this.#chains.delete(data.chainId);
+
+        break;
+      }
     }
-
-    this.#port.postMessage(message)
   }
 }
