@@ -240,12 +240,10 @@ chrome.runtime.onConnect.addListener((port) => {
       }
 
       case "add-chain": {
-        chains
-          .get(port)!
-          .chains.set(message.chainId, {
-            chainName: message.chainSpecChainName,
-            peers: 0,
-          })
+        chains.get(port)!.chains.set(message.chainId, {
+          chainName: message.chainSpecChainName,
+          peers: 0,
+        })
         notifyAllChainsChangedListeners()
         break
       }
