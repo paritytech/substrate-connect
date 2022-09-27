@@ -99,8 +99,6 @@ const Options: React.FunctionComponent = () => {
       const networks = new Map<string, NetworkTabProps>()
       bg.uiInterface.chains.forEach((chain) => {
         const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
-        console.log("cjhais", chain)
-        // if (!tab) return
 
         const network = networks.get(chainName)
         if (!network) {
