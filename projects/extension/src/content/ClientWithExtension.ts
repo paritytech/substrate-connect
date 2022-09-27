@@ -44,11 +44,11 @@ export class SmoldotClientWithExtension {
             target,
             message,
           )
-        } else if (level == 2) {
+        } else if (level === 2) {
           console.warn("[substrate-connect-extension] [%s] %s", target, message)
-        } else if (level == 3) {
+        } else if (level === 3) {
           console.info("[substrate-connect-extension] [%s] %s", target, message)
-        } else if (level == 4) {
+        } else if (level === 4) {
           console.debug(
             "[substrate-connect-extension] [%s] %s",
             target,
