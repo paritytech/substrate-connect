@@ -1,11 +1,9 @@
-import {
-  ToApplication,
-} from "@substrate/connect-extension-protocol"
+import { ToApplication } from "@substrate/connect-extension-protocol"
 import checkMessage from "./checkMessage"
 
 import {
   SmoldotClientWithExtension,
-  ChainWithExtension
+  ChainWithExtension,
 } from "./ClientWithExtension"
 
 const EXTENSION_PROVIDER_ORIGIN = "substrate-connect-client"
@@ -58,14 +56,13 @@ export class ExtensionMessageHandler {
 
     switch (data.type) {
       case "rpc": {
-        const chain = this.#chains.get(data.chainId);
+        const chain = this.#chains.get(data.chainId)
 
         // If the chainId is invalid, the message is silently discarded, as documented.
-        if (!chain)
-          return;
+        if (!chain) return
 
         chain.sendJsonRpc(data.jsonRpcMessage)
-        break;
+        break
       }
 
       case "add-chain":
@@ -77,34 +74,44 @@ export class ExtensionMessageHandler {
             chainId: data.chainId,
             errorMessage: "ChainId already in use",
           })
-          return;
+          return
         }
 
         const jsonRpcCallback = (jsonRpcMessage: string) => {
-          console.assert(this.#chains.has(data.chainId));
+          console.assert(this.#chains.has(data.chainId))
           sendMessage({
             origin: "substrate-connect-extension",
             type: "rpc",
             chainId: data.chainId,
             jsonRpcMessage,
           })
-        };
-
-        const potentialRelayChains = data.type !== 'add-chain' ? [] :
-          data.potentialRelayChainIds.filter((c) => this.#chains.has(c)).map((c) => this.#chains.get(c)!);
-
-        let createChainPromise;
-        if (data.type === "add-well-known-chain") {
-          createChainPromise = this.#clientWithExtension
-            .addWellKnownChain({ chainName: data.chainName, jsonRpcCallback, potentialRelayChains });
-        } else {
-          createChainPromise = this.#clientWithExtension
-            .addChain({ chainSpec: data.chainSpec, jsonRpcCallback, potentialRelayChains });
         }
 
-        createChainPromise
-          .then((chain) => {
-            this.#chains.set(data.chainId, chain);
+        const potentialRelayChains =
+          data.type !== "add-chain"
+            ? []
+            : data.potentialRelayChainIds
+                .filter((c) => this.#chains.has(c))
+                .map((c) => this.#chains.get(c)!)
+
+        let createChainPromise
+        if (data.type === "add-well-known-chain") {
+          createChainPromise = this.#clientWithExtension.addWellKnownChain({
+            chainName: data.chainName,
+            jsonRpcCallback,
+            potentialRelayChains,
+          })
+        } else {
+          createChainPromise = this.#clientWithExtension.addChain({
+            chainSpec: data.chainSpec,
+            jsonRpcCallback,
+            potentialRelayChains,
+          })
+        }
+
+        createChainPromise.then(
+          (chain) => {
+            this.#chains.set(data.chainId, chain)
             sendMessage({
               origin: "substrate-connect-extension",
               type: "chain-ready",
@@ -118,22 +125,22 @@ export class ExtensionMessageHandler {
               chainId: data.chainId,
               errorMessage: error.toString(),
             })
-          })
+          },
+        )
 
-        break;
+        break
       }
 
       case "remove-chain": {
-        const chain = this.#chains.get(data.chainId);
+        const chain = this.#chains.get(data.chainId)
 
         // If the chainId is invalid, the message is silently discarded, as documented.
-        if (!chain)
-          return;
+        if (!chain) return
 
-        chain.remove();
-        this.#chains.delete(data.chainId);
+        chain.remove()
+        this.#chains.delete(data.chainId)
 
-        break;
+        break
       }
     }
   }

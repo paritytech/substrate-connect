@@ -7,19 +7,19 @@ import {
   start as startSmoldotClient,
 } from "@substrate/smoldot-light"
 
-import {
-  ToExtension,
-  ToContentScript,
-} from "../background/protocol"
+import { ToExtension, ToContentScript } from "../background/protocol"
 
 export class SmoldotClientWithExtension {
   #client: SmoldotClient
   #port: chrome.runtime.Port
-  #chains: Map<ChainWithExtension, { inner: SmoldotChain, wellKnownName?: string }>
+  #chains: Map<
+    ChainWithExtension,
+    { inner: SmoldotChain; wellKnownName?: string }
+  >
   #nextRpcRqId: number
 
   constructor() {
-    this.#nextRpcRqId = 0;
+    this.#nextRpcRqId = 0
     this.#chains = new Map()
     this.#port = chrome.runtime.connect()
     this.#client = startSmoldotClient({
@@ -39,28 +39,42 @@ export class SmoldotClientWithExtension {
         // capabilities. We don't really need to use this, but not using it means that the logs
         // might not get printed correctly if they contain `%`.
         if (level <= 1) {
-          console.error("[substrate-connect-extension] [%s] %s", target, message);
+          console.error(
+            "[substrate-connect-extension] [%s] %s",
+            target,
+            message,
+          )
         } else if (level == 2) {
-          console.warn("[substrate-connect-extension] [%s] %s", target, message);
+          console.warn("[substrate-connect-extension] [%s] %s", target, message)
         } else if (level == 3) {
-          console.info("[substrate-connect-extension] [%s] %s", target, message);
+          console.info("[substrate-connect-extension] [%s] %s", target, message)
         } else if (level == 4) {
-          console.debug("[substrate-connect-extension] [%s] %s", target, message);
+          console.debug(
+            "[substrate-connect-extension] [%s] %s",
+            target,
+            message,
+          )
         } else {
-          console.trace("[substrate-connect-extension] [%s] %s", target, message);
+          console.trace(
+            "[substrate-connect-extension] [%s] %s",
+            target,
+            message,
+          )
         }
-      }
+      },
     })
 
     // At a periodic interval, we ask each chain for its number of peers.
     setInterval(() => {
       for (const { inner } of this.#chains.values()) {
-        inner.sendJsonRpc(JSON.stringify({
-          jsonrpc: "2.0",
-          id: "health-check:" + this.#nextRpcRqId,
-          method: "system_health",
-          params: [],
-        }))
+        inner.sendJsonRpc(
+          JSON.stringify({
+            jsonrpc: "2.0",
+            id: "health-check:" + this.#nextRpcRqId,
+            method: "system_health",
+            params: [],
+          }),
+        )
         this.#nextRpcRqId += 1
       }
     }, 3000)
@@ -69,24 +83,28 @@ export class SmoldotClientWithExtension {
     setInterval(() => {
       for (const { inner, wellKnownName } of this.#chains.values()) {
         if (wellKnownName) {
-          inner.sendJsonRpc(JSON.stringify({
-            jsonrpc: "2.0",
-            id: "database-content:" + this.#nextRpcRqId,
-            method: "chainHead_unstable_finalizedDatabase",
-            params: [],   // TODO: pass a max value? tricky
-          }))
+          inner.sendJsonRpc(
+            JSON.stringify({
+              jsonrpc: "2.0",
+              id: "database-content:" + this.#nextRpcRqId,
+              method: "chainHead_unstable_finalizedDatabase",
+              params: [], // TODO: pass a max value? tricky
+            }),
+          )
           this.#nextRpcRqId += 1
         }
       }
     }, 60000)
   }
 
-  async addChain(
-    options: { chainSpec: string, potentialRelayChains: ChainWithExtension[], jsonRpcCallback: JsonRpcCallback }
-  ): Promise<ChainWithExtension> {
+  async addChain(options: {
+    chainSpec: string
+    potentialRelayChains: ChainWithExtension[]
+    jsonRpcCallback: JsonRpcCallback
+  }): Promise<ChainWithExtension> {
     const potentialRelayChainsAdj = options.potentialRelayChains
       .filter((c) => this.#chains.has(c))
-      .map((c) => this.#chains.get(c)!.inner);
+      .map((c) => this.#chains.get(c)!.inner)
 
     return this.#addChainWithOptions({
       chainSpec: options.chainSpec,
@@ -96,34 +114,47 @@ export class SmoldotClientWithExtension {
     })
   }
 
-  async addWellKnownChain(
-    options: { chainName: string, potentialRelayChains: ChainWithExtension[], jsonRpcCallback: JsonRpcCallback }
-  ) {
+  async addWellKnownChain(options: {
+    chainName: string
+    potentialRelayChains: ChainWithExtension[]
+    jsonRpcCallback: JsonRpcCallback
+  }) {
     const response = await this.#sendPortThenWaitResponse(
-      { type: 'get-well-known-chain', chainName: options.chainName },
+      { type: "get-well-known-chain", chainName: options.chainName },
       (msg: ToContentScript) => {
-        if (msg.type === 'get-well-known-chain' && msg.chainName === options.chainName) { return msg }
-      }
-    );
+        if (
+          msg.type === "get-well-known-chain" &&
+          msg.chainName === options.chainName
+        ) {
+          return msg
+        }
+      },
+    )
 
     const potentialRelayChainsAdj = options.potentialRelayChains
       .filter((c) => this.#chains.has(c))
-      .map((c) => this.#chains.get(c)!.inner);
+      .map((c) => this.#chains.get(c)!.inner)
 
     // Given that the chain name is user input, we have no guarantee that it is correct. The
     // extension might report that it doesn't know about this well-known chain.
     if (!response.found)
-      throw new AddChainError("Couldn't find well-known chain");
+      throw new AddChainError("Couldn't find well-known chain")
 
-    return this.#addChainWithOptions({
-      chainSpec: response.found.chainSpec,
-      databaseContent: response.found.databaseContent,
-      jsonRpcCallback: options.jsonRpcCallback,
-      potentialRelayChains: potentialRelayChainsAdj,
-    }, options.chainName)
+    return this.#addChainWithOptions(
+      {
+        chainSpec: response.found.chainSpec,
+        databaseContent: response.found.databaseContent,
+        jsonRpcCallback: options.jsonRpcCallback,
+        potentialRelayChains: potentialRelayChainsAdj,
+      },
+      options.chainName,
+    )
   }
 
-  async #addChainWithOptions(options: SmoldotAddChainOptions, wellKnownName?: string): Promise<ChainWithExtension> {
+  async #addChainWithOptions(
+    options: SmoldotAddChainOptions,
+    wellKnownName?: string,
+  ): Promise<ChainWithExtension> {
     // Note that `options.jsonRpcCallback` is always defined. Because we override the JSON-RPC
     // callback, it doesn't make sense to give the possibility for the user to disable the
     // JSON-RPC service.
@@ -150,15 +181,15 @@ export class SmoldotClientWithExtension {
     } = {
       isSyncing: false,
       peers: 0,
-    };
+    }
 
-    const userJsonRpcCallback = options.jsonRpcCallback;
+    const userJsonRpcCallback = options.jsonRpcCallback
     options.jsonRpcCallback = (response: string) => {
       // Do the opposite of what is done when a JSON-RPC request arrives by removing the
       // prefix in front of the response.
       // Because smoldot always sends back correct answers, we can just assume that all the
       // fields are present.
-      const parsed = JSON.parse(response);
+      const parsed = JSON.parse(response)
 
       // The JSON-RPC message might not contain an id if it is a notification.
       if (parsed.id) {
@@ -174,17 +205,17 @@ export class SmoldotClientWithExtension {
           const result: { peers: number } = parsed.result
           chainInfo.peers = result.peers
           this.#sendPort({
-            type: 'chain-info-update',
+            type: "chain-info-update",
             chainId,
             bestBlockNumber: chainInfo.bestBlockHeight,
-            peers: chainInfo.peers
+            peers: chainInfo.peers,
           })
           return
         } else if (jsonRpcMessageId.startsWith("ready-sub:")) {
           chainInfo.readySubscriptionId = parsed.result
-          return;
+          return
         } else if (jsonRpcMessageId.startsWith("block-unpin:")) {
-          return;
+          return
         } else if (jsonRpcMessageId.startsWith("best-block-header:")) {
           // We might receive responses to header requests concerning blocks that were but are
           // no longer the best block of the chain. Ignore these responses.
@@ -193,33 +224,31 @@ export class SmoldotClientWithExtension {
             // The RPC call might return `null` if the subscription is dead.
             if (parsed.result) {
               try {
-                chainInfo.bestBlockHeight = headerToHeight(
-                  parsed.result,
-                )
+                chainInfo.bestBlockHeight = headerToHeight(parsed.result)
               } catch (error) {
                 delete chainInfo.bestBlockHeight
               }
               this.#sendPort({
-                type: 'chain-info-update',
+                type: "chain-info-update",
                 chainId,
                 bestBlockNumber: chainInfo.bestBlockHeight,
-                peers: chainInfo.peers
+                peers: chainInfo.peers,
               })
             }
           }
-          return;
+          return
         } else if (jsonRpcMessageId.startsWith("database-content:")) {
-          console.assert(wellKnownName);
+          console.assert(wellKnownName)
           this.#sendPort({
-            type: 'database-content',
+            type: "database-content",
             chainName: wellKnownName!,
             databaseContent: parsed.result as string,
           })
-          return;
+          return
         } else {
           // Never supposed to happen. Indicates a bug somewhere.
           console.assert(false)
-          return;
+          return
         }
       } else {
         if (
@@ -233,27 +262,31 @@ export class SmoldotClientWithExtension {
               // The chain is now in sync and has downloaded the runtime.
               chainInfo.isSyncing = false
               chainInfo.finalizedBlockHashHex =
-              parsed.params.result.finalizedBlockHash
+                parsed.params.result.finalizedBlockHash
 
               // Immediately send a single health request to the chain.
-              smoldotChain.sendJsonRpc(JSON.stringify({
-                jsonrpc: "2.0",
-                id: "health-check:" + this.#nextRpcRqId,
-                method: "system_health",
-                params: [],
-              }))
+              smoldotChain.sendJsonRpc(
+                JSON.stringify({
+                  jsonrpc: "2.0",
+                  id: "health-check:" + this.#nextRpcRqId,
+                  method: "system_health",
+                  params: [],
+                }),
+              )
               this.#nextRpcRqId += 1
 
               // Also immediately request the header of the finalized block.
-              smoldotChain.sendJsonRpc(JSON.stringify({
-                jsonrpc: "2.0",
-                id: "best-block-header:" + this.#nextRpcRqId,
-                method: "chainHead_unstable_header",
-                params: [
-                  chainInfo.readySubscriptionId,
-                  chainInfo.finalizedBlockHashHex,
-                ],
-              }))
+              smoldotChain.sendJsonRpc(
+                JSON.stringify({
+                  jsonrpc: "2.0",
+                  id: "best-block-header:" + this.#nextRpcRqId,
+                  method: "chainHead_unstable_header",
+                  params: [
+                    chainInfo.readySubscriptionId,
+                    chainInfo.finalizedBlockHashHex,
+                  ],
+                }),
+              )
               chainInfo.bestBlockHeaderRequestId =
                 "best-block-header:" + this.#nextRpcRqId
               this.#nextRpcRqId += 1
@@ -268,32 +301,36 @@ export class SmoldotClientWithExtension {
               delete chainInfo.finalizedBlockHashHex
               delete chainInfo.bestBlockHeight
               this.#sendPort({
-                type: 'chain-info-update',
+                type: "chain-info-update",
                 chainId,
                 bestBlockNumber: chainInfo.bestBlockHeight,
-                peers: chainInfo.peers
+                peers: chainInfo.peers,
               })
-              smoldotChain.sendJsonRpc(JSON.stringify({
-                jsonrpc: "2.0",
-                id: "ready-sub:" + this.#nextRpcRqId,
-                method: "chainHead_unstable_follow",
-                params: [true],
-              }))
+              smoldotChain.sendJsonRpc(
+                JSON.stringify({
+                  jsonrpc: "2.0",
+                  id: "ready-sub:" + this.#nextRpcRqId,
+                  method: "chainHead_unstable_follow",
+                  params: [true],
+                }),
+              )
               this.#nextRpcRqId += 1
               return
             }
             case "bestBlockChanged": {
               // The best block has changed. Request the header of this new best block in
               // order to know its height.
-              smoldotChain.sendJsonRpc(JSON.stringify({
-                jsonrpc: "2.0",
-                id: "best-block-header:" + this.#nextRpcRqId,
-                method: "chainHead_unstable_header",
-                params: [
-                  chainInfo.readySubscriptionId,
-                  parsed.params.result.bestBlockHash,
-                ],
-              }))
+              smoldotChain.sendJsonRpc(
+                JSON.stringify({
+                  jsonrpc: "2.0",
+                  id: "best-block-header:" + this.#nextRpcRqId,
+                  method: "chainHead_unstable_header",
+                  params: [
+                    chainInfo.readySubscriptionId,
+                    parsed.params.result.bestBlockHash,
+                  ],
+                }),
+              )
               chainInfo.bestBlockHeaderRequestId =
                 "best-block-header:" + this.#nextRpcRqId
               this.#nextRpcRqId += 1
@@ -302,10 +339,10 @@ export class SmoldotClientWithExtension {
             case "finalized": {
               // When one or more new blocks get finalized, we unpin all blocks except for
               // the new current finalized.
-              let finalized = parsed.params.result
-                .finalizedBlocksHashes as [string]
-              let pruned = parsed.params.result
-                .prunedBlocksHashes as [string]
+              let finalized = parsed.params.result.finalizedBlocksHashes as [
+                string,
+              ]
+              let pruned = parsed.params.result.prunedBlocksHashes as [string]
               let newCurrentFinalized = finalized.pop()
               ;[
                 chainInfo.finalizedBlockHashHex,
@@ -314,12 +351,14 @@ export class SmoldotClientWithExtension {
               ].forEach((blockHash) => {
                 // `chain.finalizedBlockHashHex` can be undefined
                 if (blockHash === undefined) return
-                smoldotChain.sendJsonRpc(JSON.stringify({
-                  jsonrpc: "2.0",
-                  id: "block-unpin:" + this.#nextRpcRqId,
-                  method: "chainHead_unstable_unpin",
-                  params: [chainInfo.readySubscriptionId, blockHash],
-                }))
+                smoldotChain.sendJsonRpc(
+                  JSON.stringify({
+                    jsonrpc: "2.0",
+                    id: "block-unpin:" + this.#nextRpcRqId,
+                    method: "chainHead_unstable_unpin",
+                    params: [chainInfo.readySubscriptionId, blockHash],
+                  }),
+                )
                 this.#nextRpcRqId += 1
                 chainInfo.finalizedBlockHashHex = newCurrentFinalized
               })
@@ -329,33 +368,34 @@ export class SmoldotClientWithExtension {
         }
       }
 
-      if (userJsonRpcCallback)
-        userJsonRpcCallback(response)
-    };
+      if (userJsonRpcCallback) userJsonRpcCallback(response)
+    }
 
-    const smoldotChain = await this.#client.addChain(options);
-  
-    smoldotChain.sendJsonRpc(JSON.stringify({
-      jsonrpc: "2.0",
-      id: "ready-sub:" + this.#nextRpcRqId,
-      method: "chainHead_unstable_follow",
-      params: [false],
-    }))
+    const smoldotChain = await this.#client.addChain(options)
+
+    smoldotChain.sendJsonRpc(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        id: "ready-sub:" + this.#nextRpcRqId,
+        method: "chainHead_unstable_follow",
+        params: [false],
+      }),
+    )
     this.#nextRpcRqId += 1
-  
-    const chainId = getRandomChainId();
-    const client = this;
+
+    const chainId = getRandomChainId()
+    const client = this
 
     // Given that smoldot has managed to add the chain, it means that the chain spec should
     // successfully parse.
-    const chainSpecChainName = JSON.parse(options.chainSpec)!.name as string;
+    const chainSpecChainName = JSON.parse(options.chainSpec)!.name as string
 
     const chain = {
       sendJsonRpc(rpc: string) {
         // All incoming JSON-RPC requests are modified to add `extern:` in front of their id.
         try {
-          const parsed = JSON.parse(rpc);
-          parsed.id = 'extern:' + JSON.stringify(parsed.id);
+          const parsed = JSON.parse(rpc)
+          parsed.id = "extern:" + JSON.stringify(parsed.id)
           rpc = JSON.stringify(parsed)
         } finally {
           return smoldotChain.sendJsonRpc(rpc)
@@ -363,12 +403,12 @@ export class SmoldotClientWithExtension {
       },
       remove() {
         smoldotChain.remove()
-        client.#sendPort({ type: 'remove-chain', chainId })
+        client.#sendPort({ type: "remove-chain", chainId })
         client.#chains.delete(this)
-      }
-    };
+      },
+    }
 
-    this.#sendPort({ type: 'add-chain', chainId, chainSpecChainName })
+    this.#sendPort({ type: "add-chain", chainId, chainSpecChainName })
     this.#chains.set(chain, { inner: smoldotChain, wellKnownName })
     return chain
   }
@@ -389,16 +429,16 @@ export class SmoldotClientWithExtension {
   // response, the closure should return `undefined`.
   async #sendPortThenWaitResponse<T>(
     message: ToExtension,
-    responseFilter: (message: ToContentScript) => T | undefined
+    responseFilter: (message: ToContentScript) => T | undefined,
   ): Promise<T> {
     return new Promise((resolve) => {
       const listener = (msg: ToContentScript) => {
-        const filtered = responseFilter(msg);
+        const filtered = responseFilter(msg)
         if (filtered) {
-          resolve(filtered);
-          this.#port.onMessage.removeListener(listener);
+          resolve(filtered)
+          this.#port.onMessage.removeListener(listener)
         }
-      };
+      }
 
       this.#port.onMessage.addListener(listener)
       this.#port.postMessage(message)

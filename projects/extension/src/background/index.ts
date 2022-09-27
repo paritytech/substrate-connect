@@ -6,10 +6,7 @@ import ksmcc3 from "../../public/assets/ksmcc3.json"
 import polkadot from "../../public/assets/polkadot.json"
 import rococo_v2_2 from "../../public/assets/rococo_v2_2.json"
 
-import {
-  ToContentScript,
-  ToExtension,
-} from './protocol'
+import { ToContentScript, ToExtension } from "./protocol"
 
 // Loads the well-known chains bootnodes from the local storage and returns the well-known
 // chains.
@@ -103,15 +100,21 @@ interface LogKeeper {
   error: logStructure[]
 }
 
-const chains: Map<chrome.runtime.Port, {
-  tabId: number,
-  tabUrl: string,
-  chains: Map<string, {
-    chainName: string,
-    peers: number,
-    bestBlockNumber?: number
-  }>
-}> = new Map()
+const chains: Map<
+  chrome.runtime.Port,
+  {
+    tabId: number
+    tabUrl: string
+    chains: Map<
+      string,
+      {
+        chainName: string
+        peers: number
+        bestBlockNumber?: number
+      }
+    >
+  }
+> = new Map()
 
 // Listeners that must be notified when the `get chains()` getter would return a different value.
 const chainsChangedListeners: Set<() => void> = new Set()
@@ -155,7 +158,7 @@ window.uiInterface = {
     })
   },
   get chains(): ExposedChainConnection[] {
-    const out: ExposedChainConnection[] = [];
+    const out: ExposedChainConnection[] = []
     for (const tab of Array.from(chains.values())) {
       for (const [chainId, info] of Array.from(tab.chains.entries())) {
         out.push({
@@ -167,7 +170,7 @@ window.uiInterface = {
           tab: {
             id: tab.tabId,
             url: tab.tabUrl,
-          }
+          },
         })
       }
     }
@@ -203,7 +206,7 @@ chrome.runtime.onConnect.addListener((port) => {
   chains.set(port, {
     tabId: port.sender!.tab!.id!,
     tabUrl: port.sender!.tab!.url!,
-    chains: new Map()
+    chains: new Map(),
   })
 
   port.onMessage.addListener((message: ToExtension) => {
@@ -211,51 +214,61 @@ chrome.runtime.onConnect.addListener((port) => {
       case "get-well-known-chain": {
         // TODO: don't load the list every time
         loadWellKnownChains().then((map) => {
-          const chainSpec = map.get(message.chainName);
+          const chainSpec = map.get(message.chainName)
           if (chainSpec) {
-            chrome.storage.local.get([message.chainName], (storageGetResult) => {
-              const databaseContent = storageGetResult[message.chainName] as string;
-              port.postMessage({
-                type: "get-well-known-chain",
-                chainName: message.chainName,
-                found: { chainSpec, databaseContent }
-              } as ToContentScript)
-            })
-          } else { 
+            chrome.storage.local.get(
+              [message.chainName],
+              (storageGetResult) => {
+                const databaseContent = storageGetResult[
+                  message.chainName
+                ] as string
+                port.postMessage({
+                  type: "get-well-known-chain",
+                  chainName: message.chainName,
+                  found: { chainSpec, databaseContent },
+                } as ToContentScript)
+              },
+            )
+          } else {
             port.postMessage({
               type: "get-well-known-chain",
               chainName: message.chainName,
             } as ToContentScript)
           }
         })
-        break;
+        break
       }
 
       case "add-chain": {
-        chains.get(port)!.chains.set(message.chainId, { chainName: message.chainSpecChainName, peers: 0 })
+        chains
+          .get(port)!
+          .chains.set(message.chainId, {
+            chainName: message.chainSpecChainName,
+            peers: 0,
+          })
         notifyAllChainsChangedListeners()
-        break;
+        break
       }
 
       case "chain-info-update": {
-        const info = chains.get(port)!.chains.get(message.chainId)!;
-        info.peers = message.peers;
-        info.bestBlockNumber = message.bestBlockNumber;
+        const info = chains.get(port)!.chains.get(message.chainId)!
+        info.peers = message.peers
+        info.bestBlockNumber = message.bestBlockNumber
         notifyAllChainsChangedListeners()
-        break;
+        break
       }
 
       case "database-content": {
         chrome.storage.local.set({
           [message.chainName]: message.databaseContent,
         })
-        break;
+        break
       }
 
       case "remove-chain": {
         chains.get(port)!.chains.delete(message.chainId)
         notifyAllChainsChangedListeners()
-        break;
+        break
       }
     }
   })
