@@ -41,7 +41,7 @@ const NetworkContent = ({ network, health, apps }: NetworkContentProps) => {
       </div>
       <div className="flex flex-row py-2">
         <div className="basis-1/5 font-bold">Apps</div>
-        <div className="basis-4/5">{apps.length}:</div>
+        <div className="basis-4/5">{apps.length}</div>
       </div>
       <div className="flex flex-row pb-2">
         <div className="basis-1/5"></div>
@@ -74,7 +74,9 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
               <IconWeb3>{name.toLowerCase()}</IconWeb3>
               <div className="txt-xl cap">
                 {name}
-                <span className="pl-2 text-[#616161]">({apps.length})</span>
+                <span className="pl-2 text-[#616161]">
+                  {apps.length ? "(" + apps.length + ")" : ""}
+                </span>
               </div>
             </div>
           </div>,

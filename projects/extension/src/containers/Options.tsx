@@ -99,7 +99,8 @@ const Options: React.FunctionComponent = () => {
       const networks = new Map<string, NetworkTabProps>()
       bg.uiInterface.chains.forEach((chain) => {
         const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
-        if (!tab) return
+        console.log("cjhais", chain)
+        // if (!tab) return
 
         const network = networks.get(chainName)
         if (!network) {
@@ -111,11 +112,11 @@ const Options: React.FunctionComponent = () => {
               status: "connected",
               bestBlockHeight,
             },
-            apps: [{ name: tab.url, url: tab.url }],
+            apps: tab ? [{ name: tab.url, url: tab.url }] : [],
           })
         }
 
-        network.apps.push({ name: tab.url, url: tab.url })
+        tab && network.apps.push({ name: tab.url, url: tab.url })
       })
       setNetworks([...networks.values()])
     }
