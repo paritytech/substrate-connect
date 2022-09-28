@@ -114,7 +114,7 @@ const Options: React.FunctionComponent = () => {
           })
         }
 
-        tab && network.apps.push({ name: tab.url, url: tab.url })
+        if (tab) network.apps.push({ name: tab.url, url: tab.url })
       })
       setNetworks([...networks.values()])
     }
