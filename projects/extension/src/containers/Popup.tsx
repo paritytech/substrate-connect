@@ -12,7 +12,6 @@ import { Accordion, Logo } from "../components"
 import { Background } from "../background"
 import IconWeb3 from "../components/IconWeb3"
 import { BraveModal } from "../components/BraveModal"
-import { ClientError } from "../components/ClientError"
 
 interface PopupChain {
   chainName: string
@@ -33,8 +32,6 @@ const Popup: FunctionComponent = () => {
 
   const [bg, setBg] = useState<Background | undefined>()
   const [showModal, setShowModal] = useState<boolean>(false)
-
-  const [clientError, setClientError] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     chrome.runtime.getBackgroundPage((backgroundPage) => {
@@ -91,15 +88,10 @@ const Popup: FunctionComponent = () => {
     })
 
     const cb = bg.uiInterface.onChainsChanged(refresh)
-    const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(() =>
-      setClientError(bg.uiInterface.smoldotCrashError),
-    )
-    setClientError(bg.uiInterface.smoldotCrashError)
     refresh()
 
     return () => {
       cb()
-      errCb()
     }
   }, [bg, refresh])
 

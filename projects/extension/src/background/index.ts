@@ -67,7 +67,6 @@ const loadWellKnownChains = (): Promise<Map<string, string>> => {
 export interface Background extends Window {
   uiInterface: {
     onChainsChanged: (listener: () => void) => () => void
-    onSmoldotCrashErrorChanged: (listener: () => void) => () => void
     setChromeStorageLocalSetting: (obj: any) => void
     getChromeStorageLocalSetting(
       setting: string,
@@ -77,10 +76,7 @@ export interface Background extends Window {
     // might have changed.
     get chains(): ExposedChainConnection[]
     get logger(): LogKeeper
-    // If smoldot has crashed, contains a string containing a crash message.
-    // Use `onSmoldotCrashErrorChanged` to register a callback that is called when this crash
-    // message might have changed.
-    get smoldotCrashError(): string | undefined
+
     // Get the bootnodes of the wellKnownChains
     get wellKnownChainBootnodes(): Promise<Record<string, string[]>>
   }
@@ -135,10 +131,6 @@ window.uiInterface = {
       chainsChangedListeners.delete(listener)
     }
   },
-  onSmoldotCrashErrorChanged(_listener) {
-    // TODO: remove
-    return () => {}
-  },
   setChromeStorageLocalSetting: (obj: any) => {
     chrome.storage.local.set(obj, () => {
       if (chrome.runtime.lastError) {
@@ -179,9 +171,7 @@ window.uiInterface = {
       error: [],
     }
   },
-  get smoldotCrashError() {
-    return undefined
-  },
+
   get wellKnownChainBootnodes() {
     return loadWellKnownChains().then((list) => {
       let output: Record<string, string[]> = {}
