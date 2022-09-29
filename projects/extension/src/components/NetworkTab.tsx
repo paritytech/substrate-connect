@@ -3,7 +3,7 @@ import { Accordion } from "."
 
 import { NetworkTabProps, App, OptionsNetworkTabHealthContent } from "../types"
 import "../main.css"
-import IconWeb3 from "./IconWeb3"
+import { IconWeb3 } from "./IconWeb3"
 
 interface NetworkContentProps {
   health?: OptionsNetworkTabHealthContent
@@ -66,7 +66,7 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
     <NetworkContent health={health} apps={apps} network={name} />,
   ]
   return (
-    <div className="flex w-full max-w-2xl mb-3 items-baseline">
+    <div className="flex w-full mb-3 items-baseline font-roboto">
       <Accordion
         titles={[
           <div className="flex rounded-lg">
@@ -81,6 +81,7 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
             </div>
           </div>,
         ]}
+        origin={"options"}
         contents={contents}
         showTitleIcon={!!contents.length}
       />

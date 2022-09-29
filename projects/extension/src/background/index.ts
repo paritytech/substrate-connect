@@ -67,8 +67,6 @@ const loadWellKnownChains = (): Promise<Map<string, string>> => {
 export interface Background extends Window {
   uiInterface: {
     onChainsChanged: (listener: () => void) => () => void
-    onSmoldotCrashErrorChanged: (listener: () => void) => () => void
-    disconnectTab: (tabId: number) => void
     setChromeStorageLocalSetting: (obj: any) => void
     getChromeStorageLocalSetting(
       setting: string,
@@ -77,27 +75,9 @@ export interface Background extends Window {
     // Use `onChainsChanged` to register a callback that is called when this list or its content
     // might have changed.
     get chains(): ExposedChainConnection[]
-    get logger(): LogKeeper
-    // If smoldot has crashed, contains a string containing a crash message.
-    // Use `onSmoldotCrashErrorChanged` to register a callback that is called when this crash
-    // message might have changed.
-    get smoldotCrashError(): string | undefined
     // Get the bootnodes of the wellKnownChains
     get wellKnownChainBootnodes(): Promise<Record<string, string[]>>
   }
-}
-
-interface logStructure {
-  unix_timestamp: number
-  level: number
-  target: string
-  message: string
-}
-
-interface LogKeeper {
-  all: logStructure[]
-  warn: logStructure[]
-  error: logStructure[]
 }
 
 const chains: Map<
@@ -136,13 +116,6 @@ window.uiInterface = {
       chainsChangedListeners.delete(listener)
     }
   },
-  onSmoldotCrashErrorChanged(_listener) {
-    // TODO: remove
-    return () => {}
-  },
-  disconnectTab: (_tabId: number) => {
-    // TODO: remove
-  },
   setChromeStorageLocalSetting: (obj: any) => {
     chrome.storage.local.set(obj, () => {
       if (chrome.runtime.lastError) {
@@ -176,16 +149,7 @@ window.uiInterface = {
     }
     return out
   },
-  get logger() {
-    return {
-      all: [],
-      warn: [],
-      error: [],
-    }
-  },
-  get smoldotCrashError() {
-    return undefined
-  },
+
   get wellKnownChainBootnodes() {
     return loadWellKnownChains().then((list) => {
       let output: Record<string, string[]> = {}

@@ -3,16 +3,12 @@ import React, {
   ReactNode,
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from "react"
 
-import { MdOutlineSettings, MdOutlineEast, MdLinkOff } from "react-icons/md"
-import { Accordion, Logo } from "../components"
+import { MdOutlineSettings, MdOutlineEast } from "react-icons/md"
+import { Accordion, Logo, IconWeb3, BraveModal } from "../components"
 import { Background } from "../background"
-import IconWeb3 from "../components/IconWeb3"
-import { BraveModal } from "../components/BraveModal"
-import { ClientError } from "../components/ClientError"
 
 interface PopupChain {
   chainName: string
@@ -29,13 +25,10 @@ interface ChainDetails {
 }
 
 const Popup: FunctionComponent = () => {
-  const disconnectTab = useRef<(tabId: number) => void>((_: number) => {})
   const [connChains, setConnChains] = useState<PopupChain[] | undefined>()
 
   const [bg, setBg] = useState<Background | undefined>()
   const [showModal, setShowModal] = useState<boolean>(false)
-
-  const [clientError, setClientError] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     chrome.runtime.getBackgroundPage((backgroundPage) => {
@@ -91,17 +84,11 @@ const Popup: FunctionComponent = () => {
       setShowModal(isBrave && !braveSetting)
     })
 
-    disconnectTab.current = bg.uiInterface.disconnectTab
     const cb = bg.uiInterface.onChainsChanged(refresh)
-    const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(() =>
-      setClientError(bg.uiInterface.smoldotCrashError),
-    )
-    setClientError(bg.uiInterface.smoldotCrashError)
     refresh()
 
     return () => {
       cb()
-      errCb()
     }
   }, [bg, refresh])
 
@@ -119,16 +106,13 @@ const Popup: FunctionComponent = () => {
     )
   }
 
-  const onDisconnect = (tabId: number): void => {
-    disconnectTab.current(tabId)
-    refresh()
-  }
+  console.log("connCjains", connChains)
 
   return (
     <>
       <BraveModal show={showModal} />
       <main className="w-80">
-        <header className="mt-3 mx-6 flex justify-between border-b border-neutral-200 pt-1.5 pb-4 leading-4">
+        <header className="mt-3 mx-8 flex justify-between border-b border-neutral-200 pt-1.5 pb-4 leading-4">
           <Logo textSize="xl" cName={"leading-4"} />
           <div className="tooltip">
             <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
@@ -140,81 +124,76 @@ const Popup: FunctionComponent = () => {
             />
           </div>
         </header>
-        <div className="pb-3.5">
-          {clientError && <ClientError error={clientError} />}
-          {connChains?.map((w) => {
-            if (w?.details?.length === 1 && !w?.details[0].tabId)
-              return (
-                <>
-                  <div className="block mt-4">
-                    <div key={w.chainName} className="pl-6 flex text-lg">
-                      {networkIcon(w.chainName)}
+        <div className={!connChains?.length ? "" : "pb-3.5"}>
+          {!connChains?.length ? (
+            <div className="mx-8 my-8">
+              The extension isn't connected to any network.
+            </div>
+          ) : (
+            connChains?.map((w) => {
+              if (w?.details?.length === 1 && !w?.details[0].tabId)
+                return (
+                  <>
+                    <div className="block mt-4">
+                      <div key={w.chainName} className="pl-6 flex text-lg">
+                        {networkIcon(w.chainName)}
+                      </div>
+                      <div className="pl-[4.5rem] text-sm flex pt-2">
+                        <span className="text-[#323232]">Latest block</span>
+                        <span className="pl-2 text-[#24CC85]">
+                          {w?.details[0].bestBlockHeight?.toLocaleString(
+                            "en-US",
+                          ) || "Syncing..."}
+                        </span>
+                      </div>
                     </div>
-                    <div className="pl-[4.5rem] text-sm flex pt-2">
-                      <span className="text-[#323232]">Latest block</span>
-                      <span className="pl-2 text-[#24CC85]">
-                        {w?.details[0].bestBlockHeight?.toLocaleString(
-                          "en-US",
-                        ) || "Syncing..."}
-                      </span>
+                    <div className="pl-[4.5rem] flex pt-2 pb-4 text-[#616161]">
+                      No network
                     </div>
-                  </div>
-                  <div className="pl-[4.5rem] flex pt-2 pb-4 text-[#616161]">
-                    No apps connected
-                  </div>
-                </>
-              )
-            const contents: ReactNode[] = []
-            w?.details?.forEach((t) => {
-              if (t.tabId) {
-                contents.push(
-                  <div key={t.url} className="flex justify-between">
-                    <div className="ml-8 text-sm w-full truncate text-base">
-                      {t.url}
-                    </div>
-
-                    <div
-                      className="tooltip"
-                      onClick={() => t && t.tabId && onDisconnect(t.tabId)}
-                    >
-                      <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
-                        Disconnect tab
-                      </span>
-                      <MdLinkOff className="ml-2 text-base cursor-pointer hover:bg-gray-200" />
-                    </div>
-                  </div>,
+                  </>
                 )
-              }
-            })
+              const contents: ReactNode[] = []
+              w?.details?.forEach((t) => {
+                if (t.tabId) {
+                  contents.push(
+                    <div key={t.url} className="flex justify-between">
+                      <div className="ml-8 text-sm w-full truncate text-base">
+                        {t.url}
+                      </div>
+                    </div>,
+                  )
+                }
+              })
 
-            return (
-              <Accordion
-                defaultAllExpanded={true}
-                titleClass="popup-accordion-title"
-                contentClass="popup-accordion-content"
-                titles={[
-                  <div className="block mt-4">
-                    <div className="pl-4 flex text-lg justify-start">
-                      {networkIcon(w.chainName)}
-                      <span className="pl-2 text-[#616161]">
-                        ({contents.length})
-                      </span>
-                    </div>
-                    <div className="pl-16 flex pt-2">
-                      <span className="text-[#323232]">Latest block</span>
-                      <span className="pl-2 text-[#24CC85]">
-                        {w?.details[0].bestBlockHeight?.toLocaleString(
-                          "en-US",
-                        ) || "Syncing..."}
-                      </span>
-                    </div>
-                  </div>,
-                ]}
-                contents={[<>{contents}</>]}
-                showTitleIcon={!!contents.length}
-              />
-            )
-          })}
+              return (
+                <Accordion
+                  defaultAllExpanded={true}
+                  titleClass="popup-accordion-title"
+                  contentClass="popup-accordion-content"
+                  titles={[
+                    <div className="block mt-4">
+                      <div className="pl-4 flex text-lg justify-start">
+                        {networkIcon(w.chainName)}
+                        <span className="pl-2 text-[#616161]">
+                          ({contents.length})
+                        </span>
+                      </div>
+                      <div className="pl-16 flex pt-2">
+                        <span className="text-[#323232]">Latest block</span>
+                        <span className="pl-2 text-[#24CC85]">
+                          {w?.details[0].bestBlockHeight?.toLocaleString(
+                            "en-US",
+                          ) || "Syncing..."}
+                        </span>
+                      </div>
+                    </div>,
+                  ]}
+                  contents={[<>{contents}</>]}
+                  showTitleIcon={!!contents.length}
+                />
+              )
+            })
+          )}
         </div>
         <div className="border-t border-neutral-200 mx-8" />
         <div className="pl-8 pr-6 hover:bg-stone-200">
