@@ -1,8 +1,6 @@
 export { default as Logo } from "./Logo"
-export { default as StatusCircle } from "./StatusCircle"
 export { default as light } from "./theme"
 export { default as NetworkTab } from "./NetworkTab"
-export { default as Loader } from "./Loader"
 export { MenuContent } from "./MenuContent"
 export { Accordion } from "./Accordion"
 export { Connectivity } from "./Connectivity"
