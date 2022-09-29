@@ -3,7 +3,7 @@ import { Accordion } from "."
 
 import { NetworkTabProps, App, OptionsNetworkTabHealthContent } from "../types"
 import "../main.css"
-import IconWeb3 from "./IconWeb3"
+import { IconWeb3 } from "./IconWeb3"
 
 interface NetworkContentProps {
   health?: OptionsNetworkTabHealthContent

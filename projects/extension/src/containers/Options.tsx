@@ -1,12 +1,10 @@
 import React, { SetStateAction, useEffect, useState } from "react"
 import pckg from "../../package.json"
-import { Networks, Logo } from "../components"
 import { MdOutlineNetworkCell } from "react-icons/md"
 import { FaGithub } from "react-icons/fa"
 import { Background } from "../background"
 import { NetworkTabProps } from "../types"
-import { MenuContent } from "../components"
-import { BraveModal } from "../components/BraveModal"
+import { BraveModal, Logo, MenuContent, Networks } from "../components"
 
 type MenuItemTypes = "item" | "title" | "icon"
 

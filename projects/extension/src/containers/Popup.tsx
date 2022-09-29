@@ -3,15 +3,12 @@ import React, {
   ReactNode,
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from "react"
 
 import { MdOutlineSettings, MdOutlineEast } from "react-icons/md"
-import { Accordion, Logo } from "../components"
+import { Accordion, Logo, IconWeb3, BraveModal } from "../components"
 import { Background } from "../background"
-import IconWeb3 from "../components/IconWeb3"
-import { BraveModal } from "../components/BraveModal"
 
 interface PopupChain {
   chainName: string
