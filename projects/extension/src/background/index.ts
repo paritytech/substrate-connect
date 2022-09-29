@@ -68,7 +68,6 @@ export interface Background extends Window {
   uiInterface: {
     onChainsChanged: (listener: () => void) => () => void
     onSmoldotCrashErrorChanged: (listener: () => void) => () => void
-    disconnectTab: (tabId: number) => void
     setChromeStorageLocalSetting: (obj: any) => void
     getChromeStorageLocalSetting(
       setting: string,
@@ -139,9 +138,6 @@ window.uiInterface = {
   onSmoldotCrashErrorChanged(_listener) {
     // TODO: remove
     return () => {}
-  },
-  disconnectTab: (_tabId: number) => {
-    // TODO: remove
   },
   setChromeStorageLocalSetting: (obj: any) => {
     chrome.storage.local.set(obj, () => {

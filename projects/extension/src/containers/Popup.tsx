@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react"
 
-import { MdOutlineSettings, MdOutlineEast, MdLinkOff } from "react-icons/md"
+import { MdOutlineSettings, MdOutlineEast } from "react-icons/md"
 import { Accordion, Logo } from "../components"
 import { Background } from "../background"
 import IconWeb3 from "../components/IconWeb3"
@@ -29,7 +29,6 @@ interface ChainDetails {
 }
 
 const Popup: FunctionComponent = () => {
-  const disconnectTab = useRef<(tabId: number) => void>((_: number) => {})
   const [connChains, setConnChains] = useState<PopupChain[] | undefined>()
 
   const [bg, setBg] = useState<Background | undefined>()
@@ -91,7 +90,6 @@ const Popup: FunctionComponent = () => {
       setShowModal(isBrave && !braveSetting)
     })
 
-    disconnectTab.current = bg.uiInterface.disconnectTab
     const cb = bg.uiInterface.onChainsChanged(refresh)
     const errCb = bg.uiInterface.onSmoldotCrashErrorChanged(() =>
       setClientError(bg.uiInterface.smoldotCrashError),
@@ -117,11 +115,6 @@ const Popup: FunctionComponent = () => {
         <div className="pl-2">{network}</div>
       </>
     )
-  }
-
-  const onDisconnect = (tabId: number): void => {
-    disconnectTab.current(tabId)
-    refresh()
   }
 
   return (
@@ -171,16 +164,6 @@ const Popup: FunctionComponent = () => {
                   <div key={t.url} className="flex justify-between">
                     <div className="ml-8 text-sm w-full truncate text-base">
                       {t.url}
-                    </div>
-
-                    <div
-                      className="tooltip"
-                      onClick={() => t && t.tabId && onDisconnect(t.tabId)}
-                    >
-                      <span className="p-4 text-xs shadow-lg tooltiptext tooltip_left">
-                        Disconnect tab
-                      </span>
-                      <MdLinkOff className="ml-2 text-base cursor-pointer hover:bg-gray-200" />
                     </div>
                   </div>,
                 )
