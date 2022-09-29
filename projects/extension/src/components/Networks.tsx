@@ -2,14 +2,14 @@ import React from "react"
 import { NetworkTabProps } from "../types"
 import NetworkTab from "./NetworkTab"
 
-interface ConnectivityProps {
+interface NetworksProps {
   networks: NetworkTabProps[]
 }
 
-export const Connectivity = ({ networks }: ConnectivityProps) => {
+export const Networks = ({ networks }: NetworksProps) => {
   return (
     <section className="mx-0 md:mx-12 xl:mx-36 2xl:mx-64">
-      <div className="font-inter font-bold text-3xl pb-4">Connectivity</div>
+      <div className="font-inter font-bold text-3xl pb-4">Networks</div>
       {networks.length ? (
         networks.map((network: NetworkTabProps, i: number) => {
           const { name, health, apps } = network

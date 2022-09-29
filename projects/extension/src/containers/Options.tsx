@@ -1,7 +1,8 @@
 import React, { SetStateAction, useEffect, useState } from "react"
 import pckg from "../../package.json"
-import { Connectivity, Logo } from "../components"
-import { MdOutlineSettingsEthernet } from "react-icons/md"
+import { Networks, Logo } from "../components"
+import { MdOutlineNetworkCell } from "react-icons/md"
+import { FaGithub } from "react-icons/fa"
 import { Background } from "../background"
 import { NetworkTabProps } from "../types"
 import { MenuContent } from "../components"
@@ -160,20 +161,34 @@ export const Options: React.FunctionComponent = () => {
               href="#!"
               onClick={() => setMenu(0)}
             >
-              <MdOutlineSettingsEthernet className={cName("icon", menu, 0)} />
-              <span className={cName("title", menu, 0)}>Connectivity</span>
+              <MdOutlineNetworkCell className={cName("icon", menu, 0)} />
+              <span className={cName("title", menu, 0)}>Networks</span>
             </a>
           </li>
         </ul>
         <div className="text-center bottom-0 absolute w-full">
           <hr className="m-0" />
-          <div className="py-2 text-xs pl-4">version {pckg.version}</div>
+          <div className="block float-left py-4 px-2 cursor-pointer">
+            <a
+              rel="noreferrer"
+              target="_blank"
+              href="https://github.com/paritytech/substrate-connect"
+            >
+              <div className="block float-left px-3.5 text-3xl">
+                <FaGithub />
+              </div>
+              <div className="block float-left text-xs text-left">
+                <div className="text-gray-700">Substrate Connect on Github</div>
+                <div className="text-gray-500">v {pckg.version}</div>
+              </div>
+            </a>
+          </div>
         </div>
       </div>
       <div className="ml-60 absolute w-[calc(100%-15rem)]">
         <MenuContent activeMenu={menu}>
           {/** Networks section */}
-          <Connectivity networks={networks} />
+          <Networks networks={networks} />
           <section className="font-roboto">Settings</section>
         </MenuContent>
       </div>
