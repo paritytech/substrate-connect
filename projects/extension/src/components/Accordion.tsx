@@ -13,7 +13,7 @@ interface AccItem {
 }
 
 interface AccordionProps {
-  origin: "popup" | "options"
+  origin?: "popup" | "options"
   titles: ReactNode[] | string[]
   titleClass?: string
   contents: ReactNode[] | string[]

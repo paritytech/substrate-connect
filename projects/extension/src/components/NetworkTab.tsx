@@ -81,6 +81,7 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
             </div>
           </div>,
         ]}
+        origin={"options"}
         contents={contents}
         showTitleIcon={!!contents.length}
       />
