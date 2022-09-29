@@ -66,7 +66,7 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
     <NetworkContent health={health} apps={apps} network={name} />,
   ]
   return (
-    <div className="flex w-full max-w-2xl mb-3 items-baseline">
+    <div className="flex w-full mb-3 items-baseline font-roboto">
       <Accordion
         titles={[
           <div className="flex rounded-lg">
