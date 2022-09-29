@@ -148,7 +148,7 @@ const Popup: FunctionComponent = () => {
                       </div>
                     </div>
                     <div className="pl-[4.5rem] flex pt-2 pb-4 text-[#616161]">
-                      No apps connected
+                      No network
                     </div>
                   </>
                 )

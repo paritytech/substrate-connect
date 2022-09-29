@@ -75,24 +75,9 @@ export interface Background extends Window {
     // Use `onChainsChanged` to register a callback that is called when this list or its content
     // might have changed.
     get chains(): ExposedChainConnection[]
-    get logger(): LogKeeper
-
     // Get the bootnodes of the wellKnownChains
     get wellKnownChainBootnodes(): Promise<Record<string, string[]>>
   }
-}
-
-interface logStructure {
-  unix_timestamp: number
-  level: number
-  target: string
-  message: string
-}
-
-interface LogKeeper {
-  all: logStructure[]
-  warn: logStructure[]
-  error: logStructure[]
 }
 
 const chains: Map<
@@ -163,13 +148,6 @@ window.uiInterface = {
       }
     }
     return out
-  },
-  get logger() {
-    return {
-      all: [],
-      warn: [],
-      error: [],
-    }
   },
 
   get wellKnownChainBootnodes() {
