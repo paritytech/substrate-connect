@@ -13,6 +13,7 @@ interface AccItem {
 }
 
 interface AccordionProps {
+  origin: "popup" | "options"
   titles: ReactNode[] | string[]
   titleClass?: string
   contents: ReactNode[] | string[]
@@ -53,6 +54,9 @@ const AccordionItem = ({
     ? activeItem !== value
     : activeItem === value
 
+  const arrowPosition =
+    origin !== "popup" ? "pr-4" : "pr-4 top-8 right-2 absolute"
+
   return (
     <div className={status && `item _mi__${status}`}>
       <button
@@ -75,7 +79,7 @@ const AccordionItem = ({
       >
         {title}
         {showTitleIcon && (
-          <div className="pr-4 top-8 right-2 absolute">
+          <div className={arrowPosition}>
             {activeItem !== value ? (
               <IoIosArrowDown className="cursor-pointer hover:bg-gray-200" />
             ) : (
@@ -105,6 +109,7 @@ const AccordionItem = ({
 }
 
 export const Accordion = ({
+  origin = "popup",
   titles,
   contents,
   defaultExpanded,

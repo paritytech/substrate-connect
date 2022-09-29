@@ -1,7 +1,7 @@
 import React, { SetStateAction, useEffect, useState } from "react"
 import pckg from "../../package.json"
 import { Connectivity, Logo } from "../components"
-import { MdOutlineSettingsEthernet, MdOutlineSettings } from "react-icons/md"
+import { MdOutlineSettingsEthernet } from "react-icons/md"
 import { Background } from "../background"
 import { NetworkTabProps } from "../types"
 import { MenuContent } from "../components"
@@ -162,16 +162,6 @@ export const Options: React.FunctionComponent = () => {
             >
               <MdOutlineSettingsEthernet className={cName("icon", menu, 0)} />
               <span className={cName("title", menu, 0)}>Connectivity</span>
-            </a>
-          </li>
-          <li className="relative">
-            <a
-              className={cName("item", menu, 1)}
-              href="#!"
-              onClick={() => setMenu(1)}
-            >
-              <MdOutlineSettings className={cName("icon", menu, 1)} />
-              <span className={cName("title", menu, 1)}>Settings</span>
             </a>
           </li>
         </ul>
