@@ -16,7 +16,7 @@ export const Connectivity = ({ networks }: ConnectivityProps) => {
           return <NetworkTab key={i} name={name} health={health} apps={apps} />
         })
       ) : (
-        <div>No networks or apps are connected to the extension.</div>
+        <div>The extension isn't connected to any network.</div>
       )}
     </section>
   )
