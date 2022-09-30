@@ -117,9 +117,10 @@ export class SmoldotClientWithExtension {
     potentialRelayChains: ChainWithExtension[]
     jsonRpcCallback: JsonRpcCallback
   }) {
-    const response = await this.#sendPortThenWaitResponse(
-      { type: "get-well-known-chain", chainName: options.chainName }
-    )
+    const response = await this.#sendPortThenWaitResponse({
+      type: "get-well-known-chain",
+      chainName: options.chainName,
+    })
 
     const potentialRelayChainsAdj = options.potentialRelayChains
       .filter((c) => this.#chains.has(c))
@@ -413,7 +414,9 @@ export class SmoldotClientWithExtension {
   }
 
   // Sends a message to the extension and waits for a response.
-  async #sendPortThenWaitResponse(message: ToExtension): Promise<ToContentScript> {
+  async #sendPortThenWaitResponse(
+    message: ToExtension,
+  ): Promise<ToContentScript> {
     return chrome.runtime.sendMessage(message)
   }
 }

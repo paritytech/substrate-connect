@@ -3,7 +3,7 @@ import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 
 const router = new ExtensionMessageHandler()
 
-chrome.runtime.sendMessage({ type: "tab-reset" });
+chrome.runtime.sendMessage({ type: "tab-reset" })
 
 // inject as soon as possible the DOM element necessary for web pages to know that the extension
 // is available

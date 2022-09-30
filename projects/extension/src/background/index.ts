@@ -81,7 +81,7 @@ export interface Background extends Window {
 }
 
 const chains: Map<
-  number,  // Tab ID
+  number, // Tab ID
   {
     tabUrl: string
     chains: Map<
@@ -161,77 +161,82 @@ window.uiInterface = {
   },
 }
 
-chrome.runtime.onMessage.addListener((message: ToExtension, sender, sendResponse) => {
-  switch (message.type) {
-    case "get-well-known-chain": {
-      // TODO: don't load the list every time
-      loadWellKnownChains().then((map) => {
-        const chainSpec = map.get(message.chainName)
-        if (chainSpec) {
-          chrome.storage.local.get(
-            [message.chainName],
-            (storageGetResult) => {
-              const databaseContent = storageGetResult[
-                message.chainName
-              ] as string
-              sendResponse({
-                type: "get-well-known-chain",
-                found: { chainSpec, databaseContent },
-              } as ToContentScript)
-            },
-          )
-        } else {
-          sendResponse({
-            type: "get-well-known-chain",
-            chainName: message.chainName,
-          } as ToContentScript)
-        }
-      })
-      break
-    }
+chrome.runtime.onMessage.addListener(
+  (message: ToExtension, sender, sendResponse) => {
+    switch (message.type) {
+      case "get-well-known-chain": {
+        // TODO: don't load the list every time
+        loadWellKnownChains().then((map) => {
+          const chainSpec = map.get(message.chainName)
+          if (chainSpec) {
+            chrome.storage.local.get(
+              [message.chainName],
+              (storageGetResult) => {
+                const databaseContent = storageGetResult[
+                  message.chainName
+                ] as string
+                sendResponse({
+                  type: "get-well-known-chain",
+                  found: { chainSpec, databaseContent },
+                } as ToContentScript)
+              },
+            )
+          } else {
+            sendResponse({
+              type: "get-well-known-chain",
+              chainName: message.chainName,
+            } as ToContentScript)
+          }
+        })
+        break
+      }
 
-    case "tab-reset": {
-      chains.delete(sender.tab!.id!);
-      break;
-    }
+      case "tab-reset": {
+        chains.delete(sender.tab!.id!)
+        break
+      }
 
-    case "add-chain": {
-      if (!chains.has(sender.tab!.id!))
-        chains.set(sender.tab!.id!, { chains: new Map(), tabUrl: sender.tab!.url! });
+      case "add-chain": {
+        if (!chains.has(sender.tab!.id!))
+          chains.set(sender.tab!.id!, {
+            chains: new Map(),
+            tabUrl: sender.tab!.url!,
+          })
 
-      chains.get(sender.tab!.id!)!.chains.set(message.chainId, {
-        chainName: message.chainSpecChainName,
-        peers: 0,
-      })
-      notifyAllChainsChangedListeners()
-      break
-    }
+        chains.get(sender.tab!.id!)!.chains.set(message.chainId, {
+          chainName: message.chainSpecChainName,
+          peers: 0,
+        })
+        notifyAllChainsChangedListeners()
+        break
+      }
 
-    case "chain-info-update": {
-      const info = chains.get(sender.tab!.id!)!.chains.get(message.chainId)!
-      info.peers = message.peers
-      info.bestBlockNumber = message.bestBlockNumber
-      notifyAllChainsChangedListeners()
-      break
-    }
+      case "chain-info-update": {
+        const info = chains.get(sender.tab!.id!)!.chains.get(message.chainId)!
+        info.peers = message.peers
+        info.bestBlockNumber = message.bestBlockNumber
+        notifyAllChainsChangedListeners()
+        break
+      }
 
-    case "database-content": {
-      chrome.storage.local.set({
-        [message.chainName]: message.databaseContent,
-      })
-      break
-    }
+      case "database-content": {
+        chrome.storage.local.set({
+          [message.chainName]: message.databaseContent,
+        })
+        break
+      }
 
-    case "remove-chain": {
-      chains.get(sender.tab!.id!)!.chains.delete(message.chainId)
-      notifyAllChainsChangedListeners()
-      break
+      case "remove-chain": {
+        chains.get(sender.tab!.id!)!.chains.delete(message.chainId)
+        notifyAllChainsChangedListeners()
+        break
+      }
     }
-  }
-})
+  },
+)
 
 chrome.tabs.onRemoved.addListener((tabId) => {
-  chains.delete(tabId);
+  chains.delete(tabId)
 })
 
 chrome.storage.local.get(["notifications"], (result) => {
