@@ -190,6 +190,11 @@ chrome.runtime.onMessage.addListener((message: ToExtension, sender, sendResponse
       break
     }
 
+    case "tab-reset": {
+      chains.delete(sender.tab!.id!);
+      break;
+    }
+
     case "add-chain": {
       if (!chains.has(sender.tab!.id!))
         chains.set(sender.tab!.id!, { chains: new Map(), tabUrl: sender.tab!.url! });

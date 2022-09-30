@@ -6,6 +6,7 @@
 export type ToExtension =
   | ToExtensionGetWellKnownChain
   | ToExtensionDatabaseContent
+  | ToExtensionReset
   | ToExtensionAddChain
   | ToExtensionChainInfoUpdate
   | ToExtensionRemoveChain
@@ -21,6 +22,13 @@ export interface ToExtensionDatabaseContent {
   type: "database-content"
   chainName: string
   databaseContent: string
+}
+
+// Report to the extension that all the chains of the current tab have been destroyed.
+// This is sent when the content script is loaded in order to indicate that the previous content
+// script of the same tab no longer exists.
+export interface ToExtensionReset {
+  type: "tab-reset"
 }
 
 // Report to the extension that a new chain has been initialized.
