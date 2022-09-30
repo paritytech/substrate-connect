@@ -81,9 +81,8 @@ export interface Background extends Window {
 }
 
 const chains: Map<
-  chrome.runtime.Port,
+  number,  // Tab ID
   {
-    tabId: number
     tabUrl: string
     chains: Map<
       string,
@@ -132,8 +131,8 @@ window.uiInterface = {
   },
   get chains(): ExposedChainConnection[] {
     const out: ExposedChainConnection[] = []
-    for (const tab of Array.from(chains.values())) {
-      for (const [chainId, info] of Array.from(tab.chains.entries())) {
+    for (const [tabId, tabInfo] of Array.from(chains.entries())) {
+      for (const [chainId, info] of Array.from(tabInfo.chains.entries())) {
         out.push({
           chainId,
           chainName: info.chainName,
@@ -141,8 +140,8 @@ window.uiInterface = {
           peers: info.peers,
           bestBlockHeight: info.bestBlockNumber,
           tab: {
-            id: tab.tabId,
-            url: tab.tabUrl,
+            id: tabId,
+            url: tabInfo.tabUrl,
           },
         })
       }
@@ -162,83 +161,72 @@ window.uiInterface = {
   },
 }
 
-// Handle new port connections.
-//
-// Whenever a tab starts using the substrate-connect extension, it will open a port. This is caught
-// here.
-chrome.runtime.onConnect.addListener((port) => {
-  chains.set(port, {
-    tabId: port.sender!.tab!.id!,
-    tabUrl: port.sender!.tab!.url!,
-    chains: new Map(),
-  })
-
-  port.onMessage.addListener((message: ToExtension) => {
-    switch (message.type) {
-      case "get-well-known-chain": {
-        // TODO: don't load the list every time
-        loadWellKnownChains().then((map) => {
-          const chainSpec = map.get(message.chainName)
-          if (chainSpec) {
-            chrome.storage.local.get(
-              [message.chainName],
-              (storageGetResult) => {
-                const databaseContent = storageGetResult[
-                  message.chainName
-                ] as string
-                port.postMessage({
-                  type: "get-well-known-chain",
-                  chainName: message.chainName,
-                  found: { chainSpec, databaseContent },
-                } as ToContentScript)
-              },
-            )
-          } else {
-            port.postMessage({
-              type: "get-well-known-chain",
-              chainName: message.chainName,
-            } as ToContentScript)
-          }
-        })
-        break
-      }
-
-      case "add-chain": {
-        chains.get(port)!.chains.set(message.chainId, {
-          chainName: message.chainSpecChainName,
-          peers: 0,
-        })
-        notifyAllChainsChangedListeners()
-        break
-      }
-
-      case "chain-info-update": {
-        const info = chains.get(port)!.chains.get(message.chainId)!
-        info.peers = message.peers
-        info.bestBlockNumber = message.bestBlockNumber
-        notifyAllChainsChangedListeners()
-        break
-      }
-
-      case "database-content": {
-        chrome.storage.local.set({
-          [message.chainName]: message.databaseContent,
-        })
-        break
-      }
-
-      case "remove-chain": {
-        chains.get(port)!.chains.delete(message.chainId)
-        notifyAllChainsChangedListeners()
-        break
-      }
+chrome.runtime.onMessage.addListener((message: ToExtension, sender, sendResponse) => {
+  switch (message.type) {
+    case "get-well-known-chain": {
+      // TODO: don't load the list every time
+      loadWellKnownChains().then((map) => {
+        const chainSpec = map.get(message.chainName)
+        if (chainSpec) {
+          chrome.storage.local.get(
+            [message.chainName],
+            (storageGetResult) => {
+              const databaseContent = storageGetResult[
+                message.chainName
+              ] as string
+              sendResponse({
+                type: "get-well-known-chain",
+                found: { chainSpec, databaseContent },
+              } as ToContentScript)
+            },
+          )
+        } else {
+          sendResponse({
+            type: "get-well-known-chain",
+            chainName: message.chainName,
+          } as ToContentScript)
+        }
+      })
+      break
     }
-  })
 
-  port.onDisconnect.addListener(() => {
-    chains.delete(port)
-    notifyAllChainsChangedListeners()
-  })
+    case "add-chain": {
+      if (!chains.has(sender.tab!.id!))
+        chains.set(sender.tab!.id!, { chains: new Map(), tabUrl: sender.tab!.url! });
+
+      chains.get(sender.tab!.id!)!.chains.set(message.chainId, {
+        chainName: message.chainSpecChainName,
+        peers: 0,
+      })
+      notifyAllChainsChangedListeners()
+      break
+    }
+
+    case "chain-info-update": {
+      const info = chains.get(sender.tab!.id!)!.chains.get(message.chainId)!
+      info.peers = message.peers
+      info.bestBlockNumber = message.bestBlockNumber
+      notifyAllChainsChangedListeners()
+      break
+    }
+
+    case "database-content": {
+      chrome.storage.local.set({
+        [message.chainName]: message.databaseContent,
+      })
+      break
+    }
+
+    case "remove-chain": {
+      chains.get(sender.tab!.id!)!.chains.delete(message.chainId)
+      notifyAllChainsChangedListeners()
+      break
+    }
+  }
+})
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+  chains.delete(tabId);
 })
 
 chrome.storage.local.get(["notifications"], (result) => {

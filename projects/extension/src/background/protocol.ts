@@ -52,7 +52,6 @@ export type ToContentScript = ToContentScriptWellKnownChain
 // Response to a {ToExtensionGetWellKnownChain}
 export interface ToContentScriptWellKnownChain {
   type: "get-well-known-chain"
-  chainName: string
   found?: {
     chainSpec: string
     databaseContent: string
