@@ -157,21 +157,23 @@ export const createScClient = (config?: Config): ScClient => {
         chainSpec,
         potentialRelayChains: [...chains.values()],
         disableJsonRpc: jsonRpcCallback === undefined,
-      });
+      })
 
-      (async () => {
+      ;(async () => {
         while (true) {
-          let jsonRpcResponse;
+          let jsonRpcResponse
           try {
-            jsonRpcResponse = await internalChain.nextJsonRpcResponse();
-          } catch(_) { break; }
+            jsonRpcResponse = await internalChain.nextJsonRpcResponse()
+          } catch (_) {
+            break
+          }
 
           // `nextJsonRpcResponse` throws an exception if we pass `disableJsonRpc: true` in the
           // config. We pass `disableJsonRpc: true` if `jsonRpcCallback` is undefined. Therefore,
           // this code is never reachable if `jsonRpcCallback` is undefined.
           try {
             jsonRpcCallback!(jsonRpcResponse)
-          } catch(error) {
+          } catch (error) {
             console.error("JSON-RPC callback has thrown an exception:", error)
           }
         }

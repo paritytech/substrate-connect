@@ -105,11 +105,14 @@ export class SmoldotClientWithExtension {
       .filter((c) => this.#chains.has(c))
       .map((c) => this.#chains.get(c)!.inner)
 
-    return this.#addChainWithOptions({
-      chainSpec: options.chainSpec,
-      potentialRelayChains: potentialRelayChainsAdj,
-      databaseContent: undefined,
-    }, options.jsonRpcCallback)
+    return this.#addChainWithOptions(
+      {
+        chainSpec: options.chainSpec,
+        potentialRelayChains: potentialRelayChainsAdj,
+        databaseContent: undefined,
+      },
+      options.jsonRpcCallback,
+    )
   }
 
   async addWellKnownChain(options: {
@@ -369,17 +372,19 @@ export class SmoldotClientWithExtension {
       jsonRpcCallback(response)
     }
 
-    const smoldotChain = await this.#client.addChain(options);
+    const smoldotChain = await this.#client.addChain(options)
 
-    (async () => {
+    ;(async () => {
       while (true) {
-        let jsonRpcResponse;
+        let jsonRpcResponse
         try {
-          jsonRpcResponse = await smoldotChain.nextJsonRpcResponse();
-        } catch(_) { break; }
+          jsonRpcResponse = await smoldotChain.nextJsonRpcResponse()
+        } catch (_) {
+          break
+        }
         try {
           wrappedJsonRpcCallback(jsonRpcResponse)
-        } catch(error) {
+        } catch (error) {
           console.error("JSON-RPC callback has thrown an exception:", error)
         }
       }
