@@ -3,7 +3,6 @@ import {
   Chain as SmoldotChain,
   AddChainOptions as SmoldotAddChainOptions,
   AddChainError,
-  JsonRpcCallback,
   start as startSmoldotClient,
 } from "@substrate/smoldot-light"
 
@@ -100,7 +99,7 @@ export class SmoldotClientWithExtension {
   async addChain(options: {
     chainSpec: string
     potentialRelayChains: ChainWithExtension[]
-    jsonRpcCallback: JsonRpcCallback
+    jsonRpcCallback: (msg: string) => void
   }): Promise<ChainWithExtension> {
     const potentialRelayChainsAdj = options.potentialRelayChains
       .filter((c) => this.#chains.has(c))
@@ -108,16 +107,15 @@ export class SmoldotClientWithExtension {
 
     return this.#addChainWithOptions({
       chainSpec: options.chainSpec,
-      jsonRpcCallback: options.jsonRpcCallback,
       potentialRelayChains: potentialRelayChainsAdj,
       databaseContent: undefined,
-    })
+    }, options.jsonRpcCallback)
   }
 
   async addWellKnownChain(options: {
     chainName: string
     potentialRelayChains: ChainWithExtension[]
-    jsonRpcCallback: JsonRpcCallback
+    jsonRpcCallback: (msg: string) => void
   }) {
     const response = await this.#sendPortThenWaitResponse(
       { type: "get-well-known-chain", chainName: options.chainName },
@@ -144,15 +142,16 @@ export class SmoldotClientWithExtension {
       {
         chainSpec: response.found.chainSpec,
         databaseContent: response.found.databaseContent,
-        jsonRpcCallback: options.jsonRpcCallback,
         potentialRelayChains: potentialRelayChainsAdj,
       },
+      options.jsonRpcCallback,
       options.chainName,
     )
   }
 
   async #addChainWithOptions(
     options: SmoldotAddChainOptions,
+    jsonRpcCallback: (msg: string) => void,
     wellKnownName?: string,
   ): Promise<ChainWithExtension> {
     // Note that `options.jsonRpcCallback` is always defined. Because we override the JSON-RPC
@@ -183,8 +182,7 @@ export class SmoldotClientWithExtension {
       peers: 0,
     }
 
-    const userJsonRpcCallback = options.jsonRpcCallback
-    options.jsonRpcCallback = (response: string) => {
+    const wrappedJsonRpcCallback = (response: string) => {
       // Do the opposite of what is done when a JSON-RPC request arrives by removing the
       // prefix in front of the response.
       // Because smoldot always sends back correct answers, we can just assume that all the
@@ -368,10 +366,24 @@ export class SmoldotClientWithExtension {
         }
       }
 
-      if (userJsonRpcCallback) userJsonRpcCallback(response)
+      jsonRpcCallback(response)
     }
 
-    const smoldotChain = await this.#client.addChain(options)
+    const smoldotChain = await this.#client.addChain(options);
+
+    (async () => {
+      while (true) {
+        let jsonRpcResponse;
+        try {
+          jsonRpcResponse = await smoldotChain.nextJsonRpcResponse();
+        } catch(_) { break; }
+        try {
+          wrappedJsonRpcCallback(jsonRpcResponse)
+        } catch(error) {
+          console.error("JSON-RPC callback has thrown an exception:", error)
+        }
+      }
+    })()
 
     smoldotChain.sendJsonRpc(
       JSON.stringify({

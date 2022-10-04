@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 - Improve the UI of the popup and options page. ([#1277](https://github.com/paritytech/substrate-connect/pull/1277))
+- Update @substrate/smoldot-light to [version 0.7.0](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#070---2022-09-28).
 
 ## 0.1.11 - 2022-09-21
 
