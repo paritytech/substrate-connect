@@ -4,7 +4,8 @@
     "baseUrl": ".",
     "composite": true,
     "declaration": true,
-    "inlineSourceMap": true,
+    "inlineSources": true,
+    "sourceMap": true,
     "paths": {
       "@substrate/connect-extension-protocol": [
         "./packages/connect-extension-protocol"
