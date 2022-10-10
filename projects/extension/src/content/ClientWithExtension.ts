@@ -344,10 +344,10 @@ export class SmoldotClientWithExtension {
             case "finalized": {
               // When one or more new blocks get finalized, we unpin all blocks except for
               // the new current finalized.
-              let finalized = parsed.params.result.finalizedBlocksHashes as [
+              let finalized = parsed.params.result.finalizedBlockHashes as [
                 string,
               ]
-              let pruned = parsed.params.result.prunedBlocksHashes as [string]
+              let pruned = parsed.params.result.prunedBlockHashes as [string]
               let newCurrentFinalized = finalized.pop()
               ;[
                 chainInfo.finalizedBlockHashHex,
