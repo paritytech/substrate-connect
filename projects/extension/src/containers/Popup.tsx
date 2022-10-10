@@ -1,14 +1,12 @@
 import React, {
   FunctionComponent,
   ReactNode,
-  useCallback,
   useEffect,
   useState,
 } from "react"
 
 import { MdOutlineSettings, MdOutlineEast } from "react-icons/md"
 import { Accordion, Logo, IconWeb3, BraveModal } from "../components"
-import { Background } from "../background"
 import * as environment from "../environment"
 
 interface PopupChain {
@@ -27,19 +25,9 @@ interface ChainDetails {
 
 const Popup: FunctionComponent = () => {
   const [connChains, setConnChains] = useState<PopupChain[] | undefined>()
-
-  const [bg, setBg] = useState<Background | undefined>()
   const [showModal, setShowModal] = useState<boolean>(false)
 
-  useEffect(() => {
-    chrome.runtime.getBackgroundPage((backgroundPage) => {
-      setBg(backgroundPage as Background)
-    })
-  }, [])
-
-  const refresh = useCallback(() => {
-    if (!bg) return
-
+  const refresh = () => {
     environment.get({ type: "activeChains" })
       .then((chains) => {
         const allChains: PopupChain[] = [];
@@ -76,11 +64,9 @@ const Popup: FunctionComponent = () => {
         })
         setConnChains([...allChains])
       })
-  }, [bg])
+  }
 
   useEffect(() => {
-    if (!bg) return
-
     // Identify Brave browser and show Popup
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
       const braveSetting = await environment.get({ type: "braveSetting" })
@@ -93,7 +79,7 @@ const Popup: FunctionComponent = () => {
     return () => {
       cb()
     }
-  }, [bg, refresh])
+  }, [refresh])
 
   const goToOptions = (): void => {
     chrome.runtime.openOptionsPage()

@@ -2,7 +2,6 @@ import React, { SetStateAction, useEffect, useState } from "react"
 import pckg from "../../package.json"
 import { MdOutlineNetworkCell } from "react-icons/md"
 import { FaGithub } from "react-icons/fa"
-import { Background } from "../background"
 import * as environment from '../environment'
 import { NetworkTabProps } from "../types"
 import { BraveModal, Logo, MenuContent, Networks } from "../components"
@@ -68,18 +67,9 @@ export const Options: React.FunctionComponent = () => {
   const [notifications, setNotifications] = useState<boolean>(false)
   const [menu, setMenu] = useState<number>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [bg, setBg] = useState<Background | undefined>()
   const [actionResult, setActionResult] = useState<string>("")
 
   useEffect(() => {
-    chrome.runtime.getBackgroundPage((backgroundPage) => {
-      setBg(backgroundPage as Background)
-    })
-  }, [])
-
-  useEffect(() => {
-    if (!bg) return
-
     const getNotifications = async () => {
       setNotifications(await environment.get({ type: "notifications" }) || false)
     }
@@ -128,7 +118,7 @@ export const Options: React.FunctionComponent = () => {
 
   useEffect(() => {
     environment.set({ type: "notifications" }, notifications)
-  }, [bg, notifications])
+  }, [notifications])
 
   useEffect(() => {
     const resetText = setTimeout(() => {

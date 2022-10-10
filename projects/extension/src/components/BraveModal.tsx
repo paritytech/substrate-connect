@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import { Background } from "../background"
 import * as environment from "../environment"
 
 interface Props {
@@ -14,13 +13,6 @@ const openInNewTab = (url: string): void => {
 
 export const BraveModal = ({ show, isOptions }: Props) => {
   const [showModal, setShowModal] = useState<boolean>(show)
-  const [bg, setBg] = useState<Background | undefined>()
-
-  useEffect(() => {
-    chrome.runtime.getBackgroundPage((backgroundPage) => {
-      setBg(backgroundPage as Background)
-    })
-  }, [])
 
   useEffect(() => {
     setShowModal(show)

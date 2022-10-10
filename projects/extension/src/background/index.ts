@@ -50,27 +50,6 @@ const loadWellKnownChains = async (): Promise<Map<string, string>> => {
   ])
 }
 
-export interface Background extends Window {
-  uiInterface: {
-  }
-}
-
-// Listeners that must be notified when the `get chains()` getter would return a different value.
-const chainsChangedListeners: Set<() => void> = new Set()
-const notifyAllChainsChangedListeners = () => {
-  chainsChangedListeners.forEach((l) => {
-    try {
-      l()
-    } catch (e) {
-      console.error("Uncaught exception in onChainsChanged callback:", e)
-    }
-  })
-}
-
-declare let window: Background
-window.uiInterface = {
-}
-
 chrome.runtime.onMessage.addListener(
   (message: ToExtension, sender, sendResponse) => {
     switch (message.type) {
