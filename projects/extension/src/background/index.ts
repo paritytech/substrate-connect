@@ -58,8 +58,6 @@ export interface Background extends Window {
     // Use `onChainsChanged` to register a callback that is called when this list or its content
     // might have changed.
     get chains(): ExposedChainConnection[]
-    // Get the bootnodes of the wellKnownChains
-    get wellKnownChainBootnodes(): Promise<Record<string, string[]>>
   }
 }
 
@@ -116,18 +114,7 @@ window.uiInterface = {
       }
     }
     return out
-  },
-
-  get wellKnownChainBootnodes() {
-    return loadWellKnownChains().then((list) => {
-      let output: Record<string, string[]> = {}
-      for (const chainSpec of list.values()) {
-        const parsed = JSON.parse(chainSpec)
-        output[parsed.id as string] = parsed.bootNodes as string[]
-      }
-      return output
-    })
-  },
+  }
 }
 
 chrome.runtime.onMessage.addListener(
