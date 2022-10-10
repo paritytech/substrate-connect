@@ -81,9 +81,8 @@ export interface Background extends Window {
 }
 
 const chains: Map<
-  chrome.runtime.Port,
+  number, // Tab ID
   {
-    tabId: number
     tabUrl: string
     chains: Map<
       string,
@@ -132,8 +131,8 @@ window.uiInterface = {
   },
   get chains(): ExposedChainConnection[] {
     const out: ExposedChainConnection[] = []
-    for (const tab of Array.from(chains.values())) {
-      for (const [chainId, info] of Array.from(tab.chains.entries())) {
+    for (const [tabId, tabInfo] of Array.from(chains.entries())) {
+      for (const [chainId, info] of Array.from(tabInfo.chains.entries())) {
         out.push({
           chainId,
           chainName: info.chainName,
@@ -141,8 +140,8 @@ window.uiInterface = {
           peers: info.peers,
           bestBlockHeight: info.bestBlockNumber,
           tab: {
-            id: tab.tabId,
-            url: tab.tabUrl,
+            id: tabId,
+            url: tabInfo.tabUrl,
           },
         })
       }
@@ -162,18 +161,8 @@ window.uiInterface = {
   },
 }
 
-// Handle new port connections.
-//
-// Whenever a tab starts using the substrate-connect extension, it will open a port. This is caught
-// here.
-chrome.runtime.onConnect.addListener((port) => {
-  chains.set(port, {
-    tabId: port.sender!.tab!.id!,
-    tabUrl: port.sender!.tab!.url!,
-    chains: new Map(),
-  })
-
-  port.onMessage.addListener((message: ToExtension) => {
+chrome.runtime.onMessage.addListener(
+  (message: ToExtension, sender, sendResponse) => {
     switch (message.type) {
       case "get-well-known-chain": {
         // TODO: don't load the list every time
@@ -186,15 +175,14 @@ chrome.runtime.onConnect.addListener((port) => {
                 const databaseContent = storageGetResult[
                   message.chainName
                 ] as string
-                port.postMessage({
+                sendResponse({
                   type: "get-well-known-chain",
-                  chainName: message.chainName,
                   found: { chainSpec, databaseContent },
                 } as ToContentScript)
               },
             )
           } else {
-            port.postMessage({
+            sendResponse({
               type: "get-well-known-chain",
               chainName: message.chainName,
             } as ToContentScript)
@@ -203,8 +191,19 @@ chrome.runtime.onConnect.addListener((port) => {
         break
       }
 
+      case "tab-reset": {
+        chains.delete(sender.tab!.id!)
+        break
+      }
+
       case "add-chain": {
-        chains.get(port)!.chains.set(message.chainId, {
+        if (!chains.has(sender.tab!.id!))
+          chains.set(sender.tab!.id!, {
+            chains: new Map(),
+            tabUrl: sender.tab!.url!,
+          })
+
+        chains.get(sender.tab!.id!)!.chains.set(message.chainId, {
           chainName: message.chainSpecChainName,
           peers: 0,
         })
@@ -213,7 +212,7 @@ chrome.runtime.onConnect.addListener((port) => {
       }
 
       case "chain-info-update": {
-        const info = chains.get(port)!.chains.get(message.chainId)!
+        const info = chains.get(sender.tab!.id!)!.chains.get(message.chainId)!
         info.peers = message.peers
         info.bestBlockNumber = message.bestBlockNumber
         notifyAllChainsChangedListeners()
@@ -228,17 +227,16 @@ chrome.runtime.onConnect.addListener((port) => {
       }
 
       case "remove-chain": {
-        chains.get(port)!.chains.delete(message.chainId)
+        chains.get(sender.tab!.id!)!.chains.delete(message.chainId)
         notifyAllChainsChangedListeners()
         break
       }
     }
-  })
+  },
+)
 
-  port.onDisconnect.addListener(() => {
-    chains.delete(port)
-    notifyAllChainsChangedListeners()
-  })
+chrome.tabs.onRemoved.addListener((tabId) => {
+  chains.delete(tabId)
 })
 
 chrome.storage.local.get(["notifications"], (result) => {
