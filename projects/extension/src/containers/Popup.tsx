@@ -9,6 +9,7 @@ import React, {
 import { MdOutlineSettings, MdOutlineEast } from "react-icons/md"
 import { Accordion, Logo, IconWeb3, BraveModal } from "../components"
 import { Background } from "../background"
+import * as environment from "../environment"
 
 interface PopupChain {
   chainName: string
@@ -79,8 +80,7 @@ const Popup: FunctionComponent = () => {
 
     // Identify Brave browser and show Popup
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
-      const { braveSetting } =
-        await bg.uiInterface.getChromeStorageLocalSetting("braveSetting")
+      const braveSetting = await environment.get({ type: "braveSetting" })
       setShowModal(isBrave && !braveSetting)
     })
 

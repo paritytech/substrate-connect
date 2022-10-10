@@ -67,10 +67,6 @@ const loadWellKnownChains = (): Promise<Map<string, string>> => {
 export interface Background extends Window {
   uiInterface: {
     onChainsChanged: (listener: () => void) => () => void
-    setChromeStorageLocalSetting: (obj: any) => void
-    getChromeStorageLocalSetting(
-      setting: string,
-    ): Promise<{ [key: string]: any }>
     // List of all chains that are currently running.
     // Use `onChainsChanged` to register a callback that is called when this list or its content
     // might have changed.
@@ -114,20 +110,6 @@ window.uiInterface = {
     return () => {
       chainsChangedListeners.delete(listener)
     }
-  },
-  setChromeStorageLocalSetting: (obj: any) => {
-    chrome.storage.local.set(obj, () => {
-      if (chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError)
-      }
-    })
-  },
-  getChromeStorageLocalSetting(setting: string) {
-    return new Promise((resolve, reject) => {
-      chrome.storage.local.get([setting], (res) => {
-        resolve(res)
-      })
-    })
   },
   get chains(): ExposedChainConnection[] {
     const out: ExposedChainConnection[] = []

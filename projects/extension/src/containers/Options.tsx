@@ -3,6 +3,7 @@ import pckg from "../../package.json"
 import { MdOutlineNetworkCell } from "react-icons/md"
 import { FaGithub } from "react-icons/fa"
 import { Background } from "../background"
+import * as environment from '../environment'
 import { NetworkTabProps } from "../types"
 import { BraveModal, Logo, MenuContent, Networks } from "../components"
 
@@ -80,17 +81,13 @@ export const Options: React.FunctionComponent = () => {
     if (!bg) return
 
     const getNotifications = async () => {
-      const result = await bg?.uiInterface.getChromeStorageLocalSetting(
-        "notifications",
-      )
-      setNotifications(result?.notifications as SetStateAction<boolean>)
+      setNotifications(await environment.get({ type: "notifications" }))
     }
 
     getNotifications()
 
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
-      const { braveSetting } =
-        await bg.uiInterface.getChromeStorageLocalSetting("braveSetting")
+      const braveSetting = await environment.get({ type: "braveSetting" })
       setShowModal(isBrave && !braveSetting)
     })
 
@@ -127,9 +124,7 @@ export const Options: React.FunctionComponent = () => {
   }, [bg])
 
   useEffect(() => {
-    bg?.uiInterface.setChromeStorageLocalSetting({
-      notifications: notifications,
-    })
+    environment.set({ type: "notifications" }, notifications)
   }, [bg, notifications])
 
   useEffect(() => {
