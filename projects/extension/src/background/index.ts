@@ -50,6 +50,10 @@ const loadWellKnownChains = async (): Promise<Map<string, string>> => {
   ])
 }
 
+function notifyChainsChanged() {
+  chrome.extension.getViews().forEach((window) => window.postMessage(environment.CHAINS_CHANGED_MESSAGE_DATA))
+}
+
 chrome.runtime.onMessage.addListener(
   (message: ToExtension, sender, sendResponse) => {
     switch (message.type) {
@@ -90,6 +94,7 @@ chrome.runtime.onMessage.addListener(
             }
 
             environment.set({ type: "activeChains" }, chains)
+            notifyChainsChanged()
           })
         break
       }
@@ -112,6 +117,7 @@ chrome.runtime.onMessage.addListener(
             })
 
             environment.set({ type: "activeChains" }, chains)
+            notifyChainsChanged()
           })
         break
       }
@@ -129,6 +135,7 @@ chrome.runtime.onMessage.addListener(
             }
 
             environment.set({ type: "activeChains" }, chains)
+            notifyChainsChanged()
           })
         break
       }
@@ -147,8 +154,8 @@ chrome.runtime.onMessage.addListener(
             if (pos !== -1)
               chains.splice(pos, 1);
             environment.set({ type: "activeChains" }, chains)
+            notifyChainsChanged()
           });
-        notifyAllChainsChangedListeners()
         break
       }
     }
@@ -169,6 +176,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
       }
 
       environment.set({ type: "activeChains" }, chains)
+      notifyChainsChanged()
     })
 })
 

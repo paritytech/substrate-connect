@@ -6,6 +6,12 @@ export type StorageEntry =
   { type: "bootnodes", chainName: string } |
   { type: "activeChains" };
 
+/**
+ * Whenever the content of the `activeChains` storage item is modified, a message must be sent to
+ * the active windows of the extension. The data of this message must be this value.
+ */
+export const CHAINS_CHANGED_MESSAGE_DATA = "chains have changed";
+
 export type StorageEntryType<E extends StorageEntry> =
   E["type"] extends "notifications" ? boolean :
   E["type"] extends "braveSetting" ? boolean :

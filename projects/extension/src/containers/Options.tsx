@@ -108,13 +108,18 @@ export const Options: React.FunctionComponent = () => {
         })
     }
 
-    const cb = bg.uiInterface.onChainsChanged(refresh)
+    const eventListener = (ev: MessageEvent) => {
+      if (ev.data === environment.CHAINS_CHANGED_MESSAGE_DATA)
+        refresh()
+    };
+    window.addEventListener("message", eventListener)
+
     refresh()
 
     return () => {
-      cb()
+      () => { window.removeEventListener("message", eventListener) }
     }
-  }, [bg])
+  }, [])
 
   useEffect(() => {
     environment.set({ type: "notifications" }, notifications)
