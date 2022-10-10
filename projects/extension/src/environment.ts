@@ -12,7 +12,8 @@ export type StorageEntryType<E extends StorageEntry> =
   E["type"] extends "bootnodes" ? string[] :
   never;
 
-export async function get<E extends StorageEntry>(entry: E): Promise<StorageEntryType<E>> {
+// TODO: is it null or is it undefined? ugh, need to check
+export async function get<E extends StorageEntry>(entry: E): Promise<StorageEntryType<E> | undefined> {
  return new Promise((resolve) => {
   const key = keyOf(entry);
   chrome.storage.local.get([key], (res) => resolve(res[key]))
@@ -33,7 +34,7 @@ function keyOf(entry: StorageEntry): string {
     case "braveSetting":
       return "braveSetting";
     case "database":
-      return entry.chainName;
+      return entry.chainName;   // TODO: change this to add a prefix
     case "bootnodes":
       return "bootNodes_" + entry.chainName;
   }

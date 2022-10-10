@@ -7,61 +7,48 @@ import polkadot from "../../public/assets/polkadot.json"
 import rococo_v2_2 from "../../public/assets/rococo_v2_2.json"
 
 import { ToContentScript, ToExtension } from "./protocol"
+import * as environment from "../environment"
 
 // Loads the well-known chains bootnodes from the local storage and returns the well-known
 // chains.
-const loadWellKnownChains = (): Promise<Map<string, string>> => {
-  let resolve: undefined | ((list: Map<string, string>) => void)
-  const promise = new Promise<Map<string, string>>((r) => (resolve = r))
-
+const loadWellKnownChains = async (): Promise<Map<string, string>> => {
   let polkadot_cp = Object.assign({}, polkadot)
   let ksmcc3_cp = Object.assign({}, ksmcc3)
   let westend2_cp = Object.assign({}, westend2)
   let rococo_cp = Object.assign({}, rococo_v2_2)
 
-  chrome.storage.local.get(
-    [
-      "bootNodes_".concat(polkadot_cp.id),
-      "bootNodes_".concat(ksmcc3_cp.id),
-      "bootNodes_".concat(westend2_cp.id),
-      "bootNodes_".concat(rococo_cp.id),
-    ],
-    (result) => {
-      let i = "bootNodes_".concat(polkadot_cp.id)
-      if (result[i]) {
-        polkadot_cp.bootNodes = result[i]
-      }
-      i = "bootNodes_".concat(ksmcc3_cp.id)
-      if (result[i]) {
-        ksmcc3_cp.bootNodes = result[i]
-      }
-      i = "bootNodes_".concat(westend2_cp.id)
-      if (result[i]) {
-        westend2_cp.bootNodes = result[i]
-      }
-      i = "bootNodes_".concat(rococo_cp.id)
-      if (result[i]) {
-        rococo_cp.bootNodes = result[i]
-      }
+  const polkadotBootnodes = await environment.get({ type: "bootnodes", chainName: polkadot_cp.id });
+  if (polkadotBootnodes) {
+    polkadot_cp.bootNodes = polkadotBootnodes
+  }
 
-      // Note that this list doesn't necessarily always have to match the list of well-known
-      // chains in `@substrate/connect`. The list of well-known chains is not part of the stability
-      // guarantees of the connect <-> extension protocol and is thus allowed to change
-      // between versions of the extension. For this reason, we don't use the `WellKnownChain`
-      // enum from `@substrate/connect` but instead manually make the list in that enum match
-      // the list present here.
-      resolve!(
-        new Map<string, string>([
-          [polkadot_cp.id, JSON.stringify(polkadot_cp)],
-          [ksmcc3_cp.id, JSON.stringify(ksmcc3_cp)],
-          [rococo_cp.id, JSON.stringify(rococo_cp)],
-          [westend2_cp.id, JSON.stringify(westend2_cp)],
-        ]),
-      )
-    },
-  )
+  const ksmcc3Bootnodes = await environment.get({ type: "bootnodes", chainName: ksmcc3_cp.id });
+  if (ksmcc3Bootnodes) {
+    ksmcc3_cp.bootNodes = ksmcc3Bootnodes
+  }
 
-  return promise
+  const westend2Bootnodes = await environment.get({ type: "bootnodes", chainName: westend2_cp.id });
+  if (westend2Bootnodes) {
+    westend2_cp.bootNodes = westend2Bootnodes
+  }
+
+  const rococoBootnodes = await environment.get({ type: "bootnodes", chainName: rococo_cp.id });
+  if (rococoBootnodes) {
+    rococo_cp.bootNodes = rococoBootnodes
+  }
+
+  // Note that this list doesn't necessarily always have to match the list of well-known
+  // chains in `@substrate/connect`. The list of well-known chains is not part of the stability
+  // guarantees of the connect <-> extension protocol and is thus allowed to change
+  // between versions of the extension. For this reason, we don't use the `WellKnownChain`
+  // enum from `@substrate/connect` but instead manually make the list in that enum match
+  // the list present here.
+  return new Map<string, string>([
+    [polkadot_cp.id, JSON.stringify(polkadot_cp)],
+    [ksmcc3_cp.id, JSON.stringify(ksmcc3_cp)],
+    [rococo_cp.id, JSON.stringify(rococo_cp)],
+    [westend2_cp.id, JSON.stringify(westend2_cp)],
+  ])
 }
 
 export interface Background extends Window {
@@ -151,18 +138,14 @@ chrome.runtime.onMessage.addListener(
         loadWellKnownChains().then((map) => {
           const chainSpec = map.get(message.chainName)
           if (chainSpec) {
-            chrome.storage.local.get(
-              [message.chainName],
-              (storageGetResult) => {
-                const databaseContent = storageGetResult[
-                  message.chainName
-                ] as string
+            environment
+              .get({ type: "database", chainName: message.chainName })
+              .then((databaseContent) => {
                 sendResponse({
                   type: "get-well-known-chain",
-                  found: { chainSpec, databaseContent },
+                  found: { chainSpec, databaseContent: databaseContent || "" },
                 } as ToContentScript)
-              },
-            )
+              })
           } else {
             sendResponse({
               type: "get-well-known-chain",
@@ -202,9 +185,7 @@ chrome.runtime.onMessage.addListener(
       }
 
       case "database-content": {
-        chrome.storage.local.set({
-          [message.chainName]: message.databaseContent,
-        })
+        environment.set({ type: "database", chainName: message.chainName }, message.databaseContent)
         break
       }
 
@@ -221,13 +202,9 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   chains.delete(tabId)
 })
 
-chrome.storage.local.get(["notifications"], (result) => {
-  if (Object.keys(result).length === 0) {
-    // Setup default settings
-    chrome.storage.local.set({ notifications: settings.notifications }, () => {
-      if (chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError)
-      }
-    })
-  }
-})
+// TODO: ?!?! why do we need to do this?
+environment.get({ type: "notifications" })
+  .then((result) => {
+    if (!result)
+      environment.set({ type: "notifications" }, settings.notifications)
+  })
