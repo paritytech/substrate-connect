@@ -302,7 +302,7 @@ export class SmoldotClientWithExtension {
                   jsonrpc: "2.0",
                   id: "ready-sub:" + this.#nextRpcRqId,
                   method: "chainHead_unstable_follow",
-                  params: [true],
+                  params: [false],
                 }),
               )
               this.#nextRpcRqId += 1
