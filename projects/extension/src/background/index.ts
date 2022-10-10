@@ -55,21 +55,6 @@ export interface Background extends Window {
   }
 }
 
-const chains: Map<
-  number, // Tab ID
-  {
-    tabUrl: string
-    chains: Map<
-      string,
-      {
-        chainName: string
-        peers: number
-        bestBlockNumber?: number
-      }
-    >
-  }
-> = new Map()
-
 // Listeners that must be notified when the `get chains()` getter would return a different value.
 const chainsChangedListeners: Set<() => void> = new Set()
 const notifyAllChainsChangedListeners = () => {
@@ -175,7 +160,15 @@ chrome.runtime.onMessage.addListener(
       }
 
       case "remove-chain": {
-        chains.get(sender.tab!.id!)!.chains.delete(message.chainId)
+        environment.get({ type: "activeChains" })
+          .then((chains) => {
+            if (!chains)
+              return;
+            const pos = chains.findIndex((c) => c.tab.id === sender.tab!.id! && c.chainId === message.chainId);
+            if (pos !== -1)
+              chains.splice(pos, 1);
+            environment.set({ type: "activeChains" }, chains)
+          });
         notifyAllChainsChangedListeners()
         break
       }
@@ -184,7 +177,20 @@ chrome.runtime.onMessage.addListener(
 )
 
 chrome.tabs.onRemoved.addListener((tabId) => {
-  chains.delete(tabId)
+  environment.get({ type: "activeChains" })
+    .then((chains) => {
+      if (!chains)
+        return;
+
+      while (true) {
+        const pos = chains.findIndex((c) => c.tab.id === tabId);
+        if (pos === -1)
+          break;
+        chains.splice(pos, 1);
+      }
+
+      environment.set({ type: "activeChains" }, chains)
+    })
 })
 
 // TODO: probably wrong, because the background script might reload
