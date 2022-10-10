@@ -2,7 +2,21 @@
 
 ## [Unreleased]
 
-- Add "latest block" information to Popup, ([#1254](https://github.com/paritytech/substrate-connect/pull/1254))
+### Changed
+
+- Due to the on-going update to manifest v3, the light client no longer runs in the extension but in each tab (that tries to connect to a chain) individually. As a consequence of this, the light client is no longer capable of opening non-secure WebSocket connections, and thus connectivity to chain might be greatly reduced. ([#1272](https://github.com/paritytech/substrate-connect/pull/1272))
+- Improve the UI of the popup and options page. ([#1277](https://github.com/paritytech/substrate-connect/pull/1277))
+
+## 0.1.11 - 2022-09-21
+
+### Added
+
+- The latest block number of each chain is now displayed in the extension popup. ([#1254](https://github.com/paritytech/substrate-connect/pull/1254))
+
+### Changed
+
+- Update @substrate/smoldot-light to [version 0.6.34](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#0634---2022-09-20). ([#1261](https://github.com/paritytech/substrate-connect/pull/1261))
+- Multiple versions of the extension can now be installed at the same time without them conflicting with each other. ([#1255](https://github.com/paritytech/substrate-connect/pull/1255))
 
 ## 0.1.10 - 2022-09-15
 

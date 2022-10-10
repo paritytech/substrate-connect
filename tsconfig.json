@@ -4,7 +4,6 @@
     { "path": "./packages/connect-extension-protocol" },
     { "path": "./packages/connect" },
     { "path": "./projects/burnr" },
-    { "path": "./projects/extension" },
-    { "path": "./projects/landing-page" }
+    { "path": "./projects/extension" }
   ]
 }

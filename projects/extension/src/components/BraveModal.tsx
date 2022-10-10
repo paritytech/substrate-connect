@@ -103,7 +103,7 @@ export const BraveModal = ({ show, isOptions }: Props) => {
             <button
               onClick={() => {
                 openInNewTab(
-                  "https://paritytech.github.io/substrate-connect/#troubleshooting",
+                  "https://docs.substrate.io/fundamentals/light-clients-in-substrate-connect/#brave-browser-websocket-issue",
                 )
               }}
               type="button"
