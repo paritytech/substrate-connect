@@ -92,27 +92,30 @@ export const Options: React.FunctionComponent = () => {
     })
 
     const refresh = () => {
-      const networks = new Map<string, NetworkTabProps>()
-      bg.uiInterface.chains.forEach((chain) => {
-        const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
+      environment.get({ type: "activeChains" })
+        .then((chains) => {
+          const networks = new Map<string, NetworkTabProps>()
+          (chains || []).forEach((chain) => {
+            const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
 
-        const network = networks.get(chainName)
-        if (!network) {
-          return networks.set(chainName, {
-            name: chainName,
-            health: {
-              isSyncing,
-              peers,
-              status: "connected",
-              bestBlockHeight,
-            },
-            apps: tab ? [{ name: tab.url, url: tab.url }] : [],
+            const network = networks.get(chainName)
+            if (!network) {
+              return networks.set(chainName, {
+                name: chainName,
+                health: {
+                  isSyncing,
+                  peers,
+                  status: "connected",
+                  bestBlockHeight,
+                },
+                apps: tab ? [{ name: tab.url, url: tab.url }] : [],
+              })
+            }
+
+            if (tab) network.apps.push({ name: tab.url, url: tab.url })
           })
-        }
-
-        if (tab) network.apps.push({ name: tab.url, url: tab.url })
-      })
-      setNetworks([...networks.values()])
+          setNetworks([...networks.values()])
+        })
     }
 
     const cb = bg.uiInterface.onChainsChanged(refresh)

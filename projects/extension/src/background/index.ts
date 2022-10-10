@@ -1,5 +1,4 @@
 import settings from "./settings.json"
-import { ExposedChainConnection } from "./types"
 
 import westend2 from "../../public/assets/westend2.json"
 import ksmcc3 from "../../public/assets/ksmcc3.json"
@@ -53,11 +52,6 @@ const loadWellKnownChains = async (): Promise<Map<string, string>> => {
 
 export interface Background extends Window {
   uiInterface: {
-    onChainsChanged: (listener: () => void) => () => void
-    // List of all chains that are currently running.
-    // Use `onChainsChanged` to register a callback that is called when this list or its content
-    // might have changed.
-    get chains(): ExposedChainConnection[]
   }
 }
 
@@ -90,31 +84,6 @@ const notifyAllChainsChangedListeners = () => {
 
 declare let window: Background
 window.uiInterface = {
-  onChainsChanged(listener) {
-    chainsChangedListeners.add(listener)
-    return () => {
-      chainsChangedListeners.delete(listener)
-    }
-  },
-  get chains(): ExposedChainConnection[] {
-    const out: ExposedChainConnection[] = []
-    for (const [tabId, tabInfo] of Array.from(chains.entries())) {
-      for (const [chainId, info] of Array.from(tabInfo.chains.entries())) {
-        out.push({
-          chainId,
-          chainName: info.chainName,
-          isSyncing: false,
-          peers: info.peers,
-          bestBlockHeight: info.bestBlockNumber,
-          tab: {
-            id: tabId,
-            url: tabInfo.tabUrl,
-          },
-        })
-      }
-    }
-    return out
-  }
 }
 
 chrome.runtime.onMessage.addListener(
@@ -144,30 +113,59 @@ chrome.runtime.onMessage.addListener(
       }
 
       case "tab-reset": {
-        chains.delete(sender.tab!.id!)
+        environment.get({ type: "activeChains" })
+          .then((chains) => {
+            if (!chains)
+              return;
+  
+            while (true) {
+              const pos = chains.findIndex((c) => c.tab?.id === sender.tab!.id!);
+              if (pos === -1)
+                break;
+              chains.splice(pos, 1);
+            }
+
+            environment.set({ type: "activeChains" }, chains)
+          })
         break
       }
 
       case "add-chain": {
-        if (!chains.has(sender.tab!.id!))
-          chains.set(sender.tab!.id!, {
-            chains: new Map(),
-            tabUrl: sender.tab!.url!,
-          })
+        environment.get({ type: "activeChains" })
+          .then((chains) => {
+            if (!chains)
+              chains = [];
 
-        chains.get(sender.tab!.id!)!.chains.set(message.chainId, {
-          chainName: message.chainSpecChainName,
-          peers: 0,
-        })
-        notifyAllChainsChangedListeners()
+            chains.push({
+              chainId: message.chainId,
+              chainName: message.chainSpecChainName,
+              isSyncing: false,
+              peers: 0,
+              tab: {
+                id: sender.tab!.id!,
+                url: sender.tab!.url!,
+              },
+            })
+
+            environment.set({ type: "activeChains" }, chains)
+          })
         break
       }
 
       case "chain-info-update": {
-        const info = chains.get(sender.tab!.id!)!.chains.get(message.chainId)!
-        info.peers = message.peers
-        info.bestBlockNumber = message.bestBlockNumber
-        notifyAllChainsChangedListeners()
+        environment.get({ type: "activeChains" })
+          .then((chains) => {
+            if (!chains)
+              return;
+
+            const pos = chains.findIndex((c) => c.tab?.id === sender.tab!.id! && c.chainId === message.chainId);
+            if (pos !== -1) {
+              chains[pos].peers = message.peers;
+              chains[pos].bestBlockHeight = message.bestBlockNumber;
+            }
+
+            environment.set({ type: "activeChains" }, chains)
+          })
         break
       }
 
@@ -189,9 +187,13 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   chains.delete(tabId)
 })
 
+// TODO: probably wrong, because the background script might reload
 // TODO: ?!?! why do we need to do this?
 environment.get({ type: "notifications" })
   .then((result) => {
     if (!result)
       environment.set({ type: "notifications" }, settings.notifications)
   })
+
+// TODO: probably wrong, because the background script might reload
+environment.set({ type: "activeChains" }, [])

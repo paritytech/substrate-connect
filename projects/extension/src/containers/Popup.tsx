@@ -39,40 +39,43 @@ const Popup: FunctionComponent = () => {
 
   const refresh = useCallback(() => {
     if (!bg) return
-    const allChains: PopupChain[] = []
 
-    bg.uiInterface.chains.forEach((c) => {
-      const i = allChains.findIndex((i) => i.chainName === c.chainName)
-      const { peers, isSyncing, chainId, bestBlockHeight } = c
-      if (i === -1) {
-        allChains.push({
-          chainName: c.chainName,
-          details: [
-            {
-              tabId: c.tab?.id,
-              url: c.tab?.url,
-              peers,
-              isSyncing,
-              chainId,
-              bestBlockHeight,
-            },
-          ],
+    environment.get({ type: "activeChains" })
+      .then((chains) => {
+        const allChains: PopupChain[] = [];
+        (chains || []).forEach((c) => {
+          const i = allChains.findIndex((i) => i.chainName === c.chainName)
+          const { peers, isSyncing, chainId, bestBlockHeight } = c
+          if (i === -1) {
+            allChains.push({
+              chainName: c.chainName,
+              details: [
+                {
+                  tabId: c.tab?.id,
+                  url: c.tab?.url,
+                  peers,
+                  isSyncing,
+                  chainId,
+                  bestBlockHeight,
+                },
+              ],
+            })
+          } else {
+            const details = allChains[i]?.details
+            if (!details.map((d) => d.tabId).includes(c.tab?.id)) {
+              details.push({
+                tabId: c.tab?.id,
+                url: c.tab?.url,
+                peers,
+                isSyncing,
+                chainId,
+                bestBlockHeight,
+              })
+            }
+          }
         })
-      } else {
-        const details = allChains[i]?.details
-        if (!details.map((d) => d.tabId).includes(c.tab?.id)) {
-          details.push({
-            tabId: c.tab?.id,
-            url: c.tab?.url,
-            peers,
-            isSyncing,
-            chainId,
-            bestBlockHeight,
-          })
-        }
-      }
-    })
-    setConnChains([...allChains])
+        setConnChains([...allChains])
+      })
   }, [bg])
 
   useEffect(() => {
