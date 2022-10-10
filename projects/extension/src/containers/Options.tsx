@@ -108,7 +108,7 @@ export const Options: React.FunctionComponent = () => {
                   status: "connected",
                   bestBlockHeight,
                 },
-                apps: tab ? [{ name: tab.url, url: tab.url }] : [],
+                apps: [{ name: tab.url, url: tab.url }],
               })
             }
 

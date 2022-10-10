@@ -51,8 +51,8 @@ const Popup: FunctionComponent = () => {
               chainName: c.chainName,
               details: [
                 {
-                  tabId: c.tab?.id,
-                  url: c.tab?.url,
+                  tabId: c.tab.id,
+                  url: c.tab.url,
                   peers,
                   isSyncing,
                   chainId,
@@ -62,10 +62,10 @@ const Popup: FunctionComponent = () => {
             })
           } else {
             const details = allChains[i]?.details
-            if (!details.map((d) => d.tabId).includes(c.tab?.id)) {
+            if (!details.map((d) => d.tabId).includes(c.tab.id)) {
               details.push({
-                tabId: c.tab?.id,
-                url: c.tab?.url,
+                tabId: c.tab.id,
+                url: c.tab.url,
                 peers,
                 isSyncing,
                 chainId,

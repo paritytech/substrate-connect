@@ -119,7 +119,7 @@ chrome.runtime.onMessage.addListener(
               return;
   
             while (true) {
-              const pos = chains.findIndex((c) => c.tab?.id === sender.tab!.id!);
+              const pos = chains.findIndex((c) => c.tab.id === sender.tab!.id!);
               if (pos === -1)
                 break;
               chains.splice(pos, 1);
@@ -158,7 +158,7 @@ chrome.runtime.onMessage.addListener(
             if (!chains)
               return;
 
-            const pos = chains.findIndex((c) => c.tab?.id === sender.tab!.id! && c.chainId === message.chainId);
+            const pos = chains.findIndex((c) => c.tab.id === sender.tab!.id! && c.chainId === message.chainId);
             if (pos !== -1) {
               chains[pos].peers = message.peers;
               chains[pos].bestBlockHeight = message.bestBlockNumber;

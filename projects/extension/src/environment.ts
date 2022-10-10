@@ -47,7 +47,7 @@ function keyOf(entry: StorageEntry): string {
 export interface ExposedChainConnection {
   chainId: string
   chainName: string
-  tab?: ExposedChainConnectionTabInfo  // TODO: not optional
+  tab: ExposedChainConnectionTabInfo
   isSyncing: boolean
   peers: number
   bestBlockHeight?: number
