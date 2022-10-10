@@ -180,7 +180,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
     })
 })
 
-// TODO: probably wrong, because the background script might reload
+// TODO: right now it's ok, but will be wrong with manifest v3, because the script might reload
 // TODO: ?!?! why do we need to do this?
 environment.get({ type: "notifications" })
   .then((result) => {
@@ -188,5 +188,5 @@ environment.get({ type: "notifications" })
       environment.set({ type: "notifications" }, settings.notifications)
   })
 
-// TODO: probably wrong, because the background script might reload
+// TODO: right now it's ok, but will be wrong with manifest v3, because the script might reload
 environment.set({ type: "activeChains" }, [])
