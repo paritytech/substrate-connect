@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import pckg from "../../package.json"
 import { MdOutlineNetworkCell } from "react-icons/md"
 import { FaGithub } from "react-icons/fa"
@@ -117,9 +117,7 @@ export const Options: React.FunctionComponent = () => {
     refresh()
 
     return () => {
-      ;() => {
-        window.removeEventListener("message", eventListener)
-      }
+      window.removeEventListener("message", eventListener)
     }
   }, [])
 

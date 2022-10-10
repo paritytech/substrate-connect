@@ -74,11 +74,9 @@ const Popup: FunctionComponent = () => {
     refresh()
 
     return () => {
-      ;() => {
-        window.removeEventListener("message", eventListener)
-      }
+      window.removeEventListener("message", eventListener)
     }
-  }, [refresh])
+  }, [])
 
   const goToOptions = (): void => {
     chrome.runtime.openOptionsPage()
