@@ -93,7 +93,9 @@ chrome.runtime.onMessage.addListener(
             } as ToContentScript)
           }
         })
-        break
+
+        // `true` must be returned to indicate that there will be a response.
+        return true
       }
 
       case "tab-reset": {
