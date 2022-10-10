@@ -2,7 +2,7 @@ import React, { SetStateAction, useEffect, useState } from "react"
 import pckg from "../../package.json"
 import { MdOutlineNetworkCell } from "react-icons/md"
 import { FaGithub } from "react-icons/fa"
-import * as environment from '../environment'
+import * as environment from "../environment"
 import { NetworkTabProps } from "../types"
 import { BraveModal, Logo, MenuContent, Networks } from "../components"
 
@@ -71,7 +71,9 @@ export const Options: React.FunctionComponent = () => {
 
   useEffect(() => {
     const getNotifications = async () => {
-      setNotifications(await environment.get({ type: "notifications" }) || false)
+      setNotifications(
+        (await environment.get({ type: "notifications" })) || false,
+      )
     }
 
     getNotifications()
@@ -82,42 +84,42 @@ export const Options: React.FunctionComponent = () => {
     })
 
     const refresh = () => {
-      environment.get({ type: "activeChains" })
-        .then((chains) => {
-          const networks = new Map<string, NetworkTabProps>();
-          (chains || []).forEach((chain) => {
-            const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
+      environment.get({ type: "activeChains" }).then((chains) => {
+        const networks = new Map<string, NetworkTabProps>()
+        ;(chains || []).forEach((chain) => {
+          const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
 
-            const network = networks.get(chainName)
-            if (!network) {
-              return networks.set(chainName, {
-                name: chainName,
-                health: {
-                  isSyncing,
-                  peers,
-                  status: "connected",
-                  bestBlockHeight,
-                },
-                apps: [{ name: tab.url, url: tab.url }],
-              })
-            }
+          const network = networks.get(chainName)
+          if (!network) {
+            return networks.set(chainName, {
+              name: chainName,
+              health: {
+                isSyncing,
+                peers,
+                status: "connected",
+                bestBlockHeight,
+              },
+              apps: [{ name: tab.url, url: tab.url }],
+            })
+          }
 
-            if (tab) network.apps.push({ name: tab.url, url: tab.url })
-          })
-          setNetworks([...networks.values()])
+          if (tab) network.apps.push({ name: tab.url, url: tab.url })
         })
+        setNetworks([...networks.values()])
+      })
     }
 
     const eventListener = (ev: MessageEvent) => {
-      if (ev.data === environment.CHAINS_CHANGED_MESSAGE_DATA)
-        refresh()
-    };
+      if (ev.data === environment.CHAINS_CHANGED_MESSAGE_DATA) refresh()
+    }
     window.addEventListener("message", eventListener)
 
     refresh()
 
     return () => {
-      () => { window.removeEventListener("message", eventListener) }
+      ;() => {
+        window.removeEventListener("message", eventListener)
+      }
     }
   }, [])
 

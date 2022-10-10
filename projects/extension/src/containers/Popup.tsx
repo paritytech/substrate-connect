@@ -1,9 +1,4 @@
-import React, {
-  FunctionComponent,
-  ReactNode,
-  useEffect,
-  useState,
-} from "react"
+import React, { FunctionComponent, ReactNode, useEffect, useState } from "react"
 
 import { MdOutlineSettings, MdOutlineEast } from "react-icons/md"
 import { Accordion, Logo, IconWeb3, BraveModal } from "../components"
@@ -28,42 +23,41 @@ const Popup: FunctionComponent = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   const refresh = () => {
-    environment.get({ type: "activeChains" })
-      .then((chains) => {
-        const allChains: PopupChain[] = [];
-        (chains || []).forEach((c) => {
-          const i = allChains.findIndex((i) => i.chainName === c.chainName)
-          const { peers, isSyncing, chainId, bestBlockHeight } = c
-          if (i === -1) {
-            allChains.push({
-              chainName: c.chainName,
-              details: [
-                {
-                  tabId: c.tab.id,
-                  url: c.tab.url,
-                  peers,
-                  isSyncing,
-                  chainId,
-                  bestBlockHeight,
-                },
-              ],
-            })
-          } else {
-            const details = allChains[i]?.details
-            if (!details.map((d) => d.tabId).includes(c.tab.id)) {
-              details.push({
+    environment.get({ type: "activeChains" }).then((chains) => {
+      const allChains: PopupChain[] = []
+      ;(chains || []).forEach((c) => {
+        const i = allChains.findIndex((i) => i.chainName === c.chainName)
+        const { peers, isSyncing, chainId, bestBlockHeight } = c
+        if (i === -1) {
+          allChains.push({
+            chainName: c.chainName,
+            details: [
+              {
                 tabId: c.tab.id,
                 url: c.tab.url,
                 peers,
                 isSyncing,
                 chainId,
                 bestBlockHeight,
-              })
-            }
+              },
+            ],
+          })
+        } else {
+          const details = allChains[i]?.details
+          if (!details.map((d) => d.tabId).includes(c.tab.id)) {
+            details.push({
+              tabId: c.tab.id,
+              url: c.tab.url,
+              peers,
+              isSyncing,
+              chainId,
+              bestBlockHeight,
+            })
           }
-        })
-        setConnChains([...allChains])
+        }
       })
+      setConnChains([...allChains])
+    })
   }
 
   useEffect(() => {
@@ -74,14 +68,15 @@ const Popup: FunctionComponent = () => {
     })
 
     const eventListener = (ev: MessageEvent) => {
-      if (ev.data === environment.CHAINS_CHANGED_MESSAGE_DATA)
-        refresh()
-    };
+      if (ev.data === environment.CHAINS_CHANGED_MESSAGE_DATA) refresh()
+    }
     window.addEventListener("message", eventListener)
     refresh()
 
     return () => {
-      () => { window.removeEventListener("message", eventListener) }
+      ;() => {
+        window.removeEventListener("message", eventListener)
+      }
     }
   }, [refresh])
 

@@ -16,22 +16,34 @@ const loadWellKnownChains = async (): Promise<Map<string, string>> => {
   let westend2_cp = Object.assign({}, westend2)
   let rococo_cp = Object.assign({}, rococo_v2_2)
 
-  const polkadotBootnodes = await environment.get({ type: "bootnodes", chainName: polkadot_cp.id });
+  const polkadotBootnodes = await environment.get({
+    type: "bootnodes",
+    chainName: polkadot_cp.id,
+  })
   if (polkadotBootnodes) {
     polkadot_cp.bootNodes = polkadotBootnodes
   }
 
-  const ksmcc3Bootnodes = await environment.get({ type: "bootnodes", chainName: ksmcc3_cp.id });
+  const ksmcc3Bootnodes = await environment.get({
+    type: "bootnodes",
+    chainName: ksmcc3_cp.id,
+  })
   if (ksmcc3Bootnodes) {
     ksmcc3_cp.bootNodes = ksmcc3Bootnodes
   }
 
-  const westend2Bootnodes = await environment.get({ type: "bootnodes", chainName: westend2_cp.id });
+  const westend2Bootnodes = await environment.get({
+    type: "bootnodes",
+    chainName: westend2_cp.id,
+  })
   if (westend2Bootnodes) {
     westend2_cp.bootNodes = westend2Bootnodes
   }
 
-  const rococoBootnodes = await environment.get({ type: "bootnodes", chainName: rococo_cp.id });
+  const rococoBootnodes = await environment.get({
+    type: "bootnodes",
+    chainName: rococo_cp.id,
+  })
   if (rococoBootnodes) {
     rococo_cp.bootNodes = rococoBootnodes
   }
@@ -51,7 +63,11 @@ const loadWellKnownChains = async (): Promise<Map<string, string>> => {
 }
 
 function notifyChainsChanged() {
-  chrome.extension.getViews().forEach((window) => window.postMessage(environment.CHAINS_CHANGED_MESSAGE_DATA))
+  chrome.extension
+    .getViews()
+    .forEach((window) =>
+      window.postMessage(environment.CHAINS_CHANGED_MESSAGE_DATA),
+    )
 }
 
 chrome.runtime.onMessage.addListener(
@@ -81,81 +97,80 @@ chrome.runtime.onMessage.addListener(
       }
 
       case "tab-reset": {
-        environment.get({ type: "activeChains" })
-          .then((chains) => {
-            if (!chains)
-              return;
-  
-            while (true) {
-              const pos = chains.findIndex((c) => c.tab.id === sender.tab!.id!);
-              if (pos === -1)
-                break;
-              chains.splice(pos, 1);
-            }
+        environment.get({ type: "activeChains" }).then((chains) => {
+          if (!chains) return
 
-            environment.set({ type: "activeChains" }, chains)
-            notifyChainsChanged()
-          })
+          while (true) {
+            const pos = chains.findIndex((c) => c.tab.id === sender.tab!.id!)
+            if (pos === -1) break
+            chains.splice(pos, 1)
+          }
+
+          environment.set({ type: "activeChains" }, chains)
+          notifyChainsChanged()
+        })
         break
       }
 
       case "add-chain": {
-        environment.get({ type: "activeChains" })
-          .then((chains) => {
-            if (!chains)
-              chains = [];
+        environment.get({ type: "activeChains" }).then((chains) => {
+          if (!chains) chains = []
 
-            chains.push({
-              chainId: message.chainId,
-              chainName: message.chainSpecChainName,
-              isSyncing: false,
-              peers: 0,
-              tab: {
-                id: sender.tab!.id!,
-                url: sender.tab!.url!,
-              },
-            })
-
-            environment.set({ type: "activeChains" }, chains)
-            notifyChainsChanged()
+          chains.push({
+            chainId: message.chainId,
+            chainName: message.chainSpecChainName,
+            isSyncing: false,
+            peers: 0,
+            tab: {
+              id: sender.tab!.id!,
+              url: sender.tab!.url!,
+            },
           })
+
+          environment.set({ type: "activeChains" }, chains)
+          notifyChainsChanged()
+        })
         break
       }
 
       case "chain-info-update": {
-        environment.get({ type: "activeChains" })
-          .then((chains) => {
-            if (!chains)
-              return;
+        environment.get({ type: "activeChains" }).then((chains) => {
+          if (!chains) return
 
-            const pos = chains.findIndex((c) => c.tab.id === sender.tab!.id! && c.chainId === message.chainId);
-            if (pos !== -1) {
-              chains[pos].peers = message.peers;
-              chains[pos].bestBlockHeight = message.bestBlockNumber;
-            }
+          const pos = chains.findIndex(
+            (c) =>
+              c.tab.id === sender.tab!.id! && c.chainId === message.chainId,
+          )
+          if (pos !== -1) {
+            chains[pos].peers = message.peers
+            chains[pos].bestBlockHeight = message.bestBlockNumber
+          }
 
-            environment.set({ type: "activeChains" }, chains)
-            notifyChainsChanged()
-          })
+          environment.set({ type: "activeChains" }, chains)
+          notifyChainsChanged()
+        })
         break
       }
 
       case "database-content": {
-        environment.set({ type: "database", chainName: message.chainName }, message.databaseContent)
+        environment.set(
+          { type: "database", chainName: message.chainName },
+          message.databaseContent,
+        )
         break
       }
 
       case "remove-chain": {
-        environment.get({ type: "activeChains" })
-          .then((chains) => {
-            if (!chains)
-              return;
-            const pos = chains.findIndex((c) => c.tab.id === sender.tab!.id! && c.chainId === message.chainId);
-            if (pos !== -1)
-              chains.splice(pos, 1);
-            environment.set({ type: "activeChains" }, chains)
-            notifyChainsChanged()
-          });
+        environment.get({ type: "activeChains" }).then((chains) => {
+          if (!chains) return
+          const pos = chains.findIndex(
+            (c) =>
+              c.tab.id === sender.tab!.id! && c.chainId === message.chainId,
+          )
+          if (pos !== -1) chains.splice(pos, 1)
+          environment.set({ type: "activeChains" }, chains)
+          notifyChainsChanged()
+        })
         break
       }
     }
@@ -163,30 +178,26 @@ chrome.runtime.onMessage.addListener(
 )
 
 chrome.tabs.onRemoved.addListener((tabId) => {
-  environment.get({ type: "activeChains" })
-    .then((chains) => {
-      if (!chains)
-        return;
+  environment.get({ type: "activeChains" }).then((chains) => {
+    if (!chains) return
 
-      while (true) {
-        const pos = chains.findIndex((c) => c.tab.id === tabId);
-        if (pos === -1)
-          break;
-        chains.splice(pos, 1);
-      }
+    while (true) {
+      const pos = chains.findIndex((c) => c.tab.id === tabId)
+      if (pos === -1) break
+      chains.splice(pos, 1)
+    }
 
-      environment.set({ type: "activeChains" }, chains)
-      notifyChainsChanged()
-    })
+    environment.set({ type: "activeChains" }, chains)
+    notifyChainsChanged()
+  })
 })
 
 // TODO: right now it's ok, but will be wrong with manifest v3, because the script might reload
 // TODO: ?!?! why do we need to do this?
-environment.get({ type: "notifications" })
-  .then((result) => {
-    if (!result)
-      environment.set({ type: "notifications" }, settings.notifications)
-  })
+environment.get({ type: "notifications" }).then((result) => {
+  if (!result)
+    environment.set({ type: "notifications" }, settings.notifications)
+})
 
 // TODO: right now it's ok, but will be wrong with manifest v3, because the script might reload
 environment.set({ type: "activeChains" }, [])
