@@ -25,6 +25,20 @@ class SdJsonRpcDisabledError extends Error {
   }
 }
 
+class SdMalformedJsonRpcError extends Error {
+  constructor() {
+    super()
+    this.name = "MalformedJsonRpcError"
+  }
+}
+
+class SdQueueFullError extends Error {
+  constructor() {
+    super()
+    this.name = "QueueFullError"
+  }
+}
+
 const mockSmoldotLightFactory = () => {
   const start = (options: ClientOptions) => {
     const addChain = (
@@ -80,6 +94,8 @@ const mockSmoldotLightFactory = () => {
     AlreadyDestroyedError: SdAlreadyDestroyedError,
     CrashError: SdCrashError,
     JsonRpcDisabledError: SdJsonRpcDisabledError,
+    MalformedJsonRpcError: SdMalformedJsonRpcError,
+    QueueFullError: SdQueueFullError,
     start: (options: ClientOptions) => {
       return (latestClient = start(options))
     },
