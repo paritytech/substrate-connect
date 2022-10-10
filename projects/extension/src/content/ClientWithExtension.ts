@@ -11,7 +11,6 @@ import { ToExtension, ToContentScript } from "../background/protocol"
 
 export class SmoldotClientWithExtension {
   #client: SmoldotClient
-  #port: chrome.runtime.Port
   #chains: Map<
     ChainWithExtension,
     { inner: SmoldotChain; wellKnownName?: string }
@@ -21,7 +20,6 @@ export class SmoldotClientWithExtension {
   constructor() {
     this.#nextRpcRqId = 0
     this.#chains = new Map()
-    this.#port = chrome.runtime.connect()
     this.#client = startSmoldotClient({
       // Because we are in the context of a web page, trying to open TCP connections or non-secure
       // WebSocket connections to addresses other than localhost will lead to errors. As such, we
@@ -119,17 +117,10 @@ export class SmoldotClientWithExtension {
     potentialRelayChains: ChainWithExtension[]
     jsonRpcCallback: JsonRpcCallback
   }) {
-    const response = await this.#sendPortThenWaitResponse(
-      { type: "get-well-known-chain", chainName: options.chainName },
-      (msg: ToContentScript) => {
-        if (
-          msg.type === "get-well-known-chain" &&
-          msg.chainName === options.chainName
-        ) {
-          return msg
-        }
-      },
-    )
+    const response = await this.#sendPortThenWaitResponse({
+      type: "get-well-known-chain",
+      chainName: options.chainName,
+    })
 
     const potentialRelayChainsAdj = options.potentialRelayChains
       .filter((c) => this.#chains.has(c))
@@ -415,34 +406,18 @@ export class SmoldotClientWithExtension {
 
   async terminate(): Promise<void> {
     await this.#client.terminate()
-    this.#port.disconnect()
   }
 
   // Sends a message to the extension. No response is expected.
   #sendPort(message: ToExtension) {
-    this.#port.postMessage(message)
+    chrome.runtime.sendMessage(message)
   }
 
-  // Sends a message to the extension. The closure passed as parameter then gets passed every
-  // single message sent back by the extension. If the message is a response, then the closure
-  // must return the message itself, and the function as a whole returns. If the message isn't a
-  // response, the closure should return `undefined`.
-  async #sendPortThenWaitResponse<T>(
+  // Sends a message to the extension and waits for a response.
+  async #sendPortThenWaitResponse(
     message: ToExtension,
-    responseFilter: (message: ToContentScript) => T | undefined,
-  ): Promise<T> {
-    return new Promise((resolve) => {
-      const listener = (msg: ToContentScript) => {
-        const filtered = responseFilter(msg)
-        if (filtered) {
-          resolve(filtered)
-          this.#port.onMessage.removeListener(listener)
-        }
-      }
-
-      this.#port.onMessage.addListener(listener)
-      this.#port.postMessage(message)
-    })
+  ): Promise<ToContentScript> {
+    return chrome.runtime.sendMessage(message)
   }
 }
 
