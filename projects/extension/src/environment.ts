@@ -24,12 +24,13 @@ export type StorageEntryType<E extends StorageEntry> =
     ? ExposedChainConnection[]
     : never
 
-// TODO: is it null or is it undefined? ugh, need to check
 export async function get<E extends StorageEntry>(
   entry: E,
 ): Promise<StorageEntryType<E> | undefined> {
   return new Promise((resolve) => {
     const key = keyOf(entry)
+    // Note that `res[key]` will contain `undefined` is there is no such item in the
+    // storage (tested on Chrome v106).
     chrome.storage.local.get([key], (res) => resolve(res[key]))
   })
 }
