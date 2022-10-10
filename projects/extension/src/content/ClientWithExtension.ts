@@ -419,7 +419,9 @@ export class SmoldotClientWithExtension {
   ): Promise<ToContentScript> {
     // Note: for a completely unknown reason, the Promise version of `chrome.runtime.sendMessage`
     // would always produce `undefined`.
-    return new Promise((resolve) => chrome.runtime.sendMessage(message, (val) => resolve(val)));
+    return new Promise((resolve) =>
+      chrome.runtime.sendMessage(message, (val) => resolve(val)),
+    )
   }
 }
 
