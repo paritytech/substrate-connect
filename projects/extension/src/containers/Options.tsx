@@ -81,7 +81,7 @@ export const Options: React.FunctionComponent = () => {
     if (!bg) return
 
     const getNotifications = async () => {
-      setNotifications(await environment.get({ type: "notifications" }))
+      setNotifications(await environment.get({ type: "notifications" }) || false)
     }
 
     getNotifications()
@@ -94,7 +94,7 @@ export const Options: React.FunctionComponent = () => {
     const refresh = () => {
       environment.get({ type: "activeChains" })
         .then((chains) => {
-          const networks = new Map<string, NetworkTabProps>()
+          const networks = new Map<string, NetworkTabProps>();
           (chains || []).forEach((chain) => {
             const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
 
