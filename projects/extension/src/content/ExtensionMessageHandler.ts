@@ -64,12 +64,12 @@ export class ExtensionMessageHandler {
 
         try {
           chain.sendJsonRpc(data.jsonRpcMessage)
-        } catch(error) {
+        } catch (error) {
           // As documented in the protocol, malformed JSON-RPC requests are silently ignored.
           if (error instanceof MalformedJsonRpcError) {
-            return;
+            return
           } else {
-            throw error;
+            throw error
           }
         }
         break

@@ -186,29 +186,31 @@ export const createScClient = (config?: Config): ScClient => {
           transformErrors(() => {
             try {
               internalChain.sendJsonRpc(rpc)
-            } catch(error) {
+            } catch (error) {
               if (error instanceof MalformedJsonRpcError) {
                 // In order to expose the same behavior as the extension client, we silently
                 // discard malformed JSON-RPC requests.
-                return;
+                return
               } else if (error instanceof QueueFullError) {
                 // If the queue is full, we immediately send back a JSON-RPC response indicating
                 // the error.
                 try {
-                  const parsedRq = JSON.parse(rpc);
-                  jsonRpcCallback!(JSON.stringify({
-                    jsonrpc: "v2",
-                    id: parsedRq.id,
-                    error: {
+                  const parsedRq = JSON.parse(rpc)
+                  jsonRpcCallback!(
+                    JSON.stringify({
+                      jsonrpc: "v2",
+                      id: parsedRq.id,
+                      error: {
                         code: -32000,
                         message: "JSON-RPC server is too busy",
-                    },
-                  }));
-                } catch(_error) {
+                      },
+                    }),
+                  )
+                } catch (_error) {
                   // An error here counts as a malformed JSON-RPC request, which are ignored.
                 }
               } else {
-                throw error;
+                throw error
               }
             }
           })

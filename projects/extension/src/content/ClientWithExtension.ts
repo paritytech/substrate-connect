@@ -10,7 +10,7 @@ import {
 
 import { ToExtension, ToContentScript } from "../background/protocol"
 
-export { MalformedJsonRpcError } from '@substrate/smoldot-light'
+export { MalformedJsonRpcError } from "@substrate/smoldot-light"
 
 export class SmoldotClientWithExtension {
   #client: SmoldotClient
@@ -421,22 +421,24 @@ export class SmoldotClientWithExtension {
         } finally {
           try {
             return smoldotChain.sendJsonRpc(rpc)
-          } catch(error) {
+          } catch (error) {
             if (error instanceof QueueFullError) {
               // If the queue is full, we immediately send back a JSON-RPC response indicating
               // the error.
               try {
-                const parsedRq = JSON.parse(rpc);
-                jsonRpcCallback(JSON.stringify({
-                  jsonrpc: "v2",
-                  id: parsedRq.id,
-                  error: {
+                const parsedRq = JSON.parse(rpc)
+                jsonRpcCallback(
+                  JSON.stringify({
+                    jsonrpc: "v2",
+                    id: parsedRq.id,
+                    error: {
                       code: -32000,
                       message: "JSON-RPC server is too busy",
-                  },
-                }));
-              } catch(_error) {
-                throw new MalformedJsonRpcError();
+                    },
+                  }),
+                )
+              } catch (_error) {
+                throw new MalformedJsonRpcError()
               }
             } else {
               throw error
