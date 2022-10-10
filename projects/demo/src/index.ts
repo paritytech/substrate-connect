@@ -18,7 +18,7 @@ window.onload = () => {
       const polkadotProvider = new ScProvider(WellKnownChain.polkadot)
       await Promise.all(
         [westendProvider, kusamaProvider, polkadotProvider].map((p) =>
-          p.connect({ embeddedNodeConfig: { maxLogLevel: 4 } }),
+          p.connect(),
         ),
       )
       const westend = await ApiPromise.create({ provider: westendProvider })
