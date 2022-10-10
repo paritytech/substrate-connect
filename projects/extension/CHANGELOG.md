@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- New Settings screen in Options page, that allows user to enable/disable/add/remove the bootnodes per integrated chain. ([]())
+
 ### Changed
 
 - Due to the on-going update to manifest v3, the light client no longer runs in the extension but in each tab (that tries to connect to a chain) individually. As a consequence of this, the light client is no longer capable of opening non-secure WebSocket connections, and thus connectivity to chain might be greatly reduced. ([#1272](https://github.com/paritytech/substrate-connect/pull/1272))

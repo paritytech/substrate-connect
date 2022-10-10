@@ -67,6 +67,11 @@ const loadWellKnownChains = (): Promise<Map<string, string>> => {
 export interface Background extends Window {
   uiInterface: {
     onChainsChanged: (listener: () => void) => () => void
+    onBootnodeVerification: (
+      listener: (chain: string, bootnode: string, result: string) => void,
+    ) => void
+    getDefaultBootnodes: (chain: string) => string[]
+    updateBootnode: (chain: string, bootnode: string, add: boolean) => void
     setChromeStorageLocalSetting: (obj: any) => void
     getChromeStorageLocalSetting(
       setting: string,
@@ -108,12 +113,34 @@ const notifyAllChainsChangedListeners = () => {
   })
 }
 
+// Listeners that must be notified when there is an RPC response concerning bootnode verification
+let bootnodeVerifyListener: Set<(c: string, b: string, res: string) => void> =
+  new Set()
+const verifyBootnode = (c: string, b: string, res: string): Promise<void> =>
+  new Promise((resolve, reject) => {
+    bootnodeVerifyListener.forEach((l) => {
+      try {
+        l(c, b, res)
+      } catch (e) {
+        console.error("Uncaught exception while verifying bootnodes:", e)
+        reject(e)
+      }
+    })
+    resolve()
+  })
+
 declare let window: Background
 window.uiInterface = {
   onChainsChanged(listener) {
     chainsChangedListeners.add(listener)
     return () => {
       chainsChangedListeners.delete(listener)
+    }
+  },
+  onBootnodeVerification(listener) {
+    bootnodeVerifyListener.add(listener)
+    return () => {
+      bootnodeVerifyListener.delete(listener)
     }
   },
   setChromeStorageLocalSetting: (obj: any) => {
@@ -159,6 +186,44 @@ window.uiInterface = {
       }
       return output
     })
+  },
+  // Based on the chain provided, it returns the default bootnodes of given chain
+  // bootnodes are retrieved from the chainspecs that exist in the extension.
+  getDefaultBootnodes: (chain: string): string[] => {
+    if (chain === "polkadot") return polkadot.bootNodes
+    if (chain === "ksmcc3") return ksmcc3.bootNodes
+    if (chain === "westend2") return westend2.bootNodes
+    if (chain === "rococo_v2_2") return rococo_v2_2.bootNodes
+    return []
+  },
+  // Sends an message through rpc to smoldot in order to validate the given bootnode.
+  // This passes a callback (verifyBootnode) that will be called once rpc response is received.
+  updateBootnode: async (
+    chain: string,
+    bootnode: string,
+    add: boolean,
+  ): Promise<void> => {
+    if (!add) {
+      // remove bootnode from localstorage if it already exists
+      chrome.storage.local.get(["bootNodes_".concat(chain)], (result) => {
+        const res = [...result["bootNodes_".concat(chain)]]
+        const idx = res.findIndex((a) => a === bootnode)
+        if (idx > -1) {
+          res.splice(idx, 1)
+          chrome.storage.local.set({ ["bootNodes_".concat(chain)]: [...res] })
+        }
+      })
+    } else {
+      // TODO: CHECK THIS
+      // if bootnode does not exist, send for validation
+      // if (manager.state !== "ready") return
+      // await manager.manager.validateBootnode(
+      //   null,
+      //   chain,
+      //   bootnode,
+      //   verifyBootnode,
+      // )
+    }
   },
 }
 
