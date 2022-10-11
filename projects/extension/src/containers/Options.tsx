@@ -103,7 +103,7 @@ export const Options: React.FunctionComponent = () => {
             })
           }
 
-          if (tab) network.apps.push({ name: tab.url, url: tab.url })
+         network.apps.push({ name: tab.url, url: tab.url })
         })
         setNetworks([...networks.values()])
       })
