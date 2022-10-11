@@ -2,12 +2,14 @@ import { ExtensionMessageHandler } from "./ExtensionMessageHandler"
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 import { ToExtension } from "../background/protocol"
 
-const router = new ExtensionMessageHandler()
-
 // The extension can detect when a tab is closed, but it can't properly detect when a tab is
 // reloaded or changes URL or similar. For that reason, we send from the content script a message
 // indicating that the state of that content script has been reset.
-chrome.runtime.sendMessage({ type: "tab-reset" } as ToExtension)
+const tabResetResponseRx = new Promise((resolve: (val: undefined) => void) => {
+  chrome.runtime.sendMessage({ type: "tab-reset" } as ToExtension, () => resolve(undefined))
+})
+
+const router = new ExtensionMessageHandler(tabResetResponseRx)
 
 // inject as soon as possible the DOM element necessary for web pages to know that the extension
 // is available

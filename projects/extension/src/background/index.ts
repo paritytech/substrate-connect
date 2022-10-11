@@ -91,22 +91,15 @@ chrome.runtime.onMessage.addListener(
       }
 
       case "tab-reset": {
-        environment.get({ type: "activeChains" }).then((chains) => {
-          if (!chains) return
-
-          while (true) {
-            const pos = chains.findIndex((c) => c.tab.id === sender.tab!.id!)
-            if (pos === -1) break
-            chains.splice(pos, 1)
-          }
-
-          environment.set({ type: "activeChains" }, chains)
+        environment.remove({ type: "activeChains", tabId: sender.tab!.id! }).then(() => {
+          sendResponse(null)
         })
-        break
+        // `true` must be returned to indicate that there will be a response.
+        return true
       }
 
       case "add-chain": {
-        environment.get({ type: "activeChains" }).then((chains) => {
+        environment.get({ type: "activeChains", tabId: sender.tab!.id! }).then(async (chains) => {
           if (!chains) chains = []
 
           chains.push({
@@ -120,13 +113,15 @@ chrome.runtime.onMessage.addListener(
             },
           })
 
-          environment.set({ type: "activeChains" }, chains)
+          await environment.set({ type: "activeChains", tabId: sender.tab!.id! }, chains)
+          sendResponse(null)
         })
-        break
+        // `true` must be returned to indicate that there will be a response.
+        return true
       }
 
       case "chain-info-update": {
-        environment.get({ type: "activeChains" }).then((chains) => {
+        environment.get({ type: "activeChains", tabId: sender.tab!.id! }).then(async (chains) => {
           if (!chains) return
 
           const pos = chains.findIndex(
@@ -138,9 +133,11 @@ chrome.runtime.onMessage.addListener(
             chains[pos].bestBlockHeight = message.bestBlockNumber
           }
 
-          environment.set({ type: "activeChains" }, chains)
+          await environment.set({ type: "activeChains", tabId: sender.tab!.id! }, chains)
+          sendResponse(null)
         })
-        break
+        // `true` must be returned to indicate that there will be a response.
+        return true
       }
 
       case "database-content": {
@@ -148,37 +145,30 @@ chrome.runtime.onMessage.addListener(
           { type: "database", chainName: message.chainName },
           message.databaseContent,
         )
-        break
+        sendResponse(null)
+        return false
       }
 
       case "remove-chain": {
-        environment.get({ type: "activeChains" }).then((chains) => {
+        environment.get({ type: "activeChains", tabId: sender.tab!.id! }).then(async (chains) => {
           if (!chains) return
           const pos = chains.findIndex(
             (c) =>
               c.tab.id === sender.tab!.id! && c.chainId === message.chainId,
           )
           if (pos !== -1) chains.splice(pos, 1)
-          environment.set({ type: "activeChains" }, chains)
+          await environment.set({ type: "activeChains", tabId: sender.tab!.id! }, chains)
+          sendResponse(null)
         })
-        break
+        // `true` must be returned to indicate that there will be a response.
+        return true
       }
     }
   },
 )
 
 chrome.tabs.onRemoved.addListener((tabId) => {
-  environment.get({ type: "activeChains" }).then((chains) => {
-    if (!chains) return
-
-    while (true) {
-      const pos = chains.findIndex((c) => c.tab.id === tabId)
-      if (pos === -1) break
-      chains.splice(pos, 1)
-    }
-
-    environment.set({ type: "activeChains" }, chains)
-  })
+  environment.remove({ type: "activeChains", tabId })
 })
 
 // Callback called when the browser starts.
@@ -191,5 +181,7 @@ chrome.runtime.onStartup.addListener(() => {
       environment.set({ type: "notifications" }, settings.notifications)
   })
 
-  environment.set({ type: "activeChains" }, [])
+  // Note: there is clearly a race condition here because we can start processing tab messages
+  // before the promise has finished.
+  environment.clearAllActiveChains()
 })

@@ -84,7 +84,7 @@ export const Options: React.FunctionComponent = () => {
     })
 
     const refresh = () => {
-      environment.get({ type: "activeChains" }).then((chains) => {
+      environment.getAllActiveChains().then((chains) => {
         const networks = new Map<string, NetworkTabProps>()
         ;(chains || []).forEach((chain) => {
           const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
@@ -109,7 +109,7 @@ export const Options: React.FunctionComponent = () => {
       })
     }
 
-    const unregister = environment.onChanged({ type: "activeChains" }, () => refresh());
+    const unregister = environment.onActiveChainsChanged(() => refresh());
     refresh()
     return unregister
   }, [])

@@ -14,7 +14,12 @@ const sendMessage = (msg: ToApplication): void => {
 
 export class ExtensionMessageHandler {
   #clientWithExtension?: SmoldotClientWithExtension
+  #globalExtensionMessagesSendPromise: Promise<void>
   #chains: Map<string, ChainWithExtension> = new Map()
+
+  constructor(globalExtensionMessagesSendPromise: Promise<void>) {
+    this.#globalExtensionMessagesSendPromise = globalExtensionMessagesSendPromise
+  }
 
   /**
    * connections returns the names of all the ports this `ExtensionMessageRouter`
@@ -49,7 +54,7 @@ export class ExtensionMessageHandler {
     }
 
     if (!this.#clientWithExtension) {
-      this.#clientWithExtension = new SmoldotClientWithExtension()
+      this.#clientWithExtension = new SmoldotClientWithExtension(this.#globalExtensionMessagesSendPromise)
     }
 
     // TODO: must handles smoldot crashes
