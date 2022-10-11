@@ -16,10 +16,13 @@ export class SmoldotClientWithExtension {
     { inner: SmoldotChain; wellKnownName?: string }
   >
   #nextRpcRqId: number
+  #globalExtensionMessagesSendPromise: Promise<void>
 
-  constructor() {
+  constructor(globalExtensionMessagesSendPromise: Promise<void>) {
     this.#nextRpcRqId = 0
     this.#chains = new Map()
+    this.#globalExtensionMessagesSendPromise =
+      globalExtensionMessagesSendPromise
     this.#client = startSmoldotClient({
       // Because we are in the context of a web page, trying to open TCP connections or non-secure
       // WebSocket connections to addresses other than localhost will lead to errors. As such, we
@@ -121,6 +124,8 @@ export class SmoldotClientWithExtension {
       type: "get-well-known-chain",
       chainName: options.chainName,
     })
+    if (response?.type !== "get-well-known-chain")
+      throw new Error("Invalid response from extension")
 
     const potentialRelayChainsAdj = options.potentialRelayChains
       .filter((c) => this.#chains.has(c))
@@ -195,7 +200,7 @@ export class SmoldotClientWithExtension {
           // Store the health status in the locally-held information.
           const result: { peers: number } = parsed.result
           chainInfo.peers = result.peers
-          this.#sendPort({
+          this.#sendPortThenWaitResponse({
             type: "chain-info-update",
             chainId,
             bestBlockNumber: chainInfo.bestBlockHeight,
@@ -219,7 +224,7 @@ export class SmoldotClientWithExtension {
               } catch (error) {
                 delete chainInfo.bestBlockHeight
               }
-              this.#sendPort({
+              this.#sendPortThenWaitResponse({
                 type: "chain-info-update",
                 chainId,
                 bestBlockNumber: chainInfo.bestBlockHeight,
@@ -230,7 +235,7 @@ export class SmoldotClientWithExtension {
           return
         } else if (jsonRpcMessageId.startsWith("database-content:")) {
           console.assert(wellKnownName)
-          this.#sendPort({
+          this.#sendPortThenWaitResponse({
             type: "database-content",
             chainName: wellKnownName!,
             databaseContent: parsed.result as string,
@@ -291,7 +296,7 @@ export class SmoldotClientWithExtension {
               delete chainInfo.bestBlockHeaderRequestId
               delete chainInfo.finalizedBlockHashHex
               delete chainInfo.bestBlockHeight
-              this.#sendPort({
+              this.#sendPortThenWaitResponse({
                 type: "chain-info-update",
                 chainId,
                 bestBlockNumber: chainInfo.bestBlockHeight,
@@ -394,12 +399,16 @@ export class SmoldotClientWithExtension {
       },
       remove() {
         smoldotChain.remove()
-        client.#sendPort({ type: "remove-chain", chainId })
+        client.#sendPortThenWaitResponse({ type: "remove-chain", chainId })
         client.#chains.delete(this)
       },
     }
 
-    this.#sendPort({ type: "add-chain", chainId, chainSpecChainName })
+    await this.#sendPortThenWaitResponse({
+      type: "add-chain",
+      chainId,
+      chainSpecChainName,
+    })
     this.#chains.set(chain, { inner: smoldotChain, wellKnownName })
     return chain
   }
@@ -408,16 +417,26 @@ export class SmoldotClientWithExtension {
     await this.#client.terminate()
   }
 
-  // Sends a message to the extension. No response is expected.
-  #sendPort(message: ToExtension) {
-    chrome.runtime.sendMessage(message)
-  }
-
   // Sends a message to the extension and waits for a response.
+  //
+  // The messages are sent serially using `globalExtensionMessagesSendPromise`. In other words,
+  // each message is sent only when the previously-sent message has received a response.
   async #sendPortThenWaitResponse(
     message: ToExtension,
   ): Promise<ToContentScript> {
-    return chrome.runtime.sendMessage(message)
+    return new Promise((resolve) => {
+      this.#globalExtensionMessagesSendPromise =
+        this.#globalExtensionMessagesSendPromise.then(() => {
+          return new Promise((resolve2) => {
+            // Note: for a completely unknown reason, the Promise version of `chrome.runtime.sendMessage`
+            // would always produce `undefined`.
+            chrome.runtime.sendMessage(message, (val) => {
+              resolve(val)
+              resolve2()
+            })
+          })
+        })
+    })
   }
 }
 
