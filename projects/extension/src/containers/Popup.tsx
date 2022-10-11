@@ -1,14 +1,8 @@
-import React, {
-  FunctionComponent,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from "react"
+import React, { FunctionComponent, ReactNode, useEffect, useState } from "react"
 
 import { MdOutlineSettings, MdOutlineEast } from "react-icons/md"
 import { Accordion, Logo, IconWeb3, BraveModal } from "../components"
-import { Background } from "../background"
+import * as environment from "../environment"
 
 interface PopupChain {
   chainName: string
@@ -26,71 +20,63 @@ interface ChainDetails {
 
 const Popup: FunctionComponent = () => {
   const [connChains, setConnChains] = useState<PopupChain[] | undefined>()
-
-  const [bg, setBg] = useState<Background | undefined>()
   const [showModal, setShowModal] = useState<boolean>(false)
 
-  useEffect(() => {
-    chrome.runtime.getBackgroundPage((backgroundPage) => {
-      setBg(backgroundPage as Background)
-    })
-  }, [])
-
-  const refresh = useCallback(() => {
-    if (!bg) return
-    const allChains: PopupChain[] = []
-
-    bg.uiInterface.chains.forEach((c) => {
-      const i = allChains.findIndex((i) => i.chainName === c.chainName)
-      const { peers, isSyncing, chainId, bestBlockHeight } = c
-      if (i === -1) {
-        allChains.push({
-          chainName: c.chainName,
-          details: [
-            {
-              tabId: c.tab?.id,
-              url: c.tab?.url,
+  const refresh = () => {
+    environment.get({ type: "activeChains" }).then((chains) => {
+      const allChains: PopupChain[] = []
+      ;(chains || []).forEach((c) => {
+        const i = allChains.findIndex((i) => i.chainName === c.chainName)
+        const { peers, isSyncing, chainId, bestBlockHeight } = c
+        if (i === -1) {
+          allChains.push({
+            chainName: c.chainName,
+            details: [
+              {
+                tabId: c.tab.id,
+                url: c.tab.url,
+                peers,
+                isSyncing,
+                chainId,
+                bestBlockHeight,
+              },
+            ],
+          })
+        } else {
+          const details = allChains[i]?.details
+          if (!details.map((d) => d.tabId).includes(c.tab.id)) {
+            details.push({
+              tabId: c.tab.id,
+              url: c.tab.url,
               peers,
               isSyncing,
               chainId,
               bestBlockHeight,
-            },
-          ],
-        })
-      } else {
-        const details = allChains[i]?.details
-        if (!details.map((d) => d.tabId).includes(c.tab?.id)) {
-          details.push({
-            tabId: c.tab?.id,
-            url: c.tab?.url,
-            peers,
-            isSyncing,
-            chainId,
-            bestBlockHeight,
-          })
+            })
+          }
         }
-      }
+      })
+      setConnChains([...allChains])
     })
-    setConnChains([...allChains])
-  }, [bg])
+  }
 
   useEffect(() => {
-    if (!bg) return
-
     // Identify Brave browser and show Popup
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
-      const { braveSetting } =
-        await bg.uiInterface.getChromeStorageLocalSetting("braveSetting")
+      const braveSetting = await environment.get({ type: "braveSetting" })
       setShowModal(isBrave && !braveSetting)
     })
 
-    const cb = bg.uiInterface.onChainsChanged(refresh)
+    const eventListener = (ev: MessageEvent) => {
+      if (ev.data === environment.CHAINS_CHANGED_MESSAGE_DATA) refresh()
+    }
+    window.addEventListener("message", eventListener)
     refresh()
 
     return () => {
-      cb()
+      window.removeEventListener("message", eventListener)
     }
-  }, [bg, refresh])
+  }, [])
 
   const goToOptions = (): void => {
     chrome.runtime.openOptionsPage()
