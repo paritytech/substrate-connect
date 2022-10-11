@@ -23,7 +23,7 @@ const Popup: FunctionComponent = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   const refresh = () => {
-    environment.get({ type: "activeChains" }).then((chains) => {
+    environment.getAllActiveChains().then((chains) => {
       const allChains: PopupChain[] = []
       ;(chains || []).forEach((c) => {
         const i = allChains.findIndex((i) => i.chainName === c.chainName)
@@ -67,15 +67,9 @@ const Popup: FunctionComponent = () => {
       setShowModal(isBrave && !braveSetting)
     })
 
-    const eventListener = (ev: MessageEvent) => {
-      if (ev.data === environment.CHAINS_CHANGED_MESSAGE_DATA) refresh()
-    }
-    window.addEventListener("message", eventListener)
+    const unregister = environment.onActiveChainsChanged(() => refresh())
     refresh()
-
-    return () => {
-      window.removeEventListener("message", eventListener)
-    }
+    return unregister
   }, [])
 
   const goToOptions = (): void => {

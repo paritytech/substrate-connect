@@ -1,6 +1,13 @@
 /**
  * This module contains the types that are exchanged between the content script and the
  * extension's background page.
+ *
+ * All of the `ToExtension` messages *must* be answered in order to avoid some tricky race
+ * conditions (note: in reality only some of them need to be answered, but it's been decided
+ * that all of them should, for consistency). If not specified, they are answered with `null`.
+ *
+ * **IMPORTANT**: Each `ToExtension` message must only be sent after the previously sent message
+ * has received a response. Again, this avoids tricky race conditions.
  */
 
 export type ToExtension =
@@ -55,7 +62,7 @@ export interface ToExtensionRemoveChain {
   chainId: string
 }
 
-export type ToContentScript = ToContentScriptWellKnownChain
+export type ToContentScript = ToContentScriptWellKnownChain | null
 
 // Response to a {ToExtensionGetWellKnownChain}
 export interface ToContentScriptWellKnownChain {
