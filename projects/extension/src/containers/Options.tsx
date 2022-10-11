@@ -109,15 +109,15 @@ export const Options: React.FunctionComponent = () => {
       })
     }
 
-    const eventListener = (ev: MessageEvent) => {
-      if (ev.data === environment.CHAINS_CHANGED_MESSAGE_DATA) refresh()
+    const eventListener = (message: any) => {
+      if (message === environment.CHAINS_CHANGED_MESSAGE_DATA) refresh()
     }
-    window.addEventListener("message", eventListener)
+    chrome.runtime.onMessage.addListener(eventListener);
 
     refresh()
 
     return () => {
-      window.removeEventListener("message", eventListener)
+      chrome.runtime.onMessage.removeListener(eventListener)
     }
   }, [])
 

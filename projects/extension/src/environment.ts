@@ -6,8 +6,9 @@ export type StorageEntry =
   | { type: "activeChains" }
 
 /**
- * Whenever the content of the `activeChains` storage item is modified, a message must be sent to
- * the active windows of the extension. The data of this message must be this value.
+ * Whenever the content of the `activeChains` storage item is modified, a message must be sent
+ * within the extension using `chrome.runtime.sendMessage`. The payload of this message must be
+ * this value.
  */
 export const CHAINS_CHANGED_MESSAGE_DATA = "chains have changed"
 

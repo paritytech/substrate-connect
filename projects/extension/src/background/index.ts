@@ -63,11 +63,12 @@ const loadWellKnownChains = async (): Promise<Map<string, string>> => {
 }
 
 function notifyChainsChanged() {
-  chrome.extension
-    .getViews()
-    .forEach((window) =>
-      window.postMessage(environment.CHAINS_CHANGED_MESSAGE_DATA),
-    )
+  // Send a message to all frames of our own extension.
+  // For some reason, Chrome thinks that it's a good idea to throw an exception if there is no
+  // target for the message. We simply ignore the problem.
+  try {
+    chrome.runtime.sendMessage(environment.CHAINS_CHANGED_MESSAGE_DATA);
+  } catch(_error) {}
 }
 
 chrome.runtime.onMessage.addListener(
@@ -194,12 +195,15 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   })
 })
 
-// TODO: right now it's ok, but will be wrong with manifest v3, because the script might reload
-// TODO: ?!?! why do we need to do this?
-environment.get({ type: "notifications" }).then((result) => {
-  if (!result)
-    environment.set({ type: "notifications" }, settings.notifications)
-})
+// Callback called when the browser starts.
+// Note: technically, this is triggered when a new profile is started. But since each profile has
+// its own local storage, this fits the mental model of "browser starts".
+chrome.runtime.onStartup.addListener(() => {
+  // TODO: ?!?! why do we need to do this?
+  environment.get({ type: "notifications" }).then((result) => {
+    if (!result)
+      environment.set({ type: "notifications" }, settings.notifications)
+  })
 
-// TODO: right now it's ok, but will be wrong with manifest v3, because the script might reload
-environment.set({ type: "activeChains" }, [])
+  environment.set({ type: "activeChains" }, [])
+});
