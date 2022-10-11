@@ -66,9 +66,7 @@ function notifyChainsChanged() {
   // Send a message to all frames of our own extension.
   // For some reason, Chrome thinks that it's a good idea to throw an exception if there is no
   // target for the message. We simply ignore the problem.
-  try {
-    chrome.runtime.sendMessage(environment.CHAINS_CHANGED_MESSAGE_DATA)
-  } catch (_error) {}
+  chrome.runtime.sendMessage(environment.CHAINS_CHANGED_MESSAGE_DATA).catch((_error) => {})
 }
 
 chrome.runtime.onMessage.addListener(
