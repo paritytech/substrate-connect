@@ -13,13 +13,19 @@ const sendMessage = (msg: ToApplication): void => {
 }
 
 export class ExtensionMessageHandler {
-  #clientWithExtension?: SmoldotClientWithExtension
-  #globalExtensionMessagesSendPromise: Promise<void>
+  #clientWithExtension:
+    | { type: "initialized"; client: SmoldotClientWithExtension }
+    | {
+        type: "not-initialized"
+        globalExtensionMessagesSendPromise: Promise<void>
+      }
   #chains: Map<string, ChainWithExtension> = new Map()
 
   constructor(globalExtensionMessagesSendPromise: Promise<void>) {
-    this.#globalExtensionMessagesSendPromise =
-      globalExtensionMessagesSendPromise
+    this.#clientWithExtension = {
+      type: "not-initialized",
+      globalExtensionMessagesSendPromise,
+    }
   }
 
   /**
@@ -54,10 +60,11 @@ export class ExtensionMessageHandler {
       return
     }
 
-    if (!this.#clientWithExtension) {
-      this.#clientWithExtension = new SmoldotClientWithExtension(
-        this.#globalExtensionMessagesSendPromise,
+    if (this.#clientWithExtension.type !== "initialized") {
+      const client = new SmoldotClientWithExtension(
+        this.#clientWithExtension.globalExtensionMessagesSendPromise,
       )
+      this.#clientWithExtension = { type: "initialized", client }
     }
 
     // TODO: must handles smoldot crashes
@@ -104,13 +111,14 @@ export class ExtensionMessageHandler {
 
         let createChainPromise
         if (data.type === "add-well-known-chain") {
-          createChainPromise = this.#clientWithExtension.addWellKnownChain({
-            chainName: data.chainName,
-            jsonRpcCallback,
-            potentialRelayChains,
-          })
+          createChainPromise =
+            this.#clientWithExtension.client.addWellKnownChain({
+              chainName: data.chainName,
+              jsonRpcCallback,
+              potentialRelayChains,
+            })
         } else {
-          createChainPromise = this.#clientWithExtension.addChain({
+          createChainPromise = this.#clientWithExtension.client.addChain({
             chainSpec: data.chainSpec,
             jsonRpcCallback,
             potentialRelayChains,
