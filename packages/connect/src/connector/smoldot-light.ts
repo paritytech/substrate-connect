@@ -1,7 +1,9 @@
-import type {
+import {
   Chain as SChain,
   Client,
   ClientOptions,
+  MalformedJsonRpcError,
+  QueueFullError,
 } from "@substrate/smoldot-light"
 import { getSpec } from "./specs/index.js"
 import {
@@ -156,13 +158,61 @@ export const createScClient = (config?: Config): ScClient => {
       const internalChain = await client.addChain({
         chainSpec,
         potentialRelayChains: [...chains.values()],
-        jsonRpcCallback,
+        disableJsonRpc: jsonRpcCallback === undefined,
       })
+
+      ;(async () => {
+        while (true) {
+          let jsonRpcResponse
+          try {
+            jsonRpcResponse = await internalChain.nextJsonRpcResponse()
+          } catch (_) {
+            break
+          }
+
+          // `nextJsonRpcResponse` throws an exception if we pass `disableJsonRpc: true` in the
+          // config. We pass `disableJsonRpc: true` if `jsonRpcCallback` is undefined. Therefore,
+          // this code is never reachable if `jsonRpcCallback` is undefined.
+          try {
+            jsonRpcCallback!(jsonRpcResponse)
+          } catch (error) {
+            console.error("JSON-RPC callback has thrown an exception:", error)
+          }
+        }
+      })()
 
       const chain: Chain = {
         sendJsonRpc: (rpc) => {
           transformErrors(() => {
-            internalChain.sendJsonRpc(rpc)
+            try {
+              internalChain.sendJsonRpc(rpc)
+            } catch (error) {
+              if (error instanceof MalformedJsonRpcError) {
+                // In order to expose the same behavior as the extension client, we silently
+                // discard malformed JSON-RPC requests.
+                return
+              } else if (error instanceof QueueFullError) {
+                // If the queue is full, we immediately send back a JSON-RPC response indicating
+                // the error.
+                try {
+                  const parsedRq = JSON.parse(rpc)
+                  jsonRpcCallback!(
+                    JSON.stringify({
+                      jsonrpc: "v2",
+                      id: parsedRq.id,
+                      error: {
+                        code: -32000,
+                        message: "JSON-RPC server is too busy",
+                      },
+                    }),
+                  )
+                } catch (_error) {
+                  // An error here counts as a malformed JSON-RPC request, which are ignored.
+                }
+              } else {
+                throw error
+              }
+            }
           })
         },
         remove: () => {
