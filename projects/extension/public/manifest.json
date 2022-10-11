@@ -5,12 +5,13 @@
   "name": "Substrate Connect Extension",
   "short_name": "substrate-connect",
   "version": "0.1.11",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "permissions": ["notifications", "storage", "tabs", "alarms"],
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": "background.js",
+    "type": "module"
   },
-  "browser_action": {
+  "action": {
     "default_title": "Substrate Connect",
     "default_popup": "popup.html"
   },
@@ -31,6 +32,7 @@
     "48": "./icons/icon-48.png",
     "128": "./icons/icon-128.png"
   },
-  "content_security_policy": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
-  "web_accessible_resources": ["page.js"]
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
 }
