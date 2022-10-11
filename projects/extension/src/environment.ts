@@ -5,13 +5,6 @@ export type StorageEntry =
   | { type: "bootnodes"; chainName: string }
   | { type: "activeChains" }
 
-/**
- * Whenever the content of the `activeChains` storage item is modified, a message must be sent
- * within the extension using `chrome.runtime.sendMessage`. The payload of this message must be
- * this value.
- */
-export const CHAINS_CHANGED_MESSAGE_DATA = "chains have changed"
-
 export type StorageEntryType<E extends StorageEntry> =
   E["type"] extends "notifications"
     ? boolean
@@ -44,6 +37,16 @@ export async function set<E extends StorageEntry>(
     const key = keyOf(entry)
     chrome.storage.local.set({ [key]: value }, () => resolve())
   })
+}
+
+export function onChanged<E extends StorageEntry>(entry: E, callback: (newValue: StorageEntryType<E>) => void): () => void {
+  const key = keyOf(entry);
+  const registeredCallback = (changes: { [key: string]: chrome.storage.StorageChange }, areaName: chrome.storage.AreaName) => {
+    if (areaName === 'local' && changes[key])
+      callback(changes[key].newValue)
+  };
+  chrome.storage.onChanged.addListener(registeredCallback)
+  return () => chrome.storage.onChanged.removeListener(registeredCallback)
 }
 
 function keyOf(entry: StorageEntry): string {

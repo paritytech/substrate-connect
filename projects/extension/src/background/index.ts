@@ -62,13 +62,6 @@ const loadWellKnownChains = async (): Promise<Map<string, string>> => {
   ])
 }
 
-function notifyChainsChanged() {
-  // Send a message to all frames of our own extension.
-  // For some reason, Chrome thinks that it's a good idea to throw an exception if there is no
-  // target for the message. We simply ignore the problem.
-  chrome.runtime.sendMessage(environment.CHAINS_CHANGED_MESSAGE_DATA).catch((_error) => {})
-}
-
 chrome.runtime.onMessage.addListener(
   (message: ToExtension, sender, sendResponse) => {
     switch (message.type) {
@@ -108,7 +101,6 @@ chrome.runtime.onMessage.addListener(
           }
 
           environment.set({ type: "activeChains" }, chains)
-          notifyChainsChanged()
         })
         break
       }
@@ -129,7 +121,6 @@ chrome.runtime.onMessage.addListener(
           })
 
           environment.set({ type: "activeChains" }, chains)
-          notifyChainsChanged()
         })
         break
       }
@@ -148,7 +139,6 @@ chrome.runtime.onMessage.addListener(
           }
 
           environment.set({ type: "activeChains" }, chains)
-          notifyChainsChanged()
         })
         break
       }
@@ -170,7 +160,6 @@ chrome.runtime.onMessage.addListener(
           )
           if (pos !== -1) chains.splice(pos, 1)
           environment.set({ type: "activeChains" }, chains)
-          notifyChainsChanged()
         })
         break
       }
@@ -189,7 +178,6 @@ chrome.tabs.onRemoved.addListener((tabId) => {
     }
 
     environment.set({ type: "activeChains" }, chains)
-    notifyChainsChanged()
   })
 })
 
