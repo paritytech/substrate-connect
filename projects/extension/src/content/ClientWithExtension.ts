@@ -417,7 +417,11 @@ export class SmoldotClientWithExtension {
   async #sendPortThenWaitResponse(
     message: ToExtension,
   ): Promise<ToContentScript> {
-    return chrome.runtime.sendMessage(message)
+    // Note: for a completely unknown reason, the Promise version of `chrome.runtime.sendMessage`
+    // would always produce `undefined`.
+    return new Promise((resolve) =>
+      chrome.runtime.sendMessage(message, (val) => resolve(val)),
+    )
   }
 }
 
