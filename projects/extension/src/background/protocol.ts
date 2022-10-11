@@ -1,11 +1,19 @@
 /**
  * This module contains the types that are exchanged between the content script and the
  * extension's background page.
+ *
+ * All of the `ToExtension` messages *must* be answered in order to avoid some tricky race
+ * conditions (note: in reality only some of them need to be answered, but it's been decided
+ * that all of them should, for consistency). If not specified, they are answered with `null`.
+ *
+ * **IMPORTANT**: Each `ToExtension` message must only be sent after the previously sent message
+ * has received a response. Again, this avoids tricky race conditions.
  */
 
 export type ToExtension =
   | ToExtensionGetWellKnownChain
   | ToExtensionDatabaseContent
+  | ToExtensionReset
   | ToExtensionAddChain
   | ToExtensionChainInfoUpdate
   | ToExtensionRemoveChain
@@ -21,6 +29,13 @@ export interface ToExtensionDatabaseContent {
   type: "database-content"
   chainName: string
   databaseContent: string
+}
+
+// Report to the extension that all the chains of the current tab have been destroyed.
+// This is sent when the content script is loaded in order to indicate that the previous content
+// script of the same tab no longer exists.
+export interface ToExtensionReset {
+  type: "tab-reset"
 }
 
 // Report to the extension that a new chain has been initialized.
@@ -47,12 +62,11 @@ export interface ToExtensionRemoveChain {
   chainId: string
 }
 
-export type ToContentScript = ToContentScriptWellKnownChain
+export type ToContentScript = ToContentScriptWellKnownChain | null
 
 // Response to a {ToExtensionGetWellKnownChain}
 export interface ToContentScriptWellKnownChain {
   type: "get-well-known-chain"
-  chainName: string
   found?: {
     chainSpec: string
     databaseContent: string

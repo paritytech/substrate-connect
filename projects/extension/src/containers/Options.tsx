@@ -1,8 +1,8 @@
-import React, { SetStateAction, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import pckg from "../../package.json"
 import { MdOutlineNetworkCell } from "react-icons/md"
 import { FaGithub } from "react-icons/fa"
-import { Background } from "../background"
+import * as environment from "../environment"
 import { NetworkTabProps } from "../types"
 import { BraveModal, Logo, MenuContent, Networks } from "../components"
 
@@ -67,70 +67,56 @@ export const Options: React.FunctionComponent = () => {
   const [notifications, setNotifications] = useState<boolean>(false)
   const [menu, setMenu] = useState<number>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [bg, setBg] = useState<Background | undefined>()
   const [actionResult, setActionResult] = useState<string>("")
 
   useEffect(() => {
-    chrome.runtime.getBackgroundPage((backgroundPage) => {
-      setBg(backgroundPage as Background)
-    })
-  }, [])
-
-  useEffect(() => {
-    if (!bg) return
-
     const getNotifications = async () => {
-      const result = await bg?.uiInterface.getChromeStorageLocalSetting(
-        "notifications",
+      setNotifications(
+        (await environment.get({ type: "notifications" })) || false,
       )
-      setNotifications(result?.notifications as SetStateAction<boolean>)
     }
 
     getNotifications()
 
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
-      const { braveSetting } =
-        await bg.uiInterface.getChromeStorageLocalSetting("braveSetting")
+      const braveSetting = await environment.get({ type: "braveSetting" })
       setShowModal(isBrave && !braveSetting)
     })
 
     const refresh = () => {
-      const networks = new Map<string, NetworkTabProps>()
-      bg.uiInterface.chains.forEach((chain) => {
-        const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
+      environment.getAllActiveChains().then((chains) => {
+        const networks = new Map<string, NetworkTabProps>()
+        ;(chains || []).forEach((chain) => {
+          const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
 
-        const network = networks.get(chainName)
-        if (!network) {
-          return networks.set(chainName, {
-            name: chainName,
-            health: {
-              isSyncing,
-              peers,
-              status: "connected",
-              bestBlockHeight,
-            },
-            apps: tab ? [{ name: tab.url, url: tab.url }] : [],
-          })
-        }
+          const network = networks.get(chainName)
+          if (!network) {
+            return networks.set(chainName, {
+              name: chainName,
+              health: {
+                isSyncing,
+                peers,
+                status: "connected",
+                bestBlockHeight,
+              },
+              apps: [{ name: tab.url, url: tab.url }],
+            })
+          }
 
-        if (tab) network.apps.push({ name: tab.url, url: tab.url })
+          network.apps.push({ name: tab.url, url: tab.url })
+        })
+        setNetworks([...networks.values()])
       })
-      setNetworks([...networks.values()])
     }
 
-    const cb = bg.uiInterface.onChainsChanged(refresh)
+    const unregister = environment.onActiveChainsChanged(() => refresh())
     refresh()
-
-    return () => {
-      cb()
-    }
-  }, [bg])
+    return unregister
+  }, [])
 
   useEffect(() => {
-    bg?.uiInterface.setChromeStorageLocalSetting({
-      notifications: notifications,
-    })
-  }, [bg, notifications])
+    environment.set({ type: "notifications" }, notifications)
+  }, [notifications])
 
   useEffect(() => {
     const resetText = setTimeout(() => {
