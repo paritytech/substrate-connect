@@ -84,7 +84,7 @@ export const Options: React.FunctionComponent = () => {
     })
 
     const refresh = () => {
-      environment.get({ type: "activeChains" }).then((chains) => {
+      environment.getAllActiveChains().then((chains) => {
         const networks = new Map<string, NetworkTabProps>()
         ;(chains || []).forEach((chain) => {
           const { chainName, tab, isSyncing, peers, bestBlockHeight } = chain
@@ -109,16 +109,9 @@ export const Options: React.FunctionComponent = () => {
       })
     }
 
-    const eventListener = (ev: MessageEvent) => {
-      if (ev.data === environment.CHAINS_CHANGED_MESSAGE_DATA) refresh()
-    }
-    window.addEventListener("message", eventListener)
-
+    const unregister = environment.onActiveChainsChanged(() => refresh())
     refresh()
-
-    return () => {
-      window.removeEventListener("message", eventListener)
-    }
+    return unregister
   }, [])
 
   useEffect(() => {

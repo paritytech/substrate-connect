@@ -62,14 +62,6 @@ const loadWellKnownChains = async (): Promise<Map<string, string>> => {
   ])
 }
 
-function notifyChainsChanged() {
-  chrome.extension
-    .getViews()
-    .forEach((window) =>
-      window.postMessage(environment.CHAINS_CHANGED_MESSAGE_DATA),
-    )
-}
-
 chrome.runtime.onMessage.addListener(
   (message: ToExtension, sender, sendResponse) => {
     switch (message.type) {
@@ -99,59 +91,65 @@ chrome.runtime.onMessage.addListener(
       }
 
       case "tab-reset": {
-        environment.get({ type: "activeChains" }).then((chains) => {
-          if (!chains) return
-
-          while (true) {
-            const pos = chains.findIndex((c) => c.tab.id === sender.tab!.id!)
-            if (pos === -1) break
-            chains.splice(pos, 1)
-          }
-
-          environment.set({ type: "activeChains" }, chains)
-          notifyChainsChanged()
-        })
-        break
+        environment
+          .remove({ type: "activeChains", tabId: sender.tab!.id! })
+          .then(() => {
+            sendResponse(null)
+          })
+        // `true` must be returned to indicate that there will be a response.
+        return true
       }
 
       case "add-chain": {
-        environment.get({ type: "activeChains" }).then((chains) => {
-          if (!chains) chains = []
+        environment
+          .get({ type: "activeChains", tabId: sender.tab!.id! })
+          .then(async (chains) => {
+            if (!chains) chains = []
 
-          chains.push({
-            chainId: message.chainId,
-            chainName: message.chainSpecChainName,
-            isSyncing: false,
-            peers: 0,
-            tab: {
-              id: sender.tab!.id!,
-              url: sender.tab!.url!,
-            },
+            chains.push({
+              chainId: message.chainId,
+              chainName: message.chainSpecChainName,
+              isSyncing: false,
+              peers: 0,
+              tab: {
+                id: sender.tab!.id!,
+                url: sender.tab!.url!,
+              },
+            })
+
+            await environment.set(
+              { type: "activeChains", tabId: sender.tab!.id! },
+              chains,
+            )
+            sendResponse(null)
           })
-
-          environment.set({ type: "activeChains" }, chains)
-          notifyChainsChanged()
-        })
-        break
+        // `true` must be returned to indicate that there will be a response.
+        return true
       }
 
       case "chain-info-update": {
-        environment.get({ type: "activeChains" }).then((chains) => {
-          if (!chains) return
+        environment
+          .get({ type: "activeChains", tabId: sender.tab!.id! })
+          .then(async (chains) => {
+            if (!chains) return
 
-          const pos = chains.findIndex(
-            (c) =>
-              c.tab.id === sender.tab!.id! && c.chainId === message.chainId,
-          )
-          if (pos !== -1) {
-            chains[pos].peers = message.peers
-            chains[pos].bestBlockHeight = message.bestBlockNumber
-          }
+            const pos = chains.findIndex(
+              (c) =>
+                c.tab.id === sender.tab!.id! && c.chainId === message.chainId,
+            )
+            if (pos !== -1) {
+              chains[pos].peers = message.peers
+              chains[pos].bestBlockHeight = message.bestBlockNumber
+            }
 
-          environment.set({ type: "activeChains" }, chains)
-          notifyChainsChanged()
-        })
-        break
+            await environment.set(
+              { type: "activeChains", tabId: sender.tab!.id! },
+              chains,
+            )
+            sendResponse(null)
+          })
+        // `true` must be returned to indicate that there will be a response.
+        return true
       }
 
       case "database-content": {
@@ -159,47 +157,48 @@ chrome.runtime.onMessage.addListener(
           { type: "database", chainName: message.chainName },
           message.databaseContent,
         )
-        break
+        sendResponse(null)
+        return false
       }
 
       case "remove-chain": {
-        environment.get({ type: "activeChains" }).then((chains) => {
-          if (!chains) return
-          const pos = chains.findIndex(
-            (c) =>
-              c.tab.id === sender.tab!.id! && c.chainId === message.chainId,
-          )
-          if (pos !== -1) chains.splice(pos, 1)
-          environment.set({ type: "activeChains" }, chains)
-          notifyChainsChanged()
-        })
-        break
+        environment
+          .get({ type: "activeChains", tabId: sender.tab!.id! })
+          .then(async (chains) => {
+            if (!chains) return
+            const pos = chains.findIndex(
+              (c) =>
+                c.tab.id === sender.tab!.id! && c.chainId === message.chainId,
+            )
+            if (pos !== -1) chains.splice(pos, 1)
+            await environment.set(
+              { type: "activeChains", tabId: sender.tab!.id! },
+              chains,
+            )
+            sendResponse(null)
+          })
+        // `true` must be returned to indicate that there will be a response.
+        return true
       }
     }
   },
 )
 
 chrome.tabs.onRemoved.addListener((tabId) => {
-  environment.get({ type: "activeChains" }).then((chains) => {
-    if (!chains) return
+  environment.remove({ type: "activeChains", tabId })
+})
 
-    while (true) {
-      const pos = chains.findIndex((c) => c.tab.id === tabId)
-      if (pos === -1) break
-      chains.splice(pos, 1)
-    }
-
-    environment.set({ type: "activeChains" }, chains)
-    notifyChainsChanged()
+// Callback called when the browser starts.
+// Note: technically, this is triggered when a new profile is started. But since each profile has
+// its own local storage, this fits the mental model of "browser starts".
+chrome.runtime.onStartup.addListener(() => {
+  // TODO: ?!?! why do we need to do this?
+  environment.get({ type: "notifications" }).then((result) => {
+    if (!result)
+      environment.set({ type: "notifications" }, settings.notifications)
   })
-})
 
-// TODO: right now it's ok, but will be wrong with manifest v3, because the script might reload
-// TODO: ?!?! why do we need to do this?
-environment.get({ type: "notifications" }).then((result) => {
-  if (!result)
-    environment.set({ type: "notifications" }, settings.notifications)
+  // Note: there is clearly a race condition here because we can start processing tab messages
+  // before the promise has finished.
+  environment.clearAllActiveChains()
 })
-
-// TODO: right now it's ok, but will be wrong with manifest v3, because the script might reload
-environment.set({ type: "activeChains" }, [])
