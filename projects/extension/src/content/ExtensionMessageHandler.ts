@@ -18,7 +18,8 @@ export class ExtensionMessageHandler {
   #chains: Map<string, ChainWithExtension> = new Map()
 
   constructor(globalExtensionMessagesSendPromise: Promise<void>) {
-    this.#globalExtensionMessagesSendPromise = globalExtensionMessagesSendPromise
+    this.#globalExtensionMessagesSendPromise =
+      globalExtensionMessagesSendPromise
   }
 
   /**
@@ -54,7 +55,9 @@ export class ExtensionMessageHandler {
     }
 
     if (!this.#clientWithExtension) {
-      this.#clientWithExtension = new SmoldotClientWithExtension(this.#globalExtensionMessagesSendPromise)
+      this.#clientWithExtension = new SmoldotClientWithExtension(
+        this.#globalExtensionMessagesSendPromise,
+      )
     }
 
     // TODO: must handles smoldot crashes

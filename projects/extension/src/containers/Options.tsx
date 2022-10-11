@@ -109,7 +109,7 @@ export const Options: React.FunctionComponent = () => {
       })
     }
 
-    const unregister = environment.onActiveChainsChanged(() => refresh());
+    const unregister = environment.onActiveChainsChanged(() => refresh())
     refresh()
     return unregister
   }, [])

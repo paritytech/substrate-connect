@@ -6,7 +6,9 @@ import { ToExtension } from "../background/protocol"
 // reloaded or changes URL or similar. For that reason, we send from the content script a message
 // indicating that the state of that content script has been reset.
 const tabResetResponseRx = new Promise((resolve: (val: undefined) => void) => {
-  chrome.runtime.sendMessage({ type: "tab-reset" } as ToExtension, () => resolve(undefined))
+  chrome.runtime.sendMessage({ type: "tab-reset" } as ToExtension, () =>
+    resolve(undefined),
+  )
 })
 
 const router = new ExtensionMessageHandler(tabResetResponseRx)

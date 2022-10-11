@@ -67,7 +67,7 @@ const Popup: FunctionComponent = () => {
       setShowModal(isBrave && !braveSetting)
     })
 
-    const unregister = environment.onActiveChainsChanged(() => refresh());
+    const unregister = environment.onActiveChainsChanged(() => refresh())
     refresh()
     return unregister
   }, [])

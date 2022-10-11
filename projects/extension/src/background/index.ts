@@ -91,51 +91,63 @@ chrome.runtime.onMessage.addListener(
       }
 
       case "tab-reset": {
-        environment.remove({ type: "activeChains", tabId: sender.tab!.id! }).then(() => {
-          sendResponse(null)
-        })
+        environment
+          .remove({ type: "activeChains", tabId: sender.tab!.id! })
+          .then(() => {
+            sendResponse(null)
+          })
         // `true` must be returned to indicate that there will be a response.
         return true
       }
 
       case "add-chain": {
-        environment.get({ type: "activeChains", tabId: sender.tab!.id! }).then(async (chains) => {
-          if (!chains) chains = []
+        environment
+          .get({ type: "activeChains", tabId: sender.tab!.id! })
+          .then(async (chains) => {
+            if (!chains) chains = []
 
-          chains.push({
-            chainId: message.chainId,
-            chainName: message.chainSpecChainName,
-            isSyncing: false,
-            peers: 0,
-            tab: {
-              id: sender.tab!.id!,
-              url: sender.tab!.url!,
-            },
+            chains.push({
+              chainId: message.chainId,
+              chainName: message.chainSpecChainName,
+              isSyncing: false,
+              peers: 0,
+              tab: {
+                id: sender.tab!.id!,
+                url: sender.tab!.url!,
+              },
+            })
+
+            await environment.set(
+              { type: "activeChains", tabId: sender.tab!.id! },
+              chains,
+            )
+            sendResponse(null)
           })
-
-          await environment.set({ type: "activeChains", tabId: sender.tab!.id! }, chains)
-          sendResponse(null)
-        })
         // `true` must be returned to indicate that there will be a response.
         return true
       }
 
       case "chain-info-update": {
-        environment.get({ type: "activeChains", tabId: sender.tab!.id! }).then(async (chains) => {
-          if (!chains) return
+        environment
+          .get({ type: "activeChains", tabId: sender.tab!.id! })
+          .then(async (chains) => {
+            if (!chains) return
 
-          const pos = chains.findIndex(
-            (c) =>
-              c.tab.id === sender.tab!.id! && c.chainId === message.chainId,
-          )
-          if (pos !== -1) {
-            chains[pos].peers = message.peers
-            chains[pos].bestBlockHeight = message.bestBlockNumber
-          }
+            const pos = chains.findIndex(
+              (c) =>
+                c.tab.id === sender.tab!.id! && c.chainId === message.chainId,
+            )
+            if (pos !== -1) {
+              chains[pos].peers = message.peers
+              chains[pos].bestBlockHeight = message.bestBlockNumber
+            }
 
-          await environment.set({ type: "activeChains", tabId: sender.tab!.id! }, chains)
-          sendResponse(null)
-        })
+            await environment.set(
+              { type: "activeChains", tabId: sender.tab!.id! },
+              chains,
+            )
+            sendResponse(null)
+          })
         // `true` must be returned to indicate that there will be a response.
         return true
       }
@@ -150,16 +162,21 @@ chrome.runtime.onMessage.addListener(
       }
 
       case "remove-chain": {
-        environment.get({ type: "activeChains", tabId: sender.tab!.id! }).then(async (chains) => {
-          if (!chains) return
-          const pos = chains.findIndex(
-            (c) =>
-              c.tab.id === sender.tab!.id! && c.chainId === message.chainId,
-          )
-          if (pos !== -1) chains.splice(pos, 1)
-          await environment.set({ type: "activeChains", tabId: sender.tab!.id! }, chains)
-          sendResponse(null)
-        })
+        environment
+          .get({ type: "activeChains", tabId: sender.tab!.id! })
+          .then(async (chains) => {
+            if (!chains) return
+            const pos = chains.findIndex(
+              (c) =>
+                c.tab.id === sender.tab!.id! && c.chainId === message.chainId,
+            )
+            if (pos !== -1) chains.splice(pos, 1)
+            await environment.set(
+              { type: "activeChains", tabId: sender.tab!.id! },
+              chains,
+            )
+            sendResponse(null)
+          })
         // `true` must be returned to indicate that there will be a response.
         return true
       }

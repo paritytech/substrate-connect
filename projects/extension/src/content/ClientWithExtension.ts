@@ -21,7 +21,8 @@ export class SmoldotClientWithExtension {
   constructor(globalExtensionMessagesSendPromise: Promise<void>) {
     this.#nextRpcRqId = 0
     this.#chains = new Map()
-    this.#globalExtensionMessagesSendPromise = globalExtensionMessagesSendPromise
+    this.#globalExtensionMessagesSendPromise =
+      globalExtensionMessagesSendPromise
     this.#client = startSmoldotClient({
       // Because we are in the context of a web page, trying to open TCP connections or non-secure
       // WebSocket connections to addresses other than localhost will lead to errors. As such, we
@@ -403,7 +404,11 @@ export class SmoldotClientWithExtension {
       },
     }
 
-    await this.#sendPortThenWaitResponse({ type: "add-chain", chainId, chainSpecChainName })
+    await this.#sendPortThenWaitResponse({
+      type: "add-chain",
+      chainId,
+      chainSpecChainName,
+    })
     this.#chains.set(chain, { inner: smoldotChain, wellKnownName })
     return chain
   }
@@ -420,16 +425,17 @@ export class SmoldotClientWithExtension {
     message: ToExtension,
   ): Promise<ToContentScript> {
     return new Promise((resolve) => {
-      this.#globalExtensionMessagesSendPromise = this.#globalExtensionMessagesSendPromise.then(() => {
-        return new Promise((resolve2) => {
-          // Note: for a completely unknown reason, the Promise version of `chrome.runtime.sendMessage`
-          // would always produce `undefined`.
-          chrome.runtime.sendMessage(message, (val) => {
-            resolve(val)
-            resolve2()
-          });
+      this.#globalExtensionMessagesSendPromise =
+        this.#globalExtensionMessagesSendPromise.then(() => {
+          return new Promise((resolve2) => {
+            // Note: for a completely unknown reason, the Promise version of `chrome.runtime.sendMessage`
+            // would always produce `undefined`.
+            chrome.runtime.sendMessage(message, (val) => {
+              resolve(val)
+              resolve2()
+            })
+          })
         })
-      })
     })
   }
 }

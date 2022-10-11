@@ -3,7 +3,7 @@ export type StorageEntry =
   | { type: "braveSetting" }
   | { type: "database"; chainName: string }
   | { type: "bootnodes"; chainName: string }
-  | { type: "activeChains", tabId: number }
+  | { type: "activeChains"; tabId: number }
 
 export type StorageEntryType<E extends StorageEntry> =
   E["type"] extends "notifications"
@@ -27,10 +27,10 @@ export type StorageEntryType<E extends StorageEntry> =
 export async function getAllActiveChains(): Promise<ExposedChainConnection[]> {
   return new Promise((resolve) => {
     chrome.storage.local.get(null, (res) => {
-      let out: ExposedChainConnection[] = [];
+      let out: ExposedChainConnection[] = []
       for (const key in res) {
         if (key.startsWith("activeChains_"))
-          out = [...out, ...res[key] as ExposedChainConnection[]];
+          out = [...out, ...(res[key] as ExposedChainConnection[])]
       }
       resolve(out)
     })
@@ -58,9 +58,7 @@ export async function set<E extends StorageEntry>(
   })
 }
 
-export async function remove<E extends StorageEntry>(
-  entry: E
-): Promise<void> {
+export async function remove<E extends StorageEntry>(entry: E): Promise<void> {
   return new Promise((resolve) => {
     const key = keyOf(entry)
     chrome.storage.local.remove(key, () => resolve())
@@ -70,10 +68,9 @@ export async function remove<E extends StorageEntry>(
 export async function clearAllActiveChains(): Promise<void> {
   return new Promise((resolve) => {
     chrome.storage.local.get(null, (res) => {
-      const keys = [];
+      const keys = []
       for (const key in res) {
-        if (key.startsWith("activeChains_"))
-          keys.push(key)
+        if (key.startsWith("activeChains_")) keys.push(key)
       }
       chrome.storage.local.remove(keys, () => resolve())
     })
@@ -81,14 +78,15 @@ export async function clearAllActiveChains(): Promise<void> {
 }
 
 export function onActiveChainsChanged(callback: () => void): () => void {
-  const registeredCallback = (changes: { [key: string]: chrome.storage.StorageChange }, areaName: chrome.storage.AreaName) => {
-    if (areaName !== 'local')
-      return;
+  const registeredCallback = (
+    changes: { [key: string]: chrome.storage.StorageChange },
+    areaName: chrome.storage.AreaName,
+  ) => {
+    if (areaName !== "local") return
     for (const key in changes) {
-      if (key.startsWith("activeChains_"))
-        callback()
+      if (key.startsWith("activeChains_")) callback()
     }
-  };
+  }
   chrome.storage.onChanged.addListener(registeredCallback)
   return () => chrome.storage.onChanged.removeListener(registeredCallback)
 }
