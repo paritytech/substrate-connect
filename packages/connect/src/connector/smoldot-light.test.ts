@@ -2,12 +2,7 @@
 import { jest } from "@jest/globals"
 import type { AddChainOptions, ClientOptions } from "@substrate/smoldot-light"
 import { WellKnownChain } from "../WellKnownChain"
-import {
-  AlreadyDestroyedError,
-  CrashError,
-  JsonRpcDisabledError,
-  ScClient,
-} from "./types"
+import { ScClient } from "./types"
 
 class SdAlreadyDestroyedError extends Error {
   constructor() {
@@ -27,6 +22,20 @@ class SdJsonRpcDisabledError extends Error {
   constructor() {
     super()
     this.name = "JsonRpcDisabledError"
+  }
+}
+
+class SdMalformedJsonRpcError extends Error {
+  constructor() {
+    super()
+    this.name = "MalformedJsonRpcError"
+  }
+}
+
+class SdQueueFullError extends Error {
+  constructor() {
+    super()
+    this.name = "QueueFullError"
   }
 }
 
@@ -85,6 +94,8 @@ const mockSmoldotLightFactory = () => {
     AlreadyDestroyedError: SdAlreadyDestroyedError,
     CrashError: SdCrashError,
     JsonRpcDisabledError: SdJsonRpcDisabledError,
+    MalformedJsonRpcError: SdMalformedJsonRpcError,
+    QueueFullError: SdQueueFullError,
     start: (options: ClientOptions) => {
       return (latestClient = start(options))
     },
@@ -162,24 +173,6 @@ describe("SmoldotConnect::smoldot-light", () => {
   })
 
   describe("chain", () => {
-    it("sends/receives rpc messages", async () => {
-      const { addChain } = createScClient()
-      const messagesReceived: string[] = []
-      const chain = await addChain("", (response) => {
-        messagesReceived.push(response)
-      })
-
-      const mockedChain = mockedSmoldotLight.getLatestClient()._getChains()[0]
-      mockedChain._setSendJsonRpc(
-        jest.fn((rpc) => {
-          mockedChain._addChainOptions.jsonRpcCallback!(rpc + " pong")
-        }),
-      )
-
-      chain.sendJsonRpc("ping")
-      expect(messagesReceived).toEqual(["ping pong"])
-    })
-
     it("propagates the correct chainSpec to smoldot-light", async () => {
       const { addChain, addWellKnownChain } = createScClient()
       const chainSpec = "testChainSpec"
@@ -229,109 +222,6 @@ describe("SmoldotConnect::smoldot-light", () => {
         mockedChains[1],
         mockedChains[2],
       ])
-    })
-
-    it("propagates the correct CrashError", async () => {
-      const { addChain } = createScClient()
-      const messagesReceived: string[] = []
-      const chain = await addChain("", (response) => {
-        messagesReceived.push(response)
-      })
-
-      const mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
-      mockedChain._setSendJsonRpc(
-        jest.fn((rpc) => {
-          mockedChain._addChainOptions.jsonRpcCallback!(rpc + " pong")
-        }),
-      )
-
-      mockedChain._setSendJsonRpc(
-        jest.fn((_) => {
-          throw new SdCrashError("Boom sendJsonRpc!")
-        }),
-      )
-
-      mockedChain._setRemove(
-        jest.fn(() => {
-          throw new SdCrashError("Boom remove!")
-        }),
-      )
-
-      expect(() => chain.sendJsonRpc("")).toThrow(
-        new CrashError("Boom sendJsonRpc!"),
-      )
-      expect(() => chain.remove()).toThrow(new CrashError("Boom remove!"))
-
-      mockedChain._setSendJsonRpc(
-        jest.fn((_) => {
-          throw new Error("foo")
-        }),
-      )
-
-      expect(() => chain.sendJsonRpc("")).toThrow(new CrashError("foo"))
-
-      mockedChain._setSendJsonRpc(
-        jest.fn((_) => {
-          // eslint-disable-next-line no-throw-literal
-          throw "foo"
-        }),
-      )
-      expect(() => chain.sendJsonRpc("")).toThrow(
-        new CrashError("Unexpected error foo"),
-      )
-    })
-
-    it("propagates the correct AlreadyDestroyedError", async () => {
-      const { addChain } = createScClient()
-      const messagesReceived: string[] = []
-      const chain = await addChain("", (response) => {
-        messagesReceived.push(response)
-      })
-
-      const mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
-      mockedChain._setSendJsonRpc(
-        jest.fn((rpc) => {
-          mockedChain._addChainOptions.jsonRpcCallback!(rpc + " pong")
-        }),
-      )
-
-      mockedChain._setSendJsonRpc(
-        jest.fn((_) => {
-          throw new SdAlreadyDestroyedError()
-        }),
-      )
-
-      mockedChain._setRemove(
-        jest.fn(() => {
-          throw new SdAlreadyDestroyedError()
-        }),
-      )
-
-      expect(() => chain.sendJsonRpc("")).toThrow(AlreadyDestroyedError)
-      expect(() => chain.remove()).toThrow(AlreadyDestroyedError)
-    })
-
-    it("propagates the correct JsonRpcDisabledError", async () => {
-      const { addChain } = createScClient()
-      const messagesReceived: string[] = []
-      const chain = await addChain("", (response) => {
-        messagesReceived.push(response)
-      })
-
-      const mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
-      mockedChain._setSendJsonRpc(
-        jest.fn((rpc) => {
-          mockedChain._addChainOptions.jsonRpcCallback!(rpc + " pong")
-        }),
-      )
-
-      mockedChain._setSendJsonRpc(
-        jest.fn((_) => {
-          throw new SdJsonRpcDisabledError()
-        }),
-      )
-
-      expect(() => chain.sendJsonRpc("")).toThrow(JsonRpcDisabledError)
     })
   })
 })

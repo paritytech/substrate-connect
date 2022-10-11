@@ -4,12 +4,7 @@ import {
   ToExtension,
 } from "@substrate/connect-extension-protocol"
 import { createScClient } from "./extension"
-import {
-  JsonRpcCallback,
-  AlreadyDestroyedError,
-  CrashError,
-  JsonRpcDisabledError,
-} from "./types"
+import { AlreadyDestroyedError, CrashError } from "./types"
 
 // we have to fake this API on node
 import { WellKnownChain } from "../WellKnownChain.js"
@@ -32,18 +27,6 @@ const getClientMessage = (timeout = 10) =>
     const token = setTimeout(rej, timeout)
     const onMessage = ({ data }: MessageEvent<ToExtension>) => {
       if (data?.origin !== "substrate-connect-client") return
-      window.removeEventListener("message", onMessage)
-      clearTimeout(token)
-      res(data)
-    }
-    window.addEventListener("message", onMessage)
-  })
-
-const getExtensionMessage = (timeout = 10) =>
-  new Promise<ToApplication>((res, rej) => {
-    const token = setTimeout(rej, timeout)
-    const onMessage = ({ data }: MessageEvent<ToApplication>) => {
-      if (data?.origin !== "substrate-connect-extension") return
       window.removeEventListener("message", onMessage)
       clearTimeout(token)
       res(data)
@@ -188,62 +171,6 @@ describe("SmoldotConnect::Extension", () => {
       })
 
       await expect(chainPromise).rejects.toThrow()
-    })
-  })
-
-  describe("chain.sendJsonRpc", () => {
-    it("sends and receives jsonRpc messages", async () => {
-      const { addChain } = createScClient()
-      const receivedMessages: string[] = []
-      const jsonRpcCallback: JsonRpcCallback = (response) => {
-        receivedMessages.push(response)
-      }
-
-      const chainPromise = addChain("", jsonRpcCallback)
-      const addChainMsg = await getClientMessage()
-      postToClient({
-        type: "chain-ready",
-        origin: "substrate-connect-extension",
-        chainId: addChainMsg.chainId,
-      })
-
-      const chain = await chainPromise
-      expect(receivedMessages.length).toBe(0)
-
-      chain.sendJsonRpc("ping")
-      const receivedRequest = await getClientMessage()
-
-      expect(receivedRequest).toMatchObject({
-        chainId: addChainMsg.chainId,
-        type: "rpc",
-        jsonRpcMessage: "ping",
-      })
-      expect(receivedMessages.length).toBe(0)
-
-      postToClient({
-        chainId: addChainMsg.chainId,
-        origin: "substrate-connect-extension",
-        type: "rpc",
-        jsonRpcMessage: "pong",
-      })
-      await getExtensionMessage()
-
-      expect(receivedMessages).toEqual(["pong"])
-    })
-
-    it("throws when calling sendJsonRpc if no jsonRpcCallback was provided", async () => {
-      const { addChain } = createScClient()
-      let clientMessageP = getClientMessage()
-      const chainPromise = addChain("")
-      const addChainMsg = await clientMessageP
-      postToClient({
-        type: "chain-ready",
-        origin: "substrate-connect-extension",
-        chainId: addChainMsg.chainId,
-      })
-      const chain = await chainPromise
-
-      expect(() => chain.sendJsonRpc("")).toThrow(JsonRpcDisabledError)
     })
   })
 

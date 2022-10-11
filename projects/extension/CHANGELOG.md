@@ -7,6 +7,7 @@
 - The extension is now using the manifest v3 format. ([#1280](https://github.com/paritytech/substrate-connect/pull/1280), [#1293](https://github.com/paritytech/substrate-connect/pull/1293), [#1295](https://github.com/paritytech/substrate-connect/pull/1295))
 - Due to the update to manifest v3, the light client no longer runs in the extension but in each tab (that tries to connect to a chain) individually. As a consequence of this, the light client is no longer capable of opening non-secure WebSocket connections, and thus connectivity to chain might be greatly reduced. ([#1272](https://github.com/paritytech/substrate-connect/pull/1272))
 - Improve the UI of the popup and options page. ([#1277](https://github.com/paritytech/substrate-connect/pull/1277))
+- Update @substrate/smoldot-light to [version 0.7.1](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#071---2022-10-04). ([#1282](https://github.com/paritytech/substrate-connect/pull/1282))
 
 ## 0.1.11 - 2022-09-21
 

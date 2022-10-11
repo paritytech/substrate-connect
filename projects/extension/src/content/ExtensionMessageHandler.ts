@@ -4,6 +4,7 @@ import checkMessage from "./checkMessage"
 import {
   SmoldotClientWithExtension,
   ChainWithExtension,
+  MalformedJsonRpcError,
 } from "./ClientWithExtension"
 
 const EXTENSION_PROVIDER_ORIGIN = "substrate-connect-client"
@@ -76,7 +77,16 @@ export class ExtensionMessageHandler {
         // If the chainId is invalid, the message is silently discarded, as documented.
         if (!chain) return
 
-        chain.sendJsonRpc(data.jsonRpcMessage)
+        try {
+          chain.sendJsonRpc(data.jsonRpcMessage)
+        } catch (error) {
+          // As documented in the protocol, malformed JSON-RPC requests are silently ignored.
+          if (error instanceof MalformedJsonRpcError) {
+            return
+          } else {
+            throw error
+          }
+        }
         break
       }
 
