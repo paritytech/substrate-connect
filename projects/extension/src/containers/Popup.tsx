@@ -70,7 +70,7 @@ const Popup: FunctionComponent = () => {
     const eventListener = (message: any) => {
       if (message === environment.CHAINS_CHANGED_MESSAGE_DATA) refresh()
     }
-    chrome.runtime.onMessage.addListener(eventListener);
+    chrome.runtime.onMessage.addListener(eventListener)
     refresh()
 
     return () => {
