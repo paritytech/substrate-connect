@@ -1,14 +1,11 @@
 export type StorageEntry =
-  | { type: "notifications" }
   | { type: "braveSetting" }
   | { type: "database"; chainName: string }
   | { type: "bootnodes"; chainName: string }
   | { type: "activeChains"; tabId: number }
 
 export type StorageEntryType<E extends StorageEntry> =
-  E["type"] extends "notifications"
-    ? boolean
-    : E["type"] extends "braveSetting"
+  E["type"] extends "braveSetting"
     ? boolean
     : E["type"] extends "database"
     ? string
@@ -93,8 +90,6 @@ export function onActiveChainsChanged(callback: () => void): () => void {
 
 function keyOf(entry: StorageEntry): string {
   switch (entry.type) {
-    case "notifications":
-      return "notifications"
     case "braveSetting":
       return "braveSetting"
     case "database":
