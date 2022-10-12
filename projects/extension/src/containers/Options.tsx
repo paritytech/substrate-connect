@@ -64,20 +64,11 @@ const cName = (type: MenuItemTypes, menu = 0, reqMenu: number) => {
 
 export const Options: React.FunctionComponent = () => {
   const [networks, setNetworks] = useState<NetworkTabProps[]>([])
-  const [notifications, setNotifications] = useState<boolean>(false)
   const [menu, setMenu] = useState<number>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [actionResult, setActionResult] = useState<string>("")
 
   useEffect(() => {
-    const getNotifications = async () => {
-      setNotifications(
-        (await environment.get({ type: "notifications" })) || false,
-      )
-    }
-
-    getNotifications()
-
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
       const braveSetting = await environment.get({ type: "braveSetting" })
       setShowModal(isBrave && !braveSetting)
@@ -113,10 +104,6 @@ export const Options: React.FunctionComponent = () => {
     refresh()
     return unregister
   }, [])
-
-  useEffect(() => {
-    environment.set({ type: "notifications" }, notifications)
-  }, [notifications])
 
   useEffect(() => {
     const resetText = setTimeout(() => {

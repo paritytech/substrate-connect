@@ -1,5 +1,3 @@
-import settings from "./settings.json"
-
 import westend2 from "../../public/assets/westend2.json"
 import ksmcc3 from "../../public/assets/ksmcc3.json"
 import polkadot from "../../public/assets/polkadot.json"
@@ -192,12 +190,6 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 // Note: technically, this is triggered when a new profile is started. But since each profile has
 // its own local storage, this fits the mental model of "browser starts".
 chrome.runtime.onStartup.addListener(() => {
-  // TODO: ?!?! why do we need to do this?
-  environment.get({ type: "notifications" }).then((result) => {
-    if (!result)
-      environment.set({ type: "notifications" }, settings.notifications)
-  })
-
   // Note: there is clearly a race condition here because we can start processing tab messages
   // before the promise has finished.
   environment.clearAllActiveChains()
