@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.2.0 - 2022-10-17
+
 ### Changed
 
 - The extension is now using the manifest v3 format. ([#1280](https://github.com/paritytech/substrate-connect/pull/1280), [#1293](https://github.com/paritytech/substrate-connect/pull/1293), [#1295](https://github.com/paritytech/substrate-connect/pull/1295))
