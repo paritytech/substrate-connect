@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useState } from "react"
 import { BsThreeDots } from "react-icons/bs"
-import { Background } from "../background"
+import * as environment from "../environment"
 
 import "./Bootnodes.css"
 
@@ -16,7 +16,7 @@ interface TitleProps {
   showOptions?: boolean
 }
 
-interface CheckBoxProps {
+interface SwitchProps {
   bootnode: string
   alterBootnodes: manipulateBootnodeType
   defaultBootnode: boolean
@@ -47,12 +47,12 @@ const Title = ({
   )
 }
 
-const CheckBox = ({
+const Switch = ({
   bootnode,
   alterBootnodes,
   defaultBootnode,
   isChecked,
-}: CheckBoxProps) => {
+}: SwitchProps) => {
   const [checked, setChecked] = useState<boolean>(isChecked)
 
   useEffect(() => {
@@ -60,25 +60,39 @@ const CheckBox = ({
   }, [isChecked])
 
   return (
-    <input
-      readOnly
-      className="w-4 h-4 text-green-600 bg-gray-100 rounded border-gray-300 focus:ring-green-500
-      focus:ring-green-600 ring-offset-gray-800 focus:ring-2 bg-gray-700 border-gray-600 cursor-pointer
-      mr-4 leading-3 accent-[#24cc85]"
-      type="checkbox"
-      defaultChecked={checked}
-      checked={checked}
-      onChange={() => {
-        alterBootnodes(bootnode, !checked, defaultBootnode)
-        setChecked(!checked)
-      }}
-    />
+    <div className="flex w-1/12 ml-8">
+      <label className="inline-flex relative items-center mr-5 cursor-pointer">
+        <input
+          type="checkbox"
+          className="sr-only peer"
+          defaultChecked={checked}
+          checked={checked}
+          readOnly
+        />
+        <div
+          onClick={() => {
+            // alterBootnodes(bootnode, !checked, defaultBootnode)
+            setChecked(!checked)
+          }}
+          className="w-11 h-6 bg-gray-200 rounded-full peer  peer-focus:ring-green-300  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#16DB9A]"
+        ></div>
+      </label>
+    </div>
   )
 }
 
+interface Boot {
+  [key: string]: string[]
+}
+
+const validateAddress = (input: string): boolean => {
+  let regex = /^\/dns\/[A-Za-z0-9]\/tcp\/443\/wss\/p2p\/[A-Za-z0-9]$/i
+  console.log("REGEX => ", regex.test(input))
+  return regex.test(input)
+}
+
 export const Bootnodes = () => {
-  const [bg, setBg] = useState<Background>()
-  const [bootnodes, setBootnodes] = useState<Record<string, string[]>>()
+  const [bootnodes, setBootnodes] = useState<Boot>()
   const [selectedChain, setSelectedChain] = useState<string>("polkadot")
   const [defaultBn, setDefaultBn] = useState<BootnodesType[]>([])
   const [customBn, setCustomBn] = useState<BootnodesType[]>([])
@@ -90,6 +104,14 @@ export const Bootnodes = () => {
   const [addMessage, setAddMessage] = useState<any>(undefined)
   const [loaderAdd, setLoaderAdd] = useState<boolean>(false)
   const [bootnodeMsgClass, setBootnodeMsgClass] = useState<string>()
+
+  useEffect(() => {
+    // Load default Bootnodes and save them to localStorage
+    environment.getBootnodes(selectedChain).then((a) => {
+      setBootnodes({ [selectedChain]: a })
+      setDefaultWellKnownChainBn(a)
+    })
+  }, [selectedChain])
 
   // Add to localstorage the given bootnode for the given chain
   const saveToLocalStorage = (
@@ -123,15 +145,11 @@ export const Bootnodes = () => {
   }, [addMessage])
 
   useEffect(() => {
-    // If BackgroundPage is called multiple times in the same page, the extension's context will become invalidated
-    // thus its called only during page construction and is saved in a state variable
-    chrome.runtime.getBackgroundPage((backgroundPage) => {
-      const background = backgroundPage as Background
-      setBg(background)
-      setDefaultWellKnownChainBn(
-        background?.uiInterface.getDefaultBootnodes(selectedChain),
-      )
-    })
+    console.log("selectedChain", selectedChain)
+    const mpla = async () => {
+      await environment.getBootnodes(selectedChain)
+    }
+    mpla()
   }, [selectedChain])
 
   useEffect(() => {
@@ -144,29 +162,33 @@ export const Bootnodes = () => {
         message: res || "Successfully added.",
       })
     }
-    if (!bg || !defaultWellKnownChainBn) return
-    bg.uiInterface.onBootnodeVerification(result)
-  }, [bg, defaultWellKnownChainBn])
+    if (!defaultWellKnownChainBn) return
+    console.log("result -> ", result)
+    // bg.uiInterface.onBootnodeVerification(result)
+    // TODO ADD VERIFICATIONOF BOOTNODE
+  }, [defaultWellKnownChainBn])
 
   useEffect(() => {
-    const getBootnodes = async () => {
-      setBootnodes(await bg?.uiInterface.wellKnownChainBootnodes)
-    }
-    getBootnodes()
+    // const getBootnodes = async () => {
+    //   setBootnodes()
+    // }
+    // getBootnodes()
     const tmpDef: BootnodesType[] = []
     const tmpCust: BootnodesType[] = []
     if (bootnodes) {
-      bootnodes[selectedChain].forEach((b) => {
-        const defaultBootnodes =
-          bg?.uiInterface.getDefaultBootnodes(selectedChain)
-        defaultBootnodes?.length && defaultBootnodes?.includes(b)
-          ? tmpDef.push({ bootnode: b, checked: true })
-          : tmpCust.push({ bootnode: b, checked: true })
-      })
+      console.log("bootnodes[selectedChain]", bootnodes, selectedChain)
+      bootnodes[selectedChain] &&
+        bootnodes[selectedChain].forEach((b) => {
+          const defaultBootnodes =
+            environment.getDefaultBootnodes(selectedChain)
+          defaultBootnodes?.length && defaultBootnodes?.includes(b)
+            ? tmpDef.push({ bootnode: b, checked: true })
+            : tmpCust.push({ bootnode: b, checked: true })
+        })
       setDefaultBn(tmpDef)
       setCustomBn(tmpCust)
     }
-  }, [bg, bootnodes, selectedChain])
+  }, [bootnodes, selectedChain])
 
   const alterBootnodes = async (
     bootnode: string,
@@ -184,7 +206,10 @@ export const Bootnodes = () => {
           defaultWellKnownChainBn,
         )
       } else {
-        bg?.uiInterface.updateBootnode(selectedChain, bootnode, add)
+        // bg?.uiInterface.updateBootnode(selectedChain, bootnode, add)
+        console.log(
+          "bg?.uiInterface.updateBootnode(selectedChain, bootnode, add)",
+        )
       }
       const tmp = defaultBootnode ? [...defaultBn] : [...customBn]
       const i = tmp.findIndex((b) => b.bootnode === bootnode)
@@ -198,7 +223,7 @@ export const Bootnodes = () => {
   }
 
   return (
-    <section className="mx-0 md:mx-12 xl:mx-36 2xl:mx-64 font-roboto">
+    <section className="mx-0 md:mx-12 xl:mx-36 2xl:mx-64 font-roboto max-w-5xl">
       <div className="font-inter font-bold text-3xl pb-4">Bootnodes</div>
       <div className="bg-white border border-neutral-200 p-4 rounded-md">
         {/* Network selection */}
@@ -223,14 +248,16 @@ export const Bootnodes = () => {
         <Title titleType="small">Default</Title>
         <div className="mb-8">
           {defaultWellKnownChainBn?.map((bn) => (
-            <div className="leading-4 flex items-center mb-2">
-              <CheckBox
+            <div className="leading-4 flex items-center mb-2 wrap">
+              <div className="text-ellipsis overflow-hidden whitespace-nowrap w-11/12">
+                {bn}
+              </div>
+              <Switch
                 bootnode={bn}
                 alterBootnodes={alterBootnodes}
                 defaultBootnode={true}
                 isChecked={defaultBn.map((d) => d.bootnode).includes(bn)}
               />
-              <div className="break-all">{bn}</div>
             </div>
           ))}
         </div>
@@ -238,13 +265,15 @@ export const Bootnodes = () => {
         <div className="mb-8">
           {customBn.map((c) => (
             <div className="leading-4 flex items-center mb-2">
-              <CheckBox
+              <div className="text-ellipsis overflow-hidden whitespace-nowrap	">
+                {c.bootnode}
+              </div>
+              <Switch
                 bootnode={c.bootnode}
                 alterBootnodes={alterBootnodes}
                 defaultBootnode={false}
                 isChecked={c.checked}
               />
-              <div className="break-all">{c.bootnode}</div>
             </div>
           ))}
         </div>
@@ -277,12 +306,13 @@ export const Bootnodes = () => {
                     message: "Bootnode already exists in the list.",
                   })
                 } else {
+                  console.log("validateAddress", validateAddress(customBnInput))
                   setLoaderAdd(true)
-                  bg?.uiInterface.updateBootnode(
-                    selectedChain,
-                    customBnInput,
-                    true,
-                  )
+                  // bg?.uiInterface.updateBootnode(
+                  //   selectedChain,
+                  //   customBnInput,
+                  //   true,
+                  // )
                 }
               }}
             >
