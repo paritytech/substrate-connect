@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useState } from "react"
 import { BsThreeDots } from "react-icons/bs"
 import * as environment from "../environment"
+import { multiaddr } from "multiaddr"
 
 import "./Bootnodes.css"
 
@@ -86,7 +87,7 @@ interface Boot {
 }
 
 const validateAddress = (input: string): boolean => {
-  let regex = /^\/dns\/[A-Za-z0-9]\/tcp\/443\/wss\/p2p\/[A-Za-z0-9]$/i
+  let regex = new RegExp("/dns/[A-Za-z0-9]/tcp/443/wss/p2p/{10,48}[A-Za-z0-9]")
   console.log("REGEX => ", regex.test(input))
   return regex.test(input)
 }
@@ -265,7 +266,7 @@ export const Bootnodes = () => {
         <div className="mb-8">
           {customBn.map((c) => (
             <div className="leading-4 flex items-center mb-2">
-              <div className="text-ellipsis overflow-hidden whitespace-nowrap	">
+              <div className="text-ellipsis overflow-hidden whitespace-nowrap w-11/12">
                 {c.bootnode}
               </div>
               <Switch
@@ -279,10 +280,10 @@ export const Bootnodes = () => {
         </div>
         <Title>Add custom Bootnode</Title>
         <div className="flex flex-col">
-          <div className="flex flex-row mb-4">
+          <div className="flex flex-row mb-4 justify-between">
             <input
               type="text"
-              className="w-3/6 block px-2 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding
+              className="w-10/12 block px-2 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding
               border border-solid border-gray-300 rounded focus:text-gray-700 focus:bg-white focus:border-[#24cc85]
               focus:outline-none"
               placeholder="Enter bootnode address"
@@ -292,32 +293,43 @@ export const Bootnodes = () => {
                 setCustomBnInput(v.target.value)
               }}
             />
-            <button
-              className="py-1.5 text-sm px-8 border border-[#24cc85] rounded text-[#24cc85] hover:text-white
-              hover:bg-[#24cc85] capitalize ml-4 disabled:border-gray-200 disabled:text-white disabled:bg-gray-200"
-              disabled={!customBnInput || loaderAdd}
-              onClick={async () => {
-                if (
-                  defaultWellKnownChainBn?.includes(customBnInput) ||
-                  customBn.map((c) => c.bootnode).includes(customBnInput)
-                ) {
-                  setAddMessage({
-                    error: true,
-                    message: "Bootnode already exists in the list.",
-                  })
-                } else {
-                  console.log("validateAddress", validateAddress(customBnInput))
-                  setLoaderAdd(true)
-                  // bg?.uiInterface.updateBootnode(
-                  //   selectedChain,
-                  //   customBnInput,
-                  //   true,
-                  // )
-                }
-              }}
-            >
-              {loaderAdd ? "Loading..." : "Add"}
-            </button>
+            <div className="w-2/12">
+              <button
+                className="py-1.5 text-sm px-8 border border-[#24cc85] rounded text-[#24cc85] hover:text-white
+                  hover:bg-[#24cc85] capitalize ml-4 disabled:border-gray-200 disabled:text-white disabled:bg-gray-200"
+                disabled={!customBnInput || loaderAdd}
+                onClick={async () => {
+                  try {
+                    multiaddr(customBnInput)
+                    if (
+                      defaultWellKnownChainBn?.includes(customBnInput) ||
+                      customBn.map((c) => c.bootnode).includes(customBnInput)
+                    ) {
+                      setAddMessage({
+                        error: true,
+                        message: "Bootnode already exists in the list.",
+                      })
+                    } else {
+                      setLoaderAdd(true)
+                      // bg?.uiInterface.updateBootnode(
+                      //   selectedChain,
+                      //   customBnInput,
+                      //   true,
+                      // )
+                    }
+                  } catch (err) {
+                    setAddMessage({
+                      error: true,
+                      message: (err as Error).message.replace(/^\w/, (c) =>
+                        c.toUpperCase(),
+                      ),
+                    })
+                  }
+                }}
+              >
+                {loaderAdd ? "Load" : "Add"}
+              </button>
+            </div>
           </div>
           <p className={bootnodeMsgClass}>
             {addMessage && Object.keys(addMessage) ? addMessage.message : ""}
