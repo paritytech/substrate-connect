@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## 0.2.1 - 2022-10-18
+
+### Changed
+
+- Revert the extension to manifest v2 format, for compatibility with Firefox. ([#1313](https://github.com/paritytech/substrate-connect/pull/1313))
+
 ## 0.2.0 - 2022-10-18
 
 ### Changed
