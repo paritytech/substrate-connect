@@ -451,6 +451,7 @@ export class SmoldotClientWithExtension {
 
     await this.#sendPortThenWaitResponse({
       type: "add-chain",
+      isWellKnown: wellKnownName === undefined ? false : true,
       chainId,
       chainSpecChainName,
     })

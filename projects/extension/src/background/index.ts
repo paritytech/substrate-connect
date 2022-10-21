@@ -106,6 +106,7 @@ chrome.runtime.onMessage.addListener(
 
             chains.push({
               chainId: message.chainId,
+              isWellKnown: message.isWellKnown,
               chainName: message.chainSpecChainName,
               isSyncing: false,
               peers: 0,

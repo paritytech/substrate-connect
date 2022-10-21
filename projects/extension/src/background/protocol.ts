@@ -44,6 +44,7 @@ export interface ToExtensionReset {
 export interface ToExtensionAddChain {
   type: "add-chain"
   chainId: string
+  isWellKnown: boolean
   chainSpecChainName: string
 }
 
