@@ -6,6 +6,7 @@ import * as environment from "../environment"
 
 interface PopupChain {
   chainName: string
+  isWellKnown: boolean
   details: ChainDetails[]
 }
 
@@ -26,11 +27,12 @@ const Popup: FunctionComponent = () => {
     environment.getAllActiveChains().then((chains) => {
       const allChains: PopupChain[] = []
       ;(chains || []).forEach((c) => {
-        const i = allChains.findIndex((i) => i.chainName === c.chainName)
+        const i = allChains.findIndex((i) => i.chainName === c.chainName && i.isWellKnown === c.isWellKnown)
         const { peers, isSyncing, chainId, bestBlockHeight } = c
         if (i === -1) {
           allChains.push({
             chainName: c.chainName,
+            isWellKnown: c.isWellKnown,
             details: [
               {
                 tabId: c.tab.id,

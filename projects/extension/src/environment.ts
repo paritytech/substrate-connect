@@ -104,6 +104,7 @@ function keyOf(entry: StorageEntry): string {
 export interface ExposedChainConnection {
   chainId: string
   chainName: string
+  isWellKnown: boolean
   tab: ExposedChainConnectionTabInfo
   isSyncing: boolean
   peers: number
