@@ -184,38 +184,63 @@ chrome.runtime.onMessage.addListener(
   },
 )
 
-const databaseRetrieve = async () => {
+const updateDatabases = async () => {
   const wellKnownChains = await loadWellKnownChains()
   const client = smoldotStart({
     cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
   })
 
-  for await (const [key, value] of wellKnownChains) {
-    let jsonPrepare = {
-      jsonrpc: "2.0",
-      id: "1",
-      method: "chainHead_unstable_finalizedDatabase",
-      params: {
-        max_size_bytes: chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
-      },
-    }
+  let dbChainsCounter = 0
+
+  for (const [key, value] of wellKnownChains) {
+    let databaseContent = await environment.get({
+      type: "database",
+      chainName: key,
+    })
 
     const chain = await client.addChain({
       chainSpec: value,
+      databaseContent,
     })
 
-    chain.sendJsonRpc(JSON.stringify(jsonPrepare))
-    const dbContent = await chain.nextJsonRpcResponse()
-    await environment.set(
-      { type: "database", chainName: key },
-      JSON.parse(dbContent).result,
+    chain.sendJsonRpc(
+      `{"jsonrpc":"2.0","id":"1","method":"chainHead_unstable_follow","params":[true]}`,
     )
+
+    while (true) {
+      const response = JSON.parse(await chain.nextJsonRpcResponse())
+      if (response?.params?.result?.event === "initialized") {
+        chain.sendJsonRpc(
+          JSON.stringify({
+            jsonrpc: "2.0",
+            id: "2",
+            method: "chainHead_unstable_finalizedDatabase",
+            params: {
+              max_size_bytes:
+                chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
+            },
+          }),
+        )
+      }
+      if (response?.id === "2") {
+        await environment.set(
+          { type: "database", chainName: key },
+          response.result,
+        )
+        dbChainsCounter++
+        break
+      }
+    }
   }
-  // Once the database content is received and saved in the localStorage - terminate the client
-  client.terminate()
+  // Once the database content is saved in the localStorage for all the chains
+  // then terminate the client
+  if (dbChainsCounter === wellKnownChains.size) {
+    client.terminate()
+    console.log("All databases are updated. Light Client is terminated.")
+  }
 }
 
-databaseRetrieve()
+updateDatabases()
 
 chrome.tabs.onRemoved.addListener((tabId) => {
   environment.remove({ type: "activeChains", tabId })
