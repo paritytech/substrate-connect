@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- An icon is now shown for a certain chain only if this chain was added using `addWellKnownChain` rather than `addChain`. This prevents tabs from impersonating chains. ([#1318](https://github.com/paritytech/substrate-connect/pull/1318))
+
 ## 0.2.1 - 2022-10-18
 
 ### Changed
