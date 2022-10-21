@@ -3,6 +3,8 @@ import ksmcc3 from "../../public/assets/ksmcc3.json"
 import polkadot from "../../public/assets/polkadot.json"
 import rococo_v2_2 from "../../public/assets/rococo_v2_2.json"
 
+import { start as smoldotStart } from "@substrate/smoldot-light"
+
 import { ToContentScript, ToExtension } from "./protocol"
 import * as environment from "../environment"
 
@@ -181,6 +183,39 @@ chrome.runtime.onMessage.addListener(
     }
   },
 )
+
+const databaseRetrieve = async () => {
+  const wellKnownChains = await loadWellKnownChains()
+  const client = smoldotStart({
+    cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
+  })
+
+  for await (const [key, value] of wellKnownChains) {
+    let jsonPrepare = {
+      jsonrpc: "2.0",
+      id: "1",
+      method: "chainHead_unstable_finalizedDatabase",
+      params: {
+        max_size_bytes: chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
+      },
+    }
+
+    const chain = await client.addChain({
+      chainSpec: value,
+    })
+
+    chain.sendJsonRpc(JSON.stringify(jsonPrepare))
+    const dbContent = await chain.nextJsonRpcResponse()
+    await environment.set(
+      { type: "database", chainName: key },
+      JSON.parse(dbContent).result,
+    )
+  }
+  // Once the database content is received and saved in the localStorage - terminate the client
+  client.terminate()
+}
+
+databaseRetrieve()
 
 chrome.tabs.onRemoved.addListener((tabId) => {
   environment.remove({ type: "activeChains", tabId })
