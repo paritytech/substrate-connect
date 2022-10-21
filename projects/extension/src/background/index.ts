@@ -187,7 +187,6 @@ chrome.runtime.onMessage.addListener(
 const updateDatabases = async () => {
   const wellKnownChains = await loadWellKnownChains()
   const client = smoldotStart({
-    maxLogLevel: 4,
     cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
   })
 
@@ -201,7 +200,7 @@ const updateDatabases = async () => {
       chainName: key,
     })
 
-    let promise = new Promise<void>((resolve) => {
+    const promise = new Promise<void>((resolve) => {
       client
         .addChain({
           chainSpec: value,
@@ -255,7 +254,7 @@ const updateDatabases = async () => {
 updateDatabases()
 
 chrome.alarms.create("DatabaseContentAlarm", {
-  periodInMinutes: 1, // 6 hours
+  periodInMinutes: 1440, // 24 hours
 })
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
