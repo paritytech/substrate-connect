@@ -6,9 +6,15 @@ interface Props {
 }
 
 const hasGlyph = (string: string) =>
-  ["kusama", "polkadot", "westend", "rococo", "astar", "shiden", "gm"].indexOf(
-    string,
-  ) > -1
+  [
+    "kusama",
+    "polkadot",
+    "westend",
+    "rococo",
+    "astar",
+    "shiden",
+    "gm parachain",
+  ].indexOf(string) > -1
 
 export const IconWeb3: FunctionComponent<Props> = ({ children }) => {
   return (
