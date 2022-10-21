@@ -232,15 +232,23 @@ const updateDatabases = async () => {
       }
     }
   }
+  console.log(client)
   // Once the database content is saved in the localStorage for all the chains
   // then terminate the client
   if (dbChainsCounter === wellKnownChains.size) {
-    client.terminate()
     console.log("All databases are updated. Light Client is terminated.")
   }
 }
 
 updateDatabases()
+
+chrome.alarms.create("DatabaseContentAlarm", {
+  periodInMinutes: 300, // 6 hours
+})
+
+chrome.alarms.onAlarm.addListener(async (alarm) => {
+  if (alarm.name === "DatabaseContentAlarm") updateDatabases()
+})
 
 chrome.tabs.onRemoved.addListener((tabId) => {
   environment.remove({ type: "activeChains", tabId })
