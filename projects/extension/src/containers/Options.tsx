@@ -78,8 +78,15 @@ export const Options: React.FunctionComponent = () => {
       environment.getAllActiveChains().then((chains) => {
         const networks = new Map<string, NetworkTabProps>()
         ;(chains || []).forEach((chain) => {
-          const { chainName, tab, isWellKnown, isSyncing, peers, bestBlockHeight } = chain
-          const key = isWellKnown ? "wk" : "nwk" + chainName;
+          const {
+            chainName,
+            tab,
+            isWellKnown,
+            isSyncing,
+            peers,
+            bestBlockHeight,
+          } = chain
+          const key = isWellKnown ? "wk" : "nwk" + chainName
 
           const network = networks.get(key)
           if (!network) {

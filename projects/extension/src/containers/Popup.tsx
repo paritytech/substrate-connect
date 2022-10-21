@@ -27,7 +27,9 @@ const Popup: FunctionComponent = () => {
     environment.getAllActiveChains().then((chains) => {
       const allChains: PopupChain[] = []
       ;(chains || []).forEach((c) => {
-        const i = allChains.findIndex((i) => i.chainName === c.chainName && i.isWellKnown === c.isWellKnown)
+        const i = allChains.findIndex(
+          (i) => i.chainName === c.chainName && i.isWellKnown === c.isWellKnown,
+        )
         const { peers, isSyncing, chainId, bestBlockHeight } = c
         if (i === -1) {
           allChains.push({
