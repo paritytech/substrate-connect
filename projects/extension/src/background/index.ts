@@ -187,10 +187,13 @@ chrome.runtime.onMessage.addListener(
 const updateDatabases = async () => {
   const wellKnownChains = await loadWellKnownChains()
   const client = smoldotStart({
+    maxLogLevel: 4,
     cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
   })
 
   let dbChainsCounter = 0
+
+  let promises = []
 
   for (const [key, value] of wellKnownChains) {
     let databaseContent = await environment.get({
@@ -198,52 +201,61 @@ const updateDatabases = async () => {
       chainName: key,
     })
 
-    const chain = await client.addChain({
-      chainSpec: value,
-      databaseContent,
+    let promise = new Promise<void>((resolve) => {
+      client
+        .addChain({
+          chainSpec: value,
+          databaseContent,
+        })
+        .then(async (chain) => {
+          chain.sendJsonRpc(
+            `{"jsonrpc":"2.0","id":"1","method":"chainHead_unstable_follow","params":[true]}`,
+          )
+
+          while (true) {
+            const response = JSON.parse(await chain.nextJsonRpcResponse())
+            if (response?.params?.result?.event === "initialized") {
+              chain.sendJsonRpc(
+                JSON.stringify({
+                  jsonrpc: "2.0",
+                  id: "2",
+                  method: "chainHead_unstable_finalizedDatabase",
+                  params: {
+                    max_size_bytes:
+                      chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
+                  },
+                }),
+              )
+            }
+            if (response?.id === "2") {
+              await environment.set(
+                { type: "database", chainName: key },
+                response.result,
+              )
+              dbChainsCounter++
+              resolve()
+              break
+            }
+          }
+        })
     })
+    promises.push(promise)
+  }
 
-    chain.sendJsonRpc(
-      `{"jsonrpc":"2.0","id":"1","method":"chainHead_unstable_follow","params":[true]}`,
-    )
-
-    while (true) {
-      const response = JSON.parse(await chain.nextJsonRpcResponse())
-      if (response?.params?.result?.event === "initialized") {
-        chain.sendJsonRpc(
-          JSON.stringify({
-            jsonrpc: "2.0",
-            id: "2",
-            method: "chainHead_unstable_finalizedDatabase",
-            params: {
-              max_size_bytes:
-                chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
-            },
-          }),
-        )
-      }
-      if (response?.id === "2") {
-        await environment.set(
-          { type: "database", chainName: key },
-          response.result,
-        )
-        dbChainsCounter++
-        break
-      }
+  Promise.all(promises).then(() => {
+    // Once the database content is saved in the localStorage for all the chains
+    // then terminate the client
+    if (dbChainsCounter === wellKnownChains.size) {
+      console.log("All databases are updated. Light Client is terminated.")
+      client.terminate()
     }
-  }
-  console.log(client)
-  // Once the database content is saved in the localStorage for all the chains
-  // then terminate the client
-  if (dbChainsCounter === wellKnownChains.size) {
-    console.log("All databases are updated. Light Client is terminated.")
-  }
+  })
 }
 
 updateDatabases()
 
 chrome.alarms.create("DatabaseContentAlarm", {
-  periodInMinutes: 300, // 6 hours
+  periodInMinutes: 1, // 6 hours
 })
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
