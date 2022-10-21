@@ -80,11 +80,11 @@ const Popup: FunctionComponent = () => {
     chrome.runtime.openOptionsPage()
   }
 
-  const networkIcon = (network: string) => {
+  const networkIcon = (network: string, isWellKnown: boolean) => {
     const icon = network.toLowerCase()
     return (
       <>
-        <IconWeb3>{icon}</IconWeb3>
+        <IconWeb3 isWellKnown={isWellKnown}>{icon}</IconWeb3>
         <div className="pl-2">{network}</div>
       </>
     )
@@ -120,7 +120,7 @@ const Popup: FunctionComponent = () => {
                   <>
                     <div className="block mt-4">
                       <div key={w.chainName} className="pl-6 flex text-lg">
-                        {networkIcon(w.chainName)}
+                        {networkIcon(w.chainName, w.isWellKnown)}
                       </div>
                       <div className="pl-[4.5rem] text-sm flex pt-2">
                         <span className="text-[#323232]">Latest block</span>
@@ -157,7 +157,7 @@ const Popup: FunctionComponent = () => {
                   titles={[
                     <div className="block mt-4">
                       <div className="pl-4 flex text-lg justify-start">
-                        {networkIcon(w.chainName)}
+                        {networkIcon(w.chainName, w.isWellKnown)}
                         <span className="pl-2 text-[#616161]">
                           ({contents.length})
                         </span>

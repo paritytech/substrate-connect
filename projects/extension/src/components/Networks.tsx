@@ -12,8 +12,16 @@ export const Networks = ({ networks }: NetworksProps) => {
       <div className="font-inter font-bold text-3xl pb-4">Networks</div>
       {networks.length ? (
         networks.map((network: NetworkTabProps, i: number) => {
-          const { name, health, apps } = network
-          return <NetworkTab key={i} name={name} health={health} apps={apps} />
+          const { name, health, apps, isWellKnown } = network
+          return (
+            <NetworkTab
+              key={i}
+              name={name}
+              health={health}
+              isWellKnown={isWellKnown}
+              apps={apps}
+            />
+          )
         })
       ) : (
         <div>The extension isn't connected to any network.</div>

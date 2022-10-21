@@ -2,6 +2,7 @@ import React, { FunctionComponent } from "react"
 import "../main.css"
 
 interface Props {
+  isWellKnown?: boolean
   children?: string
 }
 
@@ -10,10 +11,13 @@ interface Props {
 const hasGlyph = (string: string) =>
   ["kusama", "polkadot", "westend", "rococo"].indexOf(string) > -1
 
-export const IconWeb3: FunctionComponent<Props> = ({ children }) => {
+export const IconWeb3: FunctionComponent<Props> = ({
+  children,
+  isWellKnown,
+}) => {
   return (
     <span className="icon text-xl w-10">
-      {children && hasGlyph(children) ? children : "?"}
+      {isWellKnown && children && hasGlyph(children) ? children : "?"}
     </span>
   )
 }
