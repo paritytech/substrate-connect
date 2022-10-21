@@ -5,6 +5,8 @@ interface Props {
   children?: string
 }
 
+// Only the 4 well-known chains should ever have icons. It is not the responsibility of this
+// source code to maintain a list of active chains and their icons.
 const hasGlyph = (string: string) =>
   ["kusama", "polkadot", "westend", "rococo"].indexOf(string) > -1
 
