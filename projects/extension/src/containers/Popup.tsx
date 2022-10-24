@@ -90,8 +90,6 @@ const Popup: FunctionComponent = () => {
     )
   }
 
-  console.log("connCjains", connChains)
-
   return (
     <>
       <BraveModal show={showModal} />
