@@ -2,7 +2,7 @@ name: Publish
 
 on:
   push:
-    branches: [ nik-ci-automation-release ]
+    branches: [ wirednkod:nik-ci-automation-release ]
 
 jobs:
   npm-publish:
