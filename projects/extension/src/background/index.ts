@@ -247,7 +247,7 @@ const updateDatabases = async () => {
     // then terminate the client
     if (dbChainsCounter === wellKnownChains.size) {
       console.log("All databases are updated. Light Client is terminated.")
-      client.terminate()
+      await client.terminate()
     }
   })
 }
