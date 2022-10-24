@@ -14,36 +14,49 @@ jobs:
           node-version: 18
       - run: yarn install --immutable
       - run: yarn build
-      - name: Publish Dry Run
-        working-directory: './packages/connect'
-        run: npm publish --unsafe-perm --dry-run
 
-      # Pack and upload each package only if version is changed
+      - name: Check if 'Connect' version has been updated
+        id: connect_version
+        uses: PostHog/check-package-version@v2
+        with:
+          path: "./packages/connect"
+
       - name: Pack Connect
+        if: steps.connect_version.outputs.committed-version > steps.connect_version.outputs.published-version
         run: npm pack
         working-directory: "./packages/connect"
 
-      - name: Upload Connect
+      - name: Upload Connect Artifact
+        if: steps.connect_version.outputs.committed-version > steps.connect_version.outputs.published-version
         uses: actions/upload-artifact@v3
         with:
           name: package
           path: "./packages/connect/*.tgz"
 
+      - name: Check if 'Connect extension protocol' version has been updated
+        id: connect_extension_protocol_v
+        uses: PostHog/check-package-version@v2
+        with:
+          path: "./packages/connect"
+
       - name: Pack Connect Extension Protocol
+        if: steps.connect_extension_protocol_v.outputs.committed-version > steps.connect_extension_protocol_v.outputs.published-version
         run: npm pack
         working-directory: "./packages/connect-extension-protocol"
 
-      - name: Upload Connect Extension Protocol
+      - name: Upload Connect Extension Protocol Artifact
+        if: steps.connect_extension_protocol_v.outputs.committed-version > steps.connect_extension_protocol_v.outputs.published-version
         uses: actions/upload-artifact@v3
         with:
           name: package
           path: "./packages/connect-extension-protocol/*.tgz"
 
-      # - name: Deploy
-      #   if: steps.publish.outputs.type != 'none'
-      #   run: yarn run deploy
+      - name: Deploy
+        if: steps.connect_version.outputs.committed-version > steps.connect_version.outputs.published-version || steps.connect_extension_protocol_v.outputs.committed-version > steps.connect_extension_protocol_v.outputs.published-version
+        run: yarn run deploy
 
       - name: NPM Publish automation
+        if: steps.connect_version.outputs.committed-version > steps.connect_version.outputs.published-version || steps.connect_extension_protocol_v.outputs.committed-version > steps.connect_extension_protocol_v.outputs.published-version
         uses: octokit/request-action@v2.x
         with:
           route: POST /repos/paritytech/npm_publish_automation/actions/workflows/publish.yml/dispatches
