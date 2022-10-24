@@ -3,6 +3,8 @@ import ksmcc3 from "../../public/assets/ksmcc3.json"
 import polkadot from "../../public/assets/polkadot.json"
 import rococo_v2_2 from "../../public/assets/rococo_v2_2.json"
 
+import { start as smoldotStart } from "@substrate/smoldot-light"
+
 import { ToContentScript, ToExtension } from "./protocol"
 import * as environment from "../environment"
 
@@ -182,6 +184,84 @@ chrome.runtime.onMessage.addListener(
     }
   },
 )
+
+const updateDatabases = async () => {
+  const wellKnownChains = await loadWellKnownChains()
+  const client = smoldotStart({
+    cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
+  })
+
+  let promises = []
+
+  for (const [key, value] of wellKnownChains) {
+    let databaseContent = await environment.get({
+      type: "database",
+      chainName: key,
+    })
+
+    promises.push(
+      new Promise<void>((resolve) => {
+        client
+          .addChain({
+            chainSpec: value,
+            databaseContent,
+          })
+          .then(async (chain) => {
+            chain.sendJsonRpc(
+              `{"jsonrpc":"2.0","id":"1","method":"chainHead_unstable_follow","params":[true]}`,
+            )
+
+            while (true) {
+              const response = JSON.parse(await chain.nextJsonRpcResponse())
+              if (response?.params?.result?.event === "initialized") {
+                chain.sendJsonRpc(
+                  JSON.stringify({
+                    jsonrpc: "2.0",
+                    id: "2",
+                    method: "chainHead_unstable_finalizedDatabase",
+                    params: [
+                      // TODO: calculate this better
+                      chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
+                    ],
+                  }),
+                )
+              }
+              if (response?.id === "2") {
+                await environment.set(
+                  { type: "database", chainName: key },
+                  response.result,
+                )
+                resolve()
+                break
+              }
+            }
+          })
+      }),
+    )
+  }
+
+  Promise.all(promises).then(async () => {
+    // Once the database content is saved in the localStorage for all the chains
+    // then terminate the client
+    console.log("All databases are updated. Light Client is terminated.")
+    await client.terminate()
+  })
+}
+
+updateDatabases().catch((err) =>
+  console.error(`Error occurred during database update: ${err}`),
+)
+
+chrome.alarms.create("DatabaseContentAlarm", {
+  periodInMinutes: 1440, // 24 hours
+})
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === "DatabaseContentAlarm")
+    updateDatabases().catch((err) =>
+      console.error(`Error occurred during database update: ${err}`),
+    )
+})
 
 chrome.tabs.onRemoved.addListener((tabId) => {
   environment.remove({ type: "activeChains", tabId })
