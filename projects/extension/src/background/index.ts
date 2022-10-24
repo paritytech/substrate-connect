@@ -191,8 +191,6 @@ const updateDatabases = async () => {
     cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
   })
 
-  let dbChainsCounter = 0
-
   let promises = []
 
   for (const [key, value] of wellKnownChains) {
