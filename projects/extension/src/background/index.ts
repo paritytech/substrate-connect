@@ -201,65 +201,68 @@ const updateDatabases = async () => {
       chainName: key,
     })
 
-    const promise = new Promise<void>((resolve) => {
-      client
-        .addChain({
-          chainSpec: value,
-          databaseContent,
-        })
-        .then(async (chain) => {
-          chain.sendJsonRpc(
-            `{"jsonrpc":"2.0","id":"1","method":"chainHead_unstable_follow","params":[true]}`,
-          )
+    promises.push(
+      new Promise<void>((resolve) => {
+        client
+          .addChain({
+            chainSpec: value,
+            databaseContent,
+          })
+          .then(async (chain) => {
+            chain.sendJsonRpc(
+              `{"jsonrpc":"2.0","id":"1","method":"chainHead_unstable_follow","params":[true]}`,
+            )
 
-          while (true) {
-            const response = JSON.parse(await chain.nextJsonRpcResponse())
-            if (response?.params?.result?.event === "initialized") {
-              chain.sendJsonRpc(
-                JSON.stringify({
-                  jsonrpc: "2.0",
-                  id: "2",
-                  method: "chainHead_unstable_finalizedDatabase",
-                  params: {
-                    max_size_bytes:
+            while (true) {
+              const response = JSON.parse(await chain.nextJsonRpcResponse())
+              if (response?.params?.result?.event === "initialized") {
+                chain.sendJsonRpc(
+                  JSON.stringify({
+                    jsonrpc: "2.0",
+                    id: "2",
+                    method: "chainHead_unstable_finalizedDatabase",
+                    params: [
+                      // TODO: calculate this better
                       chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
-                  },
-                }),
-              )
+                    ],
+                  }),
+                )
+              }
+              if (response?.id === "2") {
+                await environment.set(
+                  { type: "database", chainName: key },
+                  response.result,
+                )
+                resolve()
+                break
+              }
             }
-            if (response?.id === "2") {
-              await environment.set(
-                { type: "database", chainName: key },
-                response.result,
-              )
-              dbChainsCounter++
-              resolve()
-              break
-            }
-          }
-        })
-    })
-    promises.push(promise)
+          })
+      }),
+    )
   }
 
-  Promise.all(promises).then(() => {
+  Promise.all(promises).then(async () => {
     // Once the database content is saved in the localStorage for all the chains
     // then terminate the client
-    if (dbChainsCounter === wellKnownChains.size) {
-      console.log("All databases are updated. Light Client is terminated.")
-      await client.terminate()
-    }
+    console.log("All databases are updated. Light Client is terminated.")
+    await client.terminate()
   })
 }
 
-updateDatabases()
+updateDatabases().catch((err) =>
+  console.error(`Error occurred during database update: ${err}`),
+)
 
 chrome.alarms.create("DatabaseContentAlarm", {
   periodInMinutes: 1440, // 24 hours
 })
 
-chrome.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name === "DatabaseContentAlarm") updateDatabases()
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === "DatabaseContentAlarm")
+    updateDatabases().catch((err) =>
+      console.error(`Error occurred during database update: ${err}`),
+    )
 })
 
 chrome.tabs.onRemoved.addListener((tabId) => {
