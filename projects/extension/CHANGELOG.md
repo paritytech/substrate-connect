@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Run smoldot client at extension initialization to populate databases and save in localStorage; Add functionality for repeating the poulate/save every 24 hours.
+- At the initialization of the extension, and then every 24 hours, a light client is started in the background in order to synchronize with the four well-known chains (Polkadot, Kusama, Westend, Rococo). The result can then be used as a starting point when a web page connects to one of these four chains.
 - An icon is now shown for a certain chain only if this chain was added using `addWellKnownChain` rather than `addChain`. This prevents tabs from impersonating chains. ([#1318](https://github.com/paritytech/substrate-connect/pull/1318))
 
 ## 0.2.1 - 2022-10-18
