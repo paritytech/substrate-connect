@@ -2,7 +2,7 @@ name: Publish
 
 on:
   push:
-    branches: [ main ]
+    branches: [ nik-ci-automation-release ]
 
 jobs:
   npm-publish:
@@ -17,18 +17,40 @@ jobs:
       - name: Publish Dry Run
         working-directory: './packages/connect'
         run: npm publish --unsafe-perm --dry-run
-      - name: Publish
-        id: publish
-        uses: JS-DevTools/npm-publish@v1
-        # Warning: this GitHub action doesn't seem to run prepublish scripts, hence
-        # the `npm publish --dry-run` done right above is important to ensure this.
+
+      # Pack and upload each package only if version is changed
+      - name: Pack Connect
+        run: npm pack
+        working-directory: "./packages/connect"
+
+      - name: Upload Connect
+        uses: actions/upload-artifact@v3
         with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: ./packages/connect/package.json
-          access: public
-      - name: Deploy
-        if: steps.publish.outputs.type != 'none'
-        run: yarn run deploy
+          name: package
+          path: "./packages/connect/*.tgz"
+
+      - name: Pack Connect Extension Protocol
+        run: npm pack
+        working-directory: "./packages/connect-extension-protocol"
+
+      - name: Upload Connect Extension Protocol
+        uses: actions/upload-artifact@v3
+        with:
+          name: package
+          path: "./packages/connect-extension-protocol/*.tgz"
+
+      # - name: Deploy
+      #   if: steps.publish.outputs.type != 'none'
+      #   run: yarn run deploy
+
+      - name: NPM Publish automation
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/paritytech/npm_publish_automation/actions/workflows/publish.yml/dispatches
+          ref: main
+          inputs: '${{ format(''{{ "repo": "{0}", "run_id": "{1}" }}'', github.repository, github.run_id) }}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
 
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
