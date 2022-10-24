@@ -2,7 +2,7 @@ name: E2E Zombienet CI
 
 on:
   pull_request:
-    branches: [ nik-bump-zombienet-deps ]
+    branches: [ main ]
 
 jobs:
   test:
