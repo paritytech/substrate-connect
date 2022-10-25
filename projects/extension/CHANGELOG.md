@@ -8,9 +8,23 @@
 
 ### Changed
 
+- At the initialization of the extension, and then every 24 hours, a light client is started in the background in order to synchronize with the four well-known chains (Polkadot, Kusama, Westend, Rococo). The result can then be used as a starting point when a web page connects to one of these four chains. ([#1319](https://github.com/paritytech/substrate-connect/pull/1319))
+- An icon is now shown for a certain chain only if this chain was added using `addWellKnownChain` rather than `addChain`. This prevents tabs from impersonating chains. ([#1318](https://github.com/paritytech/substrate-connect/pull/1318))
+
+## 0.2.1 - 2022-10-18
+
+### Changed
+
+- Revert the extension to manifest v2 format, for compatibility with Firefox. ([#1313](https://github.com/paritytech/substrate-connect/pull/1313))
+
+## 0.2.0 - 2022-10-18
+
+### Changed
+
 - The extension is now using the manifest v3 format. ([#1280](https://github.com/paritytech/substrate-connect/pull/1280), [#1293](https://github.com/paritytech/substrate-connect/pull/1293), [#1295](https://github.com/paritytech/substrate-connect/pull/1295))
 - Due to the update to manifest v3, the light client no longer runs in the extension but in each tab (that tries to connect to a chain) individually. As a consequence of this, the light client is no longer capable of opening non-secure WebSocket connections, and thus connectivity to chain might be greatly reduced. ([#1272](https://github.com/paritytech/substrate-connect/pull/1272))
 - Improve the UI of the popup and options page. ([#1277](https://github.com/paritytech/substrate-connect/pull/1277))
+- Update @substrate/smoldot-light to [version 0.7.2](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#072---2022-10-12). ([#1300](https://github.com/paritytech/substrate-connect/pull/1300))
 
 ## 0.1.11 - 2022-09-21
 

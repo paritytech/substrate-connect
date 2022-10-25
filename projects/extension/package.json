@@ -1,6 +1,6 @@
 {
   "name": "@substrate/extension",
-  "version": "0.1.11",
+  "version": "0.2.1",
   "description": "Browser extension to manage substrate-based blockchain light clients",
   "main": "dist/src/index.js",
   "author": "Parity Technologies",
@@ -24,14 +24,14 @@
     "eslint": "^8.23.1",
     "jest-chrome": "^0.7.2",
     "mini-css-extract-plugin": "^2.6.1",
-    "postcss": "^8.4.16",
+    "postcss": "^8.4.18",
     "postcss-loader": "^7.0.1",
     "tailwindcss": "^3.1.8",
     "web-ext": "^7.2.0"
   },
   "dependencies": {
     "@substrate/connect-extension-protocol": "^1.0.1",
-    "@substrate/smoldot-light": "0.6.34",
+    "@substrate/smoldot-light": "0.7.2",
     "multiaddr": "^10.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

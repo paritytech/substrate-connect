@@ -4,16 +4,13 @@ import polkadot from "../public/assets/polkadot.json"
 import rococo_v2_2 from "../public/assets/rococo_v2_2.json"
 
 export type StorageEntry =
-  | { type: "notifications" }
   | { type: "braveSetting" }
   | { type: "database"; chainName: string }
   | { type: "bootnodes"; chainName: string }
   | { type: "activeChains"; tabId: number }
 
 export type StorageEntryType<E extends StorageEntry> =
-  E["type"] extends "notifications"
-    ? boolean
-    : E["type"] extends "braveSetting"
+  E["type"] extends "braveSetting"
     ? boolean
     : E["type"] extends "database"
     ? string
@@ -116,8 +113,6 @@ export function onActiveChainsChanged(callback: () => void): () => void {
 
 function keyOf(entry: StorageEntry): string {
   switch (entry.type) {
-    case "notifications":
-      return "notifications"
     case "braveSetting":
       return "braveSetting"
     case "database":
@@ -132,6 +127,7 @@ function keyOf(entry: StorageEntry): string {
 export interface ExposedChainConnection {
   chainId: string
   chainName: string
+  isWellKnown: boolean
   tab: ExposedChainConnectionTabInfo
   isSyncing: boolean
   peers: number

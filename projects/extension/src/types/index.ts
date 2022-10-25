@@ -9,6 +9,7 @@ export interface TabInterface {
 
 export interface NetworkTabProps {
   name: string
+  isWellKnown: boolean
   health: OptionsNetworkTabHealthContent
   apps: App[]
 }

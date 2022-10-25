@@ -59,6 +59,7 @@ const NetworkContent = ({ network, health, apps }: NetworkContentProps) => {
 
 const NetworkTab: FunctionComponent<NetworkTabProps> = ({
   name,
+  isWellKnown,
   health,
   apps,
 }: NetworkTabProps) => {
@@ -71,7 +72,9 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
         titles={[
           <div className="flex rounded-lg">
             <div className="networkicon_container">
-              <IconWeb3>{name.toLowerCase()}</IconWeb3>
+              <IconWeb3 isWellKnown={isWellKnown}>
+                {name.toLowerCase()}
+              </IconWeb3>
               <div className="txt-xl cap">
                 {name}
                 <span className="pl-2 text-[#616161]">
