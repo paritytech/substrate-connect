@@ -1,5 +1,6 @@
 import React, { ReactNode, useEffect, useState } from "react"
 import { BsThreeDots } from "react-icons/bs"
+import { MdDeleteOutline } from "react-icons/md"
 import * as environment from "../environment"
 import { multiaddr } from "multiaddr"
 
@@ -27,6 +28,31 @@ interface SwitchProps {
 interface BootnodesType {
   checked: boolean
   bootnode: string
+}
+
+interface Boot {
+  [key: string]: string[]
+}
+
+// Add to localstorage the given bootnode for the given chain
+const saveToLocalStorage = async (
+  chainName: string,
+  bootnode: string,
+  add: boolean,
+  def: string[],
+) => {
+  if (def.length === 0) throw new Error("Default Bootnodes should exist.")
+  let res: string[]
+  const chainBootnodes = await environment.get({
+    type: "bootnodes",
+    chainName,
+  })
+  res =
+    chainBootnodes && Object.keys(chainBootnodes).length > 0
+      ? [...chainBootnodes]
+      : [...def]
+  add ? res.push(bootnode) : res.splice(res.indexOf(bootnode), 1)
+  environment.set({ type: "bootnodes", chainName }, res)
 }
 
 const Title = ({
@@ -61,18 +87,17 @@ const Switch = ({
   }, [isChecked])
 
   return (
-    <div className="flex w-1/12 ml-8">
+    <div className="flex w-1/12 ml-8" key={bootnode}>
       <label className="inline-flex relative items-center mr-5 cursor-pointer">
         <input
           type="checkbox"
           className="sr-only peer"
-          defaultChecked={checked}
           checked={checked}
           readOnly
         />
         <div
           onClick={() => {
-            // alterBootnodes(bootnode, !checked, defaultBootnode)
+            alterBootnodes(bootnode, !checked, defaultBootnode)
             setChecked(!checked)
           }}
           className="w-11 h-6 bg-gray-200 rounded-full peer  peer-focus:ring-green-300  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#16DB9A]"
@@ -82,18 +107,7 @@ const Switch = ({
   )
 }
 
-interface Boot {
-  [key: string]: string[]
-}
-
-const validateAddress = (input: string): boolean => {
-  let regex = new RegExp("/dns/[A-Za-z0-9]/tcp/443/wss/p2p/{10,48}[A-Za-z0-9]")
-  console.log("REGEX => ", regex.test(input))
-  return regex.test(input)
-}
-
 export const Bootnodes = () => {
-  const [bootnodes, setBootnodes] = useState<Boot>()
   const [selectedChain, setSelectedChain] = useState<string>("polkadot")
   const [defaultBn, setDefaultBn] = useState<BootnodesType[]>([])
   const [customBn, setCustomBn] = useState<BootnodesType[]>([])
@@ -103,37 +117,13 @@ export const Bootnodes = () => {
   >([])
 
   const [addMessage, setAddMessage] = useState<any>(undefined)
-  const [loaderAdd, setLoaderAdd] = useState<boolean>(false)
   const [bootnodeMsgClass, setBootnodeMsgClass] = useState<string>()
 
   useEffect(() => {
-    // Load default Bootnodes and save them to localStorage
-    environment.getBootnodes(selectedChain).then((a) => {
-      setBootnodes({ [selectedChain]: a })
-      setDefaultWellKnownChainBn(a)
-    })
+    // Load default Bootnodes
+    const defChains = environment.getDefaultBootnodes(selectedChain)
+    setDefaultWellKnownChainBn(defChains)
   }, [selectedChain])
-
-  // Add to localstorage the given bootnode for the given chain
-  const saveToLocalStorage = (
-    chain: string,
-    bootnode: string,
-    add: boolean,
-    def: string[],
-  ) => {
-    chrome.storage.local.get(["bootNodes_".concat(chain)], (result) => {
-      let res: string[]
-      if (def.length === 0) throw new Error("Default Bootnodes should exist.")
-      res =
-        result && Object.keys(result).length > 0
-          ? [...result["bootNodes_".concat(chain)]]
-          : [...def]
-      add ? res.push(bootnode) : res.splice(res.indexOf(bootnode), 1)
-      chrome.storage.local.set({
-        ["bootNodes_".concat(chain)]: res,
-      })
-    })
-  }
 
   useEffect(() => {
     if (addMessage && !addMessage?.error) {
@@ -142,74 +132,50 @@ export const Bootnodes = () => {
     } else {
       setBootnodeMsgClass("pb-2 text-red-600")
     }
-    setLoaderAdd(false)
   }, [addMessage])
 
   useEffect(() => {
-    console.log("selectedChain", selectedChain)
-    const mpla = async () => {
-      await environment.getBootnodes(selectedChain)
-    }
-    mpla()
-  }, [selectedChain])
-
-  useEffect(() => {
-    const result = (c: string, b: string, res: string) => {
-      if (!res) {
-        saveToLocalStorage(c, b, true, defaultWellKnownChainBn)
-      }
-      setAddMessage({
-        error: !!res,
-        message: res || "Successfully added.",
+    environment.getBootnodes(selectedChain).then((bootnodes) => {
+      const tmpDef: BootnodesType[] = []
+      const tmpCust: BootnodesType[] = []
+      bootnodes?.forEach((b) => {
+        const defaultBootnodes = environment.getDefaultBootnodes(selectedChain)
+        defaultBootnodes?.length && defaultBootnodes?.includes(b)
+          ? tmpDef.push({ bootnode: b, checked: true })
+          : tmpCust.push({ bootnode: b, checked: true })
       })
-    }
-    if (!defaultWellKnownChainBn) return
-    console.log("result -> ", result)
-    // bg.uiInterface.onBootnodeVerification(result)
-    // TODO ADD VERIFICATIONOF BOOTNODE
-  }, [defaultWellKnownChainBn])
-
-  useEffect(() => {
-    // const getBootnodes = async () => {
-    //   setBootnodes()
-    // }
-    // getBootnodes()
-    const tmpDef: BootnodesType[] = []
-    const tmpCust: BootnodesType[] = []
-    if (bootnodes) {
-      console.log("bootnodes[selectedChain]", bootnodes, selectedChain)
-      bootnodes[selectedChain] &&
-        bootnodes[selectedChain].forEach((b) => {
-          const defaultBootnodes =
-            environment.getDefaultBootnodes(selectedChain)
-          defaultBootnodes?.length && defaultBootnodes?.includes(b)
-            ? tmpDef.push({ bootnode: b, checked: true })
-            : tmpCust.push({ bootnode: b, checked: true })
-        })
       setDefaultBn(tmpDef)
       setCustomBn(tmpCust)
-    }
-  }, [bootnodes, selectedChain])
+    })
+  }, [selectedChain])
 
   const alterBootnodes = async (
     bootnode: string,
     add: boolean,
     defaultBootnode: boolean,
   ) => {
-    if (!!bootnode) {
-      // if bootnode belongs to the list (default) then it does not need to be validated as it
-      // comes from the chainspecs. It can be saved to the local storage at once.
-      if (defaultBootnode) {
+    // if bootnode belongs to the list (default) then it does not need to be validated as it
+    // comes from the chainspecs. It can be saved to the local storage at once.
+    try {
+      if (!defaultBootnode) {
+        // verify bootnode validity
+        multiaddr(customBnInput)
+      }
+      // Check if bootnode already exists in the default and custom lists
+      if (
+        defaultWellKnownChainBn?.includes(customBnInput) ||
+        customBn.map((c) => c.bootnode).includes(customBnInput)
+      ) {
+        setAddMessage({
+          error: true,
+          message: "Bootnode already exists in the list.",
+        })
+      } else {
         saveToLocalStorage(
           selectedChain,
           bootnode,
           add,
           defaultWellKnownChainBn,
-        )
-      } else {
-        // bg?.uiInterface.updateBootnode(selectedChain, bootnode, add)
-        console.log(
-          "bg?.uiInterface.updateBootnode(selectedChain, bootnode, add)",
         )
       }
       const tmp = defaultBootnode ? [...defaultBn] : [...customBn]
@@ -220,6 +186,12 @@ export const Bootnodes = () => {
         tmp.push({ bootnode, checked: true })
       }
       defaultBootnode ? setDefaultBn(tmp) : setCustomBn(tmp)
+      setCustomBnInput("")
+    } catch (err) {
+      setAddMessage({
+        error: true,
+        message: (err as Error).message.replace(/^\w/, (c) => c.toUpperCase()),
+      })
     }
   }
 
@@ -231,7 +203,6 @@ export const Bootnodes = () => {
         <Title>Network</Title>
         <div className="networkSelect">
           <select
-            disabled={loaderAdd}
             onChange={(v) => {
               setSelectedChain(v.target.value)
               setCustomBnInput("")
@@ -269,12 +240,21 @@ export const Bootnodes = () => {
               <div className="text-ellipsis overflow-hidden whitespace-nowrap w-11/12">
                 {c.bootnode}
               </div>
-              <Switch
-                bootnode={c.bootnode}
-                alterBootnodes={alterBootnodes}
-                defaultBootnode={false}
-                isChecked={c.checked}
-              />
+              <button
+                className="flex bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-full items-center"
+                onClick={() => {
+                  saveToLocalStorage(
+                    selectedChain,
+                    c.bootnode,
+                    false,
+                    defaultWellKnownChainBn,
+                  )
+                  setCustomBn(customBn.filter((f) => f.bootnode !== c.bootnode))
+                }}
+              >
+                <MdDeleteOutline className="text-base" />
+                <p>Remove</p>
+              </button>
             </div>
           ))}
         </div>
@@ -297,37 +277,26 @@ export const Bootnodes = () => {
               <button
                 className="py-1.5 text-sm px-8 border border-[#24cc85] rounded text-[#24cc85] hover:text-white
                   hover:bg-[#24cc85] capitalize ml-4 disabled:border-gray-200 disabled:text-white disabled:bg-gray-200"
-                disabled={!customBnInput || loaderAdd}
-                onClick={async () => {
-                  try {
-                    multiaddr(customBnInput)
-                    if (
-                      defaultWellKnownChainBn?.includes(customBnInput) ||
-                      customBn.map((c) => c.bootnode).includes(customBnInput)
-                    ) {
-                      setAddMessage({
-                        error: true,
-                        message: "Bootnode already exists in the list.",
-                      })
-                    } else {
-                      setLoaderAdd(true)
-                      // bg?.uiInterface.updateBootnode(
-                      //   selectedChain,
-                      //   customBnInput,
-                      //   true,
-                      // )
-                    }
-                  } catch (err) {
+                disabled={!customBnInput}
+                onClick={() => {
+                  if (
+                    defaultWellKnownChainBn?.includes(customBnInput) ||
+                    customBn.map((c) => c.bootnode).includes(customBnInput)
+                  ) {
                     setAddMessage({
                       error: true,
-                      message: (err as Error).message.replace(/^\w/, (c) =>
-                        c.toUpperCase(),
-                      ),
+                      message: "Bootnode already exists in the list.",
                     })
+                  } else {
+                    alterBootnodes(
+                      customBnInput,
+                      true,
+                      defaultWellKnownChainBn?.includes(customBnInput),
+                    )
                   }
                 }}
               >
-                {loaderAdd ? "Load" : "Add"}
+                Add
               </button>
             </div>
           </div>

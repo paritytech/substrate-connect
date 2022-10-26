@@ -49,12 +49,7 @@ export function getDefaultBootnodes(chain: string): string[] {
 
 // Load default Bootnodes and save them to localStorage
 export async function getBootnodes(chainName: string) {
-  let result = await get({ type: "bootnodes", chainName })
-  if (!result) {
-    result = getDefaultBootnodes(chainName)
-    set({ type: "bootnodes", chainName }, result)
-  }
-  return result
+  return await get({ type: "bootnodes", chainName })
 }
 
 export async function get<E extends StorageEntry>(

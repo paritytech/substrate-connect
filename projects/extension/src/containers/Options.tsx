@@ -181,7 +181,7 @@ export const Options: React.FunctionComponent = () => {
           </div>
         </div>
       </div>
-      <div className="ml-60 absolute w-[calc(100%-15rem)]">
+      <div className="ml-60 absolute w-[calc(100%-15rem)] h-[100vh] overflow-auto">
         <MenuContent activeMenu={menu}>
           {/** Networks section */}
           <Networks networks={networks} />
