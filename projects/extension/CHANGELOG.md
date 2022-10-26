@@ -4,7 +4,7 @@
 
 ### Added
 
-- New Settings screen in Options page, that allows user to enable/disable/add/remove the bootnodes per integrated chain. ([]())
+- New Bootnodes screen in Options page, that allows user to enable/disable/add/remove the bootnodes per integrated chain. ([#1294](https://github.com/paritytech/substrate-connect/pull/1294))
 
 ### Changed
 
