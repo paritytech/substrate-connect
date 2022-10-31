@@ -86,7 +86,7 @@ export const Options: React.FunctionComponent = () => {
             peers,
             bestBlockHeight,
           } = chain
-          const key = isWellKnown ? "wk" : "nwk" + chainName
+          const key = (isWellKnown ? "wk" : "nwk") + chainName
 
           const network = networks.get(key)
           if (!network) {
