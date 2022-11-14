@@ -1,30 +1,10 @@
-import React, { ReactNode, useEffect, useState } from "react"
-import { BsThreeDots } from "react-icons/bs"
+import React, { useEffect, useState } from "react"
 import { MdDeleteOutline } from "react-icons/md"
 import * as environment from "../environment"
 import { multiaddr } from "multiaddr"
 
 import "./Bootnodes.css"
-
-type manipulateBootnodeType = (
-  bootnode: string,
-  add: boolean,
-  defaultBootnode: boolean,
-) => void
-
-interface TitleProps {
-  children: ReactNode
-  titleType?: "small" | "normal" | "large"
-  showOptions?: boolean
-}
-
-interface SwitchProps {
-  bootnode: string
-  alterBootnodes: manipulateBootnodeType
-  defaultBootnode: boolean
-  isChecked: boolean
-}
-
+import { Title, Switch } from "."
 interface BootnodesType {
   checked: boolean
   bootnode: string
@@ -53,58 +33,6 @@ const saveToLocalStorage = async (
       : [...def]
   add ? res.push(bootnode) : res.splice(res.indexOf(bootnode), 1)
   environment.set({ type: "bootnodes", chainName }, res)
-}
-
-const Title = ({
-  children,
-  titleType = "normal",
-  showOptions = false,
-}: TitleProps) => {
-  const cName =
-    titleType === "small"
-      ? "text-sm text-neutral-500"
-      : titleType === "large"
-      ? "text-lg font-bold"
-      : "text-base font-bold"
-  return (
-    <div className={"flex justify-between mb-4 ".concat(cName)}>
-      <div className="capitalize">{children}</div>
-      {showOptions && <BsThreeDots className="cursor-pointer" />}
-    </div>
-  )
-}
-
-const Switch = ({
-  bootnode,
-  alterBootnodes,
-  defaultBootnode,
-  isChecked,
-}: SwitchProps) => {
-  const [checked, setChecked] = useState<boolean>(isChecked)
-
-  useEffect(() => {
-    setChecked(isChecked)
-  }, [isChecked])
-
-  return (
-    <div className="flex w-1/12 ml-8" key={bootnode}>
-      <label className="inline-flex relative items-center mr-5 cursor-pointer">
-        <input
-          type="checkbox"
-          className="sr-only peer"
-          checked={checked}
-          readOnly
-        />
-        <div
-          onClick={() => {
-            alterBootnodes(bootnode, !checked, defaultBootnode)
-            setChecked(!checked)
-          }}
-          className="w-11 h-6 bg-gray-200 rounded-full peer  peer-focus:ring-green-300  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#16DB9A]"
-        ></div>
-      </label>
-    </div>
-  )
 }
 
 export const Bootnodes = () => {
@@ -138,12 +66,24 @@ export const Bootnodes = () => {
     environment.getBootnodes(selectedChain).then((bootnodes) => {
       const tmpDef: BootnodesType[] = []
       const tmpCust: BootnodesType[] = []
-      bootnodes?.forEach((b) => {
-        const defaultBootnodes = environment.getDefaultBootnodes(selectedChain)
-        defaultBootnodes?.length && defaultBootnodes?.includes(b)
-          ? tmpDef.push({ bootnode: b, checked: true })
-          : tmpCust.push({ bootnode: b, checked: true })
-      })
+      // When bootnodes do not exist assign and save the local ones
+      if (!bootnodes?.length) {
+        environment.set(
+          { type: "bootnodes", chainName: selectedChain },
+          defaultWellKnownChainBn,
+        )
+        defaultWellKnownChainBn.forEach((b) => {
+          tmpDef.push({ bootnode: b, checked: true })
+        })
+      } else {
+        bootnodes?.forEach((b) => {
+          const defaultBootnodes =
+            environment.getDefaultBootnodes(selectedChain)
+          defaultBootnodes?.length && defaultBootnodes?.includes(b)
+            ? tmpDef.push({ bootnode: b, checked: true })
+            : tmpCust.push({ bootnode: b, checked: true })
+        })
+      }
       setDefaultBn(tmpDef)
       setCustomBn(tmpCust)
     })
