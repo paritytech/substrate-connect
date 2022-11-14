@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { MdDeleteOutline } from "react-icons/md"
 import * as environment from "../environment"
-import { multiaddr } from "multiaddr"
 
 import "./Bootnodes.css"
 import { Title, Switch } from "."
@@ -87,7 +86,20 @@ export const Bootnodes = () => {
       setDefaultBn(tmpDef)
       setCustomBn(tmpCust)
     })
-  }, [selectedChain])
+  }, [selectedChain, defaultWellKnownChainBn])
+
+  const checkMultiAddr = (addr: string) => {
+    let regex58 =
+      /\/(ip4|ip6|dns4|dns6|dns)\/([a-zA-z0-9.-]{3,})\/tcp\/[0-9]{0,5}\/(ws|wss|tls|ws)\/p2p\/[a-zA-Z1-9^Il0O]{52}/i
+
+    const base64 =
+      /\/(ip4|ip6)\/([a-zA-z0-9.-]{3,})\/udp\/(.?)\/webrtc\/certhash\/(.*?)\/p2p\/[-A-Za-z0-9+=]{1,50}|=[^=]|={3,}/i
+
+    if (!regex58.test(addr) || !regex58.test(addr))
+      throw new Error(
+        "Multiaddress provided is not correct (not base58 or base64 format).",
+      )
+  }
 
   const alterBootnodes = async (
     bootnode: string,
@@ -99,7 +111,7 @@ export const Bootnodes = () => {
     try {
       if (!defaultBootnode) {
         // verify bootnode validity
-        multiaddr(customBnInput)
+        checkMultiAddr(customBnInput)
       }
       // Check if bootnode already exists in the default and custom lists
       if (

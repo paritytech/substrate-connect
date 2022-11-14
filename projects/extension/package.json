@@ -32,7 +32,6 @@
   "dependencies": {
     "@substrate/connect-extension-protocol": "^1.0.1",
     "@substrate/smoldot-light": "0.7.5",
-    "multiaddr": "^10.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-loader": "^4.13.0",
