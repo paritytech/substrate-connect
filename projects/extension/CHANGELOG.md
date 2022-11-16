@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Update @substrate/smoldot-light to [version 0.7.5](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#075---2022-10-31). ([#1331](https://github.com/paritytech/substrate-connect/pull/1331))
+- Update @substrate/smoldot-light to [version 0.7.7](https://github.com/paritytech/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#077---2022-11-11). ([#1345](https://github.com/paritytech/substrate-connect/pull/1345))
 - At the initialization of the extension, and then every 24 hours, a light client is started in the background in order to synchronize with the four well-known chains (Polkadot, Kusama, Westend, Rococo). The result can then be used as a starting point when a web page connects to one of these four chains. ([#1319](https://github.com/paritytech/substrate-connect/pull/1319))
 - An icon is now shown for a certain chain only if this chain was added using `addWellKnownChain` rather than `addChain`. This prevents tabs from impersonating chains. ([#1318](https://github.com/paritytech/substrate-connect/pull/1318))
 
