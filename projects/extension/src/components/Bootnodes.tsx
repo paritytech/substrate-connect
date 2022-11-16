@@ -87,10 +87,10 @@ export const Bootnodes = () => {
 
   const checkMultiAddr = (addr: string) => {
     const ws =
-      /\/(ip4|ip6|dns4|dns6|dns)\/([a-zA-z0-9.-]{3,})\/tcp\/[0-9]{0,5}\/(ws|wss|tls\/ws)\/p2p\/[a-zA-Z1-9^Il0O]{52}/i
+      /\/(ip4|ip6|dns4|dns6|dns)\/(.*?)\/tcp\/[0-9]{0,5}\/(ws|wss|tls\/ws)\/p2p\/[a-zA-Z1-9^Il0O]+/i
 
     const webrtc =
-      /\/(ip4|ip6)\/([a-zA-z0-9.-]{3,})\/udp\/(.?)\/webrtc\/certhash\/(.*?)\/p2p\/[a-zA-Z1-9^Il0O]{52}/i
+      /\/(ip4|ip6)\/(.*?)\/udp\/(.*?)\/webrtc\/certhash\/(.*?)\/p2p\/[a-zA-Z1-9^Il0O]+/i
 
     if (!ws.test(addr) && !webrtc.test(addr))
       throw new Error("Provided multiaddress is not correct.")
