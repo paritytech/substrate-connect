@@ -24,6 +24,6 @@
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "devDependencies": {
-    "eslint": "^8.23.1"
+    "eslint": "^8.27.0"
   }
 }
