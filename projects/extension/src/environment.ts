@@ -39,12 +39,12 @@ export async function getAllActiveChains(): Promise<ExposedChainConnection[]> {
   })
 }
 
-export function getDefaultBootnodes(chain: string): string[] {
+export function getDefaultBootnodes(chain: string): string[] | undefined {
   if (chain === "polkadot") return polkadot.bootNodes
   if (chain === "ksmcc3") return ksmcc3.bootNodes
   if (chain === "westend2") return westend2.bootNodes
   if (chain === "rococo_v2_2") return rococo_v2_2.bootNodes
-  return []
+  return undefined
 }
 
 // Load default Bootnodes and save them to localStorage

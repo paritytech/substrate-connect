@@ -9,10 +9,6 @@ interface BootnodesType {
   bootnode: string
 }
 
-interface Boot {
-  [key: string]: string[]
-}
-
 // Add to localstorage the given bootnode for the given chain
 const saveToLocalStorage = async (
   chainName: string,
@@ -31,7 +27,7 @@ const saveToLocalStorage = async (
       ? [...chainBootnodes]
       : [...def]
   add ? res.push(bootnode) : res.splice(res.indexOf(bootnode), 1)
-  environment.set({ type: "bootnodes", chainName }, res)
+  await environment.set({ type: "bootnodes", chainName }, res)
 }
 
 export const Bootnodes = () => {
@@ -39,7 +35,7 @@ export const Bootnodes = () => {
   const [defaultBn, setDefaultBn] = useState<BootnodesType[]>([])
   const [customBn, setCustomBn] = useState<BootnodesType[]>([])
   const [customBnInput, setCustomBnInput] = useState<string>("")
-  const [defaultWellKnownChainBn, setDefaultWellKnownChainBn] = useState<
+  const [selectedChainDefaultBn, setSelectedChainDefaultBn] = useState<
     string[]
   >([])
 
@@ -49,7 +45,8 @@ export const Bootnodes = () => {
   useEffect(() => {
     // Load default Bootnodes
     const defChains = environment.getDefaultBootnodes(selectedChain)
-    setDefaultWellKnownChainBn(defChains)
+    console.assert(defChains, "Invalid chain name: " + selectedChain)
+    setSelectedChainDefaultBn(defChains || [])
   }, [selectedChain])
 
   useEffect(() => {
@@ -69,9 +66,9 @@ export const Bootnodes = () => {
       if (!bootnodes?.length) {
         environment.set(
           { type: "bootnodes", chainName: selectedChain },
-          defaultWellKnownChainBn,
+          selectedChainDefaultBn,
         )
-        defaultWellKnownChainBn.forEach((b) => {
+        selectedChainDefaultBn.forEach((b) => {
           tmpDef.push({ bootnode: b, checked: true })
         })
       } else {
@@ -86,19 +83,17 @@ export const Bootnodes = () => {
       setDefaultBn(tmpDef)
       setCustomBn(tmpCust)
     })
-  }, [selectedChain, defaultWellKnownChainBn])
+  }, [selectedChain, selectedChainDefaultBn])
 
   const checkMultiAddr = (addr: string) => {
-    let regex58 =
-      /\/(ip4|ip6|dns4|dns6|dns)\/([a-zA-z0-9.-]{3,})\/tcp\/[0-9]{0,5}\/(ws|wss|tls|ws)\/p2p\/[a-zA-Z1-9^Il0O]{52}/i
+    const ws =
+      /\/(ip4|ip6|dns4|dns6|dns)\/([a-zA-z0-9.-]{3,})\/tcp\/[0-9]{0,5}\/(ws|wss|tls\/ws)\/p2p\/[a-zA-Z1-9^Il0O]{52}/i
 
-    const base64 =
-      /\/(ip4|ip6)\/([a-zA-z0-9.-]{3,})\/udp\/(.?)\/webrtc\/certhash\/(.*?)\/p2p\/[-A-Za-z0-9+=]{1,50}|=[^=]|={3,}/i
+    const webrtc =
+      /\/(ip4|ip6)\/([a-zA-z0-9.-]{3,})\/udp\/(.?)\/webrtc\/certhash\/(.*?)\/p2p\/[a-zA-Z1-9^Il0O]{52}/i
 
-    if (!regex58.test(addr) || !regex58.test(addr))
-      throw new Error(
-        "Multiaddress provided is not correct (not base58 or base64 format).",
-      )
+    if (!ws.test(addr) && !webrtc.test(addr))
+      throw new Error("Provided multiaddress is not correct.")
   }
 
   const alterBootnodes = async (
@@ -115,7 +110,7 @@ export const Bootnodes = () => {
       }
       // Check if bootnode already exists in the default and custom lists
       if (
-        defaultWellKnownChainBn?.includes(customBnInput) ||
+        selectedChainDefaultBn?.includes(customBnInput) ||
         customBn.map((c) => c.bootnode).includes(customBnInput)
       ) {
         setAddMessage({
@@ -123,11 +118,11 @@ export const Bootnodes = () => {
           message: "Bootnode already exists in the list.",
         })
       } else {
-        saveToLocalStorage(
+        await saveToLocalStorage(
           selectedChain,
           bootnode,
           add,
-          defaultWellKnownChainBn,
+          selectedChainDefaultBn,
         )
       }
       const tmp = defaultBootnode ? [...defaultBn] : [...customBn]
@@ -171,7 +166,7 @@ export const Bootnodes = () => {
         <Title>Bootnodes</Title>
         <Title titleType="small">Default</Title>
         <div className="mb-8">
-          {defaultWellKnownChainBn?.map((bn) => (
+          {selectedChainDefaultBn?.map((bn) => (
             <div className="leading-4 flex items-center mb-2 wrap">
               <div className="text-ellipsis overflow-hidden whitespace-nowrap w-11/12">
                 {bn}
@@ -194,12 +189,12 @@ export const Bootnodes = () => {
               </div>
               <button
                 className="flex bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-full items-center"
-                onClick={() => {
-                  saveToLocalStorage(
+                onClick={async () => {
+                  await saveToLocalStorage(
                     selectedChain,
                     c.bootnode,
                     false,
-                    defaultWellKnownChainBn,
+                    selectedChainDefaultBn,
                   )
                   setCustomBn(customBn.filter((f) => f.bootnode !== c.bootnode))
                 }}
@@ -232,7 +227,7 @@ export const Bootnodes = () => {
                 disabled={!customBnInput}
                 onClick={() => {
                   if (
-                    defaultWellKnownChainBn?.includes(customBnInput) ||
+                    selectedChainDefaultBn?.includes(customBnInput) ||
                     customBn.map((c) => c.bootnode).includes(customBnInput)
                   ) {
                     setAddMessage({
@@ -243,7 +238,7 @@ export const Bootnodes = () => {
                     alterBootnodes(
                       customBnInput,
                       true,
-                      defaultWellKnownChainBn?.includes(customBnInput),
+                      selectedChainDefaultBn?.includes(customBnInput),
                     )
                   }
                 }}
