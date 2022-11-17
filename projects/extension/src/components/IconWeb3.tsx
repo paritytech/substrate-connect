@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from "react"
+import { MdOutlineGridView } from "react-icons/md"
 import "../main.css"
 
 interface Props {
@@ -16,8 +17,12 @@ export const IconWeb3: FunctionComponent<Props> = ({
   isWellKnown,
 }) => {
   return (
-    <span className="icon text-xl w-10">
-      {isWellKnown && children && hasGlyph(children) ? children : "?"}
-    </span>
+    <>
+      {isWellKnown && children && hasGlyph(children) ? (
+        <span className="icon text-xl w-10">{children}</span>
+      ) : (
+        <MdOutlineGridView className="ml-2.5 mt-1.5 mr-1.5" />
+      )}
+    </>
   )
 }
