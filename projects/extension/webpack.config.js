@@ -93,7 +93,7 @@ const config = {
     }),
     new webpack.EnvironmentPlugin({
       PKG_NAME: "@substrate/extension",
-      PKG_VERSION: "0.2.1",
+      PKG_VERSION: "0.2.2",
     }),
   ],
   optimization: {

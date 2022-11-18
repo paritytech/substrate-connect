@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.2.2 - 2022-11-18
+
 ### Added
 
 - Add new bootnodes screen in Options page, that allows the user to enable/disable/add/remove the bootnodes of the well-known chains. ([#1294](https://github.com/paritytech/substrate-connect/pull/1294))
