@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react"
 import pckg from "../../package.json"
-import { MdOutlineNetworkCell } from "react-icons/md"
+import { MdOutlineNetworkCell, MdOutlineOnlinePrediction } from "react-icons/md"
 import { FaGithub } from "react-icons/fa"
 import * as environment from "../environment"
 import { NetworkTabProps } from "../types"
-import { BraveModal, Logo, MenuContent, Networks } from "../components"
+import {
+  BraveModal,
+  Logo,
+  MenuContent,
+  Networks,
+  Bootnodes,
+} from "../components"
 
 type MenuItemTypes = "item" | "title" | "icon"
 
@@ -45,7 +51,7 @@ const cName = (type: MenuItemTypes, menu = 0, reqMenu: number) => {
       }
       break
     case "title":
-      if (menu === 0) {
+      if (menu === reqMenu) {
         classes = [...title, ...titleActive]
       } else {
         classes = [...title, ...titleInactive]
@@ -145,6 +151,16 @@ export const Options: React.FunctionComponent = () => {
               <span className={cName("title", menu, 0)}>Networks</span>
             </a>
           </li>
+          <li className="relative">
+            <a
+              className={cName("item", menu, 1)}
+              href="#!"
+              onClick={() => setMenu(1)}
+            >
+              <MdOutlineOnlinePrediction className={cName("icon", menu, 1)} />
+              <span className={cName("title", menu, 1)}>Bootnodes</span>
+            </a>
+          </li>
         </ul>
         <div className="text-center bottom-0 absolute w-full">
           <hr className="m-0" />
@@ -165,11 +181,12 @@ export const Options: React.FunctionComponent = () => {
           </div>
         </div>
       </div>
-      <div className="ml-60 absolute w-[calc(100%-15rem)]">
+      <div className="ml-60 absolute w-[calc(100%-15rem)] h-[100vh] overflow-auto">
         <MenuContent activeMenu={menu}>
           {/** Networks section */}
           <Networks networks={networks} />
-          <section className="font-roboto">Settings</section>
+          {/**Bootnodes section */}
+          <Bootnodes />
         </MenuContent>
       </div>
     </>
