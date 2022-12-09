@@ -17,11 +17,10 @@ matters for chains which have been hard forked. I.e. rococo - "rococo_v2" and
 ```js
 import { ApiPromise } from "@polkadot/api";
 import {
-  ScProvider,
-  WellKnownChain,
-} from "@polkadot/rpc-provider/substrate-connect";
+  ScProvider
+} from "@polkadot/rpc-provider";
 
-const provider = new ScProvider(WellKnownChain.polkadot);
+const provider = new ScProvider(ScProvider.WellKnownChain.polkadot);
 await provider.connect();
 const polkadotApi = await ApiPromise.create({ provider });
 await polkadotApi.rpc.chain.subscribeNewHeads((lastHeader) => {
@@ -54,14 +53,13 @@ connects to a parachain of the Westend test network:
 ```js
 import { ApiPromise } from "@polkadot/api";
 import {
-  ScProvider,
-  WellKnownChain,
-} from "@polkadot/rpc-provider/substrate-connect";
+  ScProvider
+} from "@polkadot/rpc-provider";
 import jsonParachainSpec from './myParaChainSpec.json';
 
 const parachainSpec = JSON.stringify(jsonParachainSpec);
 
-const relayProvider = new ScProvider(WellKnownChain.westend2);
+const relayProvider = new ScProvider(ScProvider.WellKnownChain.westend2);
 const provider = new ScProvider(parachainSpec, relayProvider);
 
 await provider.connect();
