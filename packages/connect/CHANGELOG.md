@@ -4,7 +4,7 @@
 
 ## 0.7.19 - 2023-01-13
 
-- Update checkpoints in chain specification, in order to correct the breaking of substrate-connect that occurred due to an operational issue on the Westend validators(execution of a sudo initializer.forceApprove operation at block #14192316 to recover consensus). ([]())
+- Update checkpoints in chain specification, in order to correct the breaking of substrate-connect that occurred due to an operational issue on the Westend validators(execution of a sudo initializer.forceApprove operation at block #14192316 to recover consensus). ([#1377](https://github.com/paritytech/substrate-connect/pull/1377))
 
 ## 0.7.18 - 2022-12-13
 
