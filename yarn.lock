@@ -4257,7 +4257,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/connect@0.7.18, @substrate/connect@workspace:packages/connect":
+"@substrate/connect@0.7.19, @substrate/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@substrate/connect@workspace:packages/connect"
   dependencies:
