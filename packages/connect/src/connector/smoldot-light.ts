@@ -4,7 +4,7 @@ import {
   ClientOptions,
   MalformedJsonRpcError,
   QueueFullError,
-} from "@substrate/smoldot-light"
+} from "smoldot"
 import { getSpec } from "./specs/index.js"
 import {
   AddChain,
@@ -20,7 +20,7 @@ import { WellKnownChain } from "../WellKnownChain.js"
 let startPromise: Promise<(options: ClientOptions) => Client> | null = null
 const getStart = () => {
   if (startPromise) return startPromise
-  startPromise = import("@substrate/smoldot-light").then((sm) => sm.start)
+  startPromise = import("smoldot").then((sm) => sm.start)
   return startPromise
 }
 
@@ -83,7 +83,7 @@ const getClientAndIncRef = (config: Config): Promise<Client> => {
 // Must be passed the exact same object as was passed to {getClientAndIncRef}
 const decRef = (config: Config) => {
   const idx = clientReferences.indexOf(config)
-  if (idx === -1) throw new Error("Internal error within smoldot-light")
+  if (idx === -1) throw new Error("Internal error within smoldot")
   clientReferences.splice(idx, 1)
 
   // Update `clientReferencesMaxLogLevel`
@@ -240,7 +240,7 @@ export const createScClient = (config?: Config): ScClient => {
     jsonRpcCallback?: (msg: string) => void,
   ): Promise<Chain> => {
     // the following line ensures that the http request for the dynamic import
-    // of smoldot-light and the request for the dynamic import of the spec
+    // of smoldot and the request for the dynamic import of the spec
     // happen in parallel
     getClientAndIncRef(configOrDefault)
 
