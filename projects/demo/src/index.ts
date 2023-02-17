@@ -1,6 +1,7 @@
 import "regenerator-runtime/runtime"
 import { ApiPromise } from "@polkadot/api"
-import { ScProvider } from "@polkadot/rpc-provider"
+import { ScProvider } from "@polkadot/rpc-provider/substrate-connect"
+import * as Sc from "@substrate/connect"
 import westmint from "./assets/westend-westmint.json"
 import UI, { emojis } from "./view"
 
@@ -10,11 +11,9 @@ window.onload = () => {
   ui.showSyncing()
   void (async () => {
     try {
-      const westendProvider = new ScProvider(ScProvider.WellKnownChain.westend2)
-      const kusamaProvider = new ScProvider(ScProvider.WellKnownChain.ksmcc3)
-      const polkadotProvider = new ScProvider(
-        ScProvider.WellKnownChain.polkadot,
-      )
+      const westendProvider = new ScProvider(Sc, Sc.WellKnownChain.westend2)
+      const kusamaProvider = new ScProvider(Sc, Sc.WellKnownChain.ksmcc3)
+      const polkadotProvider = new ScProvider(Sc, Sc.WellKnownChain.polkadot)
       await Promise.all(
         [westendProvider, kusamaProvider, polkadotProvider].map((p) =>
           p.connect(),
@@ -62,6 +61,7 @@ window.onload = () => {
       await Promise.all([westendFnc(), kusamaFnc(), polkadotFnc()])
 
       const westmintProvider = new ScProvider(
+        Sc,
         JSON.stringify(westmint),
         westendProvider,
       )

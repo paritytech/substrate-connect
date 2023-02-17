@@ -19,8 +19,9 @@ import { ApiPromise } from "@polkadot/api";
 import {
   ScProvider
 } from "@polkadot/rpc-provider";
+import * as Sc from "@substrate/connect";
 
-const provider = new ScProvider(ScProvider.WellKnownChain.polkadot);
+const provider = new ScProvider(Sc, Sc.WellKnownChain.polkadot);
 await provider.connect();
 const polkadotApi = await ApiPromise.create({ provider });
 await polkadotApi.rpc.chain.subscribeNewHeads((lastHeader) => {
@@ -33,12 +34,15 @@ await polkadotApi.rpc.chain.subscribeNewHeads((lastHeader) => {
 ```js
 import { ApiPromise } from "@polkadot/api";
 import { ScProvider } from "@polkadot/rpc-provider/substrate-connect";
+import * as Sc from "@substrate/connect";
+
 import myJsonSubstrateChainSpec from './mySubstrateChainSpec.json';
 
 const mySubstrateChainSpec = JSON.stringify(myJsonSubstrateChainSpec);
+const provider = new ScProvider(Sc, mySubstrateChainSpec);
 
-const provider = new ScProvider(mySubstrateChainSpec);
 await provider.connect();
+
 const polkadotApi = await ApiPromise.create({ provider });
 await polkadotApi.rpc.chain.subscribeNewHeads((lastHeader) => {
   console.log(lastHeader.number.toString());
@@ -55,12 +59,14 @@ import { ApiPromise } from "@polkadot/api";
 import {
   ScProvider
 } from "@polkadot/rpc-provider";
+import * as Sc from "@substrate/connect";
+
 import jsonParachainSpec from './myParaChainSpec.json';
 
 const parachainSpec = JSON.stringify(jsonParachainSpec);
 
-const relayProvider = new ScProvider(ScProvider.WellKnownChain.westend2);
-const provider = new ScProvider(parachainSpec, relayProvider);
+const relayProvider = new ScProvider(Sc, Sc.WellKnownChain.westend2);
+const provider = new ScProvider(Sc, parachainSpec, relayProvider);
 
 await provider.connect();
 
