@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## 0.7.20 - 2023-02-17
+
+- Update @substrate/smoldot-light to smoldot@[version 0.7.11](https://github.com/smol-dot/smoldot/blob/main/bin/wasm-node/CHANGELOG.md#0711---2022-02-13). ([#389](https://github.com/paritytech/substrate-connect/pull/1389))
+
 ## 0.7.19 - 2023-01-13
 
 - Update checkpoints in chain specification, in order to correct the breaking of substrate-connect that occurred due to an operational issue on the Westend validators(execution of a sudo initializer.forceApprove operation at block #14192316 to recover consensus). ([#1377](https://github.com/paritytech/substrate-connect/pull/1377))
