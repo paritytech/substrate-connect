@@ -6,7 +6,7 @@ async function connect(nodeName, networkInfo, parachainId) {
   const customChainSpec = require(networkInfo.chainSpecPath)
   const { ScProvider } = await import(
     "@polkadot/rpc-provider/substrate-connect"
-  );
+  )
   let provider
   if (parachainId) {
     const relayProvider = new ScProvider(Sc, JSON.stringify(customChainSpec))

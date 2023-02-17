@@ -13,9 +13,7 @@ window.onload = () => {
     try {
       const westendProvider = new ScProvider(Sc, Sc.WellKnownChain.westend2)
       const kusamaProvider = new ScProvider(Sc, Sc.WellKnownChain.ksmcc3)
-      const polkadotProvider = new ScProvider(Sc,
-        Sc.WellKnownChain.polkadot,
-      )
+      const polkadotProvider = new ScProvider(Sc, Sc.WellKnownChain.polkadot)
       await Promise.all(
         [westendProvider, kusamaProvider, polkadotProvider].map((p) =>
           p.connect(),
