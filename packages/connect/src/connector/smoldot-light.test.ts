@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { jest } from "@jest/globals"
-import type { AddChainOptions, ClientOptions } from "@substrate/smoldot-light"
+import type { AddChainOptions, ClientOptions } from "smoldot"
 import { WellKnownChain } from "../WellKnownChain"
 import { ScClient } from "./types"
 
@@ -104,7 +104,7 @@ const mockSmoldotLightFactory = () => {
   return mock
 }
 
-jest.unstable_mockModule("@substrate/smoldot-light", mockSmoldotLightFactory)
+jest.unstable_mockModule("smoldot", mockSmoldotLightFactory)
 jest.unstable_mockModule("./specs/index.js", () => ({
   getSpec: (wellKnownChain: string) => `fake-${wellKnownChain}-spec`,
 }))
@@ -115,12 +115,10 @@ let mockedSmoldotLight: MockSmoldotLight
 let createScClient: () => ScClient
 beforeAll(async () => {
   ;({ createScClient } = await import("./smoldot-light"))
-  mockedSmoldotLight = (await import(
-    "@substrate/smoldot-light"
-  )) as unknown as MockSmoldotLight
+  mockedSmoldotLight = (await import("smoldot")) as unknown as MockSmoldotLight
 })
 
-describe("SmoldotConnect::smoldot-light", () => {
+describe("SmoldotConnect::smoldot", () => {
   describe("client", () => {
     it("does not eagerly instantiate the client", () => {
       createScClient()
@@ -173,7 +171,7 @@ describe("SmoldotConnect::smoldot-light", () => {
   })
 
   describe("chain", () => {
-    it("propagates the correct chainSpec to smoldot-light", async () => {
+    it("propagates the correct chainSpec to smoldot", async () => {
       const { addChain, addWellKnownChain } = createScClient()
       const chainSpec = "testChainSpec"
       await addChain(chainSpec)
@@ -201,7 +199,7 @@ describe("SmoldotConnect::smoldot-light", () => {
       )
     })
 
-    it("propagates the correct potentialRelayChainIds to smoldot-light", async () => {
+    it("propagates the correct potentialRelayChainIds to smoldot", async () => {
       const { addChain } = createScClient()
       const prevChains = await Promise.all(
         Array(3)
