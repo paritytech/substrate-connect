@@ -8,27 +8,62 @@ jobs:
   npm-publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.3.0
+      - uses: actions/checkout@v3.1.0
       - uses: actions/setup-node@v3
         with:
           node-version: 18
       - run: yarn install --immutable
       - run: yarn build
-      - name: Publish Dry Run
-        working-directory: './packages/connect'
-        run: npm publish --unsafe-perm --dry-run
-      - name: Publish
-        id: publish
-        uses: JS-DevTools/npm-publish@v1
-        # Warning: this GitHub action doesn't seem to run prepublish scripts, hence
-        # the `npm publish --dry-run` done right above is important to ensure this.
+
+      - name: Check if 'Connect' version has been updated
+        id: connect_version
+        uses: PostHog/check-package-version@v2
         with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: ./packages/connect/package.json
-          access: public
+          path: "./packages/connect"
+
+      - name: Pack Connect
+        if: steps.connect_version.outputs.committed-version > steps.connect_version.outputs.published-version
+        run: npm pack
+        working-directory: "./packages/connect"
+
+      - name: Upload Connect Artifact
+        if: steps.connect_version.outputs.committed-version > steps.connect_version.outputs.published-version
+        uses: actions/upload-artifact@v3
+        with:
+          name: package
+          path: "./packages/connect/*.tgz"
+
+      - name: Check if 'Connect extension protocol' version has been updated
+        id: connect_extension_protocol_v
+        uses: PostHog/check-package-version@v2
+        with:
+          path: "./packages/connect"
+
+      - name: Pack Connect Extension Protocol
+        if: steps.connect_extension_protocol_v.outputs.committed-version > steps.connect_extension_protocol_v.outputs.published-version
+        run: npm pack
+        working-directory: "./packages/connect-extension-protocol"
+
+      - name: Upload Connect Extension Protocol Artifact
+        if: steps.connect_extension_protocol_v.outputs.committed-version > steps.connect_extension_protocol_v.outputs.published-version
+        uses: actions/upload-artifact@v3
+        with:
+          name: package
+          path: "./packages/connect-extension-protocol/*.tgz"
+
       - name: Deploy
-        if: steps.publish.outputs.type != 'none'
+        if: steps.connect_version.outputs.committed-version > steps.connect_version.outputs.published-version || steps.connect_extension_protocol_v.outputs.committed-version > steps.connect_extension_protocol_v.outputs.published-version
         run: yarn run deploy
+
+      - name: NPM Publish automation
+        if: steps.connect_version.outputs.committed-version > steps.connect_version.outputs.published-version || steps.connect_extension_protocol_v.outputs.committed-version > steps.connect_extension_protocol_v.outputs.published-version
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/paritytech/npm_publish_automation/actions/workflows/publish.yml/dispatches
+          ref: main
+          inputs: '${{ format(''{{ "repo": "{0}", "run_id": "{1}" }}'', github.repository, github.run_id) }}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
 
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
