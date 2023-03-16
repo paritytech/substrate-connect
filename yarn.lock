@@ -4289,14 +4289,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/connect@0.7.20, @substrate/connect@workspace:packages/connect":
+"@substrate/connect@0.7.21, @substrate/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@substrate/connect@workspace:packages/connect"
   dependencies:
     "@substrate/connect-extension-protocol": ^1.0.1
     eslint: ^8.23.1
     eventemitter3: ^4.0.7
-    smoldot: 0.7.11
+    smoldot: 1.0.0
   languageName: unknown
   linkType: soft
 
@@ -15356,13 +15356,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"smoldot@npm:0.7.11":
-  version: 0.7.11
-  resolution: "smoldot@npm:0.7.11"
+"smoldot@npm:1.0.0":
+  version: 1.0.0
+  resolution: "smoldot@npm:1.0.0"
   dependencies:
     pako: ^2.0.4
     ws: ^8.8.1
-  checksum: 99861d92d28eeb3c150b518ecc25de1f403ca9a3134b8d240071e825a6b8d2da7e2c13e52c2a692a425e643b74a314ed0598bfb66a9482583a265b5bb464df7f
+  checksum: 507126c07a6512ea7d19fb2041cc0f78b8031a3f76471b491f19db81e61dbe7ebbd633c23951e9f8e7c3aeee3fc4c0b508dee5b925bfb7d6640ce0853ce6e3ef
   languageName: node
   linkType: hard
 
