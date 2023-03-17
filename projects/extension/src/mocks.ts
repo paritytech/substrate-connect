@@ -2,7 +2,7 @@ import {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"
-import { AddChainOptions, Chain, Client } from "@substrate/smoldot-light"
+import { AddChainOptions, Chain, Client } from "smoldot"
 
 const noop: any = Function.prototype
 

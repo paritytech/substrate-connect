@@ -6,11 +6,11 @@ import {
   start as startSmoldotClient,
   QueueFullError,
   MalformedJsonRpcError,
-} from "@substrate/smoldot-light"
+} from "smoldot"
 
 import { ToExtension, ToContentScript } from "../background/protocol"
 
-export { MalformedJsonRpcError } from "@substrate/smoldot-light"
+export { MalformedJsonRpcError } from "smoldot"
 
 export class SmoldotClientWithExtension {
   #client: SmoldotClient

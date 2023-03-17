@@ -3,7 +3,7 @@ import ksmcc3 from "../../public/assets/ksmcc3.json"
 import polkadot from "../../public/assets/polkadot.json"
 import rococo_v2_2 from "../../public/assets/rococo_v2_2.json"
 
-import { start as smoldotStart } from "@substrate/smoldot-light"
+import { start as smoldotStart } from "smoldot"
 
 import { ToContentScript, ToExtension } from "./protocol"
 import * as environment from "../environment"
