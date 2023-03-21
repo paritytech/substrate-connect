@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 0.7.22 - 2023-03-21
+
 ### Changed
 
 - Stop using dynamic imports in order to import the "well-known" specs, due to the fact that not all bundlers are able to handle dynamic imports gracefully on package's code.
