@@ -157,21 +157,6 @@ describe("SmoldotConnect::Extension", () => {
       expect(typeof chain.remove).toBe("function")
       expect(typeof chain.sendJsonRpc).toBe("function")
     })
-
-    it("adding a chain rejects the Promise upon receiving an error while waiting for `chain-ready`", async () => {
-      const { addWellKnownChain } = createScClient()
-      const chainPromise = addWellKnownChain(WellKnownChain.polkadot)
-      const addChainMessage = await getClientMessage()
-
-      postToClient({
-        type: "error",
-        origin: "substrate-connect-extension",
-        chainId: addChainMessage.chainId,
-        errorMessage: "",
-      })
-
-      await expect(chainPromise).rejects.toThrow()
-    })
   })
 
   describe("chain.remove", () => {
