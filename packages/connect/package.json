@@ -31,8 +31,8 @@
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "build": "yarn run build:mjs && yarn run build:cjs && bash ./fix-package-type.sh",
-    "build:mjs": "tsc -b tsconfig-mjs.json && node ./src/connector/specs/generate-specs.mjs mjs",
-    "build:cjs": "tsc -b tsconfig-cjs.json && node ./src/connector/specs/generate-specs.mjs cjs",
+    "build:mjs": "tsc -b tsconfig-mjs.json",
+    "build:cjs": "tsc -b tsconfig-cjs.json",
     "lint": "yarn eslint . --ext .js,.ts"
   },
   "dependencies": {
