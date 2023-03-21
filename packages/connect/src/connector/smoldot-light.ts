@@ -245,7 +245,7 @@ export const createScClient = (config?: Config): ScClient => {
     getClientAndIncRef(configOrDefault)
 
     try {
-      const spec = await getSpec(supposedChain)
+      const spec = getSpec(supposedChain)
       return await addChain(spec, jsonRpcCallback)
     } finally {
       decRef(configOrDefault)

@@ -197,7 +197,7 @@ export const createScClient = (): ScClient => {
         origin: "substrate-connect-client",
         chainId: chainState.id,
         type: "add-chain",
-        chainSpec: await getSpec(chainSpecOrWellKnownName),
+        chainSpec: getSpec(chainSpecOrWellKnownName),
         potentialRelayChainIds: [],
       })
 

@@ -11,7 +11,7 @@ const chains: Record<WellKnownChain, any> = {
   westend2,
 }
 
-export async function getSpec(chain: string): Promise<string> {
+export function getSpec(chain: string): string {
   if (!Object.keys(chains).includes(chain))
     throw new Error("Invalid chain name")
   return JSON.stringify(chains[chain as WellKnownChain])
