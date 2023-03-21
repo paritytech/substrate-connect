@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Stop using dynamic imports in order to import the "well-known" specs, due to the fact that not all bundlers are able to handle dynamic imports gracefully on package's code.
+
 ## 0.7.21 - 2023-03-16
 
 - Update smoldot to [version 1.0.0](https://github.com/smol-dot/smoldot/blob/main/wasm-node/CHANGELOG.md#100---2022-03-12). ([#1394](https://github.com/paritytech/substrate-connect/pull/1394))

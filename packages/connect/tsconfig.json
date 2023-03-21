@@ -16,8 +16,7 @@
     "jest.config*",
     "tsconfig*",
     "*node_modules*",
-    "../../node_modules*",
-    "src/connector/specs/*.json"
+    "../../node_modules*"
   ],
   "include": ["src/**/*", "src/**/*.json"],
   "references": [{ "path": "../connect-extension-protocol/tsconfig-mjs.json" }]
