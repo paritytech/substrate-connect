@@ -4319,7 +4319,7 @@ __metadata:
     "@substrate/connect-extension-protocol": ^1.0.1
     autoprefixer: ^10.4.13
     eslint: ^8.27.0
-    jest-chrome: ^0.7.2
+    jest-chrome: ^0.8.0
     mini-css-extract-plugin: ^2.7.1
     postcss: ^8.4.19
     postcss-loader: ^7.0.1
@@ -11125,14 +11125,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-chrome@npm:^0.7.2":
-  version: 0.7.2
-  resolution: "jest-chrome@npm:0.7.2"
+"jest-chrome@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "jest-chrome@npm:0.8.0"
   dependencies:
     "@types/chrome": ^0.0.114
   peerDependencies:
     jest: ^26.0.1 || ^27.0.0
-  checksum: 1a7ebbe6981a7800504ab016665fc6c2ffd713b528a8d8b61664dd20406977b0b3212805cd0964ca96b870d687822c7965acf71f64991da12fc23a1733585408
+  checksum: c34b3be1c7c13d08eafd8505d130d1dad3339836cb77d3997e09cf1dc2be618a5ca1f685190692d9872b8a1ce0f04d204b7b66476fea275b0bcf54779ebc5a72
   languageName: node
   linkType: hard
 

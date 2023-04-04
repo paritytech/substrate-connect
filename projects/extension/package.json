@@ -22,7 +22,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.13",
     "eslint": "^8.27.0",
-    "jest-chrome": "^0.7.2",
+    "jest-chrome": "^0.8.0",
     "mini-css-extract-plugin": "^2.7.1",
     "postcss": "^8.4.19",
     "postcss-loader": "^7.0.1",
