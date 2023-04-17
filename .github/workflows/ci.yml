@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3.5.0
+    - uses: actions/checkout@v3.5.2
     - id: package-version
       run: echo "::set-output name=version::`jq .version ./projects/extension/package.json`"
     - id: webpack-version
@@ -35,7 +35,7 @@ jobs:
         node-version: [14.x, 16.x, 18.x]
 
     steps:
-    - uses: actions/checkout@v3.5.0
+    - uses: actions/checkout@v3.5.2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
