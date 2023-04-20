@@ -19,7 +19,7 @@ jobs:
         run: npm publish --unsafe-perm --dry-run
       - name: Publish
         id: publish
-        uses: JS-DevTools/npm-publish@v1
+        uses: JS-DevTools/npm-publish@v2
         # Warning: this GitHub action doesn't seem to run prepublish scripts, hence
         # the `npm publish --dry-run` done right above is important to ensure this.
         with:
