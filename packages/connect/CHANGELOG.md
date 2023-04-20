@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## 0.7.24 - 2023-04-20
+
+### Changed
+
+- Update smoldot@[version 1.0.2](https://github.com/smol-dot/smoldot/blob/main/wasm-node/CHANGELOG.md#102---2023-04-12).
+- Switch Rococo bootnodes from WS to WSS([#1418](https://github.com/paritytech/substrate-connect/pull/1418))
+- Switch to DNS name based bootnodes for Rococo ([#1413](https://github.com/paritytech/substrate-connect/pull/1413))
+
+### Fixed
+
+- Fix broken link in docs ([#1417](https://github.com/paritytech/substrate-connect/pull/1417))
+
 ## 0.7.23 - 2023-04-04
 
 ### Changed
