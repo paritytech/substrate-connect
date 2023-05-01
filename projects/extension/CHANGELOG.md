@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## 0.2.6 - 2023-05-01
+
+### Changed
+
+- Update smoldot@[version 1.0.3](https://github.com/smol-dot/smoldot/blob/main/wasm-node/CHANGELOG.md#102---2023-04-12).
+
 ## 0.2.5 - 2023-04-20
 
 ### Changed
