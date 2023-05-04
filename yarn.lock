@@ -4284,7 +4284,7 @@ __metadata:
     "@polkadot/types": ^10.5.1
     "@polkadot/util": ^12.1.1
     "@polkadot/util-crypto": ^12.1.1
-    "@substrate/connect": 0.7.24
+    "@substrate/connect": 0.7.26
     bn.js: ^5.2.1
     eslint: ^8.39.0
     qrcode.react: ^3.1.0
@@ -4323,7 +4323,7 @@ __metadata:
   dependencies:
     "@polkadot/api": ^10.5.1
     "@polkadot/rpc-provider": ^10.5.1
-    "@substrate/connect": 0.7.24
+    "@substrate/connect": 0.7.26
     eslint: ^8.39.0
     regenerator-runtime: ^0.13.11
   languageName: unknown

@@ -30,7 +30,7 @@
     "@polkadot/types": "^10.5.1",
     "@polkadot/util": "^12.1.1",
     "@polkadot/util-crypto": "^12.1.1",
-    "@substrate/connect": "0.7.24",
+    "@substrate/connect": "0.7.26",
     "bn.js": "^5.2.1",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
