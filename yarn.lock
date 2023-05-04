@@ -4306,14 +4306,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/connect@0.7.25, @substrate/connect@workspace:packages/connect":
+"@substrate/connect@0.7.26, @substrate/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@substrate/connect@workspace:packages/connect"
   dependencies:
     "@substrate/connect-extension-protocol": ^1.0.1
     eslint: ^8.39.0
     eventemitter3: ^4.0.7
-    smoldot: 1.0.3
+    smoldot: 1.0.4
   languageName: unknown
   linkType: soft
 
@@ -4344,7 +4344,7 @@ __metadata:
     react-dom: ^18.2.0
     react-hot-loader: ^4.13.1
     react-icons: ^4.8.0
-    smoldot: 1.0.3
+    smoldot: 1.0.4
     tailwindcss: ^3.3.2
     web-ext: ^7.6.2
   languageName: unknown
@@ -15683,13 +15683,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"smoldot@npm:1.0.3":
-  version: 1.0.3
-  resolution: "smoldot@npm:1.0.3"
+"smoldot@npm:1.0.4":
+  version: 1.0.4
+  resolution: "smoldot@npm:1.0.4"
   dependencies:
     pako: ^2.0.4
     ws: ^8.8.1
-  checksum: 70f12f23fac3d5eabd1300fccaa5e3a34e36fa8e40a21a138db63075fb881b3208f5d5d3fc1b59a082670b4d3036abc90c23858ed6457a59574b8fb7ef4987de
+  checksum: 81ecc38b98f7ac4dd093753e85956262608dca3c8a288c20a25fe1762a6afcdbe6f3622ea30a346df3f4145e0900ef0595e56e96e9e0de83c59f0649d1ab4786
   languageName: node
   linkType: hard
 
