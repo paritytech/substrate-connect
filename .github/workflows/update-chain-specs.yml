@@ -35,7 +35,7 @@ jobs:
           ./websocat_linux64 -n1 -B 99999999 ${{ matrix.rpc-node-address }} > rpc_answer.json
     - run: cat ./rpc_answer.json | jq .result > chain_spec.json
     - id: get-chain-id  # Reads the `id` field in the newly-downloaded chain spec
-      run: echo "::set-output name=id::`jq -r .id ./chain_spec.json`"
+      run: echo "id=`jq -r .id ./chain_spec.json`" >> $GITHUB_OUTPUT
     - if: ${{ steps.get-chain-id.outputs.id == '' }}
       uses: actions/upload-artifact@v3
       with:
