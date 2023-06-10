@@ -1,10 +1,10 @@
 import { WellKnownChain } from "src/WellKnownChain"
-import ksmcc3 from "./ksmcc3.json"
-import polkadot from "./polkadot.json"
-import rococo_v2_2 from "./rococo_v2_2.json"
-import westend2 from "./westend2.json"
+import ksmcc3 from "./js/ksmcc3.js"
+import polkadot from "./js/polkadot.js"
+import rococo_v2_2 from "./js/rococo_v2_2.js"
+import westend2 from "./js/westend2.js"
 
-const chains: Record<WellKnownChain, any> = {
+const chains: Record<WellKnownChain, string> = {
   ksmcc3,
   polkadot,
   rococo_v2_2,
@@ -14,5 +14,5 @@ const chains: Record<WellKnownChain, any> = {
 export function getSpec(chain: string): string {
   if (!Object.keys(chains).includes(chain))
     throw new Error("Invalid chain name")
-  return JSON.stringify(chains[chain as WellKnownChain])
+  return chains[chain as WellKnownChain]
 }

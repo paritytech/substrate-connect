@@ -18,3 +18,4 @@ init.sh
 !.yarn/versions
 .pnp.*
 .vscode
+packages/connect/src/connector/specs/js
