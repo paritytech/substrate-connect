@@ -18,12 +18,12 @@
     "lint": "yarn eslint . --ext .ts,.tsx"
   },
   "dependencies": {
-    "@polkadot/api": "^10.5.1",
-    "@polkadot/rpc-provider": "^10.5.1",
+    "@polkadot/api": "^10.8.1",
+    "@polkadot/rpc-provider": "^10.8.1",
     "@substrate/connect": "0.7.26",
     "regenerator-runtime": "^0.13.11"
   },
   "devDependencies": {
-    "eslint": "^8.39.0"
+    "eslint": "^8.42.0"
   }
 }
