@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## 0.7.28 - 2023-06-11
+
+### Fixed
+
+- Publish `src` folder.
+
 ## 0.7.27 - 2023-06-11
 
 ### Changed
