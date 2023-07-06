@@ -1,6 +1,6 @@
 {
   "name": "@substrate/connect",
-  "version": "0.7.24",
+  "version": "0.7.29",
   "description": "Substrate-connect to Smoldot clients. Using either substrate extension with predefined clients or an internal smoldot client based on chainSpecs provided.",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
@@ -25,7 +25,9 @@
   },
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
-    "prebuild": "yarn clean",
+    "prebuild": "yarn clean && yarn build-js-specs",
+    "postinstall": "node build-js-specs.mjs",
+    "build-js-specs": "node build-js-specs.mjs",
     "pretest": "yarn build",
     "test": "node --no-warnings --experimental-vm-modules ../../node_modules/jest/bin/jest.js --colors --coverage",
     "deep-clean": "yarn clean && rm -rf node_modules",
@@ -38,9 +40,9 @@
   "dependencies": {
     "@substrate/connect-extension-protocol": "^1.0.1",
     "eventemitter3": "^4.0.7",
-    "smoldot": "1.0.2"
+    "smoldot": "1.0.9"
   },
   "devDependencies": {
-    "eslint": "^8.23.1"
+    "eslint": "^8.42.0"
   }
 }
