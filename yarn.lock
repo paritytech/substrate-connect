@@ -4506,7 +4506,7 @@ __metadata:
     "@polkadot/types": ^10.9.1
     "@polkadot/util": ^12.3.2
     "@polkadot/util-crypto": ^12.3.2
-    "@substrate/connect": 0.7.29
+    "@substrate/connect": 0.7.30
     bn.js: ^5.2.1
     eslint: ^8.44.0
     qrcode.react: ^3.1.0
@@ -4528,7 +4528,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/connect@0.7.29, @substrate/connect@workspace:packages/connect":
+"@substrate/connect@0.7.30, @substrate/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@substrate/connect@workspace:packages/connect"
   dependencies:
@@ -4544,7 +4544,7 @@ __metadata:
   dependencies:
     "@polkadot/api": ^10.9.1
     "@polkadot/rpc-provider": ^10.9.1
-    "@substrate/connect": 0.7.29
+    "@substrate/connect": 0.7.30
     eslint: ^8.44.0
     regenerator-runtime: ^0.13.11
   languageName: unknown

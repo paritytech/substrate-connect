@@ -20,7 +20,7 @@
   "dependencies": {
     "@polkadot/api": "^10.9.1",
     "@polkadot/rpc-provider": "^10.9.1",
-    "@substrate/connect": "0.7.29",
+    "@substrate/connect": "0.7.30",
     "regenerator-runtime": "^0.13.11"
   },
   "devDependencies": {
