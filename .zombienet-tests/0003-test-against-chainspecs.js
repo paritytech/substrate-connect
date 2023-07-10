@@ -14,7 +14,6 @@ async function run(nodeName) {
   let count = 0
   await new Promise(async (resolve, reject) => {
     const unsub = await api.rpc.chain.subscribeNewHeads((header) => {
-      console.log(" - ", header.toHuman())
       if (++count === 2) {
         unsub()
         resolve()
