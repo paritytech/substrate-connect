@@ -94,7 +94,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "resolutions": {
-    "@substrate/connect": "0.7.29"
+    "@substrate/connect": "0.7.30"
   },
   "packageManager": "yarn@3.2.0"
 }
