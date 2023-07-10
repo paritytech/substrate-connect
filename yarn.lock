@@ -5109,14 +5109,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^18.2.11":
-  version: 18.2.11
-  resolution: "@types/react@npm:18.2.11"
+"@types/react@npm:^18.2.14":
+  version: 18.2.14
+  resolution: "@types/react@npm:18.2.14"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 3dcc326ea87468a06079b6c3a9e0f9a98a8438526aba81d29820954e2cb343b6beb8ca3d6a212878797a909fbd3199d07a4d819cd3efbbdba8c22039c06f1ed8
+  checksum: a6a5e8cc78f486b9020d1ad009aa6c56943c68c7c6376e0f8399e9cbcd950b7b8f5d73f00200f5379f5e58d31d57d8aed24357f301d8e86108cd438ce6c8b3dd
   languageName: node
   linkType: hard
 
@@ -16471,7 +16471,7 @@ __metadata:
     "@types/jsdom": ^20.0.1
     "@types/node": ^18.16.17
     "@types/qrcode.react": ^1.0.2
-    "@types/react": ^18.2.11
+    "@types/react": ^18.2.14
     "@types/react-dom": ^18.2.4
     "@types/react-hot-loader": ^4.1.1
     "@types/react-router-dom": ^5.3.3
