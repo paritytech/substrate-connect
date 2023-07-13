@@ -6,7 +6,7 @@ module.exports = {
     project: "./tsconfig.json",
     createDefaultProgram: true,
   },
-  extends: ["react-app", "react-app/jest", "prettier"],
+  extends: ["react-app", "prettier"],
   rules: {
     "import/no-extraneous-dependencies": [
       "error",
