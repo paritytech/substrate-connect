@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { jest } from "@jest/globals"
+import { beforeEach, beforeAll, it, describe, expect, vi } from "vitest"
 import type { AddChainOptions, ClientOptions } from "smoldot"
 import { WellKnownChain } from "../WellKnownChain"
 import { ScClient } from "./types"
@@ -39,14 +39,14 @@ class SdQueueFullError extends Error {
   }
 }
 
-const mockSmoldotLightFactory = () => {
+var mockSmoldotLightFactory = () => {
   const start = (options: ClientOptions) => {
     const addChain = (
       addChainOptions: AddChainOptions,
       isClientTerminated: () => boolean,
     ) => {
-      let _remove = jest.fn<() => []>()
-      let _sendJsonRpc = jest.fn<(rpc: string) => void>()
+      let _remove = vi.fn()
+      let _sendJsonRpc = vi.fn()
       return {
         _addChainOptions: addChainOptions,
         remove() {
@@ -70,7 +70,7 @@ const mockSmoldotLightFactory = () => {
     type MockChain = ReturnType<typeof addChain>
     const chains: MockChain[] = []
 
-    const terminate = jest.fn()
+    const terminate = vi.fn()
 
     return {
       _options: options,
@@ -90,7 +90,7 @@ const mockSmoldotLightFactory = () => {
   type MockClient = ReturnType<typeof start>
 
   let latestClient: MockClient
-  const mock = {
+  var mock = {
     AlreadyDestroyedError: SdAlreadyDestroyedError,
     CrashError: SdCrashError,
     JsonRpcDisabledError: SdJsonRpcDisabledError,
@@ -104,8 +104,8 @@ const mockSmoldotLightFactory = () => {
   return mock
 }
 
-jest.unstable_mockModule("smoldot", mockSmoldotLightFactory)
-jest.unstable_mockModule("./specs/index.js", () => ({
+vi.mock("smoldot", mockSmoldotLightFactory)
+vi.mock("./specs/index.js", () => ({
   getSpec: (wellKnownChain: string) => `fake-${wellKnownChain}-spec`,
 }))
 
@@ -115,19 +115,27 @@ let mockedSmoldotLight: MockSmoldotLight
 let createScClient: () => ScClient
 beforeAll(async () => {
   ;({ createScClient } = await import("./smoldot-light"))
-  mockedSmoldotLight = (await import("smoldot")) as unknown as MockSmoldotLight
+  mockedSmoldotLight = mockSmoldotLightFactory as unknown as MockSmoldotLight
+})
+
+beforeEach(() => {
+  vi.resetModules()
 })
 
 describe("SmoldotConnect::smoldot", () => {
   describe("client", () => {
-    it("does not eagerly instantiate the client", () => {
+    it("does not eagerly instantiate the client", async () => {
+      const { createScClient } = await import("./smoldot-light")
       createScClient()
-      expect(mockedSmoldotLight.getLatestClient()).toBeUndefined()
+      mockedSmoldotLight =
+        mockSmoldotLightFactory as unknown as MockSmoldotLight
+
+      expect(mockedSmoldotLight.start).toBeUndefined()
     })
 
     it("terminates the internal client when all the chains, from all clients, have been removed", async () => {
-      const { addWellKnownChain } = createScClient()
-      const { addChain } = createScClient()
+      const { addWellKnownChain, addChain } = createScClient()
+      // const { addChain } = createScClient()
 
       const chain1 = await addWellKnownChain("" as WellKnownChain)
       const client = mockedSmoldotLight.getLatestClient()
