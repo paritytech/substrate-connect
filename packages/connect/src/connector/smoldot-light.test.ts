@@ -2,7 +2,6 @@
 import { beforeEach, beforeAll, it, describe, expect, vi } from "vitest"
 import type { AddChainOptions, ClientOptions } from "smoldot"
 import { WellKnownChain } from "../WellKnownChain"
-import { ScClient } from "./types"
 
 class SdAlreadyDestroyedError extends Error {
   constructor() {
@@ -90,7 +89,7 @@ var mockSmoldotLightFactory = () => {
   type MockClient = ReturnType<typeof start>
 
   let latestClient: MockClient
-  var mock = {
+  const mock = {
     AlreadyDestroyedError: SdAlreadyDestroyedError,
     CrashError: SdCrashError,
     JsonRpcDisabledError: SdJsonRpcDisabledError,
@@ -112,9 +111,7 @@ vi.doMock("./specs/index.js", () => ({
 type MockSmoldotLight = ReturnType<typeof mockSmoldotLightFactory>
 let mockedSmoldotLight: MockSmoldotLight
 
-let createScClient: () => ScClient
 beforeAll(async () => {
-  // ;({ createScClient } = await import("./smoldot-light"))
   mockedSmoldotLight = mockSmoldotLightFactory as unknown as MockSmoldotLight
 })
 
