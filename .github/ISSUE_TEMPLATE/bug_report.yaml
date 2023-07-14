@@ -1,0 +1,105 @@
+name: Bug Report
+description: File a bug report
+labels: ["triage-needed"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+        **NOTE** A number of issues reported against Substrate-Connect are often found to already be fixed in more current versions of the project.
+        Before reporting an issue, please verify the version you are running (check package.json for installed version) and compare it to the latest release. 
+        If they differ, please update your version of Substrate-Connect to the latest possible and retry your command before creating an issue.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Issue Description
+      description: Please explain your issue
+      value: "Describe your issue"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproducer
+    attributes:
+      label: Steps to reproduce the issue
+      description: Please explain the steps to reproduce the issue, including configuration files needed.
+      value: "Steps to reproduce the issue\n1.\n2.\n3.\n"
+    validations:
+      required: true
+
+  - type: textarea
+    id: received_results
+    attributes:
+      label: Describe the results you received
+      description: Please explain the results you are noticing, including stacktrace and error logs.
+      value: "Describe the results you received"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_results
+    attributes:
+      label: Describe the results you expected
+      description: Please explain the results you are expecting
+      value: "Describe the results you expected"
+    validations:
+      required: true
+
+  - type: input
+    id: substrate_connect_version 
+    attributes:
+      label: Substrate-Connect version
+      description: Which Substrate-Connect version are you using ?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: provider
+    attributes:
+      label: Provider
+      description: Which browser are you using ?
+      options:
+        - Firefox
+        - Safari
+        - Chrome
+        - Brave
+        - Opera
+        - Edge
+        - Other (Specify below)
+    validations:
+      required: true
+
+  - type: textarea
+    id: browser_version
+    attributes:
+      label: Browser version
+      description: Which Browser version are you using ?
+      value: |
+        ## If browser selected is "other" add name of browser
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_environment
+    attributes:
+      label: Additional environment details
+      description: Please describe any additional environment details like OS, OS version etc.
+      value: "Additional environment details"
+
+  - type: textarea
+    id: additional_info
+    attributes:
+      label: Additional information
+      description: Please explain the additional information you deem important
+      value: "Additional information like issue happens only occasionally or issue happens with a particular architecture or on a particular setting"
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Provide us with screenshots if needed to have a better understanding of the issue
+    validations:
+      required: false
