@@ -38,7 +38,7 @@ class SdQueueFullError extends Error {
   }
 }
 
-var mockSmoldotLightFactory = () => {
+const mockSmoldotLightFactory = () => {
   const start = (options: ClientOptions) => {
     const addChain = (
       addChainOptions: AddChainOptions,
