@@ -1,3 +1,7 @@
+/**
+ * @vitest-environment jsdom
+ */
+import { it, describe, expect } from "vitest"
 import { randomBytes } from "crypto"
 import {
   ToApplication,
@@ -8,18 +12,21 @@ import { AlreadyDestroyedError, CrashError } from "./types"
 
 // we have to fake this API on node
 import { WellKnownChain } from "../WellKnownChain.js"
-;(globalThis.crypto as any) = {
-  getRandomValues: <T extends ArrayBufferView | null>(arr: T) => {
-    if (!arr) return arr
-    const tmp = new Uint8Array(arr.byteLength)
-    const randomBytesBuffer = randomBytes(tmp.length)
-    tmp.set(randomBytesBuffer)
-    const test = new DataView(arr.buffer)
-    for (let i = 0; i < tmp.length; i++) {
-      test.setUint8(i, tmp[i])
-    }
-    return arr
-  },
+
+if (!globalThis.crypto) {
+  ;(globalThis.crypto as any) = {
+    getRandomValues: <T extends ArrayBufferView | null>(arr: T) => {
+      if (!arr) return arr
+      const tmp = new Uint8Array(arr.byteLength)
+      const randomBytesBuffer = randomBytes(tmp.length)
+      tmp.set(randomBytesBuffer)
+      const test = new DataView(arr.buffer)
+      for (let i = 0; i < tmp.length; i++) {
+        test.setUint8(i, tmp[i])
+      }
+      return arr
+    },
+  }
 }
 
 const getClientMessage = (timeout = 10) =>
