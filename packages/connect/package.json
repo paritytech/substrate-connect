@@ -29,7 +29,7 @@
     "postinstall": "node build-js-specs.mjs",
     "build-js-specs": "node build-js-specs.mjs",
     "pretest": "yarn build",
-    "test": "node --no-warnings --experimental-vm-modules ../../node_modules/jest/bin/jest.js --colors --coverage",
+    "test": "vitest",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "build": "yarn run build:mjs && yarn run build:cjs && bash ./fix-package-type.sh",
@@ -42,6 +42,7 @@
     "smoldot": "1.0.12"
   },
   "devDependencies": {
-    "eslint": "^8.44.0"
+    "eslint": "^8.44.0",
+    "vitest": "^0.33.0"
   }
 }

@@ -1,7 +1,8 @@
+import { it, describe, expect } from "vitest"
 import checkMessage from "./checkMessage"
 
 describe("checkMessage works", () => {
-  test("checkMessage properly works", () => {
+  it("checkMessage properly works", () => {
     expect(checkMessage({})).toBe(false)
 
     expect(

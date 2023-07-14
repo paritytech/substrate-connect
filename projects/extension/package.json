@@ -10,7 +10,7 @@
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "compile": "tsc -b",
-    "test": "node --no-warnings --experimental-vm-modules ../../node_modules/jest/bin/jest.js --colors --coverage",
+    "test": "vitest",
     "prebuild": "yarn clean",
     "build": "webpack --config webpack.prod.js && cd dist && zip -r packed-extension.zip .",
     "dev": "yarn run prebuild && webpack --node-env development --config webpack.dev.js",
@@ -35,6 +35,7 @@
     "react-dom": "^18.2.0",
     "react-hot-loader": "^4.13.1",
     "react-icons": "^4.10.1",
-    "smoldot": "1.0.12"
+    "smoldot": "1.0.12",
+    "vitest": "^0.33.0"
   }
 }
