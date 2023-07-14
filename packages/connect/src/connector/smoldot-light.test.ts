@@ -104,8 +104,8 @@ var mockSmoldotLightFactory = () => {
   return mock
 }
 
-vi.mock("smoldot", mockSmoldotLightFactory)
-vi.mock("./specs/index.js", () => ({
+vi.doMock("smoldot", mockSmoldotLightFactory)
+vi.doMock("./specs/index.js", () => ({
   getSpec: (wellKnownChain: string) => `fake-${wellKnownChain}-spec`,
 }))
 
@@ -114,7 +114,7 @@ let mockedSmoldotLight: MockSmoldotLight
 
 let createScClient: () => ScClient
 beforeAll(async () => {
-  ;({ createScClient } = await import("./smoldot-light"))
+  // ;({ createScClient } = await import("./smoldot-light"))
   mockedSmoldotLight = mockSmoldotLightFactory as unknown as MockSmoldotLight
 })
 
@@ -124,110 +124,121 @@ beforeEach(() => {
 
 describe("SmoldotConnect::smoldot", () => {
   describe("client", () => {
-    it("does not eagerly instantiate the client", async () => {
-      const { createScClient } = await import("./smoldot-light")
-      createScClient()
-      mockedSmoldotLight =
-        mockSmoldotLightFactory as unknown as MockSmoldotLight
+    it("does not eagerly instantiate the client", () => {
+      import("./smoldot-light").then((smoldot) => {
+        smoldot.createScClient()
+        mockedSmoldotLight =
+          mockSmoldotLightFactory as unknown as MockSmoldotLight
 
-      expect(mockedSmoldotLight.start).toBeUndefined()
+        expect(mockedSmoldotLight.start).toBeUndefined()
+      })
     })
 
-    it("terminates the internal client when all the chains, from all clients, have been removed", async () => {
-      const { addWellKnownChain, addChain } = createScClient()
-      // const { addChain } = createScClient()
+    it("terminates the internal client when all the chains, from all clients, have been removed", () => {
+      import("./smoldot-light").then((smoldot) => {
+        const { addWellKnownChain, addChain } = smoldot.createScClient()
 
-      const chain1 = await addWellKnownChain("" as WellKnownChain)
-      const client = mockedSmoldotLight.getLatestClient()
+        addWellKnownChain("" as WellKnownChain).then((chain1) => {
+          const client = mockedSmoldotLight?.getLatestClient()
+          addChain("").then((chain2) => {
+            expect(client).toBe(mockedSmoldotLight.getLatestClient())
 
-      const chain2 = await addChain("")
-      expect(client).toBe(mockedSmoldotLight.getLatestClient())
+            chain1.remove()
+            expect(client.terminate).not.toHaveBeenCalled()
 
-      chain1.remove()
-      expect(client.terminate).not.toHaveBeenCalled()
-
-      chain2.remove()
-      expect(client.terminate).toHaveBeenCalled()
-
-      const chain3 = await addWellKnownChain("" as WellKnownChain)
-      expect(mockedSmoldotLight.getLatestClient()).not.toBe(client)
-      expect(
-        mockedSmoldotLight.getLatestClient().terminate,
-      ).not.toHaveBeenCalled()
-      chain3.remove()
-      expect(mockedSmoldotLight.getLatestClient().terminate).toHaveBeenCalled()
+            chain2.remove()
+            expect(client.terminate).toHaveBeenCalled()
+          })
+          addWellKnownChain("" as WellKnownChain).then((chain3) => {
+            expect(mockedSmoldotLight.getLatestClient()).not.toBe(client)
+            expect(
+              mockedSmoldotLight.getLatestClient().terminate,
+            ).not.toHaveBeenCalled()
+            chain3.remove()
+            expect(
+              mockedSmoldotLight.getLatestClient().terminate,
+            ).toHaveBeenCalled()
+          })
+        })
+      })
     })
 
-    it("handles race conditions on the client when adding/removing chains", async () => {
-      const { addChain } = createScClient()
-      const { addChain: addChain2 } = createScClient()
+    it("handles race conditions on the client when adding/removing chains", () => {
+      import("./smoldot-light").then((smoldot) => {
+        const { addChain } = smoldot.createScClient()
+        const { addChain: addChain2 } = smoldot.createScClient()
 
-      const chain1 = await addChain("")
-      const client = mockedSmoldotLight.getLatestClient()
+        addChain("").then((chain1) => {
+          const client = mockedSmoldotLight.getLatestClient()
+          const chain2Promise = addChain2("")
+          chain1.remove()
+          expect(client.terminate).not.toHaveBeenCalled()
 
-      const chain2Promise = addChain2("")
-
-      chain1.remove()
-
-      expect(client.terminate).not.toHaveBeenCalled()
-
-      const chain2 = await chain2Promise
-      chain2.remove()
-
-      expect(client.terminate).toHaveBeenCalled()
+          chain2Promise.then((chain2) => {
+            chain2.remove()
+            expect(client.terminate).toHaveBeenCalled()
+          })
+        })
+      })
     })
   })
 
   describe("chain", () => {
     it("propagates the correct chainSpec to smoldot", async () => {
-      const { addChain, addWellKnownChain } = createScClient()
-      const chainSpec = "testChainSpec"
-      await addChain(chainSpec)
+      import("./smoldot-light").then((smoldot) => {
+        const { addChain, addWellKnownChain } = smoldot.createScClient()
+        const chainSpec = "testChainSpec"
+        addChain(chainSpec).then(() => {
+          let mockedChain = mockedSmoldotLight
+            .getLatestClient()
+            ._getLatestChain()
+          expect(mockedChain._addChainOptions.chainSpec).toEqual(chainSpec)
 
-      let mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
-      expect(mockedChain._addChainOptions.chainSpec).toEqual(chainSpec)
+          addWellKnownChain(WellKnownChain.polkadot).then(() => {
+            mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
+            expect(mockedChain._addChainOptions.chainSpec).toEqual(
+              "fake-polkadot-spec",
+            )
+          })
 
-      await addWellKnownChain(WellKnownChain.polkadot)
+          addWellKnownChain(WellKnownChain.ksmcc3).then(() => {
+            mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
+            expect(mockedChain._addChainOptions.chainSpec).toEqual(
+              "fake-ksmcc3-spec",
+            )
+          })
 
-      mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
-      expect(mockedChain._addChainOptions.chainSpec).toEqual(
-        "fake-polkadot-spec",
-      )
-
-      await addWellKnownChain(WellKnownChain.ksmcc3)
-
-      mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
-      expect(mockedChain._addChainOptions.chainSpec).toEqual("fake-ksmcc3-spec")
-
-      await addWellKnownChain(WellKnownChain.rococo_v2_2)
-
-      mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
-      expect(mockedChain._addChainOptions.chainSpec).toEqual(
-        "fake-rococo_v2_2-spec",
-      )
+          addWellKnownChain(WellKnownChain.rococo_v2_2).then(() => {
+            mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
+            expect(mockedChain._addChainOptions.chainSpec).toEqual(
+              "fake-rococo_v2_2-spec",
+            )
+          })
+        })
+      })
     })
 
     it("propagates the correct potentialRelayChainIds to smoldot", async () => {
-      const { addChain } = createScClient()
-      const prevChains = await Promise.all(
-        Array(3)
-          .fill(null)
-          .map(() => addChain("")),
-      )
-
-      prevChains[0].remove()
-      await addChain("")
-
-      const mockedChains = mockedSmoldotLight
-        .getLatestClient()
-        ._getChains()
-        .slice(-4)
-      const lastMockedChain = mockedChains[3]
-
-      expect(lastMockedChain._addChainOptions.potentialRelayChains).toEqual([
-        mockedChains[1],
-        mockedChains[2],
-      ])
+      import("./smoldot-light").then((smoldot) => {
+        const { addChain } = smoldot.createScClient()
+        Promise.all(
+          Array(3)
+            .fill(null)
+            .map(() => addChain("")),
+        ).then((prevChains) => {
+          prevChains[0].remove()
+          addChain("").then(() => {
+            const mockedChains = mockedSmoldotLight
+              .getLatestClient()
+              ._getChains()
+              .slice(-4)
+            const lastMockedChain = mockedChains[3]
+            expect(
+              lastMockedChain._addChainOptions.potentialRelayChains,
+            ).toEqual([mockedChains[1], mockedChains[2]])
+          })
+        })
+      })
     })
   })
 })
