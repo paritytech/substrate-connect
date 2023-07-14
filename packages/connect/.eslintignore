@@ -7,4 +7,5 @@ coverage
 .chains
 
 /src/specs/*.json
+/src/connector/specs/*.ts
 jest.*.ts
