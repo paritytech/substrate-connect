@@ -1,0 +1,27 @@
+[settings]
+timeout = 1000
+
+[relaychain]
+default_image = "docker.io/paritypr/synth-wave:4131-0.9.12-ccd09bbf-29a1ac18"
+chain = "rococo-local"
+command = "polkadot"
+
+  [[relaychain.nodes]]
+  name = "polkadot"
+  validator = true
+  extra_args = [ "--alice", "-lparachain=debug" ]
+
+  [[relaychain.nodes]]
+  name = "ksmcc3"
+  validator = true
+  extra_args = [ "--bob", "-lparachain=debug" ]
+
+  [[relaychain.nodes]]
+  name = "westend2"
+  validator = true
+  extra_args = [ "--alice", "-lparachain=debug" ]
+
+  [[relaychain.nodes]]
+  name = "rococo"
+  validator = true
+  extra_args = [ "--bob", "-lparachain=debug" ]
