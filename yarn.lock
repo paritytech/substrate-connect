@@ -4314,9 +4314,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@substrate/extension@workspace:projects/extension"
   dependencies:
+    "@hot-loader/react-dom": ^17.0.2
     "@substrate/connect-extension-protocol": ^1.0.1
+    "@types/copy-webpack-plugin": ^10.1.0
     autoprefixer: ^10.4.14
+    copy-webpack-plugin: ^10.2.4
+    css-loader: ^6.8.1
     eslint: ^8.44.0
+    html-minimizer-webpack-plugin: ^4.3.0
+    html-webpack-plugin: ^5.5.3
     jest-chrome: ^0.7.2
     mini-css-extract-plugin: ^2.7.6
     postcss: ^8.4.25
@@ -4326,9 +4332,15 @@ __metadata:
     react-hot-loader: ^4.13.1
     react-icons: ^4.10.1
     smoldot: 1.0.12
+    style-loader: ^3.3.3
     tailwindcss: ^3.3.2
+    ts-loader: ^9.4.3
+    typescript: ^5.1.6
     vitest: ^0.33.0
     web-ext: ^7.6.2
+    webpack: ^5.86.0
+    webpack-cli: ^4.10.0
+    webpack-dev-server: ^4.15.1
   languageName: unknown
   linkType: soft
 
@@ -15652,10 +15664,8 @@ __metadata:
     "@babel/plugin-proposal-private-methods": ^7.18.6
     "@babel/preset-env": ^7.22.5
     "@babel/preset-react": ^7.22.5
-    "@hot-loader/react-dom": ^17.0.2
     "@types/asap": ^2.0.0
     "@types/chrome": ^0.0.237
-    "@types/copy-webpack-plugin": ^10.1.0
     "@types/jsdom": ^21.1.1
     "@types/node": ^18.16.17
     "@types/qrcode.react": ^1.0.2
@@ -15668,16 +15678,12 @@ __metadata:
     bn.js: ^5.2.1
     buffer: ^6.0.3
     concurrently: ^8.2.0
-    copy-webpack-plugin: ^10.2.4
     crypto-browserify: ^3.12.0
-    css-loader: ^6.8.1
     eslint: ^8.42.0
     eslint-config-prettier: ^8.8.0
     eslint-config-react-app: ^7.0.1
     eslint-plugin-import: ^2.27.5
     file-loader: ^6.2.0
-    html-minimizer-webpack-plugin: ^4.3.0
-    html-webpack-plugin: ^5.5.3
     http-server: ^14.1.1
     jsdom: ^19.0.0
     nodemon: ^2.0.22
@@ -15685,15 +15691,10 @@ __metadata:
     regenerator-runtime: ^0.13.11
     rimraf: ^3.0.2
     stream-browserify: ^3.0.0
-    style-loader: ^3.3.3
-    ts-loader: ^9.4.3
     ts-node: ^10.9.1
     typedoc: ^0.24.8
     typescript: ^5.1.6
     url-loader: ^4.1.1
-    webpack: ^5.86.0
-    webpack-cli: ^4.10.0
-    webpack-dev-server: ^4.15.1
   languageName: unknown
   linkType: soft
 

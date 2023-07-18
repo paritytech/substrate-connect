@@ -19,3 +19,4 @@ init.sh
 .pnp.*
 .vscode
 packages/connect/src/connector/specs/js
+substrate-connect_source-code.zip
