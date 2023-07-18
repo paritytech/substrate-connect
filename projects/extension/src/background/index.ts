@@ -240,12 +240,11 @@ const updateDatabases = async () => {
     )
   }
 
-  Promise.all(promises).then(async () => {
+  Promise.all(promises).then(() => {
     // Once the database content is saved in the localStorage for all the chains
     // then terminate the client
     console.log("All databases are updated. Light Client is terminated.")
-    await client.terminate()
-  })
+  }).finally(() => client.terminate());
 }
 
 updateDatabases().catch((err) =>
