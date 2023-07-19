@@ -202,10 +202,7 @@ const updateDatabases = async () => {
     promises.push(
       new Promise<void>((resolve) => {
         client
-          .addChain({
-            chainSpec: value,
-            databaseContent,
-          })
+          .addChain({ chainSpec: value, databaseContent })
           .then(async (chain) => {
             chain.sendJsonRpc(
               `{"jsonrpc":"2.0","id":"1","method":"chainHead_unstable_follow","params":[true]}`,
@@ -240,12 +237,13 @@ const updateDatabases = async () => {
     )
   }
 
-  Promise.all(promises).then(async () => {
-    // Once the database content is saved in the localStorage for all the chains
-    // then terminate the client
-    console.log("All databases are updated. Light Client is terminated.")
-    await client.terminate()
-  })
+  Promise.all(promises)
+    .then(() => {
+      // Once the database content is saved in the localStorage for all the chains
+      // then terminate the client
+      console.log("All databases are updated. Light Client is terminated.")
+    })
+    .finally(() => client.terminate())
 }
 
 updateDatabases().catch((err) =>
