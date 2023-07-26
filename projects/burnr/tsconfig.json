@@ -12,8 +12,8 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "jsx": "react-jsx",
+    "jsx": "react-jsx"
   },
-  "include": ["src/**/*", "vite.config.ts"],
-  "references": [{ "path": "../../packages/connect/tsconfig-mjs.json" }, { "path": "./tsconfig.node.json" }]
+  "include": ["./src/**/*"],
+  "references": [{ "path": "../../packages/connect/tsconfig-mjs.json" }]
 }
