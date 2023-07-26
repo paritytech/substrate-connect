@@ -4235,7 +4235,7 @@ __metadata:
     "@polkadot/types": ^10.9.1
     "@polkadot/util": ^12.3.2
     "@polkadot/util-crypto": ^12.3.2
-    "@substrate/connect": 0.7.30
+    "@substrate/connect": 0.7.31
     "@vitejs/plugin-react": ^4.0.3
     bn.js: ^5.2.1
     eslint: ^8.44.0
@@ -4260,13 +4260,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/connect@0.7.30, @substrate/connect@workspace:packages/connect":
+"@substrate/connect@0.7.31, @substrate/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@substrate/connect@workspace:packages/connect"
   dependencies:
     "@substrate/connect-extension-protocol": ^1.0.1
     eslint: ^8.44.0
-    smoldot: 1.0.12
+    smoldot: 1.0.13
     vitest: ^0.33.0
   languageName: unknown
   linkType: soft
@@ -4277,7 +4277,7 @@ __metadata:
   dependencies:
     "@polkadot/api": ^10.9.1
     "@polkadot/rpc-provider": ^10.9.1
-    "@substrate/connect": 0.7.30
+    "@substrate/connect": 0.7.31
     "@vitejs/plugin-react": ^4.0.3
     eslint: ^8.44.0
     regenerator-runtime: ^0.13.11
@@ -4307,7 +4307,7 @@ __metadata:
     react-dom: ^18.2.0
     react-hot-loader: ^4.13.1
     react-icons: ^4.10.1
-    smoldot: 1.0.12
+    smoldot: 1.0.13
     style-loader: ^3.3.3
     tailwindcss: ^3.3.2
     ts-loader: ^9.4.3
@@ -15101,12 +15101,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"smoldot@npm:1.0.12":
-  version: 1.0.12
-  resolution: "smoldot@npm:1.0.12"
+"smoldot@npm:1.0.13":
+  version: 1.0.13
+  resolution: "smoldot@npm:1.0.13"
   dependencies:
     ws: ^8.8.1
-  checksum: fea23b29654dc5107dccb5f121ed0d35e17bc579514500b70fc441a20138a763677b61e935d839ad12425125d47d7f75e4adc999b7e597493b1e738d7ee7e008
+  checksum: f9a26fe5dcb95011066f596d79e8340183698b3ae913c5795c33b7897f80524c3fac06acbb0ab0f8b4d27d900c111c930c3c2fd3bfd939c43c904c0e46651054
   languageName: node
   linkType: hard
 
