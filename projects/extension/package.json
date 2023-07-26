@@ -30,7 +30,7 @@
     "@hot-loader/react-dom": "^17.0.2",
     "@types/copy-webpack-plugin": "^10.1.0",
     "autoprefixer": "^10.4.14",
-    "copy-webpack-plugin": "^10.2.4",
+    "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.8.1",
     "eslint": "^8.44.0",
     "html-minimizer-webpack-plugin": "^4.3.0",
