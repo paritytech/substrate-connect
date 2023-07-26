@@ -69,7 +69,7 @@
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
     "regenerator-runtime": "^0.13.11",
-    "rimraf": "^3.0.2",
+    "rimraf": "^5.0.1",
     "stream-browserify": "^3.0.0",
     "ts-node": "^10.9.1",
     "typedoc": "^0.24.8",
