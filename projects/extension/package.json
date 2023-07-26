@@ -8,15 +8,22 @@
   "type": "module",
   "scripts": {
     "deep-clean": "yarn clean && rm -rf node_modules",
-    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "prep:m3": "cp ./public/manifest-v3.json ./public/manifest.json",
+    "prep:m2": "cp ./public/manifest-v2.json ./public/manifest.json",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo ./public/manifest.json",
     "test": "vitest",
     "prebuild": "yarn clean",
-    "build": "webpack --config webpack.prod.js && cd dist && zip -r packed-extension.zip .",
-    "dev": "yarn run prebuild && webpack --node-env development --config webpack.dev.js",
+    "build": "yarn run build:m3 && yarn run build:m2 && rm -rf ./public/manifest.json",
+    "build:m3": "yarn run prep:m3 && webpack --config webpack.prod.js && cd dist && zip -r packed-m3-extension.zip .",
+    "build:m2": "yarn run prep:m2 && webpack --config webpack.prod.js && cd dist && zip -r packed-m2-extension.zip .",
+    "dev": "yarn run clean && yarn run prep:m3 && webpack --node-env development --config webpack.dev.js",
+    "dev:m2": "yarn run clean && yarn run prep:m2 && webpack --node-env development --config webpack.dev.js",
     "start": "web-ext run --source-dir ./dist -t chromium",
     "start:firefox": "web-ext run --source-dir ./dist -t firefox-desktop",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx",
-    "bundle-source-code": "cp tsconfig.json tsconfig_bkp.json && mv tsconfig.ext.json tsconfig.json && yarn run clean && rm -rf node_modules && zip -r substrate-connect_source-code.zip . -x 'node_modules/*' 'dist/*' 'tsconfig_bkp.json' && mv tsconfig_bkp.json tsconfig.json && mv substrate-connect_source-code.zip ../.."
+    "bundle": "yarn run bundle:m3 && yarn run bundle:m2",
+    "bundle:m3": "cp tsconfig.json tsconfig_bkp.json && mv tsconfig.ext.json tsconfig.json && yarn run clean && rm -rf node_modules && zip -r substrate-connect_source-code.zip . -x 'node_modules/*' 'dist/*' 'tsconfig_bkp.json' && mv tsconfig_bkp.json tsconfig.json && mv substrate-connect_m3-source-code.zip ../..",
+    "bundle:m2": "cp tsconfig.json tsconfig_bkp.json && mv tsconfig.ext.json tsconfig.json && yarn run clean && rm -rf node_modules && zip -r substrate-connect_source-code.zip . -x 'node_modules/*' 'dist/*' 'tsconfig_bkp.json' && mv tsconfig_bkp.json tsconfig.json && mv substrate-connect_m2-source-code.zip ../.."
   },
   "keywords": [],
   "devDependencies": {
