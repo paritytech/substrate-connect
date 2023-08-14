@@ -8,7 +8,8 @@ import {
   MalformedJsonRpcError,
 } from "smoldot"
 
-import { ToExtension, ToContentScript } from "../background/protocol"
+import { loadWellKnownChains } from "./loadWellKnownChains"
+import * as environment from "../environment"
 
 export { MalformedJsonRpcError } from "smoldot"
 
@@ -19,13 +20,11 @@ export class SmoldotClientWithExtension {
     { inner: SmoldotChain; wellKnownName?: string }
   >
   #nextRpcRqId: number
-  #globalExtensionMessagesSendPromise: Promise<void>
 
-  constructor(globalExtensionMessagesSendPromise: Promise<void>) {
+  constructor(private onChainUpdate?: (event: ChainUpdateEvent) => void) {
     this.#nextRpcRqId = 0
     this.#chains = new Map()
-    this.#globalExtensionMessagesSendPromise =
-      globalExtensionMessagesSendPromise
+
     this.#client = startSmoldotClient({
       // Because we are in the context of a web page, trying to open TCP connections or non-secure
       // WebSocket connections to addresses other than localhost will lead to errors. As such, we
@@ -102,6 +101,7 @@ export class SmoldotClientWithExtension {
   }
 
   async addChain(options: {
+    chainId: string
     chainSpec: string
     potentialRelayChains: ChainWithExtension[]
     jsonRpcCallback: (msg: string) => void
@@ -111,6 +111,7 @@ export class SmoldotClientWithExtension {
       .map((c) => this.#chains.get(c)!.inner)
 
     return this.#addChainWithOptions(
+      options.chainId,
       {
         chainSpec: options.chainSpec,
         potentialRelayChains: potentialRelayChainsAdj,
@@ -121,30 +122,31 @@ export class SmoldotClientWithExtension {
   }
 
   async addWellKnownChain(options: {
+    chainId: string
     chainName: string
     potentialRelayChains: ChainWithExtension[]
     jsonRpcCallback: (msg: string) => void
   }) {
-    const response = await this.#sendPortThenWaitResponse({
-      type: "get-well-known-chain",
+    const chainSpec = (await loadWellKnownChains()).get(options.chainName)
+
+    // Given that the chain name is user input, we have no guarantee that it is correct. The
+    // extension might report that it doesn't know about this well-known chain.
+    if (!chainSpec) throw new AddChainError("Couldn't find well-known chain")
+
+    const databaseContent = await environment.get({
+      type: "database",
       chainName: options.chainName,
     })
-    if (response?.type !== "get-well-known-chain")
-      throw new Error("Invalid response from extension")
 
     const potentialRelayChainsAdj = options.potentialRelayChains
       .filter((c) => this.#chains.has(c))
       .map((c) => this.#chains.get(c)!.inner)
 
-    // Given that the chain name is user input, we have no guarantee that it is correct. The
-    // extension might report that it doesn't know about this well-known chain.
-    if (!response.found)
-      throw new AddChainError("Couldn't find well-known chain")
-
     return this.#addChainWithOptions(
+      options.chainId,
       {
-        chainSpec: response.found.chainSpec,
-        databaseContent: response.found.databaseContent,
+        chainSpec,
+        databaseContent,
         potentialRelayChains: potentialRelayChainsAdj,
       },
       options.jsonRpcCallback,
@@ -153,6 +155,7 @@ export class SmoldotClientWithExtension {
   }
 
   async #addChainWithOptions(
+    chainId: string,
     options: SmoldotAddChainOptions,
     jsonRpcCallback: (msg: string) => void,
     wellKnownName?: string,
@@ -205,7 +208,7 @@ export class SmoldotClientWithExtension {
           // Store the health status in the locally-held information.
           const result: { peers: number } = parsed.result
           chainInfo.peers = result.peers
-          this.#sendPortThenWaitResponse({
+          this.#emitChainUpdate({
             type: "chain-info-update",
             chainId,
             bestBlockNumber: chainInfo.bestBlockHeight,
@@ -229,7 +232,7 @@ export class SmoldotClientWithExtension {
               } catch (error) {
                 delete chainInfo.bestBlockHeight
               }
-              this.#sendPortThenWaitResponse({
+              this.#emitChainUpdate({
                 type: "chain-info-update",
                 chainId,
                 bestBlockNumber: chainInfo.bestBlockHeight,
@@ -240,7 +243,7 @@ export class SmoldotClientWithExtension {
           return
         } else if (jsonRpcMessageId.startsWith("database-content:")) {
           console.assert(wellKnownName)
-          this.#sendPortThenWaitResponse({
+          this.#emitChainUpdate({
             type: "database-content",
             chainName: wellKnownName!,
             databaseContent: parsed.result as string,
@@ -301,7 +304,7 @@ export class SmoldotClientWithExtension {
               delete chainInfo.bestBlockHeaderRequestId
               delete chainInfo.finalizedBlockHashHex
               delete chainInfo.bestBlockHeight
-              this.#sendPortThenWaitResponse({
+              this.#emitChainUpdate({
                 type: "chain-info-update",
                 chainId,
                 bestBlockNumber: chainInfo.bestBlockHeight,
@@ -400,7 +403,6 @@ export class SmoldotClientWithExtension {
     )
     this.#nextRpcRqId += 1
 
-    const chainId = getRandomChainId()
     const client = this
 
     // Given that smoldot has managed to add the chain, it means that the chain spec should
@@ -444,12 +446,12 @@ export class SmoldotClientWithExtension {
       },
       remove() {
         smoldotChain.remove()
-        client.#sendPortThenWaitResponse({ type: "remove-chain", chainId })
+        client.#emitChainUpdate({ type: "remove-chain", chainId })
         client.#chains.delete(this)
       },
     }
 
-    await this.#sendPortThenWaitResponse({
+    await this.#emitChainUpdate({
       type: "add-chain",
       isWellKnown: wellKnownName === undefined ? false : true,
       chainId,
@@ -467,22 +469,8 @@ export class SmoldotClientWithExtension {
   //
   // The messages are sent serially using `globalExtensionMessagesSendPromise`. In other words,
   // each message is sent only when the previously-sent message has received a response.
-  async #sendPortThenWaitResponse(
-    message: ToExtension,
-  ): Promise<ToContentScript> {
-    return new Promise((resolve) => {
-      this.#globalExtensionMessagesSendPromise =
-        this.#globalExtensionMessagesSendPromise.then(() => {
-          return new Promise((resolve2) => {
-            // Note: for a completely unknown reason, the Promise version of `chrome.runtime.sendMessage`
-            // would always produce `undefined`.
-            chrome.runtime.sendMessage(message, (val) => {
-              resolve(val)
-              resolve2()
-            })
-          })
-        })
-    })
+  async #emitChainUpdate(message: ChainUpdateEvent): Promise<void> {
+    this.onChainUpdate?.(message)
   }
 }
 
@@ -491,13 +479,41 @@ export interface ChainWithExtension {
   remove(): void
 }
 
-// Generate a random string.
-function getRandomChainId(): string {
-  const arr = new BigUint64Array(2)
-  // It can only be used from the browser, so this is fine.
-  crypto.getRandomValues(arr)
-  const result = (arr[1] << BigInt(64)) | arr[0]
-  return result.toString(36)
+export type ChainUpdateEvent =
+  | ChainUpdateDatabaseContent
+  | ChainUpdateAddChain
+  | ChainUpdateChainInfoUpdate
+  | ChainUpdateRemoveChain
+
+export interface ChainUpdateDatabaseContent {
+  type: "database-content"
+  chainName: string
+  databaseContent: string
+}
+
+// Report to the extension that a new chain has been initialized.
+// Note that the `chainId` is entirely scoped to the content-script <-> extension interface. It
+// does not (necessarily) relate to the `chainId` used in the connect-extension-protocol.
+export interface ChainUpdateAddChain {
+  type: "add-chain"
+  chainId: string
+  isWellKnown: boolean
+  chainSpecChainName: string
+}
+
+// Report to the extension an update of the properties of the given chain.
+export interface ChainUpdateChainInfoUpdate {
+  type: "chain-info-update"
+  chainId: string
+  peers: number
+  bestBlockNumber?: number
+}
+
+// Report to the extension that a chain previously added with {ToExtensionAddChain} has been
+// removed.
+export interface ChainUpdateRemoveChain {
+  type: "remove-chain"
+  chainId: string
 }
 
 // Converts a block header, as a hexadecimal string, to a block height.
