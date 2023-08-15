@@ -1,42 +1,65 @@
-// import { ToContentScript, ToExtension } from "./protocol"
 import {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"
-import * as environment from "../environment"
+import { MalformedJsonRpcError } from "smoldot"
+
 import { updateDatabases } from "./updateDatabases"
 import { enqueueAsyncFn } from "./enqueueAsyncFn"
-import {
-  ChainUpdateEvent,
-  ChainWithExtension,
-  MalformedJsonRpcError,
-} from "./ClientWithExtension"
-
 import { ChainChannel, ChainMultiplex, ClientService } from "./ClientService"
 import { trackChains } from "./trackChains"
 
-// TODO: track by TabId
-const chains: Record<string, ChainWithExtension> = {}
-const tabByChainId: Record<string, chrome.tabs.Tab | undefined> = {}
-const chainsV2: Record<string, ChainMultiplex> = {}
-const chainsV2Channels: Record<string, ChainChannel> = {}
+import * as environment from "../environment"
+
+// TODO: merge these maps
+const tabByChainId: Record<string, chrome.tabs.Tab> = {}
+const activeChains: Record<string, ChainMultiplex> = {}
+const activeChannels: Record<string, ChainChannel> = {}
 
 const removeChain = (chainId: string) => {
-  delete chains[chainId]
+  const tab = tabByChainId[chainId]
+  enqueueAsyncFn(async () => {
+    if (!tab) return
+
+    const chains = await environment.get({
+      type: "activeChains",
+      tabId: tab.id!,
+    })
+    if (!chains) return
+
+    const pos = chains.findIndex((c) => c.chainId === chainId)
+    if (pos === -1) return
+
+    chains.splice(pos, 1)
+
+    await environment.set({ type: "activeChains", tabId: tab!.id! }, chains)
+  })
   delete tabByChainId[chainId]
-  // delete chainsV2Channels[chainId]
-  chainsV2[chainId]?.remove()
-  delete chainsV2[chainId]
-  if (!chains[chainId]) return
-  chains[chainId].remove()
+
+  try {
+    activeChannels[chainId]?.remove()
+  } catch (error) {
+    console.error("error removing chain channel", error)
+  }
+  delete activeChannels[chainId]
+
+  try {
+    activeChains[chainId]?.remove()
+  } catch (error) {
+    console.error("error removing chain", error)
+  }
+  delete activeChains[chainId]
 }
+
 const resetTab = (tabId: number) => {
   for (const [chainId, tab] of Object.entries(tabByChainId)) {
-    if (tab?.id !== tabId) continue
-    removeChain(chainId)
+    if (tab?.id === tabId) removeChain(chainId)
   }
   enqueueAsyncFn(() => environment.remove({ type: "activeChains", tabId }))
 }
+
+// FIXME:
+environment.clearAllActiveChains()
 
 // Callback called when the browser starts.
 // Note: technically, this is triggered when a new profile is started. But since each profile has
@@ -68,8 +91,9 @@ const clientService = new ClientService()
 
 type ToBackground = ToExtension | { type: "tab-reset" }
 chrome.runtime.onMessage.addListener((msg: ToBackground, sender) => {
-  const tabId = sender.tab?.id
-  if (!tabId) return
+  const tab = sender.tab
+  if (!tab) return
+  const tabId = tab.id!
   switch (msg.type) {
     // UI/Storage related
     case "tab-reset": {
@@ -97,14 +121,37 @@ chrome.runtime.onMessage.addListener((msg: ToBackground, sender) => {
           : clientService.addChain(msg.chainId, {
               chainSpec: msg.chainSpec,
               potentialRelayChains: msg.potentialRelayChainIds
-                .filter((c) => chainsV2[c])
-                .map((c) => chainsV2[c].smoldotChain),
+                .filter((c) => activeChains[c])
+                .map((c) => activeChains[c].smoldotChain),
             })
 
       createChainPromise.then(
         (chain) => {
-          chainsV2[msg.chainId] = chain
-          chainsV2Channels[msg.chainId] = chain.channel(
+          enqueueAsyncFn(async () => {
+            const chains =
+              (await environment.get({
+                type: "activeChains",
+                tabId,
+              })) ?? []
+            chains.push({
+              chainId: msg.chainId,
+              isWellKnown: msg.type === "add-well-known-chain",
+              chainName:
+                msg.type === "add-well-known-chain"
+                  ? msg.chainName
+                  : // TODO: set chainName for non-well-known-chains
+                    "todo-parse-chain-spec",
+              isSyncing: false,
+              peers: 0,
+              tab: {
+                id: tab.id!,
+                url: tab.url!,
+              },
+            })
+            await environment.set({ type: "activeChains", tabId }, chains)
+          })
+          activeChains[msg.chainId] = chain
+          activeChannels[msg.chainId] = chain.channel(
             "app",
             (jsonRpcMessage: string) => {
               sendMessage(tabId, {
@@ -136,7 +183,7 @@ chrome.runtime.onMessage.addListener((msg: ToBackground, sender) => {
     }
 
     case "rpc": {
-      const chain = chainsV2Channels[msg.chainId]
+      const chain = activeChannels[msg.chainId]
 
       // If the chainId is invalid, the message is silently discarded, as documented.
       if (!chain) return
@@ -156,98 +203,16 @@ chrome.runtime.onMessage.addListener((msg: ToBackground, sender) => {
     }
 
     case "remove-chain": {
-      const chain = chains[msg.chainId]
-
       // If the chainId is invalid, the message is silently discarded, as documented.
-      if (!chain) return
-
       removeChain(msg.chainId)
-
-      // TODO: delete UI/storage for chain
 
       return
     }
   }
 })
 
-function handleChainUpdate(message: ChainUpdateEvent) {
-  enqueueAsyncFn(async () => {
-    switch (message.type) {
-      case "add-chain": {
-        const tab = tabByChainId[message.chainId]
-        if (!tab) return
-        const chains =
-          (await environment.get({
-            type: "activeChains",
-            tabId: tab.id!,
-          })) ?? []
-
-        chains.push({
-          chainId: message.chainId,
-          isWellKnown: message.isWellKnown,
-          chainName: message.chainSpecChainName,
-          isSyncing: false,
-          peers: 0,
-          tab: {
-            id: tab.id!,
-            url: tab.url!,
-          },
-        })
-        await environment.set({ type: "activeChains", tabId: tab.id! }, chains)
-
-        return
-      }
-      case "chain-info-update": {
-        const tab = tabByChainId[message.chainId]
-        if (!tab) return
-        const chains = await environment.get({
-          type: "activeChains",
-          tabId: tab.id!,
-        })
-
-        if (!chains) return
-        const pos = chains.findIndex(
-          (c) => c.tab.id === tab!.id! && c.chainId === message.chainId,
-        )
-        if (pos !== -1) {
-          chains[pos].peers = message.peers
-          chains[pos].bestBlockHeight = message.bestBlockNumber
-        }
-        await environment.set({ type: "activeChains", tabId: tab!.id! }, chains)
-
-        return
-      }
-      case "database-content": {
-        environment.set(
-          { type: "database", chainName: message.chainName },
-          message.databaseContent,
-        )
-
-        return
-      }
-      case "remove-chain": {
-        const tab = tabByChainId[message.chainId]
-        if (!tab) return
-        const chains = await environment.get({
-          type: "activeChains",
-          tabId: tab.id!,
-        })
-
-        if (!chains) return
-        const pos = chains.findIndex(
-          (c) => c.tab.id === tab!.id! && c.chainId === message.chainId,
-        )
-        if (pos !== -1) chains.splice(pos, 1)
-        await environment.set({ type: "activeChains", tabId: tab!.id! }, chains)
-
-        return
-      }
-    }
-  })
-}
-
 // TODO: this should be invoked on demand when the extension options/popup is active
-trackChains(chainsV2, (chainInfo) => {
+trackChains(activeChains, (chainInfo) => {
   enqueueAsyncFn(async () => {
     const tab = tabByChainId[chainInfo.chainId]
     if (!tab) return

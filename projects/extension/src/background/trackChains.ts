@@ -186,7 +186,11 @@ const trackChain = (
         // TODO: log non-AlreadyDestroyedError
       }
     }
-    channel.remove()
+    try {
+      channel.remove()
+    } catch (_) {
+      // TODO: log non-AlreadyDestroyedError
+    }
   }
 }
 
