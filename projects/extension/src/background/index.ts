@@ -10,16 +10,23 @@ import {
   ChainUpdateEvent,
   ChainWithExtension,
   MalformedJsonRpcError,
-  SmoldotClientWithExtension,
 } from "./ClientWithExtension"
+
+import { ChainChannel, ChainMultiplex, ClientService } from "./ClientService"
+import { trackChains } from "./trackChains"
 
 // TODO: track by TabId
 const chains: Record<string, ChainWithExtension> = {}
 const tabByChainId: Record<string, chrome.tabs.Tab | undefined> = {}
+const chainsV2: Record<string, ChainMultiplex> = {}
+const chainsV2Channels: Record<string, ChainChannel> = {}
 
 const removeChain = (chainId: string) => {
   delete chains[chainId]
   delete tabByChainId[chainId]
+  // delete chainsV2Channels[chainId]
+  chainsV2[chainId]?.remove()
+  delete chainsV2[chainId]
   if (!chains[chainId]) return
   chains[chainId].remove()
 }
@@ -57,7 +64,7 @@ const sendMessage = (tabId: number, message: ToApplication) => {
   chrome.tabs.sendMessage(tabId, message)
 }
 
-const client = new SmoldotClientWithExtension(handleChainUpdate)
+const clientService = new ClientService()
 
 type ToBackground = ToExtension | { type: "tab-reset" }
 chrome.runtime.onMessage.addListener((msg: ToBackground, sender) => {
@@ -72,7 +79,7 @@ chrome.runtime.onMessage.addListener((msg: ToBackground, sender) => {
 
     case "add-chain":
     case "add-well-known-chain": {
-      if (chains[msg.chainId]) {
+      if (tabByChainId[msg.chainId]) {
         sendMessage(tabId, {
           origin: "substrate-connect-extension",
           type: "error",
@@ -84,42 +91,30 @@ chrome.runtime.onMessage.addListener((msg: ToBackground, sender) => {
 
       tabByChainId[msg.chainId] = sender.tab!
 
-      const jsonRpcCallback = (jsonRpcMessage: string) => {
-        sendMessage(tabId, {
-          origin: "substrate-connect-extension",
-          type: "rpc",
-          chainId: msg.chainId,
-          jsonRpcMessage,
-        })
-      }
-
-      const potentialRelayChains =
-        msg.type !== "add-chain"
-          ? []
-          : msg.potentialRelayChainIds
-              .filter((c) => chains[c])
-              .map((c) => chains[c]!)
-
-      let createChainPromise
-      if (msg.type === "add-well-known-chain") {
-        createChainPromise = client.addWellKnownChain({
-          chainId: msg.chainId,
-          chainName: msg.chainName,
-          jsonRpcCallback,
-          potentialRelayChains,
-        })
-      } else {
-        createChainPromise = client.addChain({
-          chainId: msg.chainId,
-          chainSpec: msg.chainSpec,
-          jsonRpcCallback,
-          potentialRelayChains,
-        })
-      }
+      const createChainPromise =
+        msg.type === "add-well-known-chain"
+          ? clientService.addWellKnownChain(msg.chainId, msg.chainName)
+          : clientService.addChain(msg.chainId, {
+              chainSpec: msg.chainSpec,
+              potentialRelayChains: msg.potentialRelayChainIds
+                .filter((c) => chainsV2[c])
+                .map((c) => chainsV2[c].smoldotChain),
+            })
 
       createChainPromise.then(
         (chain) => {
-          chains[msg.chainId] = chain
+          chainsV2[msg.chainId] = chain
+          chainsV2Channels[msg.chainId] = chain.channel(
+            "app",
+            (jsonRpcMessage: string) => {
+              sendMessage(tabId, {
+                origin: "substrate-connect-extension",
+                type: "rpc",
+                chainId: msg.chainId,
+                jsonRpcMessage,
+              })
+            },
+          )
           sendMessage(tabId, {
             origin: "substrate-connect-extension",
             type: "chain-ready",
@@ -127,6 +122,7 @@ chrome.runtime.onMessage.addListener((msg: ToBackground, sender) => {
           })
         },
         (error) => {
+          delete tabByChainId[msg.chainId]
           sendMessage(tabId, {
             origin: "substrate-connect-extension",
             type: "error",
@@ -140,7 +136,7 @@ chrome.runtime.onMessage.addListener((msg: ToBackground, sender) => {
     }
 
     case "rpc": {
-      const chain = chains[msg.chainId]
+      const chain = chainsV2Channels[msg.chainId]
 
       // If the chainId is invalid, the message is silently discarded, as documented.
       if (!chain) return
@@ -249,3 +245,25 @@ function handleChainUpdate(message: ChainUpdateEvent) {
     }
   })
 }
+
+// TODO: this should be invoked on demand when the extension options/popup is active
+trackChains(chainsV2, (chainInfo) => {
+  enqueueAsyncFn(async () => {
+    const tab = tabByChainId[chainInfo.chainId]
+    if (!tab) return
+
+    const chains = await environment.get({
+      type: "activeChains",
+      tabId: tab.id!,
+    })
+    if (!chains) return
+
+    const index = chains.findIndex(
+      ({ chainId }) => chainId === chainInfo.chainId,
+    )
+    if (index === -1) return
+
+    chains[index] = { ...chains[index], ...chainInfo }
+    await environment.set({ type: "activeChains", tabId: tab!.id! }, chains)
+  })
+})
