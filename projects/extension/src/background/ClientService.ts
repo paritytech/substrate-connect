@@ -64,7 +64,7 @@ export class ChainMultiplex {
     if (this.#channels[channelId]) throw new Error("channel already created")
     this.#channels[channelId] = jsonRpcCallback
 
-    const { smoldotChain, onRemove } = this
+    const { smoldotChain } = this
     const channels = this.#channels
 
     return {
@@ -104,12 +104,6 @@ export class ChainMultiplex {
       },
       remove() {
         delete channels[channelId]
-
-        // TODO: revisit, Is this behavior correct?
-        if (Object.keys(channels).length === 0) {
-          smoldotChain.remove()
-          onRemove?.()
-        }
       },
     }
   }
