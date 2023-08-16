@@ -118,8 +118,8 @@ chrome.runtime.onMessage.addListener((msg: ToBackground, sender) => {
       const isWellKnown = msg.type === "add-well-known-chain"
 
       const createChainPromise = isWellKnown
-        ? clientService.addWellKnownChain(msg.chainId, msg.chainName)
-        : clientService.addChain(msg.chainId, {
+        ? clientService.addWellKnownChain(msg.chainName)
+        : clientService.addChain({
             chainSpec: msg.chainSpec,
             potentialRelayChains: msg.potentialRelayChainIds
               .filter((c) => activeChains[c])
