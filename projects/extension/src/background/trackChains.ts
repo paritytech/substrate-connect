@@ -1,4 +1,7 @@
 import { AlreadyDestroyedError } from "smoldot"
+import { compact } from "scale-ts"
+import { fromHex } from "@unstoppablejs/utils"
+
 import { ChainMultiplex } from "./ClientService"
 
 export interface ChainInfo {
@@ -143,7 +146,9 @@ const trackChain = (
         // The RPC call might return `null` if the subscription is dead.
         if (message.result) {
           try {
-            chainInfo.bestBlockHeight = headerToHeight(message.result)
+            chainInfo.bestBlockHeight = compact.dec(
+              fromHex(message.result).slice(32),
+            ) as number
           } catch (error) {
             chainInfo.bestBlockHeight = undefined
           }
@@ -224,67 +229,5 @@ export const trackChains = (
   return () => {
     clearInterval(monitorChainsInterval)
     Object.values(subscriptions).forEach((unsubscribe) => unsubscribe)
-  }
-}
-
-// Converts a block header, as a hexadecimal string, to a block height.
-//
-// This function should give the accurate block height in most situations, but it is possible that
-// the value is erroneous.
-//
-// This function assumes that the block header is a block header generated using Substrate. This
-// is not necessarily always true. When that happens, an error is thrown.
-//
-// Additionally, this function assumes that the block height is 32bits, which is the case for the
-// vast majority of the chains. There is currently no way to know the size of the block height.
-// This is a huge flaw in Substrate that we can't do much about here. Fortuntely, since the block
-// height is implemented in compact SCALE encoding, as long as the field containing the number is
-// at least 32 bits and the value is less than 2^32, it will encode the same regardless.
-function headerToHeight(hexHeader: String): number {
-  // Remove the initial prefix.
-  if (!(hexHeader.startsWith("0x") || hexHeader.startsWith("0X")))
-    throw new Error("Not a hexadecimal number")
-  hexHeader = hexHeader.slice(2)
-
-  // The header should start with 32 bytes containing the parent hash.
-  if (hexHeader.length < 64) throw new Error("Too short")
-  hexHeader = hexHeader.slice(64)
-
-  // The next field is the block number (which is what interests us) encoded in SCALE compact.
-  // Unfortunately this format is a bit complicated to decode.
-  // See https://docs.substrate.io/v3/advanced/scale-codec/#compactgeneral-integers
-  if (hexHeader.length < 2) throw new Error("Too short")
-  const b0 = parseInt(hexHeader.slice(0, 2), 16)
-
-  switch ((b0 & 3) as 0 | 1 | 2 | 3) {
-    case 0: {
-      return b0 >> 2
-    }
-    case 1: {
-      if (hexHeader.length < 4) throw new Error("Too short")
-      const b1 = parseInt(hexHeader.slice(2, 4), 16)
-      return (b0 >> 2) + b1 * 2 ** 6
-    }
-    case 2: {
-      if (hexHeader.length < 8) throw new Error("Too short")
-      const b1 = parseInt(hexHeader.slice(2, 4), 16)
-      const b2 = parseInt(hexHeader.slice(4, 6), 16)
-      const b3 = parseInt(hexHeader.slice(6, 8), 16)
-      return (b0 >> 2) + b1 * 2 ** 6 + b2 * 2 ** 14 + b3 * 2 ** 22
-    }
-    case 3: {
-      hexHeader = hexHeader.slice(2)
-      let len = (4 + b0) >> 2
-      let output = 0
-      let base = 0
-      while (len--) {
-        if (hexHeader.length < 2) throw new Error("Too short")
-        // Note that we assume that value can't overflow. This function is a helper and not.
-        output += parseInt(hexHeader.slice(0, 2)) << base
-        hexHeader = hexHeader.slice(2)
-        base += 8
-      }
-      return output
-    }
   }
 }
