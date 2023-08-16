@@ -1,3 +1,4 @@
+import { AlreadyDestroyedError } from "smoldot"
 import { ChainMultiplex } from "./ClientService"
 
 export interface ChainInfo {
@@ -182,14 +183,16 @@ const trackChain = (
           method: "chainHead_unstable_unfollow",
           params: [readySubscriptionId],
         })
-      } catch (_) {
-        // TODO: log non-AlreadyDestroyedError
+      } catch (error) {
+        if (error instanceof AlreadyDestroyedError) return
+        console.error(error)
       }
     }
     try {
       channel.remove()
-    } catch (_) {
-      // TODO: log non-AlreadyDestroyedError
+    } catch (error) {
+      if (error instanceof AlreadyDestroyedError) return
+      console.error(error)
     }
   }
 }
