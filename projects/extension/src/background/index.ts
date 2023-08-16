@@ -115,15 +115,16 @@ chrome.runtime.onMessage.addListener((msg: ToBackground, sender) => {
 
       tabByChainId[msg.chainId] = sender.tab!
 
-      const createChainPromise =
-        msg.type === "add-well-known-chain"
-          ? clientService.addWellKnownChain(msg.chainId, msg.chainName)
-          : clientService.addChain(msg.chainId, {
-              chainSpec: msg.chainSpec,
-              potentialRelayChains: msg.potentialRelayChainIds
-                .filter((c) => activeChains[c])
-                .map((c) => activeChains[c].smoldotChain),
-            })
+      const isWellKnown = msg.type === "add-well-known-chain"
+
+      const createChainPromise = isWellKnown
+        ? clientService.addWellKnownChain(msg.chainId, msg.chainName)
+        : clientService.addChain(msg.chainId, {
+            chainSpec: msg.chainSpec,
+            potentialRelayChains: msg.potentialRelayChainIds
+              .filter((c) => activeChains[c])
+              .map((c) => activeChains[c].smoldotChain),
+          })
 
       createChainPromise.then(
         (chain) => {
@@ -133,14 +134,13 @@ chrome.runtime.onMessage.addListener((msg: ToBackground, sender) => {
                 type: "activeChains",
                 tabId,
               })) ?? []
+
             chains.push({
               chainId: msg.chainId,
-              isWellKnown: msg.type === "add-well-known-chain",
-              chainName:
-                msg.type === "add-well-known-chain"
-                  ? msg.chainName
-                  : // TODO: set chainName for non-well-known-chains
-                    "todo-parse-chain-spec",
+              isWellKnown,
+              chainName: isWellKnown
+                ? msg.chainName
+                : (JSON.parse(msg.chainSpec).name as string),
               isSyncing: false,
               peers: 0,
               tab: {
