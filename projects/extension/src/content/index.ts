@@ -2,20 +2,19 @@ import {
   DOM_ELEMENT_ID,
   ToApplication,
 } from "@substrate/connect-extension-protocol"
-import { ToExtension } from "../background/protocol"
+import { ToBackground } from "../background/protocol"
 import checkMessage from "./checkMessage"
 
 const EXTENSION_PROVIDER_ORIGIN = "substrate-connect-client"
 
-chrome.runtime.onMessage.addListener((msg: ToApplication) => {
-  console.log("message from background")
-  window.postMessage(msg, "*")
-})
+chrome.runtime.onMessage.addListener((msg: ToApplication) =>
+  window.postMessage(msg, "*"),
+)
 
 // The extension can detect when a tab is closed, but it can't properly detect when a tab is
 // reloaded or changes URL or similar. For that reason, we send from the content script a message
 // indicating that the state of that content script has been reset.
-chrome.runtime.sendMessage({ type: "tab-reset" } as ToExtension)
+chrome.runtime.sendMessage({ type: "tab-reset" } as ToBackground)
 
 // Set up a promise for when the page is activated,
 // which is needed for prerendered pages.

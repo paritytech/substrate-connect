@@ -1,9 +1,7 @@
-import {
-  ToApplication,
-  ToExtension,
-} from "@substrate/connect-extension-protocol"
+import { ToApplication } from "@substrate/connect-extension-protocol"
 import { MalformedJsonRpcError } from "smoldot"
 
+import { ToBackground } from "./protocol"
 import { updateDatabases } from "./updateDatabases"
 import { enqueueAsyncFn } from "./enqueueAsyncFn"
 import { ChainChannel, ChainMultiplex, ClientService } from "./ClientService"
@@ -77,7 +75,6 @@ const sendMessage = (tabId: number, message: ToApplication) => {
 
 const clientService = new ClientService()
 
-type ToBackground = ToExtension | { type: "tab-reset" }
 chrome.runtime.onMessage.addListener((msg: ToBackground, sender) => {
   const tab = sender.tab
   if (!tab) return
