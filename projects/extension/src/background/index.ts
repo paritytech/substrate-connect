@@ -8,6 +8,7 @@ import { ChainChannel, ChainMultiplex, ClientService } from "./ClientService"
 import { trackChains } from "./trackChains"
 
 import * as environment from "../environment"
+import { OPTIONS_PORT, POPUP_PORT } from "../shared"
 
 // TODO: merge these maps
 const tabByChainId: Record<string, chrome.tabs.Tab> = {}
@@ -196,24 +197,29 @@ chrome.runtime.onMessage.addListener((msg: ToBackground, sender) => {
   }
 })
 
-// TODO: this should be invoked on demand when the extension options/popup is active
-trackChains(activeChains, (chainInfo) => {
-  enqueueAsyncFn(async () => {
-    const tab = tabByChainId[chainInfo.chainId]
-    if (!tab) return
+chrome.runtime.onConnect.addListener((port) => {
+  if (![POPUP_PORT, OPTIONS_PORT].includes(port.name)) return
 
-    const chains = await environment.get({
-      type: "activeChains",
-      tabId: tab.id!,
+  const untrackChains = trackChains(port.name, activeChains, (chainInfo) => {
+    enqueueAsyncFn(async () => {
+      const tab = tabByChainId[chainInfo.chainId]
+      if (!tab) return
+
+      const chains = await environment.get({
+        type: "activeChains",
+        tabId: tab.id!,
+      })
+      if (!chains) return
+
+      const index = chains.findIndex(
+        ({ chainId }) => chainId === chainInfo.chainId,
+      )
+      if (index === -1) return
+
+      chains[index] = { ...chains[index], ...chainInfo }
+      await environment.set({ type: "activeChains", tabId: tab!.id! }, chains)
     })
-    if (!chains) return
-
-    const index = chains.findIndex(
-      ({ chainId }) => chainId === chainInfo.chainId,
-    )
-    if (index === -1) return
-
-    chains[index] = { ...chains[index], ...chainInfo }
-    await environment.set({ type: "activeChains", tabId: tab!.id! }, chains)
   })
+
+  port.onDisconnect.addListener(untrackChains)
 })
