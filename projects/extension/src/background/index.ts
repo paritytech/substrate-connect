@@ -58,18 +58,6 @@ const resetTab = (tabId: number) => {
   enqueueAsyncFn(() => environment.remove({ type: "activeChains", tabId }))
 }
 
-// FIXME:
-environment.clearAllActiveChains()
-
-// Callback called when the browser starts.
-// Note: technically, this is triggered when a new profile is started. But since each profile has
-// its own local storage, this fits the mental model of "browser starts".
-chrome.runtime.onStartup.addListener(() => {
-  // Note: there is clearly a race condition here because we can start processing tab messages
-  // before the promise has finished.
-  environment.clearAllActiveChains()
-})
-
 chrome.tabs.onRemoved.addListener(resetTab)
 
 // TODO: call updateDatabases()
