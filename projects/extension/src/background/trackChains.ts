@@ -20,6 +20,7 @@ const sendJsonRpc = (
 }
 
 const trackChain = (
+  channelId: string,
   chain: ChainMultiplex,
   onUpdate: (chainInfo: ChainInfo) => void,
 ) => {
@@ -40,7 +41,7 @@ const trackChain = (
     isSyncing: true,
     peers: 0,
   }
-  const channel = chain.channel("track", (rawMessage) => {
+  const channel = chain.channel(channelId, (rawMessage) => {
     const message = JSON.parse(rawMessage)
     if (!message.id) {
       if (
@@ -203,6 +204,7 @@ const trackChain = (
 }
 
 export const trackChains = (
+  channelId: string,
   chains: Record<string, ChainMultiplex>,
   onUpdate: (chainInfo: ChainInfo & { chainId: string }) => void,
 ) => {
@@ -212,7 +214,7 @@ export const trackChains = (
     // TODO: dedupe similar chains
     for (const [chainId, chain] of Object.entries(chains)) {
       if (subscriptions[chainId]) continue
-      subscriptions[chainId] = trackChain(chain, (chainInfo) =>
+      subscriptions[chainId] = trackChain(channelId, chain, (chainInfo) =>
         onUpdate({ ...chainInfo, chainId }),
       )
     }
@@ -228,6 +230,6 @@ export const trackChains = (
 
   return () => {
     clearInterval(monitorChainsInterval)
-    Object.values(subscriptions).forEach((unsubscribe) => unsubscribe)
+    Object.values(subscriptions).forEach((unsubscribe) => unsubscribe())
   }
 }
