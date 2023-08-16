@@ -118,9 +118,6 @@ export class ChainMultiplex {
 }
 
 export class ClientService {
-  // TODO: revisit, Do we need to cache chains?
-  #chains: Record<string, ChainMultiplex> = {}
-
   #innerClient: SmoldotClient | undefined
   get #client() {
     if (!this.#innerClient) {
@@ -177,18 +174,11 @@ export class ClientService {
     return this.#innerClient
   }
 
-  addChain(chainId: string, options: SmoldotAddChainOptions) {
-    // TODO: handle concurrent addChain calls
-    if (this.#chains[chainId]) throw new Error("chainId already in use")
-
-    return this.#client.addChain(options).then((chain) => {
-      this.#chains[chainId] = new ChainMultiplex(chain)
-
-      return this.#chains[chainId]
-    })
+  async addChain(options: SmoldotAddChainOptions) {
+    return new ChainMultiplex(await this.#client.addChain(options))
   }
 
-  async addWellKnownChain(chainId: string, chainName: string) {
+  async addWellKnownChain(chainName: string) {
     const chainSpec = (await loadWellKnownChains()).get(chainName)
 
     // Given that the chain name is user input, we have no guarantee that it is correct. The
@@ -200,7 +190,7 @@ export class ClientService {
       chainName,
     })
 
-    return this.addChain(chainId, { chainSpec, databaseContent })
+    return this.addChain({ chainSpec, databaseContent })
   }
 
   async terminate() {
