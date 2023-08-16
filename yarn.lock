@@ -4293,6 +4293,7 @@ __metadata:
     "@hot-loader/react-dom": ^17.0.2
     "@substrate/connect-extension-protocol": ^1.0.1
     "@types/copy-webpack-plugin": ^10.1.0
+    "@unstoppablejs/utils": ^1.1.0
     autoprefixer: ^10.4.14
     copy-webpack-plugin: ^10.2.4
     css-loader: ^6.8.1
@@ -4307,6 +4308,7 @@ __metadata:
     react-dom: ^18.2.0
     react-hot-loader: ^4.13.1
     react-icons: ^4.10.1
+    scale-ts: ^1.4.1
     smoldot: 1.0.16
     style-loader: ^3.3.3
     tailwindcss: ^3.3.2
@@ -5124,6 +5126,13 @@ __metadata:
     "@typescript-eslint/types": 5.59.9
     eslint-visitor-keys: ^3.3.0
   checksum: 2909ce761f7fe546592cd3c43e33263d8a5fa619375fd2fdffbc72ffc33e40d6feacafb28c79f36c638fcc2225048e7cc08c61cbac6ca63723dc68610d80e3e6
+  languageName: node
+  linkType: hard
+
+"@unstoppablejs/utils@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@unstoppablejs/utils@npm:1.1.0"
+  checksum: f284e35b81d6afb0eff6a0b8ef0e2919d16a1bad88b81357b2305c059d4d1ae3507c27204bed232826b75f105a56133c9ec8563a91cd32e42b9aa36a72790cfe
   languageName: node
   linkType: hard
 
@@ -14680,6 +14689,13 @@ __metadata:
   dependencies:
     xmlchars: ^2.2.0
   checksum: 5636b55cf15f7cf0baa73f2797bf992bdcf75d1b39d82c0aa4608555c774368f6ac321cb641fd5f3d3ceb87805122cd47540da6a7b5960fe0dbdb8f8c263f000
+  languageName: node
+  linkType: hard
+
+"scale-ts@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "scale-ts@npm:1.4.1"
+  checksum: 51d0a5370054de931c7f30f573eef7f3b97fed9311909639659309490a4acd3a1aef59f61f5ddb8f5c9e7179f8c039eedb990fb7ca5c093188874da97455d867
   languageName: node
   linkType: hard
 
