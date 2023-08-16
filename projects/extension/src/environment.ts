@@ -28,7 +28,7 @@ export type StorageEntryType<E extends StorageEntry> =
  */
 export async function getAllActiveChains(): Promise<ExposedChainConnection[]> {
   return new Promise((resolve) => {
-    chrome.storage.local.get(null, (res) => {
+    chrome.storage.session.get(null, (res) => {
       let out: ExposedChainConnection[] = []
       for (const key in res) {
         if (key.startsWith("activeChains_"))
@@ -57,9 +57,10 @@ export async function get<E extends StorageEntry>(
 ): Promise<StorageEntryType<E> | undefined> {
   return new Promise((resolve) => {
     const key = keyOf(entry)
+    const area = storeageAreaOf(entry)
     // Note that `res[key]` will contain `undefined` is there is no such item in the
     // storage (tested on Chrome v106).
-    chrome.storage.local.get([key], (res) => resolve(res[key]))
+    chrome.storage[area].get([key], (res) => resolve(res[key]))
   })
 }
 
@@ -69,20 +70,22 @@ export async function set<E extends StorageEntry>(
 ): Promise<void> {
   return new Promise((resolve) => {
     const key = keyOf(entry)
-    chrome.storage.local.set({ [key]: value }, () => resolve())
+    const area = storeageAreaOf(entry)
+    chrome.storage[area].set({ [key]: value }, () => resolve())
   })
 }
 
 export async function remove<E extends StorageEntry>(entry: E): Promise<void> {
   return new Promise((resolve) => {
     const key = keyOf(entry)
-    chrome.storage.local.remove(key, () => resolve())
+    const area = storeageAreaOf(entry)
+    chrome.storage[area].remove(key, () => resolve())
   })
 }
 
 export async function clearAllActiveChains(): Promise<void> {
   return new Promise((resolve) => {
-    chrome.storage.local.get(null, (res) => {
+    chrome.storage.session.get(null, (res) => {
       const keys = []
       for (const key in res) {
         if (key.startsWith("activeChains_")) keys.push(key)
@@ -97,7 +100,7 @@ export function onActiveChainsChanged(callback: () => void): () => void {
     changes: { [key: string]: chrome.storage.StorageChange },
     areaName: chrome.storage.AreaName,
   ) => {
-    if (areaName !== "local") return
+    if (areaName !== "session") return
     for (const key in changes) {
       if (key.startsWith("activeChains_")) callback()
     }
@@ -117,6 +120,10 @@ function keyOf(entry: StorageEntry): string {
     case "activeChains":
       return "activeChains_" + entry.tabId
   }
+}
+
+function storeageAreaOf(entry: StorageEntry): "local" | "session" {
+  return entry.type === "activeChains" ? "session" : "local"
 }
 
 export interface ExposedChainConnection {
