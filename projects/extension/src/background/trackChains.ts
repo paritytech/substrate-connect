@@ -54,6 +54,7 @@ const trackChain = (
           case "initialized": {
             // The chain is now in sync and has downloaded the runtime.
             chainInfo.isSyncing = false
+            onUpdate(chainInfo)
             finalizedBlockHashHex = message.params.result.finalizedBlockHash
 
             // Immediately send a single health request to the chain.
@@ -80,6 +81,7 @@ const trackChain = (
             bestBlockHeaderRequestId = undefined
             finalizedBlockHashHex = undefined
             chainInfo.bestBlockHeight = undefined
+            chainInfo.isSyncing = true
             onUpdate(chainInfo)
 
             sendJsonRpc(channel, {
@@ -173,6 +175,8 @@ const trackChain = (
       }),
     3_000,
   )
+
+  onUpdate(chainInfo)
 
   sendJsonRpc(channel, {
     id: "ready-sub:" + nextRpcRqId++,
