@@ -2,19 +2,9 @@ import {
   DOM_ELEMENT_ID,
   ToApplication,
 } from "@substrate/connect-extension-protocol"
-import { ToBackground } from "../background/protocol"
+
 import checkMessage from "./checkMessage"
-
-const EXTENSION_PROVIDER_ORIGIN = "substrate-connect-client"
-
-chrome.runtime.onMessage.addListener((msg: ToApplication) =>
-  window.postMessage(msg, "*"),
-)
-
-// The extension can detect when a tab is closed, but it can't properly detect when a tab is
-// reloaded or changes URL or similar. For that reason, we send from the content script a message
-// indicating that the state of that content script has been reset.
-chrome.runtime.sendMessage({ type: "tab-reset" } as ToBackground)
+import { PORTS } from "../shared"
 
 // Set up a promise for when the page is activated,
 // which is needed for prerendered pages.
@@ -43,10 +33,10 @@ window.document.addEventListener("readystatechange", () => {
   s.setAttribute("style", "display:none")
   document.body.appendChild(s)
 
-  window.addEventListener("message", async ({ data }) => {
-    if (!data.origin || data.origin !== EXTENSION_PROVIDER_ORIGIN) {
-      return
-    }
+  let port: chrome.runtime.Port | undefined
+
+  window.addEventListener("message", async ({ data, source }) => {
+    if (source !== window) return
 
     if (!checkMessage(data)) {
       // probably someone abusing the extension
@@ -56,6 +46,13 @@ window.document.addEventListener("readystatechange", () => {
 
     await whenActivated
 
-    chrome.runtime.sendMessage(data)
+    if (!port) {
+      port = chrome.runtime.connect({ name: PORTS.CONTENT })
+      port.onMessage.addListener((msg: ToApplication) =>
+        window.postMessage(msg, "*"),
+      )
+    }
+
+    port.postMessage(data)
   })
 })

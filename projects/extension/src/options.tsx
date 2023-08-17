@@ -2,8 +2,8 @@ import React from "react"
 import { render } from "react-dom"
 import { Options } from "./containers/Options"
 import "./style.css"
-import { OPTIONS_PORT } from "./shared"
+import { PORTS } from "./shared"
 
-chrome.runtime.connect({ name: OPTIONS_PORT })
+chrome.runtime.connect({ name: PORTS.OPTIONS })
 
 render(<Options />, document.getElementById("options"))
