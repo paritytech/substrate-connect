@@ -1,5 +1,7 @@
-const PREFIX = "substrate-connect-port"
+const PORT_PREFIX = "substrate-connect-port"
 
-export const POPUP_PORT = `${PREFIX}-popup`
-export const OPTIONS_PORT = `${PREFIX}-options`
-export const CONTENT_PORT = `${PREFIX}-content`
+export const PORTS = {
+  POPUP: `${PORT_PREFIX}-popup`,
+  OPTIONS: `${PORT_PREFIX}-options`,
+  CONTENT: `${PORT_PREFIX}-content`,
+}

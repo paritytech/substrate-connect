@@ -2,8 +2,8 @@ import React from "react"
 import { render } from "react-dom"
 import Popup from "./containers/Popup"
 import "./style.css"
-import { POPUP_PORT } from "./shared"
+import { PORTS } from "./shared"
 
-chrome.runtime.connect({ name: POPUP_PORT })
+chrome.runtime.connect({ name: PORTS.POPUP })
 
 render(<Popup />, document.getElementById("popup"))
