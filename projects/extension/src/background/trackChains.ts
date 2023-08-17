@@ -186,6 +186,7 @@ const trackChain = (
 
   return () => {
     clearInterval(healthCheckInterval)
+    channel.remove()
     if (readySubscriptionId) {
       try {
         sendJsonRpc(channel, {
@@ -194,15 +195,10 @@ const trackChain = (
           params: [readySubscriptionId],
         })
       } catch (error) {
-        if (error instanceof AlreadyDestroyedError) return
-        console.error(error)
+        if (!(error instanceof AlreadyDestroyedError)) {
+          console.error(error)
+        }
       }
-    }
-    try {
-      channel.remove()
-    } catch (error) {
-      if (error instanceof AlreadyDestroyedError) return
-      console.error(error)
     }
   }
 }
