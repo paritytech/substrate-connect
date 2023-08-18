@@ -205,13 +205,14 @@ const trackChain = (
 
 export const trackChains = (
   channelId: string,
-  chains: Record<string, ChainMultiplex>,
+  getActiveChains: () => Record<string, ChainMultiplex>,
   onUpdate: (chainInfo: ChainInfo & { chainId: string }) => void,
 ) => {
   const subscriptions: Record<string, () => void> = {}
 
   const monitorChainsInterval = setInterval(() => {
     // TODO: dedupe similar chains
+    const chains = getActiveChains()
     for (const [chainId, chain] of Object.entries(chains)) {
       if (subscriptions[chainId]) continue
       subscriptions[chainId] = trackChain(channelId, chain, (chainInfo) =>

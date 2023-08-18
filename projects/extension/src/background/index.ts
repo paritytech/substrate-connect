@@ -12,13 +12,21 @@ import { trackChains } from "./trackChains"
 import * as environment from "../environment"
 import { PORTS } from "../shared"
 
-// TODO: merge these maps
-const tabByChainId: Record<string, chrome.tabs.Tab> = {}
-const activeChains: Record<string, ChainMultiplex> = {}
-const activeChannels: Record<string, ChainChannel> = {}
+const activeChains: Record<
+  string,
+  {
+    tab: chrome.tabs.Tab
+    chain?: ChainMultiplex
+    channel?: ChainChannel
+  }
+> = {}
 
 const removeChain = (chainId: string) => {
-  const tab = tabByChainId[chainId]
+  const activeChain = activeChains[chainId]
+  if (!activeChain) return
+  const { tab, chain, channel } = activeChain
+  delete activeChains[chainId]
+
   enqueueAsyncFn(async () => {
     if (!tab) return
 
@@ -35,25 +43,22 @@ const removeChain = (chainId: string) => {
 
     await environment.set({ type: "activeChains", tabId: tab!.id! }, chains)
   })
-  delete tabByChainId[chainId]
 
   try {
-    activeChannels[chainId]?.remove()
+    channel?.remove()
   } catch (error) {
     console.error("error removing chain channel", error)
   }
-  delete activeChannels[chainId]
 
   try {
-    activeChains[chainId]?.remove()
+    chain?.remove()
   } catch (error) {
     console.error("error removing chain", error)
   }
-  delete activeChains[chainId]
 }
 
 const resetTab = (tabId: number) => {
-  for (const [chainId, tab] of Object.entries(tabByChainId)) {
+  for (const [chainId, { tab }] of Object.entries(activeChains)) {
     if (tab?.id === tabId) removeChain(chainId)
   }
   enqueueAsyncFn(() => environment.remove({ type: "activeChains", tabId }))
@@ -79,26 +84,38 @@ const sendMessage = (port: chrome.runtime.Port, message: ToApplication) =>
 
 chrome.runtime.onConnect.addListener((port) => {
   if ([PORTS.POPUP, PORTS.OPTIONS].includes(port.name)) {
-    const untrackChains = trackChains(port.name, activeChains, (chainInfo) => {
-      enqueueAsyncFn(async () => {
-        const tab = tabByChainId[chainInfo.chainId]
-        if (!tab) return
+    const untrackChains = trackChains(
+      port.name,
+      () =>
+        Object.fromEntries(
+          Object.entries(activeChains)
+            .filter(([_, { chain }]) => !!chain)
+            .map(([chainId, { chain }]) => [chainId, chain!] as const),
+        ),
+      (chainInfo) => {
+        enqueueAsyncFn(async () => {
+          const tab = activeChains[chainInfo.chainId]?.tab
+          if (!tab) return
 
-        const chains = await environment.get({
-          type: "activeChains",
-          tabId: tab.id!,
+          const chains = await environment.get({
+            type: "activeChains",
+            tabId: tab.id!,
+          })
+          if (!chains) return
+
+          const index = chains.findIndex(
+            ({ chainId }) => chainId === chainInfo.chainId,
+          )
+          if (index === -1) return
+
+          chains[index] = { ...chains[index], ...chainInfo }
+          await environment.set(
+            { type: "activeChains", tabId: tab.id! },
+            chains,
+          )
         })
-        if (!chains) return
-
-        const index = chains.findIndex(
-          ({ chainId }) => chainId === chainInfo.chainId,
-        )
-        if (index === -1) return
-
-        chains[index] = { ...chains[index], ...chainInfo }
-        await environment.set({ type: "activeChains", tabId: tab!.id! }, chains)
-      })
-    })
+      },
+    )
 
     port.onDisconnect.addListener(untrackChains)
   } else if (port.name === PORTS.CONTENT && port.sender?.tab?.id) {
@@ -111,7 +128,7 @@ chrome.runtime.onConnect.addListener((port) => {
       switch (msg.type) {
         case "add-chain":
         case "add-well-known-chain": {
-          if (tabByChainId[msg.chainId]) {
+          if (activeChains[msg.chainId]) {
             port.postMessage({
               origin: "substrate-connect-extension",
               type: "error",
@@ -121,7 +138,7 @@ chrome.runtime.onConnect.addListener((port) => {
             return
           }
 
-          tabByChainId[msg.chainId] = tab
+          activeChains[msg.chainId] = { tab }
 
           const isWellKnown = msg.type === "add-well-known-chain"
 
@@ -130,8 +147,8 @@ chrome.runtime.onConnect.addListener((port) => {
             : clientService.addChain({
                 chainSpec: msg.chainSpec,
                 potentialRelayChains: msg.potentialRelayChainIds
-                  .filter((c) => activeChains[c])
-                  .map((c) => activeChains[c].smoldotChain),
+                  .filter((c) => !!activeChains[c]?.chain)
+                  .map((c) => activeChains[c]?.chain!.smoldotChain),
               })
 
           createChainPromise.then(
@@ -158,8 +175,8 @@ chrome.runtime.onConnect.addListener((port) => {
                 })
                 await environment.set({ type: "activeChains", tabId }, chains)
               })
-              activeChains[msg.chainId] = chain
-              activeChannels[msg.chainId] = chain.channel(
+              activeChains[msg.chainId].chain = chain
+              activeChains[msg.chainId].channel = chain.channel(
                 "app",
                 (jsonRpcMessage: string) => {
                   sendMessage(port, {
@@ -177,7 +194,7 @@ chrome.runtime.onConnect.addListener((port) => {
               })
             },
             (error) => {
-              delete tabByChainId[msg.chainId]
+              removeChain(msg.chainId)
               sendMessage(port, {
                 origin: "substrate-connect-extension",
                 type: "error",
@@ -191,13 +208,13 @@ chrome.runtime.onConnect.addListener((port) => {
         }
 
         case "rpc": {
-          const chain = activeChannels[msg.chainId]
+          const { channel } = activeChains[msg.chainId]
 
           // If the chainId is invalid, the message is silently discarded, as documented.
-          if (!chain) return
+          if (!channel) return
 
           try {
-            chain.sendJsonRpc(msg.jsonRpcMessage)
+            channel.sendJsonRpc(msg.jsonRpcMessage)
           } catch (error) {
             // As documented in the protocol, malformed JSON-RPC requests are silently ignored.
             if (error instanceof MalformedJsonRpcError) {
