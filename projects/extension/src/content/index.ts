@@ -35,9 +35,9 @@ window.document.addEventListener("readystatechange", () => {
 
   let port: chrome.runtime.Port | undefined
 
-  window.addEventListener("message", async ({ data, source }) => {
+  window.addEventListener("message", async ({ data, source, origin }) => {
     if (source !== window) return
-
+    if (data?.origin !== "substrate-connect-client") return
     if (!checkMessage(data)) {
       // probably someone abusing the extension
       console.warn("Malformed message - unrecognised message.type", data)
@@ -49,7 +49,7 @@ window.document.addEventListener("readystatechange", () => {
     if (!port) {
       port = chrome.runtime.connect({ name: PORTS.CONTENT })
       port.onMessage.addListener((msg: ToApplication) =>
-        window.postMessage(msg, "*"),
+        window.postMessage(msg, origin),
       )
     }
 
