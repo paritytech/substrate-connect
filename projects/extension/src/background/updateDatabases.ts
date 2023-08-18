@@ -1,66 +1,51 @@
-import { start as smoldotStart } from "smoldot"
-
 import * as environment from "../environment"
 import { loadWellKnownChains } from "./loadWellKnownChains"
+import { ClientService } from "./ClientService"
 
-export const updateDatabases = async () => {
+export const updateDatabases = async (client: ClientService) => {
   const wellKnownChains = await loadWellKnownChains()
-  const client = smoldotStart({
-    cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
-  })
-
-  let promises = []
-
-  for (const [key, value] of wellKnownChains) {
-    let databaseContent = await environment.get({
-      type: "database",
-      chainName: key,
+  // FIXME: improve error reporting
+  wellKnownChains.forEach(async (chainSpec, chainName) => {
+    // FIXME: use substrate-client
+    const chain = await client.addChain({
+      chainSpec,
+      databaseContent: await environment.get({
+        type: "database",
+        chainName,
+      }),
+    })
+    const channel = chain.channel("db", (rawMessage) => {
+      const message = JSON.parse(rawMessage)
+      if (message?.params?.result?.event === "initialized") {
+        channel.sendJsonRpc(
+          JSON.stringify({
+            jsonrpc: "2.0",
+            id: "1",
+            method: "chainHead_unstable_finalizedDatabase",
+            params: [
+              // TODO: calculate this better
+              chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
+            ],
+          }),
+        )
+      } else if (message?.id === "1") {
+        environment
+          .set({ type: "database", chainName }, message.result)
+          .then(() => console.log(`Updated ${chainName} database.`))
+          .finally(() => {
+            channel.remove()
+            chain.remove()
+          })
+      }
     })
 
-    promises.push(
-      new Promise<void>((resolve) => {
-        client
-          .addChain({ chainSpec: value, databaseContent })
-          .then(async (chain) => {
-            chain.sendJsonRpc(
-              `{"jsonrpc":"2.0","id":"1","method":"chainHead_unstable_follow","params":[true]}`,
-            )
-
-            while (true) {
-              const response = JSON.parse(await chain.nextJsonRpcResponse())
-              if (response?.params?.result?.event === "initialized") {
-                chain.sendJsonRpc(
-                  JSON.stringify({
-                    jsonrpc: "2.0",
-                    id: "2",
-                    method: "chainHead_unstable_finalizedDatabase",
-                    params: [
-                      // TODO: calculate this better
-                      chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
-                    ],
-                  }),
-                )
-              }
-              if (response?.id === "2") {
-                await environment.set(
-                  { type: "database", chainName: key },
-                  response.result,
-                )
-                resolve()
-                break
-              }
-            }
-          })
+    channel.sendJsonRpc(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        id: "0",
+        method: "chainHead_unstable_follow",
+        params: [true],
       }),
     )
-  }
-
-  try {
-    await Promise.all(promises)
-    console.log("All databases are updated. Light Client is terminated.")
-  } catch (error) {
-    console.error(`Error occurred during database update: ${error}`)
-  } finally {
-    client.terminate()
-  }
+  })
 }
