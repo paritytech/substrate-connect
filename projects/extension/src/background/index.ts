@@ -12,6 +12,26 @@ import { trackChains } from "./trackChains"
 import * as environment from "../environment"
 import { PORTS } from "../shared"
 
+const clientService = new ClientService()
+
+setInterval(() => updateDatabases(clientService), 120_000)
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === "DatabaseContentAlarm") updateDatabases(clientService)
+})
+
+chrome.runtime.onInstalled.addListener(({ reason }) => {
+  if (
+    reason !== chrome.runtime.OnInstalledReason.INSTALL &&
+    reason !== chrome.runtime.OnInstalledReason.UPDATE
+  )
+    return
+
+  chrome.alarms.create("DatabaseContentAlarm", {
+    periodInMinutes: 1440, // 24 hours
+  })
+})
+
 const activeChains: Record<
   string,
   {
@@ -66,18 +86,9 @@ const resetTab = (tabId: number) => {
 
 chrome.tabs.onRemoved.addListener(resetTab)
 
-// TODO: call updateDatabases()
-// updateDatabases()
-
 chrome.alarms.create("DatabaseContentAlarm", {
   periodInMinutes: 1440, // 24 hours
 })
-
-chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === "DatabaseContentAlarm") updateDatabases()
-})
-
-const clientService = new ClientService()
 
 const sendMessage = (port: chrome.runtime.Port, message: ToApplication) =>
   port.postMessage(message)
