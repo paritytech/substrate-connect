@@ -3,6 +3,7 @@ import {
   ToExtension,
 } from "@substrate/connect-extension-protocol"
 import { MalformedJsonRpcError } from "smoldot"
+import { createScClient } from "@substrate/connect"
 
 import { updateDatabases } from "./updateDatabases"
 import { enqueueAsyncFn } from "./enqueueAsyncFn"
@@ -12,12 +13,12 @@ import { trackChains } from "./trackChains"
 import * as environment from "../environment"
 import { PORTS } from "../shared"
 
-const clientService = new ClientService()
+const scClient = createScClient({ embeddedNodeConfig: { maxLogLevel: 3 } })
 
-setInterval(() => updateDatabases(clientService), 120_000)
+setInterval(() => updateDatabases(scClient), 120_000)
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === "DatabaseContentAlarm") updateDatabases(clientService)
+  if (alarm.name === "DatabaseContentAlarm") updateDatabases(scClient)
 })
 
 chrome.runtime.onInstalled.addListener(({ reason }) => {
@@ -89,6 +90,8 @@ chrome.tabs.onRemoved.addListener(resetTab)
 chrome.alarms.create("DatabaseContentAlarm", {
   periodInMinutes: 1440, // 24 hours
 })
+
+const clientService = new ClientService()
 
 const sendMessage = (port: chrome.runtime.Port, message: ToApplication) =>
   port.postMessage(message)
