@@ -4266,7 +4266,7 @@ __metadata:
   dependencies:
     "@substrate/connect-extension-protocol": ^1.0.1
     eslint: ^8.44.0
-    smoldot: 1.0.13
+    smoldot: 1.0.16
     vitest: ^0.33.0
   languageName: unknown
   linkType: soft
@@ -15114,15 +15114,6 @@ __metadata:
   version: 4.2.0
   resolution: "smart-buffer@npm:4.2.0"
   checksum: b5167a7142c1da704c0e3af85c402002b597081dd9575031a90b4f229ca5678e9a36e8a374f1814c8156a725d17008ae3bde63b92f9cfd132526379e580bec8b
-  languageName: node
-  linkType: hard
-
-"smoldot@npm:1.0.13":
-  version: 1.0.13
-  resolution: "smoldot@npm:1.0.13"
-  dependencies:
-    ws: ^8.8.1
-  checksum: f9a26fe5dcb95011066f596d79e8340183698b3ae913c5795c33b7897f80524c3fac06acbb0ab0f8b4d27d900c111c930c3c2fd3bfd939c43c904c0e46651054
   languageName: node
   linkType: hard
 
