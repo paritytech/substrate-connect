@@ -1,4 +1,4 @@
-import { AddChainError, QueueFullError, MalformedJsonRpcError } from "smoldot"
+import { AddChainError } from "smoldot"
 import { loadWellKnownChains } from "./loadWellKnownChains"
 import * as environment from "../environment"
 import { createScClient, Chain, JsonRpcCallback } from "@substrate/connect"
@@ -61,7 +61,8 @@ export const createClient = () => {
       )
       const chainMultiplex = {
         channel(channelId: string, jsonRpcCallback: JsonRpcCallback) {
-          if (channels[channelId]) throw new Error("channel already created")
+          if (channels[channelId])
+            throw new Error("Requested channelId already in use")
           channels[channelId] = jsonRpcCallback
           return {
             sendJsonRpc(rawMessage: string) {
@@ -71,38 +72,14 @@ export const createClient = () => {
                 message.id = `${channelId}:${message.id}`
                 rawMessage = JSON.stringify(message)
               } finally {
-                try {
-                  chain.sendJsonRpc(rawMessage)
-                } catch (error) {
-                  if (error instanceof QueueFullError) {
-                    // If the queue is full, we immediately send back a JSON-RPC response indicating
-                    // the error.
-                    try {
-                      const parsedRq = JSON.parse(rawMessage)
-                      jsonRpcCallback(
-                        JSON.stringify({
-                          jsonrpc: "v2",
-                          id: parsedRq.id,
-                          error: {
-                            code: -32000,
-                            message: "JSON-RPC server is too busy",
-                          },
-                        }),
-                      )
-                    } catch (_error) {
-                      throw new MalformedJsonRpcError()
-                    }
-                  } else {
-                    throw error
-                  }
-                }
+                chain.sendJsonRpc(rawMessage)
               }
             },
             remove() {
               delete channels[channelId]
               if (Object.entries(channels).length === 0) {
-                chain.remove()
                 chainReferences.delete(chainMultiplex)
+                chain.remove()
               }
             },
           }
@@ -117,7 +94,7 @@ export const createClient = () => {
 
       // Given that the chain name is user input, we have no guarantee that it is correct. The
       // extension might report that it doesn't know about this well-known chain.
-      if (!chainSpec) throw new AddChainError("Couldn't find well-known chain")
+      if (!chainSpec) throw new AddChainError("Unknown well-known chain")
 
       const databaseContent = await environment.get({
         type: "database",
