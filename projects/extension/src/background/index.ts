@@ -142,7 +142,7 @@ chrome.runtime.onConnect.addListener((port) => {
               origin: "substrate-connect-extension",
               type: "error",
               chainId: msg.chainId,
-              errorMessage: "ChainId already in use",
+              errorMessage: "Requested chainId already in use",
             })
             return
           }
@@ -151,18 +151,25 @@ chrome.runtime.onConnect.addListener((port) => {
 
           const isWellKnown = msg.type === "add-well-known-chain"
 
-          const chain = isWellKnown
-            ? await client.addWellKnownChain(msg.chainName)
-            : await client.addChain({
-                chainSpec: msg.chainSpec,
-                potentialRelayChains: await Promise.all(
-                  msg.potentialRelayChainIds
-                    .filter((c) => !!activeChains[c]?.chain)
-                    .map((c) => activeChains[c]?.chain!),
-                ),
-              })
-
           try {
+            const chain = isWellKnown
+              ? await client.addWellKnownChain(msg.chainName)
+              : await client.addChain({
+                  chainSpec: msg.chainSpec,
+                  potentialRelayChains: await Promise.all(
+                    msg.potentialRelayChainIds
+                      .filter((c) => !!activeChains[c]?.chain)
+                      .map((c) => activeChains[c]?.chain!),
+                  ),
+                })
+
+            // As documented in the protocol, if a "remove-chain" message was received before
+            // a "chain-ready" message was sent back, the chain can be discarded
+            if (!activeChains[msg.chainId]) {
+              chain.channel("any", () => {}).remove()
+              return
+            }
+
             enqueueAsyncFn(async () => {
               const chains =
                 (await environment.get({
@@ -209,7 +216,9 @@ chrome.runtime.onConnect.addListener((port) => {
               type: "error",
               chainId: msg.chainId,
               errorMessage:
-                error instanceof Error ? error.toString() : "Unknown error",
+                error instanceof Error
+                  ? error.toString()
+                  : "Unknown error when adding chain",
             })
           }
 
@@ -229,7 +238,16 @@ chrome.runtime.onConnect.addListener((port) => {
             if (error instanceof MalformedJsonRpcError) {
               return
             } else {
-              throw error
+              removeChain(msg.chainId)
+              sendMessage(port, {
+                origin: "substrate-connect-extension",
+                type: "error",
+                chainId: msg.chainId,
+                errorMessage:
+                  error instanceof Error
+                    ? error.toString()
+                    : "Unknown error when sending RPC message",
+              })
             }
           }
 
