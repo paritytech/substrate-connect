@@ -7,7 +7,7 @@ import { createScClient } from "@substrate/connect"
 
 import { updateDatabases } from "./updateDatabases"
 import { enqueueAsyncFn } from "./enqueueAsyncFn"
-import { ChainChannel, ChainMultiplex, ClientService } from "./ClientService"
+import { ChainChannel, ChainMultiplex, createClient } from "./createClient"
 import { trackChains } from "./trackChains"
 
 import * as environment from "../environment"
@@ -45,7 +45,8 @@ const activeChains: Record<
 const removeChain = (chainId: string) => {
   const activeChain = activeChains[chainId]
   if (!activeChain) return
-  const { tab, chain, channel } = activeChain
+
+  const { tab, channel } = activeChain
   delete activeChains[chainId]
 
   enqueueAsyncFn(async () => {
@@ -70,12 +71,6 @@ const removeChain = (chainId: string) => {
   } catch (error) {
     console.error("error removing chain channel", error)
   }
-
-  try {
-    chain?.remove()
-  } catch (error) {
-    console.error("error removing chain", error)
-  }
 }
 
 const resetTab = (tabId: number) => {
@@ -91,7 +86,7 @@ chrome.alarms.create("DatabaseContentAlarm", {
   periodInMinutes: 1440, // 24 hours
 })
 
-const clientService = new ClientService()
+const client = createClient()
 
 const sendMessage = (port: chrome.runtime.Port, message: ToApplication) =>
   port.postMessage(message)
@@ -138,12 +133,12 @@ chrome.runtime.onConnect.addListener((port) => {
     resetTab(tabId)
 
     port.onDisconnect.addListener(() => resetTab(tabId))
-    port.onMessage.addListener((msg: ToExtension, port) => {
+    port.onMessage.addListener(async (msg: ToExtension, port) => {
       switch (msg.type) {
         case "add-chain":
         case "add-well-known-chain": {
           if (activeChains[msg.chainId]) {
-            port.postMessage({
+            sendMessage(port, {
               origin: "substrate-connect-extension",
               type: "error",
               chainId: msg.chainId,
@@ -156,67 +151,67 @@ chrome.runtime.onConnect.addListener((port) => {
 
           const isWellKnown = msg.type === "add-well-known-chain"
 
-          const createChainPromise = isWellKnown
-            ? clientService.addWellKnownChain(msg.chainName)
-            : clientService.addChain({
+          const chain = isWellKnown
+            ? await client.addWellKnownChain(msg.chainName)
+            : await client.addChain({
                 chainSpec: msg.chainSpec,
-                potentialRelayChains: msg.potentialRelayChainIds
-                  .filter((c) => !!activeChains[c]?.chain)
-                  .map((c) => activeChains[c]?.chain!.smoldotChain),
+                potentialRelayChains: await Promise.all(
+                  msg.potentialRelayChainIds
+                    .filter((c) => !!activeChains[c]?.chain)
+                    .map((c) => activeChains[c]?.chain!),
+                ),
               })
 
-          createChainPromise.then(
-            (chain) => {
-              enqueueAsyncFn(async () => {
-                const chains =
-                  (await environment.get({
-                    type: "activeChains",
-                    tabId,
-                  })) ?? []
+          try {
+            enqueueAsyncFn(async () => {
+              const chains =
+                (await environment.get({
+                  type: "activeChains",
+                  tabId,
+                })) ?? []
 
-                chains.push({
-                  chainId: msg.chainId,
-                  isWellKnown,
-                  chainName: isWellKnown
-                    ? msg.chainName
-                    : (JSON.parse(msg.chainSpec).name as string),
-                  isSyncing: false,
-                  peers: 0,
-                  tab: {
-                    id: tab.id!,
-                    url: tab.url!,
-                  },
-                })
-                await environment.set({ type: "activeChains", tabId }, chains)
-              })
-              activeChains[msg.chainId].chain = chain
-              activeChains[msg.chainId].channel = chain.channel(
-                "app",
-                (jsonRpcMessage: string) => {
-                  sendMessage(port, {
-                    origin: "substrate-connect-extension",
-                    type: "rpc",
-                    chainId: msg.chainId,
-                    jsonRpcMessage,
-                  })
+              chains.push({
+                chainId: msg.chainId,
+                isWellKnown,
+                chainName: isWellKnown
+                  ? msg.chainName
+                  : (JSON.parse(msg.chainSpec).name as string),
+                isSyncing: false,
+                peers: 0,
+                tab: {
+                  id: tab.id!,
+                  url: tab.url!,
                 },
-              )
-              sendMessage(port, {
-                origin: "substrate-connect-extension",
-                type: "chain-ready",
-                chainId: msg.chainId,
               })
-            },
-            (error) => {
-              removeChain(msg.chainId)
-              sendMessage(port, {
-                origin: "substrate-connect-extension",
-                type: "error",
-                chainId: msg.chainId,
-                errorMessage: error.toString(),
-              })
-            },
-          )
+              await environment.set({ type: "activeChains", tabId }, chains)
+            })
+            activeChains[msg.chainId].chain = chain
+            activeChains[msg.chainId].channel = chain.channel(
+              "app",
+              (jsonRpcMessage: string) => {
+                sendMessage(port, {
+                  origin: "substrate-connect-extension",
+                  type: "rpc",
+                  chainId: msg.chainId,
+                  jsonRpcMessage,
+                })
+              },
+            )
+            sendMessage(port, {
+              origin: "substrate-connect-extension",
+              type: "chain-ready",
+              chainId: msg.chainId,
+            })
+          } catch (error) {
+            removeChain(msg.chainId)
+            sendMessage(port, {
+              origin: "substrate-connect-extension",
+              type: "error",
+              chainId: msg.chainId,
+              errorMessage:
+                error instanceof Error ? error.toString() : "Unknown error",
+            })
+          }
 
           return
         }

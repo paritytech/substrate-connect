@@ -1,8 +1,8 @@
-import { AlreadyDestroyedError } from "smoldot"
+import { AlreadyDestroyedError } from "@substrate/connect"
 import { compact } from "scale-ts"
 import { fromHex } from "@unstoppablejs/utils"
 
-import { ChainMultiplex } from "./ClientService"
+import { ChainMultiplex } from "./createClient"
 
 export interface ChainInfo {
   isSyncing: boolean
@@ -214,6 +214,7 @@ export const trackChains = (
     // TODO: dedupe similar chains
     const chains = getActiveChains()
     for (const [chainId, chain] of Object.entries(chains)) {
+      // @ts-ignore
       if (subscriptions[chainId]) continue
       subscriptions[chainId] = trackChain(channelId, chain, (chainInfo) =>
         onUpdate({ ...chainInfo, chainId }),
@@ -231,6 +232,10 @@ export const trackChains = (
 
   return () => {
     clearInterval(monitorChainsInterval)
-    Object.values(subscriptions).forEach((unsubscribe) => unsubscribe())
+    for (const chainId of Object.keys(subscriptions)) {
+      const unsubscribe = subscriptions[chainId]
+      delete subscriptions[chainId]
+      unsubscribe()
+    }
   }
 }
