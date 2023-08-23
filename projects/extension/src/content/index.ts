@@ -35,6 +35,23 @@ window.document.addEventListener("readystatechange", () => {
 
   let port: chrome.runtime.Port | undefined
 
+  const chainIds = new Set<string>()
+  const handleExtensionError = (errorMessage: string, origin: string) => {
+    console.error(errorMessage)
+    chainIds.forEach((chainId) =>
+      window.postMessage(
+        {
+          origin: "substrate-connect-extension",
+          chainId,
+          type: "error",
+          errorMessage,
+        } as ToApplication,
+        origin,
+      ),
+    )
+    chainIds.clear()
+  }
+
   window.addEventListener("message", async ({ data, source, origin }) => {
     if (source !== window) return
     if (data?.origin !== "substrate-connect-client") return
@@ -47,12 +64,42 @@ window.document.addEventListener("readystatechange", () => {
     await whenActivated
 
     if (!port) {
-      port = chrome.runtime.connect({ name: PORTS.CONTENT })
-      port.onMessage.addListener((msg: ToApplication) =>
-        window.postMessage(msg, origin),
-      )
+      try {
+        port = chrome.runtime.connect({ name: PORTS.CONTENT })
+      } catch (error) {
+        handleExtensionError(
+          "Cannot connect to substrate-connect extension",
+          origin,
+        )
+        return
+      }
+      port.onMessage.addListener((msg: ToApplication) => {
+        if (msg.type === "error") chainIds.delete(msg.chainId)
+        window.postMessage(msg, origin)
+      })
+      port.onDisconnect.addListener(() => {
+        port = undefined
+        handleExtensionError(
+          "Disconnected from substrate-connect extension",
+          origin,
+        )
+      })
     }
 
     port.postMessage(data)
+
+    switch (data.type) {
+      case "add-chain":
+      case "add-well-known-chain": {
+        chainIds.add(data.chainId)
+        break
+      }
+      case "remove-chain": {
+        chainIds.delete(data.chainId)
+        break
+      }
+      default:
+        break
+    }
   })
 })
