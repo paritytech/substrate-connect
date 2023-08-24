@@ -10,6 +10,8 @@ import * as environment from "../environment"
 import { PORTS } from "../shared"
 import type { ToBackground, ToContent } from "../protocol"
 
+enqueueAsyncFn(() => environment.clearAllActiveChains())
+
 const scClient = createScClient({ embeddedNodeConfig: { maxLogLevel: 3 } })
 
 setInterval(() => updateDatabases(scClient), 120_000)
