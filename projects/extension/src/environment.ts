@@ -90,7 +90,7 @@ export async function clearAllActiveChains(): Promise<void> {
       for (const key in res) {
         if (key.startsWith("activeChains_")) keys.push(key)
       }
-      chrome.storage.local.remove(keys, () => resolve())
+      chrome.storage.session.remove(keys, () => resolve())
     })
   })
 }
