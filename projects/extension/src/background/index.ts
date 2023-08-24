@@ -1,7 +1,3 @@
-import {
-  ToApplication,
-  ToExtension,
-} from "@substrate/connect-extension-protocol"
 import { MalformedJsonRpcError } from "smoldot"
 import { createScClient } from "@substrate/connect"
 
@@ -12,6 +8,7 @@ import { trackChains } from "./trackChains"
 
 import * as environment from "../environment"
 import { PORTS } from "../shared"
+import type { ToBackground, ToContent } from "../protocol"
 
 const scClient = createScClient({ embeddedNodeConfig: { maxLogLevel: 3 } })
 
@@ -88,7 +85,7 @@ chrome.alarms.create("DatabaseContentAlarm", {
 
 const client = createClient()
 
-const sendMessage = (port: chrome.runtime.Port, message: ToApplication) =>
+const postMessage = (port: chrome.runtime.Port, message: ToContent) =>
   port.postMessage(message)
 
 chrome.runtime.onConnect.addListener((port) => {
@@ -133,12 +130,18 @@ chrome.runtime.onConnect.addListener((port) => {
     resetTab(tabId)
 
     port.onDisconnect.addListener(() => resetTab(tabId))
-    port.onMessage.addListener(async (msg: ToExtension, port) => {
+
+    port.onMessage.addListener(async (msg: ToBackground, port) => {
       switch (msg.type) {
+        case "keep-alive": {
+          postMessage(port, { type: "keep-alive-ack" })
+          return
+        }
+
         case "add-chain":
         case "add-well-known-chain": {
           if (activeChains[msg.chainId]) {
-            sendMessage(port, {
+            postMessage(port, {
               origin: "substrate-connect-extension",
               type: "error",
               chainId: msg.chainId,
@@ -196,7 +199,7 @@ chrome.runtime.onConnect.addListener((port) => {
             activeChains[msg.chainId].channel = chain.channel(
               "app",
               (jsonRpcMessage: string) => {
-                sendMessage(port, {
+                postMessage(port, {
                   origin: "substrate-connect-extension",
                   type: "rpc",
                   chainId: msg.chainId,
@@ -204,14 +207,14 @@ chrome.runtime.onConnect.addListener((port) => {
                 })
               },
             )
-            sendMessage(port, {
+            postMessage(port, {
               origin: "substrate-connect-extension",
               type: "chain-ready",
               chainId: msg.chainId,
             })
           } catch (error) {
             removeChain(msg.chainId)
-            sendMessage(port, {
+            postMessage(port, {
               origin: "substrate-connect-extension",
               type: "error",
               chainId: msg.chainId,
@@ -239,7 +242,7 @@ chrome.runtime.onConnect.addListener((port) => {
               return
             } else {
               removeChain(msg.chainId)
-              sendMessage(port, {
+              postMessage(port, {
                 origin: "substrate-connect-extension",
                 type: "error",
                 chainId: msg.chainId,
@@ -257,7 +260,6 @@ chrome.runtime.onConnect.addListener((port) => {
         case "remove-chain": {
           // If the chainId is invalid, the message is silently discarded, as documented.
           removeChain(msg.chainId)
-
           return
         }
       }

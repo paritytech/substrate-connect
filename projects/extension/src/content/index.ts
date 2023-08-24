@@ -5,6 +5,7 @@ import {
 
 import checkMessage from "./checkMessage"
 import { PORTS } from "../shared"
+import type { ToBackground, ToContent } from "../protocol"
 
 // Set up a promise for when the page is activated,
 // which is needed for prerendered pages.
@@ -17,6 +18,14 @@ const whenActivated = new Promise<void>((resolve) => {
     resolve()
   }
 })
+
+const portPostMessage = (
+  port: chrome.runtime.Port | undefined,
+  msg: ToBackground,
+) => port?.postMessage(msg)
+
+const windowPostMessage = (msg: ToApplication, origin: string) =>
+  window.postMessage(msg, origin)
 
 // inject as soon as possible the DOM element necessary for web pages to know that the extension
 // is available
@@ -39,13 +48,13 @@ window.document.addEventListener("readystatechange", () => {
   const handleExtensionError = (errorMessage: string, origin: string) => {
     console.error(errorMessage)
     chainIds.forEach((chainId) =>
-      window.postMessage(
+      windowPostMessage(
         {
           origin: "substrate-connect-extension",
           chainId,
           type: "error",
           errorMessage,
-        } as ToApplication,
+        },
         origin,
       ),
     )
@@ -73,12 +82,18 @@ window.document.addEventListener("readystatechange", () => {
         )
         return
       }
-      port.onMessage.addListener((msg: ToApplication) => {
+      port.onMessage.addListener((msg: ToContent) => {
+        if (msg.type === "keep-alive-ack") return
         if (msg.type === "error") chainIds.delete(msg.chainId)
-        window.postMessage(msg, origin)
+        windowPostMessage(msg, origin)
       })
+      const keepAliveInterval = setInterval(
+        () => portPostMessage(port, { type: "keep-alive" }),
+        20_000,
+      )
       port.onDisconnect.addListener(() => {
         port = undefined
+        clearInterval(keepAliveInterval)
         handleExtensionError(
           "Disconnected from substrate-connect extension",
           origin,
@@ -86,7 +101,7 @@ window.document.addEventListener("readystatechange", () => {
       })
     }
 
-    port.postMessage(data)
+    portPostMessage(port, data)
 
     switch (data.type) {
       case "add-chain":
