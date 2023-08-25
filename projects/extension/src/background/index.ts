@@ -1,18 +1,22 @@
-import { MalformedJsonRpcError } from "smoldot"
-import { createScClient } from "@substrate/connect"
+import { AddChainError, MalformedJsonRpcError } from "smoldot"
+import { AddChain, Chain, createScClient } from "@substrate/connect"
 
 import { updateDatabases } from "./updateDatabases"
 import { enqueueAsyncFn } from "./enqueueAsyncFn"
-import { ChainChannel, ChainMultiplex, createClient } from "./createClient"
 import { trackChains } from "./trackChains"
 
 import * as environment from "../environment"
 import { PORTS } from "../shared"
 import type { ToBackground, ToContent } from "../protocol"
+import { loadWellKnownChains } from "./loadWellKnownChains"
 
 enqueueAsyncFn(() => environment.clearAllActiveChains())
 
-const scClient = createScClient({ embeddedNodeConfig: { maxLogLevel: 3 } })
+const scClient = createScClient({
+  embeddedNodeConfig: {
+    maxLogLevel: 3,
+  },
+})
 
 setInterval(() => updateDatabases(scClient), 120_000)
 
@@ -36,8 +40,8 @@ const activeChains: Record<
   string,
   {
     tab: chrome.tabs.Tab
-    chain?: ChainMultiplex
-    channel?: ChainChannel
+    chain?: Chain
+    addChainOptions?: Parameters<AddChain>
   }
 > = {}
 
@@ -45,7 +49,7 @@ const removeChain = (chainId: string) => {
   const activeChain = activeChains[chainId]
   if (!activeChain) return
 
-  const { tab, channel } = activeChain
+  const { tab, chain } = activeChain
   delete activeChains[chainId]
 
   enqueueAsyncFn(async () => {
@@ -66,9 +70,9 @@ const removeChain = (chainId: string) => {
   })
 
   try {
-    channel?.remove()
+    chain?.remove()
   } catch (error) {
-    console.error("error removing chain channel", error)
+    console.error("error removing chain", error)
   }
 }
 
@@ -85,37 +89,35 @@ chrome.alarms.create("DatabaseContentAlarm", {
   periodInMinutes: 1440, // 24 hours
 })
 
-const client = createClient()
-
 const postMessage = (port: chrome.runtime.Port, message: ToContent) =>
   port.postMessage(message)
 
 chrome.runtime.onConnect.addListener((port) => {
   if ([PORTS.POPUP, PORTS.OPTIONS].includes(port.name)) {
     const untrackChains = trackChains(
-      port.name,
+      scClient,
       () =>
         Object.fromEntries(
           Object.entries(activeChains)
-            .filter(([_, { chain }]) => !!chain)
-            .map(([chainId, { chain }]) => [chainId, chain!] as const),
+            .filter(([_, { addChainOptions }]) => !!addChainOptions)
+            .map(
+              ([chainId, { addChainOptions }]) =>
+                [chainId, addChainOptions!] as const,
+            ),
         ),
       (chainInfo) => {
         enqueueAsyncFn(async () => {
           const tab = activeChains[chainInfo.chainId]?.tab
           if (!tab) return
-
           const chains = await environment.get({
             type: "activeChains",
             tabId: tab.id!,
           })
           if (!chains) return
-
           const index = chains.findIndex(
             ({ chainId }) => chainId === chainInfo.chainId,
           )
           if (index === -1) return
-
           chains[index] = { ...chains[index], ...chainInfo }
           await environment.set(
             { type: "activeChains", tabId: tab.id! },
@@ -124,7 +126,6 @@ chrome.runtime.onConnect.addListener((port) => {
         })
       },
     )
-
     port.onDisconnect.addListener(untrackChains)
   } else if (port.name === PORTS.CONTENT && port.sender?.tab?.id) {
     const tab = port.sender.tab
@@ -157,21 +158,50 @@ chrome.runtime.onConnect.addListener((port) => {
           const isWellKnown = msg.type === "add-well-known-chain"
 
           try {
-            const chain = isWellKnown
-              ? await client.addWellKnownChain(msg.chainName)
-              : await client.addChain({
-                  chainSpec: msg.chainSpec,
-                  potentialRelayChains: await Promise.all(
-                    msg.potentialRelayChainIds
-                      .filter((c) => !!activeChains[c]?.chain)
-                      .map((c) => activeChains[c]?.chain!),
-                  ),
-                })
+            let addChainOptions: Parameters<AddChain>
+            const jsonRpcCallback = (jsonRpcMessage: string) => {
+              postMessage(port, {
+                origin: "substrate-connect-extension",
+                type: "rpc",
+                chainId: msg.chainId,
+                jsonRpcMessage,
+              })
+            }
+            if (isWellKnown) {
+              const chainSpec = (await loadWellKnownChains()).get(msg.chainName)
+
+              // Given that the chain name is user input, we have no guarantee that it is correct. The
+              // extension might report that it doesn't know about this well-known chain.
+              if (!chainSpec)
+                throw new AddChainError("Unknown well-known chain")
+
+              const databaseContent = await environment.get({
+                type: "database",
+                chainName: msg.chainName,
+              })
+              addChainOptions = [
+                chainSpec,
+                jsonRpcCallback,
+                undefined,
+                databaseContent,
+              ]
+            } else {
+              addChainOptions = [
+                msg.chainSpec,
+                jsonRpcCallback,
+                await Promise.all(
+                  msg.potentialRelayChainIds
+                    .filter((c) => !!activeChains[c]?.chain)
+                    .map((c) => activeChains[c]?.chain!),
+                ),
+              ]
+            }
+            const chain = await scClient.addChain(...addChainOptions)
 
             // As documented in the protocol, if a "remove-chain" message was received before
             // a "chain-ready" message was sent back, the chain can be discarded
             if (!activeChains[msg.chainId]) {
-              chain.channel("any", () => {}).remove()
+              chain.remove()
               return
             }
 
@@ -198,17 +228,7 @@ chrome.runtime.onConnect.addListener((port) => {
               await environment.set({ type: "activeChains", tabId }, chains)
             })
             activeChains[msg.chainId].chain = chain
-            activeChains[msg.chainId].channel = chain.channel(
-              "app",
-              (jsonRpcMessage: string) => {
-                postMessage(port, {
-                  origin: "substrate-connect-extension",
-                  type: "rpc",
-                  chainId: msg.chainId,
-                  jsonRpcMessage,
-                })
-              },
-            )
+            activeChains[msg.chainId].addChainOptions = addChainOptions
             postMessage(port, {
               origin: "substrate-connect-extension",
               type: "chain-ready",
@@ -231,13 +251,13 @@ chrome.runtime.onConnect.addListener((port) => {
         }
 
         case "rpc": {
-          const { channel } = activeChains[msg.chainId]
+          const { chain } = activeChains[msg.chainId]
 
           // If the chainId is invalid, the message is silently discarded, as documented.
-          if (!channel) return
+          if (!chain) return
 
           try {
-            channel.sendJsonRpc(msg.jsonRpcMessage)
+            chain.sendJsonRpc(msg.jsonRpcMessage)
           } catch (error) {
             // As documented in the protocol, malformed JSON-RPC requests are silently ignored.
             if (error instanceof MalformedJsonRpcError) {
