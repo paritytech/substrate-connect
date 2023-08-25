@@ -4291,6 +4291,7 @@ __metadata:
   resolution: "@substrate/extension@workspace:projects/extension"
   dependencies:
     "@hot-loader/react-dom": ^17.0.2
+    "@substrate/connect": "workspace:^"
     "@substrate/connect-extension-protocol": ^1.0.1
     "@types/copy-webpack-plugin": ^10.1.0
     "@unstoppablejs/utils": ^1.1.0
