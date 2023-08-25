@@ -6,7 +6,7 @@ import { enqueueAsyncFn } from "./enqueueAsyncFn"
 import { trackChains } from "./trackChains"
 
 import * as environment from "../environment"
-import { PORTS } from "../shared"
+import { PORTS, isManifestV3 } from "../shared"
 import type { ToBackground, ToContent } from "../protocol"
 import { loadWellKnownChains } from "./loadWellKnownChains"
 
@@ -15,6 +15,16 @@ enqueueAsyncFn(() => environment.clearAllActiveChains())
 const scClient = createScClient({
   embeddedNodeConfig: {
     maxLogLevel: 3,
+    portToWorkerFactory: isManifestV3
+      ? // TODO: for MV3 use Offscreen Document
+        // see https://bugs.chromium.org/p/chromium/issues/detail?id=1219164
+        undefined
+      : () => {
+          const { port1, port2 } = new MessageChannel()
+          const worker = new Worker(chrome.runtime.getURL("smoldot-worker.js"))
+          worker.postMessage(port1, [port1])
+          return port2
+        },
   },
 })
 

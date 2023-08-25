@@ -2,6 +2,7 @@ import {
   Chain as SChain,
   Client,
   ClientOptions,
+  ClientOptionsWithBytecode,
   MalformedJsonRpcError,
   QueueFullError,
 } from "smoldot"
@@ -24,6 +25,18 @@ const getStart = () => {
   return startPromise
 }
 
+let startWithByteCodePromise: Promise<
+  (options: ClientOptionsWithBytecode) => Client
+> | null = null
+const getStartWithByteCode = () => {
+  if (startWithByteCodePromise) return startWithByteCodePromise
+  // @ts-ignore Cannot find module 'smoldot/no-auto-bytecode'
+  startWithByteCodePromise = import("smoldot/no-auto-bytecode").then(
+    (sm) => sm.startWithBytecode,
+  )
+  return startWithByteCodePromise
+}
+
 const clientReferences: Config[] = [] // Note that this can't be a set, as the same config is added/removed multiple times
 let clientPromise: Promise<Client> | Client | null = null
 let clientReferencesMaxLogLevel = 3
@@ -37,32 +50,40 @@ const getClientAndIncRef = (config: Config): Promise<Client> => {
     else return Promise.resolve(clientPromise)
   }
 
-  const newClientPromise = getStart().then((start) =>
-    start({
-      forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
-      forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
-      maxLogLevel: 9999999, // The actual level filtering is done in the logCallback
-      cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
-      logCallback: (level, target, message) => {
-        if (level > clientReferencesMaxLogLevel) return
+  const clientOptions: ClientOptions = {
+    forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
+    forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
+    maxLogLevel: 9999999, // The actual level filtering is done in the logCallback
+    cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
+    logCallback: (level, target, message) => {
+      if (level > clientReferencesMaxLogLevel) return
 
-        // The first parameter of the methods of `console` has some printf-like substitution
-        // capabilities. We don't really need to use this, but not using it means that the logs
-        // might not get printed correctly if they contain `%`.
-        if (level <= 1) {
-          console.error("[%s] %s", target, message)
-        } else if (level === 2) {
-          console.warn("[%s] %s", target, message)
-        } else if (level === 3) {
-          console.info("[%s] %s", target, message)
-        } else if (level === 4) {
-          console.debug("[%s] %s", target, message)
-        } else {
-          console.trace("[%s] %s", target, message)
-        }
-      },
-    }),
-  )
+      // The first parameter of the methods of `console` has some printf-like substitution
+      // capabilities. We don't really need to use this, but not using it means that the logs
+      // might not get printed correctly if they contain `%`.
+      if (level <= 1) {
+        console.error("[%s] %s", target, message)
+      } else if (level === 2) {
+        console.warn("[%s] %s", target, message)
+      } else if (level === 3) {
+        console.info("[%s] %s", target, message)
+      } else if (level === 4) {
+        console.debug("[%s] %s", target, message)
+      } else {
+        console.trace("[%s] %s", target, message)
+      }
+    },
+    portToWorker: config.portToWorkerFactory?.(),
+  }
+
+  const newClientPromise = config.bytecode
+    ? getStartWithByteCode().then((startWithBytecode) =>
+        startWithBytecode({
+          ...clientOptions,
+          bytecode: config.bytecode!,
+        }),
+      )
+    : getStart().then((start) => start(clientOptions))
 
   clientPromise = newClientPromise
 
@@ -134,6 +155,8 @@ export interface Config {
    * value will be used.
    */
   maxLogLevel?: number
+  bytecode?: ClientOptionsWithBytecode["bytecode"]
+  portToWorkerFactory?: () => MessagePort
 }
 
 /**

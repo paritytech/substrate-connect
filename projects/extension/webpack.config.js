@@ -10,6 +10,7 @@ const config = {
     options: path.resolve("src/options.tsx"),
     content: path.resolve("src/content/index.ts"),
     background: path.resolve("src/background/index.ts"),
+    "smoldot-worker": path.resolve("src/smoldot-worker.ts"),
   },
   output: {
     path: path.resolve("dist"),
