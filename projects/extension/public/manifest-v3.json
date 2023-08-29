@@ -6,7 +6,7 @@
   "short_name": "substrate-connect",
   "version": "0.2.9",
   "manifest_version": 3,
-  "permissions": ["notifications", "storage", "tabs", "alarms"],
+  "permissions": ["notifications", "storage", "tabs", "alarms", "offscreen"],
   "background": {
     "service_worker": "background.js"
   },

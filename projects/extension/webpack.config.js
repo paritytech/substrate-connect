@@ -10,6 +10,7 @@ const config = {
     options: path.resolve("src/options.tsx"),
     content: path.resolve("src/content/index.ts"),
     background: path.resolve("src/background/index.ts"),
+    offscreen: path.resolve("src/offscreen.ts"),
   },
   output: {
     path: path.resolve("dist"),

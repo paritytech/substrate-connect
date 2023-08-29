@@ -44,7 +44,7 @@
     "@babel/preset-env": "^7.22.5",
     "@babel/preset-react": "^7.22.5",
     "@types/asap": "^2.0.0",
-    "@types/chrome": "^0.0.237",
+    "@types/chrome": "^0.0.244",
     "@types/jsdom": "^21.1.1",
     "@types/node": "^18.16.17",
     "@types/qrcode.react": "^1.0.2",
