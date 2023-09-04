@@ -63,7 +63,6 @@ export type AddChain = (
 export type AddWellKnownChain = (
   id: WellKnownChain,
   jsonRpcCallback?: JsonRpcCallback,
-  potentialRelayChains?: Chain[],
   databaseContent?: string,
 ) => Promise<Chain>
 

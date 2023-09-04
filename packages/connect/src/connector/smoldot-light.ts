@@ -243,7 +243,6 @@ export const createScClient = (config?: Config): ScClient => {
   const addWellKnownChain: AddWellKnownChain = async (
     supposedChain: WellKnownChain,
     jsonRpcCallback?: (msg: string) => void,
-    potentialRelayChains?: Chain[],
     databaseContent?: string,
   ): Promise<Chain> => {
     // the following line ensures that the http request for the dynamic import
@@ -253,12 +252,7 @@ export const createScClient = (config?: Config): ScClient => {
 
     try {
       const spec = getSpec(supposedChain)
-      return await addChain(
-        spec,
-        jsonRpcCallback,
-        potentialRelayChains,
-        databaseContent,
-      )
+      return await addChain(spec, jsonRpcCallback, undefined, databaseContent)
     } finally {
       decRef(configOrDefault)
     }
