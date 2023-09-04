@@ -4266,7 +4266,7 @@ __metadata:
   dependencies:
     "@substrate/connect-extension-protocol": ^1.0.1
     eslint: ^8.44.0
-    smoldot: 1.0.13
+    smoldot: 1.0.16
     vitest: ^0.33.0
   languageName: unknown
   linkType: soft
@@ -4291,8 +4291,10 @@ __metadata:
   resolution: "@substrate/extension@workspace:projects/extension"
   dependencies:
     "@hot-loader/react-dom": ^17.0.2
+    "@substrate/connect": "workspace:^"
     "@substrate/connect-extension-protocol": ^1.0.1
     "@types/copy-webpack-plugin": ^10.1.0
+    "@unstoppablejs/utils": ^1.1.0
     autoprefixer: ^10.4.14
     copy-webpack-plugin: ^10.2.4
     css-loader: ^6.8.1
@@ -4307,7 +4309,8 @@ __metadata:
     react-dom: ^18.2.0
     react-hot-loader: ^4.13.1
     react-icons: ^4.10.1
-    smoldot: 1.0.13
+    scale-ts: ^1.4.1
+    smoldot: 1.0.16
     style-loader: ^3.3.3
     tailwindcss: ^3.3.2
     ts-loader: ^9.4.3
@@ -5124,6 +5127,13 @@ __metadata:
     "@typescript-eslint/types": 5.59.9
     eslint-visitor-keys: ^3.3.0
   checksum: 2909ce761f7fe546592cd3c43e33263d8a5fa619375fd2fdffbc72ffc33e40d6feacafb28c79f36c638fcc2225048e7cc08c61cbac6ca63723dc68610d80e3e6
+  languageName: node
+  linkType: hard
+
+"@unstoppablejs/utils@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@unstoppablejs/utils@npm:1.1.0"
+  checksum: f284e35b81d6afb0eff6a0b8ef0e2919d16a1bad88b81357b2305c059d4d1ae3507c27204bed232826b75f105a56133c9ec8563a91cd32e42b9aa36a72790cfe
   languageName: node
   linkType: hard
 
@@ -14683,6 +14693,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"scale-ts@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "scale-ts@npm:1.4.1"
+  checksum: 51d0a5370054de931c7f30f573eef7f3b97fed9311909639659309490a4acd3a1aef59f61f5ddb8f5c9e7179f8c039eedb990fb7ca5c093188874da97455d867
+  languageName: node
+  linkType: hard
+
 "scheduler@npm:^0.20.2":
   version: 0.20.2
   resolution: "scheduler@npm:0.20.2"
@@ -15101,12 +15118,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"smoldot@npm:1.0.13":
-  version: 1.0.13
-  resolution: "smoldot@npm:1.0.13"
+"smoldot@npm:1.0.16":
+  version: 1.0.16
+  resolution: "smoldot@npm:1.0.16"
   dependencies:
     ws: ^8.8.1
-  checksum: f9a26fe5dcb95011066f596d79e8340183698b3ae913c5795c33b7897f80524c3fac06acbb0ab0f8b4d27d900c111c930c3c2fd3bfd939c43c904c0e46651054
+  checksum: 5c4b0e1d1b102dbc86292d90ecb867f353b352bb0d8c15986a6659f139df7e42e096b20d3fecde08c035f6d5c77be78cdba7306f28740789b74993912fff5bce
   languageName: node
   linkType: hard
 
