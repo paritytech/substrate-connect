@@ -50,7 +50,6 @@ const trackChain = async (
   const chain = await scClient.addChain(
     chainSpec,
     (rawMessage) => {
-      // const channel = chainOptions.channel(channelId, (rawMessage) => {
       const message = JSON.parse(rawMessage)
       if (!message.id) {
         if (
