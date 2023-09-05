@@ -1,5 +1,9 @@
+/// <reference lib="WebWorker" />
+
 // @ts-ignore TODO: fix types in smoldot/worker
 import * as smoldot from "smoldot/worker"
+
+declare var self: DedicatedWorkerGlobalScope
 
 self.onmessage = ({ data }) => {
   smoldot
