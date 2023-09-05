@@ -1,126 +1,116 @@
-import "regenerator-runtime/runtime"
-import { ApiPromise } from "@polkadot/api"
-import { ScProvider } from "@polkadot/rpc-provider/substrate-connect"
-import * as Sc from "@substrate/connect"
+import { compact } from "scale-ts"
+import { fromHex } from "@unstoppablejs/utils"
+import { WellKnownChain } from "@substrate/connect"
+import { createClient } from "@capi-dev/substrate-client"
+import { ScProvider } from "./ScProvider"
 import westmint from "./assets/westend-westmint.json"
 import UI, { emojis } from "./view"
-
-window.onload = () => {
-  const loadTime = performance.now()
-  const ui = new UI({ containerId: "messages" }, { loadTime })
-  ui.showSyncing()
-  void (async () => {
-    try {
-      const westendProvider = new ScProvider(Sc, Sc.WellKnownChain.westend2)
-      const kusamaProvider = new ScProvider(Sc, Sc.WellKnownChain.ksmcc3)
-      const polkadotProvider = new ScProvider(Sc, Sc.WellKnownChain.polkadot)
-      await Promise.all(
-        [westendProvider, kusamaProvider, polkadotProvider].map((p) =>
-          p.connect(),
-        ),
-      )
-      const westend = await ApiPromise.create({ provider: westendProvider })
-      const kusama = await ApiPromise.create({ provider: kusamaProvider })
-      const polkadot = await ApiPromise.create({ provider: polkadotProvider })
-
-      const westendFnc = async () => {
-        const westendUI = document.getElementById("westend")
-        const westendHead = await westend.rpc.chain.getHeader()
-        if (westendUI) {
-          westendUI.innerText = westendHead?.number.toString()
-          await westend.rpc.chain.subscribeNewHeads(
-            (lastHeader: { number: { toString: () => string } }) => {
-              westendUI.innerText = "#" + lastHeader?.number.toString()
-            },
-          )
-        }
-      }
-
-      const kusamaFnc = async () => {
-        const kusamaUI = document.getElementById("kusama")
-        const kusamaHead = await kusama.rpc.chain.getHeader()
-        if (kusamaUI) {
-          kusamaUI.innerText = kusamaHead?.number.toString()
-          await kusama.rpc.chain.subscribeNewHeads((lastHeader) => {
-            kusamaUI.innerText = "#" + lastHeader?.number.toString()
-          })
-        }
-      }
-
-      const polkadotFnc = async () => {
-        const polkadotUI = document.getElementById("polkadot")
-        const polkadotHead = await polkadot.rpc.chain.getHeader()
-        if (polkadotUI) {
-          polkadotUI.innerText = polkadotHead?.number.toString()
-          await polkadot.rpc.chain.subscribeNewHeads((lastHeader) => {
-            polkadotUI.innerText = "#" + lastHeader?.number.toString()
-          })
-        }
-      }
-
-      await Promise.all([westendFnc(), kusamaFnc(), polkadotFnc()])
-
-      const westmintProvider = new ScProvider(
-        Sc,
-        JSON.stringify(westmint),
-        westendProvider,
-      )
-      await westmintProvider.connect()
-      const api = await ApiPromise.create({ provider: westmintProvider })
-
-      const [chain, nodeName, nodeVersion, properties] = await Promise.all([
-        api.rpc.system.chain(),
-        api.rpc.system.name(),
-        api.rpc.system.version(),
-        api.rpc.system.properties(),
-      ])
-      const header = await api.rpc.chain.getHeader()
-      const chainName = await api.rpc.system.chain()
-
-      // Show chain constants - from chain spec
-      ui.log(
-        `${emojis.seedling} Light client ready - Using ${chain} - ${nodeName}: ${nodeVersion}`,
-        true,
-      )
-      ui.log(
-        `${emojis.info} Connected to ${chainName}: syncing will start at block #${header.number}`,
-      )
-      ui.log(
-        `${emojis.chequeredFlag} Token decimals: ${properties["tokenDecimals"]} - symbol: ${properties["tokenSymbol"]}`,
-      )
-      ui.log(
-        `${emojis.chequeredFlag} Genesis hash is ${api.genesisHash.toHex()}`,
-      )
-
-      // Show how many peers we are syncing with
-      const health = await api.rpc.system.health()
-      const peers =
-        health.peers.toNumber() === 1 ? "1 peer" : `${health.peers} peers`
-      ui.log(`${emojis.stethoscope} Parachain is syncing with ${peers}`)
-
-      // Check the state of syncing every 2s and update the syncing state message
-      //
-      // Resolves the first time the chain is fully synced so we can wait before
-      // adding subscriptions. Carries on pinging to keep the UI consistent
-      // in case syncing stops or starts.
-      const wait = (ms: number) =>
-        new Promise<void>((res) => {
-          setTimeout(res, ms)
+;(
+  [
+    [WellKnownChain.polkadot, document.getElementById("polkadot")!],
+    [WellKnownChain.ksmcc3, document.getElementById("kusama")!],
+    [WellKnownChain.westend2, document.getElementById("westend")!],
+  ] as const
+).forEach(([scProviderInput, uiElement]) => {
+  const provider = ScProvider(scProviderInput)
+  const client = createClient(provider)
+  const follow = client.chainHead(
+    true,
+    (event) => {
+      if (event.event === "initialized") {
+        follow.header(event.finalizedBlockHash).then((result) => {
+          if (!result) return
+          uiElement.innerText = `# ${compact.dec(fromHex(result).slice(32))}`
         })
-      const waitForChainToSync = async () => {
-        const health = await api.rpc.system.health()
-        if (health.isSyncing.eq(false)) {
-          ui.showSynced()
-        } else {
-          ui.showSyncing()
-          await wait(2000)
-          await waitForChainToSync()
-        }
+      } else if (event.event === "bestBlockChanged") {
+        follow.header(event.bestBlockHash).then((result) => {
+          if (!result) return
+          uiElement.innerText = `# ${compact.dec(fromHex(result).slice(32))}`
+        })
       }
+    },
+    (error) => console.error(error),
+  )
+})
 
-      await waitForChainToSync()
-    } catch (error) {
-      ui.error(error as Error)
-    }
-  })()
+await new Promise((resolve) => setTimeout(resolve, 5_000))
+{
+  const ui = new UI(
+    { containerId: "messages" },
+    { loadTime: performance.now() },
+  )
+  ui.showSyncing()
+  const uiElement = document.getElementById("westmint")!
+  const provider = ScProvider(JSON.stringify(westmint))
+  const client = createClient(provider)
+
+  const follow = client.chainHead(
+    true,
+    (event) => {
+      if (event.event === "initialized") {
+        ui.log(
+          // @ts-ignore
+          `${emojis.seedling} Light client ready - Using ${event.finalizedBlockRuntime.spec.specName}/${event.finalizedBlockRuntime.spec.specVersion}`,
+          true,
+        )
+        follow.header(event.finalizedBlockHash).then((result) => {
+          if (!result) return
+          const blockHeight = compact.dec(fromHex(result).slice(32))
+          uiElement.innerText = `# ${blockHeight}`
+        })
+        client._request("system_health", [], {
+          onSuccess(result: any) {
+            const peers =
+              result.peers === 1 ? "1 peer" : `${result.peers} peers`
+            ui.log(`${emojis.stethoscope} Parachain is syncing with ${peers}`)
+          },
+          onError(error) {
+            console.error(error)
+          },
+        })
+        client._request("chainSpec_v1_chainName", [], {
+          onSuccess(result) {
+            ui.log(`${emojis.info} Connected to ${result}`)
+          },
+          onError(error) {
+            console.error(error)
+          },
+        })
+        client._request("chainSpec_v1_genesisHash", [], {
+          onSuccess(result) {
+            ui.log(`${emojis.chequeredFlag} Genesis hash is ${result}`)
+          },
+          onError(error) {
+            console.error(error)
+          },
+        })
+        client._request("chainSpec_v1_properties", [], {
+          onSuccess(result: any) {
+            ui.log(
+              `${emojis.chequeredFlag} Token decimals: ${result.tokenDecimals} - symbol: ${result.tokenSymbol}`,
+            )
+          },
+          onError(error) {
+            console.error(error)
+          },
+        })
+        setInterval(() => {
+          client._request("system_health", [], {
+            onSuccess(result: any) {
+              result.isSyncing ? ui.showSyncing() : ui.showSynced()
+            },
+            onError(error) {
+              console.error(error)
+            },
+          })
+        }, 2_000)
+      } else if (event.event === "bestBlockChanged") {
+        follow.header(event.bestBlockHash).then((result) => {
+          if (!result) return
+          uiElement.innerText = `# ${compact.dec(fromHex(result).slice(32))}`
+        })
+      }
+    },
+    (error) => console.error("[westmint]", error),
+  )
 }

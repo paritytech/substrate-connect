@@ -2965,6 +2965,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@capi-dev/substrate-client@npm:pr-66":
+  version: 0.0.1-2650d4cf285e9c6c1aa0d4d81af4ad0211664ec9.1.0
+  resolution: "@capi-dev/substrate-client@npm:0.0.1-2650d4cf285e9c6c1aa0d4d81af4ad0211664ec9.1.0"
+  dependencies:
+    "@unstoppablejs/provider": ^0.0.1
+  checksum: db65104d75a4ce76337ba9070f03f2775957807de2c78e67470814e64632ae65665fe6749c6da71497638e0233e67c9cb120b108129ab0b0cae7f604188aad91
+  languageName: node
+  linkType: hard
+
 "@cspotcode/source-map-support@npm:^0.8.0":
   version: 0.8.1
   resolution: "@cspotcode/source-map-support@npm:0.8.1"
@@ -4275,12 +4284,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@substrate/demo@workspace:projects/demo"
   dependencies:
+    "@capi-dev/substrate-client": pr-66
     "@polkadot/api": ^10.9.1
     "@polkadot/rpc-provider": ^10.9.1
-    "@substrate/connect": 0.7.31
+    "@substrate/connect": "workspace:^"
+    "@unstoppablejs/provider": ^0.0.1
+    "@unstoppablejs/utils": ^1.1.0
     "@vitejs/plugin-react": ^4.0.3
     eslint: ^8.44.0
     regenerator-runtime: ^0.13.11
+    scale-ts: ^1.4.1
     vite: ^4.4.4
     vite-plugin-html: ^3.2.0
   languageName: unknown
@@ -5127,6 +5140,13 @@ __metadata:
     "@typescript-eslint/types": 5.59.9
     eslint-visitor-keys: ^3.3.0
   checksum: 2909ce761f7fe546592cd3c43e33263d8a5fa619375fd2fdffbc72ffc33e40d6feacafb28c79f36c638fcc2225048e7cc08c61cbac6ca63723dc68610d80e3e6
+  languageName: node
+  linkType: hard
+
+"@unstoppablejs/provider@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "@unstoppablejs/provider@npm:0.0.1"
+  checksum: 14a4038506bb1d4c919b4724a693d697cddf8c001b2eae152dec93fa7510945ab1aa4fcce66ea26721dc262c9f1f1cc446f6f762a07275764b45e93ae0796ac9
   languageName: node
   linkType: hard
 

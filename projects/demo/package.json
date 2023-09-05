@@ -19,10 +19,14 @@
     "lint": "yarn eslint . --ext .ts,.tsx"
   },
   "dependencies": {
+    "@capi-dev/substrate-client": "pr-66",
     "@polkadot/api": "^10.9.1",
     "@polkadot/rpc-provider": "^10.9.1",
-    "@substrate/connect": "0.7.31",
-    "regenerator-runtime": "^0.13.11"
+    "@substrate/connect": "workspace:^",
+    "@unstoppablejs/provider": "^0.0.1",
+    "@unstoppablejs/utils": "^1.1.0",
+    "regenerator-runtime": "^0.13.11",
+    "scale-ts": "^1.4.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.3",
