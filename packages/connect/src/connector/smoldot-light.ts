@@ -38,6 +38,7 @@ const getClientAndIncRef = (config: Config): Promise<Client> => {
 
   const newClientPromise = getStart().then((start) =>
     start({
+      portToWorker: config.portToWorkerFactory?.(),
       forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
       forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
       maxLogLevel: 9999999, // The actual level filtering is done in the logCallback
@@ -133,6 +134,8 @@ export interface Config {
    * value will be used.
    */
   maxLogLevel?: number
+
+  portToWorkerFactory?: () => MessagePort
 }
 
 /**
