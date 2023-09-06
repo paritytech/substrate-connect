@@ -17,6 +17,8 @@ import {
 } from "./types.js"
 import { WellKnownChain } from "../WellKnownChain.js"
 
+const isBrowser = ![typeof window, typeof document].includes("undefined")
+
 let startPromise: Promise<(options: ClientOptions) => Client> | null = null
 const getStart = () => {
   if (startPromise) return startPromise
@@ -89,7 +91,10 @@ const getClientAndIncRef = (config: Config): Promise<Client> => {
         return start({
           ...clientOptions,
           bytecode: new Promise((resolve) => {
-            worker!.onmessage = (event) => resolve(event.data)
+            // In NodeJs, onmessage does not exist in Worker from "node:worker_threads"
+            if (isBrowser) worker!.onmessage = (event) => resolve(event.data)
+            // @ts-ignore
+            else worker!.on("message", (message) => resolve(message))
           }),
         })
       })
