@@ -1,12 +1,10 @@
-/// <reference lib="WebWorker" />
-
 // @ts-ignore TODO: fix types in smoldot/worker
 import * as smoldot from "smoldot/worker"
+import { parentPort } from "node:worker_threads"
 
-declare var self: DedicatedWorkerGlobalScope
-
-self.onmessage = ({ data }) =>
+parentPort!.once("message", (data) =>
   smoldot
     .run(data)
     .catch((error: any) => console.error("[smoldot-worker]", error))
-    .finally(self.close)
+    .finally(() => process.exit()),
+)

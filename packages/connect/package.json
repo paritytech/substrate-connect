@@ -16,6 +16,10 @@
       "require": "./dist/cjs/index.js"
     },
     "./worker": {
+      "node": {
+        "import": "./dist/mjs/worker-node.js",
+        "require": "./dist/cjs/worker-node.js"
+      },
       "import": "./dist/mjs/worker.js",
       "require": "./dist/cjs/worker.js"
     }
