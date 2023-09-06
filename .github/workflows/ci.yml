@@ -34,7 +34,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        # TODO: re-enable Node 20.x after https://github.com/nodejs/node/pull/49500
+        node-version: [16.x, 18.x, "20.5"]
 
     steps:
     - uses: actions/checkout@v3.5.3
