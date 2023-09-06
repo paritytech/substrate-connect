@@ -1,7 +1,8 @@
 import {
-  type Chain as SChain,
-  type Client,
-  type ClientOptions,
+  Chain as SChain,
+  Client,
+  ClientOptions,
+  ClientOptionsWithBytecode,
   QueueFullError,
 } from "smoldot"
 import { getSpec } from "./specs/index.js"
@@ -23,6 +24,18 @@ const getStart = () => {
   return startPromise
 }
 
+let startWithByteCodePromise: Promise<
+  (options: ClientOptionsWithBytecode) => Client
+> | null = null
+const getStartWithByteCode = () => {
+  if (startWithByteCodePromise) return startWithByteCodePromise
+  // @ts-ignore TODO: fix types in smoldot/no-auto-bytecode
+  startWithByteCodePromise = import("smoldot/no-auto-bytecode").then(
+    (sm) => sm.startWithBytecode,
+  )
+  return startWithByteCodePromise
+}
+
 const clientReferences: Config[] = [] // Note that this can't be a set, as the same config is added/removed multiple times
 let clientPromise: Promise<Client> | Client | null = null
 let clientReferencesMaxLogLevel = 3
@@ -36,39 +49,51 @@ const getClientAndIncRef = (config: Config): Promise<Client> => {
     else return Promise.resolve(clientPromise)
   }
 
-  const newClientPromise = getStart().then((start) => {
-    let portToWorker: MessagePort | undefined = undefined
-    if (config.workerFactory) {
-      const { port1, port2 } = new MessageChannel()
-      config.workerFactory().postMessage(port1, [port1])
-      portToWorker = port2
-    }
-    return start({
-      portToWorker,
-      forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
-      forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
-      maxLogLevel: 9999999, // The actual level filtering is done in the logCallback
-      cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
-      logCallback: (level, target, message) => {
-        if (level > clientReferencesMaxLogLevel) return
+  let worker: Worker | undefined = undefined
+  let portToWorker: MessagePort | undefined = undefined
+  if (config.workerFactory) {
+    worker = config.workerFactory()
+    const { port1, port2 } = new MessageChannel()
+    worker.postMessage(port1, [port1])
+    portToWorker = port2
+  }
 
-        // The first parameter of the methods of `console` has some printf-like substitution
-        // capabilities. We don't really need to use this, but not using it means that the logs
-        // might not get printed correctly if they contain `%`.
-        if (level <= 1) {
-          console.error("[%s] %s", target, message)
-        } else if (level === 2) {
-          console.warn("[%s] %s", target, message)
-        } else if (level === 3) {
-          console.info("[%s] %s", target, message)
-        } else if (level === 4) {
-          console.debug("[%s] %s", target, message)
-        } else {
-          console.trace("[%s] %s", target, message)
-        }
-      },
-    })
-  })
+  const clientOptions: ClientOptions = {
+    portToWorker,
+    forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
+    forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
+    maxLogLevel: 9999999, // The actual level filtering is done in the logCallback
+    cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
+    logCallback: (level, target, message) => {
+      if (level > clientReferencesMaxLogLevel) return
+
+      // The first parameter of the methods of `console` has some printf-like substitution
+      // capabilities. We don't really need to use this, but not using it means that the logs
+      // might not get printed correctly if they contain `%`.
+      if (level <= 1) {
+        console.error("[%s] %s", target, message)
+      } else if (level === 2) {
+        console.warn("[%s] %s", target, message)
+      } else if (level === 3) {
+        console.info("[%s] %s", target, message)
+      } else if (level === 4) {
+        console.debug("[%s] %s", target, message)
+      } else {
+        console.trace("[%s] %s", target, message)
+      }
+    },
+  }
+
+  const newClientPromise = worker
+    ? getStartWithByteCode().then((start) => {
+        return start({
+          ...clientOptions,
+          bytecode: new Promise((resolve) => {
+            worker!.onmessage = (event) => resolve(event.data)
+          }),
+        })
+      })
+    : getStart().then((start) => start(clientOptions))
 
   clientPromise = newClientPromise
 
