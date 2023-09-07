@@ -2925,7 +2925,6 @@ __metadata:
     eslint: ^8.44.0
     html-minimizer-webpack-plugin: ^4.3.0
     html-webpack-plugin: ^5.5.3
-    jest-chrome: ^0.7.2
     mini-css-extract-plugin: ^2.7.6
     postcss: ^8.4.25
     postcss-loader: ^7.3.3
@@ -3058,16 +3057,6 @@ __metadata:
   version: 4.3.5
   resolution: "@types/chai@npm:4.3.5"
   checksum: c8f26a88c6b5b53a3275c7f5ff8f107028e3cbb9ff26795fff5f3d9dea07106a54ce9e2dce5e40347f7c4cc35657900aaf0c83934a25a1ae12e61e0f5516e431
-  languageName: node
-  linkType: hard
-
-"@types/chrome@npm:^0.0.114":
-  version: 0.0.114
-  resolution: "@types/chrome@npm:0.0.114"
-  dependencies:
-    "@types/filesystem": "*"
-    "@types/har-format": "*"
-  checksum: 7b7c7d7ae72e54011328709b23f6bb2b15e8626af01e7577deae34fd1a0ec52f3f911f9eb9eeb49110a6816ee993450119eb889a286e077c5ce194878415d63f
   languageName: node
   linkType: hard
 
@@ -9165,17 +9154,6 @@ __metadata:
   version: 1.1.1
   resolution: "jed@npm:1.1.1"
   checksum: 657949a2813b026a6f1f5d504c9f1a7fa33e9544a85ffb2740e9db95f6efe6f2a9db1a813c47e83077ba4e549600081afeddd9781704c7407aa323474fce6d93
-  languageName: node
-  linkType: hard
-
-"jest-chrome@npm:^0.7.2":
-  version: 0.7.2
-  resolution: "jest-chrome@npm:0.7.2"
-  dependencies:
-    "@types/chrome": ^0.0.114
-  peerDependencies:
-    jest: ^26.0.1 || ^27.0.0
-  checksum: 1a7ebbe6981a7800504ab016665fc6c2ffd713b528a8d8b61664dd20406977b0b3212805cd0964ca96b870d687822c7965acf71f64991da12fc23a1733585408
   languageName: node
   linkType: hard
 
