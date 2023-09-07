@@ -1,6 +1,6 @@
 import { connect } from "./utils"
 
-async function run(nodeName: string, networkInfo: any) {
+export async function run(nodeName: string, networkInfo: any) {
   const api = await connect(nodeName, networkInfo, "100")
   let count = 0
   await new Promise(async (resolve) => {
@@ -12,5 +12,3 @@ async function run(nodeName: string, networkInfo: any) {
   })
   return count
 }
-
-module.exports = { run }

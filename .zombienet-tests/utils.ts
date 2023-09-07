@@ -1,4 +1,4 @@
-import Sc from "@substrate/connect"
+import * as Sc from "@substrate/connect"
 import { ApiPromise } from "@polkadot/api"
 
 export async function connect(
