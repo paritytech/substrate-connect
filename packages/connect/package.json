@@ -35,14 +35,14 @@
     "build": "yarn run build:mjs && yarn run build:cjs && bash ./fix-package-type.sh",
     "build:mjs": "tsc -b tsconfig-mjs.json",
     "build:cjs": "tsc -b tsconfig-cjs.json",
-    "lint": "yarn eslint . --ext .js,.ts"
+    "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {
     "@substrate/connect-extension-protocol": "^1.0.1",
     "smoldot": "2.0.1"
   },
   "devDependencies": {
-    "eslint": "^8.44.0",
+    "eslint": "^8.48.0",
     "vitest": "^0.33.0"
   }
 }

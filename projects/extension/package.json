@@ -20,7 +20,7 @@
     "dev:m2": "yarn run clean && yarn run prep:m2 && webpack --node-env development --config webpack.dev.js",
     "start": "web-ext run --source-dir ./dist -t chromium",
     "start:firefox": "web-ext run --source-dir ./dist -t firefox-desktop",
-    "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "bundle": "yarn run bundle:m3 && yarn run bundle:m2",
     "bundle:m3": "cp tsconfig.json tsconfig_bkp.json && mv tsconfig.ext.json tsconfig.json && yarn run clean && rm -rf node_modules && zip -r substrate-connect_source-code.zip . -x 'node_modules/*' 'dist/*' 'tsconfig_bkp.json' && mv tsconfig_bkp.json tsconfig.json && mv substrate-connect_m3-source-code.zip ../..",
     "bundle:m2": "cp tsconfig.json tsconfig_bkp.json && mv tsconfig.ext.json tsconfig.json && yarn run clean && rm -rf node_modules && zip -r substrate-connect_source-code.zip . -x 'node_modules/*' 'dist/*' 'tsconfig_bkp.json' && mv tsconfig_bkp.json tsconfig.json && mv substrate-connect_m2-source-code.zip ../.."
@@ -32,7 +32,7 @@
     "autoprefixer": "^10.4.14",
     "copy-webpack-plugin": "^10.2.4",
     "css-loader": "^6.8.1",
-    "eslint": "^8.44.0",
+    "eslint": "^8.48.0",
     "html-minimizer-webpack-plugin": "^4.3.0",
     "html-webpack-plugin": "^5.5.3",
     "mini-css-extract-plugin": "^2.7.6",
