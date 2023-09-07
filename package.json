@@ -71,7 +71,6 @@
     "regenerator-runtime": "^0.13.11",
     "rimraf": "^3.0.2",
     "stream-browserify": "^3.0.0",
-    "ts-node": "^10.9.1",
     "typedoc": "^0.24.8",
     "typescript": "^5.1.6",
     "url-loader": "^4.1.1"
