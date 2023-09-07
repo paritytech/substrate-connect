@@ -1,4 +1,4 @@
-import { AddChainError, MalformedJsonRpcError } from "smoldot"
+import { AddChainError } from "smoldot"
 import { AddChain, Chain, createScClient } from "@substrate/connect"
 
 import { updateDatabases } from "./updateDatabases"
@@ -259,21 +259,16 @@ chrome.runtime.onConnect.addListener((port) => {
           try {
             chain.sendJsonRpc(msg.jsonRpcMessage)
           } catch (error) {
-            // As documented in the protocol, malformed JSON-RPC requests are silently ignored.
-            if (error instanceof MalformedJsonRpcError) {
-              return
-            } else {
-              removeChain(msg.chainId)
-              postMessage(port, {
-                origin: "substrate-connect-extension",
-                type: "error",
-                chainId: msg.chainId,
-                errorMessage:
-                  error instanceof Error
-                    ? error.toString()
-                    : "Unknown error when sending RPC message",
-              })
-            }
+            removeChain(msg.chainId)
+            postMessage(port, {
+              origin: "substrate-connect-extension",
+              type: "error",
+              chainId: msg.chainId,
+              errorMessage:
+                error instanceof Error
+                  ? error.toString()
+                  : "Unknown error when sending RPC message",
+            })
           }
 
           return
