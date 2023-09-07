@@ -22,7 +22,7 @@
     "@polkadot/api": "^10.9.1",
     "@polkadot/rpc-provider": "^10.9.1",
     "@substrate/connect": "0.7.31",
-    "regenerator-runtime": "^0.13.11"
+    "regenerator-runtime": "^0.14.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.3",
