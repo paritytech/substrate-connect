@@ -1,10 +1,4 @@
-import {
-  Chain as SChain,
-  Client,
-  ClientOptions,
-  MalformedJsonRpcError,
-  QueueFullError,
-} from "smoldot"
+import { Chain as SChain, Client, ClientOptions, QueueFullError } from "smoldot"
 import { getSpec } from "./specs/index.js"
 import {
   AddChain,
@@ -192,11 +186,7 @@ export const createScClient = (config?: Config): ScClient => {
             try {
               internalChain.sendJsonRpc(rpc)
             } catch (error) {
-              if (error instanceof MalformedJsonRpcError) {
-                // In order to expose the same behavior as the extension client, we silently
-                // discard malformed JSON-RPC requests.
-                return
-              } else if (error instanceof QueueFullError) {
+              if (error instanceof QueueFullError) {
                 // If the queue is full, we immediately send back a JSON-RPC response indicating
                 // the error.
                 try {
