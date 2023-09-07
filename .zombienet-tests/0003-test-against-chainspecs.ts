@@ -1,6 +1,6 @@
-const { connect } = require("./utils")
+import { connect } from "./utils"
 
-async function run(nodeName) {
+export async function run(nodeName: string) {
   let name = nodeName != "rococo" ? nodeName : "rococo_v2_2"
   console.log("name", name)
   let networkInfo = {
@@ -12,15 +12,12 @@ async function run(nodeName) {
 
   const api = await connect("light-client", networkInfo)
   let count = 0
-  await new Promise(async (resolve, reject) => {
-    const unsub = await api.rpc.chain.subscribeNewHeads((header) => {
+  await new Promise(async (resolve) => {
+    const unsub = await api.rpc.chain.subscribeNewHeads(() => {
       if (++count === 2) {
-        unsub()
-        resolve()
+        resolve(unsub())
       }
     })
   })
   return count
 }
-
-module.exports = { run }
