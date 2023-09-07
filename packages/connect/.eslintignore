@@ -8,4 +8,3 @@ coverage
 
 src/connector/specs/*.json
 src/connector/specs/js/*.ts
-jest.*.ts
