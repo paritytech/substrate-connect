@@ -27,7 +27,7 @@ jobs:
           package: ./packages/connect/package.json
           access: public
       - name: Deploy
-        if: steps.publish.outputs.type != 'none'
+        if: steps.publish.outputs.type
         run: yarn run deploy
 
   all:
