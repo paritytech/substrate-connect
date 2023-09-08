@@ -1,10 +1,15 @@
-import { Chain as SChain, Client, ClientOptions, QueueFullError } from "smoldot"
+import {
+  type Chain as SChain,
+  type Client,
+  type ClientOptions,
+  QueueFullError,
+} from "smoldot"
 import { getSpec } from "./specs/index.js"
 import {
-  AddChain,
-  AddWellKnownChain,
-  Chain,
-  ScClient,
+  type AddChain,
+  type AddWellKnownChain,
+  type Chain,
+  type ScClient,
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
