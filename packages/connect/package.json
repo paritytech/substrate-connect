@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@substrate/connect-extension-protocol": "^1.0.1",
-    "smoldot": "2.0.0"
+    "smoldot": "2.0.1"
   },
   "devDependencies": {
     "eslint": "^8.44.0",
