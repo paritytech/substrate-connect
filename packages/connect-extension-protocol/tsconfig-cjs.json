@@ -4,8 +4,7 @@
     "module": "commonjs",
     "outDir": "./dist/cjs",
     "target": "es2015",
-    "noEmit": false,
-    "verbatimModuleSyntax": false
+    "noEmit": false
   },
   "include": ["src"]
 }

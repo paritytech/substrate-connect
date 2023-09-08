@@ -14,7 +14,6 @@
     "noEmit": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "verbatimModuleSyntax": true,
 
     /* Linting */
     "strict": true,
