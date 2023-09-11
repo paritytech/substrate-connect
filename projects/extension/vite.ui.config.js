@@ -6,6 +6,7 @@ export default defineConfig(({ mode }) => ({
   base: "/ui",
   build: {
     sourcemap: mode === "production" ? true : "inline",
+    minify: mode === "production",
     outDir: `dist/ui`,
     rollupOptions: {
       input: {
