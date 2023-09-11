@@ -6,4 +6,6 @@ import { PORTS } from "./shared"
 
 chrome.runtime.connect({ name: PORTS.OPTIONS })
 
+console.log(document.getElementById("options"))
+
 render(<Options />, document.getElementById("options"))

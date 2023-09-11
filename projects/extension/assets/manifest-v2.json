@@ -8,19 +8,19 @@
   "manifest_version": 2,
   "permissions": ["notifications", "storage", "tabs", "alarms"],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["background/background.js"]
   },
   "browser_action": {
     "default_title": "Substrate Connect",
-    "default_popup": "popup.html"
+    "default_popup": "ui/assets/popup.html"
   },
   "options_ui": {
-    "page": "options.html",
+    "page": "ui/assets/options.html",
     "open_in_tab": true
   },
   "content_scripts": [
     {
-      "js": ["content.js"],
+      "js": ["content/content.js"],
       "matches": ["http://*/*", "https://*/*"],
       "run_at": "document_start"
     }
