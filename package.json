@@ -72,5 +72,8 @@
   "resolutions": {
     "@substrate/connect": "0.7.31"
   },
+  "resolutions": {
+    "@substrate/connect": "0.7.31"
+  },
   "packageManager": "yarn@3.6.3"
 }
