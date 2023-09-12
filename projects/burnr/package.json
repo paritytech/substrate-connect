@@ -13,7 +13,7 @@
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "test": "exit 0; #No tests",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "predeploy": "yarn run build"
   },
   "repository": {
@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.3",
-    "eslint": "^8.48.0",
+    "eslint": "^8.49.0",
     "vite": "^4.4.9",
     "vite-plugin-html": "^3.2.0"
   }

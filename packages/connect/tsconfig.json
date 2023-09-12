@@ -5,5 +5,6 @@
     "rootDir": "src",
     "downlevelIteration": true
   },
+  "include": ["src"],
   "references": [{ "path": "../connect-extension-protocol/tsconfig-mjs.json" }]
 }
