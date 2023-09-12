@@ -278,10 +278,6 @@ export interface ToExtensionAddWellKnownChain {
  * If the chain isn't known by the extension, this message is silently discarded. This is
  * necessary in order to avoid race conditions, as the extension might have sent a
  * {@link ToApplicationError} message at the same time as this message has been sent.
- *
- * If the JSON-RPC request is malformed (i.e. not valid JSON, or missing the mandatory field of a
- * request), it is silently ignored. While it wouldn't be a bad idea to provide feedback about this
- * problem, doing so would considerably complicate the problem, which isn't worth the trade-off.
  */
 export interface ToExtensionRpc {
   type: "rpc"
