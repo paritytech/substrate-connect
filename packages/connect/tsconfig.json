@@ -13,7 +13,6 @@
   },
   "exclude": [
     "**/*.test.ts",
-    "jest.config*",
     "tsconfig*",
     "*node_modules*",
     "../../node_modules*"

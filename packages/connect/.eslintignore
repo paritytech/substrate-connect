@@ -6,6 +6,5 @@ coverage
 # don't lint .cache
 .chains
 
-/src/specs/*.json
-/src/connector/specs/*.ts
-jest.*.ts
+src/connector/specs/*.json
+src/connector/specs/js/*.ts

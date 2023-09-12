@@ -59,7 +59,7 @@
     "concurrently": "^8.2.0",
     "crypto-browserify": "^3.12.0",
     "css-loader": "^6.8.1",
-    "eslint": "^8.44.0",
+    "eslint": "^8.48.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-import": "^2.27.5",
@@ -71,7 +71,6 @@
     "regenerator-runtime": "^0.13.11",
     "rimraf": "^3.0.2",
     "stream-browserify": "^3.0.0",
-    "ts-node": "^10.9.1",
     "typedoc": "^0.24.8",
     "typescript": "^5.1.6",
     "url-loader": "^4.1.1"
@@ -79,5 +78,5 @@
   "resolutions": {
     "@substrate/connect": "0.7.31"
   },
-  "packageManager": "yarn@3.2.0"
+  "packageManager": "yarn@3.6.3"
 }

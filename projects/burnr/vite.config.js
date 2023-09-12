@@ -9,10 +9,9 @@ export default defineConfig({
     outDir: "../dist",
   },
   plugins: [
-    // …
     react({
       // Use React plugin in all *.jsx and *.tsx files
-      include: "**/*.{jsx,tsx, js, ts}",
+      include: "**/*.{jsx,tsx,js,ts}",
     }),
   ],
 })
