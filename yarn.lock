@@ -10788,7 +10788,6 @@ __metadata:
     nodemon: ^2.0.22
     prettier: ^3.0.3
     regenerator-runtime: ^0.13.11
-    rimraf: ^3.0.2
     typedoc: ^0.24.8
     typescript: ^5.2.2
   languageName: unknown
