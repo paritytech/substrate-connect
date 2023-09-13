@@ -43,6 +43,7 @@
     "*.{js,jsx,ts,tsx,json,md}": "prettier --write"
   },
   "devDependencies": {
+    "@capi-dev/substrate-client": "pr-66",
     "@types/asap": "^2.0.0",
     "@types/chrome": "^0.0.237",
     "@types/jsdom": "^21.1.1",
@@ -53,6 +54,7 @@
     "@types/react-hot-loader": "^4.1.1",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/parser": "^6.7.0",
+    "@unstoppablejs/provider": "^0.0.1",
     "bn.js": "^5.2.1",
     "concurrently": "^8.2.0",
     "eslint": "^8.49.0",
@@ -68,9 +70,6 @@
     "rimraf": "^3.0.2",
     "typedoc": "^0.24.8",
     "typescript": "^5.2.2"
-  },
-  "resolutions": {
-    "@substrate/connect": "0.7.31"
   },
   "resolutions": {
     "@substrate/connect": "0.7.31"

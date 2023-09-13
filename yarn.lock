@@ -1667,6 +1667,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@capi-dev/substrate-client@npm:pr-66":
+  version: 0.0.1-2650d4cf285e9c6c1aa0d4d81af4ad0211664ec9.1.0
+  resolution: "@capi-dev/substrate-client@npm:0.0.1-2650d4cf285e9c6c1aa0d4d81af4ad0211664ec9.1.0"
+  dependencies:
+    "@unstoppablejs/provider": ^0.0.1
+  checksum: db65104d75a4ce76337ba9070f03f2775957807de2c78e67470814e64632ae65665fe6749c6da71497638e0233e67c9cb120b108129ab0b0cae7f604188aad91
+  languageName: node
+  linkType: hard
+
 "@devicefarmer/adbkit-logcat@npm:^2.1.2":
   version: 2.1.2
   resolution: "@devicefarmer/adbkit-logcat@npm:2.1.2"
@@ -3524,6 +3533,13 @@ __metadata:
     "@typescript-eslint/types": 6.7.0
     eslint-visitor-keys: ^3.4.1
   checksum: cd85722d26ccfa23a76e5cb5aa0229f89eb3c4f1ed87d71a0f902db15f420f3f3e94cbd16dc711039f611ac60b1e7d0fee9ee78c48c88310a5f1926a2bc8778e
+  languageName: node
+  linkType: hard
+
+"@unstoppablejs/provider@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "@unstoppablejs/provider@npm:0.0.1"
+  checksum: 14a4038506bb1d4c919b4724a693d697cddf8c001b2eae152dec93fa7510945ab1aa4fcce66ea26721dc262c9f1f1cc446f6f762a07275764b45e93ae0796ac9
   languageName: node
   linkType: hard
 
@@ -11274,6 +11290,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "substrate-connect@workspace:."
   dependencies:
+    "@capi-dev/substrate-client": pr-66
     "@types/asap": ^2.0.0
     "@types/chrome": ^0.0.237
     "@types/jsdom": ^21.1.1
@@ -11284,6 +11301,7 @@ __metadata:
     "@types/react-hot-loader": ^4.1.1
     "@types/react-router-dom": ^5.3.3
     "@typescript-eslint/parser": ^6.7.0
+    "@unstoppablejs/provider": ^0.0.1
     bn.js: ^5.2.1
     concurrently: ^8.2.0
     eslint: ^8.49.0
