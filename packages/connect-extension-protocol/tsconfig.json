@@ -4,5 +4,6 @@
     "composite": true,
     "rootDir": "src",
     "downlevelIteration": true
-  }
+  },
+  "include": ["src"]
 }
