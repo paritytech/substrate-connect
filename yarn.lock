@@ -4860,7 +4860,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concurrently@npm:^8.2.0, concurrently@npm:^8.2.1":
+"concurrently@npm:^8.2.1":
   version: 8.2.1
   resolution: "concurrently@npm:8.2.1"
   dependencies:
@@ -10778,7 +10778,7 @@ __metadata:
     "@types/react-router-dom": ^5.3.3
     "@typescript-eslint/parser": ^6.7.0
     bn.js: ^5.2.1
-    concurrently: ^8.2.0
+    concurrently: ^8.2.1
     eslint: ^8.49.0
     eslint-config-prettier: ^8.10.0
     eslint-config-react-app: ^7.0.1
