@@ -80,6 +80,30 @@
  * - Furthermore, the extension stores the state of all the well-known chains in the browser's
  * local storage. This leads to a very quick initialization time.
  *
+ * # Usage with a worker
+ * By default, when the substrate-connect extension is not installed, {@link createScClient} will run the smoldot light
+ * client entirely in the current thread. This can cause performance issues if other CPU-heavy operations are done in
+ * that thread.
+ *
+ * In order to help with this, it possible to run the smoldot light client in a worker.
+ * To do so, you must provide a {@link EmbeddedNodeConfig.workerFactory workerFactory} to {@link createScClient}
+ * and setup the worker to import `@substrate/connect/worker`.
+ *
+ * For example
+ *
+ * ```js
+ * // worker.mjs
+ * import "@substrate/connect/worker"
+ *
+ * // main.mjs
+ * import { createScClient } from "@substrate/connect"
+ * createScClient({
+ *   embeddedNodeConfig: {
+ *     workerFactory: () => new Worker("./worker.mjs"),
+ *   },
+ * })
+ * ```
+ *
  * @packageDocumentation
  */
 
