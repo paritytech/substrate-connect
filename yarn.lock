@@ -2809,7 +2809,6 @@ __metadata:
     react-is: ^18.2.0
     react-router: ^6.14.1
     react-router-dom: ^6.14.1
-    regenerator-runtime: ^0.13.11
     unique-names-generator: ^4.7.1
     vite: ^4.4.9
     vite-plugin-html: ^3.2.0
@@ -2844,7 +2843,6 @@ __metadata:
     "@substrate/connect": 0.7.31
     "@vitejs/plugin-react": ^4.0.3
     eslint: ^8.49.0
-    regenerator-runtime: ^0.13.11
     vite: ^4.4.9
     vite-plugin-html: ^3.2.0
   languageName: unknown
@@ -10778,7 +10776,6 @@ __metadata:
     lint-staged: ^14.0.1
     nodemon: ^2.0.22
     prettier: ^3.0.3
-    regenerator-runtime: ^0.13.11
     typedoc: ^0.24.8
     typescript: ^5.2.2
   languageName: unknown

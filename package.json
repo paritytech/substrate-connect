@@ -59,7 +59,6 @@
     "lint-staged": "^14.0.1",
     "nodemon": "^2.0.22",
     "prettier": "^3.0.3",
-    "regenerator-runtime": "^0.13.11",
     "typedoc": "^0.24.8",
     "typescript": "^5.2.2"
   },
