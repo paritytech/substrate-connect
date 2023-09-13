@@ -1,7 +1,7 @@
-import westend2 from "../../public/assets/westend2.json"
-import ksmcc3 from "../../public/assets/ksmcc3.json"
-import polkadot from "../../public/assets/polkadot.json"
-import rococo_v2_2 from "../../public/assets/rococo_v2_2.json"
+import westend2 from "../chainspecs/westend2.json"
+import ksmcc3 from "../chainspecs/ksmcc3.json"
+import polkadot from "../chainspecs/polkadot.json"
+import rococo_v2_2 from "../chainspecs/rococo_v2_2.json"
 
 import * as environment from "../environment"
 

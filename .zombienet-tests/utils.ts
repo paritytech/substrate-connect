@@ -22,8 +22,9 @@ export async function connect(
   let provider
   if (parachainId) {
     const relayProvider = new ScProvider(Sc, JSON.stringify(customChainSpec))
-    const customParachainSpec = require(networkInfo?.paras[parachainId]
-      ?.chainSpecPath)
+    const customParachainSpec = require(
+      networkInfo?.paras[parachainId]?.chainSpecPath,
+    )
     provider = new ScProvider(
       Sc,
       JSON.stringify(customParachainSpec),

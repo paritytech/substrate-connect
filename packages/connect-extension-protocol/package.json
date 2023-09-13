@@ -21,9 +21,9 @@
     "clean": "rm -rf dist/ tsconfig.tsbuildinfo",
     "build": "tsc -p tsconfig-mjs.json && tsc -p tsconfig-cjs.json && bash ./fix-package-type.sh",
     "test": "exit 0; #This package is only types",
-    "lint": "yarn eslint . --ext .js,.ts"
+    "lint": "eslint . --ext .js,.ts"
   },
   "devDependencies": {
-    "eslint": "^8.44.0"
+    "eslint": "^8.49.0"
   }
 }
