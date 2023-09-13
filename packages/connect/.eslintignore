@@ -1,10 +1,15 @@
 # don't ever lint node_modules
+
 node_modules
+
 # don't lint build output (make sure it's set to your correct build folder name)
+
 dist
 coverage
+
 # don't lint .cache
+
 .chains
 
-src/connector/specs/*.json
-src/connector/specs/js/*.ts
+src/connector/specs/_.json
+src/connector/specs/js/_.ts

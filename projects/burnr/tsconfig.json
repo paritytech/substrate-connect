@@ -1,19 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "outDir": "./dist",
-    "lib": ["es6", "dom"],
-    "module": "es6",
-    "target": "ES2015",
-    "types": [],
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
+    "moduleResolution": "Bundler",
     "jsx": "react-jsx"
   },
-  "include": ["src/**/*"],
-  "references": [{ "path": "../../packages/connect/tsconfig-mjs.json" }]
+  "include": ["src"]
 }

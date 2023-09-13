@@ -6,9 +6,9 @@ import {
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
-  Chain,
-  JsonRpcCallback,
-  ScClient,
+  type Chain,
+  type JsonRpcCallback,
+  type ScClient,
 } from "./types.js"
 import { WellKnownChain } from "../WellKnownChain.js"
 import { getSpec } from "./specs/index.js"
@@ -28,7 +28,7 @@ function getRandomChainId(): string {
   const arr = new BigUint64Array(2)
   // It can only be used from the browser, so this is fine.
   crypto.getRandomValues(arr)
-  const result = (arr[1] << BigInt(64)) | arr[0]
+  const result = (arr[1]! << BigInt(64)) | arr[0]!
   return result.toString(36)
 }
 
