@@ -1,7 +1,11 @@
-const Sc = require("@substrate/connect")
-const { ApiPromise } = require("@polkadot/api")
+import * as Sc from "@substrate/connect"
+import { ApiPromise } from "@polkadot/api"
 
-async function connect(nodeName, networkInfo, parachainId) {
+export async function connect(
+  nodeName: string,
+  networkInfo: any,
+  parachainId?: string,
+) {
   let userDTypes
   if (nodeName === "light-client") {
     console.log("light client")
@@ -32,5 +36,3 @@ async function connect(nodeName, networkInfo, parachainId) {
   await provider.connect()
   return ApiPromise.create({ provider, types: userDTypes })
 }
-
-module.exports = { connect }

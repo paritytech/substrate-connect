@@ -16,7 +16,7 @@ jobs:
           yarn build
       - name: Get zombienet
         run: |
-          curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.3.61/zombienet-linux-x64
+          curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.3.67/zombienet-linux-x64
           chmod +x zombienet-linux-x64
       - name: Get polkadot
         run: |
@@ -29,6 +29,7 @@ jobs:
       - name: Run test
         run: |
           export PATH=$(pwd):$PATH
+          tsc .zombienet-tests/utils.ts || true
           ./zombienet-linux-x64 -p native test ./.zombienet-tests/0001-relay-smoke-test.zndsl
           ./zombienet-linux-x64 -p native test ./.zombienet-tests/0002-parachain.zndsl
           ./zombienet-linux-x64 -p native test ./.zombienet-tests/0003-test-against-chainspecs.zndsl
