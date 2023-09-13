@@ -40,7 +40,6 @@
     "react-is": "^18.2.0",
     "react-router": "^6.14.1",
     "react-router-dom": "^6.14.1",
-    "regenerator-runtime": "^0.13.11",
     "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
