@@ -7,24 +7,6 @@ on:
     branches: [ main ]
 
 jobs:
-  check-extension-versions:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3.5.3
-    - id: package-version
-      run: echo "version=`jq .version ./projects/extension/package.json`" >> $GITHUB_OUTPUT
-    - id: manifest-version-2
-      run: echo "version=`jq .version ./projects/extension/assets/manifest-v2.json`" >> $GITHUB_OUTPUT
-    - id: manifest-version-3
-      run: echo "version=`jq .version ./projects/extension/assets/manifest-v3.json`" >> $GITHUB_OUTPUT
-    - run: exit 1
-      if: ${{ steps.package-version.outputs.version != steps.manifest-version-2.outputs.version }}
-    - run: exit 1
-      if: ${{ steps.package-version.outputs.version != steps.manifest-version-3.outputs.version }}
-    - run: exit 1
-      if: ${{steps.package-version.outputs.version == '' || steps.manifest-version-2.outputs.version == '' || steps.manifest-version-3.outputs.version == ''}}
-
   build:
     runs-on: ubuntu-latest
 
@@ -49,7 +31,7 @@ jobs:
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
     # are successful.
-    needs: [check-extension-versions, build]
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
      - run: echo Success

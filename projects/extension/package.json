@@ -7,8 +7,8 @@
   "license": "GPL-3.0-only",
   "type": "module",
   "scripts": {
-    "prep:m3": "mkdir -p dist && cp -r ./assets/icons ./dist && cp ./assets/manifest-v3.json ./dist/manifest.json",
-    "prep:m2": "mkdir -p dist && cp -r ./assets/icons ./dist && cp ./assets/manifest-v2.json ./dist/manifest.json",
+    "prep:m3": "mkdir -p dist && cp -r ./assets/icons ./dist && node scripts/generateManifest.js ./assets/manifest-v3.json ./dist/manifest.json",
+    "prep:m2": "mkdir -p dist && cp -r ./assets/icons ./dist && node scripts/generateManifest.js ./assets/manifest-v2.json ./dist/manifest.json",
     "build": "yarn build:m3 && yarn build:m2",
     "build:m3": "yarn clean && yarn prep:m3 && concurrently \"yarn:build-*\" && cd dist && zip -r packed-m3-extension.zip .",
     "build:m2": "yarn clean && yarn prep:m2 && concurrently \"yarn:build-*\" && cd dist && zip -r packed-m2-extension.zip .",

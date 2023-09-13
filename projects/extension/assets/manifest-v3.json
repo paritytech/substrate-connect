@@ -4,7 +4,7 @@
   "homepage_url": "https://github.com/paritytech/substrate-connect",
   "name": "Substrate Connect Extension",
   "short_name": "substrate-connect",
-  "version": "0.2.9",
+  "version": "0.0.0",
   "manifest_version": 3,
   "permissions": ["notifications", "storage", "tabs", "alarms"],
   "background": {
