@@ -67,7 +67,7 @@
     "http-server": "^14.1.1",
     "jsdom": "^19.0.0",
     "nodemon": "^2.0.22",
-    "prettier": "^2.8.8",
+    "prettier": "^3.0.3",
     "regenerator-runtime": "^0.13.11",
     "rimraf": "^3.0.2",
     "stream-browserify": "^3.0.0",
