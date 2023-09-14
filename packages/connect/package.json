@@ -33,14 +33,13 @@
   },
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
-    "prebuild": "yarn clean && yarn build-js-specs",
     "postinstall": "node build-js-specs.mjs",
     "build-js-specs": "node build-js-specs.mjs",
     "pretest": "yarn build",
     "test": "vitest",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "build": "yarn run build:mjs && yarn run build:cjs && bash ./fix-package-type.sh",
+    "build": "yarn clean && yarn build-js-specs && yarn run build:mjs && yarn run build:cjs && bash ./fix-package-type.sh",
     "build:mjs": "tsc -b tsconfig-mjs.json",
     "build:cjs": "tsc -b tsconfig-cjs.json",
     "lint": "eslint . --ext .js,.ts"
