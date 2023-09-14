@@ -12,7 +12,7 @@
     "typecheck": "tsc -b",
     "typecheck:watch": "tsc -b --watch",
     "copy-assets": "cp -R ./src/assets ./dist",
-    "build": "yarn clean && yarn copy-assets && yarn typecheck && vite build",
+    "build": "yarn clean && yarn copy-assets && yarn typecheck && vite build --base=./",
     "dev": "yarn clean && yarn copy-assets && vite serve",
     "preview": "vite preview",
     "test": "exit 0; #No tests",
