@@ -8,13 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.5.3
-        with:
-          fetch-depth: 0
+      - run: |
+          git remote set-branches origin gh-pages
+          git fetch --depth 1 origin gh-pages
       - uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: yarn
       - run: yarn install --immutable
-      - run: yarn build
       - name: Deploy
         run: yarn run deploy
