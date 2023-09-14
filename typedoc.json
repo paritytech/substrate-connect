@@ -1,9 +1,10 @@
 {
   "name": "Substrate Connect",
+  "entryPoints": ["packages/*"],
+  "entryPointStrategy": "packages",
   "out": "_site/api",
   "theme": "default",
-  "exclude": "*.test.ts",
+  "exclude": ["**/*.test.ts"],
   "excludeExternals": false,
-  "excludePrivate": true,
-  "includeVersion": true
+  "excludePrivate": true
 }
