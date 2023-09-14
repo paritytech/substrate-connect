@@ -21,7 +21,7 @@
   "dependencies": {
     "@polkadot/api": "^10.9.1",
     "@polkadot/rpc-provider": "^10.9.1",
-    "@substrate/connect": "0.7.31"
+    "@substrate/connect": "*"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.3",

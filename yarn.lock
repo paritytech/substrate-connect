@@ -2799,7 +2799,7 @@ __metadata:
     "@polkadot/types": ^10.9.1
     "@polkadot/util": ^12.3.2
     "@polkadot/util-crypto": ^12.3.2
-    "@substrate/connect": 0.7.31
+    "@substrate/connect": "*"
     "@vitejs/plugin-react": ^4.0.3
     bn.js: ^5.2.1
     eslint: ^8.49.0
@@ -2815,7 +2815,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/connect-extension-protocol@^1.0.1, @substrate/connect-extension-protocol@workspace:^, @substrate/connect-extension-protocol@workspace:packages/connect-extension-protocol":
+"@substrate/connect-extension-protocol@*, @substrate/connect-extension-protocol@^1.0.1, @substrate/connect-extension-protocol@workspace:packages/connect-extension-protocol":
   version: 0.0.0-use.local
   resolution: "@substrate/connect-extension-protocol@workspace:packages/connect-extension-protocol"
   dependencies:
@@ -2823,7 +2823,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/connect@0.7.31, @substrate/connect@workspace:packages/connect":
+"@substrate/connect@0.7.32, @substrate/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@substrate/connect@workspace:packages/connect"
   dependencies:
@@ -2841,7 +2841,7 @@ __metadata:
   dependencies:
     "@polkadot/api": ^10.9.1
     "@polkadot/rpc-provider": ^10.9.1
-    "@substrate/connect": 0.7.31
+    "@substrate/connect": "*"
     "@vitejs/plugin-react": ^4.0.3
     eslint: ^8.49.0
     vite: ^4.4.9
@@ -2853,8 +2853,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@substrate/extension@workspace:projects/extension"
   dependencies:
-    "@substrate/connect": "workspace:^"
-    "@substrate/connect-extension-protocol": "workspace:^"
+    "@substrate/connect": "*"
+    "@substrate/connect-extension-protocol": "*"
     "@unstoppablejs/utils": ^1.1.0
     "@vitejs/plugin-react-swc": ^3.3.2
     autoprefixer: ^10.4.14
