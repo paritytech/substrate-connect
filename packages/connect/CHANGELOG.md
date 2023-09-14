@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## 0.7.32 - 2023-09-14
+
+### Changed
+
+- Add `@substrate/connect/worker` ([#1525](https://github.com/paritytech/substrate-connect/pull/1525))
+- Update smoldot@[version 2.0.1](https://github.com/smol-dot/smoldot/blob/main/wasm-node/CHANGELOG.md#201---2023-09-08)[#1534](https://github.com/paritytech/substrate-connect/pull/1534)
+
 ## 0.7.31 - 2023-07-25
 
 ### Changed
