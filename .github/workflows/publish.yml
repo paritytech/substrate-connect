@@ -27,6 +27,11 @@ jobs:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/connect/package.json
           access: public
+      - name: Fetch gh-pages
+        run: |
+          git remote set-branches origin gh-pages
+          git fetch --depth 1 origin gh-pages
+        if: steps.publish.outputs.type
       - name: Deploy
         if: steps.publish.outputs.type
         run: yarn run deploy

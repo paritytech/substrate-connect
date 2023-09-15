@@ -26,10 +26,7 @@
     "start": "web-ext run --source-dir ./dist -t chromium",
     "start:firefox": "web-ext run --source-dir ./dist -t firefox-desktop",
     "clean": "rm -rf dist",
-    "deep-clean": "yarn clean && rm -rf node_modules",
-    "bundle": "yarn run bundle:m3 && yarn run bundle:m2",
-    "bundle:m3": "cp tsconfig.json tsconfig_bkp.json && mv tsconfig.ext.json tsconfig.json && yarn run clean && rm -rf node_modules && zip -r substrate-connect_source-code.zip . -x 'node_modules/*' 'dist/*' 'tsconfig_bkp.json' && mv tsconfig_bkp.json tsconfig.json && mv substrate-connect_m3-source-code.zip ../..",
-    "bundle:m2": "cp tsconfig.json tsconfig_bkp.json && mv tsconfig.ext.json tsconfig.json && yarn run clean && rm -rf node_modules && zip -r substrate-connect_source-code.zip . -x 'node_modules/*' 'dist/*' 'tsconfig_bkp.json' && mv tsconfig_bkp.json tsconfig.json && mv substrate-connect_m2-source-code.zip ../.."
+    "deep-clean": "yarn clean && rm -rf node_modules"
   },
   "keywords": [],
   "devDependencies": {
@@ -45,8 +42,8 @@
     "web-ext": "^7.6.2"
   },
   "dependencies": {
-    "@substrate/connect": "workspace:^",
-    "@substrate/connect-extension-protocol": "workspace:^",
+    "@substrate/connect": "*",
+    "@substrate/connect-extension-protocol": "*",
     "@unstoppablejs/utils": "^1.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

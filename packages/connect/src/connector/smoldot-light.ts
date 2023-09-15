@@ -171,6 +171,12 @@ export interface Config {
    */
   maxLogLevel?: number
 
+  /**
+   * Creates a `Worker` that is expected to import `@substrate/connect/worker`.
+   *
+   * If this option isn't set then the smoldot light client will run entirely on the "current thread", which might slow
+   * down other components that also run on this thread.
+   */
   workerFactory?: () => Worker
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "@substrate/connect",
-  "version": "0.7.31",
+  "version": "0.7.32",
   "description": "Substrate-connect to Smoldot clients. Using either substrate extension with predefined clients or an internal smoldot client based on chainSpecs provided.",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
@@ -33,14 +33,13 @@
   },
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
-    "prebuild": "yarn clean && yarn build-js-specs",
     "postinstall": "node build-js-specs.mjs",
     "build-js-specs": "node build-js-specs.mjs",
     "pretest": "yarn build",
     "test": "vitest",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "build": "yarn run build:mjs && yarn run build:cjs && bash ./fix-package-type.sh",
+    "build": "yarn clean && yarn build-js-specs && yarn run build:mjs && yarn run build:cjs && bash ./fix-package-type.sh",
     "build:mjs": "tsc -b tsconfig-mjs.json",
     "build:cjs": "tsc -b tsconfig-cjs.json",
     "lint": "eslint . --ext .js,.ts"
@@ -51,6 +50,7 @@
   },
   "devDependencies": {
     "eslint": "^8.49.0",
+    "jsdom": "^22.1.0",
     "vitest": "^0.34.3"
   }
 }
