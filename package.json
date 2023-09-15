@@ -43,7 +43,8 @@
     "*.{js,jsx,ts,tsx,json,md}": "prettier --write"
   },
   "devDependencies": {
-    "@capi-dev/substrate-client": "pr-66",
+    "@polkadot-api/json-rpc-provider": "^0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0",
+    "@polkadot-api/substrate-client": "0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0",
     "@types/asap": "^2.0.0",
     "@types/chrome": "^0.0.237",
     "@types/jsdom": "^21.1.1",

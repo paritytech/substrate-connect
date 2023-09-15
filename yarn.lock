@@ -1667,15 +1667,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@capi-dev/substrate-client@npm:pr-66":
-  version: 0.0.1-2650d4cf285e9c6c1aa0d4d81af4ad0211664ec9.1.0
-  resolution: "@capi-dev/substrate-client@npm:0.0.1-2650d4cf285e9c6c1aa0d4d81af4ad0211664ec9.1.0"
-  dependencies:
-    "@unstoppablejs/provider": ^0.0.1
-  checksum: db65104d75a4ce76337ba9070f03f2775957807de2c78e67470814e64632ae65665fe6749c6da71497638e0233e67c9cb120b108129ab0b0cae7f604188aad91
-  languageName: node
-  linkType: hard
-
 "@devicefarmer/adbkit-logcat@npm:^2.1.2":
   version: 2.1.2
   resolution: "@devicefarmer/adbkit-logcat@npm:2.1.2"
@@ -2292,6 +2283,20 @@ __metadata:
     "@pnpm/network.ca-file": ^1.0.1
     config-chain: ^1.1.11
   checksum: 0c5f1a63782309a877b70e3cbdd21ff1da57549924a941772bafd0117323881fdcda0e9753f0a695c3f85f4360f5ca27a0e20153abae6985350502f2d94b7d40
+  languageName: node
+  linkType: hard
+
+"@polkadot-api/json-rpc-provider@npm:^0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0":
+  version: 0.0.1-a068bbd81829afc0db2bacebd6211ec617934d48.1.0
+  resolution: "@polkadot-api/json-rpc-provider@npm:0.0.1-a068bbd81829afc0db2bacebd6211ec617934d48.1.0"
+  checksum: 4b752616ebebe7557e59b11e7ee01e61d803e13e520c0ce2b719cf6418d498a680da1308dab5a53da31dad42b9f9db0a9ab2fdfeb60bf7de004309972f274c43
+  languageName: node
+  linkType: hard
+
+"@polkadot-api/substrate-client@npm:0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0":
+  version: 0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0
+  resolution: "@polkadot-api/substrate-client@npm:0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0"
+  checksum: dadb61b2b9db54cccedf7b6383085426725f3cc9181743401b3d83a6ec7b9113198b4bbdbc21436063047c141b4ca3042654a91719b8ac37f9ff9285032e8d0f
   languageName: node
   linkType: hard
 
@@ -11290,7 +11295,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "substrate-connect@workspace:."
   dependencies:
-    "@capi-dev/substrate-client": pr-66
+    "@polkadot-api/json-rpc-provider": ^0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0
+    "@polkadot-api/substrate-client": 0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0
     "@types/asap": ^2.0.0
     "@types/chrome": ^0.0.237
     "@types/jsdom": ^21.1.1

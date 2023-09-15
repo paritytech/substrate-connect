@@ -4,9 +4,8 @@ import {
   ScClient,
   WellKnownChain,
 } from "@substrate/connect"
-import { createClient } from "@capi-dev/substrate-client"
-import { ProviderStatus } from "@unstoppablejs/provider"
-import type { GetProvider } from "@unstoppablejs/provider"
+import { createClient } from "@polkadot-api/substrate-client"
+import type { GetProvider } from "@polkadot-api/json-rpc-provider"
 
 const wellKnownChains: ReadonlySet<string> = new Set<WellKnownChain>(
   Object.values(WellKnownChain),
@@ -35,7 +34,7 @@ const ScProvider = (input: string, relayChainSpec?: string): GetProvider => {
         }
         chain = await addChain(input)
 
-        onStatus(ProviderStatus.ready)
+        onStatus("connected")
       })()
     }
 
