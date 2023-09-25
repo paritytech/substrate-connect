@@ -5,7 +5,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [react()],
   base: "/ui",
   build: {
-    sourcemap: mode === "production" ? true : "inline",
+    sourcemap: mode === "production" ? false : "inline",
     minify: mode === "production",
     outDir: `dist/ui`,
     rollupOptions: {

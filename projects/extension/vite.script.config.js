@@ -4,7 +4,7 @@ const input = process.env.INPUT
 
 export default defineConfig(({ mode }) => ({
   build: {
-    sourcemap: mode === "production" ? true : "inline",
+    sourcemap: mode === "production" ? false : "inline",
     minify: mode === "production",
     outDir: `dist/${input}`,
     rollupOptions: {
