@@ -7,7 +7,7 @@
   "license": "GPL-3.0-only",
   "type": "module",
   "scripts": {
-    "prep": "mkdir -p dist && cp -r ./assets/icons ./dist && cp -r ./src/chainspecs ./dist",
+    "prep": "mkdir -p dist && cp -r ./assets/icons ./dist && cp -r ./assets/chainspecs ./dist",
     "prep:m3": "yarn prep && node scripts/generateManifest.js ./assets/manifest-v3.json ./dist/manifest.json",
     "prep:m2": "yarn prep && node scripts/generateManifest.js ./assets/manifest-v2.json ./dist/manifest.json",
     "build": "yarn build:m3 && yarn build:m2",
