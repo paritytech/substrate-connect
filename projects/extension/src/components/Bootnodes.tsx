@@ -44,9 +44,10 @@ export const Bootnodes = () => {
 
   useEffect(() => {
     // Load default Bootnodes
-    const defChains = environment.getDefaultBootnodes(selectedChain)
-    console.assert(defChains, "Invalid chain name: " + selectedChain)
-    setSelectedChainDefaultBn(defChains || [])
+    environment.getDefaultBootnodes(selectedChain).then((defChains) => {
+      console.assert(defChains, "Invalid chain name: " + selectedChain)
+      setSelectedChainDefaultBn(defChains || [])
+    })
   }, [selectedChain])
 
   useEffect(() => {
@@ -59,7 +60,10 @@ export const Bootnodes = () => {
   }, [addMessage])
 
   useEffect(() => {
-    environment.getBootnodes(selectedChain).then((bootnodes) => {
+    Promise.all([
+      environment.getBootnodes(selectedChain),
+      environment.getDefaultBootnodes(selectedChain),
+    ]).then(([bootnodes, defaultBootnodes]) => {
       const tmpDef: BootnodesType[] = []
       const tmpCust: BootnodesType[] = []
       // When bootnodes do not exist assign and save the local ones
@@ -73,8 +77,6 @@ export const Bootnodes = () => {
         })
       } else {
         bootnodes?.forEach((b) => {
-          const defaultBootnodes =
-            environment.getDefaultBootnodes(selectedChain)
           defaultBootnodes?.length && defaultBootnodes?.includes(b)
             ? tmpDef.push({ bootnode: b, checked: true })
             : tmpCust.push({ bootnode: b, checked: true })
