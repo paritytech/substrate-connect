@@ -1,6 +1,7 @@
 import { defineConfig } from "vite"
 
 const input = process.env.INPUT
+const isBackground = input === "background"
 
 export default defineConfig(({ mode }) => ({
   build: {
@@ -13,7 +14,12 @@ export default defineConfig(({ mode }) => ({
       },
       output: {
         entryFileNames: (chunk) => `${chunk.name}.js`,
-        inlineDynamicImports: true,
+        inlineDynamicImports: !isBackground,
+        manualChunks: isBackground
+          ? {
+              "substrate-connect": ["@substrate/connect"],
+            }
+          : undefined,
       },
     },
   },
