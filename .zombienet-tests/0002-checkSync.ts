@@ -1,14 +1,19 @@
 import { connect } from "./utils"
 
 export async function run(nodeName: string, networkInfo: any) {
-  const api = await connect(nodeName, networkInfo, "100")
+  const { chainHead } = await connect(nodeName, networkInfo, "100")
   let count = 0
-  await new Promise(async (resolve) => {
-    const unsub = await api.rpc.chain.subscribeNewHeads(() => {
-      if (++count === 2) {
-        resolve(unsub())
-      }
-    })
+
+  await new Promise(async (resolve, reject) => {
+    const chainHeadFollower = chainHead(
+      true,
+      (event) => {
+        if (event.event === "finalized" && ++count === 2) {
+          resolve(chainHeadFollower.unfollow())
+        }
+      },
+      reject,
+    )
   })
   return count
 }
