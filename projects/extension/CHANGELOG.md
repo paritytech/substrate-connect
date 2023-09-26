@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## 0.2.11 - 2023-09-26
+
+### Changed
+
+- Reduce background script bundle size ([#1560](https://github.com/paritytech/substrate-connect/pull/1560))
+
 ## 0.2.10 - 2023-09-14
 
 ### Changed
