@@ -8,7 +8,8 @@
   "manifest_version": 3,
   "permissions": ["notifications", "storage", "tabs", "alarms"],
   "background": {
-    "service_worker": "background/background.js"
+    "service_worker": "background/background.js",
+    "type": "module"
   },
   "action": {
     "default_title": "Substrate Connect",
