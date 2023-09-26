@@ -45,7 +45,6 @@ export async function getDefaultBootnodes(
         await fetch(chrome.runtime.getURL(`./chainspecs/${chain}.json`))
       ).json()
     )?.bootNodes as string[]
-    console.log({ bootNodes })
     return bootNodes
   }
   return undefined
