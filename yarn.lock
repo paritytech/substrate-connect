@@ -2275,6 +2275,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@polkadot-api/json-rpc-provider@npm:^0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0":
+  version: 0.0.1-a068bbd81829afc0db2bacebd6211ec617934d48.1.0
+  resolution: "@polkadot-api/json-rpc-provider@npm:0.0.1-a068bbd81829afc0db2bacebd6211ec617934d48.1.0"
+  checksum: 4b752616ebebe7557e59b11e7ee01e61d803e13e520c0ce2b719cf6418d498a680da1308dab5a53da31dad42b9f9db0a9ab2fdfeb60bf7de004309972f274c43
+  languageName: node
+  linkType: hard
+
+"@polkadot-api/substrate-client@npm:0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0":
+  version: 0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0
+  resolution: "@polkadot-api/substrate-client@npm:0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0"
+  checksum: dadb61b2b9db54cccedf7b6383085426725f3cc9181743401b3d83a6ec7b9113198b4bbdbc21436063047c141b4ca3042654a91719b8ac37f9ff9285032e8d0f
+  languageName: node
+  linkType: hard
+
 "@polkadot/api-augment@npm:10.9.1, @polkadot/api-augment@npm:^10.9.1":
   version: 10.9.1
   resolution: "@polkadot/api-augment@npm:10.9.1"
@@ -11025,6 +11039,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "substrate-connect@workspace:."
   dependencies:
+    "@polkadot-api/json-rpc-provider": ^0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0
+    "@polkadot-api/substrate-client": 0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0
     "@types/chrome": ^0.0.237
     "@types/node": ^18.16.17
     "@types/qrcode.react": ^1.0.2

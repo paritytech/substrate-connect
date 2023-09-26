@@ -1,38 +1,74 @@
-import * as Sc from "@substrate/connect"
-import { ApiPromise } from "@polkadot/api"
+import {
+  Chain,
+  createScClient,
+  ScClient,
+  WellKnownChain,
+} from "@substrate/connect"
+import { createClient } from "@polkadot-api/substrate-client"
+import type { GetProvider } from "@polkadot-api/json-rpc-provider"
+
+const wellKnownChains: ReadonlySet<string> = new Set<WellKnownChain>(
+  Object.values(WellKnownChain),
+)
+
+const isWellKnownChain = (input: string): input is WellKnownChain =>
+  wellKnownChains.has(input)
+
+let client: ScClient
+const ScProvider = (input: string, relayChainSpec?: string): GetProvider => {
+  client ??= createScClient()
+
+  return (onMessage, onStatus) => {
+    const addChain = (input: string) => {
+      return isWellKnownChain(input)
+        ? client.addWellKnownChain(input, onMessage)
+        : client.addChain(input, onMessage)
+    }
+
+    let chain: Chain | undefined
+    let relayChain: Chain | undefined
+    const open = () => {
+      ;(async () => {
+        if (relayChainSpec) {
+          relayChain = await addChain(relayChainSpec)
+        }
+        chain = await addChain(input)
+
+        onStatus("connected")
+      })()
+    }
+
+    const close = () => {
+      chain?.remove()
+      relayChain?.remove()
+    }
+
+    const send = (msg: string) => {
+      chain?.sendJsonRpc(msg)
+    }
+
+    return { open, close, send }
+  }
+}
 
 export async function connect(
-  nodeName: string,
+  _nodeName: string,
   networkInfo: any,
   parachainId?: string,
 ) {
-  let userDTypes
-  if (nodeName === "light-client") {
-    console.log("light client")
-    userDTypes = []
-  } else {
-    const { userDefinedTypes } = networkInfo.nodesByName[nodeName]
-    userDTypes = userDefinedTypes
-  }
-
   const customChainSpec = require(networkInfo.chainSpecPath)
-  const { ScProvider } = await import(
-    "@polkadot/rpc-provider/substrate-connect"
-  )
   let provider
   if (parachainId) {
-    const relayProvider = new ScProvider(Sc, JSON.stringify(customChainSpec))
     const customParachainSpec = require(
       networkInfo?.paras[parachainId]?.chainSpecPath,
     )
-    provider = new ScProvider(
-      Sc,
+    provider = ScProvider(
       JSON.stringify(customParachainSpec),
-      relayProvider,
+      JSON.stringify(customChainSpec),
     )
   } else {
-    provider = new ScProvider(Sc, JSON.stringify(customChainSpec))
+    provider = ScProvider(JSON.stringify(customChainSpec))
   }
-  await provider.connect()
-  return ApiPromise.create({ provider, types: userDTypes })
+
+  return createClient(provider)
 }

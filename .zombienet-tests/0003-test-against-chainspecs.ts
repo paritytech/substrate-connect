@@ -10,14 +10,18 @@ export async function run(nodeName: string) {
     chainSpecPath: `../packages/connect/src/connector/specs/${name}.json`,
   }
 
-  const api = await connect("light-client", networkInfo)
+  const { chainHead } = await connect("light-client", networkInfo)
   let count = 0
-  await new Promise(async (resolve) => {
-    const unsub = await api.rpc.chain.subscribeNewHeads(() => {
-      if (++count === 2) {
-        resolve(unsub())
-      }
-    })
+  await new Promise(async (resolve, reject) => {
+    const chainHeadFollower = chainHead(
+      true,
+      (event) => {
+        if (event.event === "finalized" && ++count === 2) {
+          resolve(chainHeadFollower.unfollow())
+        }
+      },
+      reject,
+    )
   })
   return count
 }
