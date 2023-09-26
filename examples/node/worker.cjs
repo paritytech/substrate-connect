@@ -1,0 +1,1 @@
+require("@substrate/connect/worker")

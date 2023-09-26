@@ -19,7 +19,8 @@
     "packages/connect",
     "projects/extension",
     "projects/burnr",
-    "projects/demo"
+    "projects/demo",
+    "examples/*"
   ],
   "scripts": {
     "downloadSpecs": "node bin/downloadSpecs.js",

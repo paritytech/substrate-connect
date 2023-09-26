@@ -1,0 +1,17 @@
+{
+  "name": "parcel-example",
+  "private": true,
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html"
+  },
+  "devDependencies": {
+    "parcel": "^2.9.3"
+  },
+  "dependencies": {
+    "@substrate/connect": "workspace:^"
+  },
+  "@parcel/resolver-default": {
+    "packageExports": true
+  }
+}

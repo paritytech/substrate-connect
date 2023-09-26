@@ -1,0 +1,7 @@
+{
+  "name": "node-example",
+  "private": true,
+  "dependencies": {
+    "@substrate/connect": "workspace:^"
+  }
+}
