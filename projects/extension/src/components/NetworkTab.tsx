@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from "react"
 import { Accordion } from "."
+import { wellKnownChainMap } from "../shared"
 
 import { NetworkTabProps, App, OptionsNetworkTabHealthContent } from "../types"
 import "../main.css"
@@ -66,6 +67,8 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
   const contents = [
     <NetworkContent health={health} apps={apps} network={name} />,
   ]
+  const wellKnownName = isWellKnown ? wellKnownChainMap[name] : null
+
   return (
     <div className="flex w-full mb-3 items-baseline font-roboto">
       <Accordion
@@ -73,10 +76,10 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
           <div className="flex rounded-lg">
             <div className="networkicon_container">
               <IconWeb3 isWellKnown={isWellKnown}>
-                {name.toLowerCase()}
+                {wellKnownName?.toLowerCase()}
               </IconWeb3>
               <div className="txt-xl cap">
-                {name}
+                {wellKnownName || name}
                 <span className="pl-2 text-[#616161]">
                   {apps.length ? "(" + apps.length + ")" : ""}
                 </span>
