@@ -2,7 +2,14 @@
 
 ## [Unreleased]
 
-## 0.2.3 - 2023-07-25
+## 0.2.10 - 2023-09-14
+
+### Changed
+
+- Use `vite` to bundle the extension ([#1539](https://github.com/paritytech/substrate-connect/pull/1539))
+- Run `smoldot` in the background script with `@substrate/connect` ([#1512](https://github.com/paritytech/substrate-connect/pull/#1512))
+
+## 0.2.9 - 2023-07-25
 
 ### Changed
 
