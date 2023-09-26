@@ -1,8 +1,8 @@
-import React from "react"
+import { ReactNode } from "react"
 
 interface MenuItemContentProps {
   index: number
-  child: React.ReactNode
+  child: ReactNode
 }
 
 export const MenuItemContent = ({ child, index }: MenuItemContentProps) => (

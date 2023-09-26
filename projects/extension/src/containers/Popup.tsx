@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode, useEffect, useState } from "react"
+import { FunctionComponent, ReactNode, useEffect, useState } from "react"
 
 import { MdOutlineSettings, MdOutlineEast } from "react-icons/md"
 import { Accordion, Logo, IconWeb3, BraveModal } from "../components"
