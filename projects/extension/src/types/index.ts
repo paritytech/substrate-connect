@@ -24,7 +24,3 @@ export interface App {
   name: string
   url?: string
 }
-
-export type WellKnownChainMap = {
-  [id: string]: string
-}

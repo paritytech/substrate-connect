@@ -3,7 +3,6 @@ import { FunctionComponent, ReactNode, useEffect, useState } from "react"
 import { MdOutlineSettings, MdOutlineEast } from "react-icons/md"
 import { Accordion, Logo, IconWeb3, BraveModal } from "../components"
 import * as environment from "../environment"
-import { wellKnownChainMap } from "../shared"
 
 interface PopupChain {
   chainName: string
@@ -27,7 +26,6 @@ const Popup: FunctionComponent = () => {
   const refresh = () => {
     environment.getAllActiveChains().then((chains) => {
       const allChains: PopupChain[] = []
-      console.log("chains", chains)
       ;(chains || []).forEach((c) => {
         const i = allChains.findIndex(
           (i) => i.chainName === c.chainName && i.isWellKnown === c.isWellKnown,
@@ -87,9 +85,7 @@ const Popup: FunctionComponent = () => {
     return (
       <>
         <IconWeb3 isWellKnown={isWellKnown}>{icon}</IconWeb3>
-        <div className="pl-2">
-          {isWellKnown ? wellKnownChainMap[network] : network}
-        </div>
+        <div className="pl-2">{network}</div>
       </>
     )
   }

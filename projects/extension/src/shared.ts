@@ -1,5 +1,3 @@
-import { WellKnownChainMap } from "./types"
-
 const PORT_PREFIX = "substrate-connect-port"
 
 export const PORTS = {
@@ -8,7 +6,7 @@ export const PORTS = {
   CONTENT: `${PORT_PREFIX}-content`,
 }
 
-export const wellKnownChainMap: WellKnownChainMap = {
+export const wellKnownChainNames: Record<string, string> = {
   westend2: "Westend",
   polkadot: "Polkadot",
   ksmcc3: "Kusama",
