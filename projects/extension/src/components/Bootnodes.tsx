@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { MdDeleteOutline } from "react-icons/md"
 import * as environment from "../environment"
 
