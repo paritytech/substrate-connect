@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react"
+import { FunctionComponent } from "react"
 import { MdOutlineGridView } from "react-icons/md"
 import "../main.css"
 
