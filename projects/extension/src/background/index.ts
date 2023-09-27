@@ -6,9 +6,16 @@ import { enqueueAsyncFn } from "./enqueueAsyncFn"
 import { trackChains } from "./trackChains"
 
 import * as environment from "../environment"
-import { PORTS, wellKnownChainNames } from "../shared"
+import { PORTS } from "../shared"
 import type { ToBackground, ToContent } from "../protocol"
 import { loadWellKnownChains } from "./loadWellKnownChains"
+
+const wellKnownChainNames: Record<string, string> = {
+  westend2: "Westend",
+  polkadot: "Polkadot",
+  ksmcc3: "Kusama",
+  rococo_v2_2: "Rococo",
+}
 
 enqueueAsyncFn(() => environment.clearAllActiveChains())
 

@@ -5,10 +5,3 @@ export const PORTS = {
   OPTIONS: `${PORT_PREFIX}-options`,
   CONTENT: `${PORT_PREFIX}-content`,
 }
-
-export const wellKnownChainNames: Record<string, string> = {
-  westend2: "Westend",
-  polkadot: "Polkadot",
-  ksmcc3: "Kusama",
-  rococo_v2_2: "Rococo",
-}
