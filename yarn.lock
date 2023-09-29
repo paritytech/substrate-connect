@@ -2844,7 +2844,7 @@ __metadata:
     "@substrate/connect-extension-protocol": ^1.0.1
     eslint: ^8.49.0
     jsdom: ^22.1.0
-    smoldot: 2.0.1
+    smoldot: 2.0.3
     vitest: ^0.34.3
   languageName: unknown
   linkType: soft
@@ -2879,7 +2879,7 @@ __metadata:
     react-dom: ^18.2.0
     react-icons: ^4.10.1
     scale-ts: ^1.4.1
-    smoldot: 2.0.1
+    smoldot: 2.0.3
     tailwindcss: ^3.3.2
     typescript: ^5.2.2
     vite: ^4.4.9
@@ -10648,12 +10648,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"smoldot@npm:2.0.1":
-  version: 2.0.1
-  resolution: "smoldot@npm:2.0.1"
+"smoldot@npm:2.0.3":
+  version: 2.0.3
+  resolution: "smoldot@npm:2.0.3"
   dependencies:
     ws: ^8.8.1
-  checksum: 77c1f541d039fe740157e9b81e2b13fc72dabe3ffd75644ee9958aee48d5c5458b6cc974d1e9233b1bcf3fde7af42a53a0e48452b6657405c64158a0c8168eee
+  checksum: 2b63c20ed2d3130618f514f226692f213d8a78a1c939824d5831631bd82569608f2de491f3a83d10660f677c95d084f406ecf2662cd41f276cb999f5843b0ede
   languageName: node
   linkType: hard
 
