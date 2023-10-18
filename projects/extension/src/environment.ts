@@ -1,8 +1,3 @@
-import westend2 from "../public/assets/westend2.json"
-import ksmcc3 from "../public/assets/ksmcc3.json"
-import polkadot from "../public/assets/polkadot.json"
-import rococo_v2_2 from "../public/assets/rococo_v2_2.json"
-
 export type StorageEntry =
   | { type: "braveSetting" }
   | { type: "database"; chainName: string }
@@ -20,6 +15,8 @@ export type StorageEntryType<E extends StorageEntry> =
     ? ExposedChainConnection[]
     : never
 
+const activeChainsStorage = chrome.storage[storeageAreaOf("activeChains")]
+
 /**
  * Finds all the `activeChains` entries, and concatenates them together.
  *
@@ -28,7 +25,7 @@ export type StorageEntryType<E extends StorageEntry> =
  */
 export async function getAllActiveChains(): Promise<ExposedChainConnection[]> {
   return new Promise((resolve) => {
-    chrome.storage.local.get(null, (res) => {
+    activeChainsStorage.get(null, (res) => {
       let out: ExposedChainConnection[] = []
       for (const key in res) {
         if (key.startsWith("activeChains_"))
@@ -39,11 +36,17 @@ export async function getAllActiveChains(): Promise<ExposedChainConnection[]> {
   })
 }
 
-export function getDefaultBootnodes(chain: string): string[] | undefined {
-  if (chain === "polkadot") return polkadot.bootNodes
-  if (chain === "ksmcc3") return ksmcc3.bootNodes
-  if (chain === "westend2") return westend2.bootNodes
-  if (chain === "rococo_v2_2") return rococo_v2_2.bootNodes
+export async function getDefaultBootnodes(
+  chain: string,
+): Promise<string[] | undefined> {
+  if (["polkadot", "ksmcc3", "westend2", "rococo_v2_2"].includes(chain)) {
+    const bootNodes = (
+      await (
+        await fetch(chrome.runtime.getURL(`./chainspecs/${chain}.json`))
+      ).json()
+    )?.bootNodes as string[]
+    return bootNodes
+  }
   return undefined
 }
 
@@ -57,9 +60,10 @@ export async function get<E extends StorageEntry>(
 ): Promise<StorageEntryType<E> | undefined> {
   return new Promise((resolve) => {
     const key = keyOf(entry)
+    const area = storeageAreaOf(entry.type)
     // Note that `res[key]` will contain `undefined` is there is no such item in the
     // storage (tested on Chrome v106).
-    chrome.storage.local.get([key], (res) => resolve(res[key]))
+    chrome.storage[area].get([key], (res) => resolve(res[key]))
   })
 }
 
@@ -69,35 +73,35 @@ export async function set<E extends StorageEntry>(
 ): Promise<void> {
   return new Promise((resolve) => {
     const key = keyOf(entry)
-    chrome.storage.local.set({ [key]: value }, () => resolve())
+    const area = storeageAreaOf(entry.type)
+    chrome.storage[area].set({ [key]: value }, () => resolve())
   })
 }
 
 export async function remove<E extends StorageEntry>(entry: E): Promise<void> {
   return new Promise((resolve) => {
     const key = keyOf(entry)
-    chrome.storage.local.remove(key, () => resolve())
+    const area = storeageAreaOf(entry.type)
+    chrome.storage[area].remove(key, () => resolve())
   })
 }
 
 export async function clearAllActiveChains(): Promise<void> {
   return new Promise((resolve) => {
-    chrome.storage.local.get(null, (res) => {
+    activeChainsStorage.get(null, (res) => {
       const keys = []
       for (const key in res) {
         if (key.startsWith("activeChains_")) keys.push(key)
       }
-      chrome.storage.local.remove(keys, () => resolve())
+      activeChainsStorage.remove(keys, () => resolve())
     })
   })
 }
 
 export function onActiveChainsChanged(callback: () => void): () => void {
-  const registeredCallback = (
-    changes: { [key: string]: chrome.storage.StorageChange },
-    areaName: chrome.storage.AreaName,
-  ) => {
-    if (areaName !== "local") return
+  const registeredCallback = (changes: {
+    [key: string]: chrome.storage.StorageChange
+  }) => {
     for (const key in changes) {
       if (key.startsWith("activeChains_")) callback()
     }
@@ -117,6 +121,11 @@ function keyOf(entry: StorageEntry): string {
     case "activeChains":
       return "activeChains_" + entry.tabId
   }
+}
+
+function storeageAreaOf(type: StorageEntry["type"]): "local" | "session" {
+  // chrome.storage.session is available from Chrome v102+ with MV3+ and Firefox 115+
+  return chrome.storage.session && type === "activeChains" ? "session" : "local"
 }
 
 export interface ExposedChainConnection {

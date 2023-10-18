@@ -1,12 +1,12 @@
 import {
   createScClient as smoldotScClient,
-  Config as EmbeddedNodeConfig,
+  type Config as EmbeddedNodeConfig,
 } from "./smoldot-light.js"
 import { createScClient as extensionScClient } from "./extension.js"
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 
 export * from "./types.js"
-export { EmbeddedNodeConfig }
+export type { EmbeddedNodeConfig }
 
 /**
  * `true` if the substrate-connect extension is installed and available.

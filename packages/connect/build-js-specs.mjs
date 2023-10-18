@@ -20,7 +20,7 @@ try {
         encoding: "utf8",
       })
 
-      const jsContent = `export default \`${jsonContent}\``
+      const jsContent = `export const chainSpec = \`${jsonContent}\``
       await writeFile(path.join(jsDir, file.slice(0, -4) + "ts"), jsContent)
     }),
   )

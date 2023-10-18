@@ -2,26 +2,40 @@ import {
   Chain as SChain,
   Client,
   ClientOptions,
-  MalformedJsonRpcError,
+  ClientOptionsWithBytecode,
   QueueFullError,
 } from "smoldot"
 import { getSpec } from "./specs/index.js"
 import {
-  AddChain,
-  AddWellKnownChain,
-  Chain,
-  ScClient,
+  type AddChain,
+  type AddWellKnownChain,
+  type Chain,
+  type ScClient,
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
 } from "./types.js"
 import { WellKnownChain } from "../WellKnownChain.js"
 
+const isBrowser = ![typeof window, typeof document].includes("undefined")
+
 let startPromise: Promise<(options: ClientOptions) => Client> | null = null
 const getStart = () => {
   if (startPromise) return startPromise
   startPromise = import("smoldot").then((sm) => sm.start)
   return startPromise
+}
+
+let startWithByteCodePromise: Promise<
+  (options: ClientOptionsWithBytecode) => Client
+> | null = null
+const getStartWithByteCode = () => {
+  if (startWithByteCodePromise) return startWithByteCodePromise
+  // @ts-ignore TODO: fix types in smoldot/no-auto-bytecode
+  startWithByteCodePromise = import("smoldot/no-auto-bytecode").then(
+    (sm) => sm.startWithBytecode,
+  )
+  return startWithByteCodePromise
 }
 
 const clientReferences: Config[] = [] // Note that this can't be a set, as the same config is added/removed multiple times
@@ -37,32 +51,54 @@ const getClientAndIncRef = (config: Config): Promise<Client> => {
     else return Promise.resolve(clientPromise)
   }
 
-  const newClientPromise = getStart().then((start) =>
-    start({
-      forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
-      forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
-      maxLogLevel: 9999999, // The actual level filtering is done in the logCallback
-      cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
-      logCallback: (level, target, message) => {
-        if (level > clientReferencesMaxLogLevel) return
+  let worker: Worker | undefined = undefined
+  let portToWorker: MessagePort | undefined = undefined
+  if (config.workerFactory) {
+    worker = config.workerFactory()
+    const { port1, port2 } = new MessageChannel()
+    worker.postMessage(port1, [port1])
+    portToWorker = port2
+  }
 
-        // The first parameter of the methods of `console` has some printf-like substitution
-        // capabilities. We don't really need to use this, but not using it means that the logs
-        // might not get printed correctly if they contain `%`.
-        if (level <= 1) {
-          console.error("[%s] %s", target, message)
-        } else if (level === 2) {
-          console.warn("[%s] %s", target, message)
-        } else if (level === 3) {
-          console.info("[%s] %s", target, message)
-        } else if (level === 4) {
-          console.debug("[%s] %s", target, message)
-        } else {
-          console.trace("[%s] %s", target, message)
-        }
-      },
-    }),
-  )
+  const clientOptions: ClientOptions = {
+    portToWorker,
+    forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
+    forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
+    maxLogLevel: 9999999, // The actual level filtering is done in the logCallback
+    cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
+    logCallback: (level, target, message) => {
+      if (level > clientReferencesMaxLogLevel) return
+
+      // The first parameter of the methods of `console` has some printf-like substitution
+      // capabilities. We don't really need to use this, but not using it means that the logs
+      // might not get printed correctly if they contain `%`.
+      if (level <= 1) {
+        console.error("[%s] %s", target, message)
+      } else if (level === 2) {
+        console.warn("[%s] %s", target, message)
+      } else if (level === 3) {
+        console.info("[%s] %s", target, message)
+      } else if (level === 4) {
+        console.debug("[%s] %s", target, message)
+      } else {
+        console.trace("[%s] %s", target, message)
+      }
+    },
+  }
+
+  const newClientPromise = worker
+    ? getStartWithByteCode().then((start) => {
+        return start({
+          ...clientOptions,
+          bytecode: new Promise((resolve) => {
+            // In NodeJs, onmessage does not exist in Worker from "node:worker_threads"
+            if (isBrowser) worker!.onmessage = (event) => resolve(event.data)
+            // @ts-ignore
+            else worker!.on("message", (message) => resolve(message))
+          }),
+        })
+      })
+    : getStart().then((start) => start(clientOptions))
 
   clientPromise = newClientPromise
 
@@ -134,6 +170,14 @@ export interface Config {
    * value will be used.
    */
   maxLogLevel?: number
+
+  /**
+   * Creates a `Worker` that is expected to import `@substrate/connect/worker`.
+   *
+   * If this option isn't set then the smoldot light client will run entirely on the "current thread", which might slow
+   * down other components that also run on this thread.
+   */
+  workerFactory?: () => Worker
 }
 
 /**
@@ -151,14 +195,19 @@ export const createScClient = (config?: Config): ScClient => {
   const addChain: AddChain = async (
     chainSpec: string,
     jsonRpcCallback?: (msg: string) => void,
+    potentialRelayChains?: Chain[],
+    databaseContent?: string,
   ): Promise<Chain> => {
     const client = await getClientAndIncRef(configOrDefault)
 
     try {
       const internalChain = await client.addChain({
         chainSpec,
-        potentialRelayChains: [...chains.values()],
+        potentialRelayChains: (potentialRelayChains
+          ?.map((c) => chains.get(c))
+          .filter((sc) => !!sc) as SChain[]) ?? [...chains.values()],
         disableJsonRpc: jsonRpcCallback === undefined,
+        databaseContent,
       })
 
       ;(async () => {
@@ -187,11 +236,7 @@ export const createScClient = (config?: Config): ScClient => {
             try {
               internalChain.sendJsonRpc(rpc)
             } catch (error) {
-              if (error instanceof MalformedJsonRpcError) {
-                // In order to expose the same behavior as the extension client, we silently
-                // discard malformed JSON-RPC requests.
-                return
-              } else if (error instanceof QueueFullError) {
+              if (error instanceof QueueFullError) {
                 // If the queue is full, we immediately send back a JSON-RPC response indicating
                 // the error.
                 try {
@@ -238,6 +283,7 @@ export const createScClient = (config?: Config): ScClient => {
   const addWellKnownChain: AddWellKnownChain = async (
     supposedChain: WellKnownChain,
     jsonRpcCallback?: (msg: string) => void,
+    databaseContent?: string,
   ): Promise<Chain> => {
     // the following line ensures that the http request for the dynamic import
     // of smoldot and the request for the dynamic import of the spec
@@ -245,8 +291,12 @@ export const createScClient = (config?: Config): ScClient => {
     getClientAndIncRef(configOrDefault)
 
     try {
-      const spec = getSpec(supposedChain)
-      return await addChain(spec, jsonRpcCallback)
+      return await addChain(
+        await getSpec(supposedChain),
+        jsonRpcCallback,
+        undefined,
+        databaseContent,
+      )
     } finally {
       decRef(configOrDefault)
     }

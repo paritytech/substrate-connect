@@ -56,11 +56,14 @@ export type JsonRpcCallback = (response: string) => void
 export type AddChain = (
   chainSpec: string,
   jsonRpcCallback?: JsonRpcCallback,
+  potentialRelayChains?: Chain[],
+  databaseContent?: string,
 ) => Promise<Chain>
 
 export type AddWellKnownChain = (
   id: WellKnownChain,
   jsonRpcCallback?: JsonRpcCallback,
+  databaseContent?: string,
 ) => Promise<Chain>
 
 /**

@@ -1,4 +1,3 @@
-import "regenerator-runtime/runtime"
 import { ApiPromise } from "@polkadot/api"
 import { ScProvider } from "@polkadot/rpc-provider/substrate-connect"
 import * as Sc from "@substrate/connect"

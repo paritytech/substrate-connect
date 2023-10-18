@@ -5,7 +5,4 @@ dist
 # don't lint .cache
 .cache
 
-jest-setup.js
-jest.config.ts
 webpack.*
-/public/assets/*.json
