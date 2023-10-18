@@ -6,6 +6,5 @@ yarn-error.log*
 /coverage
 tsconfig.*
 extension-resolver.cjs
-jest.config*
 
 fix-package-type.sh

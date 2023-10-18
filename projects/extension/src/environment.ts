@@ -1,8 +1,3 @@
-import westend2 from "../public/assets/westend2.json"
-import ksmcc3 from "../public/assets/ksmcc3.json"
-import polkadot from "../public/assets/polkadot.json"
-import rococo_v2_2 from "../public/assets/rococo_v2_2.json"
-
 export type StorageEntry =
   | { type: "braveSetting" }
   | { type: "database"; chainName: string }
@@ -41,11 +36,17 @@ export async function getAllActiveChains(): Promise<ExposedChainConnection[]> {
   })
 }
 
-export function getDefaultBootnodes(chain: string): string[] | undefined {
-  if (chain === "polkadot") return polkadot.bootNodes
-  if (chain === "ksmcc3") return ksmcc3.bootNodes
-  if (chain === "westend2") return westend2.bootNodes
-  if (chain === "rococo_v2_2") return rococo_v2_2.bootNodes
+export async function getDefaultBootnodes(
+  chain: string,
+): Promise<string[] | undefined> {
+  if (["polkadot", "ksmcc3", "westend2", "rococo_v2_2"].includes(chain)) {
+    const bootNodes = (
+      await (
+        await fetch(chrome.runtime.getURL(`./chainspecs/${chain}.json`))
+      ).json()
+    )?.bootNodes as string[]
+    return bootNodes
+  }
   return undefined
 }
 

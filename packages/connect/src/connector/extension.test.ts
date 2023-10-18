@@ -4,8 +4,8 @@
 import { it, describe, expect } from "vitest"
 import { randomBytes } from "crypto"
 import {
-  ToApplication,
-  ToExtension,
+  type ToApplication,
+  type ToExtension,
 } from "@substrate/connect-extension-protocol"
 import { createScClient } from "./extension"
 import { AlreadyDestroyedError, CrashError } from "./types"
@@ -22,7 +22,7 @@ if (!globalThis.crypto) {
       tmp.set(randomBytesBuffer)
       const test = new DataView(arr.buffer)
       for (let i = 0; i < tmp.length; i++) {
-        test.setUint8(i, tmp[i])
+        test.setUint8(i, tmp[i]!)
       }
       return arr
     },

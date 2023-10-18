@@ -181,23 +181,25 @@ describe("SmoldotConnect::smoldot", () => {
         const { addChain, addWellKnownChain } = smoldot.createScClient()
         const chainSpec = "testChainSpec"
         await addChain(chainSpec)
-        let mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
+        let mockedChain = mockedSmoldotLight
+          .getLatestClient()
+          ._getLatestChain()!
         expect(mockedChain._addChainOptions.chainSpec).toEqual(chainSpec)
 
         await addWellKnownChain(WellKnownChain.polkadot)
-        mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
+        mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()!
         expect(mockedChain._addChainOptions.chainSpec).toEqual(
           "fake-polkadot-spec",
         )
 
         await addWellKnownChain(WellKnownChain.ksmcc3)
-        mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
+        mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()!
         expect(mockedChain._addChainOptions.chainSpec).toEqual(
           "fake-ksmcc3-spec",
         )
 
         await addWellKnownChain(WellKnownChain.rococo_v2_2)
-        mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()
+        mockedChain = mockedSmoldotLight.getLatestClient()._getLatestChain()!
         expect(mockedChain._addChainOptions.chainSpec).toEqual(
           "fake-rococo_v2_2-spec",
         )
@@ -212,14 +214,14 @@ describe("SmoldotConnect::smoldot", () => {
             .fill(null)
             .map(() => addChain("")),
         )
-        prevChains[0].remove()
+        prevChains[0]!.remove()
         await addChain("")
         const mockedChains = mockedSmoldotLight
           .getLatestClient()
           ._getChains()
           .slice(-4)
         const lastMockedChain = mockedChains[3]
-        expect(lastMockedChain._addChainOptions.potentialRelayChains).toEqual([
+        expect(lastMockedChain!._addChainOptions.potentialRelayChains).toEqual([
           mockedChains[1],
           mockedChains[2],
         ])

@@ -1,4 +1,3 @@
-import React from "react"
 import { NetworkTabProps } from "../types"
 import NetworkTab from "./NetworkTab"
 

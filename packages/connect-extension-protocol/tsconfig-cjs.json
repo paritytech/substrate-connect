@@ -3,6 +3,8 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "./dist/cjs",
-    "target": "es2015"
-  }
+    "target": "es2015",
+    "noEmit": false
+  },
+  "include": ["src"]
 }
