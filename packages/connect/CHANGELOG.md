@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## 0.7.33 - 2023-09-26
+
+### Changed
+
+- Use dynamic imports for well known chain ([#1560](https://github.com/paritytech/substrate-connect/pull/1560))
+
 ## 0.7.32 - 2023-09-14
 
 ### Changed

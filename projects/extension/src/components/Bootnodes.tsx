@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { MdDeleteOutline } from "react-icons/md"
 import * as environment from "../environment"
 
@@ -43,14 +43,6 @@ export const Bootnodes = () => {
   const [bootnodeMsgClass, setBootnodeMsgClass] = useState<string>()
 
   useEffect(() => {
-    // Load default Bootnodes
-    environment.getDefaultBootnodes(selectedChain).then((defChains) => {
-      console.assert(defChains, "Invalid chain name: " + selectedChain)
-      setSelectedChainDefaultBn(defChains || [])
-    })
-  }, [selectedChain])
-
-  useEffect(() => {
     if (addMessage && !addMessage?.error) {
       setBootnodeMsgClass("pb-2 text-green-600")
       setCustomBnInput("")
@@ -64,15 +56,18 @@ export const Bootnodes = () => {
       environment.getBootnodes(selectedChain),
       environment.getDefaultBootnodes(selectedChain),
     ]).then(([bootnodes, defaultBootnodes]) => {
+      console.assert(defaultBootnodes, `Invalid chain name: ${selectedChain}`)
+      defaultBootnodes ??= []
+      setSelectedChainDefaultBn(defaultBootnodes)
       const tmpDef: BootnodesType[] = []
       const tmpCust: BootnodesType[] = []
       // When bootnodes do not exist assign and save the local ones
       if (!bootnodes?.length) {
         environment.set(
           { type: "bootnodes", chainName: selectedChain },
-          selectedChainDefaultBn,
+          defaultBootnodes,
         )
-        selectedChainDefaultBn.forEach((b) => {
+        defaultBootnodes.forEach((b) => {
           tmpDef.push({ bootnode: b, checked: true })
         })
       } else {
@@ -85,7 +80,7 @@ export const Bootnodes = () => {
       setDefaultBn(tmpDef)
       setCustomBn(tmpCust)
     })
-  }, [selectedChain, selectedChainDefaultBn])
+  }, [selectedChain])
 
   const checkMultiAddr = (addr: string) => {
     const ws =

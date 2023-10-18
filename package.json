@@ -65,7 +65,7 @@
     "typescript": "^5.2.2"
   },
   "resolutions": {
-    "@substrate/connect": "0.7.32"
+    "@substrate/connect": "0.7.33"
   },
   "packageManager": "yarn@3.6.3"
 }

@@ -2,6 +2,19 @@
 
 ## [Unreleased]
 
+## 0.2.12 - 2023-09-27
+
+### Changed
+
+- Replace chain Ids with chain Names for well known chains in ([#1563](https://github.com/paritytech/substrate-connect/pull/1563))
+- Fix bootnode initialization ([#1565](https://github.com/paritytech/substrate-connect/pull/1565))
+
+## 0.2.11 - 2023-09-26
+
+### Changed
+
+- Reduce background script bundle size ([#1560](https://github.com/paritytech/substrate-connect/pull/1560))
+
 ## 0.2.10 - 2023-09-14
 
 ### Changed

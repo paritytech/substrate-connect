@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { FunctionComponent, useEffect, useState } from "react"
 import pckg from "../../package.json"
 import { MdOutlineNetworkCell, MdOutlineOnlinePrediction } from "react-icons/md"
 import { FaGithub } from "react-icons/fa"
@@ -68,7 +68,7 @@ const cName = (type: MenuItemTypes, menu = 0, reqMenu: number) => {
   return classes.join(" ")
 }
 
-export const Options: React.FunctionComponent = () => {
+export const Options: FunctionComponent = () => {
   const [networks, setNetworks] = useState<NetworkTabProps[]>([])
   const [menu, setMenu] = useState<number>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
