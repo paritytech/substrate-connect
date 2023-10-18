@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v4.1.1
       - name: build
         run: |
-          yarn install --immutable
+          yarn install
           yarn build
       - name: Get zombienet
         run: |
