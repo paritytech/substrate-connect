@@ -6,10 +6,10 @@ import { ToExtension } from "@substrate/connect-extension-protocol"
  * Do not forget to update this function if the `ToExtension` interface changes!
  */
 export default function checkReceivedMessage(msg: any): msg is ToExtension {
-  const message = msg as ToExtension
+  if (msg?.origin !== "substrate-connect-client") return false
+  if (typeof msg?.type !== "string") return false
 
-  if (message.origin !== "substrate-connect-client") return false
-  if (typeof message.type !== "string") return false
+  const message = msg as ToExtension
 
   switch (message.type) {
     case "add-chain": {

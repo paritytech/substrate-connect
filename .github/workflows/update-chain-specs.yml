@@ -49,7 +49,7 @@ jobs:
         mv "$tmp" "$output"
     - run: |  # Do the same as the previous step, but for the chain spec of the extension. This is done separately in case the spec is not the same with the one in `connect`
         tmp=$(mktemp)
-        output=./repo/projects/extension/public/assets/${{ steps.get-chain-id.outputs.id }}.json
+        output=./repo/projects/extension/assets/chainspecs/${{ steps.get-chain-id.outputs.id }}.json
         jq --slurpfile downloaded ./chain_spec.json '.lightSyncState = $downloaded[0].lightSyncState' "$output" > "$tmp"
         mv "$tmp" "$output"
     - uses: actions/upload-artifact@v3
@@ -81,8 +81,8 @@ jobs:
         # request triggers other actions such as the CI checks. GitHub prevents actions that use
         # GITHUB_TOKEN from triggering further actions, to avoid recursive actions.
         token: ${{ secrets.GH_TOKEN }}
-        committer: Substrate Connect <raoul@parity.io>
-        author: Substrate Connect <raoul@parity.io>
+        committer: CICD team <cicd-team@parity.io>
+        author: CICD team <cicd-team@parity.io>
         path: repo
         branch: automatic-checkpoints-update
         base: main

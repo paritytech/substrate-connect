@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react"
+import { FunctionComponent } from "react"
 import { Accordion } from "."
 
 import { NetworkTabProps, App, OptionsNetworkTabHealthContent } from "../types"

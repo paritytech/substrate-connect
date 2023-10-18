@@ -33,8 +33,8 @@ echo "Place burnr wallet demo's files."
 cp -r ./projects/burnr/dist/* ./$directory/burnr/.
 echo "Place multi-demo's files."
 cp -r ./projects/demo/dist/* ./$directory/demo/.
-echo "Place Substrate-connect extension's zip."
-cp ./projects/extension/dist/packed-extension.zip ./$directory/extension/packed-extension.zip
+# echo "Place Substrate-connect extension's zip."
+# cp ./projects/extension/dist/packed-extension.zip ./$directory/extension/packed-extension.zip
 echo "Generate API docs."
 yarn api-docs
 

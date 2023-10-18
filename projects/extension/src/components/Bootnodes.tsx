@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { MdDeleteOutline } from "react-icons/md"
 import * as environment from "../environment"
 
@@ -43,13 +43,6 @@ export const Bootnodes = () => {
   const [bootnodeMsgClass, setBootnodeMsgClass] = useState<string>()
 
   useEffect(() => {
-    // Load default Bootnodes
-    const defChains = environment.getDefaultBootnodes(selectedChain)
-    console.assert(defChains, "Invalid chain name: " + selectedChain)
-    setSelectedChainDefaultBn(defChains || [])
-  }, [selectedChain])
-
-  useEffect(() => {
     if (addMessage && !addMessage?.error) {
       setBootnodeMsgClass("pb-2 text-green-600")
       setCustomBnInput("")
@@ -59,22 +52,26 @@ export const Bootnodes = () => {
   }, [addMessage])
 
   useEffect(() => {
-    environment.getBootnodes(selectedChain).then((bootnodes) => {
+    Promise.all([
+      environment.getBootnodes(selectedChain),
+      environment.getDefaultBootnodes(selectedChain),
+    ]).then(([bootnodes, defaultBootnodes]) => {
+      console.assert(defaultBootnodes, `Invalid chain name: ${selectedChain}`)
+      defaultBootnodes ??= []
+      setSelectedChainDefaultBn(defaultBootnodes)
       const tmpDef: BootnodesType[] = []
       const tmpCust: BootnodesType[] = []
       // When bootnodes do not exist assign and save the local ones
       if (!bootnodes?.length) {
         environment.set(
           { type: "bootnodes", chainName: selectedChain },
-          selectedChainDefaultBn,
+          defaultBootnodes,
         )
-        selectedChainDefaultBn.forEach((b) => {
+        defaultBootnodes.forEach((b) => {
           tmpDef.push({ bootnode: b, checked: true })
         })
       } else {
         bootnodes?.forEach((b) => {
-          const defaultBootnodes =
-            environment.getDefaultBootnodes(selectedChain)
           defaultBootnodes?.length && defaultBootnodes?.includes(b)
             ? tmpDef.push({ bootnode: b, checked: true })
             : tmpCust.push({ bootnode: b, checked: true })
@@ -83,7 +80,7 @@ export const Bootnodes = () => {
       setDefaultBn(tmpDef)
       setCustomBn(tmpCust)
     })
-  }, [selectedChain, selectedChainDefaultBn])
+  }, [selectedChain])
 
   const checkMultiAddr = (addr: string) => {
     const ws =

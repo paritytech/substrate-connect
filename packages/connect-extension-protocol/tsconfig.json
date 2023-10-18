@@ -1,14 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "rootDir": "./src",
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
+    "composite": true,
+    "rootDir": "src",
     "downlevelIteration": true
-  }
+  },
+  "include": ["src"]
 }

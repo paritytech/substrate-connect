@@ -1,275 +1,294 @@
-import westend2 from "../../public/assets/westend2.json"
-import ksmcc3 from "../../public/assets/ksmcc3.json"
-import polkadot from "../../public/assets/polkadot.json"
-import rococo_v2_2 from "../../public/assets/rococo_v2_2.json"
+import { AddChainError } from "smoldot"
+import { AddChain, Chain, createScClient } from "@substrate/connect"
 
-import { start as smoldotStart } from "smoldot"
+import { updateDatabases } from "./updateDatabases"
+import { enqueueAsyncFn } from "./enqueueAsyncFn"
+import { trackChains } from "./trackChains"
 
-import { ToContentScript, ToExtension } from "./protocol"
 import * as environment from "../environment"
+import { PORTS } from "../shared"
+import type { ToBackground, ToContent } from "../protocol"
+import { loadWellKnownChains } from "./loadWellKnownChains"
 
-// Loads the well-known chains bootnodes from the local storage and returns the well-known
-// chains.
-const loadWellKnownChains = async (): Promise<Map<string, string>> => {
-  let polkadot_cp = Object.assign({}, polkadot)
-  let ksmcc3_cp = Object.assign({}, ksmcc3)
-  let westend2_cp = Object.assign({}, westend2)
-  let rococo_cp = Object.assign({}, rococo_v2_2)
-
-  const polkadotBootnodes = await environment.get({
-    type: "bootnodes",
-    chainName: polkadot_cp.id,
-  })
-  if (polkadotBootnodes) {
-    polkadot_cp.bootNodes = polkadotBootnodes
-  }
-
-  const ksmcc3Bootnodes = await environment.get({
-    type: "bootnodes",
-    chainName: ksmcc3_cp.id,
-  })
-  if (ksmcc3Bootnodes) {
-    ksmcc3_cp.bootNodes = ksmcc3Bootnodes
-  }
-
-  const westend2Bootnodes = await environment.get({
-    type: "bootnodes",
-    chainName: westend2_cp.id,
-  })
-  if (westend2Bootnodes) {
-    westend2_cp.bootNodes = westend2Bootnodes
-  }
-
-  const rococoBootnodes = await environment.get({
-    type: "bootnodes",
-    chainName: rococo_cp.id,
-  })
-  if (rococoBootnodes) {
-    rococo_cp.bootNodes = rococoBootnodes
-  }
-
-  // Note that this list doesn't necessarily always have to match the list of well-known
-  // chains in `@substrate/connect`. The list of well-known chains is not part of the stability
-  // guarantees of the connect <-> extension protocol and is thus allowed to change
-  // between versions of the extension. For this reason, we don't use the `WellKnownChain`
-  // enum from `@substrate/connect` but instead manually make the list in that enum match
-  // the list present here.
-  return new Map<string, string>([
-    [polkadot_cp.id, JSON.stringify(polkadot_cp)],
-    [ksmcc3_cp.id, JSON.stringify(ksmcc3_cp)],
-    [rococo_cp.id, JSON.stringify(rococo_cp)],
-    [westend2_cp.id, JSON.stringify(westend2_cp)],
-  ])
+const wellKnownChainNames: Record<string, string> = {
+  westend2: "Westend",
+  polkadot: "Polkadot",
+  ksmcc3: "Kusama",
+  rococo_v2_2: "Rococo",
 }
 
-chrome.runtime.onMessage.addListener(
-  (message: ToExtension, sender, sendResponse) => {
-    switch (message.type) {
-      case "get-well-known-chain": {
-        // TODO: don't load the list every time
-        loadWellKnownChains().then((map) => {
-          const chainSpec = map.get(message.chainName)
-          if (chainSpec) {
-            environment
-              .get({ type: "database", chainName: message.chainName })
-              .then((databaseContent) => {
-                sendResponse({
-                  type: "get-well-known-chain",
-                  found: { chainSpec, databaseContent: databaseContent || "" },
-                } as ToContentScript)
-              })
-          } else {
-            sendResponse({
-              type: "get-well-known-chain",
-              chainName: message.chainName,
-            } as ToContentScript)
-          }
-        })
+enqueueAsyncFn(() => environment.clearAllActiveChains())
 
-        // `true` must be returned to indicate that there will be a response.
-        return true
-      }
-
-      case "tab-reset": {
-        environment
-          .remove({ type: "activeChains", tabId: sender.tab!.id! })
-          .then(() => {
-            sendResponse(null)
-          })
-        // `true` must be returned to indicate that there will be a response.
-        return true
-      }
-
-      case "add-chain": {
-        environment
-          .get({ type: "activeChains", tabId: sender.tab!.id! })
-          .then(async (chains) => {
-            if (!chains) chains = []
-
-            chains.push({
-              chainId: message.chainId,
-              isWellKnown: message.isWellKnown,
-              chainName: message.chainSpecChainName,
-              isSyncing: false,
-              peers: 0,
-              tab: {
-                id: sender.tab!.id!,
-                url: sender.tab!.url!,
-              },
-            })
-
-            await environment.set(
-              { type: "activeChains", tabId: sender.tab!.id! },
-              chains,
-            )
-            sendResponse(null)
-          })
-        // `true` must be returned to indicate that there will be a response.
-        return true
-      }
-
-      case "chain-info-update": {
-        environment
-          .get({ type: "activeChains", tabId: sender.tab!.id! })
-          .then(async (chains) => {
-            if (!chains) return
-
-            const pos = chains.findIndex(
-              (c) =>
-                c.tab.id === sender.tab!.id! && c.chainId === message.chainId,
-            )
-            if (pos !== -1) {
-              chains[pos].peers = message.peers
-              chains[pos].bestBlockHeight = message.bestBlockNumber
-            }
-
-            await environment.set(
-              { type: "activeChains", tabId: sender.tab!.id! },
-              chains,
-            )
-            sendResponse(null)
-          })
-        // `true` must be returned to indicate that there will be a response.
-        return true
-      }
-
-      case "database-content": {
-        environment.set(
-          { type: "database", chainName: message.chainName },
-          message.databaseContent,
-        )
-        sendResponse(null)
-        return false
-      }
-
-      case "remove-chain": {
-        environment
-          .get({ type: "activeChains", tabId: sender.tab!.id! })
-          .then(async (chains) => {
-            if (!chains) return
-            const pos = chains.findIndex(
-              (c) =>
-                c.tab.id === sender.tab!.id! && c.chainId === message.chainId,
-            )
-            if (pos !== -1) chains.splice(pos, 1)
-            await environment.set(
-              { type: "activeChains", tabId: sender.tab!.id! },
-              chains,
-            )
-            sendResponse(null)
-          })
-        // `true` must be returned to indicate that there will be a response.
-        return true
-      }
-    }
+const scClient = createScClient({
+  embeddedNodeConfig: {
+    maxLogLevel: 3,
   },
-)
+})
 
-const updateDatabases = async () => {
-  const wellKnownChains = await loadWellKnownChains()
-  const client = smoldotStart({
-    cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
+setInterval(() => updateDatabases(scClient), 120_000)
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === "DatabaseContentAlarm") updateDatabases(scClient)
+})
+
+chrome.runtime.onInstalled.addListener(({ reason }) => {
+  if (
+    reason !== chrome.runtime.OnInstalledReason.INSTALL &&
+    reason !== chrome.runtime.OnInstalledReason.UPDATE
+  )
+    return
+
+  chrome.alarms.create("DatabaseContentAlarm", {
+    periodInMinutes: 1440, // 24 hours
+  })
+})
+
+const activeChains: Record<
+  string,
+  {
+    tab: chrome.tabs.Tab
+    chain?: Chain
+    addChainOptions?: Parameters<AddChain>
+  }
+> = {}
+
+const removeChain = (chainId: string) => {
+  const activeChain = activeChains[chainId]
+  if (!activeChain) return
+
+  const { tab, chain } = activeChain
+  delete activeChains[chainId]
+
+  enqueueAsyncFn(async () => {
+    if (!tab) return
+
+    const chains = await environment.get({
+      type: "activeChains",
+      tabId: tab.id!,
+    })
+    if (!chains) return
+
+    const pos = chains.findIndex((c) => c.chainId === chainId)
+    if (pos === -1) return
+
+    chains.splice(pos, 1)
+
+    await environment.set({ type: "activeChains", tabId: tab!.id! }, chains)
   })
 
-  let promises = []
-
-  for (const [key, value] of wellKnownChains) {
-    let databaseContent = await environment.get({
-      type: "database",
-      chainName: key,
-    })
-
-    promises.push(
-      new Promise<void>((resolve) => {
-        client
-          .addChain({ chainSpec: value, databaseContent })
-          .then(async (chain) => {
-            chain.sendJsonRpc(
-              `{"jsonrpc":"2.0","id":"1","method":"chainHead_unstable_follow","params":[true]}`,
-            )
-
-            while (true) {
-              const response = JSON.parse(await chain.nextJsonRpcResponse())
-              if (response?.params?.result?.event === "initialized") {
-                chain.sendJsonRpc(
-                  JSON.stringify({
-                    jsonrpc: "2.0",
-                    id: "2",
-                    method: "chainHead_unstable_finalizedDatabase",
-                    params: [
-                      // TODO: calculate this better
-                      chrome.storage.local.QUOTA_BYTES / wellKnownChains.size,
-                    ],
-                  }),
-                )
-              }
-              if (response?.id === "2") {
-                await environment.set(
-                  { type: "database", chainName: key },
-                  response.result,
-                )
-                resolve()
-                break
-              }
-            }
-          })
-      }),
-    )
+  try {
+    chain?.remove()
+  } catch (error) {
+    console.error("error removing chain", error)
   }
-
-  Promise.all(promises)
-    .then(() => {
-      // Once the database content is saved in the localStorage for all the chains
-      // then terminate the client
-      console.log("All databases are updated. Light Client is terminated.")
-    })
-    .finally(() => client.terminate())
 }
 
-updateDatabases().catch((err) =>
-  console.error(`Error occurred during database update: ${err}`),
-)
+const resetTab = (tabId: number) => {
+  for (const [chainId, { tab }] of Object.entries(activeChains)) {
+    if (tab?.id === tabId) removeChain(chainId)
+  }
+  enqueueAsyncFn(() => environment.remove({ type: "activeChains", tabId }))
+}
+
+chrome.tabs.onRemoved.addListener(resetTab)
 
 chrome.alarms.create("DatabaseContentAlarm", {
   periodInMinutes: 1440, // 24 hours
 })
 
-chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === "DatabaseContentAlarm")
-    updateDatabases().catch((err) =>
-      console.error(`Error occurred during database update: ${err}`),
+const postMessage = (port: chrome.runtime.Port, message: ToContent) =>
+  port.postMessage(message)
+
+chrome.runtime.onConnect.addListener((port) => {
+  if ([PORTS.POPUP, PORTS.OPTIONS].includes(port.name)) {
+    const untrackChains = trackChains(
+      scClient,
+      () =>
+        Object.fromEntries(
+          Object.entries(activeChains)
+            .filter(([_, { addChainOptions }]) => !!addChainOptions)
+            .map(
+              ([chainId, { addChainOptions }]) =>
+                [chainId, addChainOptions!] as const,
+            ),
+        ),
+      (chainInfo) => {
+        enqueueAsyncFn(async () => {
+          const tab = activeChains[chainInfo.chainId]?.tab
+          if (!tab) return
+          const chains = await environment.get({
+            type: "activeChains",
+            tabId: tab.id!,
+          })
+          if (!chains) return
+          const index = chains.findIndex(
+            ({ chainId }) => chainId === chainInfo.chainId,
+          )
+          if (index === -1) return
+          chains[index] = { ...chains[index], ...chainInfo }
+          await environment.set(
+            { type: "activeChains", tabId: tab.id! },
+            chains,
+          )
+        })
+      },
     )
-})
+    port.onDisconnect.addListener(untrackChains)
+  } else if (port.name === PORTS.CONTENT && port.sender?.tab?.id) {
+    const tab = port.sender.tab
+    const tabId = tab.id!
+    resetTab(tabId)
 
-chrome.tabs.onRemoved.addListener((tabId) => {
-  environment.remove({ type: "activeChains", tabId })
-})
+    port.onDisconnect.addListener(() => resetTab(tabId))
 
-// Callback called when the browser starts.
-// Note: technically, this is triggered when a new profile is started. But since each profile has
-// its own local storage, this fits the mental model of "browser starts".
-chrome.runtime.onStartup.addListener(() => {
-  // Note: there is clearly a race condition here because we can start processing tab messages
-  // before the promise has finished.
-  environment.clearAllActiveChains()
+    port.onMessage.addListener(async (msg: ToBackground, port) => {
+      switch (msg.type) {
+        case "keep-alive": {
+          postMessage(port, { type: "keep-alive-ack" })
+          return
+        }
+
+        case "add-chain":
+        case "add-well-known-chain": {
+          if (activeChains[msg.chainId]) {
+            postMessage(port, {
+              origin: "substrate-connect-extension",
+              type: "error",
+              chainId: msg.chainId,
+              errorMessage: "Requested chainId already in use",
+            })
+            return
+          }
+
+          activeChains[msg.chainId] = { tab }
+
+          const isWellKnown = msg.type === "add-well-known-chain"
+
+          try {
+            let addChainOptions: Parameters<AddChain>
+            const jsonRpcCallback = (jsonRpcMessage: string) => {
+              postMessage(port, {
+                origin: "substrate-connect-extension",
+                type: "rpc",
+                chainId: msg.chainId,
+                jsonRpcMessage,
+              })
+            }
+            if (isWellKnown) {
+              const chainSpec = (await loadWellKnownChains()).get(msg.chainName)
+
+              // Given that the chain name is user input, we have no guarantee that it is correct. The
+              // extension might report that it doesn't know about this well-known chain.
+              if (!chainSpec)
+                throw new AddChainError("Unknown well-known chain")
+
+              const databaseContent = await environment.get({
+                type: "database",
+                chainName: msg.chainName,
+              })
+              addChainOptions = [
+                chainSpec,
+                jsonRpcCallback,
+                undefined,
+                databaseContent,
+              ]
+            } else {
+              addChainOptions = [
+                msg.chainSpec,
+                jsonRpcCallback,
+                await Promise.all(
+                  msg.potentialRelayChainIds
+                    .filter((c) => !!activeChains[c]?.chain)
+                    .map((c) => activeChains[c]?.chain!),
+                ),
+              ]
+            }
+            const chain = await scClient.addChain(...addChainOptions)
+
+            // As documented in the protocol, if a "remove-chain" message was received before
+            // a "chain-ready" message was sent back, the chain can be discarded
+            if (!activeChains[msg.chainId]) {
+              chain.remove()
+              return
+            }
+
+            enqueueAsyncFn(async () => {
+              const chains =
+                (await environment.get({
+                  type: "activeChains",
+                  tabId,
+                })) ?? []
+
+              chains.push({
+                chainId: msg.chainId,
+                isWellKnown,
+                chainName: isWellKnown
+                  ? wellKnownChainNames[msg.chainName] ?? msg.chainName
+                  : (JSON.parse(msg.chainSpec).name as string),
+                isSyncing: false,
+                peers: 0,
+                tab: {
+                  id: tab.id!,
+                  url: tab.url!,
+                },
+              })
+              await environment.set({ type: "activeChains", tabId }, chains)
+            })
+            activeChains[msg.chainId].chain = chain
+            activeChains[msg.chainId].addChainOptions = addChainOptions
+            postMessage(port, {
+              origin: "substrate-connect-extension",
+              type: "chain-ready",
+              chainId: msg.chainId,
+            })
+          } catch (error) {
+            removeChain(msg.chainId)
+            postMessage(port, {
+              origin: "substrate-connect-extension",
+              type: "error",
+              chainId: msg.chainId,
+              errorMessage:
+                error instanceof Error
+                  ? error.toString()
+                  : "Unknown error when adding chain",
+            })
+          }
+
+          return
+        }
+
+        case "rpc": {
+          const { chain } = activeChains[msg.chainId]
+
+          // If the chainId is invalid, the message is silently discarded, as documented.
+          if (!chain) return
+
+          try {
+            chain.sendJsonRpc(msg.jsonRpcMessage)
+          } catch (error) {
+            removeChain(msg.chainId)
+            postMessage(port, {
+              origin: "substrate-connect-extension",
+              type: "error",
+              chainId: msg.chainId,
+              errorMessage:
+                error instanceof Error
+                  ? error.toString()
+                  : "Unknown error when sending RPC message",
+            })
+          }
+
+          return
+        }
+
+        case "remove-chain": {
+          // If the chainId is invalid, the message is silently discarded, as documented.
+          removeChain(msg.chainId)
+          return
+        }
+      }
+    })
+  } else {
+    console.warn("unrecognized port.name", port.name, port.sender?.tab?.url)
+  }
 })

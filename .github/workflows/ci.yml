@@ -7,34 +7,13 @@ on:
     branches: [ main ]
 
 jobs:
-  check-extension-versions:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3.5.3
-    - id: package-version
-      run: echo "version=`jq .version ./projects/extension/package.json`" >> $GITHUB_OUTPUT
-    - id: webpack-version
-      run: echo "version=`grep -rnw './projects/extension/webpack.config.js' -e 'PKG_VERSION' | grep -o '".*"'`" >> $GITHUB_OUTPUT
-    - id: manifest-version-2
-      run: echo "version=`jq .version ./projects/extension/public/manifest-v2.json`" >> $GITHUB_OUTPUT
-    - id: manifest-version-3
-      run: echo "version=`jq .version ./projects/extension/public/manifest-v3.json`" >> $GITHUB_OUTPUT
-    - run: exit 1
-      if: ${{ steps.package-version.outputs.version != steps.webpack-version.outputs.version }}
-    - run: exit 1
-      if: ${{ steps.package-version.outputs.version != steps.manifest-version-2.outputs.version }}
-    - run: exit 1
-      if: ${{ steps.package-version.outputs.version != steps.manifest-version-3.outputs.version }}
-    - run: exit 1
-      if: ${{steps.package-version.outputs.version == '' || steps.webpack-version.outputs.version == ''  || steps.manifest-version-2.outputs.version == '' || steps.manifest-version-3.outputs.version == ''}}
-
   build:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        # TODO: re-enable Node 20.x after https://github.com/nodejs/node/pull/49500
+        node-version: [16.x, 18.x, "20.5"]
 
     steps:
     - uses: actions/checkout@v3.5.3
@@ -42,6 +21,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+        cache: yarn
     - run: yarn install --immutable
     - run: yarn checkResolutions
     - run: yarn build
@@ -51,7 +31,7 @@ jobs:
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
     # are successful.
-    needs: [check-extension-versions, build]
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
      - run: echo Success
