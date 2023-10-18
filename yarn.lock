@@ -2837,7 +2837,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/connect@0.7.33, @substrate/connect@workspace:packages/connect":
+"@substrate/connect@0.7.34, @substrate/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@substrate/connect@workspace:packages/connect"
   dependencies:
@@ -3184,12 +3184,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.2.6":
-  version: 18.2.6
-  resolution: "@types/react-dom@npm:18.2.6"
+"@types/react-dom@npm:^18.2.12":
+  version: 18.2.12
+  resolution: "@types/react-dom@npm:18.2.12"
   dependencies:
     "@types/react": "*"
-  checksum: b56e42efab121a3a8013d2eb8c1688e6028a25ea6d33c4362d2846f0af3760b164b4d7c34846614024cfb8956cca70dd1743487f152e32ff89a00fe6fbd2be54
+  checksum: 64eaf808e91c1d58270ea92dda0e0cbb671f7289be4a5a4e0ccbd85857dd69394970eaa403d958dfbca739735c0af9cde4cf8fe135ff34434838360beae8d306
   languageName: node
   linkType: hard
 
@@ -11045,7 +11045,7 @@ __metadata:
     "@types/node": ^18.16.17
     "@types/qrcode.react": ^1.0.2
     "@types/react": ^18.2.14
-    "@types/react-dom": ^18.2.6
+    "@types/react-dom": ^18.2.12
     "@types/react-router-dom": ^5.3.3
     "@typescript-eslint/parser": ^6.7.0
     concurrently: ^8.2.1
