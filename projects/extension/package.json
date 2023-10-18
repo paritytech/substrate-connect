@@ -50,6 +50,6 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
     "scale-ts": "^1.4.1",
-    "smoldot": "2.0.1"
+    "smoldot": "2.0.6"
   }
 }
