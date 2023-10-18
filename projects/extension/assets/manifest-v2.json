@@ -4,23 +4,24 @@
   "homepage_url": "https://github.com/paritytech/substrate-connect",
   "name": "Substrate Connect Extension",
   "short_name": "substrate-connect",
-  "version": "0.2.9",
-  "manifest_version": 3,
+  "version": "0.0.0",
+  "manifest_version": 2,
   "permissions": ["notifications", "storage", "tabs", "alarms"],
   "background": {
-    "service_worker": "background.js"
+    "scripts": ["background/background.js"],
+    "type": "module"
   },
-  "action": {
+  "browser_action": {
     "default_title": "Substrate Connect",
-    "default_popup": "popup.html"
+    "default_popup": "ui/assets/popup.html"
   },
   "options_ui": {
-    "page": "options.html",
+    "page": "ui/assets/options.html",
     "open_in_tab": true
   },
   "content_scripts": [
     {
-      "js": ["content.js"],
+      "js": ["content/content.js"],
       "matches": ["http://*/*", "https://*/*"],
       "run_at": "document_start"
     }
@@ -31,7 +32,5 @@
     "48": "./icons/icon-48.png",
     "128": "./icons/icon-128.png"
   },
-  "content_security_policy": {
-    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
-  }
+  "content_security_policy": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
 }

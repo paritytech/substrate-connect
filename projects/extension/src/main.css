@@ -1,6 +1,7 @@
 @font-face {
   font-family: "Web3-Regular";
-  src: url("./fonts/Web3-Regular.woff") format("woff"),
+  src:
+    url("./fonts/Web3-Regular.woff") format("woff"),
     url("./fonts/Web3-Regular.woff2") format("woff2");
 }
 

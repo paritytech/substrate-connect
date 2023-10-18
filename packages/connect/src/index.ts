@@ -4,7 +4,7 @@
  * Connecting to a chain is done in two steps:
  *
  * 1. Call {@link createScClient}, which gives you a so-called *client*.
- * 2. Call {@link addChain} or {@link addWellKnownChain} on this client.
+ * 2. Call {@link ScClient.addChain addChain} or {@link ScClient.addWellKnownChain addWellKnownChain} on this client.
  *
  * Note that this library is a low-level library where you directly send JSON-RPC requests and
  * receive responses.
@@ -14,10 +14,10 @@
  * # Adding parachains
  *
  * Connecting to a parachain is done the same way as connecting to a standalone chain: obtaining
- * a client then calling {@link addChain}.
+ * a client then calling {@link ScClient.addChain addChain}.
  *
- * However, if you call {@link addChain} with a parachain chain specification, you **must** have
- * connected to its corresponding relay chain beforehand (using {@link addChain} or {@link addWellKnownChain}).
+ * However, if you call {@link ScClient.addChain addChain} with a parachain chain specification, you **must** have
+ * connected to its corresponding relay chain beforehand (using {@link ScClient.addChain addChain} or {@link ScClient.addWellKnownChain addWellKnownChain}).
  * Failing to do so will lead to an error at the initialization of the parachain.
  *
  * Furthermore, the parachain must be added to the same client object as the one the relay chain
@@ -68,17 +68,41 @@
  * Using {@link WellKnownChain}s doesn't provide any benefit when the substrate-connect extension is not
  * installed.
  *
- * If, however, the substrate-connect extension is installed, using {@link addWellKnownChain} has several
+ * If, however, the substrate-connect extension is installed, using {@link ScClient.addWellKnownChain addWellKnownChain} has several
  * benefits:
  *
  * - The web page that uses substrate-connect doesn't need to download the chain specification of
  * a well-known chain from the web server, as this chain specification is already known by the
  * extension.
  * - The extension starts connect to well-known chains when the browser initializes, meaning that
- * when {@link addWellKnownChain} is called, it is likely that the chain in question has already been
+ * when {@link ScClient.addWellKnownChain addWellKnownChain} is called, it is likely that the chain in question has already been
  * fully synchronized.
  * - Furthermore, the extension stores the state of all the well-known chains in the browser's
  * local storage. This leads to a very quick initialization time.
+ *
+ * # Usage with a worker
+ * By default, when the substrate-connect extension is not installed, {@link createScClient} will run the smoldot light
+ * client entirely in the current thread. This can cause performance issues if other CPU-heavy operations are done in
+ * that thread.
+ *
+ * In order to help with this, it possible to run the smoldot light client in a worker.
+ * To do so, you must provide a {@link EmbeddedNodeConfig.workerFactory workerFactory} to {@link createScClient}
+ * and setup the worker to import `@substrate/connect/worker`.
+ *
+ * For example
+ *
+ * ```js
+ * // worker.mjs
+ * import "@substrate/connect/worker"
+ *
+ * // main.mjs
+ * import { createScClient } from "@substrate/connect"
+ * createScClient({
+ *   embeddedNodeConfig: {
+ *     workerFactory: () => new Worker("./worker.mjs"),
+ *   },
+ * })
+ * ```
  *
  * @packageDocumentation
  */

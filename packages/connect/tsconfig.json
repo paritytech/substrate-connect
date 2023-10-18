@@ -1,23 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
-    "rootDir": "./src",
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
+    "rootDir": "src",
     "downlevelIteration": true
   },
-  "exclude": [
-    "**/*.test.ts",
-    "jest.config*",
-    "tsconfig*",
-    "*node_modules*",
-    "../../node_modules*"
-  ],
-  "include": ["src/**/*", "src/**/*.json"],
+  "include": ["src"],
   "references": [{ "path": "../connect-extension-protocol/tsconfig-mjs.json" }]
 }
