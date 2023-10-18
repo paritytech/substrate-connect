@@ -10,6 +10,13 @@ import { PORTS } from "../shared"
 import type { ToBackground, ToContent } from "../protocol"
 import { loadWellKnownChains } from "./loadWellKnownChains"
 
+const wellKnownChainNames: Record<string, string> = {
+  westend2: "Westend",
+  polkadot: "Polkadot",
+  ksmcc3: "Kusama",
+  rococo_v2_2: "Rococo",
+}
+
 enqueueAsyncFn(() => environment.clearAllActiveChains())
 
 const scClient = createScClient({
@@ -216,7 +223,7 @@ chrome.runtime.onConnect.addListener((port) => {
                 chainId: msg.chainId,
                 isWellKnown,
                 chainName: isWellKnown
-                  ? msg.chainName
+                  ? wellKnownChainNames[msg.chainName] ?? msg.chainName
                   : (JSON.parse(msg.chainSpec).name as string),
                 isSyncing: false,
                 peers: 0,

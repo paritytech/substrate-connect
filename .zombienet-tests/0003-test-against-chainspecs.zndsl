@@ -2,7 +2,7 @@ Description: Simple Parachain Smoke Test
 Network: ./0003-test-against-chainspecs.toml
 Creds: config
 
-polkadot: js-script ./0003-test-against-chainspecs.js within 50 seconds
-ksmcc3: js-script ./0003-test-against-chainspecs.js within 50 seconds
-westend2: js-script ./0003-test-against-chainspecs.js within 50 seconds
-rococo: js-script ./0003-test-against-chainspecs.js within 120 seconds
+polkadot: ts-script ./0003-test-against-chainspecs.ts within 120 seconds
+ksmcc3: ts-script ./0003-test-against-chainspecs.ts within 120 seconds
+westend2: ts-script ./0003-test-against-chainspecs.ts within 120 seconds
+rococo: ts-script ./0003-test-against-chainspecs.ts within 120 seconds

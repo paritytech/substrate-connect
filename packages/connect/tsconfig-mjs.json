@@ -3,7 +3,8 @@
   "compilerOptions": {
     "module": "es2020",
     "outDir": "./dist/mjs",
-    "target": "ES2018"
+    "target": "ES2018",
+    "noEmit": false
   },
   "references": [{ "path": "../connect-extension-protocol/tsconfig-mjs.json" }]
 }
