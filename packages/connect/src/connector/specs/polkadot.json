@@ -3,22 +3,12 @@
   "id": "polkadot",
   "chainType": "Live",
   "bootNodes": [
-    "/dns/polkadot-connect-0.parity.io/tcp/443/wss/p2p/12D3KooWEPmjoRpDSUuiTjvyNDd8fejZ9eNWH5bE965nyBMDrB4o",
-    "/dns/polkadot-connect-1.parity.io/tcp/443/wss/p2p/12D3KooWLvcA24g6sT9YTaQyinwowMbLF5z7iMLoxZpEiV9pSmNf",
-    "/dns/polkadot-connect-2.parity.io/tcp/443/wss/p2p/12D3KooWDhp18HYzJuVX2jLhtjQgAhT1XWGqah42StoUJpkLvh2o",
-    "/dns/polkadot-connect-3.parity.io/tcp/443/wss/p2p/12D3KooWEsPEadSjLAPyxckqVJkp54aVdPuX3DD6a1FTL2y5cB9x",
-    "/dns/polkadot-connect-4.parity.io/tcp/443/wss/p2p/12D3KooWFfG1SQvcPoUK2N41cx7r52KYXKpRtZxfLZk8xtVzpp4d",
-    "/dns/polkadot-connect-5.parity.io/tcp/443/wss/p2p/12D3KooWDmQPkBvQGg9wjBdFThtWj3QCDVQyHJ1apfWrHvjwbYS8",
-    "/dns/polkadot-connect-6.parity.io/tcp/443/wss/p2p/12D3KooWBKtPpCnVTTzD7fPpCdFsrsYZ5K8fwmsLabb1JBuCycYs",
-    "/dns/polkadot-connect-7.parity.io/tcp/443/wss/p2p/12D3KooWP3BsFY6UaiLjEJ3YbDp6q6SMQgAHB15qKj41DUZQLMqD",
-    "/dns/p2p.0.polkadot.network/tcp/30333/p2p/12D3KooWHsvEicXjWWraktbZ4MQBizuyADQtuEGr3NbDvtm5rFA5",
-    "/dns/p2p.1.polkadot.network/tcp/30333/p2p/12D3KooWQz2q2UWVCiy9cFX1hHYEmhSKQB2hjEZCccScHLGUPjcc",
-    "/dns/p2p.2.polkadot.network/tcp/30333/p2p/12D3KooWNHxjYbDLLbDNZ2tq1kXgif5MSiLTUWJKcDdedKu4KaG8",
-    "/dns/p2p.3.polkadot.network/tcp/30333/p2p/12D3KooWGJQysxrQcSvUWWNw88RkqYvJhH3ZcDpWJ8zrXKhLP5Vr",
-    "/dns/p2p.4.polkadot.network/tcp/30333/p2p/12D3KooWKer8bYqpYjwurVABu13mkELpX2X7mSpEicpjShLeg7D6",
-    "/dns/p2p.5.polkadot.network/tcp/30333/p2p/12D3KooWSRjL9LcEQd5u2fQTbyLxTEHq1tUFgQ6amXSp8Eu7TfKP",
-    "/dns/cc1-0.parity.tech/tcp/30333/p2p/12D3KooWSz8r2WyCdsfWHgPyvD8GKQdJ1UAiRmrcrs8sQB3fe2KU",
-    "/dns/cc1-1.parity.tech/tcp/30333/p2p/12D3KooWFN2mhgpkJsDBuNuE5427AcDrsib8EoqGMZmkxWwx3Md4"
+    "/dns/polkadot-bootnode-0.polkadot.io/tcp/30333/p2p/12D3KooWSz8r2WyCdsfWHgPyvD8GKQdJ1UAiRmrcrs8sQB3fe2KU",
+    "/dns/polkadot-bootnode-0.polkadot.io/tcp/30334/ws/p2p/12D3KooWSz8r2WyCdsfWHgPyvD8GKQdJ1UAiRmrcrs8sQB3fe2KU",
+    "/dns/polkadot-bootnode-0.polkadot.io/tcp/443/wss/p2p/12D3KooWSz8r2WyCdsfWHgPyvD8GKQdJ1UAiRmrcrs8sQB3fe2KU",
+    "/dns/polkadot-bootnode-1.polkadot.io/tcp/30333/p2p/12D3KooWFN2mhgpkJsDBuNuE5427AcDrsib8EoqGMZmkxWwx3Md4",
+    "/dns/polkadot-bootnode-1.polkadot.io/tcp/30334/ws/p2p/12D3KooWFN2mhgpkJsDBuNuE5427AcDrsib8EoqGMZmkxWwx3Md4",
+    "/dns/polkadot-bootnode-1.polkadot.io/tcp/443/wss/p2p/12D3KooWFN2mhgpkJsDBuNuE5427AcDrsib8EoqGMZmkxWwx3Md4"
   ],
   "telemetryEndpoints": [
     [
