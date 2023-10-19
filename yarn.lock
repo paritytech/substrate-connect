@@ -3567,12 +3567,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.2.12":
-  version: 18.2.12
-  resolution: "@types/react-dom@npm:18.2.12"
+"@types/react-dom@npm:^18.2.14":
+  version: 18.2.14
+  resolution: "@types/react-dom@npm:18.2.14"
   dependencies:
     "@types/react": "*"
-  checksum: 64eaf808e91c1d58270ea92dda0e0cbb671f7289be4a5a4e0ccbd85857dd69394970eaa403d958dfbca739735c0af9cde4cf8fe135ff34434838360beae8d306
+  checksum: 890289c70d1966c168037637c09cacefe6205bdd27a33252144a6b432595a2943775ac1a1accac0beddaeb67f8fdf721e076acb1adc990b08e51c3d9fd4e780c
   languageName: node
   linkType: hard
 
@@ -11458,7 +11458,7 @@ __metadata:
     "@types/node": ^18.16.17
     "@types/qrcode.react": ^1.0.2
     "@types/react": ^18.2.14
-    "@types/react-dom": ^18.2.12
+    "@types/react-dom": ^18.2.14
     "@types/react-router-dom": ^5.3.3
     "@typescript-eslint/parser": ^6.7.0
     concurrently: ^8.2.1
