@@ -2292,9 +2292,9 @@ __metadata:
   linkType: hard
 
 "@polkadot-api/json-rpc-provider@npm:^0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0":
-  version: 0.0.1-a068bbd81829afc0db2bacebd6211ec617934d48.1.0
-  resolution: "@polkadot-api/json-rpc-provider@npm:0.0.1-a068bbd81829afc0db2bacebd6211ec617934d48.1.0"
-  checksum: 4b752616ebebe7557e59b11e7ee01e61d803e13e520c0ce2b719cf6418d498a680da1308dab5a53da31dad42b9f9db0a9ab2fdfeb60bf7de004309972f274c43
+  version: 0.0.1-fdc7d00297555a1dd912444a04b728f22f7e1a4d.1.0
+  resolution: "@polkadot-api/json-rpc-provider@npm:0.0.1-fdc7d00297555a1dd912444a04b728f22f7e1a4d.1.0"
+  checksum: 5c5742da80eb470d8593329de9504ce48471132a33fcaf96635fc6201dfe87d144260a165c201771fcd58b1250649d6aac6aec2badfd8f5e988279018abe3fde
   languageName: node
   linkType: hard
 
