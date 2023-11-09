@@ -1,6 +1,10 @@
 import { FunctionComponent, useEffect, useState } from "react"
 import pckg from "../../package.json"
-import { MdOutlineNetworkCell, MdOutlineOnlinePrediction } from "react-icons/md"
+import {
+  MdOutlineNetworkCell,
+  MdOutlineOnlinePrediction,
+  MdOutlineSupervisorAccount,
+} from "react-icons/md"
 import { FaGithub } from "react-icons/fa"
 import * as environment from "../environment"
 import { NetworkTabProps } from "../types"
@@ -11,6 +15,7 @@ import {
   Networks,
   Bootnodes,
 } from "../components"
+import { AccountsList } from "../components/AccountsListOptions"
 
 type MenuItemTypes = "item" | "title" | "icon"
 
@@ -141,6 +146,17 @@ export const Options: FunctionComponent = () => {
           </div>
         </div>
         <ul className="relative px-1 pt-10">
+          {/* TODO: Fix The accounts */}
+          <li className="relative">
+            <a
+              className={cName("item", menu, 1)}
+              href="#!"
+              onClick={() => setMenu(2)}
+            >
+              <MdOutlineSupervisorAccount className={cName("icon", menu, 1)} />
+              <span className={cName("title", menu, 1)}>Accounts</span>
+            </a>
+          </li>
           <li className="relative">
             <a
               className={cName("item", menu, 0)}
@@ -181,12 +197,13 @@ export const Options: FunctionComponent = () => {
           </div>
         </div>
       </div>
-      <div className="ml-60 absolute w-[calc(100%-15rem)] h-[100vh] overflow-auto">
+      <div className="pt-6 ml-60 absolute w-[calc(100%-15rem)] h-[100vh] overflow-auto">
         <MenuContent activeMenu={menu}>
           {/** Networks section */}
           <Networks networks={networks} />
           {/**Bootnodes section */}
           <Bootnodes />
+          <AccountsList />
         </MenuContent>
       </div>
     </>

@@ -1,3 +1,3 @@
 export { Options } from "./Options"
-export { default as Popup } from "./Popup"
-export { default as Logo } from "../components/Logo"
+export { Popup } from "./Popup"
+export { Logo } from "../components/Logo"

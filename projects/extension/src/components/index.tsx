@@ -1,4 +1,4 @@
-export { default as Logo } from "./Logo"
+export { Logo } from "./Logo"
 export { default as light } from "./theme"
 export { default as NetworkTab } from "./NetworkTab"
 export { MenuContent } from "./MenuContent"

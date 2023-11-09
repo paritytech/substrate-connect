@@ -173,8 +173,8 @@ export const Accordion = ({
           <AccordionItem
             title={title}
             value={index.toString()}
-            titleClass={titleClass}
-            contentClass={contentClass}
+            titleclassName={titleClass}
+            contentclassName={contentClass}
             status={stat}
             showTitleIcon={showTitleIcon}
           >

@@ -3,7 +3,7 @@ interface LogoProps {
   cName?: string
 }
 
-const Logo = ({ textSize, cName }: LogoProps) => {
+export const Logo = ({ textSize, cName }: LogoProps) => {
   const c = `${
     textSize ? `text-${textSize}` : ""
   } font-poppins font-semibold text-black `
@@ -15,5 +15,3 @@ const Logo = ({ textSize, cName }: LogoProps) => {
     </div>
   )
 }
-
-export default Logo
