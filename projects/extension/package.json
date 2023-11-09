@@ -43,6 +43,9 @@
     "web-ext": "^7.6.2"
   },
   "dependencies": {
+    "@polkadot-cloud/core": "^1.0.45",
+    "@polkadot-cloud/react": "^0.1.124",
+    "@polkadot-cloud/utils": "^0.0.25",
     "@substrate/connect": "*",
     "@substrate/connect-extension-protocol": "*",
     "@unstoppablejs/utils": "^1.1.0",
