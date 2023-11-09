@@ -4,6 +4,7 @@ import {
   IconProps,
   TitleProps,
 } from "@polkadot-cloud/react/recipes/AccountCard"
+import { IconWeb3 } from "./IconWeb3"
 
 const make = (length: number) => {
   var result = ""
@@ -24,7 +25,7 @@ const titleProps: TitleProps = {
 const ellipsisProps: EllipsisProps = {
   active: true,
   position: "center",
-  amount: 13,
+  amount: 12,
 }
 
 const iconProps: IconProps = {
@@ -48,6 +49,15 @@ export const AccountsList = () => {
           })}
           ellipsis={ellipsisProps}
           icon={iconProps}
+          extraComponent={{
+            component: (
+              <IconWeb3 textSize="sm" isWellKnown>
+                polkadot
+              </IconWeb3>
+            ),
+            position: "right",
+            gridSize: 2,
+          }}
         />
         <AccountCard
           style={{ margin: "0.5rem 0" }}
@@ -56,6 +66,15 @@ export const AccountsList = () => {
           })}
           ellipsis={ellipsisProps}
           icon={iconProps}
+          extraComponent={{
+            component: (
+              <IconWeb3 textSize="sm" isWellKnown>
+                kusama
+              </IconWeb3>
+            ),
+            position: "right",
+            gridSize: 2,
+          }}
         />
         <AccountCard
           style={{ margin: "0.5rem 0" }}
@@ -64,6 +83,15 @@ export const AccountsList = () => {
           })}
           ellipsis={ellipsisProps}
           icon={iconProps}
+          extraComponent={{
+            component: (
+              <IconWeb3 textSize="sm" isWellKnown>
+                westend
+              </IconWeb3>
+            ),
+            position: "right",
+            gridSize: 2,
+          }}
         />
       </div>
     </div>

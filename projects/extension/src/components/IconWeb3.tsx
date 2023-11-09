@@ -5,6 +5,7 @@ import "../main.css"
 interface Props {
   isWellKnown?: boolean
   children?: string
+  textSize?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl"
 }
 
 // Only the 4 well-known chains should ever have icons. It is not the responsibility of this
@@ -15,11 +16,14 @@ const hasGlyph = (string: string) =>
 export const IconWeb3: FunctionComponent<Props> = ({
   children,
   isWellKnown,
+  textSize = "xl",
 }) => {
   return (
     <>
       {isWellKnown && children && hasGlyph(children) ? (
-        <span className="icon text-xl w-10">{children}</span>
+        <span className={`icon text-${textSize as string} w-10`}>
+          {children}
+        </span>
       ) : (
         <MdOutlineGridView className="ml-2.5 mt-1.5 mr-1.5" />
       )}

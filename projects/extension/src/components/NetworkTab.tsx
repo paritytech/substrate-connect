@@ -66,6 +66,7 @@ const NetworkTab: FunctionComponent<NetworkTabProps> = ({
   const contents = [
     <NetworkContent health={health} apps={apps} network={name} />,
   ]
+  console.log("name", name)
   return (
     <div className="flex w-full mb-3 items-baseline font-roboto">
       <Accordion

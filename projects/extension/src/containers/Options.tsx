@@ -15,7 +15,7 @@ import {
   Networks,
   Bootnodes,
 } from "../components"
-import { AccountsList } from "../components/AccountsListOptions"
+import { AccountsListOptions } from "../components/AccountsListOptions"
 
 type MenuItemTypes = "item" | "title" | "icon"
 
@@ -203,7 +203,7 @@ export const Options: FunctionComponent = () => {
           <Networks networks={networks} />
           {/**Bootnodes section */}
           <Bootnodes />
-          <AccountsList />
+          <AccountsListOptions />
         </MenuContent>
       </div>
     </>

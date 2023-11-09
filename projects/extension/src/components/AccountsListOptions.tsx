@@ -4,6 +4,7 @@ import {
   IconProps,
   TitleProps,
 } from "@polkadot-cloud/react/recipes/AccountCard"
+import { IconWeb3 } from "./IconWeb3"
 
 const make = (length: number) => {
   var result = ""
@@ -19,16 +20,11 @@ const make = (length: number) => {
 const titleProps: TitleProps = {
   // name: make(Math.random() * (12 - 6) + 6),
   address: make(32),
-}
-
-const ellipsisProps: EllipsisProps = {
-  active: true,
-  position: "center",
-  amount: 13,
+  justify: "flex-start",
 }
 
 const iconProps: IconProps = {
-  size: 32,
+  size: 36,
   copy: true,
   position: "left",
   dark: false,
@@ -36,36 +32,59 @@ const iconProps: IconProps = {
   justify: "flex-start",
 }
 
-export const AccountsList = () => {
+const accountStyle = {
+  margin: "0.5rem 0",
+  padding: "1rem",
+  backgroundColor: "white",
+}
+
+export const AccountsListOptions = () => {
   return (
-    <div>
+    <section
+      className="mx-0 md:mx-12 xl:mx-36 2xl:mx-36"
+      style={{ width: "50%" }}
+    >
+      <div className="font-inter font-bold text-3xl pb-4">Accounts</div>
       {/* TODO: Fix The accounts */}
-      <div style={{ margin: "1rem" }}>
-        <AccountCard
-          style={{ margin: "0.5rem 0" }}
-          title={Object.assign({}, titleProps, {
-            address: "5FsfHTe8DyyXiAo6AAubX8CS5KWjvKaENf5c8iXr52cJn6B3",
-          })}
-          ellipsis={ellipsisProps}
-          icon={iconProps}
-        />
-        <AccountCard
-          style={{ margin: "0.5rem 0" }}
-          title={Object.assign({}, titleProps, {
-            address: "5FUB8bMYR3yu8dK7uiYTg96kQqQmCWK12LTRmQK8phVfXKvf",
-          })}
-          ellipsis={ellipsisProps}
-          icon={iconProps}
-        />
-        <AccountCard
-          style={{ margin: "0.5rem 0" }}
-          title={Object.assign({}, titleProps, {
-            address: "14tr1o5qdDUEywX8s2HDxoj6UJNPMcE6yphvYpUQ5GdTxcAN",
-          })}
-          ellipsis={ellipsisProps}
-          icon={iconProps}
-        />
-      </div>
-    </div>
+      <AccountCard
+        fontSize="medium"
+        style={accountStyle}
+        icon={iconProps}
+        title={Object.assign({}, titleProps, {
+          address: "5FsfHTe8DyyXiAo6AAubX8CS5KWjvKaENf5c8iXr52cJn6B3",
+        })}
+        extraComponent={{
+          component: <IconWeb3 isWellKnown>polkadot</IconWeb3>,
+          position: "right",
+          gridSize: 1,
+        }}
+      />
+      <AccountCard
+        fontSize="medium"
+        style={accountStyle}
+        icon={iconProps}
+        title={Object.assign({}, titleProps, {
+          address: "5FUB8bMYR3yu8dK7uiYTg96kQqQmCWK12LTRmQK8phVfXKvf",
+        })}
+        extraComponent={{
+          component: <IconWeb3 isWellKnown>kusama</IconWeb3>,
+          position: "right",
+          gridSize: 1,
+        }}
+      />
+      <AccountCard
+        fontSize="medium"
+        style={accountStyle}
+        icon={iconProps}
+        title={Object.assign({}, titleProps, {
+          address: "14tr1o5qdDUEywX8s2HDxoj6UJNPMcE6yphvYpUQ5GdTxcAN",
+        })}
+        extraComponent={{
+          component: <IconWeb3 isWellKnown>westend</IconWeb3>,
+          position: "right",
+          gridSize: 1,
+        }}
+      />
+    </section>
   )
 }
