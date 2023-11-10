@@ -42,13 +42,11 @@ function getRandomChainId(): string {
  * `Promise`s will never resolve.
  */
 export const createScClient = (): ScClient => {
-  const chains = new Map<Chain, string>()
-
   const internalAddChain = async (
     isWellKnown: boolean,
     chainSpecOrWellKnownName: string,
     jsonRpcCallback?: JsonRpcCallback,
-    potentialRelayChainIds = [] as string[],
+    relayChainId?: string,
   ): Promise<Chain> => {
     type ChainState =
       | {
@@ -168,7 +166,7 @@ export const createScClient = (): ScClient => {
         chainId: chainState.id,
         type: "add-chain",
         chainSpec: chainSpecOrWellKnownName,
-        potentialRelayChainIds,
+        potentialRelayChainIds: relayChainId ? [relayChainId] : [],
       })
     }
 
@@ -235,7 +233,6 @@ export const createScClient = (): ScClient => {
         }
 
         listeners.delete(chainState.id)
-        chains.delete(chain)
 
         postToExtension({
           origin: "substrate-connect-client",
@@ -243,17 +240,25 @@ export const createScClient = (): ScClient => {
           type: "remove-chain",
         })
       },
+      addChain: function (
+        chainSpec: string,
+        jsonRpcCallback?: JsonRpcCallback | undefined,
+      ): Promise<Chain> {
+        return internalAddChain(
+          false,
+          chainSpec,
+          jsonRpcCallback,
+          chainState.id,
+        )
+      },
     }
-
-    // This mapping of chains is kept just for the `potentialRelayChainIds` field.
-    chains.set(chain, chainState.id)
 
     return chain
   }
 
   return {
     addChain: (chainSpec: string, jsonRpcCallback?: JsonRpcCallback) =>
-      internalAddChain(false, chainSpec, jsonRpcCallback, [...chains.values()]),
+      internalAddChain(false, chainSpec, jsonRpcCallback),
     addWellKnownChain: (
       name: WellKnownChain,
       jsonRpcCallback?: JsonRpcCallback,

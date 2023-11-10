@@ -49,6 +49,36 @@ export interface Chain {
    * @throws {CrashError} If the background client has crashed.
    */
   remove(): void
+
+  /**
+   * Connects to a parachain.
+   *
+   * Throws an exception if the chain specification isn't valid, or if the chain specification
+   * concerns a parachain but no corresponding relay chain can be found.
+   *
+   * Substrate-connect will automatically de-duplicate chains if multiple identical chains are
+   * added, in order to save resources. In other words, it is not a problem to call `addChain`
+   * multiple times with the same chain specifications and obtain multiple `Chain`.
+   * When the same client is used for multiple different purposes, you are in fact strongly
+   * encouraged to trust substrate-connect and not attempt to de-duplicate chains yourself, as
+   * determining whether two chains are identical is complicated and might have security
+   * implications.
+   *
+   * Substrate-connect tries to distribute CPU resources equally between all active `Chain`
+   * objects.
+   *
+   * @param chainSpec Specification of the chain to add.
+   
+   * @param jsonRpcCallback Callback invoked in response to calling {Chain.sendJsonRpc}.
+   * This field is optional. If no callback is provided, the client will save up resources by not
+   * starting the JSON-RPC endpoint, and it is forbidden to call {Chain.sendJsonRpc}.
+   * Will never be called after ̀{Chain.remove} has been called or if a {CrashError} has been
+   * generated.
+   *
+   * @throws {AddChainError} If the chain can't be added.
+   * @throws {CrashError} If the background client has crashed.
+   */
+  addChain: AddChain
 }
 
 export type JsonRpcCallback = (response: string) => void
@@ -56,7 +86,6 @@ export type JsonRpcCallback = (response: string) => void
 export type AddChain = (
   chainSpec: string,
   jsonRpcCallback?: JsonRpcCallback,
-  potentialRelayChains?: Chain[],
   databaseContent?: string,
 ) => Promise<Chain>
 
