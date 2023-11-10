@@ -10,81 +10,8 @@ import {
   type JsonRpcCallback,
   type ScClient,
 } from "./types.js"
-import {
-  RawChain,
-  getLightClientProvider,
-} from "@polkadot-api/light-client-extension-helpers/dist/web-page/web-page-helper.mjs"
 import { WellKnownChain } from "../WellKnownChain.js"
 import { getSpec } from "./specs/index.js"
-
-const lightClientProviderPromise = getLightClientProvider("ScClient")
-
-const wellKnownChainGenesisHashes: Record<string, string> = {
-  polkadot:
-    "0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3",
-  ksmcc3: "0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe",
-  westend2:
-    "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e",
-}
-
-export const createScClient = (): ScClient => {
-  const internalAddChain = async (
-    isWellKnown: boolean,
-    chainSpecOrWellKnownName: string,
-    jsonRpcCallback?: JsonRpcCallback,
-    relayChainGenesisHash?: string,
-  ): Promise<Chain> => {
-    const lightClientProvider = await lightClientProviderPromise
-
-    let chain: RawChain
-    if (isWellKnown) {
-      // TODO: double check if it's ok to assume that provider.getChains() will always return well known chains
-      const foundChain = Object.values(lightClientProvider.getChains()).find(
-        ({ genesisHash }) =>
-          genesisHash === wellKnownChainGenesisHashes[chainSpecOrWellKnownName],
-      )
-      if (!foundChain) throw new Error("Unknown well-known chain")
-      chain = foundChain
-    } else {
-      // TODO: double check how to infer relayChainGenesisHash based on potentialRelayChains
-      chain = await lightClientProvider.getChain(
-        chainSpecOrWellKnownName,
-        relayChainGenesisHash,
-      )
-    }
-
-    const jsonRpcProvider = chain.connect(jsonRpcCallback!)
-
-    return {
-      sendJsonRpc(rpc: string): void {
-        jsonRpcProvider.send(rpc)
-      },
-      remove() {
-        jsonRpcProvider.disconnect()
-      },
-      addChain: function (
-        chainSpec: string,
-        jsonRpcCallback?: JsonRpcCallback | undefined,
-      ): Promise<Chain> {
-        return internalAddChain(
-          false,
-          chainSpec,
-          jsonRpcCallback,
-          chain.genesisHash,
-        )
-      },
-    }
-  }
-
-  return {
-    addChain: (chainSpec: string, jsonRpcCallback?: JsonRpcCallback) =>
-      internalAddChain(false, chainSpec, jsonRpcCallback),
-    addWellKnownChain: (
-      name: WellKnownChain,
-      jsonRpcCallback?: JsonRpcCallback,
-    ) => internalAddChain(true, name, jsonRpcCallback),
-  }
-}
 
 const listeners = new Map<string, (msg: ToApplication) => void>()
 if (typeof window === "object") {
@@ -114,12 +41,14 @@ function getRandomChainId(): string {
  * If you try to add a chain without the extension installed, nothing will happen and the
  * `Promise`s will never resolve.
  */
-export const createScClientOld = (): ScClient => {
+export const createScClient = (): ScClient => {
+  const chains = new Map<Chain, string>()
+
   const internalAddChain = async (
     isWellKnown: boolean,
     chainSpecOrWellKnownName: string,
     jsonRpcCallback?: JsonRpcCallback,
-    relayChainId?: string,
+    potentialRelayChainIds = [] as string[],
   ): Promise<Chain> => {
     type ChainState =
       | {
@@ -239,7 +168,7 @@ export const createScClientOld = (): ScClient => {
         chainId: chainState.id,
         type: "add-chain",
         chainSpec: chainSpecOrWellKnownName,
-        potentialRelayChainIds: relayChainId ? [relayChainId] : [],
+        potentialRelayChainIds,
       })
     }
 
@@ -306,6 +235,7 @@ export const createScClientOld = (): ScClient => {
         }
 
         listeners.delete(chainState.id)
+        chains.delete(chain)
 
         postToExtension({
           origin: "substrate-connect-client",
@@ -317,21 +247,21 @@ export const createScClientOld = (): ScClient => {
         chainSpec: string,
         jsonRpcCallback?: JsonRpcCallback | undefined,
       ): Promise<Chain> {
-        return internalAddChain(
-          false,
-          chainSpec,
-          jsonRpcCallback,
+        return internalAddChain(false, chainSpec, jsonRpcCallback, [
           chainState.id,
-        )
+        ])
       },
     }
+
+    // This mapping of chains is kept just for the `potentialRelayChainIds` field.
+    chains.set(chain, chainState.id)
 
     return chain
   }
 
   return {
     addChain: (chainSpec: string, jsonRpcCallback?: JsonRpcCallback) =>
-      internalAddChain(false, chainSpec, jsonRpcCallback),
+      internalAddChain(false, chainSpec, jsonRpcCallback, [...chains.values()]),
     addWellKnownChain: (
       name: WellKnownChain,
       jsonRpcCallback?: JsonRpcCallback,

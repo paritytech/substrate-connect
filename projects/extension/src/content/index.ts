@@ -3,7 +3,7 @@ import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 
 const channelId = getRandomChannelId()
 
-register(channelId)
+register(`ScClient`)
 
 // Set up a promise for when the page is activated,
 // which is needed for prerendered pages.
@@ -31,6 +31,8 @@ window.document.addEventListener("readystatechange", () => {
   s.id = DOM_ELEMENT_ID
   s.setAttribute("style", "display:none")
   document.body.appendChild(s)
+
+  return
 
   window.addEventListener("message", async ({ data, source, origin }) => {
     await whenActivated
