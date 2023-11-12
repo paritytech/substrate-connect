@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Changed
+
+## 0.7.35 - 2023-11-12
+
+### Changed
+
+- Update smoldot@[version 2.0.7](https://github.com/smol-dot/smoldot/blob/main/wasm-node/CHANGELOG.md#207---2023-11-02)[#1602](https://github.com/paritytech/substrate-connect/pull/1602)
+- Fix code-spliting issue ([#1605](https://github.com/paritytech/substrate-connect/pull/1605))
+- Update dependencies ([#1606](https://github.com/paritytech/substrate-connect/pull/1606))
+
 ## 0.7.34 - 2023-10-18
 
 ### Changed
