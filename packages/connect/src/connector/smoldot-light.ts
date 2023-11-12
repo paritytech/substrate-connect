@@ -1,9 +1,8 @@
-import {
+import type {
   Chain as SChain,
   Client,
   ClientOptions,
   ClientOptionsWithBytecode,
-  QueueFullError,
 } from "smoldot"
 import { getSpec } from "./specs/index.js"
 import {
@@ -19,10 +18,15 @@ import { WellKnownChain } from "../WellKnownChain.js"
 
 const isBrowser = ![typeof window, typeof document].includes("undefined")
 
+let QueueFullError = class {}
+
 let startPromise: Promise<(options: ClientOptions) => Client> | null = null
 const getStart = () => {
   if (startPromise) return startPromise
-  startPromise = import("smoldot").then((sm) => sm.start)
+  startPromise = import("smoldot").then((sm) => {
+    QueueFullError = sm.QueueFullError
+    return sm.start
+  })
   return startPromise
 }
 
