@@ -1,17 +1,17 @@
-import {
-  AddChain,
-  AlreadyDestroyedError,
-  Chain,
-  ScClient,
-} from "@substrate/connect"
 import { compact } from "scale-ts"
 import { fromHex } from "@unstoppablejs/utils"
 
-type AddChainOptions = {
-  addChainOptions: Parameters<AddChain>
-  relayAddChainOptions?: Parameters<AddChain>
-}
+import type {
+  AddChain,
+  AddChainOptions as AddScChainOptions,
+  ScChain,
+} from "./addChain"
+import { AlreadyDestroyedError } from "smoldot"
 
+type AddChainOptions = {
+  addChainOptions: AddScChainOptions
+  relayAddChainOptions?: AddScChainOptions
+}
 export interface ChainInfo {
   isSyncing: boolean
   peers: number
@@ -21,14 +21,14 @@ export interface ChainInfo {
 }
 
 const sendJsonRpc = (
-  chain: Chain,
+  chain: ScChain,
   message: { id: string; method: string; params: any[] },
 ) => {
   chain.sendJsonRpc(JSON.stringify({ jsonrpc: "2.0", ...message }))
 }
 
 const trackChain = async (
-  scClient: ScClient,
+  addChain: AddChain,
   { addChainOptions, relayAddChainOptions }: AddChainOptions,
   onUpdate: (chainInfo: ChainInfo) => void,
 ) => {
@@ -176,14 +176,14 @@ const trackChain = async (
   }
 
   const relayChain = relayAddChainOptions
-    ? await scClient.addChain(
+    ? await addChain(
         relayAddChainOptions[0],
         undefined,
         relayAddChainOptions[2],
       )
     : undefined
 
-  const chain = await (relayChain ?? scClient).addChain(
+  const chain = await (relayChain?.addChain ?? addChain)(
     addChainOptions[0],
     onMessage,
     addChainOptions[2],
@@ -228,8 +228,7 @@ const trackChain = async (
 }
 
 export const trackChains = (
-  scClient: ScClient,
-  // FIXME: getActiveChainsOptions should return relayChainAddChainOptions for parachains
+  addChain: AddChain,
   getActiveChainsOptions: () => Record<string, AddChainOptions>,
   onUpdate: (chainInfo: ChainInfo & { chainId: string }) => void,
 ) => {
@@ -240,7 +239,7 @@ export const trackChains = (
     for (const [chainId, chainOptions] of Object.entries(chainsOptions)) {
       // @ts-ignore
       if (subscriptions[chainId]) continue
-      subscriptions[chainId] = trackChain(scClient, chainOptions, (chainInfo) =>
+      subscriptions[chainId] = trackChain(addChain, chainOptions, (chainInfo) =>
         onUpdate({ ...chainInfo, chainId }),
       )
     }
