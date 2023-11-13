@@ -1,5 +1,4 @@
 import { AddChainError } from "smoldot"
-import { AddChain, Chain, createScClient } from "@substrate/connect"
 
 import { updateDatabases } from "./updateDatabases"
 import { enqueueAsyncFn } from "./enqueueAsyncFn"
@@ -9,6 +8,7 @@ import * as environment from "../environment"
 import { PORTS } from "../shared"
 import type { ToBackground, ToContent } from "../protocol"
 import { loadWellKnownChains } from "./loadWellKnownChains"
+import { type AddChainOptions, type ScChain, addChain } from "./addChain"
 
 const wellKnownChainNames: Record<string, string> = {
   westend2: "Westend",
@@ -19,16 +19,10 @@ const wellKnownChainNames: Record<string, string> = {
 
 enqueueAsyncFn(() => environment.clearAllActiveChains())
 
-const scClient = createScClient({
-  embeddedNodeConfig: {
-    maxLogLevel: 3,
-  },
-})
-
-setInterval(() => updateDatabases(scClient), 120_000)
+setInterval(() => updateDatabases(addChain), 120_000)
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === "DatabaseContentAlarm") updateDatabases(scClient)
+  if (alarm.name === "DatabaseContentAlarm") updateDatabases(addChain)
 })
 
 chrome.runtime.onInstalled.addListener(({ reason }) => {
@@ -47,8 +41,8 @@ const activeChains: Record<
   string,
   {
     tab: chrome.tabs.Tab
-    chain?: Chain
-    addChainOptions?: Parameters<AddChain>
+    chain?: ScChain
+    addChainOptions?: AddChainOptions
   }
 > = {}
 
@@ -102,7 +96,7 @@ const postMessage = (port: chrome.runtime.Port, message: ToContent) =>
 chrome.runtime.onConnect.addListener((port) => {
   if ([PORTS.POPUP, PORTS.OPTIONS].includes(port.name)) {
     const untrackChains = trackChains(
-      scClient,
+      addChain,
       () =>
         Object.fromEntries(
           Object.entries(activeChains)
@@ -165,7 +159,7 @@ chrome.runtime.onConnect.addListener((port) => {
           const isWellKnown = msg.type === "add-well-known-chain"
 
           try {
-            let addChainOptions: Parameters<AddChain>
+            let addChainOptions: AddChainOptions
             const jsonRpcCallback = (jsonRpcMessage: string) => {
               postMessage(port, {
                 origin: "substrate-connect-extension",
@@ -203,7 +197,7 @@ chrome.runtime.onConnect.addListener((port) => {
                 ),
               ]
             }
-            const chain = await scClient.addChain(...addChainOptions)
+            const chain = await addChain(...addChainOptions)
 
             // As documented in the protocol, if a "remove-chain" message was received before
             // a "chain-ready" message was sent back, the chain can be discarded
