@@ -1,9 +1,9 @@
-import type { ScClient } from "@substrate/connect"
 import * as environment from "../environment"
+import { type AddChain } from "./addChain"
 import { loadWellKnownChains } from "./loadWellKnownChains"
 
 // TODO: use substrate-client when it supports custom RPC calls like chainHead_unstable_finalizedDatabase
-export const updateDatabases = async (client: ScClient) => {
+export const updateDatabases = async (addChain: AddChain) => {
   const wellKnownChains = [...(await loadWellKnownChains()).entries()]
   await Promise.allSettled(
     wellKnownChains.map(async ([chainName, chainSpec]) => {
@@ -28,7 +28,7 @@ export const updateDatabases = async (client: ScClient) => {
                   chain.remove()
                 }
               }
-              const chain = await client.addChain(
+              const chain = await addChain(
                 chainSpec,
                 (rawMessage) => {
                   const message = JSON.parse(rawMessage)

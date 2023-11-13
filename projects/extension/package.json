@@ -43,7 +43,6 @@
     "web-ext": "^7.8.0"
   },
   "dependencies": {
-    "@substrate/connect": "*",
     "@substrate/connect-extension-protocol": "*",
     "@unstoppablejs/utils": "^1.1.0",
     "react": "^18.2.0",
