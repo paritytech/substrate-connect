@@ -49,6 +49,6 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
     "scale-ts": "^1.4.2",
-    "smoldot": "2.0.6"
+    "smoldot": "2.0.7"
   }
 }
