@@ -43,7 +43,7 @@
     "web-ext": "^7.8.0"
   },
   "dependencies": {
-    "@polkadot-api/light-client-extension-helpers": "pr-164",
+    "@polkadot-api/light-client-extension-helpers": "next",
     "@substrate/connect-extension-protocol": "*",
     "@unstoppablejs/utils": "^1.1.0",
     "react": "^18.2.0",
