@@ -27,7 +27,9 @@ export type { EmbeddedNodeConfig }
 export const isExtensionPresent =
   typeof document === "object" &&
   typeof document.getElementById === "function" &&
-  !!document.getElementById(DOM_ELEMENT_ID)
+  !!document.getElementById(DOM_ELEMENT_ID) &&
+  document.getElementById(DOM_ELEMENT_ID)?.getAttribute("channelid") ===
+    DOM_ELEMENT_ID
 
 /**
  * Configuration that can be passed to {createScClient}.

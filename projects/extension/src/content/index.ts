@@ -1,21 +1,7 @@
 import { register } from "@polkadot-api/light-client-extension-helpers/content-script"
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 
-const channelId = getRandomChannelId()
-
-register(`ScClient`)
-
-// Set up a promise for when the page is activated,
-// which is needed for prerendered pages.
-const whenActivated = new Promise<void>((resolve) => {
-  // @ts-ignore
-  if (document.prerendering) {
-    // @ts-ignore
-    document.addEventListener("prerenderingchange", resolve)
-  } else {
-    resolve()
-  }
-})
+register(DOM_ELEMENT_ID)
 
 // inject as soon as possible the DOM element necessary for web pages to know that the extension
 // is available
@@ -30,29 +16,6 @@ window.document.addEventListener("readystatechange", () => {
   const s = document.createElement("span")
   s.id = DOM_ELEMENT_ID
   s.setAttribute("style", "display:none")
+  s.setAttribute("channelid", DOM_ELEMENT_ID)
   document.body.appendChild(s)
-
-  return
-
-  window.addEventListener("message", async ({ data, source, origin }) => {
-    await whenActivated
-
-    if (source !== window) return
-
-    if (!data?.channelId && data?.origin === "substrate-connect-client") {
-      window.postMessage({ channelId, msg: data }, origin)
-    } else if (
-      data?.channelId === channelId &&
-      data?.msg?.origin === "substrate-connect-extension"
-    ) {
-      window.postMessage(data.msg, origin)
-    }
-  })
 })
-
-function getRandomChannelId(): string {
-  const arr = new BigUint64Array(2)
-  crypto.getRandomValues(arr)
-  const result = (arr[1]! << BigInt(64)) | arr[0]!
-  return `substrate-connect-extension-${result.toString(36)}`
-}
