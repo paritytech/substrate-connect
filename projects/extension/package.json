@@ -43,13 +43,12 @@
     "web-ext": "^7.8.0"
   },
   "dependencies": {
-    "@substrate/connect": "*",
     "@substrate/connect-extension-protocol": "*",
     "@unstoppablejs/utils": "^1.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
     "scale-ts": "^1.4.2",
-    "smoldot": "2.0.7"
+    "smoldot": "2.0.6"
   }
 }
