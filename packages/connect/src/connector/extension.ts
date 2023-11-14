@@ -11,10 +11,10 @@ import {
   type JsonRpcCallback,
   type ScClient,
 } from "./types.js"
-import {
+import type {
   RawChain,
-  getLightClientProvider,
-} from "@polkadot-api/light-client-extension-helpers/dist/web-page/web-page-helper.mjs"
+  LightClientProvider,
+} from "@polkadot-api/light-client-extension-helpers/web-page"
 import { WellKnownChain } from "../WellKnownChain.js"
 import { getSpec } from "./specs/index.js"
 
@@ -28,9 +28,15 @@ const wellKnownChainGenesisHashes: Record<string, string> = {
     "0x6408de7737c59c238890533af25896a2c20608d8b380bb01029acb392781063e",
 }
 
-const lightClientProviderPromise = getLightClientProvider(DOM_ELEMENT_ID)
+let lightClientProviderPromise: Promise<LightClientProvider>
 
 export const createScClient = (): ScClient => {
+  if (!lightClientProviderPromise)
+    lightClientProviderPromise = import(
+      "@polkadot-api/light-client-extension-helpers/web-page"
+    ).then(({ getLightClientProvider }) =>
+      getLightClientProvider(DOM_ELEMENT_ID),
+    )
   const internalAddChain = async (
     isWellKnown: boolean,
     chainSpecOrWellKnownName: string,

@@ -7,8 +7,8 @@ import {
   type ToApplication,
   type ToExtension,
 } from "@substrate/connect-extension-protocol"
-import { createScClient } from "./extension"
-import { AlreadyDestroyedError, CrashError } from "./types"
+import { createScClient } from "./extension.js"
+import { AlreadyDestroyedError, CrashError } from "./types.js"
 
 // we have to fake this API on node
 import { WellKnownChain } from "../WellKnownChain.js"
