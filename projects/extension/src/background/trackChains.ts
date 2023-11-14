@@ -1,13 +1,7 @@
-import {
-  AddChain,
-  AlreadyDestroyedError,
-  Chain,
-  ScClient,
-} from "@substrate/connect"
 import { compact } from "scale-ts"
 import { fromHex } from "@unstoppablejs/utils"
-
-type AddChainOptions = Parameters<AddChain>
+import type { AddChain, AddChainOptions, ScChain } from "./addChain"
+import { AlreadyDestroyedError } from "smoldot"
 
 export interface ChainInfo {
   isSyncing: boolean
@@ -18,14 +12,14 @@ export interface ChainInfo {
 }
 
 const sendJsonRpc = (
-  chain: Chain,
+  chain: ScChain,
   message: { id: string; method: string; params: any[] },
 ) => {
   chain.sendJsonRpc(JSON.stringify({ jsonrpc: "2.0", ...message }))
 }
 
 const trackChain = async (
-  scClient: ScClient,
+  addChain: AddChain,
   [chainSpec, _, potentialRelayChains, databaseContent]: AddChainOptions,
   onUpdate: (chainInfo: ChainInfo) => void,
 ) => {
@@ -47,7 +41,7 @@ const trackChain = async (
     peers: 0,
   }
 
-  const chain = await scClient.addChain(
+  const chain = await addChain(
     chainSpec,
     (rawMessage) => {
       const message = JSON.parse(rawMessage)
@@ -215,7 +209,7 @@ const trackChain = async (
 }
 
 export const trackChains = (
-  scClient: ScClient,
+  addChain: AddChain,
   getActiveChainsOptions: () => Record<string, AddChainOptions>,
   onUpdate: (chainInfo: ChainInfo & { chainId: string }) => void,
 ) => {
@@ -226,7 +220,7 @@ export const trackChains = (
     for (const [chainId, chainOptions] of Object.entries(chainsOptions)) {
       // @ts-ignore
       if (subscriptions[chainId]) continue
-      subscriptions[chainId] = trackChain(scClient, chainOptions, (chainInfo) =>
+      subscriptions[chainId] = trackChain(addChain, chainOptions, (chainInfo) =>
         onUpdate({ ...chainInfo, chainId }),
       )
     }
