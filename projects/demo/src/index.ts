@@ -10,59 +10,18 @@ window.onload = () => {
   ui.showSyncing()
   void (async () => {
     try {
-      const westendProvider = new ScProvider(Sc, Sc.WellKnownChain.westend2)
-      const kusamaProvider = new ScProvider(Sc, Sc.WellKnownChain.ksmcc3)
-      const polkadotProvider = new ScProvider(Sc, Sc.WellKnownChain.polkadot)
-      await Promise.all(
-        [westendProvider, kusamaProvider, polkadotProvider].map((p) =>
-          p.connect(),
-        ),
-      )
-      const westend = await ApiPromise.create({ provider: westendProvider })
-      const kusama = await ApiPromise.create({ provider: kusamaProvider })
-      const polkadot = await ApiPromise.create({ provider: polkadotProvider })
-
-      const westendFnc = async () => {
-        const westendUI = document.getElementById("westend")
-        const westendHead = await westend.rpc.chain.getHeader()
-        if (westendUI) {
-          westendUI.innerText = westendHead?.number.toString()
-          await westend.rpc.chain.subscribeNewHeads(
-            (lastHeader: { number: { toString: () => string } }) => {
-              westendUI.innerText = "#" + lastHeader?.number.toString()
-            },
-          )
-        }
-      }
-
-      const kusamaFnc = async () => {
-        const kusamaUI = document.getElementById("kusama")
-        const kusamaHead = await kusama.rpc.chain.getHeader()
-        if (kusamaUI) {
-          kusamaUI.innerText = kusamaHead?.number.toString()
-          await kusama.rpc.chain.subscribeNewHeads((lastHeader) => {
-            kusamaUI.innerText = "#" + lastHeader?.number.toString()
-          })
-        }
-      }
-
-      const polkadotFnc = async () => {
-        const polkadotUI = document.getElementById("polkadot")
-        const polkadotHead = await polkadot.rpc.chain.getHeader()
-        if (polkadotUI) {
-          polkadotUI.innerText = polkadotHead?.number.toString()
-          await polkadot.rpc.chain.subscribeNewHeads((lastHeader) => {
-            polkadotUI.innerText = "#" + lastHeader?.number.toString()
-          })
-        }
-      }
-
-      await Promise.all([westendFnc(), kusamaFnc(), polkadotFnc()])
+      ;(
+        [
+          [Sc.WellKnownChain.polkadot, "polkadot"],
+          [Sc.WellKnownChain.ksmcc3, "kusama"],
+          [Sc.WellKnownChain.westend2, "westend"],
+        ] as [spec: string, elementId: string][]
+      ).forEach(([spec, elementId]) => subscribeChainNewHeads(spec, elementId))
 
       const westmintProvider = new ScProvider(
         Sc,
         JSON.stringify(westmint),
-        westendProvider,
+        new ScProvider(Sc, Sc.WellKnownChain.westend2),
       )
       await westmintProvider.connect()
       const api = await ApiPromise.create({ provider: westmintProvider })
@@ -122,4 +81,19 @@ window.onload = () => {
       ui.error(error as Error)
     }
   })()
+}
+
+async function subscribeChainNewHeads(spec: string, elementId: string) {
+  const provider = new ScProvider(Sc, spec)
+  await provider.connect()
+  const api = await ApiPromise.create({ provider })
+  const ui = document.getElementById(elementId)
+  if (!ui) return
+  const header = await api.rpc.chain.getHeader()
+  ui.innerText = `#${header?.number.toString()}`
+  await api.rpc.chain.subscribeNewHeads(
+    (lastHeader: { number: { toString: () => string } }) => {
+      ui.innerText = `#${lastHeader?.number.toString()}`
+    },
+  )
 }
