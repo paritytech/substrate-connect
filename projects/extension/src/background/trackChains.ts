@@ -1,17 +1,9 @@
 import { compact } from "scale-ts"
 import { fromHex } from "@unstoppablejs/utils"
 
-import type {
-  AddChain,
-  AddChainOptions as AddScChainOptions,
-  ScChain,
-} from "./addChain"
+import type { AddChain, AddChainOptions, Chain } from "./addChain"
 import { AlreadyDestroyedError } from "smoldot"
 
-type AddChainOptions = {
-  addChainOptions: AddScChainOptions
-  relayAddChainOptions?: AddScChainOptions
-}
 export interface ChainInfo {
   isSyncing: boolean
   peers: number
@@ -21,7 +13,7 @@ export interface ChainInfo {
 }
 
 const sendJsonRpc = (
-  chain: ScChain,
+  chain: Chain,
   message: { id: string; method: string; params: any[] },
 ) => {
   chain.sendJsonRpc(JSON.stringify({ jsonrpc: "2.0", ...message }))
@@ -29,7 +21,7 @@ const sendJsonRpc = (
 
 const trackChain = async (
   addChain: AddChain,
-  { addChainOptions, relayAddChainOptions }: AddChainOptions,
+  { addChainOptions, relayAddChainOptions }: ActiveChainOptions,
   onUpdate: (chainInfo: ChainInfo) => void,
 ) => {
   let nextRpcRqId = 0
@@ -50,7 +42,7 @@ const trackChain = async (
     peers: 0,
   }
 
-  const onMessage = (rawMessage: string) => {
+  const jsonRpcCallback = (rawMessage: string) => {
     const message = JSON.parse(rawMessage)
     if (!message.id) {
       if (
@@ -176,18 +168,13 @@ const trackChain = async (
   }
 
   const relayChain = relayAddChainOptions
-    ? await addChain(
-        relayAddChainOptions[0],
-        undefined,
-        relayAddChainOptions[2],
-      )
+    ? await addChain({ ...relayAddChainOptions, jsonRpcCallback: undefined })
     : undefined
 
-  const chain = await (relayChain?.addChain ?? addChain)(
-    addChainOptions[0],
-    onMessage,
-    addChainOptions[2],
-  )
+  const chain = await (relayChain?.addChain ?? addChain)({
+    ...addChainOptions,
+    jsonRpcCallback,
+  })
 
   const healthCheckInterval = setInterval(
     () =>
@@ -227,9 +214,14 @@ const trackChain = async (
   }
 }
 
+type ActiveChainOptions = {
+  addChainOptions: AddChainOptions
+  relayAddChainOptions?: AddChainOptions
+}
+
 export const trackChains = (
   addChain: AddChain,
-  getActiveChainsOptions: () => Record<string, AddChainOptions>,
+  getActiveChainsOptions: () => Record<string, ActiveChainOptions>,
   onUpdate: (chainInfo: ChainInfo & { chainId: string }) => void,
 ) => {
   const subscriptions: Record<string, Promise<() => void>> = {}

@@ -1,4 +1,4 @@
-import type { Chain, Client } from "smoldot"
+import type { Chain as SChain, Client } from "smoldot"
 import {
   start,
   QueueFullError,
@@ -47,19 +47,19 @@ const transformErrors = (thunk: () => void) => {
   }
 }
 
-export type ScChain = Pick<Chain, "sendJsonRpc" | "remove"> & {
+export type Chain = Pick<SChain, "sendJsonRpc" | "remove"> & {
   addChain: AddChain
 }
-export type AddChainOptions = Parameters<AddChain>
-export type AddChain = (
-  chainSpec: string,
-  jsonRpcCallback?: (msg: string) => void,
-  databaseContent?: string,
-) => Promise<ScChain>
+export type AddChainOptions = {
+  chainSpec: string
+  jsonRpcCallback?: (msg: string) => void
+  databaseContent?: string
+}
+export type AddChain = (options: AddChainOptions) => Promise<Chain>
 
 const createAddChain =
-  (relayChain?: Chain): AddChain =>
-  async (chainSpec, jsonRpcCallback, databaseContent) => {
+  (relayChain?: SChain): AddChain =>
+  async ({ chainSpec, jsonRpcCallback, databaseContent }) => {
     const client = await getClientAndIncRef()
     try {
       const internalChain = await client.addChain({
@@ -89,7 +89,7 @@ const createAddChain =
         }
       })()
 
-      const chain: ScChain = {
+      const chain: Chain = {
         sendJsonRpc: (rpc: string) => {
           transformErrors(() => {
             try {
