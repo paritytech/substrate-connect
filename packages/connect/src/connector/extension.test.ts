@@ -86,60 +86,6 @@ describe("SmoldotConnect::Extension", () => {
         "Error while creating the chain: test",
       )
     })
-
-    it("propagates the correct potentialRelayChainIds", async () => {
-      const { addChain } = createScClient()
-      let chainPromise = addChain("")
-      const addChainMsg1 = await getClientMessage()
-      postToClient({
-        type: "chain-ready",
-        origin: "substrate-connect-extension",
-        chainId: addChainMsg1.chainId,
-      })
-      const chain1 = await chainPromise
-
-      chainPromise = addChain("")
-      const addChainMsg2 = await getClientMessage()
-      postToClient({
-        type: "chain-ready",
-        origin: "substrate-connect-extension",
-        chainId: addChainMsg2.chainId,
-      })
-      await chainPromise
-
-      chainPromise = addChain("")
-      const addChainMsg3 = await getClientMessage()
-      postToClient({
-        type: "chain-ready",
-        origin: "substrate-connect-extension",
-        chainId: addChainMsg3.chainId,
-      })
-      await chainPromise
-
-      const removeP = getClientMessage()
-      chain1.remove()
-      await removeP
-
-      // adding an active chain from an unrelated client in order to ensure
-      // that it doesn't show up in the list of `potentialRelayChainIds`
-      const { addChain: addChain2 } = createScClient()
-      chainPromise = addChain2("")
-      const addChainMsg4 = await getClientMessage()
-      postToClient({
-        type: "chain-ready",
-        origin: "substrate-connect-extension",
-        chainId: addChainMsg4.chainId,
-      })
-      await chainPromise
-
-      addChain("")
-      const addChainMsg5 = await getClientMessage()
-      expect(addChainMsg5).toMatchObject({
-        type: "add-chain",
-        chainSpec: "",
-        potentialRelayChainIds: [addChainMsg2.chainId, addChainMsg3.chainId],
-      })
-    })
   })
 
   describe("addWellKnownChain", () => {
@@ -202,6 +148,28 @@ describe("SmoldotConnect::Extension", () => {
       await getClientMessage()
       expect(() => chain.remove()).toThrow(AlreadyDestroyedError)
       expect(() => chain.sendJsonRpc("")).toThrow(AlreadyDestroyedError)
+    })
+  })
+
+  describe("chain.addChain", () => {
+    it("it the chain", async () => {
+      const { addChain } = createScClient()
+      let chainPromise = addChain("")
+      const addChainMsg1 = await getClientMessage()
+      postToClient({
+        type: "chain-ready",
+        origin: "substrate-connect-extension",
+        chainId: addChainMsg1.chainId,
+      })
+      const chain1 = await chainPromise
+
+      chain1.addChain("chainSpec2")
+      const addChainMsg2 = await getClientMessage()
+      expect(addChainMsg2).toMatchObject({
+        type: "add-chain",
+        chainSpec: "chainSpec2",
+        potentialRelayChainIds: [addChainMsg1.chainId],
+      })
     })
   })
 

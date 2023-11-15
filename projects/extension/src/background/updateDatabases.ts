@@ -28,9 +28,9 @@ export const updateDatabases = async (addChain: AddChain) => {
                   chain.remove()
                 }
               }
-              const chain = await addChain(
+              const chain = await addChain({
                 chainSpec,
-                (rawMessage) => {
+                jsonRpcCallback: (rawMessage) => {
                   const message = JSON.parse(rawMessage)
                   if (message?.params?.result?.event === "initialized") {
                     sendJsonRpc({
@@ -47,12 +47,11 @@ export const updateDatabases = async (addChain: AddChain) => {
                     resolve(message.result)
                   }
                 },
-                undefined,
-                await environment.get({
+                databaseContent: await environment.get({
                   type: "database",
                   chainName,
                 }),
-              )
+              })
               sendJsonRpc({
                 id: "0",
                 method: "chainHead_unstable_follow",

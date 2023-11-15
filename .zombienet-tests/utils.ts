@@ -22,6 +22,8 @@ const ScProvider = (input: string, relayChainSpec?: string): GetProvider => {
     const addChain = (input: string) => {
       return isWellKnownChain(input)
         ? client.addWellKnownChain(input, onMessage)
+        : relayChain
+        ? relayChain.addChain(input, onMessage)
         : client.addChain(input, onMessage)
     }
 
@@ -32,6 +34,7 @@ const ScProvider = (input: string, relayChainSpec?: string): GetProvider => {
         if (relayChainSpec) {
           relayChain = await addChain(relayChainSpec)
         }
+
         chain = await addChain(input)
 
         onStatus("connected")

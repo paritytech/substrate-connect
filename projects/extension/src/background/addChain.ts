@@ -1,4 +1,4 @@
-import type { Chain, Client } from "smoldot"
+import type { Chain as SChain, Client } from "smoldot"
 import {
   start,
   QueueFullError,
@@ -10,17 +10,13 @@ import {
 let clientReferences: number = 0
 let client: Client | null = null
 const getClientAndIncRef = () => {
-  if (client) {
-    clientReferences++
-    return client
-  }
-
-  client = start({
-    forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
-    forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
-    maxLogLevel: 3,
-    cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
-  })
+  if (!client)
+    client = start({
+      forbidTcp: true, // In order to avoid confusing inconsistencies between browsers and NodeJS, TCP connections are always disabled.
+      forbidNonLocalWs: true, // Prevents browsers from emitting warnings if smoldot tried to establish non-secure WebSocket connections
+      maxLogLevel: 3,
+      cpuRateLimit: 0.5, // Politely limit the CPU usage of the smoldot background worker.
+    })
 
   clientReferences++
   return client
@@ -51,100 +47,95 @@ const transformErrors = (thunk: () => void) => {
   }
 }
 
-const chains = new Map<ScChain, Chain>()
-
-export type ScChain = Pick<Chain, "sendJsonRpc" | "remove">
-export type AddChainOptions = Parameters<AddChain>
-export type AddChain = (
-  chainSpec: string,
-  jsonRpcCallback?: (msg: string) => void,
-  potentialRelayChains?: ScChain[],
-  databaseContent?: string,
-) => Promise<ScChain>
-
-export const addChain: AddChain = async (
-  chainSpec,
-  jsonRpcCallback,
-  potentialRelayChains,
-  databaseContent,
-) => {
-  const client = await getClientAndIncRef()
-  try {
-    const internalChain = await client.addChain({
-      chainSpec,
-      potentialRelayChains: potentialRelayChains
-        ?.map((c) => chains.get(c))
-        .filter((sc): sc is Chain => !!sc) ?? [...chains.values()],
-      disableJsonRpc: jsonRpcCallback === undefined,
-      databaseContent,
-    })
-
-    ;(async () => {
-      while (true) {
-        let jsonRpcResponse
-        try {
-          jsonRpcResponse = await internalChain.nextJsonRpcResponse()
-        } catch (_) {
-          break
-        }
-
-        // `nextJsonRpcResponse` throws an exception if we pass `disableJsonRpc: true` in the
-        // config. We pass `disableJsonRpc: true` if `jsonRpcCallback` is undefined. Therefore,
-        // this code is never reachable if `jsonRpcCallback` is undefined.
-        try {
-          jsonRpcCallback!(jsonRpcResponse)
-        } catch (error) {
-          console.error("JSON-RPC callback has thrown an exception:", error)
-        }
-      }
-    })()
-
-    const chain: ScChain = {
-      sendJsonRpc: (rpc: string) => {
-        transformErrors(() => {
-          try {
-            internalChain.sendJsonRpc(rpc)
-          } catch (error) {
-            if (error instanceof QueueFullError) {
-              // If the queue is full, we immediately send back a JSON-RPC response indicating
-              // the error.
-              try {
-                const parsedRq = JSON.parse(rpc)
-                jsonRpcCallback!(
-                  JSON.stringify({
-                    jsonrpc: "v2",
-                    id: parsedRq.id,
-                    error: {
-                      code: -32000,
-                      message: "JSON-RPC server is too busy",
-                    },
-                  }),
-                )
-              } catch (_error) {
-                // An error here counts as a malformed JSON-RPC request, which are ignored.
-              }
-            } else {
-              throw error
-            }
-          }
-        })
-      },
-      remove: () => {
-        try {
-          transformErrors(() => {
-            internalChain.remove()
-          })
-        } finally {
-          chains.delete(chain)
-          decRef()
-        }
-      },
-    }
-
-    chains.set(chain, internalChain)
-    return chain
-  } catch (error) {
-    decRef()
-    throw error
-  }
+export type Chain = Pick<SChain, "sendJsonRpc" | "remove"> & {
+  addChain: AddChain
 }
+export type AddChainOptions = {
+  chainSpec: string
+  jsonRpcCallback?: (msg: string) => void
+  databaseContent?: string
+}
+export type AddChain = (options: AddChainOptions) => Promise<Chain>
+
+const createAddChain =
+  (relayChain?: SChain): AddChain =>
+  async ({ chainSpec, jsonRpcCallback, databaseContent }) => {
+    const client = await getClientAndIncRef()
+    try {
+      const internalChain = await client.addChain({
+        chainSpec,
+        disableJsonRpc: jsonRpcCallback === undefined,
+        databaseContent,
+        potentialRelayChains: relayChain ? [relayChain] : undefined,
+      })
+
+      ;(async () => {
+        while (true) {
+          let jsonRpcResponse
+          try {
+            jsonRpcResponse = await internalChain.nextJsonRpcResponse()
+          } catch (_) {
+            break
+          }
+
+          // `nextJsonRpcResponse` throws an exception if we pass `disableJsonRpc: true` in the
+          // config. We pass `disableJsonRpc: true` if `jsonRpcCallback` is undefined. Therefore,
+          // this code is never reachable if `jsonRpcCallback` is undefined.
+          try {
+            jsonRpcCallback!(jsonRpcResponse)
+          } catch (error) {
+            console.error("JSON-RPC callback has thrown an exception:", error)
+          }
+        }
+      })()
+
+      const chain: Chain = {
+        sendJsonRpc: (rpc: string) => {
+          transformErrors(() => {
+            try {
+              internalChain.sendJsonRpc(rpc)
+            } catch (error) {
+              if (error instanceof QueueFullError) {
+                // If the queue is full, we immediately send back a JSON-RPC response indicating
+                // the error.
+                try {
+                  const parsedRq = JSON.parse(rpc)
+                  jsonRpcCallback!(
+                    JSON.stringify({
+                      jsonrpc: "v2",
+                      id: parsedRq.id,
+                      error: {
+                        code: -32000,
+                        message: "JSON-RPC server is too busy",
+                      },
+                    }),
+                  )
+                } catch (_error) {
+                  // An error here counts as a malformed JSON-RPC request, which are ignored.
+                }
+              } else {
+                throw error
+              }
+            }
+          })
+        },
+        remove: () => {
+          try {
+            transformErrors(() => {
+              internalChain.remove()
+            })
+          } finally {
+            decRef()
+          }
+        },
+        addChain: createAddChain(internalChain),
+      }
+
+      return chain
+    } catch (error) {
+      decRef()
+      throw error
+    }
+  }
+
+export const addChain = createAddChain()

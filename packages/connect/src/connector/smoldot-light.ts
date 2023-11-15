@@ -6,13 +6,14 @@ import type {
 } from "smoldot"
 import { getSpec } from "./specs/index.js"
 import {
-  type AddChain,
   type AddWellKnownChain,
   type Chain,
   type ScClient,
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
+  JsonRpcCallback,
+  AddChain,
 } from "./types.js"
 import { WellKnownChain } from "../WellKnownChain.js"
 
@@ -194,22 +195,18 @@ export interface Config {
 export const createScClient = (config?: Config): ScClient => {
   const configOrDefault = config || { maxLogLevel: 3 }
 
-  const chains = new Map<Chain, SChain>()
-
-  const addChain: AddChain = async (
+  const internalAddChain = async (
     chainSpec: string,
     jsonRpcCallback?: (msg: string) => void,
-    potentialRelayChains?: Chain[],
     databaseContent?: string,
+    relayChain?: SChain,
   ): Promise<Chain> => {
     const client = await getClientAndIncRef(configOrDefault)
 
     try {
       const internalChain = await client.addChain({
         chainSpec,
-        potentialRelayChains: (potentialRelayChains
-          ?.map((c) => chains.get(c))
-          .filter((sc) => !!sc) as SChain[]) ?? [...chains.values()],
+        potentialRelayChains: relayChain ? [relayChain] : undefined,
         disableJsonRpc: jsonRpcCallback === undefined,
         databaseContent,
       })
@@ -234,7 +231,7 @@ export const createScClient = (config?: Config): ScClient => {
         }
       })()
 
-      const chain: Chain = {
+      return {
         sendJsonRpc: (rpc) => {
           transformErrors(() => {
             try {
@@ -270,19 +267,30 @@ export const createScClient = (config?: Config): ScClient => {
               internalChain.remove()
             })
           } finally {
-            chains.delete(chain)
             decRef(configOrDefault)
           }
         },
+        addChain: (
+          chainSpec: string,
+          jsonRpcCallback?: JsonRpcCallback | undefined,
+          databaseContent?: string | undefined,
+        ): Promise<Chain> => {
+          return internalAddChain(
+            chainSpec,
+            jsonRpcCallback,
+            databaseContent,
+            internalChain,
+          )
+        },
       }
-
-      chains.set(chain, internalChain)
-      return chain
     } catch (error) {
       decRef(configOrDefault)
       throw error
     }
   }
+
+  const addChain: AddChain = (chainSpec, jsonRpcCallback, databaseContent) =>
+    internalAddChain(chainSpec, jsonRpcCallback, databaseContent)
 
   const addWellKnownChain: AddWellKnownChain = async (
     supposedChain: WellKnownChain,
@@ -295,15 +303,18 @@ export const createScClient = (config?: Config): ScClient => {
     getClientAndIncRef(configOrDefault)
 
     try {
-      return await addChain(
+      return await internalAddChain(
         await getSpec(supposedChain),
         jsonRpcCallback,
-        undefined,
         databaseContent,
       )
     } finally {
       decRef(configOrDefault)
     }
   }
-  return { addChain, addWellKnownChain }
+
+  return {
+    addChain,
+    addWellKnownChain,
+  }
 }

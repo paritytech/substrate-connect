@@ -8,7 +8,7 @@ import * as environment from "../environment"
 import { PORTS } from "../shared"
 import type { ToBackground, ToContent } from "../protocol"
 import { loadWellKnownChains } from "./loadWellKnownChains"
-import { type AddChainOptions, type ScChain, addChain } from "./addChain"
+import { type AddChainOptions, type Chain, addChain } from "./addChain"
 
 const wellKnownChainNames: Record<string, string> = {
   westend2: "Westend",
@@ -41,8 +41,9 @@ const activeChains: Record<
   string,
   {
     tab: chrome.tabs.Tab
-    chain?: ScChain
+    chain?: Chain
     addChainOptions?: AddChainOptions
+    relayAddChainOptions?: AddChainOptions
   }
 > = {}
 
@@ -102,8 +103,14 @@ chrome.runtime.onConnect.addListener((port) => {
           Object.entries(activeChains)
             .filter(([_, { addChainOptions }]) => !!addChainOptions)
             .map(
-              ([chainId, { addChainOptions }]) =>
-                [chainId, addChainOptions!] as const,
+              ([chainId, { addChainOptions, relayAddChainOptions }]) =>
+                [
+                  chainId,
+                  {
+                    addChainOptions: addChainOptions!,
+                    relayAddChainOptions,
+                  },
+                ] as const,
             ),
         ),
       (chainInfo) => {
@@ -168,6 +175,7 @@ chrome.runtime.onConnect.addListener((port) => {
                 jsonRpcMessage,
               })
             }
+            let chain: Chain
             if (isWellKnown) {
               const chainSpec = (await loadWellKnownChains()).get(msg.chainName)
 
@@ -180,24 +188,16 @@ chrome.runtime.onConnect.addListener((port) => {
                 type: "database",
                 chainName: msg.chainName,
               })
-              addChainOptions = [
-                chainSpec,
-                jsonRpcCallback,
-                undefined,
-                databaseContent,
-              ]
+              addChainOptions = { chainSpec, jsonRpcCallback, databaseContent }
+              chain = await addChain(addChainOptions)
             } else {
-              addChainOptions = [
-                msg.chainSpec,
-                jsonRpcCallback,
-                await Promise.all(
-                  msg.potentialRelayChainIds
-                    .filter((c) => !!activeChains[c]?.chain)
-                    .map((c) => activeChains[c]?.chain!),
-                ),
-              ]
+              addChainOptions = { chainSpec: msg.chainSpec, jsonRpcCallback }
+              chain = await (msg.potentialRelayChainIds[0]
+                ? activeChains[msg.potentialRelayChainIds[0]].chain!.addChain(
+                    addChainOptions,
+                  )
+                : addChain(addChainOptions))
             }
-            const chain = await addChain(...addChainOptions)
 
             // As documented in the protocol, if a "remove-chain" message was received before
             // a "chain-ready" message was sent back, the chain can be discarded
@@ -230,6 +230,10 @@ chrome.runtime.onConnect.addListener((port) => {
             })
             activeChains[msg.chainId].chain = chain
             activeChains[msg.chainId].addChainOptions = addChainOptions
+            activeChains[msg.chainId].relayAddChainOptions =
+              msg.type === "add-chain"
+                ? activeChains[msg.potentialRelayChainIds[0]].addChainOptions
+                : undefined
             postMessage(port, {
               origin: "substrate-connect-extension",
               type: "chain-ready",
