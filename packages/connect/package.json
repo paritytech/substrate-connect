@@ -8,21 +8,21 @@
     "access": "public"
   },
   "type": "module",
-  "main": "dist/cjs/index.js",
-  "module": "dist/mjs/index.js",
-  "types": "dist/mjs/index.d.ts",
+  "main": "build/index.cjs",
+  "module": "build/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/mjs/index.js",
-      "require": "./dist/cjs/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./worker": {
       "node": {
-        "import": "./dist/mjs/worker-node.js",
-        "require": "./dist/cjs/worker-node.js"
+        "import": "./dist/worker-node.js",
+        "require": "./dist/worker-node.cjs"
       },
-      "import": "./dist/mjs/worker.js",
-      "require": "./dist/cjs/worker.js"
+      "import": "./dist/worker.js",
+      "require": "./dist/worker.cjs"
     }
   },
   "repository": {
@@ -40,9 +40,7 @@
     "test": "vitest",
     "deep-clean": "yarn clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "build": "yarn clean && yarn build-js-specs && yarn run build:mjs && yarn run build:cjs && bash ./fix-package-type.sh",
-    "build:mjs": "tsc -b tsconfig-mjs.json",
-    "build:cjs": "tsc -b tsconfig-cjs.json",
+    "build": "yarn clean && yarn build-js-specs && tsup-node src/index.ts src/worker.ts src/worker-node.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
     "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {
@@ -53,6 +51,7 @@
   "devDependencies": {
     "eslint": "^8.53.0",
     "jsdom": "^22.1.0",
+    "tsup": "^7.2.0",
     "typescript": "^5.2.2",
     "vitest": "^0.34.6"
   }
