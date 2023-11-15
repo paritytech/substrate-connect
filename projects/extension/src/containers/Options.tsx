@@ -1,6 +1,6 @@
-import { FunctionComponent, useEffect, useState } from "react"
-import pckg from "../../package.json"
+import { FunctionComponent, useEffect, useMemo, useState } from "react"
 import { MdOutlineNetworkCell, MdOutlineOnlinePrediction } from "react-icons/md"
+import pckg from "../../package.json"
 import { FaGithub } from "react-icons/fa"
 import * as environment from "../environment"
 import { NetworkTabProps } from "../types"
@@ -11,6 +11,7 @@ import {
   Networks,
   Bootnodes,
 } from "../components"
+import { useChains } from "../hooks/useChains"
 
 type MenuItemTypes = "item" | "title" | "icon"
 
@@ -69,55 +70,38 @@ const cName = (type: MenuItemTypes, menu = 0, reqMenu: number) => {
 }
 
 export const Options: FunctionComponent = () => {
-  const [networks, setNetworks] = useState<NetworkTabProps[]>([])
+  const { chains } = useChains()
   const [menu, setMenu] = useState<number>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [actionResult, setActionResult] = useState<string>("")
+  const networks: NetworkTabProps[] = useMemo(
+    () =>
+      chains?.map((c) => {
+        return {
+          ...c,
+          name: c.chainName,
+          health: {
+            isSyncing: c.details[0].isSyncing,
+            peers: c.details[0].peers,
+            status: "connected",
+            bestBlockHeight: c.details[0].bestBlockHeight,
+          },
+          apps: c.details.map(({ url }) => {
+            return {
+              name: url ?? "",
+              url: url,
+            }
+          }),
+        }
+      }) ?? [],
+    [chains],
+  )
 
   useEffect(() => {
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
       const braveSetting = await environment.get({ type: "braveSetting" })
       setShowModal(isBrave && !braveSetting)
     })
-
-    const refresh = () => {
-      environment.getAllActiveChains().then((chains) => {
-        const networks = new Map<string, NetworkTabProps>()
-        ;(chains || []).forEach((chain) => {
-          const {
-            chainName,
-            tab,
-            isWellKnown,
-            isSyncing,
-            peers,
-            bestBlockHeight,
-          } = chain
-          const key = (isWellKnown ? "wk" : "nwk") + chainName
-
-          const network = networks.get(key)
-          if (!network) {
-            return networks.set(key, {
-              name: chainName,
-              isWellKnown,
-              health: {
-                isSyncing,
-                peers,
-                status: "connected",
-                bestBlockHeight,
-              },
-              apps: [{ name: tab.url, url: tab.url }],
-            })
-          }
-
-          network.apps.push({ name: tab.url, url: tab.url })
-        })
-        setNetworks([...networks.values()])
-      })
-    }
-
-    const unregister = environment.onActiveChainsChanged(() => refresh())
-    refresh()
-    return unregister
   }, [])
 
   useEffect(() => {

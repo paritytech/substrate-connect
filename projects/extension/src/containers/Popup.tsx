@@ -3,66 +3,11 @@ import { FunctionComponent, ReactNode, useEffect, useState } from "react"
 import { MdOutlineSettings, MdOutlineEast } from "react-icons/md"
 import { Accordion, Logo, IconWeb3, BraveModal } from "../components"
 import * as environment from "../environment"
-
-interface PopupChain {
-  chainName: string
-  isWellKnown: boolean
-  details: ChainDetails[]
-}
-
-interface ChainDetails {
-  tabId?: number
-  url?: string
-  peers: number
-  isSyncing: boolean
-  chainId: string
-  bestBlockHeight: number | undefined
-}
+import { useChains } from "../hooks/useChains"
 
 const Popup: FunctionComponent = () => {
-  const [connChains, setConnChains] = useState<PopupChain[] | undefined>()
+  const { chains } = useChains()
   const [showModal, setShowModal] = useState<boolean>(false)
-
-  const refresh = () => {
-    environment.getAllActiveChains().then((chains) => {
-      const allChains: PopupChain[] = []
-      ;(chains || []).forEach((c) => {
-        const i = allChains.findIndex(
-          (i) => i.chainName === c.chainName && i.isWellKnown === c.isWellKnown,
-        )
-        const { peers, isSyncing, chainId, bestBlockHeight } = c
-        if (i === -1) {
-          allChains.push({
-            chainName: c.chainName,
-            isWellKnown: c.isWellKnown,
-            details: [
-              {
-                tabId: c.tab.id,
-                url: c.tab.url,
-                peers,
-                isSyncing,
-                chainId,
-                bestBlockHeight,
-              },
-            ],
-          })
-        } else {
-          const details = allChains[i]?.details
-          if (!details.map((d) => d.tabId).includes(c.tab.id)) {
-            details.push({
-              tabId: c.tab.id,
-              url: c.tab.url,
-              peers,
-              isSyncing,
-              chainId,
-              bestBlockHeight,
-            })
-          }
-        }
-      })
-      setConnChains([...allChains])
-    })
-  }
 
   useEffect(() => {
     // Identify Brave browser and show Popup
@@ -70,10 +15,6 @@ const Popup: FunctionComponent = () => {
       const braveSetting = await environment.get({ type: "braveSetting" })
       setShowModal(isBrave && !braveSetting)
     })
-
-    const unregister = environment.onActiveChainsChanged(() => refresh())
-    refresh()
-    return unregister
   }, [])
 
   const goToOptions = (): void => {
@@ -106,24 +47,24 @@ const Popup: FunctionComponent = () => {
             />
           </div>
         </header>
-        <div className={!connChains?.length ? "" : "pb-3.5"}>
-          {!connChains?.length ? (
+        <div className={!chains?.length ? "" : "pb-3.5"}>
+          {!chains?.length ? (
             <div className="mx-8 my-8">
               The extension isn't connected to any network.
             </div>
           ) : (
-            connChains?.map((w) => {
-              if (w?.details?.length === 1 && !w?.details[0].tabId)
+            chains?.map((c) => {
+              if (c?.details?.length === 1 && !c?.details[0].tabId)
                 return (
                   <>
                     <div className="block mt-4">
-                      <div key={w.chainName} className="pl-6 flex text-lg">
-                        {networkIcon(w.chainName, w.isWellKnown)}
+                      <div key={c.chainName} className="pl-6 flex text-lg">
+                        {networkIcon(c.chainName, c.isWellKnown)}
                       </div>
                       <div className="pl-[4.5rem] text-sm flex pt-2">
                         <span className="text-[#323232]">Latest block</span>
                         <span className="pl-2 text-[#24CC85]">
-                          {w?.details[0].bestBlockHeight?.toLocaleString(
+                          {c?.details[0].bestBlockHeight?.toLocaleString(
                             "en-US",
                           ) || "Syncing..."}
                         </span>
@@ -135,7 +76,7 @@ const Popup: FunctionComponent = () => {
                   </>
                 )
               const contents: ReactNode[] = []
-              w?.details?.forEach((t) => {
+              c?.details?.forEach((t) => {
                 if (t.tabId) {
                   contents.push(
                     <div key={t.url} className="flex justify-between">
@@ -155,7 +96,7 @@ const Popup: FunctionComponent = () => {
                   titles={[
                     <div className="block mt-4">
                       <div className="pl-4 flex text-lg justify-start">
-                        {networkIcon(w.chainName, w.isWellKnown)}
+                        {networkIcon(c.chainName, c.isWellKnown)}
                         <span className="pl-2 text-[#616161]">
                           ({contents.length})
                         </span>
@@ -163,7 +104,7 @@ const Popup: FunctionComponent = () => {
                       <div className="pl-16 flex pt-2">
                         <span className="text-[#323232]">Latest block</span>
                         <span className="pl-2 text-[#24CC85]">
-                          {w?.details[0].bestBlockHeight?.toLocaleString(
+                          {c?.details[0].bestBlockHeight?.toLocaleString(
                             "en-US",
                           ) || "Syncing..."}
                         </span>
