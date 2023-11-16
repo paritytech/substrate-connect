@@ -70,30 +70,28 @@ const cName = (type: MenuItemTypes, menu = 0, reqMenu: number) => {
 }
 
 export const Options: FunctionComponent = () => {
-  const { chains } = useChains()
+  const chains = useChains()
   const [menu, setMenu] = useState<number>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [actionResult, setActionResult] = useState<string>("")
   const networks: NetworkTabProps[] = useMemo(
     () =>
-      chains?.map((c) => {
+      chains.map(({ chainName, isWellKnown, details }) => {
         return {
-          ...c,
-          name: c.chainName,
+          isWellKnown,
+          name: chainName,
           health: {
-            isSyncing: c.details[0].isSyncing,
-            peers: c.details[0].peers,
+            isSyncing: details[0].isSyncing,
+            peers: details[0].peers,
             status: "connected",
-            bestBlockHeight: c.details[0].bestBlockHeight,
+            bestBlockHeight: details[0].bestBlockHeight,
           },
-          apps: c.details.map(({ url }) => {
-            return {
-              name: url ?? "",
-              url: url,
-            }
-          }),
+          apps: details.map(({ url }) => ({
+            name: url ?? "",
+            url: url,
+          })),
         }
-      }) ?? [],
+      }),
     [chains],
   )
 

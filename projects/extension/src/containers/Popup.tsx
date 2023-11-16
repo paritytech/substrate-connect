@@ -5,8 +5,22 @@ import { Accordion, Logo, IconWeb3, BraveModal } from "../components"
 import * as environment from "../environment"
 import { useChains } from "../hooks/useChains"
 
+const goToOptions = (): void => {
+  chrome.runtime.openOptionsPage()
+}
+
+const networkIcon = (network: string, isWellKnown: boolean) => {
+  const icon = network.toLowerCase()
+  return (
+    <>
+      <IconWeb3 isWellKnown={isWellKnown}>{icon}</IconWeb3>
+      <div className="pl-2">{network}</div>
+    </>
+  )
+}
+
 const Popup: FunctionComponent = () => {
-  const { chains } = useChains()
+  const chains = useChains()
   const [showModal, setShowModal] = useState<boolean>(false)
 
   useEffect(() => {
@@ -17,19 +31,7 @@ const Popup: FunctionComponent = () => {
     })
   }, [])
 
-  const goToOptions = (): void => {
-    chrome.runtime.openOptionsPage()
-  }
-
-  const networkIcon = (network: string, isWellKnown: boolean) => {
-    const icon = network.toLowerCase()
-    return (
-      <>
-        <IconWeb3 isWellKnown={isWellKnown}>{icon}</IconWeb3>
-        <div className="pl-2">{network}</div>
-      </>
-    )
-  }
+  console.log(">>>", chains)
 
   return (
     <>
