@@ -113,7 +113,6 @@ const activeChains$ = activeConnectionsAndTabs$.pipe(
 
 const createChainDetailObservable = (chain: PageChain) =>
   defer(() => {
-    console.log(">> createChainDetailObservable", chain.genesisHash)
     const client = createClient(chain.provider)
     const observableClient = getObservableClient(client)
     const { follow$, unfollow, header$ } = observableClient.chainHead$()
@@ -162,12 +161,7 @@ const createChainDetailObservable = (chain: PageChain) =>
         peers,
         isSyncing,
       })),
-      tap((obj) => console.log(">> tap", chain.genesisHash, obj)),
       finalize(() => {
-        console.log(
-          ">> createChainDetailObservable finalize",
-          chain.genesisHash,
-        )
         observableClient.destroy()
         unfollow()
       }),
@@ -206,7 +200,6 @@ const activeChainUpdates$: Observable<ActiveChainUpdateEvent> =
       () => [new Set<string>(), [] as ActiveChainUpdateEvent[]] as const,
     ),
     mergeMap(([_, changes]) => changes),
-    tap((e) => console.log(">> chainUpdate", e)),
     share(),
   )
 const activeChainDetails$ = combineKeys(

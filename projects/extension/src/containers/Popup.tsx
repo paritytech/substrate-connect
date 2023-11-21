@@ -31,8 +31,6 @@ const Popup: FunctionComponent = () => {
     })
   }, [])
 
-  console.log(">>>", chains)
-
   return (
     <>
       <BraveModal show={showModal} />

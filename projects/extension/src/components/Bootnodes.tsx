@@ -70,10 +70,7 @@ export const Bootnodes = () => {
       const tmpCust: BootnodesType[] = []
       // When bootnodes do not exist assign and save the local ones
       if (!bootnodes?.length) {
-        environment.set(
-          { type: "bootnodes", chainName: selectedChain },
-          defaultBootnodes,
-        )
+        setBootNodes(selectedChain, defaultBootnodes)
         defaultBootnodes.forEach((b) => {
           tmpDef.push({ bootnode: b, checked: true })
         })
