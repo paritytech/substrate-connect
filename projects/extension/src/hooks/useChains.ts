@@ -11,7 +11,6 @@ import { useEffect, useState } from "react"
 import { combineKeys } from "@react-rxjs/utils"
 import {
   combineLatest,
-  interval,
   Observable,
   distinct,
   exhaustMap,
@@ -25,12 +24,8 @@ import {
   finalize,
   defer,
   mergeMap,
-  of,
   tap,
-  mergeScan,
-  merge,
-  takeUntil,
-  EMPTY,
+  timer,
 } from "rxjs"
 import { fromHex } from "@polkadot-api/utils"
 import { compact } from "scale-ts"
@@ -71,7 +66,7 @@ export const useChains = () => {
   return chains
 }
 
-const activeConnectionsAndTabs$ = interval(2000).pipe(
+const activeConnectionsAndTabs$ = timer(0, 2000).pipe(
   switchMap(async () => {
     const [connections, tabs] = await Promise.all([
       helper.getActiveConnections(),
@@ -151,7 +146,7 @@ const createChainDetailObservable = (chain: PageChain) =>
       ),
       startWith(undefined),
     )
-    const peers$ = interval(5000).pipe(
+    const peers$ = timer(0, 5000).pipe(
       switchMap(
         () =>
           new Promise<number>((resolve, reject) => {
@@ -189,13 +184,18 @@ const createChainDetailObservable = (chain: PageChain) =>
     )
   })
 
+const lazyScan =
+  <Acc, Item>(reducer: (acc: Acc, value: Item) => Acc, getInit: () => Acc) =>
+  (base: Observable<Item>): Observable<Acc> =>
+    defer(() => base.pipe(scan(reducer, getInit())))
+
 type ActiveChainUpdateEvent =
   | { type: "add"; chain: PageChain }
   | { type: "remove"; genesisHash: string }
 
 const activeChainUpdates$: Observable<ActiveChainUpdateEvent> =
   activeConnectionsAndTabs$.pipe(
-    scan(
+    lazyScan(
       ([activeChains], [connections]) => {
         const connectionsGenesisHashes = connections.map(
           ({ chain }) => chain.genesisHash,
@@ -213,50 +213,15 @@ const activeChainUpdates$: Observable<ActiveChainUpdateEvent> =
         }
         return [activeChains, changes] as const
       },
-      [new Set<string>(), [] as ActiveChainUpdateEvent[]] as const,
+      () => [new Set<string>(), [] as ActiveChainUpdateEvent[]] as const,
     ),
-    mergeMap(([_, changes]) => of(...changes)),
+    mergeMap(([_, changes]) => changes),
     tap((e) => console.log(">> chainUpdate", e)),
     share(),
   )
-// const activeChainDetailsV2$: Observable<
-//   Record<string, Pick<ChainDetails, "bestBlockHeight" | "isSyncing" | "peers">>
-// > = activeChainUpdates$.pipe(
-//   mergeScan((details, event) => {
-//     const obs: Observable<typeof details>[] = []
-//     if (event.type === "add") {
-//       obs.push(
-//         createChainDetailObservable(event.chain).pipe(
-//           map((detail) =>
-//             details.set(
-//               event.chain.genesisHash,
-//               detail as {
-//                 bestBlockHeight: number | undefined
-//                 peers: number
-//                 isSyncing: boolean
-//               },
-//             ),
-//           ),
-//           takeUntil(
-//             activeChainUpdates$.pipe(
-//               filter(
-//                 (e) =>
-//                   e.type === "remove" &&
-//                   e.genesisHash === event.chain.genesisHash,
-//               ),
-//             ),
-//           ),
-//           finalize(() => details.delete(event.chain.genesisHash)),
-//         ),
-//       )
-//     }
-//     return obs.length === 0 ? EMPTY : merge(...obs)
-//   }, new Map<string, Pick<ChainDetails, "bestBlockHeight" | "isSyncing" | "peers">>()),
-//   map((detailsMap) => Object.fromEntries(detailsMap.entries())),
-// )
 const activeChainDetails$ = combineKeys(
   activeChainUpdates$.pipe(
-    scan(
+    lazyScan(
       (acc, e) => {
         if (e.type === "add") {
           acc[e.chain.genesisHash] = e.chain
@@ -265,7 +230,7 @@ const activeChainDetails$ = combineKeys(
         }
         return acc
       },
-      {} as Record<string, PageChain>,
+      () => ({}) as Record<string, PageChain>,
     ),
     map((chains) => Object.values(chains)),
   ),
