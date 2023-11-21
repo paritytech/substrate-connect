@@ -11,7 +11,7 @@ import {
   Networks,
   Bootnodes,
 } from "../components"
-import { useChains } from "../hooks/useChains"
+import { useActiveChains } from "../hooks/useActiveChains"
 
 type MenuItemTypes = "item" | "title" | "icon"
 
@@ -70,7 +70,7 @@ const cName = (type: MenuItemTypes, menu = 0, reqMenu: number) => {
 }
 
 export const Options: FunctionComponent = () => {
-  const chains = useChains()
+  const chains = useActiveChains()
   const [menu, setMenu] = useState<number>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [actionResult, setActionResult] = useState<string>("")

@@ -57,7 +57,7 @@ type ChainDetails = {
   bestBlockHeight?: number
 }
 
-export const useChains = () => {
+export const useActiveChains = () => {
   const [chains, setChains] = useState([] as Chain[])
   useEffect(() => {
     const subscription = chains$.subscribe(setChains)

@@ -3,7 +3,7 @@ import { FunctionComponent, ReactNode, useEffect, useState } from "react"
 import { MdOutlineSettings, MdOutlineEast } from "react-icons/md"
 import { Accordion, Logo, IconWeb3, BraveModal } from "../components"
 import * as environment from "../environment"
-import { useChains } from "../hooks/useChains"
+import { useActiveChains } from "../hooks/useActiveChains"
 
 const goToOptions = (): void => {
   chrome.runtime.openOptionsPage()
@@ -20,7 +20,7 @@ const networkIcon = (network: string, isWellKnown: boolean) => {
 }
 
 const Popup: FunctionComponent = () => {
-  const chains = useChains()
+  const chains = useActiveChains()
   const [showModal, setShowModal] = useState<boolean>(false)
 
   useEffect(() => {
