@@ -3313,7 +3313,7 @@ __metadata:
     "@substrate/connect-extension-protocol": ^1.0.1
     eslint: ^8.53.0
     jsdom: ^22.1.0
-    smoldot: 2.0.7
+    smoldot: 2.0.10
     typescript: ^5.2.2
     vitest: ^0.34.6
   languageName: unknown
@@ -3348,7 +3348,7 @@ __metadata:
     react-dom: ^18.2.0
     react-icons: ^4.11.0
     scale-ts: ^1.4.2
-    smoldot: 2.0.7
+    smoldot: 2.0.10
     tailwindcss: ^3.3.5
     typescript: ^5.2.2
     vite: ^4.5.0
@@ -3679,12 +3679,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.18.9":
-  version: 18.18.9
-  resolution: "@types/node@npm:18.18.9"
+"@types/node@npm:^20.9.3":
+  version: 20.9.3
+  resolution: "@types/node@npm:20.9.3"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 629ce20357586144031cb43d601617eef45e59460dea6b1e123f708e6885664f44d54f65e5b72b2614af5b8613f3652ced832649c0b991accbc6a85139befa51
+  checksum: 0cfbfd2a8bd18acc75aa4d7685c7dcf56344f48addd4041d306dc194f3132f8014d56fd49fcb26bcdf400b883f9527e5e2beaf52dfce029cef15c69b8ed2e72a
   languageName: node
   linkType: hard
 
@@ -11518,12 +11518,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"smoldot@npm:2.0.7":
-  version: 2.0.7
-  resolution: "smoldot@npm:2.0.7"
+"smoldot@npm:2.0.10":
+  version: 2.0.10
+  resolution: "smoldot@npm:2.0.10"
   dependencies:
     ws: ^8.8.1
-  checksum: fc039bfa0560312ae09c2136dd506f2a1994ead804b7234b49b2ecfac2fd19d306973a0fcfb66019645a8cf9a1702c270bc544a622ae40b63cf14790ea3531e0
+  checksum: b427d97264a04fd2272e667c554c6edc0ee49c2caabd3945a4f8495e5161d694ddec10915e8e85be4f019942b93342bf59c955c5a83190151ae61cbd329a429e
   languageName: node
   linkType: hard
 
@@ -11917,7 +11917,7 @@ __metadata:
     "@polkadot-api/json-rpc-provider": ^0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0
     "@polkadot-api/substrate-client": 0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0
     "@types/chrome": ^0.0.237
-    "@types/node": ^18.18.9
+    "@types/node": ^20.9.3
     "@types/qrcode.react": ^1.0.5
     "@types/react": ^18.2.37
     "@types/react-dom": ^18.2.15
