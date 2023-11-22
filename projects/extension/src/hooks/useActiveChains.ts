@@ -115,9 +115,20 @@ const createChainDetailObservable = (chain: PageChain) =>
   defer(() => {
     const client = createClient(chain.provider)
     const observableClient = getObservableClient(client)
-    const { follow$, unfollow, header$ } = observableClient.chainHead$()
-    const followWithRetry$ = follow$.pipe(
-      retry({ count: 3, resetOnSuccess: true }),
+    let chainHead = observableClient.chainHead$()
+    let unfollow = chainHead.unfollow
+    const followWithRetry$ = chainHead.follow$.pipe(
+      retry({
+        count: 3,
+        resetOnSuccess: true,
+        delay() {
+          unfollow()
+          console.warn("will refollow", chain.name, chain.genesisHash)
+          chainHead = observableClient.chainHead$()
+          unfollow = chainHead.unfollow
+          return chainHead.follow$
+        },
+      }),
     )
     const bestBlockHeight$ = followWithRetry$.pipe(
       filter(
@@ -128,7 +139,7 @@ const createChainDetailObservable = (chain: PageChain) =>
         } => block.type === "bestBlockChanged" && !!block.bestBlockHash,
       ),
       exhaustMap(({ bestBlockHash }) =>
-        header$(bestBlockHash).pipe(
+        chainHead.header$(bestBlockHash).pipe(
           filter(Boolean),
           map((header) => compact.dec(fromHex(header).slice(32)) as number),
         ),
@@ -162,8 +173,8 @@ const createChainDetailObservable = (chain: PageChain) =>
         isSyncing,
       })),
       finalize(() => {
-        observableClient.destroy()
         unfollow()
+        observableClient.destroy()
       }),
     )
   })
