@@ -44,7 +44,6 @@ export const createScClient = (): ScClient => {
 
     let chain: RawChain
     if (isWellKnown) {
-      // TODO: double check if it's ok to assume that provider.getChains() will always return well known chains
       const foundChain = Object.values(lightClientProvider.getChains()).find(
         ({ genesisHash }) =>
           genesisHash === wellKnownChainGenesisHashes[chainSpecOrWellKnownName],
