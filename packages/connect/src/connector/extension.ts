@@ -31,28 +31,9 @@ export const createScClient = (): ScClient => {
   if (!lightClientProviderPromise)
     lightClientProviderPromise = import(
       "@polkadot-api/light-client-extension-helpers/web-page"
-    ).then(async ({ getLightClientProvider }) => {
-      const hasEveryWellKnownChain = (chains: Record<string, RawChain>) => {
-        const chainsGenesisHashes = Object.values(chains).map(
-          ({ genesisHash }) => genesisHash,
-        )
-        return Object.values(wellKnownChainGenesisHashes).every((genesisHash) =>
-          chainsGenesisHashes.includes(genesisHash),
-        )
-      }
-      const lightClientProvider = await getLightClientProvider(DOM_ELEMENT_ID)
-      await new Promise<void>((resolve) => {
-        if (hasEveryWellKnownChain(lightClientProvider.getChains()))
-          return resolve()
-        const unsubscribe = lightClientProvider.addChainsChangeListener(() => {
-          if (hasEveryWellKnownChain(lightClientProvider.getChains())) {
-            unsubscribe()
-            resolve()
-          }
-        })
-      })
-      return lightClientProvider
-    })
+    ).then(({ getLightClientProvider }) =>
+      getLightClientProvider(DOM_ELEMENT_ID),
+    )
   const internalAddChain = async (
     isWellKnown: boolean,
     chainSpecOrWellKnownName: string,
@@ -63,6 +44,7 @@ export const createScClient = (): ScClient => {
 
     let chain: RawChain
     if (isWellKnown) {
+      // TODO: double check if it's ok to assume that provider.getChains() will always return well known chains
       const foundChain = Object.values(lightClientProvider.getChains()).find(
         ({ genesisHash }) =>
           genesisHash === wellKnownChainGenesisHashes[chainSpecOrWellKnownName],
