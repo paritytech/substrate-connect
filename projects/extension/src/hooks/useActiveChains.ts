@@ -115,21 +115,20 @@ const createChainDetailObservable = (chain: PageChain) =>
   defer(() => {
     const client = createClient(chain.provider)
     const observableClient = getObservableClient(client)
-    let chainHead = observableClient.chainHead$()
-    let unfollow = chainHead.unfollow
-    const followWithRetry$ = chainHead.follow$.pipe(
-      catchError(() =>
-        timer(0).pipe(
-          concatMap(() =>
-            defer(() => {
-              chainHead = observableClient.chainHead$()
-              unfollow = chainHead.unfollow
-              return chainHead.follow$
-            }),
-          ),
+    type ChainHead$ = ReturnType<(typeof observableClient)["chainHead$"]>
+    let chainHead: ChainHead$
+    let unfollow: ChainHead$["unfollow"]
+    const createFollowWithRetry = (): ChainHead$["follow$"] => {
+      console.log("createFollowWithRetry", chain.name)
+      chainHead = observableClient.chainHead$()
+      unfollow = chainHead.unfollow
+      return chainHead.follow$.pipe(
+        catchError(() =>
+          timer(1000).pipe(concatMap(() => defer(createFollowWithRetry))),
         ),
-      ),
-    )
+      )
+    }
+    const followWithRetry$ = createFollowWithRetry()
     const bestBlockHeight$ = followWithRetry$.pipe(
       filter(
         (
