@@ -25,7 +25,9 @@ import {
   mergeMap,
   timer,
   catchError,
-  concatMap,
+  EMPTY,
+  repeat,
+  from,
 } from "rxjs"
 import { fromHex } from "@polkadot-api/utils"
 import { compact } from "scale-ts"
@@ -118,17 +120,15 @@ const createChainDetailObservable = (chain: PageChain) =>
     type ChainHead$ = ReturnType<(typeof observableClient)["chainHead$"]>
     let chainHead: ChainHead$
     let unfollow: ChainHead$["unfollow"]
-    const createFollowWithRetry = (): ChainHead$["follow$"] => {
-      console.log("createFollowWithRetry", chain.name)
+    const followWithRetry$ = defer(() => {
       chainHead = observableClient.chainHead$()
       unfollow = chainHead.unfollow
-      return chainHead.follow$.pipe(
-        catchError(() =>
-          timer(1000).pipe(concatMap(() => defer(createFollowWithRetry))),
-        ),
-      )
-    }
-    const followWithRetry$ = createFollowWithRetry()
+      return chainHead.follow$
+    }).pipe(
+      catchError(() => EMPTY),
+      repeat({ delay: 1 }),
+      share(),
+    )
     const bestBlockHeight$ = followWithRetry$.pipe(
       filter(
         (
@@ -146,8 +146,8 @@ const createChainDetailObservable = (chain: PageChain) =>
       startWith(undefined),
     )
     const peers$ = timer(0, 5000).pipe(
-      switchMap(
-        () =>
+      switchMap(() =>
+        from(
           new Promise<number>((resolve, reject) => {
             client._request("system_health", [], {
               onSuccess(result: any) {
@@ -156,6 +156,7 @@ const createChainDetailObservable = (chain: PageChain) =>
               onError: reject,
             })
           }),
+        ).pipe(catchError(() => EMPTY)),
       ),
       distinct(),
       startWith(0),
