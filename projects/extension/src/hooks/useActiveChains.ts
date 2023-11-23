@@ -16,7 +16,6 @@ import {
   exhaustMap,
   filter,
   map,
-  retry,
   scan,
   startWith,
   switchMap,
@@ -24,8 +23,11 @@ import {
   finalize,
   defer,
   mergeMap,
-  tap,
   timer,
+  catchError,
+  EMPTY,
+  repeat,
+  from,
 } from "rxjs"
 import { fromHex } from "@polkadot-api/utils"
 import { compact } from "scale-ts"
@@ -115,20 +117,17 @@ const createChainDetailObservable = (chain: PageChain) =>
   defer(() => {
     const client = createClient(chain.provider)
     const observableClient = getObservableClient(client)
-    let chainHead = observableClient.chainHead$()
-    let unfollow = chainHead.unfollow
-    const followWithRetry$ = chainHead.follow$.pipe(
-      retry({
-        count: 3,
-        resetOnSuccess: true,
-        delay() {
-          unfollow()
-          console.warn("will refollow", chain.name, chain.genesisHash)
-          chainHead = observableClient.chainHead$()
-          unfollow = chainHead.unfollow
-          return chainHead.follow$
-        },
-      }),
+    type ChainHead$ = ReturnType<(typeof observableClient)["chainHead$"]>
+    let chainHead: ChainHead$
+    let unfollow: ChainHead$["unfollow"]
+    const followWithRetry$ = defer(() => {
+      chainHead = observableClient.chainHead$()
+      unfollow = chainHead.unfollow
+      return chainHead.follow$
+    }).pipe(
+      catchError(() => EMPTY),
+      repeat({ delay: 1 }),
+      share(),
     )
     const bestBlockHeight$ = followWithRetry$.pipe(
       filter(
@@ -142,13 +141,14 @@ const createChainDetailObservable = (chain: PageChain) =>
         chainHead.header$(bestBlockHash).pipe(
           filter(Boolean),
           map((header) => compact.dec(fromHex(header).slice(32)) as number),
+          catchError(() => EMPTY),
         ),
       ),
       startWith(undefined),
     )
     const peers$ = timer(0, 5000).pipe(
-      switchMap(
-        () =>
+      switchMap(() =>
+        from(
           new Promise<number>((resolve, reject) => {
             client._request("system_health", [], {
               onSuccess(result: any) {
@@ -157,6 +157,7 @@ const createChainDetailObservable = (chain: PageChain) =>
               onError: reject,
             })
           }),
+        ).pipe(catchError(() => EMPTY)),
       ),
       distinct(),
       startWith(0),
