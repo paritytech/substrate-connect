@@ -3660,6 +3660,7 @@ __metadata:
   resolution: "@substrate/connect-extension-protocol@workspace:packages/connect-extension-protocol"
   dependencies:
     eslint: ^8.53.0
+    typescript: ^5.2.2
   languageName: unknown
   linkType: soft
 
