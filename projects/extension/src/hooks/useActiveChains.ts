@@ -16,7 +16,6 @@ import {
   exhaustMap,
   filter,
   map,
-  retry,
   scan,
   startWith,
   switchMap,
@@ -24,8 +23,9 @@ import {
   finalize,
   defer,
   mergeMap,
-  tap,
   timer,
+  catchError,
+  concatMap,
 } from "rxjs"
 import { fromHex } from "@polkadot-api/utils"
 import { compact } from "scale-ts"
@@ -118,17 +118,17 @@ const createChainDetailObservable = (chain: PageChain) =>
     let chainHead = observableClient.chainHead$()
     let unfollow = chainHead.unfollow
     const followWithRetry$ = chainHead.follow$.pipe(
-      retry({
-        count: 3,
-        resetOnSuccess: true,
-        delay() {
-          unfollow()
-          console.warn("will refollow", chain.name, chain.genesisHash)
-          chainHead = observableClient.chainHead$()
-          unfollow = chainHead.unfollow
-          return chainHead.follow$
-        },
-      }),
+      catchError(() =>
+        timer(0).pipe(
+          concatMap(() =>
+            defer(() => {
+              chainHead = observableClient.chainHead$()
+              unfollow = chainHead.unfollow
+              return chainHead.follow$
+            }),
+          ),
+        ),
+      ),
     )
     const bestBlockHeight$ = followWithRetry$.pipe(
       filter(
