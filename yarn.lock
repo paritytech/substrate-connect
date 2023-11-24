@@ -2828,14 +2828,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot-api/json-rpc-provider-proxy@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0":
+"@polkadot-api/json-rpc-provider-proxy@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0, @polkadot-api/json-rpc-provider-proxy@npm:next":
   version: 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
   resolution: "@polkadot-api/json-rpc-provider-proxy@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0"
   checksum: e0142f62f6d811d68707fe49b870546dea1b0d7731b3051ca0548baf4556d1813f052430b6d31ebc65c44cadb4e15a2f7e8f1571577d326c18639dcd7735407a
   languageName: node
   linkType: hard
 
-"@polkadot-api/json-rpc-provider@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0, @polkadot-api/json-rpc-provider@npm:next":
+"@polkadot-api/json-rpc-provider@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0":
   version: 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
   resolution: "@polkadot-api/json-rpc-provider@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0"
   checksum: afe84aa33acb02a9aa798bd580ce7d481c435358b17d38c28d8b16992eef4ac3f7e947001023d8b27a9e3d7397fe1abd8ee078ce0aeee6ae39898dcb7da27ebd
@@ -12339,7 +12339,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "substrate-connect@workspace:."
   dependencies:
-    "@polkadot-api/json-rpc-provider": next
+    "@polkadot-api/json-rpc-provider-proxy": next
     "@polkadot-api/substrate-client": next
     "@types/chrome": ^0.0.237
     "@types/node": ^18.18.9

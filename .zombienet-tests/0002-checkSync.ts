@@ -8,7 +8,7 @@ export async function run(nodeName: string, networkInfo: any) {
     const chainHeadFollower = chainHead(
       true,
       (event) => {
-        if (event.event === "finalized" && ++count === 2) {
+        if (event.type === "finalized" && ++count === 2) {
           resolve(chainHeadFollower.unfollow())
         }
       },
