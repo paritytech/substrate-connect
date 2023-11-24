@@ -2858,7 +2858,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot-api/substrate-bindings@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0":
+"@polkadot-api/substrate-bindings@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0, @polkadot-api/substrate-bindings@npm:next":
   version: 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
   resolution: "@polkadot-api/substrate-bindings@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0"
   dependencies:
@@ -3579,11 +3579,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@substrate/demo@workspace:projects/demo"
   dependencies:
-    "@polkadot/api": ^10.10.1
-    "@polkadot/rpc-provider": ^10.10.1
+    "@polkadot-api/client": next
+    "@polkadot-api/json-rpc-provider-proxy": next
+    "@polkadot-api/substrate-bindings": next
+    "@polkadot-api/substrate-client": next
+    "@polkadot-api/utils": next
     "@substrate/connect": "*"
-    "@vitejs/plugin-react": ^4.1.1
     eslint: ^8.53.0
+    rxjs: ^7.8.1
     vite: ^4.5.0
     vite-plugin-html: ^3.2.0
   languageName: unknown

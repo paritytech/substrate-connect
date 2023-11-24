@@ -19,12 +19,15 @@
     "lint": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
-    "@polkadot/api": "^10.10.1",
-    "@polkadot/rpc-provider": "^10.10.1",
-    "@substrate/connect": "*"
+    "@polkadot-api/client": "next",
+    "@polkadot-api/json-rpc-provider-proxy": "next",
+    "@polkadot-api/substrate-bindings": "next",
+    "@polkadot-api/substrate-client": "next",
+    "@polkadot-api/utils": "next",
+    "@substrate/connect": "*",
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.1.1",
     "eslint": "^8.53.0",
     "vite": "^4.5.0",
     "vite-plugin-html": "^3.2.0"
