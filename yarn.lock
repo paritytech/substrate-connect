@@ -3614,7 +3614,7 @@ __metadata:
     react-icons: ^4.11.0
     rxjs: ^7.8.1
     scale-ts: ^1.4.2
-    smoldot: 2.0.12
+    smoldot: 2.0.10
     tailwindcss: ^3.3.5
     typescript: ^5.2.2
     vite: ^4.5.0
@@ -11934,6 +11934,15 @@ __metadata:
   version: 4.2.0
   resolution: "smart-buffer@npm:4.2.0"
   checksum: b5167a7142c1da704c0e3af85c402002b597081dd9575031a90b4f229ca5678e9a36e8a374f1814c8156a725d17008ae3bde63b92f9cfd132526379e580bec8b
+  languageName: node
+  linkType: hard
+
+"smoldot@npm:2.0.10":
+  version: 2.0.10
+  resolution: "smoldot@npm:2.0.10"
+  dependencies:
+    ws: ^8.8.1
+  checksum: b427d97264a04fd2272e667c554c6edc0ee49c2caabd3945a4f8495e5161d694ddec10915e8e85be4f019942b93342bf59c955c5a83190151ae61cbd329a429e
   languageName: node
   linkType: hard
 
