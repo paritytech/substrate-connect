@@ -47,6 +47,7 @@ export default defineConfig({
     command: isCI ? "yarn preview" : "yarn dev",
     cwd: "../demo",
     url: dappUrl,
-    reuseExistingServer: true,
+    timeout: 120 * 1000,
+    reuseExistingServer: !isCI,
   },
 })

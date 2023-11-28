@@ -39,8 +39,11 @@ jobs:
         cache: yarn
     - run: yarn install --immutable
     - run: yarn build
+    - name: Build exentension with Manifest v3
+      run: yarn build:m3
+      working-directory: ./projects/extension
     - name: Install Playwright Browsers
-      run: yarn dlx playwright install --with-deps chromium
+      run: yarn exec playwright install --with-deps chromium
       working-directory: ./projects/extension
     - name: Run Playwright tests
       run: yarn exec playwright test --project=chromium
