@@ -46,7 +46,7 @@
   "dependencies": {
     "@polkadot-api/light-client-extension-helpers": "next",
     "@substrate/connect-extension-protocol": "^1.0.1",
-    "smoldot": "2.0.12"
+    "smoldot": "2.0.13"
   },
   "devDependencies": {
     "eslint": "^8.53.0",
