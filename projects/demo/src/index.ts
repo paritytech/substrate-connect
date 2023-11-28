@@ -16,7 +16,10 @@ import { exhaustMap, filter, map } from "rxjs"
 import { compact } from "@polkadot-api/substrate-bindings"
 
 import UI, { emojis } from "./view"
-import westmint from "./assets/westend-westmint.json"
+
+import assetHubPolkadot from "./assets/asset-hub-polkadot.json?raw"
+import assetHubKusama from "./assets/asset-hub-kusama.json?raw"
+import assetHubWestend from "./assets/asset-hub-westend.json?raw"
 
 window.onload = () => {
   ;(
@@ -24,11 +27,13 @@ window.onload = () => {
       [[WellKnownChain.polkadot], "polkadot"],
       [[WellKnownChain.ksmcc3], "kusama"],
       [[WellKnownChain.westend2], "westend"],
-      [[JSON.stringify(westmint), WellKnownChain.westend2], "westmint"],
+      [[assetHubPolkadot, WellKnownChain.polkadot], "asset-hub-polkadot"],
+      [[assetHubKusama, WellKnownChain.ksmcc3], "asset-hub-kusama"],
+      [[assetHubWestend, WellKnownChain.westend2], "asset-hub-westend"],
     ] as [[spec: string, relaySpec?: string], elementId: string][]
   ).forEach(([specs, elementId]) => followChainBestBlocks(specs, elementId))
 
-  showWestmintChainDetails()
+  showAssetHubPolkadotChainDetails()
 }
 
 const followChainBestBlocks = (
@@ -65,11 +70,13 @@ const followChainBestBlocks = (
       ),
     )
     .subscribe((bestBlockHeight) => {
+      if (bestBlockHeight > 0)
+        ui.setAttribute("data-blockheight", `${bestBlockHeight}`)
       ui.innerText = `#${bestBlockHeight}`
     })
 }
 
-const showWestmintChainDetails = async () => {
+const showAssetHubPolkadotChainDetails = async () => {
   const ui = new UI(
     { containerId: "messages" },
     { loadTime: performance.now() },
@@ -77,7 +84,7 @@ const showWestmintChainDetails = async () => {
   ui.showSyncing()
 
   const client = createClient(
-    ScProvider(JSON.stringify(westmint), WellKnownChain.westend2),
+    ScProvider(assetHubPolkadot, WellKnownChain.polkadot),
   )
   const observableClient = getObservableClient(client)
   observableClient.chainHead$().follow$.subscribe(async (event) => {
