@@ -4,6 +4,16 @@
 
 ### Changed
 
+## 0.8.0 - 2023-11-28
+
+### Breaking
+
+- Add `chain.addChain(...)` to substrate connect API ([#1604](https://github.com/paritytech/substrate-connect/pull/1604))
+
+### Changed
+
+- Update smoldot@[version 2.0.13](https://github.com/smol-dot/smoldot/blob/main/wasm-node/CHANGELOG.md#2013---2023-11-28) ([#1641](https://github.com/paritytech/substrate-connect/pull/1641))
+
 ## 0.7.35 - 2023-11-12
 
 ### Changed
