@@ -2814,83 +2814,83 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot-api/client@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0, @polkadot-api/client@npm:next":
-  version: 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-  resolution: "@polkadot-api/client@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0"
+"@polkadot-api/client@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0, @polkadot-api/client@npm:next":
+  version: 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+  resolution: "@polkadot-api/client@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0"
   dependencies:
-    "@polkadot-api/substrate-bindings": 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-    "@polkadot-api/substrate-client": 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-    "@polkadot-api/substrate-codegen": 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-    "@polkadot-api/utils": 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
+    "@polkadot-api/substrate-bindings": 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+    "@polkadot-api/substrate-client": 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+    "@polkadot-api/substrate-codegen": 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+    "@polkadot-api/utils": 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
   peerDependencies:
     rxjs: ">=7.8.0"
-  checksum: 372fb4232b1ee9273ed7a4b4a8d8cd91bef5f0ae3866fd5a0847526f441786a94ca7097fbf726e47dafbd51ca1ee55bc9d58723ac403a6d93144b519e8e49e72
+  checksum: adbc00f266a27ce4b61b0d0c787ec8df13254786b2f2553b0da753fede40206f3187239d00a3b7591e326e854fea01c10e6cfee54243e71d95977131a8c2116d
   languageName: node
   linkType: hard
 
-"@polkadot-api/json-rpc-provider-proxy@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0, @polkadot-api/json-rpc-provider-proxy@npm:next":
-  version: 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-  resolution: "@polkadot-api/json-rpc-provider-proxy@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0"
-  checksum: e0142f62f6d811d68707fe49b870546dea1b0d7731b3051ca0548baf4556d1813f052430b6d31ebc65c44cadb4e15a2f7e8f1571577d326c18639dcd7735407a
+"@polkadot-api/json-rpc-provider-proxy@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0, @polkadot-api/json-rpc-provider-proxy@npm:next":
+  version: 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+  resolution: "@polkadot-api/json-rpc-provider-proxy@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0"
+  checksum: 155f90a61ea914d1fd7178c1559d05fdd5e28872a6b02b4d9708bda1449a3dc227fc0290f15cb3a177d0611fbafd3a6dbec92668ce88b7551cf4aee459fd7528
   languageName: node
   linkType: hard
 
-"@polkadot-api/json-rpc-provider@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0":
-  version: 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-  resolution: "@polkadot-api/json-rpc-provider@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0"
-  checksum: afe84aa33acb02a9aa798bd580ce7d481c435358b17d38c28d8b16992eef4ac3f7e947001023d8b27a9e3d7397fe1abd8ee078ce0aeee6ae39898dcb7da27ebd
+"@polkadot-api/json-rpc-provider@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0":
+  version: 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+  resolution: "@polkadot-api/json-rpc-provider@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0"
+  checksum: c26abe0494715824d8c3bc4ac9a3c2184e40797529484a4aea615b3ba4ca2908ad4d6e289358a4e753b93c30233f46d1fb045ef8895ebb5b740f1d7ff80ae46b
   languageName: node
   linkType: hard
 
 "@polkadot-api/light-client-extension-helpers@npm:next":
-  version: 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-  resolution: "@polkadot-api/light-client-extension-helpers@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0"
+  version: 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+  resolution: "@polkadot-api/light-client-extension-helpers@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0"
   dependencies:
-    "@polkadot-api/client": 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-    "@polkadot-api/json-rpc-provider": 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-    "@polkadot-api/json-rpc-provider-proxy": 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-    "@polkadot-api/substrate-client": 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
+    "@polkadot-api/client": 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+    "@polkadot-api/json-rpc-provider": 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+    "@polkadot-api/json-rpc-provider-proxy": 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+    "@polkadot-api/substrate-client": 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
     "@substrate/connect-extension-protocol": ^1.0.1
     rxjs: ^7.8.1
   peerDependencies:
     smoldot: 2.0.3
-  checksum: c2d9daadda385a7b9950887c3f96a623a08669fa513a9c860b04f6a6cc97bba05a65ce2e07a51b7b5678881e5d7362b03a4a66e156380ffe7de9c240ac3bdc81
+  checksum: 9dc18ae50a96f475667a97de067ea931a7c4c75ae6a26dca00943385fde123e68189703b3e2829531e6f6a2a043d1366b7cbdd14cdd9ffe5ff08ae9a26bd50f0
   languageName: node
   linkType: hard
 
-"@polkadot-api/substrate-bindings@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0, @polkadot-api/substrate-bindings@npm:next":
-  version: 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-  resolution: "@polkadot-api/substrate-bindings@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0"
+"@polkadot-api/substrate-bindings@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0, @polkadot-api/substrate-bindings@npm:next":
+  version: 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+  resolution: "@polkadot-api/substrate-bindings@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0"
   dependencies:
     "@noble/hashes": ^1.3.1
-    "@polkadot-api/utils": 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
+    "@polkadot-api/utils": 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
     "@scure/base": ^1.1.1
     scale-ts: ^1.4.2
-  checksum: 16a9c905a83511578c1dfc9692b8b91e5c6cf4c332a57b899d0fdda34e1f2e4364f7d2f8972a6fdc53b32c23ab02f6a6fb0de151915dd99f7143f5fa99f40119
+  checksum: f6a3ed8ac1ca9a2fa9957b0679709dafa0980e8244ae5d4525657db6013e52645546174416a37737df1029393e2fab97000cb1cfe1f0dca463746443c1a25ed5
   languageName: node
   linkType: hard
 
-"@polkadot-api/substrate-client@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0, @polkadot-api/substrate-client@npm:next":
-  version: 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-  resolution: "@polkadot-api/substrate-client@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0"
-  checksum: 5e5ee9ac16870a2ca8473afc5ab6bd9ac8acc6d831b9f592b5adbc6b780d963489988303a7f963e422358e908aec00337e3b8280437cb42ee4d035190d4807fe
+"@polkadot-api/substrate-client@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0, @polkadot-api/substrate-client@npm:next":
+  version: 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+  resolution: "@polkadot-api/substrate-client@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0"
+  checksum: c327f1ad03f6871d3e40507105a7b9f08e62425b61e121d459d0bb39c48c2e4435b55c935153de91b8332a2ee995035b1690faa63ae32f2db01318ec70209eb6
   languageName: node
   linkType: hard
 
-"@polkadot-api/substrate-codegen@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0":
-  version: 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-  resolution: "@polkadot-api/substrate-codegen@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0"
+"@polkadot-api/substrate-codegen@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0":
+  version: 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+  resolution: "@polkadot-api/substrate-codegen@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0"
   dependencies:
-    "@polkadot-api/substrate-bindings": 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-    "@polkadot-api/utils": 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-  checksum: 1e7dd90afd23069bca08033822797f1ca6acae8cf65bc9b5367f299ce13a32cb8f9a3c7631bf11883b76e9c617a15137bcb3e28b86a49e112f3f69738fbe322e
+    "@polkadot-api/substrate-bindings": 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+    "@polkadot-api/utils": 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+  checksum: e37d3e988469ce7aed760445ee819ec9ddcddc3712b558b0d1e0c0151cc9dadb1e45e04e5a704e521fae4e529fd95c801bde9d193fc64cd023f75a38463e6621
   languageName: node
   linkType: hard
 
-"@polkadot-api/utils@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0, @polkadot-api/utils@npm:next":
-  version: 0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0
-  resolution: "@polkadot-api/utils@npm:0.0.1-fc2d544220690af6fb53e6837b4498eaf27ec832.1.0"
-  checksum: b9bf4177cc87a340044ba110b9ca4f56e39e2468e558c6e640a59e00e6b874100a65a77b945c578334e27c9046f229b445078189e28f1919ef9c054edd992e33
+"@polkadot-api/utils@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0, @polkadot-api/utils@npm:next":
+  version: 0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0
+  resolution: "@polkadot-api/utils@npm:0.0.1-62606ec6e9132a1bc15f0608fc175b7240348007.1.0"
+  checksum: d238fde20625be01e6d0563c7fd3babfc2993654b0e0845216ebeef3b0ce9e388989d78ee4e8e9d92f8ed3aa9a65e8920c719b03c4b6522414154af8f76830c3
   languageName: node
   linkType: hard
 
@@ -3614,7 +3614,7 @@ __metadata:
     react-icons: ^4.11.0
     rxjs: ^7.8.1
     scale-ts: ^1.4.2
-    smoldot: 2.0.10
+    smoldot: 2.0.12
     tailwindcss: ^3.3.5
     typescript: ^5.2.2
     vite: ^4.5.0
@@ -11943,6 +11943,15 @@ __metadata:
   dependencies:
     ws: ^8.8.1
   checksum: b427d97264a04fd2272e667c554c6edc0ee49c2caabd3945a4f8495e5161d694ddec10915e8e85be4f019942b93342bf59c955c5a83190151ae61cbd329a429e
+  languageName: node
+  linkType: hard
+
+"smoldot@npm:2.0.12":
+  version: 2.0.12
+  resolution: "smoldot@npm:2.0.12"
+  dependencies:
+    ws: ^8.8.1
+  checksum: 22abcfd191406bfc0884b03ab6fcb029f60206834f06c9047d007809f88052a9c6600affb4d15ee9a5aa8d206131aa92083fb56f61f351feb2707c6024455b08
   languageName: node
   linkType: hard
 
