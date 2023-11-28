@@ -28,10 +28,33 @@ jobs:
     - run: yarn lint
     - run: yarn test
 
+  playwright:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: yarn
+    - run: yarn install --immutable
+    - run: yarn build
+    - name: Install Playwright Browsers
+      run: yarn dlx playwright install --with-deps chromium
+      working-directory: ./projects/extension
+    - name: Run Playwright tests
+      run: yarn exec playwright test --project=chromium
+      working-directory: ./projects/extension
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: playwright-report
+        path: projects/extension/playwright-report/
+
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
     # are successful.
-    needs: [build]
+    needs: [build, playwright]
     runs-on: ubuntu-latest
     steps:
      - run: echo Success
