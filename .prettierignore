@@ -75,3 +75,4 @@ westend2.json*
 *westmint*.json*
 rococo_v2_2.json*
 packages/connect/src/connector/specs/js
+packages/connect-known-chains/src/specs

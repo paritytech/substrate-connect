@@ -45,7 +45,7 @@
     "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {
-    "@substrate/connect-extension-protocol": "^1.0.1",
+    "@substrate/connect-extension-protocol": "workspace:^",
     "smoldot": "2.0.13"
   },
   "devDependencies": {
