@@ -29,7 +29,6 @@ jobs:
         working-directory: './packages/connect-known-chains'
         run: yarn pack
       - name: "@substrate/connect-known-chains Publish"
-        id: publish
         uses: JS-DevTools/npm-publish@v2
         with:
           token: ${{ secrets.NPM_TOKEN }}
