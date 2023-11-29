@@ -1,6 +1,6 @@
 {
   "name": "@substrate/connect-known-chains",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Substrate-connect well known chain specifications",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
@@ -14,20 +14,20 @@
       "require": "./dist/index.js"
     },
     "./polkadot": {
-      "import": "./dist/specs/polkadot.cjs",
-      "require": "./dist/specs/polkadot.js"
+      "import": "./dist/specs/polkadot.js",
+      "require": "./dist/specs/polkadot.cjs"
     },
     "./ksmcc3": {
-      "import": "./dist/specs/ksmcc3.cjs",
-      "require": "./dist/specs/ksmcc3.js"
+      "import": "./dist/specs/ksmcc3.js",
+      "require": "./dist/specs/ksmcc3.cjs"
     },
     "./westend2": {
-      "import": "./dist/specs/westend2.cjs",
-      "require": "./dist/specs/westend2.js"
+      "import": "./dist/specs/westend2.js",
+      "require": "./dist/specs/westend2.cjs"
     },
     "./rococo_v2_2": {
-      "import": "./dist/specs/rococo_v2_2.cjs",
-      "require": "./dist/specs/rococo_v2_2.js"
+      "import": "./dist/specs/rococo_v2_2.js",
+      "require": "./dist/specs/rococo_v2_2.cjs"
     }
   },
   "repository": {
