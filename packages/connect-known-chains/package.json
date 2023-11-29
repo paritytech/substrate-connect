@@ -1,0 +1,55 @@
+{
+  "name": "@substrate/connect-known-chains",
+  "version": "0.0.1",
+  "description": "Substrate-connect well known chain specifications",
+  "author": "Parity Team <admin@parity.io>",
+  "license": "GPL-3.0-only",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": ".dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./polkadot": {
+      "import": "./dist/specs/polkadot.cjs",
+      "require": "./dist/specs/polkadot.js"
+    },
+    "./ksmcc3": {
+      "import": "./dist/specs/ksmcc3.cjs",
+      "require": "./dist/specs/ksmcc3.js"
+    },
+    "./westend2": {
+      "import": "./dist/specs/westend2.cjs",
+      "require": "./dist/specs/westend2.js"
+    },
+    "./rococo_v2_2": {
+      "import": "./dist/specs/rococo_v2_2.cjs",
+      "require": "./dist/specs/rococo_v2_2.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paritytech/substrate-connect.git"
+  },
+  "bugs": {
+    "url": "https://github.com/paritytech/substrate-connect/issues"
+  },
+  "homepage": "https://github.com/paritytech/substrate-connect#readme",
+  "scripts": {
+    "postinstall": "yarn build-js-specs",
+    "build-js-specs": "node scripts/build-js-specs.js",
+    "test": "exit 0; #This package is only types",
+    "deep-clean": "yarn clean && rm -rf node_modules",
+    "clean": "rm -rf dist",
+    "build": "yarn clean && yarn build-js-specs && tsup-node src/index.ts src/specs/polkadot.ts src/specs/ksmcc3.ts src/specs/westend2.ts src/specs/rococo_v2_2.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
+    "lint": "eslint . --ext .js,.ts"
+  },
+  "devDependencies": {
+    "eslint": "^8.53.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.2.2"
+  }
+}

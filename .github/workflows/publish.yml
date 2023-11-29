@@ -15,17 +15,25 @@ jobs:
           cache: yarn
       - run: yarn install --immutable
       - run: yarn build
-      - name: Publish Dry Run
+      - name: "@substrate/connect Pack"
         working-directory: './packages/connect'
-        run: npm publish --unsafe-perm --dry-run
-      - name: Publish
+        run: yarn pack
+      - name: "@substrate/connect Publish"
         id: publish
         uses: JS-DevTools/npm-publish@v2
-        # Warning: this GitHub action doesn't seem to run prepublish scripts, hence
-        # the `npm publish --dry-run` done right above is important to ensure this.
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          package: ./packages/connect/package.json
+          package: ./packages/connect/package.tgz
+          access: public
+      - name: "@substrate/connect-known-chains Pack"
+        working-directory: './packages/connect-known-chains'
+        run: yarn pack
+      - name: "@substrate/connect-known-chains Publish"
+        id: publish
+        uses: JS-DevTools/npm-publish@v2
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./packages/connect-known-chains/package.tgz
           access: public
       - name: Fetch gh-pages
         run: |
