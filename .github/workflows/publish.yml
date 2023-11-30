@@ -19,11 +19,21 @@ jobs:
         working-directory: './packages/connect'
         run: yarn pack
       - name: "@substrate/connect Publish"
-        id: publish
+        id: publish_connect
         uses: JS-DevTools/npm-publish@v2
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/connect/package.tgz
+          access: public
+      - name: "@substrate/connect-extension-protocol Pack"
+        working-directory: './packages/connect-extension-protocol'
+        run: yarn pack
+      - name: "@substrate/connect-extension-protocol Publish"
+        id: publish_connect_extension_protocol
+        uses: JS-DevTools/npm-publish@v2
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./packages/connect-extension-protocol/package.tgz
           access: public
       - name: "@substrate/connect-known-chains Pack"
         working-directory: './packages/connect-known-chains'
@@ -35,12 +45,12 @@ jobs:
           package: ./packages/connect-known-chains/package.tgz
           access: public
       - name: Fetch gh-pages
+        if: steps.publish_connect.outputs.type || steps.publish_connect_extension_protocol.outputs.type
         run: |
           git remote set-branches origin gh-pages
           git fetch --depth 1 origin gh-pages
-        if: steps.publish.outputs.type
       - name: Deploy
-        if: steps.publish.outputs.type
+        if: steps.publish_connect.outputs.type || steps.publish_connect_extension_protocol.outputs.type
         run: yarn run deploy
 
   all:
