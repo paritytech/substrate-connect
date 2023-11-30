@@ -3544,7 +3544,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/connect-known-chains@workspace:packages/connect-known-chains":
+"@substrate/connect-known-chains@workspace:^, @substrate/connect-known-chains@workspace:packages/connect-known-chains":
   version: 0.0.0-use.local
   resolution: "@substrate/connect-known-chains@workspace:packages/connect-known-chains"
   dependencies:
@@ -3559,9 +3559,11 @@ __metadata:
   resolution: "@substrate/connect@workspace:packages/connect"
   dependencies:
     "@substrate/connect-extension-protocol": "workspace:^"
+    "@substrate/connect-known-chains": "workspace:^"
     eslint: ^8.53.0
     jsdom: ^22.1.0
     smoldot: 2.0.13
+    tsup: ^8.0.1
     typescript: ^5.2.2
     vitest: ^0.34.6
   languageName: unknown

@@ -11,7 +11,7 @@ import {
   type ScClient,
 } from "./types.js"
 import { WellKnownChain } from "../WellKnownChain.js"
-import { getSpec } from "./specs/index.js"
+import { getSpec } from "./getSpec.js"
 
 const listeners = new Map<string, (msg: ToApplication) => void>()
 if (typeof window === "object") {

@@ -44,11 +44,6 @@ jobs:
           rpc_answer.json
     - run: |  # Overwrite the `lightSyncState` field of the existing chain spec with the value of spec that's been downloaded.
         tmp=$(mktemp)
-        output=./repo/packages/connect/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json
-        jq --slurpfile downloaded ./chain_spec.json '.lightSyncState = $downloaded[0].lightSyncState' "$output" > "$tmp"
-        mv "$tmp" "$output"
-    - run: |  # Overwrite the `lightSyncState` field of the existing chain spec with the value of spec that's been downloaded.
-        tmp=$(mktemp)
         output=./repo/packages/connect-known-chains/specs/${{ steps.get-chain-id.outputs.id }}.json
         jq --slurpfile downloaded ./chain_spec.json '.lightSyncState = $downloaded[0].lightSyncState' "$output" > "$tmp"
         mv "$tmp" "$output"

@@ -4,7 +4,7 @@ import type {
   ClientOptions,
   ClientOptionsWithBytecode,
 } from "smoldot"
-import { getSpec } from "./specs/index.js"
+import { getSpec } from "./getSpec.js"
 import {
   type AddWellKnownChain,
   type Chain,

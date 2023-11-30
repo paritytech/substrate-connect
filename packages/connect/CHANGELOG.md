@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Use chain specifications from `@substrate/connect-known-chains` ([#1647](https://github.com/paritytech/substrate-connect/pull/1647))
+
 ### Changed
 
 ## 0.8.0 - 2023-11-28
