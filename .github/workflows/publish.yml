@@ -15,25 +15,42 @@ jobs:
           cache: yarn
       - run: yarn install --immutable
       - run: yarn build
-      - name: Publish Dry Run
+      - name: "@substrate/connect Pack"
         working-directory: './packages/connect'
-        run: npm publish --unsafe-perm --dry-run
-      - name: Publish
-        id: publish
+        run: yarn pack
+      - name: "@substrate/connect Publish"
+        id: publish_connect
         uses: JS-DevTools/npm-publish@v2
-        # Warning: this GitHub action doesn't seem to run prepublish scripts, hence
-        # the `npm publish --dry-run` done right above is important to ensure this.
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          package: ./packages/connect/package.json
+          package: ./packages/connect/package.tgz
+          access: public
+      - name: "@substrate/connect-extension-protocol Pack"
+        working-directory: './packages/connect-extension-protocol'
+        run: yarn pack
+      - name: "@substrate/connect-extension-protocol Publish"
+        id: publish_connect_extension_protocol
+        uses: JS-DevTools/npm-publish@v2
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./packages/connect-extension-protocol/package.tgz
+          access: public
+      - name: "@substrate/connect-known-chains Pack"
+        working-directory: './packages/connect-known-chains'
+        run: yarn pack
+      - name: "@substrate/connect-known-chains Publish"
+        uses: JS-DevTools/npm-publish@v2
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./packages/connect-known-chains/package.tgz
           access: public
       - name: Fetch gh-pages
+        if: steps.publish_connect.outputs.type || steps.publish_connect_extension_protocol.outputs.type
         run: |
           git remote set-branches origin gh-pages
           git fetch --depth 1 origin gh-pages
-        if: steps.publish.outputs.type
       - name: Deploy
-        if: steps.publish.outputs.type
+        if: steps.publish_connect.outputs.type || steps.publish_connect_extension_protocol.outputs.type
         run: yarn run deploy
 
   all:

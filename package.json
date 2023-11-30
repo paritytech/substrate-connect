@@ -16,6 +16,7 @@
   "private": true,
   "workspaces": [
     "packages/connect-extension-protocol",
+    "packages/connect-known-chains",
     "packages/connect",
     "projects/extension",
     "projects/burnr",
@@ -65,7 +66,7 @@
     "typescript": "^5.2.2"
   },
   "resolutions": {
-    "@substrate/connect": "0.8.0"
+    "@substrate/connect": "0.8.1"
   },
   "packageManager": "yarn@3.6.3"
 }

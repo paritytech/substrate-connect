@@ -7,7 +7,7 @@ export async function run(nodeName: string) {
     test: {
       userDefinedTypes: [],
     },
-    chainSpecPath: `../packages/connect/src/connector/specs/${name}.json`,
+    chainSpecPath: `../packages/connect-known-chains/specs/${name}.json`,
   }
 
   const { chainHead } = await connect("light-client", networkInfo)

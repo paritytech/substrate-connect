@@ -7,8 +7,8 @@ import { mkdir } from "fs/promises"
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const specsDir = path.join(__dirname, "./src/connector/specs")
-const jsDir = path.join(specsDir, "./js/")
+const specsDir = path.join(__dirname, "../specs")
+const jsDir = path.join(__dirname, "../src/specs/")
 try {
   const files = await readdir(specsDir)
   const jsonFiles = files.filter((file) => file.endsWith(".json"))
@@ -20,7 +20,7 @@ try {
         encoding: "utf8",
       })
 
-      const jsContent = `export const chainSpec = \`${jsonContent}\``
+      const jsContent = `export const chainSpec: string = \`${jsonContent}\``
       await writeFile(path.join(jsDir, file.slice(0, -4) + "ts"), jsContent)
     }),
   )
