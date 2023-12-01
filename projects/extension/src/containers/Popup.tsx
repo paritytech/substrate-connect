@@ -42,6 +42,7 @@ const Popup: FunctionComponent = () => {
               Go to Options
             </span>
             <MdOutlineSettings
+              data-testid={"btnGoToOptions"}
               onClick={goToOptions}
               className="text-xl leading-5 cursor-pointer hover:bg-gray-200"
             />
@@ -57,13 +58,20 @@ const Popup: FunctionComponent = () => {
               if (c?.details?.length === 1 && !c?.details[0].tabId)
                 return (
                   <>
-                    <div className="block mt-4">
+                    <div
+                      className="block mt-4"
+                      data-testid={`chain${c.chainName}`}
+                    >
                       <div key={c.chainName} className="pl-6 flex text-lg">
                         {networkIcon(c.chainName, c.isWellKnown)}
                       </div>
                       <div className="pl-[4.5rem] text-sm flex pt-2">
                         <span className="text-[#323232]">Latest block</span>
-                        <span className="pl-2 text-[#24CC85]">
+                        <span
+                          className="pl-2 text-[#24CC85]"
+                          data-testid="blockheight"
+                          data-blockheight={c?.details[0].bestBlockHeight}
+                        >
                           {c?.details[0].bestBlockHeight?.toLocaleString(
                             "en-US",
                           ) || "Syncing..."}
@@ -94,7 +102,10 @@ const Popup: FunctionComponent = () => {
                   titleClass="popup-accordion-title"
                   contentClass="popup-accordion-content"
                   titles={[
-                    <div className="block mt-4">
+                    <div
+                      className="block mt-4"
+                      data-testid={`chain${c.chainName}`}
+                    >
                       <div className="pl-4 flex text-lg justify-start">
                         {networkIcon(c.chainName, c.isWellKnown)}
                         <span className="pl-2 text-[#616161]">
@@ -103,7 +114,11 @@ const Popup: FunctionComponent = () => {
                       </div>
                       <div className="pl-16 flex pt-2">
                         <span className="text-[#323232]">Latest block</span>
-                        <span className="pl-2 text-[#24CC85]">
+                        <span
+                          className="pl-2 text-[#24CC85]"
+                          data-testid="blockheight"
+                          data-blockheight={c?.details[0].bestBlockHeight}
+                        >
                           {c?.details[0].bestBlockHeight?.toLocaleString(
                             "en-US",
                           ) || "Syncing..."}
