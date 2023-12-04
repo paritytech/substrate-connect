@@ -1,9 +1,8 @@
-import { FunctionComponent, useEffect, useMemo, useState } from "react"
+import { FunctionComponent, useEffect, useState } from "react"
 import { MdOutlineNetworkCell, MdOutlineOnlinePrediction } from "react-icons/md"
 import pckg from "../../package.json"
 import { FaGithub } from "react-icons/fa"
 import * as environment from "../environment"
-import { NetworkTabProps } from "../types"
 import {
   BraveModal,
   Logo,
@@ -11,7 +10,6 @@ import {
   Networks,
   Bootnodes,
 } from "../components"
-import { useActiveChains } from "../hooks/useActiveChains"
 
 type MenuItemTypes = "item" | "title" | "icon"
 
@@ -70,30 +68,9 @@ const cName = (type: MenuItemTypes, menu = 0, reqMenu: number) => {
 }
 
 export const Options: FunctionComponent = () => {
-  const chains = useActiveChains()
-  const [menu, setMenu] = useState<number>(0)
+  const [menu, setMenu] = useState<0 | 1>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [actionResult, setActionResult] = useState<string>("")
-  const networks: NetworkTabProps[] = useMemo(
-    () =>
-      chains.map(({ chainName, isWellKnown, details }) => {
-        return {
-          isWellKnown,
-          name: chainName,
-          health: {
-            isSyncing: details[0].isSyncing,
-            peers: details[0].peers,
-            status: "connected",
-            bestBlockHeight: details[0].bestBlockHeight,
-          },
-          apps: details.map(({ url }) => ({
-            name: url ?? "",
-            url: url,
-          })),
-        }
-      }),
-    [chains],
-  )
 
   useEffect(() => {
     window.navigator?.brave?.isBrave().then(async (isBrave: any) => {
@@ -164,11 +141,8 @@ export const Options: FunctionComponent = () => {
         </div>
       </div>
       <div className="ml-60 absolute w-[calc(100%-15rem)] h-[100vh] overflow-auto">
-        <MenuContent activeMenu={menu}>
-          {/** Networks section */}
-          <Networks networks={networks} />
-          {/**Bootnodes section */}
-          <Bootnodes />
+        <MenuContent>
+          {menu === 0 ? <Networks /> : menu === 1 ? <Bootnodes /> : null}
         </MenuContent>
       </div>
     </>

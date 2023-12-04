@@ -9,7 +9,13 @@ const goToOptions = (): void => {
   chrome.runtime.openOptionsPage()
 }
 
-const networkIcon = (network: string, isWellKnown: boolean) => {
+const NetworkIcon = ({
+  network,
+  isWellKnown,
+}: {
+  network: string
+  isWellKnown: boolean
+}) => {
   const icon = network.toLowerCase()
   return (
     <>
@@ -63,7 +69,10 @@ const Popup: FunctionComponent = () => {
                       data-testid={`chain${c.chainName}`}
                     >
                       <div key={c.chainName} className="pl-6 flex text-lg">
-                        {networkIcon(c.chainName, c.isWellKnown)}
+                        <NetworkIcon
+                          network={c.chainName}
+                          isWellKnown={c.isWellKnown}
+                        />
                       </div>
                       <div className="pl-[4.5rem] text-sm flex pt-2">
                         <span className="text-[#323232]">Latest block</span>
@@ -107,7 +116,10 @@ const Popup: FunctionComponent = () => {
                       data-testid={`chain${c.chainName}`}
                     >
                       <div className="pl-4 flex text-lg justify-start">
-                        {networkIcon(c.chainName, c.isWellKnown)}
+                        <NetworkIcon
+                          network={c.chainName}
+                          isWellKnown={c.isWellKnown}
+                        />
                         <span className="pl-2 text-[#616161]">
                           ({contents.length})
                         </span>
