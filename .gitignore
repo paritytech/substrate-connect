@@ -2,6 +2,7 @@ node_modules
 .DS_Store
 yarn-error.log
 dist
+.turbo
 # testing
 coverage
 _site

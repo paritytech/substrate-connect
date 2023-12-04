@@ -28,7 +28,6 @@
     "deep-clean": "yarn workspaces foreach run deep-clean && rm -rf node_modules",
     "clean": " yarn workspaces foreach run clean",
     "lint": "prettier --check . && yarn workspaces foreach run lint",
-    "build": "yarn workspaces foreach --topological run build",
     "test": "yarn workspaces foreach run test",
     "dev:api-docs": "concurrently -n typedoc,http-server 'nodemon -e ts --watch ./packages/connect --watch ./packages/connect-extension-protocol --exec typedoc' 'http-server _site/api'",
     "dev:burnr": "yarn workspace @substrate/burnr run dev",
@@ -62,6 +61,7 @@
     "lint-staged": "^14.0.1",
     "nodemon": "^2.0.22",
     "prettier": "^3.0.3",
+    "turbo": "^1.10.16",
     "typedoc": "^0.25.3",
     "typescript": "^5.2.2"
   },

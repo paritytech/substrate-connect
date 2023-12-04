@@ -16,6 +16,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4.1.1
+    - name: Cache turbo build setup
+      uses: actions/cache@v3
+      with:
+        path: .turbo
+        key: ${{ runner.os }}-turbo-${{ matrix.node-version }}-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-turbo-${{ matrix.node-version }}-
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -23,21 +30,26 @@ jobs:
         cache: yarn
     - run: yarn install --immutable
     - run: yarn checkResolutions
-    - run: yarn build
-    - run: yarn lint
-    - run: yarn test
+    - run: yarn turbo build lint test --cache-dir=.turbo
 
   playwright:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4.1.1
+    - name: Cache turbo build setup
+      uses: actions/cache@v3
+      with:
+        path: .turbo
+        key: ${{ runner.os }}-turbo-18.x-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-turbo-18.x-
     - uses: actions/setup-node@v3
       with:
         node-version: 18.x
         cache: yarn
     - run: yarn install --immutable
-    - run: yarn build
+    - run: yarn turbo build --cache-dir=.turbo
     - name: Build exentension with Manifest v3 for Chrome
       run: yarn build:chrome
       working-directory: ./projects/extension
