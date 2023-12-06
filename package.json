@@ -46,7 +46,7 @@
     "@polkadot-api/json-rpc-provider": "^0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0",
     "@polkadot-api/substrate-client": "0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0",
     "@types/chrome": "^0.0.237",
-    "@types/node": "^18.18.9",
+    "@types/node": "^20.10.3",
     "@types/qrcode.react": "^1.0.5",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
