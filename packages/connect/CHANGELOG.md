@@ -4,6 +4,12 @@
 
 ### Changed
 
+## 0.8.2 - 2023-12-06
+
+### Changed
+
+- Update `@substrate/connect-known-chains@^1.0.2`
+
 ## 0.8.1 - 2023-11-30
 
 ### Changed
