@@ -34,5 +34,10 @@
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{9b4d20ed-b18a-4237-b5d0-ca71c2ce2060}"
+    }
   }
 }
