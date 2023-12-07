@@ -1,6 +1,6 @@
 {
   "name": "@substrate/connect-known-chains",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Substrate-connect well known chain specifications",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
@@ -39,7 +39,6 @@
   },
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
-    "postinstall": "yarn build-js-specs",
     "build-js-specs": "node scripts/build-js-specs.js",
     "test": "exit 0; #This package is only types",
     "deep-clean": "yarn clean && rm -rf node_modules",
