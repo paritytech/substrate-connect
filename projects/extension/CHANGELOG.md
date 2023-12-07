@@ -4,8 +4,13 @@
 
 ### Changed
 
+## 0.3.0 - 2023-12-07
+
+### Changed
+
 - Use `@polkadot-api/light-client-extension-helpers` in background and content scripts ([#1603](https://github.com/paritytech/substrate-connect/pull/1603))
 - Update Firefox to Manifest v3 ([#1603](https://github.com/paritytech/substrate-connect/pull/1603))
+- Update bootnodes ([#1673](https://github.com/paritytech/substrate-connect/pull/1673))
 
 ## 0.2.13 - 2023-10-18
 

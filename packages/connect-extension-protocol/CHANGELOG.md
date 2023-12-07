@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+## 2.0.0 - 2022-12-07
+
 ### Breaking
 
 - Update `DOM_ELEMENT_ID` ([#1603](https://github.com/paritytech/substrate-connect/pull/1603))
