@@ -16,7 +16,7 @@ export async function run(nodeName: string) {
     const chainHeadFollower = chainHead(
       true,
       (event) => {
-        if (event.event === "finalized" && ++count === 2) {
+        if (event.type === "finalized" && ++count === 2) {
           resolve(chainHeadFollower.unfollow())
         }
       },

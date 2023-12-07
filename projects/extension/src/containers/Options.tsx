@@ -1,9 +1,8 @@
 import { FunctionComponent, useEffect, useState } from "react"
-import pckg from "../../package.json"
 import { MdOutlineNetworkCell, MdOutlineOnlinePrediction } from "react-icons/md"
+import pckg from "../../package.json"
 import { FaGithub } from "react-icons/fa"
 import * as environment from "../environment"
-import { NetworkTabProps } from "../types"
 import {
   BraveModal,
   Logo,
@@ -69,8 +68,7 @@ const cName = (type: MenuItemTypes, menu = 0, reqMenu: number) => {
 }
 
 export const Options: FunctionComponent = () => {
-  const [networks, setNetworks] = useState<NetworkTabProps[]>([])
-  const [menu, setMenu] = useState<number>(0)
+  const [menu, setMenu] = useState<0 | 1>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [actionResult, setActionResult] = useState<string>("")
 
@@ -79,45 +77,6 @@ export const Options: FunctionComponent = () => {
       const braveSetting = await environment.get({ type: "braveSetting" })
       setShowModal(isBrave && !braveSetting)
     })
-
-    const refresh = () => {
-      environment.getAllActiveChains().then((chains) => {
-        const networks = new Map<string, NetworkTabProps>()
-        ;(chains || []).forEach((chain) => {
-          const {
-            chainName,
-            tab,
-            isWellKnown,
-            isSyncing,
-            peers,
-            bestBlockHeight,
-          } = chain
-          const key = (isWellKnown ? "wk" : "nwk") + chainName
-
-          const network = networks.get(key)
-          if (!network) {
-            return networks.set(key, {
-              name: chainName,
-              isWellKnown,
-              health: {
-                isSyncing,
-                peers,
-                status: "connected",
-                bestBlockHeight,
-              },
-              apps: [{ name: tab.url, url: tab.url }],
-            })
-          }
-
-          network.apps.push({ name: tab.url, url: tab.url })
-        })
-        setNetworks([...networks.values()])
-      })
-    }
-
-    const unregister = environment.onActiveChainsChanged(() => refresh())
-    refresh()
-    return unregister
   }, [])
 
   useEffect(() => {
@@ -182,11 +141,8 @@ export const Options: FunctionComponent = () => {
         </div>
       </div>
       <div className="ml-60 absolute w-[calc(100%-15rem)] h-[100vh] overflow-auto">
-        <MenuContent activeMenu={menu}>
-          {/** Networks section */}
-          <Networks networks={networks} />
-          {/**Bootnodes section */}
-          <Bootnodes />
+        <MenuContent>
+          {menu === 0 ? <Networks /> : menu === 1 ? <Bootnodes /> : null}
         </MenuContent>
       </div>
     </>

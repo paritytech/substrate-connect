@@ -118,7 +118,7 @@
 /**
  * `id` of the DOM elemeent automatically inserted by the extension when a web page loads.
  */
-export const DOM_ELEMENT_ID = "substrateConnectExtensionAvailable"
+export const DOM_ELEMENT_ID = "substrateConnectExtensionAvailableV2"
 
 /**
  * Messages sent by the extension always conform to this interface.

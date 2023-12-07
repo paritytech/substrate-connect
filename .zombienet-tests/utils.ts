@@ -3,9 +3,10 @@ import {
   createScClient,
   ScClient,
   WellKnownChain,
+  JsonRpcCallback,
 } from "@substrate/connect"
 import { createClient } from "@polkadot-api/substrate-client"
-import type { GetProvider } from "@polkadot-api/json-rpc-provider"
+import { getSyncProvider } from "@polkadot-api/json-rpc-provider-proxy"
 
 const wellKnownChains: ReadonlySet<string> = new Set<WellKnownChain>(
   Object.values(WellKnownChain),
@@ -15,43 +16,49 @@ const isWellKnownChain = (input: string): input is WellKnownChain =>
   wellKnownChains.has(input)
 
 let client: ScClient
-const ScProvider = (input: string, relayChainSpec?: string): GetProvider => {
+const noop = () => {}
+const ScProvider = (input: string, relayChainSpec?: string) => {
   client ??= createScClient()
+  const addChain = (input: string, jsonRpcCallback?: JsonRpcCallback) =>
+    isWellKnownChain(input)
+      ? client.addWellKnownChain(input, jsonRpcCallback)
+      : client.addChain(input, jsonRpcCallback)
 
-  return (onMessage, onStatus) => {
-    const addChain = (input: string) => {
-      return isWellKnownChain(input)
-        ? client.addWellKnownChain(input, onMessage)
-        : relayChain
-        ? relayChain.addChain(input, onMessage)
-        : client.addChain(input, onMessage)
+  return getSyncProvider(async () => {
+    let listener: (message: string) => void = noop
+    const onMessage = (msg: string) => {
+      listener(msg)
     }
 
-    let chain: Chain | undefined
-    let relayChain: Chain | undefined
-    const open = () => {
-      ;(async () => {
-        if (relayChainSpec) {
-          relayChain = await addChain(relayChainSpec)
-        }
-
-        chain = await addChain(input)
-
-        onStatus("connected")
-      })()
+    let chain: Chain
+    try {
+      const relayChain = relayChainSpec
+        ? await addChain(relayChainSpec)
+        : undefined
+      chain = relayChain
+        ? await relayChain.addChain(input, onMessage)
+        : await addChain(input, onMessage)
+    } catch (e) {
+      console.warn(
+        `couldn't create chain with: ${input} ${relayChainSpec ?? ""}`,
+      )
+      console.error(e)
+      throw e
     }
 
-    const close = () => {
-      chain?.remove()
-      relayChain?.remove()
+    return (onMessage) => {
+      listener = onMessage
+      return {
+        send(msg: string) {
+          chain.sendJsonRpc(msg)
+        },
+        disconnect() {
+          listener = noop
+          chain.remove()
+        },
+      }
     }
-
-    const send = (msg: string) => {
-      chain?.sendJsonRpc(msg)
-    }
-
-    return { open, close, send }
-  }
+  })
 }
 
 export async function connect(

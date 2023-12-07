@@ -1,4 +1,10 @@
-<html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo</title>
+  </head>
   <body>
     <div id="root"></div>
     <style>
@@ -54,15 +60,30 @@
     <table class="table">
       <tr>
         <td>Polkadot</td>
-        <td id="polkadot"></td>
+        <td id="polkadot" data-testid="chainPolkadot"></td>
       </tr>
       <tr>
         <td>Kusama</td>
-        <td id="kusama"></td>
+        <td id="kusama" data-testid="chainKusama"></td>
       </tr>
       <tr>
         <td>Westend</td>
-        <td id="westend"></td>
+        <td id="westend" data-testid="chainWestend"></td>
+      </tr>
+    </table>
+    <div id="mn_title">Parachains - Latest Headers</div>
+    <table class="table">
+      <tr>
+        <td>Asset Hub Polkadot</td>
+        <td id="asset-hub-polkadot" data-testid="chainAssetHubPolkadot"></td>
+      </tr>
+      <tr>
+        <td>Asset Hub Kusama</td>
+        <td id="asset-hub-kusama" data-testid="chainAssetHubKusama"></td>
+      </tr>
+      <tr>
+        <td>Asset Hub Westend</td>
+        <td id="asset-hub-westend" data-testid="chainAssetHubWestend"></td>
       </tr>
     </table>
     <section id="messages"></section>

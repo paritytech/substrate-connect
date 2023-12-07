@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { beforeEach, beforeAll, it, describe, expect, vi } from "vitest"
 import type { AddChainOptions, ClientOptions } from "smoldot"
-import { WellKnownChain } from "../WellKnownChain"
+import { WellKnownChain } from "../WellKnownChain.js"
 
 class SdAlreadyDestroyedError extends Error {
   constructor() {
@@ -122,7 +122,7 @@ beforeEach(() => {
 describe("SmoldotConnect::smoldot", () => {
   describe("client", () => {
     it("does not eagerly instantiate the client", () => {
-      import("./smoldot-light").then((smoldot) => {
+      import("./smoldot-light.js").then((smoldot) => {
         smoldot.createScClient()
         mockedSmoldotLight =
           mockSmoldotLightFactory as unknown as MockSmoldotLight
@@ -132,7 +132,7 @@ describe("SmoldotConnect::smoldot", () => {
     })
 
     it("terminates the internal client when all the chains, from all clients, have been removed", () => {
-      import("./smoldot-light").then(async (smoldot) => {
+      import("./smoldot-light.js").then(async (smoldot) => {
         const { addWellKnownChain, addChain } = smoldot.createScClient()
 
         let chain1 = await addWellKnownChain("" as WellKnownChain)
@@ -158,7 +158,7 @@ describe("SmoldotConnect::smoldot", () => {
     })
 
     it("handles race conditions on the client when adding/removing chains", () => {
-      import("./smoldot-light").then(async (smoldot) => {
+      import("./smoldot-light.js").then(async (smoldot) => {
         const { addChain } = smoldot.createScClient()
         const { addChain: addChain2 } = smoldot.createScClient()
 
@@ -177,7 +177,7 @@ describe("SmoldotConnect::smoldot", () => {
 
   describe("chain", () => {
     it("propagates the correct chainSpec to smoldot", () => {
-      import("./smoldot-light").then(async (smoldot) => {
+      import("./smoldot-light.js").then(async (smoldot) => {
         const { addChain, addWellKnownChain } = smoldot.createScClient()
         const chainSpec = "testChainSpec"
         await addChain(chainSpec)
@@ -207,7 +207,7 @@ describe("SmoldotConnect::smoldot", () => {
     })
 
     it("propagates the correct potentialRelayChainIds to smoldot", () => {
-      import("./smoldot-light").then(async (smoldot) => {
+      import("./smoldot-light.js").then(async (smoldot) => {
         const { addChain } = smoldot.createScClient()
         let prevChains = await Promise.all(
           Array(3)

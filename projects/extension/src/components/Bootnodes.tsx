@@ -4,10 +4,20 @@ import * as environment from "../environment"
 
 import "./Bootnodes.css"
 import { Title, Switch } from "."
+import { helper } from "@polkadot-api/light-client-extension-helpers/extension-page"
+import { wellKnownGenesisHashByChainId } from "../constants"
 interface BootnodesType {
   checked: boolean
   bootnode: string
 }
+
+const getBootNodes = async (chainId: string) =>
+  (await helper.getChains()).find(
+    ({ genesisHash }) => genesisHash === wellKnownGenesisHashByChainId[chainId],
+  )?.bootNodes ?? []
+
+const setBootNodes = async (chainId: string, bootNodes: string[]) =>
+  helper.setBootNodes(wellKnownGenesisHashByChainId[chainId], bootNodes)
 
 // Add to localstorage the given bootnode for the given chain
 const saveToLocalStorage = async (
@@ -18,16 +28,13 @@ const saveToLocalStorage = async (
 ) => {
   if (def.length === 0) throw new Error("Default Bootnodes should exist.")
   let res: string[]
-  const chainBootnodes = await environment.get({
-    type: "bootnodes",
-    chainName,
-  })
+  const chainBootnodes = await getBootNodes(chainName)
   res =
     chainBootnodes && Object.keys(chainBootnodes).length > 0
       ? [...chainBootnodes]
       : [...def]
   add ? res.push(bootnode) : res.splice(res.indexOf(bootnode), 1)
-  await environment.set({ type: "bootnodes", chainName }, res)
+  await setBootNodes(chainName, res)
 }
 
 export const Bootnodes = () => {
@@ -53,7 +60,7 @@ export const Bootnodes = () => {
 
   useEffect(() => {
     Promise.all([
-      environment.getBootnodes(selectedChain),
+      getBootNodes(selectedChain),
       environment.getDefaultBootnodes(selectedChain),
     ]).then(([bootnodes, defaultBootnodes]) => {
       console.assert(defaultBootnodes, `Invalid chain name: ${selectedChain}`)
@@ -63,10 +70,7 @@ export const Bootnodes = () => {
       const tmpCust: BootnodesType[] = []
       // When bootnodes do not exist assign and save the local ones
       if (!bootnodes?.length) {
-        environment.set(
-          { type: "bootnodes", chainName: selectedChain },
-          defaultBootnodes,
-        )
+        setBootNodes(selectedChain, defaultBootnodes)
         defaultBootnodes.forEach((b) => {
           tmpDef.push({ bootnode: b, checked: true })
         })
