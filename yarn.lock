@@ -3647,7 +3647,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/connect-extension-protocol@*, @substrate/connect-extension-protocol@^1.0.1, @substrate/connect-extension-protocol@workspace:^, @substrate/connect-extension-protocol@workspace:packages/connect-extension-protocol":
+"@substrate/connect-extension-protocol@*, @substrate/connect-extension-protocol@workspace:^, @substrate/connect-extension-protocol@workspace:packages/connect-extension-protocol":
   version: 0.0.0-use.local
   resolution: "@substrate/connect-extension-protocol@workspace:packages/connect-extension-protocol"
   dependencies:
@@ -3655,6 +3655,13 @@ __metadata:
     typescript: ^5.2.2
   languageName: unknown
   linkType: soft
+
+"@substrate/connect-extension-protocol@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@substrate/connect-extension-protocol@npm:1.0.1"
+  checksum: 116dee587e81e832e14c25038bd849438c9493c6089aa6c1bf1760780d463880d44d362ed983d57ac3695368ac46f3c9df3dbaed92f36de89626c9735cecd1e4
+  languageName: node
+  linkType: hard
 
 "@substrate/connect-known-chains@^1.0.1, @substrate/connect-known-chains@workspace:^, @substrate/connect-known-chains@workspace:packages/connect-known-chains":
   version: 0.0.0-use.local
@@ -3666,7 +3673,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@substrate/connect@0.8.2, @substrate/connect@workspace:packages/connect":
+"@substrate/connect@0.8.3, @substrate/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@substrate/connect@workspace:packages/connect"
   dependencies:

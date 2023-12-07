@@ -4,6 +4,10 @@
 
 ### Changed
 
+## 0.8.3 - 2023-12-07
+
+### Changed
+
 - Use `@polkadot-api/light-client-extension-helpers/web-page` ([#1603](https://github.com/paritytech/substrate-connect/pull/1603))
 
 ## 0.8.2 - 2023-12-06
