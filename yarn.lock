@@ -4060,12 +4060,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.18.9":
-  version: 18.18.9
-  resolution: "@types/node@npm:18.18.9"
+"@types/node@npm:^20.10.4":
+  version: 20.10.4
+  resolution: "@types/node@npm:20.10.4"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 629ce20357586144031cb43d601617eef45e59460dea6b1e123f708e6885664f44d54f65e5b72b2614af5b8613f3652ced832649c0b991accbc6a85139befa51
+  checksum: 054b296417e771ab524bea63cf3289559c6bdf290d45428f7cc68e9b00030ff7a0ece47b8c99a26b4f47a443919813bcf42beadff2f0bea7d8125fa541d92eb0
   languageName: node
   linkType: hard
 
@@ -12521,7 +12521,7 @@ __metadata:
     "@polkadot-api/json-rpc-provider-proxy": next
     "@polkadot-api/substrate-client": next
     "@types/chrome": ^0.0.237
-    "@types/node": ^18.18.9
+    "@types/node": ^20.10.4
     "@types/qrcode.react": ^1.0.5
     "@types/react": ^18.2.37
     "@types/react-dom": ^18.2.15

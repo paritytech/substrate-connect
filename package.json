@@ -46,7 +46,7 @@
     "@polkadot-api/json-rpc-provider-proxy": "next",
     "@polkadot-api/substrate-client": "next",
     "@types/chrome": "^0.0.237",
-    "@types/node": "^18.18.9",
+    "@types/node": "^20.10.4",
     "@types/qrcode.react": "^1.0.5",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
