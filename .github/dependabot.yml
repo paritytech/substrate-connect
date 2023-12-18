@@ -9,46 +9,6 @@ updates:
       interval: daily
     open-pull-requests-limit: 4
 
-  - package-ecosystem: npm
-    directory: "/packages/connect"
-    labels:
-    - "automerge"
-    schedule:
-      interval: daily
-    open-pull-requests-limit: 4
-
-  - package-ecosystem: npm
-    directory: "/packages/connect-extension-protocol"
-    labels:
-    - "automerge"
-    schedule:
-      interval: daily
-    open-pull-requests-limit: 4
-
-  - package-ecosystem: npm
-    directory: "/projects/extension"
-    labels:
-    - "automerge"
-    schedule:
-      interval: daily
-    open-pull-requests-limit: 4
-
-  - package-ecosystem: npm
-    directory: "/projects/burnr"
-    labels:
-    - "automerge"
-    schedule:
-      interval: daily
-    open-pull-requests-limit: 4
-
-  - package-ecosystem: npm
-    directory: "/projects/demo"
-    labels:
-    - "automerge"
-    schedule:
-      interval: daily
-    open-pull-requests-limit: 4
-
   - package-ecosystem: github-actions
     directory: '/'
     labels:
