@@ -19,3 +19,24 @@ window.document.addEventListener("readystatechange", () => {
   s.setAttribute("channelid", DOM_ELEMENT_ID)
   document.body.appendChild(s)
 })
+
+try {
+  const s = document.createElement("script")
+  s.src = chrome.runtime.getURL("inpage/inpage.js")
+  s.onload = function () {
+    // @ts-expect-error
+    this.remove()
+  }
+  ;(document.head || document.documentElement).appendChild(s)
+} catch (error) {
+  console.error("error injecting inpage/inpage.js", error)
+}
+
+// Proxy rpc requests to the background script
+const port = chrome.runtime.connect({ name: "account-management" })
+port.onMessage.addListener((rpcResponse) => window.postMessage({ rpcResponse }))
+window.addEventListener("message", async ({ data, source, origin }) => {
+  // FIXME: check source/origin/channelId
+  if (!data?.rpc) return
+  port.postMessage(data.rpc)
+})

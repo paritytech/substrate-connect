@@ -2734,10 +2734,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/curves@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@noble/curves@npm:1.3.0"
+  dependencies:
+    "@noble/hashes": 1.3.3
+  checksum: b65342ee66c4a440eee2978524412eabba9a9efdd16d6370e15218c6a7d80bddf35e66bb57ed52c0dfd32cb9a717b439ab3a72db618f1a0066dfebe3fd12a421
+  languageName: node
+  linkType: hard
+
 "@noble/hashes@npm:1.3.2, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2":
   version: 1.3.2
   resolution: "@noble/hashes@npm:1.3.2"
   checksum: fe23536b436539d13f90e4b9be843cc63b1b17666a07634a2b1259dded6f490be3d050249e6af98076ea8f2ea0d56f578773c2197f2aa0eeaa5fba5bc18ba474
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:1.3.3, @noble/hashes@npm:^1.3.3":
+  version: 1.3.3
+  resolution: "@noble/hashes@npm:1.3.3"
+  checksum: 8a6496d1c0c64797339bc694ad06cdfaa0f9e56cd0c3f68ae3666cfb153a791a55deb0af9c653c7ed2db64d537aa3e3054629740d2f2338bb1dcb7ab60cd205b
   languageName: node
   linkType: hard
 
@@ -2903,6 +2919,36 @@ __metadata:
   version: 0.0.1-6a8e1370da14dec9a2acd40c32dccc68e5bbe782.1.0
   resolution: "@polkadot-api/utils@npm:0.0.1-6a8e1370da14dec9a2acd40c32dccc68e5bbe782.1.0"
   checksum: 14480304d26e8faf77825c025a51dbf6e0fc7426060f6348c9dc3abc92b4d4488bb9fd2c4904113bedf8e7165f6760f8ae670c56843d4d8cc6fc5c2904fd0005
+  languageName: node
+  linkType: hard
+
+"@polkadot-labs/hdkd-helpers@npm:0.0.4, @polkadot-labs/hdkd-helpers@npm:^0.0.4":
+  version: 0.0.4
+  resolution: "@polkadot-labs/hdkd-helpers@npm:0.0.4"
+  dependencies:
+    "@noble/curves": ^1.3.0
+    "@noble/hashes": ^1.3.3
+    "@polkadot-labs/schnorrkel-wasm": 0.0.3
+    "@scure/base": ^1.1.5
+    scale-ts: ^1.4.2
+  checksum: a322029d78d238258136ee618e556fe8373aa3a483b2ef8dec85c6ca1124523b13022c02e6aae96b3d2df21ec166a2c69cbe9b43ac42493b67f40f9d22d38d5a
+  languageName: node
+  linkType: hard
+
+"@polkadot-labs/hdkd@npm:^0.0.4":
+  version: 0.0.4
+  resolution: "@polkadot-labs/hdkd@npm:0.0.4"
+  dependencies:
+    "@polkadot-labs/hdkd-helpers": 0.0.4
+    "@polkadot-labs/schnorrkel-wasm": 0.0.3
+  checksum: b40f7abaab10e479edf3280b94a354680b4743c92765c494c4b7a7982bf81e7e789fe8eb0b1b0aab2c5b36e2a80e43ec1495fe1dd65a50d5954b12405d8a6d74
+  languageName: node
+  linkType: hard
+
+"@polkadot-labs/schnorrkel-wasm@npm:0.0.3":
+  version: 0.0.3
+  resolution: "@polkadot-labs/schnorrkel-wasm@npm:0.0.3"
+  checksum: e6bdee670474cc0085dea5a9de49cb4cc5a73e2eda87f11f96f6a26bfa2b940c2abd8b062958098f290b2e7680cd467ed26291066ebe7ad3a30bffbe9a4a5360
   languageName: node
   linkType: hard
 
@@ -3602,6 +3648,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@scure/base@npm:^1.1.5":
+  version: 1.1.5
+  resolution: "@scure/base@npm:1.1.5"
+  checksum: 9e9ee6088cb3aa0fb91f5a48497d26682c7829df3019b1251d088d166d7a8c0f941c68aaa8e7b96bbad20c71eb210397cb1099062cde3e29d4bad6b975c18519
+  languageName: node
+  linkType: hard
+
 "@sinclair/typebox@npm:^0.27.8":
   version: 0.27.8
   resolution: "@sinclair/typebox@npm:0.27.8"
@@ -3716,6 +3769,8 @@ __metadata:
     "@polkadot-api/light-client-extension-helpers": next
     "@polkadot-api/substrate-client": next
     "@polkadot-api/utils": next
+    "@polkadot-labs/hdkd": ^0.0.4
+    "@polkadot-labs/hdkd-helpers": ^0.0.4
     "@react-rxjs/core": ^0.10.7
     "@react-rxjs/utils": ^0.9.7
     "@substrate/connect-extension-protocol": "*"
