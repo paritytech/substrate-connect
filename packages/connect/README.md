@@ -119,7 +119,7 @@ chain.sendJsonRpc(
 
 In order to connect to a parachain, you must first instantiate the relay chain
 this parachain is connected to, then instantiate the parachain on the same
-`ScClient`. The following example connects to a parachain of the Westend test
+relay chain. The following example connects to a parachain of the Westend test
 network:
 
 ```js
@@ -129,8 +129,8 @@ import jsonParachainSpec from './myParaChainSpec.json';
 const parachainSpec = JSON.stringify(jsonParachainSpec);
 
 const scClient = createScClient();
-await scClient.addWellKnownChain(WellKnownChain.westend2)
-const parachain = await scClient.addChain(
+const relayChain = await scClient.addWellKnownChain(WellKnownChain.westend2)
+const parachain = await relayChain.addChain(
   parachainSpec,
   function jsonRpcCallback(response) {
     console.log("response", response);
