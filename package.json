@@ -43,8 +43,8 @@
     "*.{js,jsx,ts,tsx,json,md}": "prettier --write"
   },
   "devDependencies": {
-    "@polkadot-api/json-rpc-provider-proxy": "next",
-    "@polkadot-api/substrate-client": "next",
+    "@polkadot-api/json-rpc-provider-proxy": "0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0",
+    "@polkadot-api/substrate-client": "0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0",
     "@types/chrome": "^0.0.237",
     "@types/node": "^18.18.9",
     "@types/qrcode.react": "^1.0.5",
