@@ -45,7 +45,7 @@
     "@polkadot-api/light-client-extension-helpers": "next",
     "@substrate/connect-extension-protocol": "workspace:^",
     "@substrate/connect-known-chains": "workspace:^",
-    "smoldot": "2.0.13"
+    "smoldot": "2.0.16"
   },
   "devDependencies": {
     "eslint": "^8.53.0",
