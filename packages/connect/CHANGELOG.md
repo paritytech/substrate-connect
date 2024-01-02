@@ -4,6 +4,13 @@
 
 ### Changed
 
+## 0.8.4 - 2024-01-02
+
+### Changed
+
+- Update smoldot@[version 1.0.16](https://github.com/smol-dot/smoldot/blob/main/wasm-node/CHANGELOG.md#2016---2023-12-29) [#1708](https://github.com/paritytech/substrate-connect/pull/1708)
+- Use `@polkadot-api/light-client-extension-helpers@0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0` ([#1709](https://github.com/paritytech/substrate-connect/pull/1709))
+
 ## 0.8.3 - 2023-12-07
 
 ### Changed
