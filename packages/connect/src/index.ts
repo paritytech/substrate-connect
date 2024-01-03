@@ -11,29 +11,19 @@
  *
  * # Adding parachains
  *
- * Connecting to a parachain is done the same way as connecting to a standalone chain: obtaining
- * a client then calling {@link ScClient.addChain addChain}.
- *
- * However, if you call {@link ScClient.addChain addChain} with a parachain chain specification, you **must** have
- * connected to its corresponding relay chain beforehand (using {@link ScClient.addChain addChain} or {@link ScClient.addWellKnownChain addWellKnownChain}).
- * Failing to do so will lead to an error at the initialization of the parachain.
- *
- * Furthermore, the parachain must be added to the same client object as the one the relay chain
- * was added to.
- *
- * In other words, this will work:
+ * Connecting to a parachain is done by obtaining a relay chain instance and then calling {@link Chain.addChain addChain}.
  *
  * ```js
  * const client = createScClient();
- * await client.addChain(relayChain);
- * await client.addChain(parachain);
+ * const relayChain = await client.addChain(relayChainSpec);
+ * const parachain = await relayChain.addChain(parachainSpec);
  * ```
  *
  * While this will **not** work, and an exception will be thrown when adding the parachain:
  *
  * ```js
- * await createScClient().addChain(relayChain);
- * await createScClient().addChain(parachain);
+ * await createScClient().addChain(relayChainSpec);
+ * await createScClient().addChain(parachainSpec);
  * ```
  *
  * # Resources sharing
@@ -45,9 +35,9 @@
  * In order words, it is not a problem to do this:
  *
  * ```js
- * const relayChain = ...;
- * const chain1 = await createScClient().addChain(relayChain);
- * const chain2 = await createScClient().addChain(relayChain);
+ * const relayChainSpec = ...;
+ * const chain1 = await createScClient().addChain(relayChainSpec);
+ * const chain2 = await createScClient().addChain(relayChainSpec);
  * ```
  *
  * From an API perspective, `chain1` and `chain2` should be treated as two completely separate
