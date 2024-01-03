@@ -8,8 +8,6 @@
  *
  * Note that this library is a low-level library where you directly send JSON-RPC requests and
  * receive responses.
- * For a high-level library build on top of `substrate-connect` you can use
- * {@link https://github.com/polkadot-js/api/tree/master/packages/rpc-provider | polkadot/rpc-provider/substrate-connect}
  *
  * # Adding parachains
  *
