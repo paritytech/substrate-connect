@@ -7,13 +7,13 @@
     "last 2 versions"
   ],
   "scripts": {
-    "deep-clean": "yarn clean && rm -rf node_modules",
+    "deep-clean": "pnpm clean && rm -rf node_modules",
     "clean": "rm -rf dist/ tsconfig.tsbuildinfo && mkdir -p dist/assets",
     "typecheck": "tsc -b",
     "typecheck:watch": "tsc -b --watch",
     "copy-assets": "cp -R ./src/assets ./dist",
-    "build": "yarn clean && yarn copy-assets && yarn typecheck && vite build --base=./",
-    "dev": "yarn clean && yarn copy-assets && vite serve",
+    "build": "pnpm clean && pnpm copy-assets && pnpm typecheck && vite build --base=./",
+    "dev": "pnpm clean && pnpm copy-assets && vite serve",
     "preview": "vite preview",
     "test": "exit 0; #No tests",
     "lint": "eslint . --ext .ts,.tsx"

@@ -10,12 +10,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4.1.1
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
       - uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: yarn
-      - run: yarn install --immutable
-      - run: yarn build
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm build
       - name: Get zombienet
         run: |
           curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.3.68/zombienet-linux-x64

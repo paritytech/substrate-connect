@@ -20,7 +20,7 @@ echo -e "Checking out $branch...."
 git worktree add $directory -f $branch
 
 echo -e "Rebuilding everything..."
-yarn build
+pnpm build
 
 echo -e "Generating site..."
 echo "Init demo for github pages process..."
@@ -36,7 +36,7 @@ cp -r ./projects/demo/dist/* ./$directory/demo/.
 # echo "Place Substrate-connect extension's zip."
 # cp ./projects/extension/dist/packed-extension.zip ./$directory/extension/packed-extension.zip
 echo "Generate API docs."
-yarn api-docs
+pnpm api-docs
 
 echo -e "Deploying $branch branch..."
 cd $directory &&

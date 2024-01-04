@@ -51,6 +51,8 @@ node_modules/
 .yarn/*
 .pnp.*
 
+pnpm-lock.yaml
+
 logs
 *.log
 npm-debug.log*

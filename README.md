@@ -25,7 +25,7 @@ The substrate connect [API documentation is published here](https://paritytech.g
 
 ## Development
 
-This repository is using [yarn classic workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
+This repository is using [pnpm workspaces](https://pnpm.io/workspaces).
 
 We are tracking our work and milestones in a [github project](https://github.com/paritytech/substrate-connect/projects/1).
 
@@ -43,44 +43,44 @@ git clone https://github.com/paritytech/substrate-connect.git
 2. Install all dependencies
 
 ```bash
-yarn install
+pnpm install
 ```
 
 3. Compile all packages and projects
 
 ```bash
-yarn build
+pnpm build
 ```
 
 To clean up all build artefacts in workspaces in the repository, run:
 
 ```bash
-yarn clean
+pnpm clean
 ```
 
 To clean up all build artefacts and dependencies in workspaces in the repository, run:
 
 ```bash
-yarn deep-clean
+pnpm deep-clean
 ```
 
 ## Run local version of Smoldot Extension
 Running the following command will build all necessary dependencies and run the Smoldot Extension in development mode with hot reloading enabled. Once run a new (Chrome) browser will appear with the extension added.
 
 ```bash
-yarn dev:extension
+pnpm dev:extension
 ```
 
-(Make sure to run `$ yarn install` before.)
+(Make sure to run `$ pnpm install` before.)
 
 ## Run local version of Burnr wallet
 Running the following command will build all necessary dependencies and run the Substrate Burnr Wallet in development mode with hot reloading enabled. It will be served on http://localhost:1234/
 
 ```bash
-yarn dev:burnr
+pnpm dev:burnr
 ```
 
-(Make sure to run `$ yarn install` before.)
+(Make sure to run `$ pnpm install` before.)
 
 
 ## [Deployments and releases](./DEPLOY-RELEASE.md)

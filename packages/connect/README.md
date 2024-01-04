@@ -68,6 +68,6 @@ parachain.sendJsonRpc(
 
 ## Scripts
 
-* `yarn test` to run the unit tests
-* `yarn build` to build @substrate-connect
-* `yarn lint` to run linter for @substrate-connect
+* `pnpm test` to run the unit tests
+* `pnpm build` to build @substrate-connect
+* `pnpm lint` to run linter for @substrate-connect
