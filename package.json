@@ -68,5 +68,5 @@
   "resolutions": {
     "@substrate/connect": "0.8.4"
   },
-  "packageManager": "yarn@3.6.3"
+  "packageManager": "pnpm@8.14.0"
 }
