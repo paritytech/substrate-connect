@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 18
           cache: pnpm
-      - run: pnpm installj
+      - run: pnpm install
       - run: pnpm build
       - name: "@substrate/connect Pack"
         working-directory: './packages/connect'

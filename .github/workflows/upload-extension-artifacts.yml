@@ -22,12 +22,12 @@ jobs:
           path: ./projects/extension
       - run: pnpm install
       - run: pnpm build
-      - run: pnpm workspace @substrate/extension build:firefox
+      - run: pnpm --filter @substrate/extension build:firefox
       - uses: actions/upload-artifact@v3
         with:
           name: substrate-connect-extension-mv3-firefox
           path: ./projects/extension/dist
-      - run: pnpm workspace @substrate/extension build:chrome
+      - run: pnpm --filter @substrate/extension build:chrome
       - uses: actions/upload-artifact@v3
         with:
           name: substrate-connect-extension-mv3-chrome
