@@ -3,7 +3,7 @@ import { type Chain, type JsonRpcCallback, type ScClient } from "./types.js"
 import type {
   RawChain,
   LightClientProvider,
-} from "@polkadot-api/light-client-extension-helpers/web-page"
+} from "@substrate/light-client-extension-helpers/web-page"
 import { WellKnownChain } from "../WellKnownChain.js"
 
 const wellKnownChainGenesisHashes: Record<string, string> = {
@@ -30,7 +30,7 @@ let lightClientProviderPromise: Promise<LightClientProvider>
 export const createScClient = (): ScClient => {
   if (!lightClientProviderPromise)
     lightClientProviderPromise = import(
-      "@polkadot-api/light-client-extension-helpers/web-page"
+      "@substrate/light-client-extension-helpers/web-page"
     ).then(({ getLightClientProvider }) =>
       getLightClientProvider(DOM_ELEMENT_ID),
     )

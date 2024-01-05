@@ -1,4 +1,4 @@
-import { register } from "@polkadot-api/light-client-extension-helpers/content-script"
+import { register } from "@substrate/light-client-extension-helpers/content-script"
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 
 register(DOM_ELEMENT_ID)

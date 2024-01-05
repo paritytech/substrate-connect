@@ -1,6 +1,7 @@
 {
   "name": "@substrate/burnr",
-  "version": "0.0.1",
+  "version": "0.0.0",
+  "private": true,
   "description": "A light-client-based, in-browser wallet for Substrate. It's meant to be quick and easy to use but less secure than other solutions.",
   "author": "Parity Team <admin@parity.io>",
   "license": "Apache-2.0",
@@ -32,7 +33,7 @@
     "@polkadot/types": "^10.10.1",
     "@polkadot/util": "^12.5.1",
     "@polkadot/util-crypto": "^12.5.1",
-    "@substrate/connect": "*",
+    "@substrate/connect": "workspace:*",
     "bn.js": "^5.2.1",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",

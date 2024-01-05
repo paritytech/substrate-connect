@@ -42,7 +42,7 @@
     "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {
-    "@polkadot-api/light-client-extension-helpers": "0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0",
+    "@substrate/light-client-extension-helpers": "workspace:^",
     "@substrate/connect-extension-protocol": "workspace:^",
     "@substrate/connect-known-chains": "workspace:^",
     "smoldot": "2.0.16"
@@ -50,8 +50,6 @@
   "devDependencies": {
     "eslint": "^8.53.0",
     "jsdom": "^22.1.0",
-    "tsup": "^8.0.1",
-    "typescript": "^5.2.2",
     "vitest": "^0.34.6"
   }
 }

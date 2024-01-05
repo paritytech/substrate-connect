@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Use `@substrate/light-client-extension-helpers`
+
 ### Changed
 
 ## 0.3.0 - 2023-12-07

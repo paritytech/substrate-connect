@@ -4,7 +4,7 @@ import * as environment from "../environment"
 
 import "./Bootnodes.css"
 import { Title, Switch } from "."
-import { helper } from "@polkadot-api/light-client-extension-helpers/extension-page"
+import { helper } from "@substrate/light-client-extension-helpers/extension-page"
 import { wellKnownGenesisHashByChainId } from "../constants"
 interface BootnodesType {
   checked: boolean

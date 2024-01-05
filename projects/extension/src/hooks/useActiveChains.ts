@@ -1,7 +1,7 @@
 import {
   helper,
   PageChain,
-} from "@polkadot-api/light-client-extension-helpers/extension-page"
+} from "@substrate/light-client-extension-helpers/extension-page"
 import { getObservableClient } from "@polkadot-api/client"
 import {
   createClient,
