@@ -314,8 +314,8 @@ importers:
         specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
         version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
       '@polkadot-api/substrate-bindings':
-        specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
-        version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
+        specifier: 0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0
+        version: 0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0
       '@polkadot-api/substrate-client':
         specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
         version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
@@ -2759,12 +2759,25 @@ packages:
       scale-ts: 1.4.3
     dev: false
 
+  /@polkadot-api/substrate-bindings@0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0:
+    resolution: {integrity: sha512-9aI9TvTXvCMgrtT+boH08s17UpOY3p8P8TIhVrOgWQ11Txmh50afA4un5KbOkfUnUBRJhpQ8owB7ubVx/J2a1A==}
+    dependencies:
+      '@noble/hashes': 1.3.3
+      '@polkadot-api/utils': 0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0
+      '@scure/base': 1.1.5
+      scale-ts: 1.4.3
+    dev: false
+
   /@polkadot-api/substrate-client@0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0:
     resolution: {integrity: sha512-XhPnda3ILBI20HwcdwMUd2EkGMFVc9ogKdQ1euZrqQEZeOHRkFN6sNmUgg+jZvm8ekA/0+RJXrtm5xyOciEV4Q==}
     dev: false
 
   /@polkadot-api/utils@0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0:
     resolution: {integrity: sha512-1qexCG1KNs6J62HRwgkRbMw3tO0mRXuGAX7bxRZWZDI/WwzCa4M27/sHlwTy0ukgo6+8Rpz8nQlVJEwpx7Q11w==}
+    dev: false
+
+  /@polkadot-api/utils@0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0:
+    resolution: {integrity: sha512-dYaTmswyAOM3dQkS5vFDLfyoKUuFXK4EQraxQ0z4WD5yiuzyxMUL+i+JBPauCBfYykqzcXkECeEIhd/H5+fVkA==}
     dev: false
 
   /@polkadot/api-augment@10.11.2:
