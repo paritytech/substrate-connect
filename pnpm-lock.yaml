@@ -15,8 +15,8 @@ importers:
         specifier: ^0.0.237
         version: 0.0.237
       '@types/node':
-        specifier: ^18.18.9
-        version: 18.19.4
+        specifier: ^20.10.6
+        version: 20.10.6
       '@types/qrcode.react':
         specifier: ^1.0.5
         version: 1.0.5
@@ -131,7 +131,7 @@ importers:
         version: 0.4.5(eslint@8.56.0)
       vite:
         specifier: ^4.4.5
-        version: 4.5.1(@types/node@18.19.4)
+        version: 4.5.1(@types/node@20.10.6)
 
   examples/light-client-extension-helpers-extension:
     dependencies:
@@ -152,7 +152,7 @@ importers:
         specifier: ^0.0.246
         version: 0.0.246
       '@types/node':
-        specifier: ^20.9.0
+        specifier: ^20.10.6
         version: 20.10.6
       concurrently:
         specifier: ^8.2.2
@@ -300,7 +300,7 @@ importers:
         version: 8.56.0
       vite:
         specifier: ^4.5.0
-        version: 4.5.1(@types/node@18.19.4)
+        version: 4.5.1(@types/node@20.10.6)
       vite-plugin-html:
         specifier: ^3.2.0
         version: 3.2.1(vite@4.5.1)
@@ -334,7 +334,7 @@ importers:
         version: 8.56.0
       vite:
         specifier: ^4.5.0
-        version: 4.5.1(@types/node@18.19.4)
+        version: 4.5.1(@types/node@20.10.6)
       vite-plugin-html:
         specifier: ^3.2.0
         version: 3.2.1(vite@4.5.1)
@@ -407,7 +407,7 @@ importers:
         version: 3.4.1
       vite:
         specifier: ^4.5.0
-        version: 4.5.1(@types/node@18.19.4)
+        version: 4.5.1(@types/node@20.10.6)
       web-ext:
         specifier: ^7.8.0
         version: 7.9.0
@@ -3642,12 +3642,6 @@ packages:
     resolution: {integrity: sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==}
     dev: true
 
-  /@types/node@18.19.4:
-    resolution: {integrity: sha512-xNzlUhzoHotIsnFoXmJB+yWmBvFZgKCI9TtPIEdYIMM1KWfwuY8zh7wvc1u1OAXlC7dlf6mZVx/s+Y5KfFz19A==}
-    dependencies:
-      undici-types: 5.26.5
-    dev: true
-
   /@types/node@20.10.6:
     resolution: {integrity: sha512-Vac8H+NlRNNlAmDfGUP7b5h/KA+AtWIzuXy0E6OyP8f1tCLYAtPvKRRDJjAPqhpCb0t6U2j7/xqAuLEebW2kiw==}
     dependencies:
@@ -4006,7 +4000,7 @@ packages:
       vite: ^4 || ^5
     dependencies:
       '@swc/core': 1.3.102
-      vite: 4.5.1(@types/node@18.19.4)
+      vite: 4.5.1(@types/node@20.10.6)
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: true
@@ -4022,7 +4016,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.7)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.0
-      vite: 4.5.1(@types/node@18.19.4)
+      vite: 4.5.1(@types/node@20.10.6)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -10131,43 +10125,7 @@ packages:
       html-minifier-terser: 6.1.0
       node-html-parser: 5.4.2
       pathe: 0.2.0
-      vite: 4.5.1(@types/node@18.19.4)
-    dev: true
-
-  /vite@4.5.1(@types/node@18.19.4):
-    resolution: {integrity: sha512-AXXFaAJ8yebyqzoNB9fu2pHoo/nWX+xZlaRwoeYUxEqBO+Zj4msE5G+BhGBll9lYEKv9Hfks52PAF2X7qDYXQA==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': '>= 14'
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      '@types/node': 18.19.4
-      esbuild: 0.18.20
-      postcss: 8.4.32
-      rollup: 3.29.4
-    optionalDependencies:
-      fsevents: 2.3.3
+      vite: 4.5.1(@types/node@20.10.6)
     dev: true
 
   /vite@4.5.1(@types/node@20.10.6):
