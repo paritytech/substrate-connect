@@ -43,8 +43,6 @@
     "*.{js,jsx,ts,tsx,json,md}": "prettier --write"
   },
   "devDependencies": {
-    "@polkadot-api/json-rpc-provider-proxy": "0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0",
-    "@polkadot-api/substrate-client": "0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0",
     "@types/chrome": "^0.0.237",
     "@types/node": "^18.18.9",
     "@types/qrcode.react": "^1.0.5",
@@ -62,8 +60,7 @@
     "lint-staged": "^14.0.1",
     "nodemon": "^2.0.22",
     "prettier": "^3.0.3",
-    "typedoc": "^0.25.3",
-    "typescript": "^5.2.2"
+    "typedoc": "^0.25.3"
   },
   "resolutions": {
     "@substrate/connect": "0.8.4"

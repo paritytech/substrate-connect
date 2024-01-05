@@ -11,12 +11,6 @@ importers:
 
   .:
     devDependencies:
-      '@polkadot-api/json-rpc-provider-proxy':
-        specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
-        version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
-      '@polkadot-api/substrate-client':
-        specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
-        version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
       '@types/chrome':
         specifier: ^0.0.237
         version: 0.0.237
@@ -71,9 +65,6 @@ importers:
       typedoc:
         specifier: ^0.25.3
         version: 0.25.6(typescript@5.3.3)
-      typescript:
-        specifier: ^5.2.2
-        version: 5.3.3
 
   packages/connect:
     dependencies:
@@ -315,6 +306,22 @@ importers:
       web-ext:
         specifier: ^7.8.0
         version: 7.9.0
+
+  zombienet-tests:
+    dependencies:
+      '@polkadot-api/json-rpc-provider-proxy':
+        specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
+        version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
+      '@polkadot-api/substrate-client':
+        specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
+        version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
+      '@substrate/connect':
+        specifier: 0.8.4
+        version: link:../packages/connect
+    devDependencies:
+      typescript:
+        specifier: ^5.2.2
+        version: 5.3.3
 
 packages:
 
@@ -2608,6 +2615,7 @@ packages:
 
   /@polkadot-api/json-rpc-provider-proxy@0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0:
     resolution: {integrity: sha512-+laeeYlqH+NicD0dvW0hmNb2eCacrD6TSjqQ1jQExYjIjUehQvWbQU2opHsAxsKsRcG9pV97caceTi7fo2uGvg==}
+    dev: false
 
   /@polkadot-api/json-rpc-provider@0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0:
     resolution: {integrity: sha512-E7gVrZFs0GezKm+5x2AK07kzwGeKUBgeUwdv65pzhPFOhmPJu28fFLG8an3aZHtQXUkOV6os/KW4UY5KPRMKJg==}
@@ -2646,6 +2654,7 @@ packages:
 
   /@polkadot-api/substrate-client@0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0:
     resolution: {integrity: sha512-XhPnda3ILBI20HwcdwMUd2EkGMFVc9ogKdQ1euZrqQEZeOHRkFN6sNmUgg+jZvm8ekA/0+RJXrtm5xyOciEV4Q==}
+    dev: false
 
   /@polkadot-api/utils@0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0:
     resolution: {integrity: sha512-1qexCG1KNs6J62HRwgkRbMw3tO0mRXuGAX7bxRZWZDI/WwzCa4M27/sHlwTy0ukgo6+8Rpz8nQlVJEwpx7Q11w==}

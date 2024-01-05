@@ -1,3 +1,4 @@
 packages:
-  - "packages/*"
-  - "projects/**"
+  - packages/*
+  - projects/*
+  - zombienet-tests
