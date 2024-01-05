@@ -51,6 +51,8 @@ node_modules/
 .yarn/*
 .pnp.*
 
+pnpm-lock.yaml
+
 logs
 *.log
 npm-debug.log*
@@ -76,3 +78,4 @@ westend2.json*
 rococo_v2_2.json*
 packages/connect/src/connector/specs/js
 packages/connect-known-chains/src/specs
+zombienet-tests/src/*.js

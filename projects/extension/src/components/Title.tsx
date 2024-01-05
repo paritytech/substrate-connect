@@ -17,8 +17,8 @@ const Title = ({
     titleType === "small"
       ? "text-sm text-neutral-500"
       : titleType === "large"
-      ? "text-lg font-bold"
-      : "text-base font-bold"
+        ? "text-lg font-bold"
+        : "text-base font-bold"
   return (
     <div className={"flex justify-between mb-4 ".concat(cName)}>
       <div className="capitalize">{children}</div>

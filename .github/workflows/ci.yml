@@ -16,36 +16,42 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4.1.1
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        cache: yarn
-    - run: yarn install --immutable
-    - run: yarn checkResolutions
-    - run: yarn build
-    - run: yarn lint
-    - run: yarn test
+        cache: pnpm
+    - run: pnpm install
+    - run: pnpm checkResolutions
+    - run: pnpm build
+    - run: pnpm lint
+    - run: pnpm test
 
   playwright:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4.1.1
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
     - uses: actions/setup-node@v3
       with:
         node-version: 18.x
-        cache: yarn
-    - run: yarn install --immutable
-    - run: yarn build
+        cache: pnpm
+    - run: pnpm install 
+    - run: pnpm build
     - name: Build exentension with Manifest v3 for Chrome
-      run: yarn build:chrome
+      run: pnpm build:chrome
       working-directory: ./projects/extension
     - name: Install Playwright Browsers
-      run: yarn exec playwright install --with-deps chromium
+      run: pnpm exec playwright install --with-deps chromium
       working-directory: ./projects/extension
     - name: Run Playwright tests
-      run: yarn exec playwright test --project=chromium
+      run: pnpm exec playwright test --project=chromium
       working-directory: ./projects/extension
     - uses: actions/upload-artifact@v3
       if: failure()

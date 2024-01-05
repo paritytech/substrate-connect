@@ -44,7 +44,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: isCI ? "yarn preview" : "yarn dev",
+    command: isCI ? "pnpm preview" : "pnpm dev",
     cwd: "../demo",
     url: dappUrl,
     timeout: 120 * 1000,

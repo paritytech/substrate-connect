@@ -17,7 +17,7 @@
     "dist/"
   ],
   "scripts": {
-    "deep-clean": "yarn clean && rm -rf node_modules",
+    "deep-clean": "pnpm clean && rm -rf node_modules",
     "clean": "rm -rf dist/ tsconfig.tsbuildinfo",
     "build": "tsc -p tsconfig-mjs.json && tsc -p tsconfig-cjs.json && bash ./fix-package-type.sh",
     "test": "exit 0; #This package is only types",

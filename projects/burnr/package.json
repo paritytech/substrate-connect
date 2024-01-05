@@ -6,15 +6,15 @@
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {
-    "prebuild": "yarn clean",
+    "prebuild": "pnpm clean",
     "build": "vite build",
-    "dev": "yarn run clean && vite serve",
+    "dev": "pnpm clean && vite serve",
     "preview": "vite preview",
-    "deep-clean": "yarn clean && rm -rf node_modules",
+    "deep-clean": "pnpm clean && rm -rf node_modules",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "test": "exit 0; #No tests",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
-    "predeploy": "yarn run build"
+    "predeploy": "pnpm build"
   },
   "repository": {
     "type": "git",

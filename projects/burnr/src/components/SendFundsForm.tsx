@@ -106,8 +106,8 @@ const Structure = ({ name, rest, fee }: StructureProps) => {
           !fee
             ? opacityNone
             : name === "Fees"
-            ? `${price} ${priceFee}`
-            : `${price} ${priceBalance}`
+              ? `${price} ${priceFee}`
+              : `${price} ${priceBalance}`
         }
       >
         <Typography variant="subtitle1">{rest}</Typography>

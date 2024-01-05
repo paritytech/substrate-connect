@@ -1,0 +1,17 @@
+{
+  "name": "zombienet-tests",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "tsc --skipLibCheck src/utils.ts"
+  },
+  "dependencies": {
+    "@polkadot-api/json-rpc-provider-proxy": "0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0",
+    "@polkadot-api/substrate-client": "0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0",
+    "@substrate/connect": "workspace:*"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}

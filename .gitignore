@@ -7,7 +7,6 @@ coverage
 _site
 *.tsbuildinfo
 polkadot
-zombienet-*
 polkadot-parachain*
 init.sh
 .yarn/*

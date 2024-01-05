@@ -25,15 +25,15 @@
   "scripts": {
     "downloadSpecs": "node bin/downloadSpecs.js",
     "api-docs": "typedoc",
-    "deep-clean": "yarn workspaces foreach run deep-clean && rm -rf node_modules",
-    "clean": " yarn workspaces foreach run clean",
-    "lint": "prettier --check . && yarn workspaces foreach run lint",
-    "build": "yarn workspaces foreach --topological run build",
-    "test": "yarn workspaces foreach run test",
+    "deep-clean": "pnpm -r deep-clean && rm -rf node_modules",
+    "clean": " pnpm -r run clean",
+    "lint": "prettier --check . && pnpm -r lint",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
     "dev:api-docs": "concurrently -n typedoc,http-server 'nodemon -e ts --watch ./packages/connect --watch ./packages/connect-extension-protocol --exec typedoc' 'http-server _site/api'",
-    "dev:burnr": "yarn workspace @substrate/burnr run dev",
-    "dev:demo": "yarn workspace @substrate/demo run dev",
-    "dev:extension": "yarn workspace @substrate/extension run dev",
+    "dev:burnr": "pnpm --filter @substrate/burnr dev",
+    "dev:demo": "pnpm --filter @substrate/demo dev",
+    "dev:extension": "pnpm --filter @substrate/extension dev",
     "deploy": "./deploy.sh",
     "format": "prettier --write .",
     "checkResolutions": "node ./.ensure-resolution.mjs",
@@ -43,8 +43,6 @@
     "*.{js,jsx,ts,tsx,json,md}": "prettier --write"
   },
   "devDependencies": {
-    "@polkadot-api/json-rpc-provider-proxy": "0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0",
-    "@polkadot-api/substrate-client": "0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0",
     "@types/chrome": "^0.0.237",
     "@types/node": "^18.18.9",
     "@types/qrcode.react": "^1.0.5",
@@ -62,11 +60,10 @@
     "lint-staged": "^14.0.1",
     "nodemon": "^2.0.22",
     "prettier": "^3.0.3",
-    "typedoc": "^0.25.3",
-    "typescript": "^5.2.2"
+    "typedoc": "^0.25.3"
   },
   "resolutions": {
     "@substrate/connect": "0.8.4"
   },
-  "packageManager": "yarn@3.6.3"
+  "packageManager": "pnpm@8.14.0"
 }

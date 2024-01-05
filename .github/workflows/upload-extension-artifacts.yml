@@ -9,22 +9,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.1
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
       - uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: yarn
+          cache: pnpm
       - uses: actions/upload-artifact@v3
         with:
           name: substrate-connect-extension-source-code
           path: ./projects/extension
-      - run: yarn install --immutable
-      - run: yarn build
-      - run: yarn workspace @substrate/extension build:firefox
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm workspace @substrate/extension build:firefox
       - uses: actions/upload-artifact@v3
         with:
           name: substrate-connect-extension-mv3-firefox
           path: ./projects/extension/dist
-      - run: yarn workspace @substrate/extension build:chrome
+      - run: pnpm workspace @substrate/extension build:chrome
       - uses: actions/upload-artifact@v3
         with:
           name: substrate-connect-extension-mv3-chrome
