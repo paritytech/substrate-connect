@@ -28,7 +28,9 @@
     "start:firefox": "web-ext run --source-dir ./dist -t firefox-desktop",
     "clean": "rm -rf dist",
     "deep-clean": "pnpm clean && rm -rf node_modules",
-    "playwright": "playwright test --ui"
+    "playwright": "playwright test --ui",
+    "playwright:install": "playwright install --with-deps chromium",
+    "playwright:chromium": "playwright test --project=chromium"
   },
   "keywords": [],
   "devDependencies": {

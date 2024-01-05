@@ -9,7 +9,9 @@
     "build-extension-scripts": "tsup src/content.ts src/inpage.ts src/options.ts --clean --out-dir dist/js --platform neutral --target=es2020 --format iife",
     "dev": "pnpm copy-assets && concurrently \"pnpm:build-* --sourcemap inline --watch\"",
     "start": "web-ext run --source-dir ./dist -t chromium --start-url http://localhost:5173",
-    "playwright": "playwright test --ui"
+    "playwright": "playwright test --ui",
+    "playwright:install": "playwright install --with-deps chromium",
+    "playwright:chromium": "playwright test --project=chromium"
   },
   "dependencies": {
     "@polkadot-api/substrate-client": "0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0",

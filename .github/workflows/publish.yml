@@ -19,7 +19,7 @@ jobs:
       - run: pnpm install
       - run: pnpm build
       - name: "@substrate/connect Pack"
-        working-directory: './packages/connect'
+        working-directory: ./packages/connect
         run: pnpm pack && mv *.tgz package.tgz
       - name: "@substrate/connect Publish"
         id: publish_connect
@@ -29,7 +29,7 @@ jobs:
           package: ./packages/connect/package.tgz
           access: public
       - name: "@substrate/connect-extension-protocol Pack"
-        working-directory: './packages/connect-extension-protocol'
+        working-directory: ./packages/connect-extension-protocol
         run: pnpm pack && mv *.tgz package.tgz
       - name: "@substrate/connect-extension-protocol Publish"
         id: publish_connect_extension_protocol
@@ -39,7 +39,7 @@ jobs:
           package: ./packages/connect-extension-protocol/package.tgz
           access: public
       - name: "@substrate/connect-known-chains Pack"
-        working-directory: './packages/connect-known-chains'
+        working-directory: ./packages/connect-known-chains
         run: pnpm pack && mv *.tgz package.tgz
       - name: "@substrate/connect-known-chains Publish"
         uses: JS-DevTools/npm-publish@v2

@@ -44,20 +44,19 @@ jobs:
         cache: pnpm
     - run: pnpm install 
     - run: pnpm build
-    - name: Build exentension with Manifest v3 for Chrome
+    - name: Build extension with Manifest v3 for Chrome
       run: pnpm build:chrome
       working-directory: ./projects/extension
-    - name: Install Playwright Browsers
-      run: pnpm exec playwright install --with-deps chromium
+    - run: pnpm playwright:install
       working-directory: ./projects/extension
-    - name: Run Playwright tests
-      run: pnpm exec playwright test --project=chromium
+    - name: Test projects/extension
+      run: pnpm playwright:chromium
       working-directory: ./projects/extension
-    - uses: actions/upload-artifact@v3
-      if: failure()
-      with:
-        name: playwright-report
-        path: projects/extension/playwright-report/
+    - run: pnpm playwright:install
+      working-directory: ./examples/light-client-extension-helpers-extension
+    - name: Test examples/light-client-extension-helpers-extension
+      run: pnpm playwright:chromium
+      working-directory: ./examples/light-client-extension-helpers-extension
 
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
