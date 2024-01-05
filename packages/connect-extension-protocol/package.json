@@ -24,7 +24,6 @@
     "lint": "eslint . --ext .js,.ts"
   },
   "devDependencies": {
-    "eslint": "^8.53.0",
-    "typescript": "^5.2.2"
+    "eslint": "^8.53.0"
   }
 }

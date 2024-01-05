@@ -62,21 +62,27 @@ importers:
       prettier:
         specifier: ^3.0.3
         version: 3.1.1
+      tsup:
+        specifier: ^8.0.1
+        version: 8.0.1(typescript@5.3.3)
       typedoc:
         specifier: ^0.25.3
         version: 0.25.6(typescript@5.3.3)
+      typescript:
+        specifier: ^5.2.2
+        version: 5.3.3
 
   packages/connect:
     dependencies:
-      '@polkadot-api/light-client-extension-helpers':
-        specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
-        version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0(smoldot@2.0.16)
       '@substrate/connect-extension-protocol':
         specifier: workspace:^
         version: link:../connect-extension-protocol
       '@substrate/connect-known-chains':
         specifier: workspace:^
         version: link:../connect-known-chains
+      '@substrate/light-client-extension-helpers':
+        specifier: workspace:^
+        version: link:../light-client-extension-helpers
       smoldot:
         specifier: 2.0.16
         version: 2.0.16
@@ -87,12 +93,6 @@ importers:
       jsdom:
         specifier: ^22.1.0
         version: 22.1.0
-      tsup:
-        specifier: ^8.0.1
-        version: 8.0.1(typescript@5.3.3)
-      typescript:
-        specifier: ^5.2.2
-        version: 5.3.3
       vitest:
         specifier: ^0.34.6
         version: 0.34.6(jsdom@22.1.0)
@@ -102,21 +102,43 @@ importers:
       eslint:
         specifier: ^8.53.0
         version: 8.56.0
-      typescript:
-        specifier: ^5.2.2
-        version: 5.3.3
 
   packages/connect-known-chains:
     devDependencies:
       eslint:
         specifier: ^8.53.0
         version: 8.56.0
-      tsup:
-        specifier: ^8.0.1
-        version: 8.0.1(typescript@5.3.3)
-      typescript:
-        specifier: ^5.2.2
-        version: 5.3.3
+
+  packages/light-client-extension-helpers:
+    dependencies:
+      '@polkadot-api/client':
+        specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
+        version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0(rxjs@7.8.1)
+      '@polkadot-api/json-rpc-provider':
+        specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
+        version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
+      '@polkadot-api/json-rpc-provider-proxy':
+        specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
+        version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
+      '@polkadot-api/substrate-client':
+        specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
+        version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
+      '@substrate/connect-extension-protocol':
+        specifier: workspace:^
+        version: link:../connect-extension-protocol
+      '@substrate/connect-known-chains':
+        specifier: workspace:^
+        version: link:../connect-known-chains
+      rxjs:
+        specifier: ^7.8.1
+        version: 7.8.1
+      smoldot:
+        specifier: 2.x
+        version: 2.0.16
+    devDependencies:
+      '@types/chrome':
+        specifier: ^0.0.246
+        version: 0.0.246
 
   projects/burnr:
     dependencies:
@@ -236,9 +258,6 @@ importers:
       '@polkadot-api/client':
         specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
         version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0(rxjs@7.8.1)
-      '@polkadot-api/light-client-extension-helpers':
-        specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
-        version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0(smoldot@2.0.16)
       '@polkadot-api/substrate-client':
         specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
         version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
@@ -252,8 +271,11 @@ importers:
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.7)(react@18.2.0)(rxjs@7.8.1)
       '@substrate/connect-extension-protocol':
-        specifier: '*'
+        specifier: workspace:*
         version: link:../../packages/connect-extension-protocol
+      '@substrate/light-client-extension-helpers':
+        specifier: workspace:^
+        version: link:../../packages/light-client-extension-helpers
       '@unstoppablejs/utils':
         specifier: ^1.1.0
         version: 1.1.0
@@ -2623,6 +2645,7 @@ packages:
 
   /@polkadot-api/light-client-extension-helpers@0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0(smoldot@2.0.16):
     resolution: {integrity: sha512-ivBA+TbGFVAw+0ijQXGrxbzsvAuBjSzhjpLyToKGkPG4speCOcCzv/piifkwDC8gfausHA7JVXXgb7AS5u8tRg==}
+    requiresBuild: true
     peerDependencies:
       smoldot: 2.x
     dependencies:
@@ -2635,6 +2658,7 @@ packages:
       rxjs: 7.8.1
       smoldot: 2.0.16
     dev: false
+    optional: true
 
   /@polkadot-api/metadata-builders@0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0:
     resolution: {integrity: sha512-zz+vFWQAS2WV0OLA3QP+RgntCfeU3OXxh9fvaagEszv9dEd1709WR8HHchdbtAucXfjewHCnXsu+vkYf+RpGDw==}
@@ -3273,7 +3297,9 @@ packages:
 
   /@substrate/connect-extension-protocol@1.0.1:
     resolution: {integrity: sha512-161JhCC1csjH3GE5mPLEd7HbWtwNSPJBg3p1Ksz9SFlTzj/bgEwudiRN2y5i0MoLGCIJRYKyKGMxVnd29PzNjg==}
+    requiresBuild: true
     dev: false
+    optional: true
 
   /@substrate/connect-extension-protocol@2.0.0:
     resolution: {integrity: sha512-nKu8pDrE3LNCEgJjZe1iGXzaD6OSIDD4Xzz/yo4KO9mQ6LBvf49BVrt4qxBFGL6++NneLiWUZGoh+VSd4PyVIg==}
@@ -3283,7 +3309,9 @@ packages:
 
   /@substrate/connect-known-chains@1.0.3:
     resolution: {integrity: sha512-GWw4Nk4OWU8peSya7WcMWnIKiXXAkPExRlMRaUc8wYZo77cwWqRz+ltiGyGaXyE3PLx/5ityvDmNkl2a4MAHrA==}
+    requiresBuild: true
     dev: false
+    optional: true
 
   /@substrate/connect@0.8.4:
     resolution: {integrity: sha512-kLc584rPV0zXKn7ETroOB0IsbhexzcPEodrjI6/T7aQoRNaA334g7PnbuWRZ8mtj101krK2riZnVsLonPRFcKw==}
@@ -3485,6 +3513,13 @@ packages:
 
   /@types/chrome@0.0.237:
     resolution: {integrity: sha512-krsRmyfMlck5r+H1EapsrrucDRq6iRm0NAi5fapr93CgnpVMDdK+h2+z4x79GegdW7BNH9Vb//gkptORwwwVIQ==}
+    dependencies:
+      '@types/filesystem': 0.0.35
+      '@types/har-format': 1.2.15
+    dev: true
+
+  /@types/chrome@0.0.246:
+    resolution: {integrity: sha512-MxGxEomGxsJiL9xe/7ZwVgwdn8XVKWbPvxpVQl3nWOjrS0Ce63JsfzxUc4aU3GvRcUPYsfufHmJ17BFyKxeA4g==}
     dependencies:
       '@types/filesystem': 0.0.35
       '@types/har-format': 1.2.15

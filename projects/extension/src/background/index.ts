@@ -1,5 +1,5 @@
 import { start } from "smoldot"
-import { register } from "@polkadot-api/light-client-extension-helpers/background"
+import { register } from "@substrate/light-client-extension-helpers/background"
 
 register({
   smoldotClient: start({ maxLogLevel: 4 }),
