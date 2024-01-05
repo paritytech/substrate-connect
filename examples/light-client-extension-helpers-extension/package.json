@@ -14,7 +14,7 @@
     "playwright:chromium": "playwright test --project=chromium"
   },
   "dependencies": {
-    "@polkadot-api/substrate-client": "0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0",
+    "@polkadot-api/substrate-client": "0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0",
     "@substrate/light-client-extension-helpers": "workspace:*",
     "smoldot": "2.0.16"
   },
