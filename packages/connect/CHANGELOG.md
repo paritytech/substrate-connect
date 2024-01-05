@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Use `@substrate/light-client-extension-helpers/web-page`
+
 ### Changed
 
 ## 0.8.4 - 2024-01-02
