@@ -204,8 +204,8 @@ importers:
         specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
         version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0(rxjs@7.8.1)
       '@polkadot-api/json-rpc-provider':
-        specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
-        version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
+        specifier: 0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0
+        version: 0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0
       '@polkadot-api/json-rpc-provider-proxy':
         specifier: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
         version: 0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0
@@ -2724,6 +2724,12 @@ packages:
 
   /@polkadot-api/json-rpc-provider@0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0:
     resolution: {integrity: sha512-E7gVrZFs0GezKm+5x2AK07kzwGeKUBgeUwdv65pzhPFOhmPJu28fFLG8an3aZHtQXUkOV6os/KW4UY5KPRMKJg==}
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@polkadot-api/json-rpc-provider@0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0:
+    resolution: {integrity: sha512-IIC7ziD4+O/gRBW94XSqUKU0Fgmy3b3V2Sf1CEvc3mMAZ8KAGyUaBCzQruidxk2DNUB5fVzaIVpaGq3nwoEOrQ==}
     dev: false
 
   /@polkadot-api/light-client-extension-helpers@0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0(smoldot@2.0.16):
