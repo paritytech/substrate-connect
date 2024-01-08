@@ -3,17 +3,13 @@ import {
   PageChain,
 } from "@substrate/light-client-extension-helpers/extension-page"
 import { getObservableClient } from "@polkadot-api/client"
-import {
-  createClient,
-  type FollowEventWithRuntime,
-} from "@polkadot-api/substrate-client"
+import { createClient } from "@polkadot-api/substrate-client"
 import { useEffect, useState } from "react"
 import { combineKeys } from "@react-rxjs/utils"
 import {
   combineLatest,
   Observable,
   distinct,
-  exhaustMap,
   filter,
   map,
   scan,
@@ -29,8 +25,6 @@ import {
   repeat,
   from,
 } from "rxjs"
-import { fromHex } from "@polkadot-api/utils"
-import { compact } from "scale-ts"
 import { wellKnownChainIdByGenesisHash } from "../constants"
 
 type Chain = {
@@ -127,23 +121,13 @@ const createChainDetailObservable = (chain: PageChain) =>
     }).pipe(
       catchError(() => EMPTY),
       repeat({ delay: 1 }),
-      share(),
     )
-    const bestBlockHeight$ = followWithRetry$.pipe(
-      filter(
-        (
-          block,
-        ): block is FollowEventWithRuntime & {
-          type: "bestBlockChanged"
-        } => block.type === "bestBlockChanged" && !!block.bestBlockHash,
-      ),
-      exhaustMap(({ bestBlockHash }) =>
-        chainHead.header$(bestBlockHash).pipe(
-          filter(Boolean),
-          map((header) => compact.dec(fromHex(header).slice(32)) as number),
-          catchError(() => EMPTY),
-        ),
-      ),
+    // FIXME: chainHead may be undefined
+    const bestBlockHeight$ = defer(() => chainHead.bestBlocks$).pipe(
+      catchError(() => EMPTY),
+      repeat({ delay: 1 }),
+      filter((blocks) => blocks.length > 0),
+      map(([block]) => block.header.number),
       startWith(undefined),
     )
     const peers$ = timer(0, 5000).pipe(

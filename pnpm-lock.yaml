@@ -304,21 +304,12 @@ importers:
       '@polkadot-api/json-rpc-provider-proxy':
         specifier: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
         version: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
-      '@polkadot-api/substrate-bindings':
-        specifier: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
-        version: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
-        version: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
-      '@polkadot-api/utils':
         specifier: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
         version: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
       '@substrate/connect':
         specifier: 0.8.4
         version: link:../../packages/connect
-      rxjs:
-        specifier: ^7.8.1
-        version: 7.8.1
     devDependencies:
       eslint:
         specifier: ^8.53.0
@@ -336,9 +327,6 @@ importers:
         specifier: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
         version: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
-        version: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
-      '@polkadot-api/utils':
         specifier: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
         version: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
       '@react-rxjs/core':
@@ -368,9 +356,6 @@ importers:
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
-      scale-ts:
-        specifier: ^1.4.2
-        version: 1.4.3
       smoldot:
         specifier: 2.0.16
         version: 2.0.16
