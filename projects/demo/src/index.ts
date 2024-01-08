@@ -5,15 +5,12 @@ import {
   WellKnownChain,
   JsonRpcCallback,
 } from "@substrate/connect"
-import {
-  FollowEventWithRuntime,
-  createClient,
-} from "@polkadot-api/substrate-client"
-import { fromHex } from "@polkadot-api/utils"
+import { createClient } from "@polkadot-api/substrate-client"
+// import { fromHex } from "@polkadot-api/utils"
 import { getObservableClient } from "@polkadot-api/client"
 import { getSyncProvider } from "@polkadot-api/json-rpc-provider-proxy"
-import { exhaustMap, filter, map } from "rxjs"
-import { compact } from "@polkadot-api/substrate-bindings"
+// import { exhaustMap, filter, map } from "rxjs"
+// import { compact } from "@polkadot-api/substrate-bindings"
 
 import UI, { emojis } from "./view"
 
@@ -51,29 +48,13 @@ const followChainBestBlocks = (
       ScProvider(wellKnownChainOrChainSpec, wellKnownChainOrRelayChainSpec),
     ),
   )
-  const { follow$, header$ } = client.chainHead$()
 
-  follow$
-    .pipe(
-      filter(
-        (
-          event,
-        ): event is FollowEventWithRuntime & {
-          type: "bestBlockChanged"
-        } => event.type === "bestBlockChanged" && !!event.bestBlockHash,
-      ),
-      exhaustMap(({ bestBlockHash }) =>
-        header$(bestBlockHash).pipe(
-          filter(Boolean),
-          map((header) => compact.dec(fromHex(header).slice(32)) as number),
-        ),
-      ),
-    )
-    .subscribe((bestBlockHeight) => {
-      if (bestBlockHeight > 0)
-        ui.setAttribute("data-blockheight", `${bestBlockHeight}`)
-      ui.innerText = `#${bestBlockHeight}`
-    })
+  client.chainHead$().bestBlocks$.subscribe((bestBlocks) => {
+    if (bestBlocks.length === 0) return
+    const bestBlock = bestBlocks[0]!
+    ui.setAttribute("data-blockheight", `${bestBlock.header.number}`)
+    ui.innerText = `#${bestBlock.header.number}`
+  })
 }
 
 const showAssetHubPolkadotChainDetails = async () => {
