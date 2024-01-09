@@ -5,15 +5,10 @@ import {
   WellKnownChain,
   JsonRpcCallback,
 } from "@substrate/connect"
-import {
-  FollowEventWithRuntime,
-  createClient,
-} from "@polkadot-api/substrate-client"
-import { fromHex } from "@polkadot-api/utils"
+import { createClient } from "@polkadot-api/substrate-client"
 import { getObservableClient } from "@polkadot-api/client"
 import { getSyncProvider } from "@polkadot-api/json-rpc-provider-proxy"
-import { exhaustMap, filter, map } from "rxjs"
-import { compact } from "@polkadot-api/substrate-bindings"
+import { filter, map } from "rxjs"
 
 import UI, { emojis } from "./view"
 
@@ -46,33 +41,19 @@ const followChainBestBlocks = (
   const ui = document.getElementById(elementId)
   if (!ui) return
 
-  const client = getObservableClient(
-    createClient(
-      ScProvider(wellKnownChainOrChainSpec, wellKnownChainOrRelayChainSpec),
-    ),
+  const client = createClient(
+    ScProvider(wellKnownChainOrChainSpec, wellKnownChainOrRelayChainSpec),
   )
-  const { follow$, header$ } = client.chainHead$()
 
-  follow$
-    .pipe(
-      filter(
-        (
-          event,
-        ): event is FollowEventWithRuntime & {
-          type: "bestBlockChanged"
-        } => event.type === "bestBlockChanged" && !!event.bestBlockHash,
-      ),
-      exhaustMap(({ bestBlockHash }) =>
-        header$(bestBlockHash).pipe(
-          filter(Boolean),
-          map((header) => compact.dec(fromHex(header).slice(32)) as number),
-        ),
-      ),
+  getObservableClient(client)
+    .chainHead$()
+    .bestBlocks$.pipe(
+      map((blocks) => blocks[0]),
+      filter(Boolean),
     )
-    .subscribe((bestBlockHeight) => {
-      if (bestBlockHeight > 0)
-        ui.setAttribute("data-blockheight", `${bestBlockHeight}`)
-      ui.innerText = `#${bestBlockHeight}`
+    .subscribe(({ header }) => {
+      ui.setAttribute("data-blockheight", `${header.number}`)
+      ui.innerText = `#${header.number}`
     })
 }
 
@@ -86,42 +67,46 @@ const showAssetHubPolkadotChainDetails = async () => {
   const client = createClient(
     ScProvider(assetHubPolkadot, WellKnownChain.polkadot),
   )
-  const observableClient = getObservableClient(client)
-  observableClient.chainHead$().follow$.subscribe(async (event) => {
-    if (event.type !== "initialized") return
-    ui.showSynced()
-    const [genesisHash, chainName, properties] = (await Promise.all(
-      [
-        "chainSpec_v1_genesisHash",
-        "chainSpec_v1_chainName",
-        "chainSpec_v1_properties",
-      ].map(
-        (method) =>
-          new Promise((resolve, reject) =>
-            client._request(method, [], {
-              onSuccess: resolve,
-              onError: reject,
-            }),
-          ),
-      ),
-    )) as [string, string, any]
 
-    ui.log(`${emojis.seedling} Light client ready`, true)
-    ui.log(`${emojis.info} Connected to ${chainName}`)
-    ui.log(
-      `${emojis.chequeredFlag} Token decimals: ${properties?.tokenDecimals} - symbol: ${properties?.tokenSymbol}`,
-    )
-    ui.log(`${emojis.chequeredFlag} Genesis hash is ${genesisHash}`)
-    client._request("system_health", [], {
-      onSuccess(health: { peers: number }) {
-        const peers = `${health.peers} ${health.peers === 1 ? "peer" : "peers"}`
-        ui.log(`${emojis.stethoscope} Parachain is syncing with ${peers}`)
-      },
-      onError(error) {
-        console.error(error)
-      },
+  getObservableClient(client)
+    .chainHead$()
+    .follow$.subscribe(async (event) => {
+      if (event.type !== "initialized") return
+      ui.showSynced()
+      const [genesisHash, chainName, properties] = (await Promise.all(
+        [
+          "chainSpec_v1_genesisHash",
+          "chainSpec_v1_chainName",
+          "chainSpec_v1_properties",
+        ].map(
+          (method) =>
+            new Promise((resolve, reject) =>
+              client._request(method, [], {
+                onSuccess: resolve,
+                onError: reject,
+              }),
+            ),
+        ),
+      )) as [string, string, any]
+
+      ui.log(`${emojis.seedling} Light client ready`, true)
+      ui.log(`${emojis.info} Connected to ${chainName}`)
+      ui.log(
+        `${emojis.chequeredFlag} Token decimals: ${properties?.tokenDecimals} - symbol: ${properties?.tokenSymbol}`,
+      )
+      ui.log(`${emojis.chequeredFlag} Genesis hash is ${genesisHash}`)
+      client._request("system_health", [], {
+        onSuccess(health: { peers: number }) {
+          const peers = `${health.peers} ${
+            health.peers === 1 ? "peer" : "peers"
+          }`
+          ui.log(`${emojis.stethoscope} Parachain is syncing with ${peers}`)
+        },
+        onError(error) {
+          console.error(error)
+        },
+      })
     })
-  })
 }
 
 const wellKnownChains: ReadonlySet<string> = new Set<WellKnownChain>(
