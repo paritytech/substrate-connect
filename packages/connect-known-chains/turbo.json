@@ -3,7 +3,6 @@
   "extends": ["//"],
   "pipeline": {
     "build": {
-      "inputs": ["src/**", "tsconfig.json", "scripts/**", "specs/**"],
       "outputs": ["dist/**", "src/specs/**"]
     }
   }
