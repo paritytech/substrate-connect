@@ -24,6 +24,7 @@ import {
   EMPTY,
   repeat,
   from,
+  combineLatestWith,
 } from "rxjs"
 import { wellKnownChainIdByGenesisHash } from "../constants"
 
@@ -111,23 +112,23 @@ const createChainDetailObservable = (chain: PageChain) =>
   defer(() => {
     const client = createClient(chain.provider)
     const observableClient = getObservableClient(client)
-    type ChainHead$ = ReturnType<(typeof observableClient)["chainHead$"]>
-    let chainHead: ChainHead$
-    let unfollow: ChainHead$["unfollow"]
-    const followWithRetry$ = defer(() => {
-      chainHead = observableClient.chainHead$()
-      unfollow = chainHead.unfollow
-      return chainHead.follow$
+    let unfollow: () => void
+    const followAndBestBlocksWithRetry$ = defer(() => {
+      const {
+        unfollow: unfollow_,
+        follow$,
+        bestBlocks$,
+      } = observableClient.chainHead$()
+      unfollow = unfollow_
+      return follow$.pipe(combineLatestWith(bestBlocks$.pipe(startWith([]))))
     }).pipe(
       catchError(() => EMPTY),
       repeat({ delay: 1 }),
+      share(),
     )
-    // FIXME: chainHead may be undefined
-    const bestBlockHeight$ = defer(() => chainHead.bestBlocks$).pipe(
-      catchError(() => EMPTY),
-      repeat({ delay: 1 }),
-      filter((blocks) => blocks.length > 0),
-      map(([block]) => block.header.number),
+    const bestBlockHeight$ = followAndBestBlocksWithRetry$.pipe(
+      map(([_, bestBlocks]) => bestBlocks[0]?.header.number),
+      filter(Boolean),
       startWith(undefined),
     )
     const peers$ = timer(0, 5000).pipe(
@@ -146,7 +147,8 @@ const createChainDetailObservable = (chain: PageChain) =>
       distinct(),
       startWith(0),
     )
-    const isSyncing$ = followWithRetry$.pipe(
+    const isSyncing$ = followAndBestBlocksWithRetry$.pipe(
+      map(([followEvent]) => followEvent),
       scan((acc, { type }) => (type === "initialized" ? false : acc), true),
       distinct(),
       startWith(true),
