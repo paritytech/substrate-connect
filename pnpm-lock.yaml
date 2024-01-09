@@ -95,6 +95,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      rxjs:
+        specifier: ^7.8.1
+        version: 7.8.1
     devDependencies:
       '@types/react':
         specifier: ^18.2.15
@@ -310,6 +313,9 @@ importers:
       '@substrate/connect':
         specifier: 0.8.4
         version: link:../../packages/connect
+      rxjs:
+        specifier: ^7.8.1
+        version: 7.8.1
     devDependencies:
       eslint:
         specifier: ^8.53.0
