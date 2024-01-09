@@ -16,6 +16,7 @@ init.sh
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+.turbo
 .vscode
 packages/connect/src/connector/specs/js
 substrate-connect_*-source-code.zip

@@ -38,7 +38,7 @@
     "test": "vitest",
     "deep-clean": "pnpm clean && rm -rf node_modules",
     "clean": "rm -rf dist",
-    "build": "pnpm clean && tsup-node src/index.ts src/worker.ts src/worker-node.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
+    "build": "tsup-node src/index.ts src/worker.ts src/worker-node.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
     "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {

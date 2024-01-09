@@ -43,7 +43,7 @@
     "test": "exit 0; #This package is only types",
     "deep-clean": "pnpm clean && rm -rf node_modules",
     "clean": "rm -rf dist",
-    "build": "pnpm clean && pnpm build-js-specs && tsup-node src/index.ts src/specs/polkadot.ts src/specs/ksmcc3.ts src/specs/westend2.ts src/specs/rococo_v2_2.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
+    "build": "pnpm build-js-specs && tsup-node src/index.ts src/specs/polkadot.ts src/specs/ksmcc3.ts src/specs/westend2.ts src/specs/rococo_v2_2.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
     "lint": "eslint . --ext .js,.ts"
   },
   "devDependencies": {
