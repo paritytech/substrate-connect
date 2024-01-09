@@ -1,0 +1,10 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "pipeline": {
+    "build": {
+      "inputs": ["src/**", "tsconfig.json", "scripts/**", "specs/**"],
+      "outputs": ["dist/**", "src/specs/**"]
+    }
+  }
+}
