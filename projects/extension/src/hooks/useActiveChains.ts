@@ -3,17 +3,13 @@ import {
   PageChain,
 } from "@substrate/light-client-extension-helpers/extension-page"
 import { getObservableClient } from "@polkadot-api/client"
-import {
-  createClient,
-  type FollowEventWithRuntime,
-} from "@polkadot-api/substrate-client"
+import { createClient } from "@polkadot-api/substrate-client"
 import { useEffect, useState } from "react"
 import { combineKeys } from "@react-rxjs/utils"
 import {
   combineLatest,
   Observable,
   distinct,
-  exhaustMap,
   filter,
   map,
   scan,
@@ -28,9 +24,8 @@ import {
   EMPTY,
   repeat,
   from,
+  combineLatestWith,
 } from "rxjs"
-import { fromHex } from "@polkadot-api/utils"
-import { compact } from "scale-ts"
 import { wellKnownChainIdByGenesisHash } from "../constants"
 
 type Chain = {
@@ -117,33 +112,23 @@ const createChainDetailObservable = (chain: PageChain) =>
   defer(() => {
     const client = createClient(chain.provider)
     const observableClient = getObservableClient(client)
-    type ChainHead$ = ReturnType<(typeof observableClient)["chainHead$"]>
-    let chainHead: ChainHead$
-    let unfollow: ChainHead$["unfollow"]
-    const followWithRetry$ = defer(() => {
-      chainHead = observableClient.chainHead$()
-      unfollow = chainHead.unfollow
-      return chainHead.follow$
+    let unfollow: () => void
+    const followAndBestBlocksWithRetry$ = defer(() => {
+      const {
+        unfollow: unfollow_,
+        follow$,
+        bestBlocks$,
+      } = observableClient.chainHead$()
+      unfollow = unfollow_
+      return follow$.pipe(combineLatestWith(bestBlocks$.pipe(startWith([]))))
     }).pipe(
       catchError(() => EMPTY),
       repeat({ delay: 1 }),
       share(),
     )
-    const bestBlockHeight$ = followWithRetry$.pipe(
-      filter(
-        (
-          block,
-        ): block is FollowEventWithRuntime & {
-          type: "bestBlockChanged"
-        } => block.type === "bestBlockChanged" && !!block.bestBlockHash,
-      ),
-      exhaustMap(({ bestBlockHash }) =>
-        chainHead.header$(bestBlockHash).pipe(
-          filter(Boolean),
-          map((header) => compact.dec(fromHex(header).slice(32)) as number),
-          catchError(() => EMPTY),
-        ),
-      ),
+    const bestBlockHeight$ = followAndBestBlocksWithRetry$.pipe(
+      map(([_, bestBlocks]) => bestBlocks[0]?.header.number),
+      filter(Boolean),
       startWith(undefined),
     )
     const peers$ = timer(0, 5000).pipe(
@@ -162,7 +147,8 @@ const createChainDetailObservable = (chain: PageChain) =>
       distinct(),
       startWith(0),
     )
-    const isSyncing$ = followWithRetry$.pipe(
+    const isSyncing$ = followAndBestBlocksWithRetry$.pipe(
+      map(([followEvent]) => followEvent),
       scan((acc, { type }) => (type === "initialized" ? false : acc), true),
       distinct(),
       startWith(true),

@@ -11,14 +11,12 @@
   },
   "dependencies": {
     "@picocss/pico": "^1.5.10",
-    "@polkadot-api/client": "0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0",
-    "@polkadot-api/substrate-client": "0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0",
-    "@polkadot-api/utils": "0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0",
+    "@polkadot-api/client": "0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0",
+    "@polkadot-api/substrate-client": "0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0",
     "@substrate/light-client-extension-helpers": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rxjs": "^7.8.1",
-    "scale-ts": "^1.4.2"
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
