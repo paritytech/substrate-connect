@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["tsconfig.base.json", ".prettierrc"],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
@@ -11,6 +12,9 @@
     },
     "lint": {
       "dependsOn": ["build"]
+    },
+    "//#lint": {
+      "dependsOn": []
     }
   }
 }

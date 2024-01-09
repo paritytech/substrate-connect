@@ -27,7 +27,7 @@
     "api-docs": "typedoc",
     "deep-clean": "pnpm -r deep-clean && rm -rf node_modules",
     "clean": " pnpm -r run clean",
-    "lint": "prettier --check . && pnpm -r lint",
+    "lint": "prettier --check .",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "dev:api-docs": "concurrently -n typedoc,http-server 'nodemon -e ts --watch ./packages/connect --watch ./packages/connect-extension-protocol --exec typedoc' 'http-server _site/api'",
