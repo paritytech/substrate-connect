@@ -4,7 +4,6 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["tsconfig.json", "src/**/*.tsx", "src/**/*.ts"],
       "outputs": ["dist/**"]
     },
     "test": {
