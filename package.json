@@ -57,7 +57,7 @@
     "eslint-plugin-import": "^2.29.0",
     "http-server": "^14.1.1",
     "husky": "^8.0.3",
-    "lint-staged": "^14.0.1",
+    "lint-staged": "^15.2.0",
     "nodemon": "^2.0.22",
     "prettier": "^3.0.3",
     "tslib": "^2.6.2",
