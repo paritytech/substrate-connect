@@ -23,7 +23,7 @@ jobs:
         run: pnpm pack && mv *.tgz package.tgz
       - name: "@substrate/connect Publish"
         id: publish_connect
-        uses: JS-DevTools/npm-publish@v2
+        uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/connect/package.tgz
@@ -33,7 +33,7 @@ jobs:
         run: pnpm pack && mv *.tgz package.tgz
       - name: "@substrate/connect-extension-protocol Publish"
         id: publish_connect_extension_protocol
-        uses: JS-DevTools/npm-publish@v2
+        uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/connect-extension-protocol/package.tgz
@@ -42,7 +42,7 @@ jobs:
         working-directory: ./packages/connect-known-chains
         run: pnpm pack && mv *.tgz package.tgz
       - name: "@substrate/connect-known-chains Publish"
-        uses: JS-DevTools/npm-publish@v2
+        uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/connect-known-chains/package.tgz
@@ -51,7 +51,7 @@ jobs:
         working-directory: ./packages/light-client-extension-helpers
         run: pnpm pack && mv *.tgz package.tgz
       - name: "@substrate/light-client-extension-helpers Publish"
-        uses: JS-DevTools/npm-publish@v2
+        uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/light-client-extension-helpers/package.tgz
