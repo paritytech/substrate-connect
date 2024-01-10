@@ -1,0 +1,27 @@
+name: Publish Package
+description: Publish Package to NPM
+inputs:
+  token:
+    description: NPM Token
+    required: true
+  package-directory:
+    description: Package directory
+    required: true
+outputs:
+  type:
+    description: Semver release type, `initial` if first release, `different` if other change, or empty if no release.
+    value: ${{ steps.publish.outputs.type }}
+runs:
+  using: composite
+  steps:
+    - name: Pack
+      run: pnpm pack && mv *.tgz package.tgz
+      shell: bash
+      working-directory: ${{ inputs.package-directory }}
+    - name: Publish
+      id: publish
+      uses: JS-DevTools/npm-publish@v3
+      with:
+        token: ${{ inputs.token }}
+        package: ${{ inputs.package-directory }}/package.tgz
+        access: public

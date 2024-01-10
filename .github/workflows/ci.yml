@@ -84,44 +84,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4.1.1
       - uses: ./.github/actions/turbo-build
-      - name: "@substrate/connect Pack"
-        working-directory: ./packages/connect
-        run: pnpm pack && mv *.tgz package.tgz
       - name: "@substrate/connect Publish"
         id: publish_connect
-        uses: JS-DevTools/npm-publish@v3
+        uses: ./.github/actions/publish-package 
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          package: ./packages/connect/package.tgz
-          access: public
-      - name: "@substrate/connect-extension-protocol Pack"
-        working-directory: ./packages/connect-extension-protocol
-        run: pnpm pack && mv *.tgz package.tgz
+          package-directory: ./packages/connect
       - name: "@substrate/connect-extension-protocol Publish"
         id: publish_connect_extension_protocol
-        uses: JS-DevTools/npm-publish@v3
+        uses: ./.github/actions/publish-package 
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          package: ./packages/connect-extension-protocol/package.tgz
-          access: public
-      - name: "@substrate/connect-known-chains Pack"
-        working-directory: ./packages/connect-known-chains
-        run: pnpm pack && mv *.tgz package.tgz
+          package-directory: ./packages/connect-extension-protocol
       - name: "@substrate/connect-known-chains Publish"
-        uses: JS-DevTools/npm-publish@v3
+        uses: ./.github/actions/publish-package 
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          package: ./packages/connect-known-chains/package.tgz
-          access: public
-      - name: "@substrate/light-client-extension-helpers Pack"
-        working-directory: ./packages/light-client-extension-helpers
-        run: pnpm pack && mv *.tgz package.tgz
+          package-directory: ./packages/connect-known-chains
       - name: "@substrate/light-client-extension-helpers Publish"
-        uses: JS-DevTools/npm-publish@v3
+        uses: ./.github/actions/publish-package 
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          package: ./packages/light-client-extension-helpers/package.tgz
-          access: public
+          package-directory: ./packages/light-client-extension-helpers
       - name: Fetch gh-pages
         if: steps.publish_connect.outputs.type || steps.publish_connect_extension_protocol.outputs.type
         run: |
