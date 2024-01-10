@@ -20,9 +20,8 @@ jobs:
       uses: actions/cache@v3
       with:
         path: .turbo
-        key: ${{ runner.os }}-turbo-${{ matrix.node-version }}-build-test-lint-${{ github.sha }}
+        key: ${{ runner.os }}-turbo-${{ matrix.node-version }}-build-${{ github.sha }}
         restore-keys: |
-          ${{ runner.os }}-turbo-${{ matrix.node-version }}-build-test-lint-
           ${{ runner.os }}-turbo-${{ matrix.node-version }}-build-
     - uses: pnpm/action-setup@v2
       with:
@@ -36,7 +35,8 @@ jobs:
     - run: pnpm checkResolutions
     - run: pnpm turbo build test lint --cache-dir=.turbo
 
-  playwright:
+  playwright-tests:
+    needs: [build]
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -71,10 +71,167 @@ jobs:
       run: pnpm playwright:chromium
       working-directory: ./examples/light-client-extension-helpers-extension
 
+  zombienet-tests:
+    needs: [build]
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - name: Cache turbo build setup
+        uses: actions/cache@v3
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-18.x-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-18.x-build-
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm turbo build --cache-dir=.turbo
+      - name: Get zombienet
+        run: |
+          curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.3.68/zombienet-linux-x64
+          chmod +x zombienet-linux-x64
+      - name: Get polkadot
+        run: |
+          curl -L -O https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.1.0/polkadot
+          chmod +x polkadot
+      - name: Get polkadot execute worker
+        run: |
+          curl -L -O https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.1.0/polkadot-execute-worker
+          chmod +x polkadot-execute-worker
+      - name: Get polkadot prepare worker
+        run: |
+          curl -L -O https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.1.0/polkadot-prepare-worker
+          chmod +x polkadot-prepare-worker
+      - name: Get polkadot-parachain
+        run: |
+          curl -L -O https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.1.0/polkadot-parachain
+          chmod +x polkadot-parachain
+      - name: Run test
+        run: |
+          export PATH=$(pwd):$PATH
+          cd zombienet-tests/src
+          zombienet-linux-x64 -p native test 0001-relay-smoke-test.zndsl
+          zombienet-linux-x64 -p native test 0002-parachain.zndsl
+          zombienet-linux-x64 -p native test 0003-test-against-chainspecs.zndsl
+
+  npm-publish:
+    if: github.ref == 'refs/heads/main'
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - name: Cache turbo build setup
+        uses: actions/cache@v3
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-18.x-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-18.x-build-
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm turbo build --cache-dir=.turbo
+      - name: "@substrate/connect Pack"
+        working-directory: ./packages/connect
+        run: pnpm pack && mv *.tgz package.tgz
+      - name: "@substrate/connect Publish"
+        id: publish_connect
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./packages/connect/package.tgz
+          access: public
+      - name: "@substrate/connect-extension-protocol Pack"
+        working-directory: ./packages/connect-extension-protocol
+        run: pnpm pack && mv *.tgz package.tgz
+      - name: "@substrate/connect-extension-protocol Publish"
+        id: publish_connect_extension_protocol
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./packages/connect-extension-protocol/package.tgz
+          access: public
+      - name: "@substrate/connect-known-chains Pack"
+        working-directory: ./packages/connect-known-chains
+        run: pnpm pack && mv *.tgz package.tgz
+      - name: "@substrate/connect-known-chains Publish"
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./packages/connect-known-chains/package.tgz
+          access: public
+      - name: "@substrate/light-client-extension-helpers Pack"
+        working-directory: ./packages/light-client-extension-helpers
+        run: pnpm pack && mv *.tgz package.tgz
+      - name: "@substrate/light-client-extension-helpers Publish"
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./packages/light-client-extension-helpers/package.tgz
+          access: public
+      - name: Fetch gh-pages
+        if: steps.publish_connect.outputs.type || steps.publish_connect_extension_protocol.outputs.type
+        run: |
+          git remote set-branches origin gh-pages
+          git fetch --depth 1 origin gh-pages
+      - name: Deploy
+        if: steps.publish_connect.outputs.type || steps.publish_connect_extension_protocol.outputs.type
+        run: pnpm deploy
+
+  upload-extension-artifacts:
+    if: github.ref == 'refs/heads/main'
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - name: Cache turbo build setup
+        uses: actions/cache@v3
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-18.x-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-18.x-build-
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: pnpm
+      - uses: actions/upload-artifact@v4
+        with:
+          name: substrate-connect-extension-source-code
+          path: ./projects/extension
+      - run: pnpm install
+      - run: pnpm turbo build --cache-dir=.turbo
+      - run: pnpm --filter @substrate/extension build:firefox
+      - uses: actions/upload-artifact@v4
+        with:
+          name: substrate-connect-extension-mv3-firefox
+          path: ./projects/extension/dist
+      - run: pnpm --filter @substrate/extension build:chrome
+      - uses: actions/upload-artifact@v4
+        with:
+          name: substrate-connect-extension-mv3-chrome
+          path: ./projects/extension/dist
+
+
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
     # are successful.
-    needs: [build, playwright]
+    needs: [build, playwright-tests]
     runs-on: ubuntu-latest
     steps:
      - run: echo Success
