@@ -16,24 +16,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4.1.1
-    - name: Cache turbo build setup
-      uses: actions/cache@v3
-      with:
-        path: .turbo
-        key: ${{ runner.os }}-turbo-${{ matrix.node-version }}-build-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-turbo-${{ matrix.node-version }}-build-
-    - uses: pnpm/action-setup@v2
-      with:
-        version: 8
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+    - uses: ./.github/actions/turbo-build 
       with:
         node-version: ${{ matrix.node-version }}
-        cache: pnpm
-    - run: pnpm install
     - run: pnpm checkResolutions
-    - run: pnpm turbo build test lint --cache-dir=.turbo
 
   playwright-tests:
     needs: [build]
@@ -41,22 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4.1.1
-    - name: Cache turbo build setup
-      uses: actions/cache@v3
-      with:
-        path: .turbo
-        key: ${{ runner.os }}-turbo-18.x-build-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-turbo-18.x-build-
-    - uses: pnpm/action-setup@v2
-      with:
-        version: 8
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 18.x
-        cache: pnpm
-    - run: pnpm install 
-    - run: pnpm turbo build --cache-dir=.turbo
+    - uses: ./.github/actions/turbo-build
     - name: Build extension with Manifest v3 for Chrome
       run: pnpm build:chrome
       working-directory: ./projects/extension
@@ -77,22 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.1
-      - name: Cache turbo build setup
-        uses: actions/cache@v3
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-18.x-build-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-18.x-build-
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-          cache: pnpm
-      - run: pnpm install
-      - run: pnpm turbo build --cache-dir=.turbo
+      - uses: ./.github/actions/turbo-build
       - name: Get zombienet
         run: |
           curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.3.68/zombienet-linux-x64
@@ -127,22 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.1
-      - name: Cache turbo build setup
-        uses: actions/cache@v3
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-18.x-build-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-18.x-build-
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-          cache: pnpm
-      - run: pnpm install
-      - run: pnpm turbo build --cache-dir=.turbo
+      - uses: ./.github/actions/turbo-build
       - name: "@substrate/connect Pack"
         working-directory: ./packages/connect
         run: pnpm pack && mv *.tgz package.tgz
@@ -196,26 +137,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.1
-      - name: Cache turbo build setup
-        uses: actions/cache@v3
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-18.x-build-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-18.x-build-
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
-          cache: pnpm
       - uses: actions/upload-artifact@v4
         with:
           name: substrate-connect-extension-source-code
           path: ./projects/extension
-      - run: pnpm install
-      - run: pnpm turbo build --cache-dir=.turbo
+      - uses: ./.github/actions/turbo-build
       - run: pnpm --filter @substrate/extension build:firefox
       - uses: actions/upload-artifact@v4
         with:
