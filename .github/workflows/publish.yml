@@ -9,15 +9,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.1
+      - name: Cache turbo build setup
+        uses: actions/cache@v3
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-18.x-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-18.x-build-
       - uses: pnpm/action-setup@v2
         with:
           version: 8
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 18.x
           cache: pnpm
       - run: pnpm install
-      - run: pnpm build
+      - run: pnpm turbo build --cache-dir=.turbo
       - name: "@substrate/connect Pack"
         working-directory: ./packages/connect
         run: pnpm pack && mv *.tgz package.tgz
