@@ -25,7 +25,7 @@ jobs:
           node-version: 18.x
           cache: pnpm
       - run: pnpm install
-      - run: pnpm turbo build  --cache-dir=.turbo
+      - run: pnpm turbo build --cache-dir=.turbo
       - name: Get zombienet
         run: |
           curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.3.68/zombienet-linux-x64
