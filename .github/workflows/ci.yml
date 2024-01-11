@@ -137,7 +137,6 @@ jobs:
           name: substrate-connect-extension-mv3-chrome
           path: ./projects/extension/dist
 
-
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
     # are successful.
