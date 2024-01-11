@@ -37,7 +37,7 @@ export const createScClient = (): ScClient => {
   const internalAddChain = async (
     isWellKnown: boolean,
     chainSpecOrWellKnownName: string,
-    jsonRpcCallback?: JsonRpcCallback,
+    jsonRpcCallback: JsonRpcCallback = () => {},
     relayChainGenesisHash?: string,
   ): Promise<Chain> => {
     const lightClientProvider = await lightClientProviderPromise
@@ -57,7 +57,7 @@ export const createScClient = (): ScClient => {
       )
     }
 
-    const jsonRpcProvider = chain.connect(jsonRpcCallback!)
+    const jsonRpcProvider = chain.connect(jsonRpcCallback)
 
     return {
       sendJsonRpc(rpc: string): void {
