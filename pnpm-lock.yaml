@@ -12,8 +12,8 @@ importers:
   .:
     devDependencies:
       '@types/chrome':
-        specifier: ^0.0.237
-        version: 0.0.237
+        specifier: ^0.0.256
+        version: 0.0.256
       '@types/node':
         specifier: ^20.11.0
         version: 20.11.0
@@ -146,8 +146,8 @@ importers:
         specifier: ^1.40.1
         version: 1.40.1
       '@types/chrome':
-        specifier: ^0.0.246
-        version: 0.0.246
+        specifier: ^0.0.256
+        version: 0.0.256
       '@types/node':
         specifier: ^20.11.0
         version: 20.11.0
@@ -223,8 +223,8 @@ importers:
         version: 2.0.16
     devDependencies:
       '@types/chrome':
-        specifier: ^0.0.246
-        version: 0.0.246
+        specifier: ^0.0.256
+        version: 0.0.256
 
   projects/burnr:
     dependencies:
@@ -3615,15 +3615,8 @@ packages:
       '@types/node': 20.11.0
     dev: false
 
-  /@types/chrome@0.0.237:
-    resolution: {integrity: sha512-krsRmyfMlck5r+H1EapsrrucDRq6iRm0NAi5fapr93CgnpVMDdK+h2+z4x79GegdW7BNH9Vb//gkptORwwwVIQ==}
-    dependencies:
-      '@types/filesystem': 0.0.35
-      '@types/har-format': 1.2.15
-    dev: true
-
-  /@types/chrome@0.0.246:
-    resolution: {integrity: sha512-MxGxEomGxsJiL9xe/7ZwVgwdn8XVKWbPvxpVQl3nWOjrS0Ce63JsfzxUc4aU3GvRcUPYsfufHmJ17BFyKxeA4g==}
+  /@types/chrome@0.0.256:
+    resolution: {integrity: sha512-NleTQw4DNzhPwObLNuQ3i3nvX1rZ1mgnx5FNHc2KP+Cj1fgd3BrT5yQ6Xvs+7H0kNsYxCY+lxhiCwsqq3JwtEg==}
     dependencies:
       '@types/filesystem': 0.0.35
       '@types/har-format': 1.2.15

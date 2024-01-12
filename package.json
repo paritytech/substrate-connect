@@ -43,7 +43,7 @@
     "*.{js,jsx,ts,tsx,json,md}": "prettier --write"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.237",
+    "@types/chrome": "^0.0.256",
     "@types/node": "^20.11.0",
     "@types/qrcode.react": "^1.0.5",
     "@types/react": "^18.2.47",
