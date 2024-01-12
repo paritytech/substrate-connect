@@ -20,12 +20,7 @@ import type {
   BackgroundRpcHandlers,
 } from "./types"
 import { smoldotProvider } from "./smoldot-provider"
-import type {
-  // ToBackground,
-  // ToContent,
-  ToExtension,
-  ToPage,
-} from "@/protocol"
+import type { ToExtension, ToPage } from "@/protocol"
 import {
   ALARM,
   CONTEXT,
@@ -34,6 +29,7 @@ import {
   createRpc,
 } from "@/shared"
 import * as storage from "@/storage"
+import { WebPageRpcHandlers } from "@/web-page/types"
 
 export type * from "./types"
 
@@ -390,12 +386,24 @@ export const register = ({
       //#endregion
     }
 
-    const rpc = createRpc((message) => port.postMessage(message), handlers)
+    const rpc = createRpc<WebPageRpcHandlers>(
+      (message) =>
+        postMessage(
+          // @ts-expect-error
+          message,
+        ),
+      handlers,
+    )
     const handleInternalRpcMessage = (message: any) => rpc.handle(message)
+
+    const unsubscribeOnChainsChanged = storage.onChainsChanged((chains) =>
+      rpc.notify("onAddChains", [chains]),
+    )
 
     let isPortDisconnected = false
     port.onDisconnect.addListener(() => {
       isPortDisconnected = true
+      unsubscribeOnChainsChanged()
       if (!activeChains[tabId]) return
       for (const [chainId, { chain }] of Object.entries(activeChains[tabId])) {
         try {
@@ -633,17 +641,6 @@ export const register = ({
 
   return { lightClientPageHelper, addOnAddChainByUserListener }
 }
-
-storage.onChainsChanged(async (chains) => {
-  ;(await chrome.tabs.query({ url: ["https://*/*", "http://*/*"] })).forEach(
-    ({ id }) =>
-      chrome.tabs.sendMessage(id!, {
-        origin: CONTEXT.BACKGROUND,
-        type: "onAddChains",
-        chains,
-      } as ToPage),
-  )
-})
 
 const withClient =
   <T>(fn: (client: SubstrateClient) => T | Promise<T>) =>
