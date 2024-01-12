@@ -23,6 +23,6 @@
     "@types/chrome": "^0.0.246",
     "@types/node": "^20.10.8",
     "concurrently": "^8.2.2",
-    "web-ext": "^7.8.0"
+    "web-ext": "^7.10.0"
   }
 }
