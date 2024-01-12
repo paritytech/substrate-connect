@@ -20,7 +20,12 @@ import type {
   BackgroundRpcHandlers,
 } from "./types"
 import { smoldotProvider } from "./smoldot-provider"
-import type { ToBackground, ToContent, ToExtension, ToPage } from "@/protocol"
+import type {
+  // ToBackground,
+  // ToContent,
+  ToExtension,
+  ToPage,
+} from "@/protocol"
 import {
   ALARM,
   CONTEXT,
@@ -300,10 +305,10 @@ export const register = ({
     >
   > = {}
   const isSubstrateConnectOrContentMessage = createIsHelperMessage<
-    | (ToExtension & {
-        origin: "substrate-connect-client"
-      })
-    | ToBackground
+    ToExtension & {
+      origin: "substrate-connect-client"
+    }
+    // | ToBackground
   >(["substrate-connect-client", CONTEXT.CONTENT_SCRIPT])
   const helperPortNames: string[] = [PORT.CONTENT_SCRIPT, PORT.EXTENSION_PAGE]
   chrome.runtime.onConnect.addListener((port) => {
@@ -313,7 +318,8 @@ export const register = ({
     const tabId = port.sender?.tab?.id ?? chrome.tabs.TAB_ID_NONE
 
     const postMessage = (
-      message: (ToPage & { origin: "substrate-connect-extension" }) | ToContent,
+      message: ToPage & { origin: "substrate-connect-extension" },
+      // | ToContent,
     ) => port.postMessage(message)
 
     const handlers: BackgroundRpcHandlers = {
@@ -590,10 +596,10 @@ export const register = ({
 
           break
         }
-        case "keep-alive": {
-          console.warn("Unrecognized message", msg)
-          break
-        }
+        // case "keep-alive": {
+        //   console.warn("Unrecognized message", msg)
+        //   break
+        // }
         default: {
           const unrecognizedMsg: never = msg
           console.warn("Unrecognized message", unrecognizedMsg)

@@ -1,8 +1,8 @@
 import type { BackgroundRpcHandlers } from "@/background/types"
 import type {
   PostMessage,
-  ToBackground,
-  ToContent,
+  // ToBackground,
+  // ToContent,
   ToExtension,
   ToPage,
 } from "@/protocol"
@@ -45,7 +45,8 @@ export const register = (channelId: string) => {
 
   const portPostMessage = (
     port: chrome.runtime.Port,
-    msg: ToExtension | ToBackground,
+    // msg: ToExtension | ToBackground,
+    msg: ToExtension,
   ) => port.postMessage(msg)
 
   const chainIds = new Set<string>()
@@ -85,20 +86,25 @@ export const register = (channelId: string) => {
       rpc = createRpc<BackgroundRpcHandlers>((message) =>
         port!.postMessage(message),
       )
-      port.onMessage.addListener((msg: ToPage | ToContent) => {
-        rpc!.handle(msg as any)
-        if (
-          msg.origin === "substrate-connect-extension" &&
-          msg.type === "error"
-        )
-          chainIds.delete(msg.chainId)
-        else if (
-          msg.origin === CONTEXT.BACKGROUND &&
-          msg.type === "keep-alive-ack"
-        )
-          return
-        postToPage(msg, origin)
-      })
+      port.onMessage.addListener(
+        (
+          msg: ToPage,
+          // | ToContent
+        ) => {
+          rpc!.handle(msg as any)
+          if (
+            msg.origin === "substrate-connect-extension" &&
+            msg.type === "error"
+          )
+            chainIds.delete(msg.chainId)
+          // else if (
+          //   msg.origin === CONTEXT.BACKGROUND &&
+          //   msg.type === "keep-alive-ack"
+          // )
+          //   return
+          postToPage(msg, origin)
+        },
+      )
       const keepAliveInterval = setInterval(() => {
         if (!port || !rpc) return
         // portPostMessage(port, {

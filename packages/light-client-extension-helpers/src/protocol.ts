@@ -21,18 +21,18 @@ export type ToExtensionRequest = Message<
   } & (BackgroundRequestGetChain | BackgroundRequestGetChains)
 >
 
-export type ToBackground = ToBackgroundKeepAlive
+// export type ToBackground = ToBackgroundKeepAlive
 
-type ToBackgroundKeepAlive = Message<
-  "@substrate/light-client-extension-helper-context-content-script",
-  {
-    type: "keep-alive"
-  }
->
+// type ToBackgroundKeepAlive = Message<
+//   "@substrate/light-client-extension-helper-context-content-script",
+//   {
+//     type: "keep-alive"
+//   }
+// >
 
 export type ToPage = ToPageResponse | ToPageNotification | ConnectToApplication
 
-export type ToContent = ToContentKeepAlive
+// export type ToContent = ToContentKeepAlive
 
 export type ToPageResponse = Message<
   "@substrate/light-client-extension-helper-context-content-script",
@@ -57,28 +57,26 @@ type ToPageNotificationOnAddChains = Message<
 
 type ToPageNotification = ToPageNotificationOnAddChains
 
-type ToContentKeepAlive = Message<
-  "@substrate/light-client-extension-helper-context-background",
-  {
-    type: "keep-alive-ack"
-  }
->
+// type ToContentKeepAlive = Message<
+//   "@substrate/light-client-extension-helper-context-background",
+//   {
+//     type: "keep-alive-ack"
+//   }
+// >
 
-export type BackgroundRequest =
-  | Message<
-      "@substrate/light-client-extension-helper-context-content-script",
-      | BackgroundRequestGetChain
-      | BackgroundRequestGetChains
-      | BackgroundRequestIsBackgroundScriptReady
-    >
-  | Message<
-      "@substrate/light-client-extension-helper-context-extension-page",
-      | BackgroundRequestDeleteChain
-      | BackgroundRequestPersistChain
-      | BackgroundRequestGetActiveConnections
-      | BackgroundRequestDisconnect
-      | BackgroundRequestSetBootNodes
-    >
+export type BackgroundRequest = Message<
+  "@substrate/light-client-extension-helper-context-content-script",
+  BackgroundRequestGetChain | BackgroundRequestGetChains
+  // | BackgroundRequestIsBackgroundScriptReady
+>
+// | Message<
+//     "@substrate/light-client-extension-helper-context-extension-page",
+//     | BackgroundRequestDeleteChain
+//     | BackgroundRequestPersistChain
+//     | BackgroundRequestGetActiveConnections
+//     | BackgroundRequestDisconnect
+//     | BackgroundRequestSetBootNodes
+//   >
 
 // FIXME: merge BackgroundRequest/BackgroundResponse/ToExtensionRequest/ToPageResponse
 type BackgroundRequestGetChain = {
@@ -87,51 +85,51 @@ type BackgroundRequestGetChain = {
   relayChainGenesisHash?: string
 }
 
-type BackgroundRequestDeleteChain = {
-  type: "deleteChain"
-  genesisHash: string
-}
+// type BackgroundRequestDeleteChain = {
+//   type: "deleteChain"
+//   genesisHash: string
+// }
 
-type BackgroundRequestPersistChain = {
-  type: "persistChain"
-  chainSpec: string
-  relayChainGenesisHash?: string
-}
+// type BackgroundRequestPersistChain = {
+//   type: "persistChain"
+//   chainSpec: string
+//   relayChainGenesisHash?: string
+// }
 
 type BackgroundRequestGetChains = {
   type: "getChains"
 }
 
-type BackgroundRequestIsBackgroundScriptReady = {
-  type: "isBackgroundScriptReady"
-}
+// type BackgroundRequestIsBackgroundScriptReady = {
+//   type: "isBackgroundScriptReady"
+// }
 
-type BackgroundRequestGetActiveConnections = {
-  type: "getActiveConnections"
-}
+// type BackgroundRequestGetActiveConnections = {
+//   type: "getActiveConnections"
+// }
 
-type BackgroundRequestDisconnect = {
-  type: "disconnect"
-  tabId: number
-  genesisHash: string
-}
+// type BackgroundRequestDisconnect = {
+//   type: "disconnect"
+//   tabId: number
+//   genesisHash: string
+// }
 
-type BackgroundRequestSetBootNodes = {
-  type: "setBootNodes"
-  genesisHash: string
-  bootNodes: string[]
-}
+// type BackgroundRequestSetBootNodes = {
+//   type: "setBootNodes"
+//   genesisHash: string
+//   bootNodes: string[]
+// }
 
 export type BackgroundResponse = Message<
   "@substrate/light-client-extension-helper-context-background",
   | BackgroundResponseGetChain
-  | BackgroundResponseDeleteChain
-  | BackgroundResponsePersistChain
+  // | BackgroundResponseDeleteChain
+  // | BackgroundResponsePersistChain
   | BackgroundResponseGetChains
-  | BackgroundResponseGetActiveConnections
-  | BackgroundResponseDisconnect
-  | BackgroundResponseSetBootNodes
-  | BackgroundResponseIsBackgroundScriptReady
+  // | BackgroundResponseGetActiveConnections
+  // | BackgroundResponseDisconnect
+  // | BackgroundResponseSetBootNodes
+  // | BackgroundResponseIsBackgroundScriptReady
 >
 
 type BackgroundResponseGetChain = {
@@ -142,45 +140,45 @@ type BackgroundResponseGetChain = {
   }
 }
 
-type BackgroundResponseDeleteChain = {
-  type: "deleteChainResponse"
-}
+// type BackgroundResponseDeleteChain = {
+//   type: "deleteChainResponse"
+// }
 
-type BackgroundResponsePersistChain = {
-  type: "persistChainResponse"
-}
+// type BackgroundResponsePersistChain = {
+//   type: "persistChainResponse"
+// }
 
 type BackgroundResponseGetChains = {
   type: "getChainsResponse"
   chains: Record<string, { genesisHash: string; name: string }>
 }
 
-type BackgroundResponseGetActiveConnections = {
-  type: "getActiveConnectionsResponse"
-  connections: {
-    tabId: number
-    chain: {
-      genesisHash: string
-      chainSpec: string
-      relayChainGenesisHash?: string
-      name: string
-      ss58Format: number
-      bootNodes: Array<string>
-    }
-  }[]
-}
+// type BackgroundResponseGetActiveConnections = {
+//   type: "getActiveConnectionsResponse"
+//   connections: {
+//     tabId: number
+//     chain: {
+//       genesisHash: string
+//       chainSpec: string
+//       relayChainGenesisHash?: string
+//       name: string
+//       ss58Format: number
+//       bootNodes: Array<string>
+//     }
+//   }[]
+// }
 
-type BackgroundResponseDisconnect = {
-  type: "disconnectResponse"
-}
+// type BackgroundResponseDisconnect = {
+//   type: "disconnectResponse"
+// }
 
-type BackgroundResponseSetBootNodes = {
-  type: "setBootNodesResponse"
-}
+// type BackgroundResponseSetBootNodes = {
+//   type: "setBootNodesResponse"
+// }
 
-type BackgroundResponseIsBackgroundScriptReady = {
-  type: "isBackgroundScriptReadyResponse"
-}
+// type BackgroundResponseIsBackgroundScriptReady = {
+//   type: "isBackgroundScriptReadyResponse"
+// }
 
 export type BackgroundResponseError = Message<
   "@substrate/light-client-extension-helper-context-background",
