@@ -83,34 +83,27 @@ export const register = (channelId: string) => {
         handleExtensionError("Cannot connect to extension", origin)
         return
       }
-      rpc = createRpc<BackgroundRpcHandlers>((message) =>
-        port!.postMessage(message),
-      )
-      port.onMessage.addListener(
-        (
-          msg: ToPage,
-          // | ToContent
-        ) => {
-          rpc!.handle(msg as any)
-          if (
-            msg.origin === "substrate-connect-extension" &&
-            msg.type === "error"
-          )
-            chainIds.delete(msg.chainId)
-          // else if (
-          //   msg.origin === CONTEXT.BACKGROUND &&
-          //   msg.type === "keep-alive-ack"
-          // )
-          //   return
-          postToPage(msg, origin)
-        },
+      port.onMessage.addListener((msg: ToPage) => {
+        if (
+          msg.origin === "substrate-connect-extension" &&
+          msg.type === "error"
+        )
+          chainIds.delete(msg.chainId)
+
+        postToPage(
+          // @ts-expect-error
+          {
+            ...msg,
+            origin: msg.origin ?? CONTEXT.CONTENT_SCRIPT,
+          },
+          origin,
+        )
+      })
+      rpc = createRpc<BackgroundRpcHandlers>(
+        (message) => port?.postMessage(message),
       )
       const keepAliveInterval = setInterval(() => {
         if (!port || !rpc) return
-        // portPostMessage(port, {
-        //   origin: CONTEXT.CONTENT_SCRIPT,
-        //   type: "keep-alive",
-        // })
         rpc.notify("keepAlive", [])
       }, KEEP_ALIVE_INTERVAL)
       port.onDisconnect.addListener(() => {
@@ -119,63 +112,6 @@ export const register = (channelId: string) => {
         clearInterval(keepAliveInterval)
         handleExtensionError("Disconnected from extension", origin)
       })
-    }
-
-    // FIXME: use better types
-    if (!rpc) throw new Error("no rpc")
-
-    await rpc.call("isBackgroundScriptReady", [])
-
-    // TODO: revisit when 2 webpage helper send message with same id
-    if (msg.origin === CONTEXT.WEB_PAGE) {
-      try {
-        switch (msg.type) {
-          case "getChain": {
-            postToPage(
-              {
-                origin: CONTEXT.CONTENT_SCRIPT,
-                type: "getChainResponse",
-                id: msg.id,
-                chain: await rpc.call("getChain", [
-                  msg.chainSpec,
-                  msg.relayChainGenesisHash,
-                ]),
-              },
-              origin,
-            )
-            break
-          }
-          case "getChains": {
-            postToPage(
-              {
-                origin: CONTEXT.CONTENT_SCRIPT,
-                type: "getChainsResponse",
-                id: msg.id,
-                chains: await rpc.call("getChains", []),
-              },
-              origin,
-            )
-            break
-          }
-          default: {
-            const unrecognizedMsg: never = msg
-            console.warn("Unrecognized message", unrecognizedMsg)
-            break
-          }
-        }
-      } catch (error) {
-        postToPage(
-          {
-            origin: CONTEXT.CONTENT_SCRIPT,
-            type: "error",
-            id: msg.id,
-            error: error instanceof Error ? error.toString() : "Unknown error",
-          },
-          origin,
-        )
-      }
-
-      return
     }
 
     portPostMessage(port, msg)
@@ -200,6 +136,7 @@ export const register = (channelId: string) => {
     CONTEXT.BACKGROUND,
     "substrate-connect-extension",
   ])
+  // TODO: try to handle in chrome.runtime.connect.onMessage
   chrome.runtime.onMessage.addListener((msg) => {
     if (!isBackgroundHelperMessage(msg)) return
     if (msg.origin === "substrate-connect-extension" && msg.type === "error")
