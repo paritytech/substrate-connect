@@ -1,3 +1,4 @@
+import type { BackgroundRpcHandlers } from "@/background/types"
 import type {
   PostMessage,
   ToBackground,
@@ -10,7 +11,7 @@ import {
   KEEP_ALIVE_INTERVAL,
   PORT,
   createIsHelperMessage,
-  sendBackgroundRequest,
+  createRpc,
 } from "@/shared"
 
 let isRegistered = false
@@ -65,6 +66,7 @@ export const register = (channelId: string) => {
   }
 
   let port: chrome.runtime.Port | undefined
+  let rpc: ReturnType<typeof createRpc<BackgroundRpcHandlers>> | undefined
   window.addEventListener("message", async ({ data, source, origin }) => {
     if (source !== window || !data) return
     const { channelId: msgChannelId, msg } = data
@@ -72,24 +74,78 @@ export const register = (channelId: string) => {
     if (!isWebPageHelperMessage(msg)) return
 
     await whenActivated
-    await sendBackgroundRequest({
-      origin: CONTEXT.CONTENT_SCRIPT,
-      type: "isBackgroundScriptReady",
-    })
 
+    if (!port) {
+      try {
+        port = chrome.runtime.connect({ name: PORT.CONTENT_SCRIPT })
+      } catch (error) {
+        handleExtensionError("Cannot connect to extension", origin)
+        return
+      }
+      rpc = createRpc<BackgroundRpcHandlers>((message) =>
+        port!.postMessage(message),
+      )
+      port.onMessage.addListener((msg: ToPage | ToContent) => {
+        rpc!.handle(msg as any)
+        if (
+          msg.origin === "substrate-connect-extension" &&
+          msg.type === "error"
+        )
+          chainIds.delete(msg.chainId)
+        else if (
+          msg.origin === CONTEXT.BACKGROUND &&
+          msg.type === "keep-alive-ack"
+        )
+          return
+        postToPage(msg, origin)
+      })
+      const keepAliveInterval = setInterval(() => {
+        if (!port || !rpc) return
+        // portPostMessage(port, {
+        //   origin: CONTEXT.CONTENT_SCRIPT,
+        //   type: "keep-alive",
+        // })
+        rpc.notify("keepAlive", [])
+      }, KEEP_ALIVE_INTERVAL)
+      port.onDisconnect.addListener(() => {
+        port = undefined
+        rpc = undefined
+        clearInterval(keepAliveInterval)
+        handleExtensionError("Disconnected from extension", origin)
+      })
+    }
+
+    // FIXME: use better types
+    if (!rpc) throw new Error("no rpc")
+
+    await rpc.call("isBackgroundScriptReady", [])
+
+    // TODO: revisit when 2 webpage helper send message with same id
     if (msg.origin === CONTEXT.WEB_PAGE) {
       try {
         switch (msg.type) {
-          case "getChain":
+          case "getChain": {
+            postToPage(
+              {
+                origin: CONTEXT.CONTENT_SCRIPT,
+                type: "getChainResponse",
+                id: msg.id,
+                chain: await rpc.call("getChain", [
+                  msg.chainSpec,
+                  msg.relayChainGenesisHash,
+                ]),
+              },
+              origin,
+            )
+            break
+          }
           case "getChains": {
             postToPage(
               {
-                ...(await sendBackgroundRequest({
-                  ...msg,
-                  origin: CONTEXT.CONTENT_SCRIPT,
-                })),
                 origin: CONTEXT.CONTENT_SCRIPT,
+                type: "getChainsResponse",
                 id: msg.id,
+                chains: await rpc.call("getChains", []),
               },
               origin,
             )
@@ -114,42 +170,6 @@ export const register = (channelId: string) => {
       }
 
       return
-    }
-
-    if (!port) {
-      try {
-        port = chrome.runtime.connect({ name: PORT.CONTENT_SCRIPT })
-      } catch (error) {
-        handleExtensionError("Cannot connect to extension", origin)
-        return
-      }
-      port.onMessage.addListener((msg: ToPage | ToContent) => {
-        if (
-          msg.origin === "substrate-connect-extension" &&
-          msg.type === "error"
-        )
-          chainIds.delete(msg.chainId)
-        else if (
-          msg.origin === CONTEXT.BACKGROUND &&
-          msg.type === "keep-alive-ack"
-        )
-          return
-        postToPage(msg, origin)
-      })
-      const keepAliveInterval = setInterval(
-        () =>
-          port &&
-          portPostMessage(port, {
-            origin: CONTEXT.CONTENT_SCRIPT,
-            type: "keep-alive",
-          }),
-        KEEP_ALIVE_INTERVAL,
-      )
-      port.onDisconnect.addListener(() => {
-        port = undefined
-        clearInterval(keepAliveInterval)
-        handleExtensionError("Disconnected from extension", origin)
-      })
     }
 
     portPostMessage(port, msg)

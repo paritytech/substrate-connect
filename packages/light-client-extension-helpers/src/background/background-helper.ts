@@ -17,18 +17,17 @@ import type {
   AddOnAddChainByUserListener,
   LightClientPageHelper,
   PageChain,
+  BackgroundRpcHandlers,
 } from "./types"
 import { smoldotProvider } from "./smoldot-provider"
-import type {
-  BackgroundRequest,
-  BackgroundResponse,
-  BackgroundResponseError,
-  ToBackground,
-  ToContent,
-  ToExtension,
-  ToPage,
-} from "@/protocol"
-import { ALARM, CONTEXT, PORT, createIsHelperMessage } from "@/shared"
+import type { ToBackground, ToContent, ToExtension, ToPage } from "@/protocol"
+import {
+  ALARM,
+  CONTEXT,
+  PORT,
+  createIsHelperMessage,
+  createRpc,
+} from "@/shared"
 import * as storage from "@/storage"
 
 export type * from "./types"
@@ -317,6 +316,77 @@ export const register = ({
       message: (ToPage & { origin: "substrate-connect-extension" }) | ToContent,
     ) => port.postMessage(message)
 
+    const handlers: BackgroundRpcHandlers = {
+      //#region content-script RPCs
+      keepAlive() {},
+      async isBackgroundScriptReady() {
+        await initialized.finally()
+        return true
+      },
+      async getChain(chainSpec, relayChainGenesisHash) {
+        const tabId = port.sender?.tab?.id
+        if (!tabId) throw new Error("Undefined tabId")
+
+        const chains = await storage.getChains()
+
+        if (relayChainGenesisHash && !chains[relayChainGenesisHash])
+          throw new Error(
+            `Unknown relayChainGenesisHash ${relayChainGenesisHash}`,
+          )
+        const { genesisHash, name } = await getChainData({
+          smoldotClient,
+          chainSpec,
+          relayChainGenesisHash,
+        })
+
+        if (chains[genesisHash]) return chains[genesisHash]
+
+        const chain = {
+          genesisHash,
+          name,
+          chainSpec,
+          relayChainGenesisHash,
+        }
+
+        await addChainByUserListener?.(chain, tabId)
+
+        return chain
+      },
+      getChains() {
+        return storage.getChains()
+      },
+      //#endregion
+      // FIXME: do not allow content-script to call ExtensionPage RPCs
+      //#region ExtensionPage RPCs
+      deleteChain(genesisHash) {
+        return lightClientPageHelper.deleteChain(genesisHash)
+      },
+      persistChain(chainSpec, relayChainGenesisHash) {
+        return lightClientPageHelper.persistChain(
+          chainSpec,
+          relayChainGenesisHash,
+        )
+      },
+      async getActiveConnections() {
+        return (await lightClientPageHelper.getActiveConnections()).map(
+          ({ tabId, chain: { provider, ...chain } }) => ({
+            tabId,
+            chain,
+          }),
+        )
+      },
+      disconnect(tabId, genesisHash) {
+        return lightClientPageHelper.disconnect(tabId, genesisHash)
+      },
+      setBootNodes(genesisHash, bootNodes) {
+        return lightClientPageHelper.setBootNodes(genesisHash, bootNodes)
+      },
+      //#endregion
+    }
+
+    const rpc = createRpc((message) => port.postMessage(message), handlers)
+    const handleInternalRpcMessage = (message: any) => rpc.handle(message)
+
     let isPortDisconnected = false
     port.onDisconnect.addListener(() => {
       isPortDisconnected = true
@@ -334,14 +404,9 @@ export const register = ({
 
     const pendingAddChains: Record<string, boolean> = {}
     port.onMessage.addListener(async (msg) => {
+      handleInternalRpcMessage(msg)
       if (!isSubstrateConnectOrContentMessage(msg)) return
       switch (msg.type) {
-        case "keep-alive": {
-          return postMessage({
-            origin: CONTEXT.BACKGROUND,
-            type: "keep-alive-ack",
-          })
-        }
         case "add-well-known-chain":
         case "add-chain": {
           activeChains[tabId] ??= {}
@@ -525,6 +590,10 @@ export const register = ({
 
           break
         }
+        case "keep-alive": {
+          console.warn("Unrecognized message", msg)
+          break
+        }
         default: {
           const unrecognizedMsg: never = msg
           console.warn("Unrecognized message", unrecognizedMsg)
@@ -545,155 +614,6 @@ export const register = ({
       throw new Error("addChainByUserCallback is already set")
     addChainByUserListener = onAddChainByUser
   }
-
-  const isHelperMessage = createIsHelperMessage<BackgroundRequest>([
-    CONTEXT.CONTENT_SCRIPT,
-    CONTEXT.EXTENSION_PAGE,
-  ])
-  chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (!isHelperMessage(msg)) return
-    switch (msg.type) {
-      case "isBackgroundScriptReady":
-        initialized.finally(() =>
-          sendBackgroundResponse(sendResponse, {
-            origin: CONTEXT.BACKGROUND,
-            type: "isBackgroundScriptReadyResponse",
-          }),
-        )
-        return true
-      case "getChain": {
-        ;(async () => {
-          const tabId = sender?.tab?.id
-          if (!tabId) return
-          try {
-            const chains = await storage.getChains()
-            const { chainSpec, relayChainGenesisHash } = msg
-            if (relayChainGenesisHash && !chains[relayChainGenesisHash])
-              throw new Error(
-                `Unknown relayChainGenesisHash ${relayChainGenesisHash}`,
-              )
-            const { genesisHash, name } = await getChainData({
-              smoldotClient,
-              chainSpec,
-              relayChainGenesisHash,
-            })
-
-            if (chains[genesisHash]) {
-              return sendBackgroundResponse(sendResponse, {
-                origin: CONTEXT.BACKGROUND,
-                type: "getChainResponse",
-                chain: chains[genesisHash],
-              })
-            }
-
-            const chain = {
-              genesisHash,
-              name,
-              chainSpec,
-              relayChainGenesisHash,
-            }
-
-            await addChainByUserListener?.(chain, tabId)
-
-            sendBackgroundResponse(sendResponse, {
-              origin: CONTEXT.BACKGROUND,
-              type: "getChainResponse",
-              chain,
-            })
-          } catch (error) {
-            console.error("background addChain error", error)
-            sendBackgroundErrorResponse(sendResponse, error)
-          }
-        })()
-        return true
-      }
-      case "deleteChain": {
-        lightClientPageHelper
-          .deleteChain(msg.genesisHash)
-          .then(() =>
-            sendBackgroundResponse(sendResponse, {
-              origin: CONTEXT.BACKGROUND,
-              type: "deleteChainResponse",
-            }),
-          )
-          .catch(handleBackgroundErrorResponse(sendResponse))
-        return true
-      }
-      case "persistChain": {
-        lightClientPageHelper
-          .persistChain(msg.chainSpec, msg.relayChainGenesisHash)
-          .then(() =>
-            sendBackgroundResponse(sendResponse, {
-              origin: CONTEXT.BACKGROUND,
-              type: "persistChainResponse",
-            }),
-          )
-          .catch(handleBackgroundErrorResponse(sendResponse))
-        return true
-      }
-      case "getChains": {
-        storage
-          .getChains()
-          .then((chains) => {
-            sendBackgroundResponse(sendResponse, {
-              origin: CONTEXT.BACKGROUND,
-              type: "getChainsResponse",
-              chains,
-            })
-          })
-          .catch(handleBackgroundErrorResponse(sendResponse))
-        return true
-      }
-      case "getActiveConnections": {
-        lightClientPageHelper
-          .getActiveConnections()
-          .then((connections) =>
-            sendBackgroundResponse(sendResponse, {
-              origin: CONTEXT.BACKGROUND,
-              type: "getActiveConnectionsResponse",
-              connections: connections.map(
-                ({ tabId, chain: { provider, ...chain } }) => ({
-                  tabId,
-                  chain,
-                }),
-              ),
-            }),
-          )
-          .catch(handleBackgroundErrorResponse(sendResponse))
-        return true
-      }
-      case "disconnect": {
-        lightClientPageHelper
-          .disconnect(msg.tabId, msg.genesisHash)
-          .then(() =>
-            sendBackgroundResponse(sendResponse, {
-              origin: CONTEXT.BACKGROUND,
-              type: "disconnectResponse",
-            }),
-          )
-          .catch(handleBackgroundErrorResponse(sendResponse))
-        return true
-      }
-      case "setBootNodes": {
-        lightClientPageHelper
-          .setBootNodes(msg.genesisHash, msg.bootNodes)
-          .then(() =>
-            sendBackgroundResponse(sendResponse, {
-              origin: CONTEXT.BACKGROUND,
-              type: "setBootNodesResponse",
-            }),
-          )
-          .catch(handleBackgroundErrorResponse(sendResponse))
-        return true
-      }
-      default: {
-        const unrecognizedMsg: never = msg
-        console.warn("Unrecognized message", unrecognizedMsg)
-        break
-      }
-    }
-    return
-  })
 
   const removeChain = (tabId: number, chainId: string) => {
     const chain = activeChains?.[tabId]?.[chainId]?.chain
@@ -827,32 +747,6 @@ const getFinalizedDatabase = withClientChainHead$(
 const awaitFinalized = withClientChainHead$(({ finalized$ }) =>
   firstValueFrom(finalized$),
 )
-
-const sendBackgroundResponse = <
-  T extends BackgroundResponse | BackgroundResponseError,
->(
-  sendResponse: (msg: any) => void,
-  msg: T,
-) => sendResponse(msg)
-
-const sendBackgroundErrorResponse = (
-  sendResponse: (msg: any) => void,
-  error: Error | string | unknown,
-) =>
-  sendBackgroundResponse(sendResponse, {
-    origin: CONTEXT.BACKGROUND,
-    type: "error",
-    error:
-      error instanceof Error
-        ? error.toString()
-        : typeof error === "string"
-          ? error
-          : "Unknown error getting chain data",
-  })
-
-const handleBackgroundErrorResponse =
-  (sendResponse: (msg: any) => void) => (error: Error | string | unknown) =>
-    sendBackgroundErrorResponse(sendResponse, error)
 
 const substrateClientRequest = <T>(
   client: SubstrateClient,

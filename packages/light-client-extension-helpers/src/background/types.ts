@@ -36,3 +36,33 @@ export interface PageChain {
   bootNodes: Array<string>
   provider: ConnectProvider
 }
+
+export type BackgroundRpcHandlers = {
+  keepAlive(): void
+  isBackgroundScriptReady(): Promise<boolean>
+  getChain(
+    chainSpec: string,
+    relayChainGenesisHash?: string,
+  ): Promise<{
+    genesisHash: string
+    name: string
+  }>
+  getChains(): Promise<Record<string, { genesisHash: string; name: string }>>
+  deleteChain(genesisHash: string): Promise<void>
+  persistChain(chainSpec: string, relayChainGenesisHash?: string): Promise<void>
+  getActiveConnections(): Promise<
+    Array<{
+      tabId: number
+      chain: {
+        genesisHash: string
+        chainSpec: string
+        relayChainGenesisHash?: string
+        name: string
+        ss58Format: number
+        bootNodes: Array<string>
+      }
+    }>
+  >
+  disconnect(tabId: number, genesisHash: string): void
+  setBootNodes(genesisHash: string, bootNodes: string[]): Promise<void>
+}

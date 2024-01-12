@@ -58,13 +58,18 @@ export const createRpc = <THandlers extends Handlers>(
               error: {
                 code: -32603,
                 message:
-                  error instanceof Error ? error.toString() : "Unknown error",
+                  error instanceof Error
+                    ? error.toString()
+                    : typeof error === "string"
+                      ? error
+                      : "Unknown error",
               },
             })
         }
-      } else if ("result" in message || "error" in message) {
+      } else if ("id" in message) {
         const { id } = message
-        if (!pending.has(id)) return
+        if (!pending.has(id))
+          return console.assert(false, "Unknown message", message)
         const { resolve, reject } = pending.get(id)!
         pending.delete(id)
         if ("error" in message) return reject(message.error)
@@ -77,6 +82,4 @@ export const createRpc = <THandlers extends Handlers>(
 }
 
 const isRpcMessage = (message: any): message is RpcMessage =>
-  typeof message === "object" &&
-  ("method" in message ||
-    ("id" in message && ("result" in message || "error" in message)))
+  typeof message === "object" && ("method" in message || "id" in message)
