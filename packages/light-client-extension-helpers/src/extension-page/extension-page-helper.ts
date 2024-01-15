@@ -16,10 +16,10 @@ port.onMessage.addListener(rpc.handle)
 
 export const helper: LightClientPageHelper = {
   async deleteChain(genesisHash) {
-    await rpc.call("deleteChain", [genesisHash])
+    await rpc.request("deleteChain", [genesisHash])
   },
   async persistChain(chainSpec, relayChainGenesisHash) {
-    await rpc.call("persistChain", [chainSpec, relayChainGenesisHash])
+    await rpc.request("persistChain", [chainSpec, relayChainGenesisHash])
   },
   async getChains() {
     return Promise.all(
@@ -48,7 +48,7 @@ export const helper: LightClientPageHelper = {
     )
   },
   async getActiveConnections() {
-    const connections = await rpc.call("getActiveConnections", [])
+    const connections = await rpc.request("getActiveConnections", [])
     return connections.map(({ tabId, chain }) => ({
       tabId,
       chain: {
@@ -73,9 +73,9 @@ export const helper: LightClientPageHelper = {
     }))
   },
   async disconnect(tabId: number, genesisHash: string) {
-    await rpc.call("disconnect", [tabId, genesisHash])
+    await rpc.request("disconnect", [tabId, genesisHash])
   },
   async setBootNodes(genesisHash, bootNodes) {
-    await rpc.call("setBootNodes", [genesisHash, bootNodes])
+    await rpc.request("setBootNodes", [genesisHash, bootNodes])
   },
 }

@@ -70,13 +70,13 @@ export const getLightClientProvider = async (
   })
 
   // FIXME: rename isBackgroundScriptReady
-  await rpc.call("isBackgroundScriptReady", [])
+  // await rpc.call("isBackgroundScriptReady", [])
 
-  let chains = await rpc.call("getChains", [])
+  let chains = await rpc.request("getChains", [])
   chainsChangeCallbacks.push((chains_) => (chains = chains_))
   return {
     async getChain(chainSpec, relayChainGenesisHash) {
-      const chainInfo = await rpc.call("getChain", [
+      const chainInfo = await rpc.request("getChain", [
         chainSpec,
         relayChainGenesisHash,
       ])

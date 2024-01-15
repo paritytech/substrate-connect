@@ -18,7 +18,7 @@ export const createRpc = <THandlers extends Handlers>(
     { resolve: (r: any) => void; reject: (e: any) => void }
   >()
   return {
-    call<
+    request<
       TMethod extends string & keyof THandlers,
       TParams extends Parameters<THandlers[TMethod]>,
       TReturn extends Awaited<ReturnType<THandlers[TMethod]>>,
@@ -81,5 +81,12 @@ export const createRpc = <THandlers extends Handlers>(
   }
 }
 
-const isRpcMessage = (message: any): message is RpcMessage =>
+export type Rpc<T extends Handlers = any> = ReturnType<typeof createRpc<T>>
+
+export const isRpcMessage = (message: any): message is RpcMessage =>
   typeof message === "object" && ("method" in message || "id" in message)
+
+export const isRpcRequestMessage = (
+  message: any,
+): message is RpcMessage & { method: string } =>
+  isRpcMessage(message) && "method" in message
