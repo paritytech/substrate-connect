@@ -29,7 +29,8 @@ import {
   createRpc,
 } from "@/shared"
 import * as storage from "@/storage"
-import { WebPageRpcHandlers } from "@/web-page/types"
+import type { WebPageRpcHandlers } from "@/web-page/types"
+import type { ContentScriptRpcHandlers } from "@/content-script/types"
 
 export type * from "./types"
 
@@ -386,7 +387,7 @@ export const register = ({
       //#endregion
     }
 
-    const rpc = createRpc<WebPageRpcHandlers>(
+    const rpc = createRpc<WebPageRpcHandlers & ContentScriptRpcHandlers>(
       (message) =>
         postMessage(
           // @ts-expect-error
@@ -399,6 +400,8 @@ export const register = ({
     const unsubscribeOnChainsChanged = storage.onChainsChanged((chains) =>
       rpc.notify("onAddChains", [chains]),
     )
+
+    initialized.finally(() => rpc.notify("onReady", []))
 
     let isPortDisconnected = false
     port.onDisconnect.addListener(() => {

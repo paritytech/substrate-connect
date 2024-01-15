@@ -12,7 +12,9 @@ import {
   PORT,
   createIsHelperMessage,
   createRpc,
+  isRpcRequestMessage,
 } from "@/shared"
+import { ContentScriptRpcHandlers } from "./types"
 
 let isRegistered = false
 export const register = (channelId: string) => {
@@ -68,6 +70,8 @@ export const register = (channelId: string) => {
 
   let port: chrome.runtime.Port | undefined
   let rpc: ReturnType<typeof createRpc<BackgroundRpcHandlers>> | undefined
+  let isReady: Promise<void> | undefined
+  let resolveIsReady: () => void
   window.addEventListener("message", async ({ data, source, origin }) => {
     if (source !== window || !data) return
     const { channelId: msgChannelId, msg } = data
@@ -75,6 +79,11 @@ export const register = (channelId: string) => {
     if (!isWebPageHelperMessage(msg)) return
 
     await whenActivated
+
+    if (!isReady)
+      isReady = new Promise<void>((resolve) => {
+        resolveIsReady = resolve
+      })
 
     if (!port) {
       try {
@@ -90,6 +99,9 @@ export const register = (channelId: string) => {
         )
           chainIds.delete(msg.chainId)
 
+        if (isRpcRequestMessage(msg) && msg.method === "onReady")
+          return rpc?.handle(msg)
+
         postToPage(
           // @ts-expect-error
           {
@@ -99,8 +111,14 @@ export const register = (channelId: string) => {
           origin,
         )
       })
+      const handlers: ContentScriptRpcHandlers = {
+        onReady() {
+          resolveIsReady()
+        },
+      }
       rpc = createRpc<BackgroundRpcHandlers>(
         (message) => port?.postMessage(message),
+        handlers,
       )
       const keepAliveInterval = setInterval(() => {
         if (!port || !rpc) return
@@ -113,6 +131,8 @@ export const register = (channelId: string) => {
         handleExtensionError("Disconnected from extension", origin)
       })
     }
+
+    await isReady
 
     portPostMessage(port, msg)
 
