@@ -15,8 +15,8 @@ importers:
         specifier: ^0.0.256
         version: 0.0.256
       '@types/node':
-        specifier: ^20.11.0
-        version: 20.11.0
+        specifier: ^20.11.4
+        version: 20.11.4
       '@types/qrcode.react':
         specifier: ^1.0.5
         version: 1.0.5
@@ -128,7 +128,7 @@ importers:
         version: 0.4.5(eslint@8.56.0)
       vite:
         specifier: ^4.4.5
-        version: 4.5.1(@types/node@20.11.0)
+        version: 4.5.1(@types/node@20.11.4)
 
   examples/light-client-extension-helpers-extension:
     dependencies:
@@ -149,8 +149,8 @@ importers:
         specifier: ^0.0.256
         version: 0.0.256
       '@types/node':
-        specifier: ^20.11.0
-        version: 20.11.0
+        specifier: ^20.11.4
+        version: 20.11.4
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
@@ -181,7 +181,7 @@ importers:
         version: 23.2.0
       vitest:
         specifier: ^1.1.3
-        version: 1.1.3(@types/node@20.11.0)(jsdom@23.2.0)
+        version: 1.1.3(@types/node@20.11.4)(jsdom@23.2.0)
 
   packages/connect-extension-protocol:
     devDependencies:
@@ -297,7 +297,7 @@ importers:
         version: 8.56.0
       vite:
         specifier: ^4.5.0
-        version: 4.5.1(@types/node@20.11.0)
+        version: 4.5.1(@types/node@20.11.4)
       vite-plugin-html:
         specifier: ^3.2.0
         version: 3.2.1(vite@4.5.1)
@@ -325,7 +325,7 @@ importers:
         version: 8.56.0
       vite:
         specifier: ^4.5.0
-        version: 4.5.1(@types/node@20.11.0)
+        version: 4.5.1(@types/node@20.11.4)
       vite-plugin-html:
         specifier: ^3.2.0
         version: 3.2.1(vite@4.5.1)
@@ -392,7 +392,7 @@ importers:
         version: 3.4.1
       vite:
         specifier: ^4.5.0
-        version: 4.5.1(@types/node@20.11.0)
+        version: 4.5.1(@types/node@20.11.4)
       web-ext:
         specifier: ^7.10.0
         version: 7.10.0
@@ -3612,7 +3612,7 @@ packages:
   /@types/bn.js@5.1.5:
     resolution: {integrity: sha512-V46N0zwKRF5Q00AZ6hWtN0T8gGmDUaUzLWQvHFo5yThtVwK/VCenFY3wXVbOvNfajEpsTfQM4IN9k/d6gUVX3A==}
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.4
     dev: false
 
   /@types/chrome@0.0.256:
@@ -3660,8 +3660,8 @@ packages:
     resolution: {integrity: sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==}
     dev: true
 
-  /@types/node@20.11.0:
-    resolution: {integrity: sha512-o9bjXmDNcF7GbM4CNQpmi+TutCgap/K3w1JyKgxAjqx41zp9qlIAVFi0IhCNsJcXolEqLWhbFbEeL0PvYm4pcQ==}
+  /@types/node@20.11.4:
+    resolution: {integrity: sha512-6I0fMH8Aoy2lOejL3s4LhyIYX34DPwY8bl5xlNjBvUEk8OHrcuzsFt+Ied4LvJihbtXPM+8zUqdydfIti86v9g==}
     dependencies:
       undici-types: 5.26.5
 
@@ -3726,7 +3726,7 @@ packages:
   /@types/yauzl@2.10.3:
     resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.4
     dev: true
 
   /@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.56.0)(typescript@5.3.3):
@@ -4018,7 +4018,7 @@ packages:
       vite: ^4 || ^5
     dependencies:
       '@swc/core': 1.3.102
-      vite: 4.5.1(@types/node@20.11.0)
+      vite: 4.5.1(@types/node@20.11.4)
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: true
@@ -4034,7 +4034,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.7)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.0
-      vite: 4.5.1(@types/node@20.11.0)
+      vite: 4.5.1(@types/node@20.11.4)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4734,7 +4734,7 @@ packages:
   /canvas-renderer@2.2.1:
     resolution: {integrity: sha512-RrBgVL5qCEDIXpJ6NrzyRNoTnXxYarqm/cS/W6ERhUJts5UQtt/XPEosGN3rqUkZ4fjBArlnCbsISJ+KCFnIAg==}
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.4
     dev: false
 
   /caseless@0.12.0:
@@ -4826,7 +4826,7 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.4
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -10166,7 +10166,7 @@ packages:
       extsprintf: 1.3.0
     dev: true
 
-  /vite-node@1.1.3(@types/node@20.11.0):
+  /vite-node@1.1.3(@types/node@20.11.4):
     resolution: {integrity: sha512-BLSO72YAkIUuNrOx+8uznYICJfTEbvBAmWClY3hpath5+h1mbPS5OMn42lrTxXuyCazVyZoDkSRnju78GiVCqA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -10175,7 +10175,7 @@ packages:
       debug: 4.3.4(supports-color@5.5.0)
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 5.0.11(@types/node@20.11.0)
+      vite: 5.0.11(@types/node@20.11.4)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -10204,10 +10204,10 @@ packages:
       html-minifier-terser: 6.1.0
       node-html-parser: 5.4.2
       pathe: 0.2.0
-      vite: 4.5.1(@types/node@20.11.0)
+      vite: 4.5.1(@types/node@20.11.4)
     dev: true
 
-  /vite@4.5.1(@types/node@20.11.0):
+  /vite@4.5.1(@types/node@20.11.4):
     resolution: {integrity: sha512-AXXFaAJ8yebyqzoNB9fu2pHoo/nWX+xZlaRwoeYUxEqBO+Zj4msE5G+BhGBll9lYEKv9Hfks52PAF2X7qDYXQA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -10235,7 +10235,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.4
       esbuild: 0.18.20
       postcss: 8.4.32
       rollup: 3.29.4
@@ -10243,7 +10243,7 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vite@5.0.11(@types/node@20.11.0):
+  /vite@5.0.11(@types/node@20.11.4):
     resolution: {integrity: sha512-XBMnDjZcNAw/G1gEiskiM1v6yzM4GE5aMGvhWTlHAYYhxb7S3/V1s3m2LDHa8Vh6yIWYYB0iJwsEaS523c4oYA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -10271,7 +10271,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.4
       esbuild: 0.19.11
       postcss: 8.4.33
       rollup: 4.9.2
@@ -10279,7 +10279,7 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vitest@1.1.3(@types/node@20.11.0)(jsdom@23.2.0):
+  /vitest@1.1.3(@types/node@20.11.4)(jsdom@23.2.0):
     resolution: {integrity: sha512-2l8om1NOkiA90/Y207PsEvJLYygddsOyr81wLQ20Ra8IlLKbyQncWsGZjnbkyG2KwwuTXLQjEPOJuxGMG8qJBQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -10304,7 +10304,7 @@ packages:
       jsdom:
         optional: true
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.4
       '@vitest/expect': 1.1.3
       '@vitest/runner': 1.1.3
       '@vitest/snapshot': 1.1.3
@@ -10324,8 +10324,8 @@ packages:
       strip-literal: 1.3.0
       tinybench: 2.5.1
       tinypool: 0.8.1
-      vite: 5.0.11(@types/node@20.11.0)
-      vite-node: 1.1.3(@types/node@20.11.0)
+      vite: 5.0.11(@types/node@20.11.4)
+      vite-node: 1.1.3(@types/node@20.11.4)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less

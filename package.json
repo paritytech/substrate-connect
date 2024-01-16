@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@types/chrome": "^0.0.256",
-    "@types/node": "^20.11.0",
+    "@types/node": "^20.11.4",
     "@types/qrcode.react": "^1.0.5",
     "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.15",
