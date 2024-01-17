@@ -1,4 +1,4 @@
-type RpcMessage =
+export type RpcMessage =
   | { id?: string; method: string; params?: any[] }
   | { id: string; result: any }
   | {

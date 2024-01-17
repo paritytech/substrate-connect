@@ -1,20 +1,17 @@
+import type { ToExtension } from "@substrate/connect-extension-protocol"
+import type { ToApplicationMessage } from "@/protocol"
 import type { BackgroundRpcHandlers } from "@/background/types"
-import type {
-  PostMessage,
-  // ToBackground,
-  // ToContent,
-  ToExtension,
-  ToPage,
-} from "@/protocol"
 import {
   CONTEXT,
   KEEP_ALIVE_INTERVAL,
   PORT,
-  createIsHelperMessage,
+  Rpc,
+  RpcMessage,
   createRpc,
-  isRpcRequestMessage,
+  isRpcMessageWithOrigin,
+  isSubstrateConnectToApplicationMessage,
+  isSubstrateConnectToExtensionMessage,
 } from "@/shared"
-import { ContentScriptRpcHandlers } from "./types"
 
 let isRegistered = false
 export const register = (channelId: string) => {
@@ -33,134 +30,122 @@ export const register = (channelId: string) => {
     }
   })
 
-  const postToPage = (msg: ToPage, targetOrigin: string) => {
-    window.postMessage({ channelId, msg } as PostMessage<ToPage>, targetOrigin)
-  }
-
-  const validWebPageOrigins = [CONTEXT.WEB_PAGE, "substrate-connect-client"]
-  const isWebPageHelperMessage = (msg: any): msg is ToExtension => {
-    if (!msg) return false
-    if (!validWebPageOrigins.includes(msg?.origin)) return false
-    if (!msg?.type && !msg?.id) return false
-    return true
-  }
-
-  const portPostMessage = (
-    port: chrome.runtime.Port,
-    // msg: ToExtension | ToBackground,
-    msg: ToExtension,
-  ) => port.postMessage(msg)
+  const postToPage = (msg: ToApplicationMessage["msg"]) =>
+    window.postMessage(
+      { channelId, msg } as ToApplicationMessage,
+      window.origin,
+    )
 
   const chainIds = new Set<string>()
-  const handleExtensionError = (errorMessage: string, origin: string) => {
-    console.error(errorMessage)
+
+  const onProxyMessage = (msg: any) => {
+    if (isSubstrateConnectToApplicationMessage(msg) && msg.type === "error")
+      chainIds.delete(msg.chainId)
+
+    postToPage({
+      ...msg,
+      origin: isSubstrateConnectToApplicationMessage(msg)
+        ? msg.origin
+        : CONTEXT.CONTENT_SCRIPT,
+    })
+  }
+  const onProxyDisconnect = () => {
     chainIds.forEach((chainId) =>
-      postToPage(
-        {
-          origin: "substrate-connect-extension",
-          chainId,
-          type: "error",
-          errorMessage,
-        },
-        origin,
-      ),
+      postToPage({
+        origin: "substrate-connect-extension",
+        chainId,
+        type: "error",
+        errorMessage: "Disconnected from extension",
+      }),
     )
     chainIds.clear()
   }
 
-  let port: chrome.runtime.Port | undefined
-  let rpc: ReturnType<typeof createRpc<BackgroundRpcHandlers>> | undefined
-  let isReady: Promise<void> | undefined
-  let resolveIsReady: () => void
-  window.addEventListener("message", async ({ data, source, origin }) => {
+  window.addEventListener("message", async ({ data, source }) => {
     if (source !== window || !data) return
     const { channelId: msgChannelId, msg } = data
     if (channelId !== msgChannelId) return
-    if (!isWebPageHelperMessage(msg)) return
+    if (
+      !isRpcMessageWithOrigin(msg, CONTEXT.WEB_PAGE) &&
+      !isSubstrateConnectToExtensionMessage(msg)
+    )
+      return
 
     await whenActivated
 
-    if (!isReady)
-      isReady = new Promise<void>((resolve) => {
-        resolveIsReady = resolve
-      })
+    await getOrCreateInternalRpc()
 
-    if (!port) {
-      try {
-        port = chrome.runtime.connect({ name: PORT.CONTENT_SCRIPT })
-      } catch (error) {
-        handleExtensionError("Cannot connect to extension", origin)
-        return
-      }
-      port.onMessage.addListener((msg: ToPage) => {
-        if (
-          msg.origin === "substrate-connect-extension" &&
-          msg.type === "error"
-        )
+    getOrCreateExtensionProxy(onProxyMessage, onProxyDisconnect).postMessage(
+      msg,
+    )
+
+    if (isSubstrateConnectToExtensionMessage(msg))
+      switch (msg.type) {
+        case "add-chain":
+        case "add-well-known-chain": {
+          chainIds.add(msg.chainId)
+          break
+        }
+        case "remove-chain": {
           chainIds.delete(msg.chainId)
-
-        if (isRpcRequestMessage(msg) && msg.method === "onReady")
-          return rpc?.handle(msg)
-
-        postToPage(
-          // @ts-expect-error
-          {
-            ...msg,
-            origin: msg.origin ?? CONTEXT.CONTENT_SCRIPT,
-          },
-          origin,
-        )
-      })
-      const handlers: ContentScriptRpcHandlers = {
-        onReady() {
-          resolveIsReady()
-        },
+          break
+        }
+        default:
+          break
       }
-      rpc = createRpc<BackgroundRpcHandlers>(
-        (message) => port?.postMessage(message),
-        handlers,
-      )
-      const keepAliveInterval = setInterval(() => {
-        if (!port || !rpc) return
-        rpc.notify("keepAlive", [])
-      }, KEEP_ALIVE_INTERVAL)
-      port.onDisconnect.addListener(() => {
-        port = undefined
-        rpc = undefined
-        clearInterval(keepAliveInterval)
-        handleExtensionError("Disconnected from extension", origin)
-      })
-    }
-
-    await isReady
-
-    portPostMessage(port, msg)
-
-    if (msg.origin !== "substrate-connect-client") return
-    switch (msg.type) {
-      case "add-chain":
-      case "add-well-known-chain": {
-        chainIds.add(msg.chainId)
-        break
-      }
-      case "remove-chain": {
-        chainIds.delete(msg.chainId)
-        break
-      }
-      default:
-        break
-    }
   })
 
-  const isBackgroundHelperMessage = createIsHelperMessage<ToPage>([
-    CONTEXT.BACKGROUND,
-    "substrate-connect-extension",
-  ])
-  // TODO: try to handle in chrome.runtime.connect.onMessage
+  // TODO: update background-helper so this is handled in chrome.runtime.connect.onMessage
   chrome.runtime.onMessage.addListener((msg) => {
-    if (!isBackgroundHelperMessage(msg)) return
-    if (msg.origin === "substrate-connect-extension" && msg.type === "error")
+    if (isSubstrateConnectToApplicationMessage(msg) && msg.type === "error") {
       chainIds.delete(msg.chainId)
-    postToPage(msg, window.origin)
+      postToPage(msg)
+    }
   })
+}
+
+let extensionProxy:
+  | { postMessage(msg: RpcMessage | ToExtension): void }
+  | undefined
+const getOrCreateExtensionProxy = (
+  onMessage: (msg: any) => void,
+  onDisconnect?: (port: chrome.runtime.Port) => void,
+) => {
+  if (extensionProxy) return extensionProxy
+
+  const port = chrome.runtime.connect({ name: PORT.WEB_PAGE })
+  port.onDisconnect.addListener((port) => {
+    extensionProxy = undefined
+    onDisconnect?.(port)
+  })
+  port.onMessage.addListener(onMessage)
+
+  return (extensionProxy = {
+    postMessage(msg) {
+      port.postMessage(msg)
+    },
+  })
+}
+
+let internalRpc: Promise<Rpc<BackgroundRpcHandlers>> | undefined
+const getOrCreateInternalRpc = async () => {
+  if (internalRpc) return internalRpc
+
+  internalRpc = new Promise(async (resolve) => {
+    const port = chrome.runtime.connect({ name: PORT.CONTENT_SCRIPT })
+    const rpc = createRpc<BackgroundRpcHandlers>((msg) => port.postMessage(msg))
+    port.onMessage.addListener(rpc.handle)
+    const keepAliveInterval = setInterval(
+      () => rpc.notify("keepAlive", []),
+      KEEP_ALIVE_INTERVAL,
+    )
+    port.onDisconnect.addListener(() => {
+      internalRpc = undefined
+      clearInterval(keepAliveInterval)
+    })
+    await rpc.request("isBackgroundScriptReady", [])
+    resolve(rpc)
+  })
+
+  return internalRpc
 }

@@ -1,23 +1,19 @@
-import type { PostMessage, ToExtension, ToPage } from "@/protocol"
+import type { ToExtensionMessage } from "@/protocol"
 import {
   CONTEXT,
   createBackgroundClientConnectProvider,
-  createIsHelperMessage,
   createRpc,
+  isRpcMessageWithOrigin,
+  isSubstrateConnectToApplicationMessage,
 } from "@/shared"
 import type { LightClientProvider, RawChain, WebPageRpcHandlers } from "./types"
 import type { BackgroundRpcHandlers } from "@/background/types"
+import type { ToApplication } from "@substrate/connect-extension-protocol"
 
 export type * from "./types"
 
-const postToExtension = (message: PostMessage<ToExtension>) =>
+const postToExtension = (message: ToExtensionMessage) =>
   window.postMessage(message, window.origin)
-
-const isHelperMessage = createIsHelperMessage<ToPage>([
-  CONTEXT.CONTENT_SCRIPT,
-  CONTEXT.BACKGROUND,
-  "substrate-connect-extension",
-])
 
 const channelIds = new Set<string>()
 
@@ -58,19 +54,11 @@ export const getLightClientProvider = async (
     if (source !== window || !data) return
     const { channelId: messageChannelId, msg } = data
     if (messageChannelId !== channelId) return
-    if (!isHelperMessage(msg)) return
-    // FIXME: isInternalRpcMessage()
-    if (msg.origin !== "substrate-connect-extension")
-      return rpc.handle(msg as any)
-    // FIXME: isSubstrateConnectMessage()
-    if (msg.origin === "substrate-connect-extension")
+    if (isRpcMessageWithOrigin(msg, CONTEXT.CONTENT_SCRIPT))
+      return rpc.handle(msg)
+    if (isSubstrateConnectToApplicationMessage(msg))
       return rawChainCallbacks.forEach((cb) => cb(msg))
-
-    console.warn("Unhandled message", msg)
   })
-
-  // FIXME: rename isBackgroundScriptReady
-  // await rpc.call("isBackgroundScriptReady", [])
 
   let chains = await rpc.request("getChains", [])
   chainsChangeCallbacks.push((chains_) => (chains = chains_))
@@ -103,9 +91,7 @@ export const getLightClientProvider = async (
   }
 }
 
-const rawChainCallbacks: ((
-  msg: ToPage & { origin: "substrate-connect-extension" },
-) => void)[] = []
+const rawChainCallbacks: ((msg: ToApplication) => void)[] = []
 
 const createRawChain = (
   channelId: string,
