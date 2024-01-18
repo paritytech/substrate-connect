@@ -67,7 +67,7 @@
     "typescript": "^5.2.2"
   },
   "resolutions": {
-    "@substrate/connect": "0.8.4"
+    "@substrate/connect": "0.8.5"
   },
   "packageManager": "pnpm@8.14.0"
 }
