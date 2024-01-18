@@ -24,8 +24,6 @@
     "/dns/statemine-bootnode.radiumblock.com/tcp/30333/p2p/12D3KooWCKUrE5uaXQ288ko3Ex3zCyozyJLG47KEYTopinnXNtYL",
     "/dns/statemine-bootnode.radiumblock.com/tcp/30336/wss/p2p/12D3KooWCKUrE5uaXQ288ko3Ex3zCyozyJLG47KEYTopinnXNtYL"
   ],
-  "telemetryEndpoints": null,
-  "protocolId": null,
   "properties": {
     "ss58Format": 2,
     "tokenDecimals": 12,

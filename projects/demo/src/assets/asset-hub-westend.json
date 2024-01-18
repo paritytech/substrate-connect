@@ -22,8 +22,6 @@
     "/dns/westmint-bootnode.radiumblock.com/tcp/30336/wss/p2p/12D3KooWDoq4PVdWm5nzRSvEz3DSSKjVgRhWVUaKyi5JMKwJKYbk",
     "/dns/westmint-bootnode.radiumblock.com/tcp/30333/p2p/12D3KooWDoq4PVdWm5nzRSvEz3DSSKjVgRhWVUaKyi5JMKwJKYbk"
   ],
-  "telemetryEndpoints": null,
-  "protocolId": null,
   "relay_chain": "westend2",
   "properties": {
     "tokenDecimals": 12,

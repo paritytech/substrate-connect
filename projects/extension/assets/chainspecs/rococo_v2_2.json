@@ -10,13 +10,6 @@
     "/dns/rococo-bootnode-0.polkadot.io/tcp/443/wss/p2p/12D3KooWGikJMBmRiG5ofCqn8aijCijgfmZR5H9f53yUF3srm6Nm",
     "/dns/rococo-bootnode-1.polkadot.io/tcp/443/wss/p2p/12D3KooWLDfH9mHRCidrd5NfQjp7rRMUcJSEUwSvEKyu7xU2cG3d"
   ],
-  "telemetryEndpoints": [
-    [
-      "/dns/telemetry.polkadot.io/tcp/443/x-parity-wss/%2Fsubmit%2F",
-      0
-    ]
-  ],
-  "protocolId": "rococo",
   "properties": {
     "ss58Format": 42,
     "tokenDecimals": 12,

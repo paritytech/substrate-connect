@@ -35,13 +35,6 @@
     "/dns/ibp-boot-westend.luckyfriday.io/tcp/30333/p2p/12D3KooWDg1YEytdwFFNWroFj6gio4YFsMB3miSbHKgdpJteUMB9",
     "/dns/ibp-boot-westend.luckyfriday.io/tcp/30334/wss/p2p/12D3KooWDg1YEytdwFFNWroFj6gio4YFsMB3miSbHKgdpJteUMB9"
   ],
-  "telemetryEndpoints": [
-    [
-      "wss://telemetry.polkadot.io/submit/",
-      0
-    ]
-  ],
-  "protocolId": "wnd2",
   "properties": {
     "ss58Format": 42,
     "tokenDecimals": 12,

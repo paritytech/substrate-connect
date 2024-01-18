@@ -38,13 +38,6 @@
     "/dns/ibp-boot-polkadot.luckyfriday.io/tcp/30333/p2p/12D3KooWEjk6QXrZJ26fLpaajisJGHiz6WiQsR8k7mkM9GmWKnRZ",
     "/dns/ibp-boot-polkadot.luckyfriday.io/tcp/30334/wss/p2p/12D3KooWEjk6QXrZJ26fLpaajisJGHiz6WiQsR8k7mkM9GmWKnRZ"
   ],
-  "telemetryEndpoints": [
-    [
-      "wss://telemetry.polkadot.io/submit/",
-      0
-    ]
-  ],
-  "protocolId": "dot",
   "properties": {
     "ss58Format": 0,
     "tokenDecimals": 10,
