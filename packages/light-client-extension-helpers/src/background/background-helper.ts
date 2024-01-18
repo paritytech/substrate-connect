@@ -24,6 +24,7 @@ import { smoldotProvider } from "./smoldot-provider"
 import {
   ALARM,
   PORT,
+  RpcMessage,
   createRpc,
   isRpcMessage,
   isSubstrateConnectToExtensionMessage,
@@ -312,15 +313,12 @@ export const register = ({
     // use chrome.tabs.TAB_ID_NONE for popup port
     const tabId = port.sender?.tab?.id ?? chrome.tabs.TAB_ID_NONE
 
-    const postMessage = (message: ToApplication) => port.postMessage(message)
+    const postMessage = (message: ToApplication | RpcMessage) =>
+      port.postMessage(message)
 
     const handlers: BackgroundRpcHandlers = {
       //#region content-script RPCs
       keepAlive() {},
-      async isBackgroundScriptReady() {
-        await initialized.finally()
-        return true
-      },
       async getChain(chainSpec, relayChainGenesisHash) {
         const tabId = port.sender?.tab?.id
         if (!tabId) throw new Error("Undefined tabId")
@@ -383,19 +381,13 @@ export const register = ({
     }
 
     const rpc = createRpc<WebPageRpcHandlers & ContentScriptRpcHandlers>(
-      (message) =>
-        postMessage(
-          // @ts-expect-error
-          message,
-        ),
+      (message) => postMessage(message),
       handlers,
     )
 
     const unsubscribeOnChainsChanged = storage.onChainsChanged((chains) =>
       rpc.notify("onAddChains", [chains]),
     )
-
-    // initialized.finally(() => rpc.notify("onReady", []))
 
     let isPortDisconnected = false
     port.onDisconnect.addListener(() => {
@@ -415,6 +407,7 @@ export const register = ({
 
     const pendingAddChains: Record<string, boolean> = {}
     port.onMessage.addListener(async (msg) => {
+      await initialized
       if (
         isRpcMessage(msg) &&
         (port.name === PORT.EXTENSION_PAGE ||

@@ -31,12 +31,17 @@ export const register = (channelId: string) => {
   })
 
   const postToPage = (msg: ToApplicationMessage["msg"]) =>
-    window.postMessage(
-      { channelId, msg } as ToApplicationMessage,
-      window.origin,
-    )
+    window.postMessage({ channelId, msg } as ToApplicationMessage)
 
   const chainIds = new Set<string>()
+
+  // TODO: update background-helper so this is handled in chrome.runtime.connect.onMessage
+  chrome.runtime.onMessage.addListener((msg) => {
+    if (isSubstrateConnectToApplicationMessage(msg) && msg.type === "error") {
+      chainIds.delete(msg.chainId)
+      postToPage(msg)
+    }
+  })
 
   const onProxyMessage = (msg: any) => {
     if (isSubstrateConnectToApplicationMessage(msg) && msg.type === "error")
@@ -73,7 +78,7 @@ export const register = (channelId: string) => {
 
     await whenActivated
 
-    await getOrCreateInternalRpc()
+    getOrCreateInternalRpc()
 
     getOrCreateExtensionProxy(onProxyMessage, onProxyDisconnect).postMessage(
       msg,
@@ -93,14 +98,6 @@ export const register = (channelId: string) => {
         default:
           break
       }
-  })
-
-  // TODO: update background-helper so this is handled in chrome.runtime.connect.onMessage
-  chrome.runtime.onMessage.addListener((msg) => {
-    if (isSubstrateConnectToApplicationMessage(msg) && msg.type === "error") {
-      chainIds.delete(msg.chainId)
-      postToPage(msg)
-    }
   })
 }
 
@@ -127,25 +124,23 @@ const getOrCreateExtensionProxy = (
   })
 }
 
-let internalRpc: Promise<Rpc<BackgroundRpcHandlers>> | undefined
-const getOrCreateInternalRpc = async () => {
+let internalRpc: Rpc<BackgroundRpcHandlers> | undefined
+const getOrCreateInternalRpc = () => {
   if (internalRpc) return internalRpc
 
-  internalRpc = new Promise(async (resolve) => {
-    const port = chrome.runtime.connect({ name: PORT.CONTENT_SCRIPT })
-    const rpc = createRpc<BackgroundRpcHandlers>((msg) => port.postMessage(msg))
-    port.onMessage.addListener(rpc.handle)
-    const keepAliveInterval = setInterval(
-      () => rpc.notify("keepAlive", []),
-      KEEP_ALIVE_INTERVAL,
-    )
-    port.onDisconnect.addListener(() => {
-      internalRpc = undefined
-      clearInterval(keepAliveInterval)
-    })
-    await rpc.request("isBackgroundScriptReady", [])
-    resolve(rpc)
+  const port = chrome.runtime.connect({ name: PORT.CONTENT_SCRIPT })
+  const rpc = createRpc<BackgroundRpcHandlers>((msg) => port.postMessage(msg))
+  port.onMessage.addListener(rpc.handle)
+  const keepAliveInterval = setInterval(
+    () => rpc.notify("keepAlive", []),
+    KEEP_ALIVE_INTERVAL,
+  )
+  port.onDisconnect.addListener(() => {
+    internalRpc = undefined
+    clearInterval(keepAliveInterval)
   })
+
+  internalRpc = rpc
 
   return internalRpc
 }

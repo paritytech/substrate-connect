@@ -1,3 +1,1 @@
-export type ContentScriptRpcHandlers = {
-  onReady(): void
-}
+export type ContentScriptRpcHandlers = {}

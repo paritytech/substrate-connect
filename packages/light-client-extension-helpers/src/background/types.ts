@@ -39,7 +39,6 @@ export interface PageChain {
 
 export type BackgroundRpcHandlers = {
   keepAlive(): void
-  isBackgroundScriptReady(): Promise<boolean>
   getChain(
     chainSpec: string,
     relayChainGenesisHash?: string,
