@@ -34,7 +34,7 @@
     "dev:burnr": "pnpm --filter @substrate/burnr dev",
     "dev:demo": "pnpm --filter @substrate/demo dev",
     "dev:extension": "pnpm --filter @substrate/extension dev",
-    "deploy": "./deploy.sh",
+    "deploy-projects-and-docs": "./deploy.sh",
     "format": "prettier --write .",
     "checkResolutions": "node ./.ensure-resolution.mjs",
     "postinstall": "husky install"
