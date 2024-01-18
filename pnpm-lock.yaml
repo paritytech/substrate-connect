@@ -139,8 +139,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/light-client-extension-helpers
       smoldot:
-        specifier: 2.0.16
-        version: 2.0.16
+        specifier: 2.0.17
+        version: 2.0.17
     devDependencies:
       '@playwright/test':
         specifier: ^1.40.1
@@ -170,8 +170,8 @@ importers:
         specifier: workspace:^
         version: link:../light-client-extension-helpers
       smoldot:
-        specifier: 2.0.16
-        version: 2.0.16
+        specifier: 2.0.17
+        version: 2.0.17
     devDependencies:
       eslint:
         specifier: ^8.53.0
@@ -366,8 +366,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.0.16
-        version: 2.0.16
+        specifier: 2.0.17
+        version: 2.0.17
     devDependencies:
       '@playwright/test':
         specifier: ^1.40.1
@@ -9268,6 +9268,15 @@ packages:
 
   /smoldot@2.0.16:
     resolution: {integrity: sha512-8zYhO2etGpgqOOUfdiMI36R/U1DnUAxihtG3MgFiqau5+Ix6no8TQXIuyz9ih5baqFyeke9WcYm7duhpE6p24Q==}
+    dependencies:
+      ws: 8.16.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
+  /smoldot@2.0.17:
+    resolution: {integrity: sha512-8lHuFcd941WMtpR7pfedkUSlgN0/IWPt8p203cEKxFvaZ8Y+QQegl7iiQTgP4w0zWPQcPBT1zqUKCyd42u4UCw==}
     dependencies:
       ws: 8.16.0
     transitivePeerDependencies:
