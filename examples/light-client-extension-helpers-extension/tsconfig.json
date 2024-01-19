@@ -5,8 +5,8 @@
     "moduleResolution": "Bundler",
     "baseUrl": "src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
     },
-    "outDir": "dist/js"
-  }
+    "outDir": "dist/js",
+  },
 }
