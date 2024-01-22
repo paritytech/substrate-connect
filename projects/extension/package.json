@@ -34,7 +34,7 @@
   },
   "keywords": [],
   "devDependencies": {
-    "@playwright/test": "^1.41.0",
+    "@playwright/test": "^1.41.1",
     "@vitejs/plugin-react-swc": "^3.4.1",
     "autoprefixer": "^10.4.17",
     "concurrently": "^8.2.2",
