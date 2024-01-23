@@ -8,6 +8,7 @@ import {
   Rpc,
   RpcMessage,
   createRpc,
+  isRpcMessage,
   isRpcMessageWithOrigin,
   isSubstrateConnectToApplicationMessage,
   isSubstrateConnectToExtensionMessage,
@@ -44,6 +45,10 @@ export const register = (channelId: string) => {
   })
 
   const onProxyMessage = (msg: any) => {
+    // TODO: remove on 0.0.4
+    if (isRpcResponseToLegacyRequestMessage(msg))
+      msg = adaptRpcResponseToLegacyToApplicationMessage(msg)
+
     if (isSubstrateConnectToApplicationMessage(msg) && msg.type === "error")
       chainIds.delete(msg.chainId)
 
@@ -68,8 +73,13 @@ export const register = (channelId: string) => {
 
   window.addEventListener("message", async ({ data, source }) => {
     if (source !== window || !data) return
-    const { channelId: msgChannelId, msg } = data
+    const { channelId: msgChannelId } = data
     if (channelId !== msgChannelId) return
+    let { msg } = data
+    // TODO: remove on 0.0.4
+    if (isLegacyToExtensionMessage(msg))
+      msg = adaptLegacyToExtensionMessageToRpcMessage(msg)
+
     if (
       !isRpcMessageWithOrigin(msg, CONTEXT.WEB_PAGE) &&
       !isSubstrateConnectToExtensionMessage(msg)
@@ -144,3 +154,98 @@ const getOrCreateInternalRpc = () => {
 
   return internalRpc
 }
+
+//#region Legacy message helpers for DApps or libraries using @substrate/light-client-extension-helpers@0.0.2
+// TODO: remove on v0.0.4
+// TODO: breaking change for @substrate/connect@0.8.5
+
+type LegacyToExtensionMessage =
+  | {
+      id: string
+      origin: "@substrate/light-client-extension-helper-context-web-page"
+      type: "getChains"
+    }
+  | {
+      id: string
+      origin: "@substrate/light-client-extension-helper-context-web-page"
+      type: "getChain"
+      chainSpec: string
+      relayChainGenesisHash?: string
+    }
+
+type LegacyToApplicationMessage =
+  | {
+      id: string
+      origin: "@substrate/light-client-extension-helper-context-background"
+      type: "getChainsResponse"
+      chains: any
+    }
+  | {
+      id: string
+      origin: "@substrate/light-client-extension-helper-context-background"
+      type: "getChainResponse"
+      chain: any
+    }
+
+const isLegacyToExtensionMessage = (
+  msg: any,
+): msg is LegacyToExtensionMessage => {
+  if (
+    typeof msg !== "object" ||
+    typeof msg?.id !== "string" ||
+    msg?.origin !==
+      "@substrate/light-client-extension-helper-context-web-page" ||
+    !(
+      msg?.type === "getChains" ||
+      (msg?.type === "getChain" && typeof msg?.chainSpec === "string")
+    )
+  )
+    return false
+
+  return true
+}
+
+const isRpcResponseToLegacyRequestMessage = (msg: any): msg is RpcMessage =>
+  isRpcMessage(msg) && !!msg?.id?.startsWith("legacy:")
+//   if (isRpcMessage(msg) && )
+//   if (typeof msg !== "object") return false
+//   if (typeof msg?.id !== "string" || !msg?.id.startsWith("legacy:"))
+//     return false
+//   return true
+// }
+
+const adaptLegacyToExtensionMessageToRpcMessage = (
+  msg: LegacyToExtensionMessage,
+) => {
+  return {
+    id: `legacy:${msg.type}:${msg.id}`,
+    orign: msg.origin,
+    method: msg.type,
+    params:
+      msg.type === "getChains"
+        ? []
+        : [msg.chainSpec, msg.relayChainGenesisHash],
+  } as RpcMessage
+}
+
+const adaptRpcResponseToLegacyToApplicationMessage = (msg: RpcMessage) => {
+  if (!("result" in msg)) return msg
+  if (msg.id.startsWith("legacy:getChains:")) {
+    return {
+      origin: "@substrate/light-client-extension-helper-context-background",
+      id: msg.id.replace("legacy:getChains:", ""),
+      type: "getChainsResponse",
+      chains: msg.result,
+    } as LegacyToApplicationMessage
+  } else if (msg.id.startsWith("legacy:getChain:")) {
+    return {
+      origin: "@substrate/light-client-extension-helper-context-background",
+      id: msg.id.replace("legacy:getChain:", ""),
+      type: "getChainResponse",
+      chain: msg.result,
+    } as LegacyToApplicationMessage
+  }
+  return msg
+}
+
+//#endregion
