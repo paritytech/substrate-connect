@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "eslint": "^8.53.0",
-    "jsdom": "^23.2.0",
+    "jsdom": "^24.0.0",
     "vitest": "^1.2.1"
   }
 }
