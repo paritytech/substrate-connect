@@ -1,8 +1,8 @@
-import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
-import { type Chain, type JsonRpcCallback, type ScClient } from "./types.js"
+import type { Chain, JsonRpcCallback, ScClient } from "./types.js"
 import type {
   RawChain,
   LightClientProvider,
+  PIP6963AnnounceProviderEvent,
 } from "@substrate/light-client-extension-helpers/web-page"
 import { WellKnownChain } from "../WellKnownChain.js"
 
@@ -29,11 +29,7 @@ let lightClientProviderPromise: Promise<LightClientProvider>
  */
 export const createScClient = (): ScClient => {
   if (!lightClientProviderPromise)
-    lightClientProviderPromise = import(
-      "@substrate/light-client-extension-helpers/web-page"
-    ).then(({ getLightClientProvider }) =>
-      getLightClientProvider(DOM_ELEMENT_ID),
-    )
+    lightClientProviderPromise = getLightClientProvider()
   const internalAddChain = async (
     isWellKnown: boolean,
     chainSpecOrWellKnownName: string,
@@ -88,4 +84,18 @@ export const createScClient = (): ScClient => {
       jsonRpcCallback?: JsonRpcCallback,
     ) => internalAddChain(true, name, jsonRpcCallback),
   }
+}
+
+function getLightClientProvider() {
+  return new Promise<LightClientProvider>((resolve) => {
+    const listener = (event: PIP6963AnnounceProviderEvent) => {
+      // TODO: improve substrate-connect provider identification
+      if (event.detail.info.rdns === "io.github.paritytech.substrate-connect") {
+        window.removeEventListener("pip6963:announceProvider", listener)
+        resolve(event.detail.provider)
+      }
+    }
+    window.addEventListener("pip6963:announceProvider", listener)
+    window.dispatchEvent(new Event("pip6963:requestProvider"))
+  })
 }
