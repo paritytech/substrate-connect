@@ -16,4 +16,13 @@ window.addEventListener("message", ({ source, origin, data }: MessageEvent) => {
   })
 })
 
+try {
+  const s = document.createElement("script")
+  s.src = chrome.runtime.getURL("inpage/inpage.js")
+  s.onload = () => s.remove()
+  ;(document.head || document.documentElement).appendChild(s)
+} catch (error) {
+  console.error("error injecting inpage/inpage.js", error)
+}
+
 register(DOM_ELEMENT_ID)
