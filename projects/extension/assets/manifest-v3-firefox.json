@@ -39,5 +39,11 @@
     "gecko": {
       "id": "{9b4d20ed-b18a-4237-b5d0-ca71c2ce2060}"
     }
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["inpage/inpage.js"],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ]
 }
