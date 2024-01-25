@@ -18,7 +18,7 @@ const isWellKnownChain = (input: string): input is WellKnownChain =>
 let client: ScClient
 const noop = () => {}
 const ScProvider = (input: string, relayChainSpec?: string) => {
-  client ??= createScClient()
+  client ??= createScClient({ embeddedNodeConfig: { maxLogLevel: 4 } })
   const addChain = (input: string, jsonRpcCallback?: JsonRpcCallback) =>
     isWellKnownChain(input)
       ? client.addWellKnownChain(input, jsonRpcCallback)
