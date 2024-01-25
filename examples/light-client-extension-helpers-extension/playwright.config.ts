@@ -37,7 +37,7 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
     {
-      name: "Google Chrome",
+      name: "chrome",
       use: { ...devices["Desktop Chrome"], channel: "chrome" },
     },
   ],
