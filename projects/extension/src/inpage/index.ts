@@ -10,21 +10,21 @@ const PROVIDER_INFO = {
   // TODO: revisit icon
   icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>",
   // TODO: revisit rdns
-  rdns: "io.github.paritytech.substrate-connect",
+  rdns: "io.github.paritytech.SubstrateConnect",
 }
 
-const providerPromise = getLightClientProvider(DOM_ELEMENT_ID)
+const detail: PIP6963ProviderDetail = Object.freeze({
+  info: PROVIDER_INFO,
+  provider: getLightClientProvider(DOM_ELEMENT_ID),
+})
 
-const announceProvider = async () =>
-  window.dispatchEvent(
-    new CustomEvent<PIP6963ProviderDetail>("pip6963:announceProvider", {
-      detail: Object.freeze({
-        info: PROVIDER_INFO,
-        provider: await providerPromise,
-      }),
-    }),
-  )
+window.addEventListener(
+  "pip6963:requestProvider",
+  ({ detail: { onProvider } }) => onProvider(detail),
+)
 
-window.addEventListener("pip6963:requestProvider", announceProvider)
-
-announceProvider()
+window.dispatchEvent(
+  new CustomEvent("pip6963:announceProvider", {
+    detail,
+  }),
+)

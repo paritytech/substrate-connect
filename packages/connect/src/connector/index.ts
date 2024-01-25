@@ -4,6 +4,10 @@ import {
 } from "./smoldot-light.js"
 import { createScClient as extensionScClient } from "./extension.js"
 import type { ScClient } from "./types.js"
+import type {
+  LightClientProvider,
+  PIP6963OnProvider,
+} from "@substrate/light-client-extension-helpers/web-page"
 
 export * from "./types.js"
 export type { EmbeddedNodeConfig }
@@ -35,14 +39,13 @@ export interface Config {
  * extension is installed and available.
  */
 export const createScClient = (config?: Config): ScClient => {
-  if (config?.forceEmbeddedNode || typeof document !== "object")
+  if (config?.forceEmbeddedNode)
     return smoldotScClient(config?.embeddedNodeConfig)
 
-  const client = isExtensionPresent().then((isPresent) =>
-    isPresent
-      ? extensionScClient()
-      : smoldotScClient(config?.embeddedNodeConfig),
-  )
+  const lightClientProviderPromise = getExtensionLightClientProviderPromise()
+  const client = lightClientProviderPromise
+    ? extensionScClient(lightClientProviderPromise)
+    : smoldotScClient(config?.embeddedNodeConfig)
 
   return {
     async addChain(chainSpec, jsonRpcCallback, databaseContent) {
@@ -62,37 +65,22 @@ export const createScClient = (config?: Config): ScClient => {
   }
 }
 
-async function isExtensionPresent() {
-  let isPresent = false
-  const onMessage = ({ source, origin, data }: MessageEvent) => {
-    if (
-      source !== window ||
-      origin !== window.origin ||
-      typeof data !== "object" ||
-      data.origin !== "substrate-connect-extension" ||
-      data.type !== "is-extension-present"
-    )
-      return
-    isPresent = true
-    window.removeEventListener("message", onMessage)
-  }
-  window.addEventListener("message", onMessage)
-  window.postMessage({
-    origin: "substrate-connect-client",
-    type: "is-extension-present",
-  })
-  await waitMacroTasks(5)
-  return isPresent
-}
-
-function waitMacroTasks(n: number) {
-  return new Promise<void>((resolve) => {
-    let macroTaskCount = 0
-    const checkMacroTaskCount = () => {
-      ++macroTaskCount
-      if (macroTaskCount > n) return resolve()
-      setTimeout(checkMacroTaskCount)
-    }
-    checkMacroTaskCount()
-  })
+function getExtensionLightClientProviderPromise():
+  | Promise<LightClientProvider>
+  | undefined {
+  if (typeof document !== "object" || typeof CustomEvent !== "function") return
+  let lightClientProviderPromise: Promise<LightClientProvider> | undefined
+  window.dispatchEvent(
+    new CustomEvent<PIP6963OnProvider>("pip6963:requestProvider", {
+      detail: {
+        onProvider(detail) {
+          // TODO: improve substrate-connect provider identification
+          if (detail.info.rdns === "io.github.paritytech.SubstrateConnect") {
+            lightClientProviderPromise = detail.provider
+          }
+        },
+      },
+    }),
+  )
+  return lightClientProviderPromise
 }
