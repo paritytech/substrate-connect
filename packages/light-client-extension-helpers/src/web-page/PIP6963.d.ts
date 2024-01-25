@@ -3,7 +3,11 @@ import { LightClientProvider } from "./types"
 export type PIP6963ProviderDetail = {
   info: PIP6963ProviderInfo
   // FIXME: update to PolkadotProvider from https://github.com/paritytech/polkadot-provider
-  provider: LightClientProvider
+  provider: Promise<LightClientProvider>
+}
+
+export type PIP6963OnProvider = {
+  onProvider(detail: PIP6963ProviderDetail): void
 }
 
 export type PIP6963ProviderInfo = {
@@ -20,11 +24,12 @@ export declare global {
   }
 }
 
-export interface PIP6963AnnounceProviderEvent extends CustomEvent {
+export interface PIP6963AnnounceProviderEvent
+  extends CustomEvent<PIP6963ProviderDetail> {
   type: "pip6963:announceProvider"
-  detail: PIP6963ProviderDetail
 }
 
-export interface PIP6963RequestProviderEvent extends Event {
+export interface PIP6963RequestProviderEvent
+  extends CustomEvent<PIP6963OnProvider> {
   type: "pip6963:requestProvider"
 }

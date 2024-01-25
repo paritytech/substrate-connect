@@ -2,7 +2,6 @@ import type { Chain, JsonRpcCallback, ScClient } from "./types.js"
 import type {
   RawChain,
   LightClientProvider,
-  PIP6963AnnounceProviderEvent,
 } from "@substrate/light-client-extension-helpers/web-page"
 import { WellKnownChain } from "../WellKnownChain.js"
 
@@ -16,8 +15,6 @@ const wellKnownChainGenesisHashes: Record<string, string> = {
     "0x6408de7737c59c238890533af25896a2c20608d8b380bb01029acb392781063e",
 }
 
-let lightClientProviderPromise: Promise<LightClientProvider>
-
 /**
  * Returns a {@link ScClient} that connects to chains by asking the substrate-connect extension
  * to do so.
@@ -27,9 +24,9 @@ let lightClientProviderPromise: Promise<LightClientProvider>
  * If you try to add a chain without the extension installed, nothing will happen and the
  * `Promise`s will never resolve.
  */
-export const createScClient = (): ScClient => {
-  if (!lightClientProviderPromise)
-    lightClientProviderPromise = getLightClientProvider()
+export const createScClient = (
+  lightClientProviderPromise: Promise<LightClientProvider>,
+): ScClient => {
   const internalAddChain = async (
     isWellKnown: boolean,
     chainSpecOrWellKnownName: string,
@@ -84,18 +81,4 @@ export const createScClient = (): ScClient => {
       jsonRpcCallback?: JsonRpcCallback,
     ) => internalAddChain(true, name, jsonRpcCallback),
   }
-}
-
-function getLightClientProvider() {
-  return new Promise<LightClientProvider>((resolve) => {
-    const listener = (event: PIP6963AnnounceProviderEvent) => {
-      // TODO: improve substrate-connect provider identification
-      if (event.detail.info.rdns === "io.github.paritytech.substrate-connect") {
-        window.removeEventListener("pip6963:announceProvider", listener)
-        resolve(event.detail.provider)
-      }
-    }
-    window.addEventListener("pip6963:announceProvider", listener)
-    window.dispatchEvent(new Event("pip6963:requestProvider"))
-  })
 }
