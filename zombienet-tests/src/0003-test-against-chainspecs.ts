@@ -10,18 +10,20 @@ export async function run(nodeName: string) {
     chainSpecPath: `../../packages/connect-known-chains/specs/${name}.json`,
   }
 
-  const { chainHead } = await connect("light-client", networkInfo)
+  const client = await connect("light-client", networkInfo)
   let count = 0
-  await new Promise(async (resolve, reject) => {
-    const chainHeadFollower = chainHead(
+  await new Promise<void>(async (resolve, reject) => {
+    const chainHeadFollower = client.chainHead(
       true,
       (event) => {
         if (event.type === "finalized" && ++count === 2) {
-          resolve(chainHeadFollower.unfollow())
+          chainHeadFollower.unfollow()
+          resolve()
         }
       },
       reject,
     )
   })
+  client.destroy()
   return count
 }
