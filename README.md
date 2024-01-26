@@ -19,10 +19,6 @@ node.
 
 The substrate connect [API documentation is published here](https://paritytech.github.io/substrate-connect/api/).
 
-## Building an app with @substrate/connect and installing the extension
-
-**[The most up-to-date usage instructions for app builders can be found here](https://docs.substrate.io/learn/light-clients-in-substrate-connect/)**
-
 ## Development
 
 This repository is using [pnpm workspaces](https://pnpm.io/workspaces).
