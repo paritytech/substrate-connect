@@ -37,14 +37,14 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
     {
-      name: "Google Chrome",
+      name: "chrome",
       use: { ...devices["Desktop Chrome"], channel: "chrome" },
     },
   ],
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: isCI ? "pnpm preview" : "pnpm dev",
+    command: isCI ? "pnpm preview --strictPort" : "pnpm dev --strictPort",
     cwd: "../demo",
     url: dappUrl,
     timeout: 120 * 1000,

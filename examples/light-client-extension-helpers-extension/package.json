@@ -11,6 +11,7 @@
     "start": "web-ext run --source-dir ./dist -t chromium --start-url http://localhost:5173",
     "playwright": "playwright test --ui",
     "playwright:install": "playwright install --with-deps chromium",
+    "playwright:chrome": "playwright test --project=chrome",
     "playwright:chromium": "playwright test --project=chromium"
   },
   "dependencies": {
