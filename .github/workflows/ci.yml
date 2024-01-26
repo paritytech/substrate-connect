@@ -21,7 +21,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: pnpm checkResolutions
 
-  playwright-tests:
+  playwright-test-extension:
     needs: [build]
     timeout-minutes: 10
     runs-on: ubuntu-latest
@@ -31,16 +31,24 @@ jobs:
     - name: Build extension with Manifest v3 for Chrome
       run: pnpm build:chrome
       working-directory: ./projects/extension
-    # - run: pnpm playwright:install
-    #   working-directory: ./projects/extension
-    # - name: Test projects/extension
-    #   run: pnpm playwright:chromium --trace on
-    #   working-directory: ./projects/extension
-    # - uses: actions/upload-artifact@v4
-    #   if: failure()
-    #   with:
-    #     name: playwright-report-substrate-connect-extension-mv3-chrome
-    #     path: ./projects/extension/playwright-report
+    - run: pnpm playwright:install
+      working-directory: ./projects/extension
+    - name: Test projects/extension
+      run: pnpm playwright:chromium --trace on
+      working-directory: ./projects/extension
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: playwright-report-substrate-connect-extension-mv3-chrome
+        path: ./projects/extension/playwright-report
+
+  playwright-test-examples:
+    needs: [build]
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - uses: ./.github/actions/turbo-build
     - run: pnpm playwright:install
       working-directory: ./examples/light-client-extension-helpers-extension
     - name: Test examples/light-client-extension-helpers-extension
@@ -150,7 +158,7 @@ jobs:
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
     # are successful.
-    needs: [build, playwright-tests]
+    needs: [build, playwright-test-extension, playwright-test-examples]
     runs-on: ubuntu-latest
     steps:
      - run: echo Success
