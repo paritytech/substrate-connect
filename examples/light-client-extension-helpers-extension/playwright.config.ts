@@ -44,7 +44,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: isCI ? "pnpm preview" : "pnpm dev",
+    command: isCI ? "pnpm preview --strictPort" : "pnpm dev --strictPort",
     cwd: "../light-client-extension-helpers-dapp",
     url: dappUrl,
     reuseExistingServer: true,
