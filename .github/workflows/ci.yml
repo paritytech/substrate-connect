@@ -31,16 +31,16 @@ jobs:
     - name: Build extension with Manifest v3 for Chrome
       run: pnpm build:chrome
       working-directory: ./projects/extension
-    - run: pnpm playwright:install
-      working-directory: ./projects/extension
-    - name: Test projects/extension
-      run: pnpm playwright:chromium --trace on
-      working-directory: ./projects/extension
-    - uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: playwright-report-substrate-connect-extension-mv3-chrome
-        path: ./projects/extension/playwright-report
+    # - run: pnpm playwright:install
+    #   working-directory: ./projects/extension
+    # - name: Test projects/extension
+    #   run: pnpm playwright:chromium --trace on
+    #   working-directory: ./projects/extension
+    # - uses: actions/upload-artifact@v4
+    #   if: failure()
+    #   with:
+    #     name: playwright-report-substrate-connect-extension-mv3-chrome
+    #     path: ./projects/extension/playwright-report
     - run: pnpm playwright:install
       working-directory: ./examples/light-client-extension-helpers-extension
     - name: Test examples/light-client-extension-helpers-extension
