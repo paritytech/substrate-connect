@@ -24,6 +24,6 @@
     "@types/chrome": "^0.0.259",
     "@types/node": "^20.11.7",
     "concurrently": "^8.2.2",
-    "web-ext": "^7.10.0"
+    "web-ext": "^7.11.0"
   }
 }
