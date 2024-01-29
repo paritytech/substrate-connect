@@ -1,6 +1,6 @@
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 import {
-  type PIP6963ProviderDetail,
+  type PIP0001ProviderDetail,
   getLightClientProvider,
 } from "@substrate/light-client-extension-helpers/web-page"
 
@@ -13,18 +13,18 @@ const PROVIDER_INFO = {
   rdns: "io.github.paritytech.SubstrateConnect",
 }
 
-const detail: PIP6963ProviderDetail = Object.freeze({
+const detail: PIP0001ProviderDetail = Object.freeze({
   info: PROVIDER_INFO,
   provider: getLightClientProvider(DOM_ELEMENT_ID),
 })
 
 window.addEventListener(
-  "pip6963:requestProvider",
+  "pip0001:requestProvider",
   ({ detail: { onProvider } }) => onProvider(detail),
 )
 
 window.dispatchEvent(
-  new CustomEvent("pip6963:announceProvider", {
+  new CustomEvent("pip0001:announceProvider", {
     detail,
   }),
 )
