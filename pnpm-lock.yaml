@@ -139,8 +139,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/light-client-extension-helpers
       smoldot:
-        specifier: 2.0.17
-        version: 2.0.17
+        specifier: 2.0.20
+        version: 2.0.20
     devDependencies:
       '@playwright/test':
         specifier: ^1.41.1
@@ -170,8 +170,8 @@ importers:
         specifier: workspace:^
         version: link:../light-client-extension-helpers
       smoldot:
-        specifier: 2.0.17
-        version: 2.0.17
+        specifier: 2.0.20
+        version: 2.0.20
     devDependencies:
       eslint:
         specifier: ^8.53.0
@@ -220,7 +220,7 @@ importers:
         version: 7.8.1
       smoldot:
         specifier: 2.x
-        version: 2.0.17
+        version: 2.0.20
     devDependencies:
       '@types/chrome':
         specifier: ^0.0.259
@@ -366,8 +366,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.0.17
-        version: 2.0.17
+        specifier: 2.0.20
+        version: 2.0.20
     devDependencies:
       '@playwright/test':
         specifier: ^1.41.1
@@ -9163,7 +9163,6 @@ packages:
 
   /sign-addon@5.3.0:
     resolution: {integrity: sha512-7nHlCzhQgVMLBNiXVEgbG/raq48awOW0lYMN5uo1BaB3mp0+k8M8pvDwbfTlr3apcxZJsk9HQsAW1POwoJugpQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     dependencies:
       common-tags: 1.8.2
       core-js: 3.29.0
@@ -9216,6 +9215,17 @@ packages:
 
   /smoldot@2.0.17:
     resolution: {integrity: sha512-8lHuFcd941WMtpR7pfedkUSlgN0/IWPt8p203cEKxFvaZ8Y+QQegl7iiQTgP4w0zWPQcPBT1zqUKCyd42u4UCw==}
+    requiresBuild: true
+    dependencies:
+      ws: 8.16.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+    optional: true
+
+  /smoldot@2.0.20:
+    resolution: {integrity: sha512-vDuT0QZ3ds8HjJ0nDj/FdrPny5//oEWTJeNrj7a7H5OJlZx2M5HTPpbVqd1C3gjkPIdGRYNBYSe2WDOEul4b0g==}
     dependencies:
       ws: 8.16.0
     transitivePeerDependencies:
