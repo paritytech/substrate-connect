@@ -18,21 +18,17 @@ import type {
   AddOnAddChainByUserListener,
   LightClientPageHelper,
   PageChain,
-  BackgroundRpcHandlers,
 } from "./types"
 import { smoldotProvider } from "./smoldot-provider"
 import {
   ALARM,
   PORT,
-  createRpc,
   isRpcMessage,
   isSubstrateConnectToExtensionMessage,
   type RpcMessage,
-  type MethodHandlersFor,
 } from "@/shared"
 import * as storage from "@/storage"
-import type { WebPageRpcHandlers } from "@/web-page/types"
-import type { ContentScriptRpcHandlers } from "@/content-script/types"
+import { createBackgroundRpc } from "./createBackgroundRpc"
 
 export type * from "./types"
 
@@ -317,74 +313,7 @@ export const register = ({
     const postMessage = (message: ToApplication | RpcMessage) =>
       port.postMessage(message)
 
-    const handlers: MethodHandlersFor<BackgroundRpcHandlers> = {
-      //#region content-script RPCs
-      keepAlive() {},
-      async getChain([chainSpec, relayChainGenesisHash]) {
-        const tabId = port.sender?.tab?.id
-        if (!tabId) throw new Error("Undefined tabId")
-
-        const chains = await storage.getChains()
-
-        if (relayChainGenesisHash && !chains[relayChainGenesisHash])
-          throw new Error(
-            `Unknown relayChainGenesisHash ${relayChainGenesisHash}`,
-          )
-        const { genesisHash, name } = await getChainData({
-          smoldotClient,
-          chainSpec,
-          relayChainGenesisHash,
-        })
-
-        if (chains[genesisHash]) return chains[genesisHash]
-
-        const chain = {
-          genesisHash,
-          name,
-          chainSpec,
-          relayChainGenesisHash,
-        }
-
-        await addChainByUserListener?.(chain, tabId)
-
-        return chain
-      },
-      getChains() {
-        return storage.getChains()
-      },
-      //#endregion
-      // FIXME: do not allow content-script to call ExtensionPage RPCs
-      //#region ExtensionPage RPCs
-      deleteChain([genesisHash]) {
-        return lightClientPageHelper.deleteChain(genesisHash)
-      },
-      persistChain([chainSpec, relayChainGenesisHash]) {
-        return lightClientPageHelper.persistChain(
-          chainSpec,
-          relayChainGenesisHash,
-        )
-      },
-      async getActiveConnections() {
-        return (await lightClientPageHelper.getActiveConnections()).map(
-          ({ tabId, chain: { provider, ...chain } }) => ({
-            tabId,
-            chain,
-          }),
-        )
-      },
-      disconnect([tabId, genesisHash]) {
-        return lightClientPageHelper.disconnect(tabId, genesisHash)
-      },
-      setBootNodes([genesisHash, bootNodes]) {
-        return lightClientPageHelper.setBootNodes(genesisHash, bootNodes)
-      },
-      //#endregion
-    }
-
-    const rpc = createRpc<WebPageRpcHandlers & ContentScriptRpcHandlers>(
-      (message) => postMessage(message),
-      handlers,
-    )
+    const rpc = createBackgroundRpc(postMessage)
 
     const unsubscribeOnChainsChanged = storage.onChainsChanged((chains) =>
       rpc.notify("onAddChains", [chains]),
@@ -409,16 +338,18 @@ export const register = ({
     const pendingAddChains: Record<string, boolean> = {}
     port.onMessage.addListener(async (msg) => {
       await initialized
-      if (
-        isRpcMessage(msg) &&
-        (port.name === PORT.EXTENSION_PAGE ||
-          port.name === PORT.CONTENT_SCRIPT ||
-          // FIXME: improve guard for web-page proxy port
-          (port.name === PORT.WEB_PAGE &&
-            "method" in msg &&
-            (msg.method === "getChain" || msg.method === "getChains")))
-      )
-        return rpc.handle(msg)
+      if (isRpcMessage(msg))
+        return rpc.handle(msg, {
+          port,
+          lightClientPageHelper,
+          addChainByUserListener,
+          getChainData: ({ chainSpec, relayChainGenesisHash }) =>
+            getChainData({
+              smoldotClient,
+              chainSpec,
+              relayChainGenesisHash,
+            }),
+        })
       else if (isSubstrateConnectToExtensionMessage(msg))
         switch (msg.type) {
           case "add-well-known-chain":

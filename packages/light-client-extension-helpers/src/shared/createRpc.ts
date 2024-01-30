@@ -12,7 +12,7 @@ type Handler = (...params: any[]) => any | Promise<any>
 
 type Handlers = Record<string, Handler>
 
-export type MethodHandlersFor<
+export type RpcMethodHandlersFor<
   THandlers extends Handlers,
   TContext = unknown,
 > = {
@@ -22,21 +22,21 @@ export type MethodHandlersFor<
   ) => ReturnType<THandlers[method]>
 }
 
-type MethodMiddleware<Context = any> = (
-  next: MethodMiddlewareNext<Context>,
+export type RpcMethodMiddleware<Context = any> = (
+  next: RpcMethodMiddlewareNext<Context>,
   request: RpcRequestMessage,
   context?: Context,
 ) => Promise<any>
 
-type MethodMiddlewareNext<Context> = (
+type RpcMethodMiddlewareNext<Context> = (
   request: RpcRequestMessage,
   context?: Context,
 ) => Promise<any>
 
 export const createRpc = <THandlers extends Handlers, TContext = unknown>(
   sendMessage: (message: RpcMessage) => void,
-  handlers?: MethodHandlersFor<Handlers, TContext>,
-  middlewares?: MethodMiddleware<TContext>[],
+  handlers?: RpcMethodHandlersFor<Handlers, TContext>,
+  middlewares?: RpcMethodMiddleware<TContext>[],
 ) => {
   let nextId = 0
   const pending = new Map<
@@ -56,7 +56,7 @@ export const createRpc = <THandlers extends Handlers, TContext = unknown>(
         context,
       ),
   )
-  const innerMethodHandler: MethodMiddlewareNext<TContext> = (
+  const innerMethodHandler: RpcMethodMiddlewareNext<TContext> = (
     { method, params },
     context,
   ) => handlers?.[method](params ?? [], context)
@@ -124,7 +124,7 @@ export const isRpcRequestMessage = (
 // }
 
 const createIsValidMethodMiddleware =
-  (methods: string[]): MethodMiddleware =>
+  (methods: string[]): RpcMethodMiddleware =>
   (next, request, context) => {
     if (!methods.includes(request.method))
       throw new RpcError("Method not found", -32601)
@@ -132,7 +132,7 @@ const createIsValidMethodMiddleware =
   }
 
 const createResponseMiddleware =
-  (sendMessage: (message: RpcResponseMessage) => void): MethodMiddleware =>
+  (sendMessage: (message: RpcResponseMessage) => void): RpcMethodMiddleware =>
   async (next, request, context) => {
     const { id } = request
     try {

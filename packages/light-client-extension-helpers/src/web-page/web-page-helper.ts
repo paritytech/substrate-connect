@@ -5,7 +5,7 @@ import {
   createRpc,
   isRpcMessageWithOrigin,
   isSubstrateConnectToApplicationMessage,
-  type MethodHandlersFor,
+  type RpcMethodHandlersFor,
 } from "@/shared"
 import type { LightClientProvider, RawChain, WebPageRpcHandlers } from "./types"
 import type { BackgroundRpcHandlers } from "@/background/types"
@@ -28,7 +28,7 @@ export const getLightClientProvider = async (
   const chainsChangeCallbacks: Parameters<
     LightClientProvider["addChainsChangeListener"]
   >[0][] = []
-  const handlers: MethodHandlersFor<WebPageRpcHandlers> = {
+  const handlers: RpcMethodHandlersFor<WebPageRpcHandlers> = {
     onAddChains([chains]) {
       chainsChangeCallbacks.forEach((cb) =>
         cb(
