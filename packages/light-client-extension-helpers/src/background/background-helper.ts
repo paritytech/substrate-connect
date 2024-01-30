@@ -24,10 +24,11 @@ import { smoldotProvider } from "./smoldot-provider"
 import {
   ALARM,
   PORT,
-  RpcMessage,
   createRpc,
   isRpcMessage,
   isSubstrateConnectToExtensionMessage,
+  type RpcMessage,
+  type MethodHandlersFor,
 } from "@/shared"
 import * as storage from "@/storage"
 import type { WebPageRpcHandlers } from "@/web-page/types"
@@ -316,10 +317,10 @@ export const register = ({
     const postMessage = (message: ToApplication | RpcMessage) =>
       port.postMessage(message)
 
-    const handlers: BackgroundRpcHandlers = {
+    const handlers: MethodHandlersFor<BackgroundRpcHandlers> = {
       //#region content-script RPCs
       keepAlive() {},
-      async getChain(chainSpec, relayChainGenesisHash) {
+      async getChain([chainSpec, relayChainGenesisHash]) {
         const tabId = port.sender?.tab?.id
         if (!tabId) throw new Error("Undefined tabId")
 
@@ -354,10 +355,10 @@ export const register = ({
       //#endregion
       // FIXME: do not allow content-script to call ExtensionPage RPCs
       //#region ExtensionPage RPCs
-      deleteChain(genesisHash) {
+      deleteChain([genesisHash]) {
         return lightClientPageHelper.deleteChain(genesisHash)
       },
-      persistChain(chainSpec, relayChainGenesisHash) {
+      persistChain([chainSpec, relayChainGenesisHash]) {
         return lightClientPageHelper.persistChain(
           chainSpec,
           relayChainGenesisHash,
@@ -371,10 +372,10 @@ export const register = ({
           }),
         )
       },
-      disconnect(tabId, genesisHash) {
+      disconnect([tabId, genesisHash]) {
         return lightClientPageHelper.disconnect(tabId, genesisHash)
       },
-      setBootNodes(genesisHash, bootNodes) {
+      setBootNodes([genesisHash, bootNodes]) {
         return lightClientPageHelper.setBootNodes(genesisHash, bootNodes)
       },
       //#endregion
