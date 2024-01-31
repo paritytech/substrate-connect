@@ -2,7 +2,7 @@
 
 Substrate connect provides a way to interact with [substrate](https://substrate.dev/)
 based blockchains in the browser without using an RPC server. Substrate connect
-uses a [smoldot](https://github.com/paritytech/smoldot/) WASM light client to
+uses a [smoldot](https://github.com/smol-dot/smoldot) WASM light client to
 securely connect to the blockchain network without relying on specific 3rd parties.
 
 Due to browser limitations on websockets from https pages, establishing a good
