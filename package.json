@@ -37,7 +37,7 @@
     "deploy-projects-and-docs": "./deploy.sh",
     "format": "prettier --write .",
     "checkResolutions": "node ./.ensure-resolution.mjs",
-    "postinstall": "husky install"
+    "prepare": "husky"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,md}": "prettier --write"
