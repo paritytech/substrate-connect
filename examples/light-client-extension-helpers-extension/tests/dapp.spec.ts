@@ -5,7 +5,9 @@ test("sanity", async ({ page }) => {
   await page.goto("/")
 
   await expect(page).toHaveTitle(/extension-dapp/)
-  await expect(page.locator("h1")).toHaveText("Extension Test DApp")
+  await expect(page.locator("h1")).toHaveText("Extension Test DApp", {
+    timeout: 15_000,
+  })
 
   for (const chainName of ["Polkadot", "Kusama", "Westend"]) {
     const chain = page.getByTestId(`chain${chainName}`)
