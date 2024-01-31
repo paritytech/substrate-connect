@@ -1,6 +1,6 @@
 import type { ToExtension } from "@substrate/connect-extension-protocol"
 import type { ToApplicationMessage } from "@/protocol"
-import type { BackgroundRpcHandlers } from "@/background/types"
+import type { BackgroundRpcSpec } from "@/background/types"
 import {
   CONTEXT,
   KEEP_ALIVE_INTERVAL,
@@ -134,15 +134,16 @@ const getOrCreateExtensionProxy = (
   })
 }
 
-let internalRpc: Rpc<BackgroundRpcHandlers> | undefined
+let internalRpc: Rpc<BackgroundRpcSpec> | undefined
 const getOrCreateInternalRpc = () => {
   if (internalRpc) return internalRpc
 
   const port = chrome.runtime.connect({ name: PORT.CONTENT_SCRIPT })
-  const rpc = createRpc<BackgroundRpcHandlers>((msg) => port.postMessage(msg))
+  const rpc = createRpc((msg) => port.postMessage(msg))
+  const rpcClient = rpc.client<BackgroundRpcSpec>()
   port.onMessage.addListener(rpc.handle)
   const keepAliveInterval = setInterval(
-    () => rpc.notify("keepAlive", []),
+    () => rpcClient.notify("keepAlive", []),
     KEEP_ALIVE_INTERVAL,
   )
   port.onDisconnect.addListener(() => {

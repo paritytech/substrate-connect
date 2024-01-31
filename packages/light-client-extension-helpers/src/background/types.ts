@@ -37,7 +37,7 @@ export interface PageChain {
   provider: ConnectProvider
 }
 
-export type BackgroundRpcHandlers = {
+export type BackgroundRpcSpec = {
   keepAlive(): void
   getChain(
     chainSpec: string,

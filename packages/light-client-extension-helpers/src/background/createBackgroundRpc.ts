@@ -1,20 +1,17 @@
-import { Client } from "smoldot"
 import type {
   AddOnAddChainByUserListener,
-  BackgroundRpcHandlers,
+  BackgroundRpcSpec as BackgroundRpcSpec,
   LightClientPageHelper,
 } from "./types"
 import {
   createRpc,
   PORT,
   RpcError,
-  type RpcMethodHandlersFor,
+  type RpcMethodHandlers,
   type RpcMessage,
   type RpcMethodMiddleware,
 } from "@/shared"
 import * as storage from "@/storage"
-import type { ContentScriptRpcHandlers } from "@/content-script/types"
-import type { WebPageRpcHandlers } from "@/web-page/types"
 
 type Context = {
   port: chrome.runtime.Port
@@ -26,7 +23,7 @@ type Context = {
   }) => Promise<{ genesisHash: string; name: string }>
 }
 
-const handlers: RpcMethodHandlersFor<BackgroundRpcHandlers, Context> = {
+const handlers: RpcMethodHandlers<BackgroundRpcSpec, Context> = {
   //#region content-script RPCs
   keepAlive() {},
   async getChain([chainSpec, relayChainGenesisHash], ctx) {
@@ -123,9 +120,4 @@ const allowedMethodsMiddleware: RpcMethodMiddleware<Context> = async (
 
 export const createBackgroundRpc = (
   sendMessage: (message: RpcMessage) => void,
-) =>
-  createRpc<WebPageRpcHandlers & ContentScriptRpcHandlers, Context>(
-    sendMessage,
-    handlers,
-    [allowedMethodsMiddleware],
-  )
+) => createRpc(sendMessage, handlers, [allowedMethodsMiddleware])

@@ -5,10 +5,10 @@ import {
   createRpc,
   isRpcMessageWithOrigin,
   isSubstrateConnectToApplicationMessage,
-  type RpcMethodHandlersFor,
+  type RpcMethodHandlers,
 } from "@/shared"
-import type { LightClientProvider, RawChain, WebPageRpcHandlers } from "./types"
-import type { BackgroundRpcHandlers } from "@/background/types"
+import type { LightClientProvider, RawChain, WebPageRpcSpec } from "./types"
+import type { BackgroundRpcSpec } from "@/background/types"
 import type { ToApplication } from "@substrate/connect-extension-protocol"
 
 export type * from "./types"
@@ -28,7 +28,7 @@ export const getLightClientProvider = async (
   const chainsChangeCallbacks: Parameters<
     LightClientProvider["addChainsChangeListener"]
   >[0][] = []
-  const handlers: RpcMethodHandlersFor<WebPageRpcHandlers> = {
+  const handlers: RpcMethodHandlers<WebPageRpcSpec> = {
     onAddChains([chains]) {
       chainsChangeCallbacks.forEach((cb) =>
         cb(
@@ -42,7 +42,7 @@ export const getLightClientProvider = async (
       )
     },
   }
-  const rpc = createRpc<BackgroundRpcHandlers>(
+  const rpc = createRpc(
     (msg) =>
       window.postMessage(
         { channelId, msg: { origin: CONTEXT.WEB_PAGE, ...msg } },
@@ -50,6 +50,8 @@ export const getLightClientProvider = async (
       ),
     handlers,
   )
+  const rpcClient = rpc.client<BackgroundRpcSpec>()
+  rpcClient.request("getChains", [])
 
   window.addEventListener("message", ({ data, source }) => {
     if (source !== window || !data) return
@@ -61,11 +63,11 @@ export const getLightClientProvider = async (
       return rawChainCallbacks.forEach((cb) => cb(msg))
   })
 
-  let chains = await rpc.request("getChains", [])
+  let chains = await rpcClient.request("getChains", [])
   chainsChangeCallbacks.push((chains_) => (chains = chains_))
   return {
     async getChain(chainSpec, relayChainGenesisHash) {
-      const chainInfo = await rpc.request("getChain", [
+      const chainInfo = await rpcClient.request("getChain", [
         chainSpec,
         relayChainGenesisHash,
       ])

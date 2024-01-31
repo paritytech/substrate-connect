@@ -38,7 +38,7 @@ export interface JsonRpcProvider {
   disconnect: UnsubscribeFn
 }
 
-export type WebPageRpcHandlers = {
+export type WebPageRpcSpec = {
   onAddChains(
     chains: Record<string, { genesisHash: string; name: string }>,
   ): void

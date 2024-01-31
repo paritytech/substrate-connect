@@ -1,1 +1,1 @@
-export type ContentScriptRpcHandlers = {}
+export type ContentScriptRpcSpec = {}

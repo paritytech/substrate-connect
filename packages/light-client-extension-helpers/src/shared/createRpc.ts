@@ -8,34 +8,31 @@ type RpcResponseMessage =
 
 export type RpcMessage = RpcRequestMessage | RpcResponseMessage
 
-type Handler = (...params: any[]) => any | Promise<any>
+type RpcHandler = (...params: any[]) => any | Promise<any>
 
-type Handlers = Record<string, Handler>
+type RpcSpec = Record<string, RpcHandler>
 
-export type RpcMethodHandlersFor<
-  THandlers extends Handlers,
-  TContext = unknown,
-> = {
-  [method in keyof THandlers]: (
-    params: Parameters<THandlers[method]>,
-    context?: TContext,
-  ) => ReturnType<THandlers[method]>
+export type RpcMethodHandlers<TRpcSpec extends RpcSpec, TContext = void> = {
+  [method in keyof TRpcSpec]: (
+    params: Parameters<TRpcSpec[method]>,
+    context: TContext,
+  ) => ReturnType<TRpcSpec[method]>
 }
 
 export type RpcMethodMiddleware<Context = any> = (
   next: RpcMethodMiddlewareNext<Context>,
   request: RpcRequestMessage,
-  context?: Context,
+  context: Context,
 ) => Promise<any>
 
 type RpcMethodMiddlewareNext<Context> = (
   request: RpcRequestMessage,
-  context?: Context,
+  context: Context,
 ) => Promise<any>
 
-export const createRpc = <THandlers extends Handlers, TContext = unknown>(
+export const createRpc = <TContext>(
   sendMessage: (message: RpcMessage) => void,
-  handlers?: RpcMethodHandlersFor<Handlers, TContext>,
+  handlers?: RpcMethodHandlers<RpcSpec, TContext>,
   middlewares?: RpcMethodMiddleware<TContext>[],
 ) => {
   let nextId = 0
@@ -60,27 +57,39 @@ export const createRpc = <THandlers extends Handlers, TContext = unknown>(
     { method, params },
     context,
   ) => handlers?.[method](params ?? [], context)
-  const methodHandler = (message: RpcRequestMessage, context?: TContext) =>
+  const methodHandler = (message: RpcRequestMessage, context: TContext) =>
     applyMiddleware(innerMethodHandler, message, context)
+  const request = <T>(method: string, params: any[]) => {
+    const id = `${nextId++}`
+    sendMessage({ id, method, params })
+    return new Promise<T>((resolve, reject) =>
+      pending.set(id, { resolve, reject }),
+    )
+  }
+  const notify = (method: string, params: any[]) => {
+    sendMessage({ method, params })
+  }
   return {
-    request<
-      TMethod extends string & keyof THandlers,
-      TParams extends Parameters<THandlers[TMethod]>,
-      TReturn extends Awaited<ReturnType<THandlers[TMethod]>>,
-    >(method: TMethod, params: TParams) {
-      const id = `${nextId++}`
-      sendMessage({ id, method, params })
-      return new Promise<TReturn>((resolve, reject) =>
-        pending.set(id, { resolve, reject }),
-      )
+    request,
+    notify,
+    client<TRpcSpec extends RpcSpec>() {
+      return {
+        request<
+          TMethod extends string & keyof TRpcSpec,
+          TParams extends Parameters<TRpcSpec[TMethod]>,
+          TReturn extends Awaited<ReturnType<TRpcSpec[TMethod]>>,
+        >(method: TMethod, params: TParams) {
+          return request<TReturn>(method, params)
+        },
+        notify<
+          TMethod extends string & keyof TRpcSpec,
+          TParams extends Parameters<TRpcSpec[TMethod]>,
+        >(method: TMethod, params: TParams) {
+          notify(method, params)
+        },
+      }
     },
-    notify<
-      TMethod extends string & keyof THandlers,
-      TParams extends Parameters<THandlers[TMethod]>,
-    >(method: TMethod, params: TParams) {
-      sendMessage({ method, params })
-    },
-    async handle(message: RpcMessage, context?: TContext) {
+    async handle(message: RpcMessage, context: TContext) {
       if (!isRpcMessage(message)) return
       if ("method" in message) {
         try {
@@ -103,10 +112,7 @@ export const createRpc = <THandlers extends Handlers, TContext = unknown>(
   }
 }
 
-export type Rpc<
-  THandlers extends Handlers = any,
-  TContext = unknown,
-> = ReturnType<typeof createRpc<THandlers, TContext>>
+export type Rpc<TContext = void> = ReturnType<typeof createRpc<TContext>>
 
 export const isRpcMessage = (message: any): message is RpcMessage =>
   typeof message === "object" && ("method" in message || "id" in message)
