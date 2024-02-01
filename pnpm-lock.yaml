@@ -12,8 +12,8 @@ importers:
   .:
     devDependencies:
       '@types/chrome':
-        specifier: ^0.0.259
-        version: 0.0.259
+        specifier: ^0.0.260
+        version: 0.0.260
       '@types/node':
         specifier: ^20.11.14
         version: 20.11.14
@@ -146,8 +146,8 @@ importers:
         specifier: ^1.41.1
         version: 1.41.1
       '@types/chrome':
-        specifier: ^0.0.259
-        version: 0.0.259
+        specifier: ^0.0.260
+        version: 0.0.260
       '@types/node':
         specifier: ^20.11.14
         version: 20.11.14
@@ -223,8 +223,8 @@ importers:
         version: 2.0.20
     devDependencies:
       '@types/chrome':
-        specifier: ^0.0.259
-        version: 0.0.259
+        specifier: ^0.0.260
+        version: 0.0.260
 
   projects/burnr:
     dependencies:
@@ -3543,8 +3543,8 @@ packages:
       '@types/node': 20.11.14
     dev: false
 
-  /@types/chrome@0.0.259:
-    resolution: {integrity: sha512-WP1HsLqKgoUwR/4dYiTfmOSUG5B05+xrPLbqboO15nuaUC+aBYxwB9ixVyLPYY9D+vocJK9rzH5g1lpqVrJqhg==}
+  /@types/chrome@0.0.260:
+    resolution: {integrity: sha512-lX6QpgfsZRTDpNcCJ+3vzfFnFXq9bScFRTlfhbK5oecSAjamsno+ejFTCbNtc5O/TPnVK9Tja/PyecvWQe0F2w==}
     dependencies:
       '@types/filesystem': 0.0.35
       '@types/har-format': 1.2.15
