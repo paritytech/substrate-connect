@@ -29,8 +29,6 @@ import {
 } from "@/shared"
 import * as storage from "@/storage"
 import { createBackgroundRpc } from "./createBackgroundRpc"
-import { WebPageRpcSpec } from "@/web-page/types"
-import { ContentScriptRpcSpec } from "@/content-script/types"
 
 export type * from "./types"
 
@@ -316,10 +314,9 @@ export const register = ({
       port.postMessage(message)
 
     const rpc = createBackgroundRpc(postMessage)
-    const rpcClient = rpc.client<WebPageRpcSpec & ContentScriptRpcSpec>()
 
     const unsubscribeOnChainsChanged = storage.onChainsChanged((chains) =>
-      rpcClient.notify("onAddChains", [chains]),
+      rpc.notify("onAddChains", [chains]),
     )
 
     let isPortDisconnected = false

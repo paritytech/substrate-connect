@@ -8,9 +8,9 @@ type RpcResponseMessage =
 
 export type RpcMessage = RpcRequestMessage | RpcResponseMessage
 
-type RpcHandler = (...params: any[]) => any | Promise<any>
+type RpcMethod = (...params: any[]) => any | Promise<any>
 
-type RpcSpec = Record<string, RpcHandler>
+type RpcSpec = Record<string, RpcMethod>
 
 export type RpcMethodHandlers<TRpcSpec extends RpcSpec, TContext = void> = {
   [method in keyof TRpcSpec]: (
@@ -69,10 +69,39 @@ export const createRpc = <TContext>(
   const notify = (method: string, params: any[]) => {
     sendMessage({ method, params })
   }
+  const handle = async (message: RpcMessage, context: TContext) => {
+    if (!isRpcMessage(message)) return
+    if ("method" in message) {
+      try {
+        await methodHandler(message, context)
+      } catch (error) {
+        console.error("error hanlding message:", message, error)
+      }
+    } else if ("id" in message) {
+      const { id } = message
+      if (!pending.has(id))
+        return console.assert(false, "Unknown message", message)
+      const { resolve, reject } = pending.get(id)!
+      pending.delete(id)
+      if ("error" in message) return reject(message.error)
+      resolve(message.result)
+    } else {
+      console.assert(false, "Unhandled message", message)
+    }
+  }
   return {
     request,
     notify,
-    client<TRpcSpec extends RpcSpec>() {
+    handle,
+    withClient<TRpcSpec extends RpcSpec>() {
+      const cache = new Map<string, (...args: any[]) => any>()
+      const client = new Proxy({} as TRpcSpec, {
+        get(_, prop: string) {
+          if (!cache.has(prop))
+            cache.set(prop, (...args) => request(prop, args))
+          return cache.get(prop)!
+        },
+      })
       return {
         request<
           TMethod extends string & keyof TRpcSpec,
@@ -87,32 +116,12 @@ export const createRpc = <TContext>(
         >(method: TMethod, params: TParams) {
           notify(method, params)
         },
-      }
-    },
-    async handle(message: RpcMessage, context: TContext) {
-      if (!isRpcMessage(message)) return
-      if ("method" in message) {
-        try {
-          await methodHandler(message, context)
-        } catch (error) {
-          console.error("error hanlding message:", message, error)
-        }
-      } else if ("id" in message) {
-        const { id } = message
-        if (!pending.has(id))
-          return console.assert(false, "Unknown message", message)
-        const { resolve, reject } = pending.get(id)!
-        pending.delete(id)
-        if ("error" in message) return reject(message.error)
-        resolve(message.result)
-      } else {
-        console.assert(false, "Unhandled message", message)
+        handle,
+        client,
       }
     },
   }
 }
-
-export type Rpc<TContext = void> = ReturnType<typeof createRpc<TContext>>
 
 export const isRpcMessage = (message: any): message is RpcMessage =>
   typeof message === "object" && ("method" in message || "id" in message)

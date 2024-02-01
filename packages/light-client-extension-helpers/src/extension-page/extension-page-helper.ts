@@ -11,16 +11,17 @@ export type * from "./types"
 
 // FIXME: re-connect?
 const port = chrome.runtime.connect({ name: PORT.EXTENSION_PAGE })
-const rpc = createRpc((msg) => port.postMessage(msg))
-const rpcClient = rpc.client<BackgroundRpcSpec>()
+const rpc = createRpc((msg) =>
+  port.postMessage(msg),
+).withClient<BackgroundRpcSpec>()
 port.onMessage.addListener(rpc.handle)
 
 export const helper: LightClientPageHelper = {
   async deleteChain(genesisHash) {
-    await rpcClient.request("deleteChain", [genesisHash])
+    await rpc.client.deleteChain(genesisHash)
   },
   async persistChain(chainSpec, relayChainGenesisHash) {
-    await rpcClient.request("persistChain", [chainSpec, relayChainGenesisHash])
+    await rpc.client.persistChain(chainSpec, relayChainGenesisHash)
   },
   async getChains() {
     return Promise.all(
@@ -49,7 +50,7 @@ export const helper: LightClientPageHelper = {
     )
   },
   async getActiveConnections() {
-    const connections = await rpcClient.request("getActiveConnections", [])
+    const connections = await rpc.client.getActiveConnections()
     return connections.map(({ tabId, chain }) => ({
       tabId,
       chain: {
@@ -74,9 +75,9 @@ export const helper: LightClientPageHelper = {
     }))
   },
   async disconnect(tabId: number, genesisHash: string) {
-    await rpcClient.request("disconnect", [tabId, genesisHash])
+    await rpc.client.disconnect(tabId, genesisHash)
   },
   async setBootNodes(genesisHash, bootNodes) {
-    await rpcClient.request("setBootNodes", [genesisHash, bootNodes])
+    await rpc.client.setBootNodes(genesisHash, bootNodes)
   },
 }

@@ -49,9 +49,7 @@ export const getLightClientProvider = async (
         window.origin,
       ),
     handlers,
-  )
-  const rpcClient = rpc.client<BackgroundRpcSpec>()
-  rpcClient.request("getChains", [])
+  ).withClient<BackgroundRpcSpec>()
 
   window.addEventListener("message", ({ data, source }) => {
     if (source !== window || !data) return
@@ -63,14 +61,14 @@ export const getLightClientProvider = async (
       return rawChainCallbacks.forEach((cb) => cb(msg))
   })
 
-  let chains = await rpcClient.request("getChains", [])
+  let chains = await rpc.client.getChains()
   chainsChangeCallbacks.push((chains_) => (chains = chains_))
   return {
     async getChain(chainSpec, relayChainGenesisHash) {
-      const chainInfo = await rpcClient.request("getChain", [
+      const chainInfo = await rpc.client.getChain(
         chainSpec,
         relayChainGenesisHash,
-      ])
+      )
       return createRawChain(
         channelId,
         chains[chainInfo.genesisHash]

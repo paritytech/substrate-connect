@@ -5,7 +5,6 @@ import {
   CONTEXT,
   KEEP_ALIVE_INTERVAL,
   PORT,
-  Rpc,
   RpcMessage,
   createRpc,
   isRpcMessage,
@@ -134,16 +133,17 @@ const getOrCreateExtensionProxy = (
   })
 }
 
-let internalRpc: Rpc<BackgroundRpcSpec> | undefined
+let internalRpc: any | undefined
 const getOrCreateInternalRpc = () => {
   if (internalRpc) return internalRpc
 
   const port = chrome.runtime.connect({ name: PORT.CONTENT_SCRIPT })
-  const rpc = createRpc((msg) => port.postMessage(msg))
-  const rpcClient = rpc.client<BackgroundRpcSpec>()
+  const rpc = createRpc((msg) =>
+    port.postMessage(msg),
+  ).withClient<BackgroundRpcSpec>()
   port.onMessage.addListener(rpc.handle)
   const keepAliveInterval = setInterval(
-    () => rpcClient.notify("keepAlive", []),
+    () => rpc.notify("keepAlive", []),
     KEEP_ALIVE_INTERVAL,
   )
   port.onDisconnect.addListener(() => {

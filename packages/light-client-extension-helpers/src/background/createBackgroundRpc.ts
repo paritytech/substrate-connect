@@ -1,3 +1,4 @@
+import { ContentScriptRpcSpec } from "@/content-script/types"
 import type {
   AddOnAddChainByUserListener,
   BackgroundRpcSpec as BackgroundRpcSpec,
@@ -12,6 +13,7 @@ import {
   type RpcMethodMiddleware,
 } from "@/shared"
 import * as storage from "@/storage"
+import { WebPageRpcSpec } from "@/web-page/types"
 
 type Context = {
   port: chrome.runtime.Port
@@ -120,4 +122,7 @@ const allowedMethodsMiddleware: RpcMethodMiddleware<Context> = async (
 
 export const createBackgroundRpc = (
   sendMessage: (message: RpcMessage) => void,
-) => createRpc(sendMessage, handlers, [allowedMethodsMiddleware])
+) =>
+  createRpc(sendMessage, handlers, [allowedMethodsMiddleware]).withClient<
+    WebPageRpcSpec & ContentScriptRpcSpec
+  >()
