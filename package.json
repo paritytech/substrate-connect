@@ -25,48 +25,49 @@
   "scripts": {
     "downloadSpecs": "node bin/downloadSpecs.js",
     "api-docs": "typedoc",
-    "deep-clean": "yarn workspaces foreach run deep-clean && rm -rf node_modules",
-    "clean": " yarn workspaces foreach run clean",
-    "lint": "prettier --check . && yarn workspaces foreach run lint",
-    "build": "yarn workspaces foreach --topological run build",
-    "test": "yarn workspaces foreach run test",
+    "deep-clean": "pnpm -r deep-clean && rm -rf node_modules",
+    "clean": " pnpm -r run clean",
+    "lint": "prettier --check .",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
     "dev:api-docs": "concurrently -n typedoc,http-server 'nodemon -e ts --watch ./packages/connect --watch ./packages/connect-extension-protocol --exec typedoc' 'http-server _site/api'",
-    "dev:burnr": "yarn workspace @substrate/burnr run dev",
-    "dev:demo": "yarn workspace @substrate/demo run dev",
-    "dev:extension": "yarn workspace @substrate/extension run dev",
-    "deploy": "./deploy.sh",
+    "dev:burnr": "pnpm --filter @substrate/burnr dev",
+    "dev:demo": "pnpm --filter @substrate/demo dev",
+    "dev:extension": "pnpm --filter @substrate/extension dev",
+    "deploy-projects-and-docs": "./deploy.sh",
     "format": "prettier --write .",
     "checkResolutions": "node ./.ensure-resolution.mjs",
-    "postinstall": "husky install"
+    "prepare": "husky"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,md}": "prettier --write"
   },
   "devDependencies": {
-    "@polkadot-api/json-rpc-provider": "^0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0",
-    "@polkadot-api/substrate-client": "0.0.1-6b090acd3321b98b6306434088c5eba4a2e29edd.1.0",
-    "@types/chrome": "^0.0.237",
-    "@types/node": "^18.18.9",
+    "@types/chrome": "^0.0.260",
+    "@types/node": "^20.11.14",
     "@types/qrcode.react": "^1.0.5",
-    "@types/react": "^18.2.37",
+    "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.15",
     "@types/react-router-dom": "^5.3.3",
-    "@typescript-eslint/parser": "^6.10.0",
+    "@typescript-eslint/parser": "^6.19.1",
     "concurrently": "^8.2.2",
     "eslint": "^8.53.0",
-    "eslint-config-prettier": "^8.10.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-import": "^2.29.0",
     "http-server": "^14.1.1",
-    "husky": "^8.0.3",
-    "lint-staged": "^14.0.1",
-    "nodemon": "^2.0.22",
-    "prettier": "^3.0.3",
-    "typedoc": "^0.25.3",
+    "husky": "^9.0.7",
+    "lint-staged": "^15.2.1",
+    "nodemon": "^3.0.3",
+    "prettier": "^3.2.4",
+    "tslib": "^2.6.2",
+    "tsup": "^8.0.1",
+    "turbo": "^1.11.3",
+    "typedoc": "^0.25.7",
     "typescript": "^5.2.2"
   },
   "resolutions": {
-    "@substrate/connect": "0.8.0"
+    "@substrate/connect": "0.8.5"
   },
-  "packageManager": "yarn@3.6.3"
+  "packageManager": "pnpm@8.14.0"
 }

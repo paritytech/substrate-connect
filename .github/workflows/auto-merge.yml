@@ -17,12 +17,12 @@ jobs:
       # will not occur.
       - name: Dependabot metadata
         id: dependabot-metadata
-        uses: dependabot/fetch-metadata@v1.1.1
+        uses: dependabot/fetch-metadata@v1.6.0
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       # Here the PR gets approved.
       - name: Approve a PR
-        if: ${{ steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
+        if: ${{ !contains(steps.dependabot-metadata.outputs.dependency-names, 'smoldot') && !contains(steps.dependabot-metadata.outputs.dependency-names, '@polkadot-api') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
         run: gh pr review --approve "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
@@ -30,7 +30,7 @@ jobs:
       # Finally, this sets the PR to allow auto-merging for patch and minor
       # updates if all checks pass
       - name: Enable auto-merge for Dependabot PRs
-        if: ${{ steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
+        if: ${{ !contains(steps.dependabot-metadata.outputs.dependency-names, 'smoldot') && !contains(steps.dependabot-metadata.outputs.dependency-names, '@polkadot-api') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}

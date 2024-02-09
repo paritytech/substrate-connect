@@ -1,0 +1,50 @@
+{
+  "name": "@substrate/light-client-extension-helpers",
+  "version": "0.0.2",
+  "author": "Matias Volpe (https://github.com/kratico)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paritytech/polkadot-api.git"
+  },
+  "license": "MIT",
+  "exports": {
+    "./background": "./dist/background/background-helper.mjs",
+    "./content-script": "./dist/content-script/content-script-helper.mjs",
+    "./extension-page": "./dist/extension-page/extension-page-helper.mjs",
+    "./web-page": "./dist/web-page/web-page-helper.mjs",
+    "./known-chain-specs": "./dist/known-chain-specs/index.mjs",
+    "./known-chain-specs/polkadot": "./dist/known-chain-specs/polkadot.mjs",
+    "./known-chain-specs/ksmcc3": "./dist/known-chain-specs/ksmcc3.mjs",
+    "./known-chain-specs/westend2": "./dist/known-chain-specs/westend2.mjs",
+    "./known-chain-specs/rococo_v2_2": "./dist/known-chain-specs/rococo_v2_2.mjs",
+    "./smoldot": "./dist/smoldot/smoldot.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --noEmit && tsup-node src/background/background-helper.ts src/content-script/content-script-helper.ts src/extension-page/extension-page-helper.ts src/web-page/web-page-helper.ts src/known-chain-specs/index.ts src/known-chain-specs/polkadot.ts src/known-chain-specs/ksmcc3.ts src/known-chain-specs/westend2.ts src/known-chain-specs/rococo_v2_2.ts src/smoldot/smoldot.ts --clean --sourcemap --platform neutral --target=es2020 --format esm --dts",
+    "dev": "pnpm build --watch",
+    "lint": "prettier --check README.md \"src/**/*.{js,jsx,ts,tsx,json,md}\""
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": false,
+    "trailingComma": "all"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.260"
+  },
+  "peerDependencies": {
+    "smoldot": "2.x"
+  },
+  "dependencies": {
+    "@polkadot-api/client": "0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0",
+    "@polkadot-api/json-rpc-provider": "0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0",
+    "@polkadot-api/json-rpc-provider-proxy": "0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0",
+    "@polkadot-api/substrate-client": "0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0",
+    "@substrate/connect-extension-protocol": "workspace:^",
+    "@substrate/connect-known-chains": "workspace:^",
+    "rxjs": "^7.8.1"
+  }
+}

@@ -12,26 +12,153 @@ jobs:
 
     strategy:
       matrix:
-        # TODO: re-enable Node 20.x after https://github.com/nodejs/node/pull/49500
-        node-version: [16.x, 18.x, "20.5"]
+        node-version: [16.x, 18.x, 20.x]
 
     steps:
     - uses: actions/checkout@v4.1.1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+    - uses: ./.github/actions/turbo-build 
       with:
         node-version: ${{ matrix.node-version }}
-        cache: yarn
-    - run: yarn install --immutable
-    - run: yarn checkResolutions
-    - run: yarn build
-    - run: yarn lint
-    - run: yarn test
+    - run: pnpm checkResolutions
+
+  playwright-test-extension:
+    needs: [build]
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - uses: ./.github/actions/turbo-build
+    - name: Build extension with Manifest v3 for Chrome
+      run: pnpm build:chrome
+      working-directory: ./projects/extension
+    - run: pnpm playwright:install
+      working-directory: ./projects/extension
+    - name: Test projects/extension
+      run: pnpm playwright:chromium --trace on
+      working-directory: ./projects/extension
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: playwright-report-substrate-connect-extension-mv3-chrome
+        path: ./projects/extension/playwright-report
+
+  playwright-test-examples:
+    needs: [build]
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - uses: ./.github/actions/turbo-build
+    - run: pnpm playwright:install
+      working-directory: ./examples/light-client-extension-helpers-extension
+    - name: Test examples/light-client-extension-helpers-extension
+      run: pnpm playwright:chromium --trace on
+      working-directory: ./examples/light-client-extension-helpers-extension
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: playwright-report-light-client-extension-helpers-extension-mv3-chrome
+        path: ./examples/light-client-extension-helpers-extension/playwright-report
+
+  zombienet-tests:
+    needs: [build]
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - uses: ./.github/actions/turbo-build
+      - name: Get zombienet
+        run: |
+          curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.3.91/zombienet-linux-x64
+          chmod +x zombienet-linux-x64
+      - name: Get polkadot
+        run: |
+          curl -L -O https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.6.0/polkadot
+          chmod +x polkadot
+      - name: Get polkadot execute worker
+        run: |
+          curl -L -O https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.6.0/polkadot-execute-worker
+          chmod +x polkadot-execute-worker
+      - name: Get polkadot prepare worker
+        run: |
+          curl -L -O https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.6.0/polkadot-prepare-worker
+          chmod +x polkadot-prepare-worker
+      - name: Get polkadot-parachain
+        run: |
+          curl -L -O https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.6.0/polkadot-parachain
+          chmod +x polkadot-parachain
+      - name: Run test
+        run: |
+          export PATH=$(pwd):$PATH
+          cd zombienet-tests/src
+          zombienet-linux-x64 -p native test 0001-relay-smoke-test.zndsl
+          zombienet-linux-x64 -p native test 0002-parachain.zndsl
+          zombienet-linux-x64 -p native test 0003-test-against-chainspecs.zndsl
+
+  npm-publish:
+    if: github.ref == 'refs/heads/main'
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - uses: ./.github/actions/turbo-build
+      - name: "@substrate/connect Publish"
+        id: publish_connect
+        uses: ./.github/actions/publish-package 
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package-directory: ./packages/connect
+      - name: "@substrate/connect-extension-protocol Publish"
+        id: publish_connect_extension_protocol
+        uses: ./.github/actions/publish-package 
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package-directory: ./packages/connect-extension-protocol
+      - name: "@substrate/connect-known-chains Publish"
+        uses: ./.github/actions/publish-package 
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package-directory: ./packages/connect-known-chains
+      - name: "@substrate/light-client-extension-helpers Publish"
+        uses: ./.github/actions/publish-package 
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package-directory: ./packages/light-client-extension-helpers
+      - name: Fetch gh-pages
+        if: steps.publish_connect.outputs.type || steps.publish_connect_extension_protocol.outputs.type
+        run: |
+          git remote set-branches origin gh-pages
+          git fetch --depth 1 origin gh-pages
+      - name: Deploy Projects & Docs
+        if: steps.publish_connect.outputs.type || steps.publish_connect_extension_protocol.outputs.type
+        run: pnpm deploy-projects-and-docs
+
+  upload-extension-artifacts:
+    if: github.ref == 'refs/heads/main'
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: substrate-connect-extension-source-code
+          path: ./projects/extension
+      - uses: ./.github/actions/turbo-build
+      - run: pnpm --filter @substrate/extension build:firefox
+      - uses: actions/upload-artifact@v4
+        with:
+          name: substrate-connect-extension-mv3-firefox
+          path: ./projects/extension/dist
+      - run: pnpm --filter @substrate/extension build:chrome
+      - uses: actions/upload-artifact@v4
+        with:
+          name: substrate-connect-extension-mv3-chrome
+          path: ./projects/extension/dist
 
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
     # are successful.
-    needs: [build]
+    needs: [build, playwright-test-extension, playwright-test-examples]
     runs-on: ubuntu-latest
     steps:
      - run: echo Success

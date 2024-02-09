@@ -1,27 +1,28 @@
 {
   "name": "@substrate/connect",
-  "version": "0.8.0",
+  "version": "0.8.5",
   "description": "Substrate-connect to Smoldot clients. Using either substrate extension with predefined clients or an internal smoldot client based on chainSpecs provided.",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/cjs/index.js",
-  "module": "dist/mjs/index.js",
-  "types": "dist/mjs/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/mjs/index.js",
-      "require": "./dist/cjs/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./worker": {
       "node": {
-        "import": "./dist/mjs/worker-node.js",
-        "require": "./dist/cjs/worker-node.js"
+        "import": "./dist/worker-node.js",
+        "require": "./dist/worker-node.cjs"
       },
-      "import": "./dist/mjs/worker.js",
-      "require": "./dist/cjs/worker.js"
+      "import": "./dist/worker.js",
+      "require": "./dist/worker.cjs"
     }
   },
   "repository": {
@@ -33,25 +34,22 @@
   },
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
-    "postinstall": "node build-js-specs.mjs",
-    "build-js-specs": "node build-js-specs.mjs",
-    "pretest": "yarn build",
-    "test": "vitest",
-    "deep-clean": "yarn clean && rm -rf node_modules",
-    "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "build": "yarn clean && yarn build-js-specs && yarn run build:mjs && yarn run build:cjs && bash ./fix-package-type.sh",
-    "build:mjs": "tsc -b tsconfig-mjs.json",
-    "build:cjs": "tsc -b tsconfig-cjs.json",
+    "pretest": "pnpm build",
+    "test": "vitest --dangerouslyIgnoreUnhandledErrors --environment jsdom",
+    "deep-clean": "pnpm clean && rm -rf node_modules",
+    "clean": "rm -rf dist",
+    "build": "tsup-node src/index.ts src/worker.ts src/worker-node.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
     "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {
+    "@substrate/light-client-extension-helpers": "workspace:^",
     "@substrate/connect-extension-protocol": "workspace:^",
-    "smoldot": "2.0.13"
+    "@substrate/connect-known-chains": "workspace:^",
+    "smoldot": "2.0.20"
   },
   "devDependencies": {
     "eslint": "^8.53.0",
-    "jsdom": "^22.1.0",
-    "typescript": "^5.2.2",
-    "vitest": "^0.34.6"
+    "jsdom": "^24.0.0",
+    "vitest": "^1.2.2"
   }
 }

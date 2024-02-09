@@ -1,6 +1,6 @@
 {
   "name": "@substrate/connect-known-chains",
-  "version": "1.0.1",
+  "version": "1.0.6",
   "description": "Substrate-connect well known chain specifications",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
@@ -39,17 +39,14 @@
   },
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
-    "postinstall": "yarn build-js-specs",
     "build-js-specs": "node scripts/build-js-specs.js",
     "test": "exit 0; #This package is only types",
-    "deep-clean": "yarn clean && rm -rf node_modules",
+    "deep-clean": "pnpm clean && rm -rf node_modules",
     "clean": "rm -rf dist",
-    "build": "yarn clean && yarn build-js-specs && tsup-node src/index.ts src/specs/polkadot.ts src/specs/ksmcc3.ts src/specs/westend2.ts src/specs/rococo_v2_2.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
+    "build": "pnpm build-js-specs && tsup-node src/index.ts src/specs/polkadot.ts src/specs/ksmcc3.ts src/specs/westend2.ts src/specs/rococo_v2_2.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
     "lint": "eslint . --ext .js,.ts"
   },
   "devDependencies": {
-    "eslint": "^8.53.0",
-    "tsup": "^8.0.1",
-    "typescript": "^5.2.2"
+    "eslint": "^8.53.0"
   }
 }

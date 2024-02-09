@@ -1,32 +1,34 @@
 {
   "name": "@substrate/demo",
-  "version": "1.0.0",
+  "version": "0.0.0",
+  "private": true,
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
   "browserslist": [
     "last 2 versions"
   ],
   "scripts": {
-    "deep-clean": "yarn clean && rm -rf node_modules",
+    "deep-clean": "pnpm clean && rm -rf node_modules",
     "clean": "rm -rf dist/ tsconfig.tsbuildinfo && mkdir -p dist/assets",
     "typecheck": "tsc -b",
     "typecheck:watch": "tsc -b --watch",
     "copy-assets": "cp -R ./src/assets ./dist",
-    "build": "yarn clean && yarn copy-assets && yarn typecheck && vite build --base=./",
-    "dev": "yarn clean && yarn copy-assets && vite serve",
+    "build": "pnpm clean && pnpm copy-assets && pnpm typecheck && vite build --base=./",
+    "dev": "pnpm clean && pnpm copy-assets && vite serve",
     "preview": "vite preview",
     "test": "exit 0; #No tests",
     "lint": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
-    "@polkadot/api": "^10.10.1",
-    "@polkadot/rpc-provider": "^10.10.1",
-    "@substrate/connect": "*"
+    "@polkadot-api/client": "0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0",
+    "@polkadot-api/json-rpc-provider-proxy": "0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0",
+    "@polkadot-api/substrate-client": "0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0",
+    "@substrate/connect": "workspace:*",
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.1.1",
     "eslint": "^8.53.0",
     "vite": "^4.5.0",
-    "vite-plugin-html": "^3.2.0"
+    "vite-plugin-html": "^3.2.2"
   }
 }

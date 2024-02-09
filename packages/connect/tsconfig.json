@@ -1,10 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "target": "ES2015",
     "baseUrl": ".",
     "rootDir": "src",
-    "downlevelIteration": true
+    "moduleResolution": "Bundler",
+    "downlevelIteration": true,
   },
   "include": ["src"],
-  "references": [{ "path": "../connect-extension-protocol/tsconfig-mjs.json" }]
+  "references": [{ "path": "../connect-extension-protocol/tsconfig-mjs.json" }],
 }

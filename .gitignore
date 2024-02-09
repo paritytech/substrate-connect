@@ -7,7 +7,6 @@ coverage
 _site
 *.tsbuildinfo
 polkadot
-zombienet-*
 polkadot-parachain*
 init.sh
 .yarn/*
@@ -17,6 +16,7 @@ init.sh
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+.turbo
 .vscode
 packages/connect/src/connector/specs/js
 substrate-connect_*-source-code.zip

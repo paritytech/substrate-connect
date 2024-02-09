@@ -1,0 +1,29 @@
+name: Turbo build
+inputs:
+  node-version:
+    description: Node version
+    required: true
+    default: 18.x
+runs:
+  using: composite
+  steps:
+    - name: Cache turbo build setup
+      uses: actions/cache@v3
+      with:
+        path: .turbo
+        key: ${{ runner.os }}-turbo-${{ inputs.node-version }}-build-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-turbo-${{ inputs.node-version }}-build-
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
+    - name: Use Node.js ${{ inputs.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
+    - run: pnpm install
+      shell: bash
+    - run: pnpm turbo build test lint --cache-dir=.turbo
+      shell: bash
+ 

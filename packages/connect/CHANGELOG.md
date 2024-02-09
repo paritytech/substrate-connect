@@ -4,6 +4,38 @@
 
 ### Changed
 
+## 0.8.5 - 2024-01-18
+
+### Changed
+
+- Use `@substrate/light-client-extension-helpers` ([#1720](https://github.com/paritytech/substrate-connect/pull/1720))
+- Update smoldot@[version 2.0.17](https://github.com/smol-dot/smoldot/blob/main/wasm-node/CHANGELOG.md#2017---2024-01-17) [#1767](https://github.com/paritytech/substrate-connect/pull/1767)
+
+## 0.8.4 - 2024-01-02
+
+### Changed
+
+- Update smoldot@[version 2.0.16](https://github.com/smol-dot/smoldot/blob/main/wasm-node/CHANGELOG.md#2016---2023-12-29) [#1708](https://github.com/paritytech/substrate-connect/pull/1708)
+- Use `@polkadot-api/light-client-extension-helpers@0.0.1-4bc9bd71f8f37f800fec7a42775f403271903870.1.0` ([#1709](https://github.com/paritytech/substrate-connect/pull/1709))
+
+## 0.8.3 - 2023-12-07
+
+### Changed
+
+- Use `@polkadot-api/light-client-extension-helpers/web-page` ([#1603](https://github.com/paritytech/substrate-connect/pull/1603))
+
+## 0.8.2 - 2023-12-06
+
+### Changed
+
+- Update `@substrate/connect-known-chains@^1.0.2`
+
+## 0.8.1 - 2023-11-30
+
+### Changed
+
+- Use chain specifications from `@substrate/connect-known-chains` ([#1647](https://github.com/paritytech/substrate-connect/pull/1647))
+
 ## 0.8.0 - 2023-11-28
 
 ### Breaking

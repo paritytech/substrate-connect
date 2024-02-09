@@ -37,16 +37,11 @@ jobs:
     - id: get-chain-id  # Reads the `id` field in the newly-downloaded chain spec
       run: echo "id=`jq -r .id ./chain_spec.json`" >> $GITHUB_OUTPUT
     - if: ${{ steps.get-chain-id.outputs.id == '' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: failed-response-${{ github.run_id }}
         path: |
           rpc_answer.json
-    - run: |  # Overwrite the `lightSyncState` field of the existing chain spec with the value of spec that's been downloaded.
-        tmp=$(mktemp)
-        output=./repo/packages/connect/src/connector/specs/${{ steps.get-chain-id.outputs.id }}.json
-        jq --slurpfile downloaded ./chain_spec.json '.lightSyncState = $downloaded[0].lightSyncState' "$output" > "$tmp"
-        mv "$tmp" "$output"
     - run: |  # Overwrite the `lightSyncState` field of the existing chain spec with the value of spec that's been downloaded.
         tmp=$(mktemp)
         output=./repo/packages/connect-known-chains/specs/${{ steps.get-chain-id.outputs.id }}.json
@@ -57,7 +52,7 @@ jobs:
         output=./repo/projects/extension/assets/chainspecs/${{ steps.get-chain-id.outputs.id }}.json
         jq --slurpfile downloaded ./chain_spec.json '.lightSyncState = $downloaded[0].lightSyncState' "$output" > "$tmp"
         mv "$tmp" "$output"
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: chain-spec-${{ steps.get-chain-id.outputs.id }}
         # Note that passing `repo/**` maintains paths under `repo`. This is a bit of magic by the upload-artifact action.
@@ -74,7 +69,7 @@ jobs:
       with:
         path: repo
         ref: main
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         # Since we're not passing a name, this automatically downloads *all* artifacts
         # Unfortunately, this creates intermediary directories.

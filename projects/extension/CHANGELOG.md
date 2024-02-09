@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+### Changed
+
+## 0.3.1 - 2024-01-18
+
+### Changed
+
+- Use `@substrate/light-client-extension-helpers`
+- Update smoldot@[version 2.0.17](https://github.com/smol-dot/smoldot/blob/main/wasm-node/CHANGELOG.md#2017---2024-01-17) [#1767](https://github.com/paritytech/substrate-connect/pull/1767)
+
+## 0.3.0 - 2023-12-07
+
+### Changed
+
+- Use `@polkadot-api/light-client-extension-helpers` in background and content scripts ([#1603](https://github.com/paritytech/substrate-connect/pull/1603))
+- Update Firefox to Manifest v3 ([#1603](https://github.com/paritytech/substrate-connect/pull/1603))
+- Update bootnodes ([#1673](https://github.com/paritytech/substrate-connect/pull/1673))
+
 ## 0.2.13 - 2023-10-18
 
 ### Changed

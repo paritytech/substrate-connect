@@ -165,10 +165,10 @@ export const Accordion = ({
           titles.length === 1
             ? "single"
             : index === 0
-            ? "first"
-            : index === titles?.length - 1
-            ? "last"
-            : undefined
+              ? "first"
+              : index === titles?.length - 1
+                ? "last"
+                : undefined
         return (
           <AccordionItem
             title={title}
