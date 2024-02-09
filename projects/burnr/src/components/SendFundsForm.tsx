@@ -147,7 +147,7 @@ const SendFundsForm: FunctionComponent = () => {
       const keyring = new Keyring({ type: "sr25519" })
       const sender = keyring.addFromUri(account.userSeed)
       const fee = await api.tx.balances
-        .transfer(address, new BN(amount))
+        .transferAllowDeath(address, new BN(amount))
         .paymentInfo(sender)
       setFee(fee.partialFee)
     }
@@ -189,7 +189,7 @@ const SendFundsForm: FunctionComponent = () => {
       const keyring = new Keyring({ type: "sr25519" })
       const sender = keyring.addFromUri(account.userSeed)
       await api.tx.balances
-        .transfer(address, new BN(amount))
+        .transferAllowDeath(address, new BN(amount))
         .signAndSend(sender, (result) => {
           setMessage(`Current transaction status ${result.status}`)
           if (result.status.isInBlock) {
