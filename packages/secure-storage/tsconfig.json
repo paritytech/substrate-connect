@@ -1,8 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "composite": true,
+    "target": "ES2015",
+    "baseUrl": ".",
     "rootDir": "src",
+    "moduleResolution": "Bundler",
     "downlevelIteration": true,
   },
   "include": ["src"],
