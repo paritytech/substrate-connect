@@ -35,6 +35,7 @@
   "scripts": {
     "pretest": "pnpm build",
     "test": "vitest --environment jsdom",
+    "bench": "vitest bench --environment jsdom",
     "deep-clean": "pnpm clean && rm -rf node_modules",
     "clean": "rm -rf dist",
     "build": "tsup-node src/index.ts src/worker.ts src/worker-node.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
