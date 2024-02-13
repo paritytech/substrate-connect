@@ -37,19 +37,65 @@ export async function encryptPassword(
 
 const wxchacha = managedNonce(xchacha20poly1305)
 
-export function encryptWithPassword(
+export type SecureLocalStorage = {
+  setItem: (typeof localStorage)["setItem"]
+  getItem: (typeof localStorage)["getItem"]
+  removeItem: (typeof localStorage)["removeItem"]
+  clear: (typeof localStorage)["clear"]
+}
+
+export const createSecureLocalStorage = (
+  password: Uint8Array,
+): SecureLocalStorage => {
+  const textEncoder = new TextEncoder()
+  const textDecoder = new TextDecoder()
+
+  const setItem: SecureLocalStorage["setItem"] = (key, value) => {
+    localStorage.setItem(
+      key,
+      textDecoder.decode(
+        encryptWithPassword(textEncoder.encode(value), password),
+      ),
+    )
+  }
+
+  const getItem: SecureLocalStorage["getItem"] = (key) => {
+    const item = localStorage.getItem(key)
+    if (!item) {
+      return null
+    }
+
+    return textDecoder.decode(
+      decryptWithPassword(password, textEncoder.encode(item)),
+    )
+  }
+
+  const removeItem: SecureLocalStorage["removeItem"] = (key) =>
+    localStorage.removeItem(key)
+
+  const clear: SecureLocalStorage["clear"] = () => localStorage.clear()
+
+  return {
+    setItem,
+    getItem,
+    removeItem,
+    clear,
+  }
+}
+
+const encryptWithPassword = (
   password: Uint8Array,
   data: Uint8Array,
-): Uint8Array {
+): Uint8Array => {
   const cipher = wxchacha(password)
 
   return cipher.encrypt(data)
 }
 
-export function decryptWithPassword(
+const decryptWithPassword = (
   password: Uint8Array,
   data: Uint8Array,
-): Uint8Array {
+): Uint8Array => {
   const cipher = wxchacha(password)
 
   return cipher.decrypt(data)
