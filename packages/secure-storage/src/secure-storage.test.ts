@@ -10,9 +10,17 @@ describe("secure storage", async () => {
     secureLocalStorage.clear()
   })
 
-  test("get and set", () => {
+  test("sanity test", () => {
     secureLocalStorage.setItem("foo", "foobar")
+    secureLocalStorage.setItem("bar", "baz")
 
     expect(secureLocalStorage.getItem("foo")).toEqual("foobar")
+    expect(secureLocalStorage.getItem("bar")).toEqual("baz")
+
+    secureLocalStorage.removeItem("foo")
+    expect(secureLocalStorage.getItem("foo")).toBeNull()
+
+    secureLocalStorage.clear()
+    expect(secureLocalStorage.getItem("bar")).toBeNull()
   })
 })
