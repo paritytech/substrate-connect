@@ -1,11 +1,11 @@
 import { describe, bench } from "vitest"
-import { encryptPassword } from "./"
+import { encryptPassword } from "./password"
 
 describe("password", () => {
   bench(
     "encrypt password",
-    () => {
-      encryptPassword("password")
+    async () => {
+      await encryptPassword("password")
     },
     { time: 1000 },
   )

@@ -26,7 +26,8 @@
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "dependencies": {
     "@noble/ciphers": "^0.5.1",
-    "@noble/hashes": "^1.3.3"
+    "@noble/hashes": "^1.3.3",
+    "@polkadot-api/utils": "next"
   },
   "devDependencies": {
     "eslint": "^8.53.0",
@@ -35,7 +36,7 @@
   "scripts": {
     "pretest": "pnpm build",
     "test": "vitest --environment jsdom",
-    "bench": "vitest bench --environment jsdom",
+    "bench": "vitest bench",
     "deep-clean": "pnpm clean && rm -rf node_modules",
     "clean": "rm -rf dist",
     "build": "tsup-node src/index.ts src/worker.ts src/worker-node.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
