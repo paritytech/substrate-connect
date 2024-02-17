@@ -15,4 +15,9 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
+  test: {
+    global: true,
+    environment: "jsdom",
+    exclude: ["tests/**", "node_modules"],
+  },
 }))

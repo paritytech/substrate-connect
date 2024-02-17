@@ -162,6 +162,7 @@ const Popup: FunctionComponent = () => {
             </div>
           </button>
         </div>
+        <CreatePassword passwordKey="password" />
       </main>
     </>
   )
