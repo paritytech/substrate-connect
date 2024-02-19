@@ -1,5 +1,4 @@
 import { scryptAsync } from "@noble/hashes/scrypt"
-import { webcrypto } from "crypto"
 
 export type ScryptOptions = {
   N: number
@@ -22,7 +21,7 @@ export async function encryptPassword(
   options: ScryptOptions = SCRYPT_DEFAULT_OPTIONS,
 ): Promise<Uint8Array> {
   const salt = new Uint8Array(options.saltLen)
-  webcrypto.getRandomValues(salt)
+  crypto.getRandomValues(salt)
 
   return scryptAsync(password, salt, {
     N: options.N,
