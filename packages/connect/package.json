@@ -45,7 +45,7 @@
     "@substrate/light-client-extension-helpers": "workspace:^",
     "@substrate/connect-extension-protocol": "workspace:^",
     "@substrate/connect-known-chains": "workspace:^",
-    "smoldot": "2.0.20"
+    "smoldot": "2.0.21"
   },
   "devDependencies": {
     "eslint": "^8.53.0",
