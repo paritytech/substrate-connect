@@ -3,33 +3,14 @@ import {
   type Config as EmbeddedNodeConfig,
 } from "./smoldot-light.js"
 import { createScClient as extensionScClient } from "./extension.js"
-import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
+import type { ScClient } from "./types.js"
+import type {
+  LightClientProvider,
+  LightClientOnProvider,
+} from "@substrate/light-client-extension-helpers/web-page"
 
 export * from "./types.js"
 export type { EmbeddedNodeConfig }
-
-/**
- * `true` if the substrate-connect extension is installed and available.
- *
- * Always `false` when outside of a browser environment.
- *
- * We detect this based on the presence of a DOM element with a specific `id`. See
- * `connect-extension-protocol`.
- *
- * Note that the value is determined at initialization and will not change even if the user
- * enables, disables, installs, or uninstalls the extension while the script is running. These
- * situations are very niche, and handling them properly would add a lot of complexity that isn't
- * worth it.
- *
- * This constant is mostly for informative purposes, for example to display a message in a UI
- * encouraging the user to install the extension.
- */
-export const isExtensionPresent =
-  typeof document === "object" &&
-  typeof document.getElementById === "function" &&
-  !!document.getElementById(DOM_ELEMENT_ID) &&
-  document.getElementById(DOM_ELEMENT_ID)?.getAttribute("channelid") ===
-    DOM_ELEMENT_ID
 
 /**
  * Configuration that can be passed to {createScClient}.
@@ -57,9 +38,51 @@ export interface Config {
  * extension or by executing a light client directly from JavaScript, depending on whether the
  * extension is installed and available.
  */
-export function createScClient(config?: Config) {
-  const forceEmbedded = config?.forceEmbeddedNode
+export const createScClient = (config?: Config): ScClient => {
+  if (config?.forceEmbeddedNode)
+    return smoldotScClient(config?.embeddedNodeConfig)
 
-  if (!forceEmbedded && isExtensionPresent) return extensionScClient()
-  return smoldotScClient(config?.embeddedNodeConfig)
+  const lightClientProviderPromise = getExtensionLightClientProviderPromise()
+  const client = lightClientProviderPromise
+    ? extensionScClient(lightClientProviderPromise)
+    : smoldotScClient(config?.embeddedNodeConfig)
+
+  return {
+    async addChain(chainSpec, jsonRpcCallback, databaseContent) {
+      return (await client).addChain(
+        chainSpec,
+        jsonRpcCallback,
+        databaseContent,
+      )
+    },
+    async addWellKnownChain(id, jsonRpcCallback, databaseContent) {
+      return (await client).addWellKnownChain(
+        id,
+        jsonRpcCallback,
+        databaseContent,
+      )
+    },
+  }
+}
+
+function getExtensionLightClientProviderPromise():
+  | Promise<LightClientProvider>
+  | undefined {
+  if (typeof document !== "object" || typeof CustomEvent !== "function") return
+  let lightClientProviderPromise: Promise<LightClientProvider> | undefined
+  window.dispatchEvent(
+    new CustomEvent<LightClientOnProvider>("lightClient:requestProvider", {
+      detail: {
+        onProvider(detail) {
+          if (
+            detail.info.rdns ===
+            "io.github.paritytech.SubstrateConnectLightClient"
+          ) {
+            lightClientProviderPromise = detail.provider
+          }
+        },
+      },
+    }),
+  )
+  return lightClientProviderPromise
 }

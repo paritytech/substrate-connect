@@ -1,5 +1,4 @@
-import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
-import { type Chain, type JsonRpcCallback, type ScClient } from "./types.js"
+import type { Chain, JsonRpcCallback, ScClient } from "./types.js"
 import type {
   RawChain,
   LightClientProvider,
@@ -16,8 +15,6 @@ const wellKnownChainGenesisHashes: Record<string, string> = {
     "0x6408de7737c59c238890533af25896a2c20608d8b380bb01029acb392781063e",
 }
 
-let lightClientProviderPromise: Promise<LightClientProvider>
-
 /**
  * Returns a {@link ScClient} that connects to chains by asking the substrate-connect extension
  * to do so.
@@ -27,13 +24,9 @@ let lightClientProviderPromise: Promise<LightClientProvider>
  * If you try to add a chain without the extension installed, nothing will happen and the
  * `Promise`s will never resolve.
  */
-export const createScClient = (): ScClient => {
-  if (!lightClientProviderPromise)
-    lightClientProviderPromise = import(
-      "@substrate/light-client-extension-helpers/web-page"
-    ).then(({ getLightClientProvider }) =>
-      getLightClientProvider(DOM_ELEMENT_ID),
-    )
+export const createScClient = (
+  lightClientProviderPromise: Promise<LightClientProvider>,
+): ScClient => {
   const internalAddChain = async (
     isWellKnown: boolean,
     chainSpecOrWellKnownName: string,
