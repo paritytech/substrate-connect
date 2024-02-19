@@ -6,7 +6,7 @@ import { createScClient as extensionScClient } from "./extension.js"
 import type { ScClient } from "./types.js"
 import type {
   LightClientProvider,
-  PIP0001OnProvider,
+  LightClientOnProvider,
 } from "@substrate/light-client-extension-helpers/web-page"
 
 export * from "./types.js"
@@ -71,11 +71,13 @@ function getExtensionLightClientProviderPromise():
   if (typeof document !== "object" || typeof CustomEvent !== "function") return
   let lightClientProviderPromise: Promise<LightClientProvider> | undefined
   window.dispatchEvent(
-    new CustomEvent<PIP0001OnProvider>("pip0001:requestProvider", {
+    new CustomEvent<LightClientOnProvider>("lightClient:requestProvider", {
       detail: {
         onProvider(detail) {
-          // TODO: improve substrate-connect provider identification
-          if (detail.info.rdns === "io.github.paritytech.SubstrateConnect") {
+          if (
+            detail.info.rdns ===
+            "io.github.paritytech.SubstrateConnectLightClient"
+          ) {
             lightClientProviderPromise = detail.provider
           }
         },

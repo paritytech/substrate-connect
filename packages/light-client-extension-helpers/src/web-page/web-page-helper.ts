@@ -13,7 +13,6 @@ import {
 import type { LightClientProvider, RawChain } from "./types"
 
 export type * from "./types"
-export type * from "./PIP0001"
 
 const postToExtension = (message: PostMessage<ToExtension>) =>
   window.postMessage(message, window.origin)
