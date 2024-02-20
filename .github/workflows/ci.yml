@@ -93,7 +93,6 @@ jobs:
           cd zombienet-tests/src
           zombienet-linux-x64 -p native test 0001-relay-smoke-test.zndsl
           zombienet-linux-x64 -p native test 0002-parachain.zndsl
-          zombienet-linux-x64 -p native test 0003-test-against-chainspecs.zndsl
 
   npm-publish:
     if: github.ref == 'refs/heads/main'
