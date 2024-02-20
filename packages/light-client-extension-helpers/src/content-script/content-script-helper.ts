@@ -43,7 +43,7 @@ export const register = (channelId: string) => {
     }
   })
 
-  const onProxyMessage = (msg: any) => {
+  const onRelayMessage = (msg: any) => {
     // TODO: remove on 0.0.4
     if (isRpcResponseToLegacyRequestMessage(msg))
       msg = adaptRpcResponseToLegacyToApplicationMessage(msg)
@@ -58,7 +58,7 @@ export const register = (channelId: string) => {
         : CONTEXT.CONTENT_SCRIPT,
     })
   }
-  const onProxyDisconnect = () => {
+  const onRelayerDisconnect = () => {
     chainIds.forEach((chainId) =>
       postToPage({
         origin: "substrate-connect-extension",
@@ -89,9 +89,10 @@ export const register = (channelId: string) => {
 
     getOrCreateInternalRpc()
 
-    getOrCreateExtensionProxy(onProxyMessage, onProxyDisconnect).postMessage(
-      msg,
-    )
+    getOrCreateExtensionRelayer(
+      onRelayMessage,
+      onRelayerDisconnect,
+    ).postMessage(msg)
 
     if (isSubstrateConnectToExtensionMessage(msg))
       switch (msg.type) {
@@ -110,23 +111,23 @@ export const register = (channelId: string) => {
   })
 }
 
-let extensionProxy:
+let extensionRelayer:
   | { postMessage(msg: RpcMessage | ToExtension): void }
   | undefined
-const getOrCreateExtensionProxy = (
+const getOrCreateExtensionRelayer = (
   onMessage: (msg: any) => void,
   onDisconnect?: (port: chrome.runtime.Port) => void,
 ) => {
-  if (extensionProxy) return extensionProxy
+  if (extensionRelayer) return extensionRelayer
 
   const port = chrome.runtime.connect({ name: PORT.WEB_PAGE })
   port.onDisconnect.addListener((port) => {
-    extensionProxy = undefined
+    extensionRelayer = undefined
     onDisconnect?.(port)
   })
   port.onMessage.addListener(onMessage)
 
-  return (extensionProxy = {
+  return (extensionRelayer = {
     postMessage(msg) {
       port.postMessage(msg)
     },
@@ -208,12 +209,6 @@ const isLegacyToExtensionMessage = (
 
 const isRpcResponseToLegacyRequestMessage = (msg: any): msg is RpcMessage =>
   isRpcMessage(msg) && !!msg?.id?.startsWith("legacy:")
-//   if (isRpcMessage(msg) && )
-//   if (typeof msg !== "object") return false
-//   if (typeof msg?.id !== "string" || !msg?.id.startsWith("legacy:"))
-//     return false
-//   return true
-// }
 
 const adaptLegacyToExtensionMessageToRpcMessage = (
   msg: LegacyToExtensionMessage,
