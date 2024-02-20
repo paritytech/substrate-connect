@@ -75,7 +75,7 @@ jobs:
         # Unfortunately, this creates intermediary directories.
         path: .
     - run: cp -r ./chain-spec-*/* ./repo
-    - uses: peter-evans/create-pull-request@v5
+    - uses: peter-evans/create-pull-request@v6
       with:
         # We use a custom secret (rather than the default GITHUB_TOKEN) so that opening the pull
         # request triggers other actions such as the CI checks. GitHub prevents actions that use
