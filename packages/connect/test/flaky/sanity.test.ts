@@ -2,7 +2,7 @@ import { expect, test } from "vitest"
 import { createClient } from "@polkadot-api/substrate-client"
 import { getSyncProvider } from "@polkadot-api/json-rpc-provider-proxy"
 
-import { createScClient, ScClient, WellKnownChain } from "../src"
+import { createScClient, ScClient, WellKnownChain } from "../../src"
 
 test.each([
   [WellKnownChain.polkadot],
