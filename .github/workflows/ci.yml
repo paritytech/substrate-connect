@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [18.x, 20.x]
 
     steps:
     - uses: actions/checkout@v4.1.1
@@ -20,6 +20,16 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: pnpm checkResolutions
+
+  connect-flaky-tests:
+    needs: [build]
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - uses: ./.github/actions/turbo-build
+    - run: pnpm test:flaky
+      working-directory: ./packages/connect
 
   playwright-test-extension:
     needs: [build]
@@ -157,7 +167,7 @@ jobs:
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
     # are successful.
-    needs: [build, playwright-test-extension, playwright-test-examples]
+    needs: [build, playwright-test-extension, playwright-test-examples, zombienet-tests]
     runs-on: ubuntu-latest
     steps:
      - run: echo Success
