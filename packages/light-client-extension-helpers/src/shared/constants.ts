@@ -12,6 +12,7 @@ const portPrefix = `${extensionPrefix}-port`
 export const PORT = {
   CONTENT_SCRIPT: `${portPrefix}-content-script`,
   EXTENSION_PAGE: `${portPrefix}-extension-page`,
+  WEB_PAGE: `${portPrefix}-web-page`,
 } as const
 
 export const STORAGE_PREFIX = extensionPrefix

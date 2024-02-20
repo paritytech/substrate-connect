@@ -1,16 +1,16 @@
-import type {
-  PostMessage,
-  ToBackground,
-  ToContent,
-  ToExtension,
-  ToPage,
-} from "@/protocol"
+import type { ToExtension } from "@substrate/connect-extension-protocol"
+import type { ToApplicationMessage } from "@/protocol"
+import type { BackgroundRpcSpec } from "@/background/types"
 import {
   CONTEXT,
   KEEP_ALIVE_INTERVAL,
   PORT,
-  createIsHelperMessage,
-  sendBackgroundRequest,
+  RpcMessage,
+  createRpc,
+  isRpcMessage,
+  isRpcMessageWithOrigin,
+  isSubstrateConnectToApplicationMessage,
+  isSubstrateConnectToExtensionMessage,
 } from "@/shared"
 
 let isRegistered = false
@@ -30,154 +30,218 @@ export const register = (channelId: string) => {
     }
   })
 
-  const postToPage = (msg: ToPage, targetOrigin: string) => {
-    window.postMessage({ channelId, msg } as PostMessage<ToPage>, targetOrigin)
-  }
-
-  const validWebPageOrigins = [CONTEXT.WEB_PAGE, "substrate-connect-client"]
-  const isWebPageHelperMessage = (msg: any): msg is ToExtension => {
-    if (!msg) return false
-    if (!validWebPageOrigins.includes(msg?.origin)) return false
-    if (!msg?.type && !msg?.id) return false
-    return true
-  }
-
-  const portPostMessage = (
-    port: chrome.runtime.Port,
-    msg: ToExtension | ToBackground,
-  ) => port.postMessage(msg)
+  const postToPage = (msg: ToApplicationMessage["msg"]) =>
+    window.postMessage({ channelId, msg } as ToApplicationMessage)
 
   const chainIds = new Set<string>()
-  const handleExtensionError = (errorMessage: string, origin: string) => {
-    console.error(errorMessage)
+
+  // TODO: update background-helper so this is handled in chrome.runtime.connect.onMessage
+  chrome.runtime.onMessage.addListener((msg) => {
+    if (isSubstrateConnectToApplicationMessage(msg) && msg.type === "error") {
+      chainIds.delete(msg.chainId)
+      postToPage(msg)
+    }
+  })
+
+  const onRelayMessage = (msg: any) => {
+    // TODO: remove on 0.0.4
+    if (isRpcResponseToLegacyRequestMessage(msg))
+      msg = adaptRpcResponseToLegacyToApplicationMessage(msg)
+
+    if (isSubstrateConnectToApplicationMessage(msg) && msg.type === "error")
+      chainIds.delete(msg.chainId)
+
+    postToPage({
+      ...msg,
+      origin: isSubstrateConnectToApplicationMessage(msg)
+        ? msg.origin
+        : CONTEXT.CONTENT_SCRIPT,
+    })
+  }
+  const onRelayerDisconnect = () => {
     chainIds.forEach((chainId) =>
-      postToPage(
-        {
-          origin: "substrate-connect-extension",
-          chainId,
-          type: "error",
-          errorMessage,
-        },
-        origin,
-      ),
+      postToPage({
+        origin: "substrate-connect-extension",
+        chainId,
+        type: "error",
+        errorMessage: "Disconnected from extension",
+      }),
     )
     chainIds.clear()
   }
 
-  let port: chrome.runtime.Port | undefined
-  window.addEventListener("message", async ({ data, source, origin }) => {
+  window.addEventListener("message", async ({ data, source }) => {
     if (source !== window || !data) return
-    const { channelId: msgChannelId, msg } = data
+    const { channelId: msgChannelId } = data
     if (channelId !== msgChannelId) return
-    if (!isWebPageHelperMessage(msg)) return
+    let { msg } = data
+    // TODO: remove on 0.0.4
+    if (isLegacyToExtensionMessage(msg))
+      msg = adaptLegacyToExtensionMessageToRpcMessage(msg)
+
+    if (
+      !isRpcMessageWithOrigin(msg, CONTEXT.WEB_PAGE) &&
+      !isSubstrateConnectToExtensionMessage(msg)
+    )
+      return
 
     await whenActivated
-    await sendBackgroundRequest({
-      origin: CONTEXT.CONTENT_SCRIPT,
-      type: "isBackgroundScriptReady",
-    })
 
-    if (msg.origin === CONTEXT.WEB_PAGE) {
-      try {
-        switch (msg.type) {
-          case "getChain":
-          case "getChains": {
-            postToPage(
-              {
-                ...(await sendBackgroundRequest({
-                  ...msg,
-                  origin: CONTEXT.CONTENT_SCRIPT,
-                })),
-                origin: CONTEXT.CONTENT_SCRIPT,
-                id: msg.id,
-              },
-              origin,
-            )
-            break
-          }
-          default: {
-            const unrecognizedMsg: never = msg
-            console.warn("Unrecognized message", unrecognizedMsg)
-            break
-          }
+    getOrCreateInternalRpc()
+
+    getOrCreateExtensionRelayer(
+      onRelayMessage,
+      onRelayerDisconnect,
+    ).postMessage(msg)
+
+    if (isSubstrateConnectToExtensionMessage(msg))
+      switch (msg.type) {
+        case "add-chain":
+        case "add-well-known-chain": {
+          chainIds.add(msg.chainId)
+          break
         }
-      } catch (error) {
-        postToPage(
-          {
-            origin: CONTEXT.CONTENT_SCRIPT,
-            type: "error",
-            id: msg.id,
-            error: error instanceof Error ? error.toString() : "Unknown error",
-          },
-          origin,
-        )
-      }
-
-      return
-    }
-
-    if (!port) {
-      try {
-        port = chrome.runtime.connect({ name: PORT.CONTENT_SCRIPT })
-      } catch (error) {
-        handleExtensionError("Cannot connect to extension", origin)
-        return
-      }
-      port.onMessage.addListener((msg: ToPage | ToContent) => {
-        if (
-          msg.origin === "substrate-connect-extension" &&
-          msg.type === "error"
-        )
+        case "remove-chain": {
           chainIds.delete(msg.chainId)
-        else if (
-          msg.origin === CONTEXT.BACKGROUND &&
-          msg.type === "keep-alive-ack"
-        )
-          return
-        postToPage(msg, origin)
-      })
-      const keepAliveInterval = setInterval(
-        () =>
-          port &&
-          portPostMessage(port, {
-            origin: CONTEXT.CONTENT_SCRIPT,
-            type: "keep-alive",
-          }),
-        KEEP_ALIVE_INTERVAL,
-      )
-      port.onDisconnect.addListener(() => {
-        port = undefined
-        clearInterval(keepAliveInterval)
-        handleExtensionError("Disconnected from extension", origin)
-      })
-    }
-
-    portPostMessage(port, msg)
-
-    if (msg.origin !== "substrate-connect-client") return
-    switch (msg.type) {
-      case "add-chain":
-      case "add-well-known-chain": {
-        chainIds.add(msg.chainId)
-        break
+          break
+        }
+        default:
+          break
       }
-      case "remove-chain": {
-        chainIds.delete(msg.chainId)
-        break
-      }
-      default:
-        break
-    }
-  })
-
-  const isBackgroundHelperMessage = createIsHelperMessage<ToPage>([
-    CONTEXT.BACKGROUND,
-    "substrate-connect-extension",
-  ])
-  chrome.runtime.onMessage.addListener((msg) => {
-    if (!isBackgroundHelperMessage(msg)) return
-    if (msg.origin === "substrate-connect-extension" && msg.type === "error")
-      chainIds.delete(msg.chainId)
-    postToPage(msg, window.origin)
   })
 }
+
+let extensionRelayer:
+  | { postMessage(msg: RpcMessage | ToExtension): void }
+  | undefined
+const getOrCreateExtensionRelayer = (
+  onMessage: (msg: any) => void,
+  onDisconnect?: (port: chrome.runtime.Port) => void,
+) => {
+  if (extensionRelayer) return extensionRelayer
+
+  const port = chrome.runtime.connect({ name: PORT.WEB_PAGE })
+  port.onDisconnect.addListener((port) => {
+    extensionRelayer = undefined
+    onDisconnect?.(port)
+  })
+  port.onMessage.addListener(onMessage)
+
+  return (extensionRelayer = {
+    postMessage(msg) {
+      port.postMessage(msg)
+    },
+  })
+}
+
+let internalRpc: any | undefined
+const getOrCreateInternalRpc = () => {
+  if (internalRpc) return internalRpc
+
+  const port = chrome.runtime.connect({ name: PORT.CONTENT_SCRIPT })
+  const rpc = createRpc((msg) =>
+    port.postMessage(msg),
+  ).withClient<BackgroundRpcSpec>()
+  port.onMessage.addListener(rpc.handle)
+  const keepAliveInterval = setInterval(
+    () => rpc.notify("keepAlive", []),
+    KEEP_ALIVE_INTERVAL,
+  )
+  port.onDisconnect.addListener(() => {
+    internalRpc = undefined
+    clearInterval(keepAliveInterval)
+  })
+
+  internalRpc = rpc
+
+  return internalRpc
+}
+
+//#region Legacy message helpers for DApps or libraries using @substrate/light-client-extension-helpers@0.0.2
+// TODO: remove on v0.0.4
+// TODO: breaking change for @substrate/connect@0.8.5
+
+type LegacyToExtensionMessage =
+  | {
+      id: string
+      origin: "@substrate/light-client-extension-helper-context-web-page"
+      type: "getChains"
+    }
+  | {
+      id: string
+      origin: "@substrate/light-client-extension-helper-context-web-page"
+      type: "getChain"
+      chainSpec: string
+      relayChainGenesisHash?: string
+    }
+
+type LegacyToApplicationMessage =
+  | {
+      id: string
+      origin: "@substrate/light-client-extension-helper-context-background"
+      type: "getChainsResponse"
+      chains: any
+    }
+  | {
+      id: string
+      origin: "@substrate/light-client-extension-helper-context-background"
+      type: "getChainResponse"
+      chain: any
+    }
+
+const isLegacyToExtensionMessage = (
+  msg: any,
+): msg is LegacyToExtensionMessage => {
+  if (
+    typeof msg !== "object" ||
+    typeof msg?.id !== "string" ||
+    msg?.origin !==
+      "@substrate/light-client-extension-helper-context-web-page" ||
+    !(
+      msg?.type === "getChains" ||
+      (msg?.type === "getChain" && typeof msg?.chainSpec === "string")
+    )
+  )
+    return false
+
+  return true
+}
+
+const isRpcResponseToLegacyRequestMessage = (msg: any): msg is RpcMessage =>
+  isRpcMessage(msg) && !!msg?.id?.startsWith("legacy:")
+
+const adaptLegacyToExtensionMessageToRpcMessage = (
+  msg: LegacyToExtensionMessage,
+) => {
+  return {
+    id: `legacy:${msg.type}:${msg.id}`,
+    orign: msg.origin,
+    method: msg.type,
+    params:
+      msg.type === "getChains"
+        ? []
+        : [msg.chainSpec, msg.relayChainGenesisHash],
+  } as RpcMessage
+}
+
+const adaptRpcResponseToLegacyToApplicationMessage = (msg: RpcMessage) => {
+  if (!("result" in msg)) return msg
+  if (msg.id.startsWith("legacy:getChains:")) {
+    return {
+      origin: "@substrate/light-client-extension-helper-context-background",
+      id: msg.id.replace("legacy:getChains:", ""),
+      type: "getChainsResponse",
+      chains: msg.result,
+    } as LegacyToApplicationMessage
+  } else if (msg.id.startsWith("legacy:getChain:")) {
+    return {
+      origin: "@substrate/light-client-extension-helper-context-background",
+      id: msg.id.replace("legacy:getChain:", ""),
+      type: "getChainResponse",
+      chain: msg.result,
+    } as LegacyToApplicationMessage
+  }
+  return msg
+}
+
+//#endregion

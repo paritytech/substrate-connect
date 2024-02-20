@@ -1,113 +1,74 @@
-import type {
-  PostMessage,
-  ToExtension,
-  ToExtensionRequest,
-  ToPage,
-  ToPageResponse,
-} from "@/protocol"
+import type { ToExtensionMessage } from "@/protocol"
 import {
   CONTEXT,
   createBackgroundClientConnectProvider,
-  createIsHelperMessage,
+  createRpc,
+  isRpcMessageWithOrigin,
+  isSubstrateConnectToApplicationMessage,
+  type RpcMethodHandlers,
 } from "@/shared"
-import type { LightClientProvider, RawChain } from "./types"
+import type { LightClientProvider, RawChain, WebPageRpcSpec } from "./types"
+import type { BackgroundRpcSpec } from "@/background/types"
+import type { ToApplication } from "@substrate/connect-extension-protocol"
 
 export type * from "./types"
 
-const postToExtension = (message: PostMessage<ToExtension>) =>
+const postToExtension = (message: ToExtensionMessage) =>
   window.postMessage(message, window.origin)
-
-const isHelperMessage = createIsHelperMessage<ToPage>([
-  CONTEXT.CONTENT_SCRIPT,
-  CONTEXT.BACKGROUND,
-  "substrate-connect-extension",
-])
 
 const channelIds = new Set<string>()
 
 export const getLightClientProvider = async (
   channelId: string,
 ): Promise<LightClientProvider> => {
-  const chainsChangeCallbacks: Parameters<
-    LightClientProvider["addChainsChangeListener"]
-  >[0][] = []
   if (channelIds.has(channelId))
     throw new Error(`channelId "${channelId}" already in use`)
   channelIds.add(channelId)
 
-  const pendingRequests: Record<
-    string,
-    { resolve(result: any): void; reject(error: string): void }
-  > = {}
-
-  window.addEventListener("message", ({ data, source }) => {
-    if (source !== window || !data) return
-    const { channelId: messageChannelId, msg } = data
-    if (messageChannelId !== channelId) return
-    if (!isHelperMessage(msg)) return
-    if (msg.origin === "substrate-connect-extension")
-      return rawChainCallbacks.forEach((cb) => cb(msg))
-    if (msg.origin === CONTEXT.CONTENT_SCRIPT) {
-      const pendingRequest = pendingRequests[msg.id]
-      if (!pendingRequest) return console.warn("Unhandled response", msg)
-      msg.type === "error"
-        ? pendingRequest.reject(msg.error)
-        : pendingRequest.resolve(msg)
-      delete pendingRequests[msg.id]
-      return
-    }
-    if (msg.origin === CONTEXT.BACKGROUND && msg.type === "onAddChains")
-      return chainsChangeCallbacks.forEach((cb) =>
+  const chainsChangeCallbacks: Parameters<
+    LightClientProvider["addChainsChangeListener"]
+  >[0][] = []
+  const handlers: RpcMethodHandlers<WebPageRpcSpec> = {
+    onAddChains([chains]) {
+      chainsChangeCallbacks.forEach((cb) =>
         cb(
           Object.fromEntries(
-            Object.entries(msg.chains).map(([key, { genesisHash, name }]) => [
+            Object.entries(chains).map(([key, { genesisHash, name }]) => [
               key,
               createRawChain(channelId, { genesisHash, name }),
             ]),
           ),
         ),
       )
-
-    console.warn("Unhandled message", msg)
-  })
-
-  const requestReply = <
-    TReq extends ToExtensionRequest,
-    TRes extends ToPageResponse & {
-      type: `${TReq["type"]}Response`
     },
-  >(
-    channelId: string,
-    msg: TReq,
-  ): Promise<TRes> => {
-    const promise = new Promise<TRes>((resolve, reject) => {
-      pendingRequests[msg.id] = { resolve, reject }
-    })
-    postToExtension({ channelId, msg })
-    return promise
   }
+  const rpc = createRpc(
+    (msg) =>
+      window.postMessage(
+        { channelId, msg: { origin: CONTEXT.WEB_PAGE, ...msg } },
+        window.origin,
+      ),
+    handlers,
+  ).withClient<BackgroundRpcSpec>()
 
-  // FIXME: improve id generation, random-id?
-  const nextId = (
-    (initialId) => () =>
-      "" + initialId++
-  )(0)
-
-  let { chains } = await requestReply(channelId, {
-    origin: CONTEXT.WEB_PAGE,
-    id: nextId(),
-    type: "getChains",
+  window.addEventListener("message", ({ data, source }) => {
+    if (source !== window || !data) return
+    const { channelId: messageChannelId, msg } = data
+    if (messageChannelId !== channelId) return
+    if (isRpcMessageWithOrigin(msg, CONTEXT.CONTENT_SCRIPT))
+      return rpc.handle(msg)
+    if (isSubstrateConnectToApplicationMessage(msg))
+      return rawChainCallbacks.forEach((cb) => cb(msg))
   })
+
+  let chains = await rpc.client.getChains()
   chainsChangeCallbacks.push((chains_) => (chains = chains_))
   return {
     async getChain(chainSpec, relayChainGenesisHash) {
-      const { chain: chainInfo } = await requestReply(channelId, {
-        origin: CONTEXT.WEB_PAGE,
-        id: nextId(),
-        type: "getChain",
+      const chainInfo = await rpc.client.getChain(
         chainSpec,
         relayChainGenesisHash,
-      })
+      )
       return createRawChain(
         channelId,
         chains[chainInfo.genesisHash]
@@ -131,9 +92,7 @@ export const getLightClientProvider = async (
   }
 }
 
-const rawChainCallbacks: ((
-  msg: ToPage & { origin: "substrate-connect-extension" },
-) => void)[] = []
+const rawChainCallbacks: ((msg: ToApplication) => void)[] = []
 
 const createRawChain = (
   channelId: string,
