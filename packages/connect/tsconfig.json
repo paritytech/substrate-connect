@@ -5,8 +5,8 @@
     "baseUrl": ".",
     "rootDir": "src",
     "moduleResolution": "Bundler",
-    "downlevelIteration": true,
+    "downlevelIteration": true
   },
   "include": ["src", "test"],
-  "references": [{ "path": "../connect-extension-protocol/tsconfig-mjs.json" }],
+  "references": [{ "path": "../connect-extension-protocol/tsconfig-mjs.json" }]
 }
