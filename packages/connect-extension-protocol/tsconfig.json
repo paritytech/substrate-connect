@@ -3,7 +3,7 @@
   "compilerOptions": {
     "composite": true,
     "rootDir": "src",
-    "downlevelIteration": true,
+    "downlevelIteration": true
   },
-  "include": ["src"],
+  "include": ["src"]
 }

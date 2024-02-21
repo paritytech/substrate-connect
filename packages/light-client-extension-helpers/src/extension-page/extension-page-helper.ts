@@ -1,32 +1,27 @@
 import {
-  sendBackgroundRequest,
   PORT,
   createBackgroundClientConnectProvider,
-  CONTEXT,
+  createRpc,
 } from "@/shared"
 import * as storage from "@/storage"
 import type { LightClientPageHelper } from "./types"
+import type { BackgroundRpcSpec } from "@/background/types"
 
 export type * from "./types"
 
 // FIXME: re-connect?
 const port = chrome.runtime.connect({ name: PORT.EXTENSION_PAGE })
+const rpc = createRpc((msg) =>
+  port.postMessage(msg),
+).withClient<BackgroundRpcSpec>()
+port.onMessage.addListener(rpc.handle)
 
 export const helper: LightClientPageHelper = {
   async deleteChain(genesisHash) {
-    await sendBackgroundRequest({
-      origin: CONTEXT.EXTENSION_PAGE,
-      type: "deleteChain",
-      genesisHash,
-    })
+    await rpc.client.deleteChain(genesisHash)
   },
   async persistChain(chainSpec, relayChainGenesisHash) {
-    await sendBackgroundRequest({
-      origin: CONTEXT.EXTENSION_PAGE,
-      type: "persistChain",
-      chainSpec,
-      relayChainGenesisHash,
-    })
+    await rpc.client.persistChain(chainSpec, relayChainGenesisHash)
   },
   async getChains() {
     return Promise.all(
@@ -55,10 +50,7 @@ export const helper: LightClientPageHelper = {
     )
   },
   async getActiveConnections() {
-    const { connections } = await sendBackgroundRequest({
-      origin: CONTEXT.EXTENSION_PAGE,
-      type: "getActiveConnections",
-    })
+    const connections = await rpc.client.getActiveConnections()
     return connections.map(({ tabId, chain }) => ({
       tabId,
       chain: {
@@ -83,19 +75,9 @@ export const helper: LightClientPageHelper = {
     }))
   },
   async disconnect(tabId: number, genesisHash: string) {
-    await sendBackgroundRequest({
-      origin: CONTEXT.EXTENSION_PAGE,
-      type: "disconnect",
-      tabId,
-      genesisHash,
-    })
+    await rpc.client.disconnect(tabId, genesisHash)
   },
   async setBootNodes(genesisHash, bootNodes) {
-    await sendBackgroundRequest({
-      origin: CONTEXT.EXTENSION_PAGE,
-      type: "setBootNodes",
-      genesisHash,
-      bootNodes,
-    })
+    await rpc.client.setBootNodes(genesisHash, bootNodes)
   },
 }

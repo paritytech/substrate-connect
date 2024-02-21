@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "moduleResolution": "Bundler",
-    "jsx": "react-jsx",
+    "jsx": "react-jsx"
   },
-  "include": ["src"],
+  "include": ["src"]
 }

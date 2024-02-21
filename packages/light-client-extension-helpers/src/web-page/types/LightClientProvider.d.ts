@@ -37,3 +37,9 @@ export interface JsonRpcProvider {
   // the `onMessage` and `onStatusChange` callbacks that was previously registered
   disconnect: UnsubscribeFn
 }
+
+export type WebPageRpcSpec = {
+  onAddChains(
+    chains: Record<string, { genesisHash: string; name: string }>,
+  ): void
+}

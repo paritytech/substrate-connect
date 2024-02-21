@@ -1,3 +1,4 @@
+import type { ToApplication } from "@substrate/connect-extension-protocol"
 import {
   type SubstrateClient,
   createClient,
@@ -19,17 +20,15 @@ import type {
   PageChain,
 } from "./types"
 import { smoldotProvider } from "./smoldot-provider"
-import type {
-  BackgroundRequest,
-  BackgroundResponse,
-  BackgroundResponseError,
-  ToBackground,
-  ToContent,
-  ToExtension,
-  ToPage,
-} from "@/protocol"
-import { ALARM, CONTEXT, PORT, createIsHelperMessage } from "@/shared"
+import {
+  ALARM,
+  PORT,
+  isRpcMessage,
+  isSubstrateConnectToExtensionMessage,
+  type RpcMessage,
+} from "@/shared"
 import * as storage from "@/storage"
+import { createBackgroundRpc } from "./createBackgroundRpc"
 
 export type * from "./types"
 
@@ -276,7 +275,7 @@ export const register = ({
             type: "error",
             chainId,
             errorMessage: "Disconnected",
-          } as ToPage)
+          } as ToApplication)
         })
     },
     setBootNodes(genesisHash, bootNodes) {
@@ -300,26 +299,30 @@ export const register = ({
       }
     >
   > = {}
-  const isSubstrateConnectOrContentMessage = createIsHelperMessage<
-    | (ToExtension & {
-        origin: "substrate-connect-client"
-      })
-    | ToBackground
-  >(["substrate-connect-client", CONTEXT.CONTENT_SCRIPT])
-  const helperPortNames: string[] = [PORT.CONTENT_SCRIPT, PORT.EXTENSION_PAGE]
+  const helperPortNames: string[] = [
+    PORT.CONTENT_SCRIPT,
+    PORT.EXTENSION_PAGE,
+    PORT.WEB_PAGE,
+  ]
   chrome.runtime.onConnect.addListener((port) => {
     if (!helperPortNames.includes(port.name)) return
 
     // use chrome.tabs.TAB_ID_NONE for popup port
     const tabId = port.sender?.tab?.id ?? chrome.tabs.TAB_ID_NONE
 
-    const postMessage = (
-      message: (ToPage & { origin: "substrate-connect-extension" }) | ToContent,
-    ) => port.postMessage(message)
+    const postMessage = (message: ToApplication | RpcMessage) =>
+      port.postMessage(message)
+
+    const rpc = createBackgroundRpc(postMessage)
+
+    const unsubscribeOnChainsChanged = storage.onChainsChanged((chains) =>
+      rpc.notify("onAddChains", [chains]),
+    )
 
     let isPortDisconnected = false
     port.onDisconnect.addListener(() => {
       isPortDisconnected = true
+      unsubscribeOnChainsChanged()
       if (!activeChains[tabId]) return
       for (const [chainId, { chain }] of Object.entries(activeChains[tabId])) {
         try {
@@ -334,203 +337,212 @@ export const register = ({
 
     const pendingAddChains: Record<string, boolean> = {}
     port.onMessage.addListener(async (msg) => {
-      if (!isSubstrateConnectOrContentMessage(msg)) return
-      switch (msg.type) {
-        case "keep-alive": {
-          return postMessage({
-            origin: CONTEXT.BACKGROUND,
-            type: "keep-alive-ack",
-          })
-        }
-        case "add-well-known-chain":
-        case "add-chain": {
-          activeChains[tabId] ??= {}
-          try {
-            if (
-              activeChains[tabId][msg.chainId] ||
-              pendingAddChains[msg.chainId]
-            )
-              throw new Error("Requested chainId already in use")
+      await initialized
+      if (isRpcMessage(msg))
+        return rpc.handle(msg, {
+          port,
+          lightClientPageHelper,
+          addChainByUserListener,
+          getChainData: ({ chainSpec, relayChainGenesisHash }) =>
+            getChainData({
+              smoldotClient,
+              chainSpec,
+              relayChainGenesisHash,
+            }),
+        })
+      else if (isSubstrateConnectToExtensionMessage(msg))
+        switch (msg.type) {
+          case "add-well-known-chain":
+          case "add-chain": {
+            activeChains[tabId] ??= {}
+            try {
+              if (
+                activeChains[tabId][msg.chainId] ||
+                pendingAddChains[msg.chainId]
+              )
+                throw new Error("Requested chainId already in use")
 
-            pendingAddChains[msg.chainId] = true
-            const chains = await storage.getChains()
+              pendingAddChains[msg.chainId] = true
+              const chains = await storage.getChains()
 
-            let addChainOptions: AddChainOptions
-            if (msg.type === "add-well-known-chain") {
-              const chain =
-                Object.values(chains).find(
-                  (chain) => chain.genesisHash === msg.chainName,
-                ) ??
-                Object.values(chains).find(
-                  (chain) => chain.name === msg.chainName,
-                )
-              if (!chain) throw new Error("Unknown well-known chain")
-              addChainOptions = {
-                chainSpec: chain.chainSpec,
-                disableJsonRpc: false,
-                potentialRelayChains: chain.relayChainGenesisHash
-                  ? [
-                      await smoldotClient.addChain({
-                        chainSpec:
-                          chains[chain.relayChainGenesisHash].chainSpec,
-                        disableJsonRpc: true,
-                        databaseContent: await storage.get({
-                          type: "databaseContent",
-                          genesisHash: chain.relayChainGenesisHash,
+              let addChainOptions: AddChainOptions
+              if (msg.type === "add-well-known-chain") {
+                const chain =
+                  Object.values(chains).find(
+                    (chain) => chain.genesisHash === msg.chainName,
+                  ) ??
+                  Object.values(chains).find(
+                    (chain) => chain.name === msg.chainName,
+                  )
+                if (!chain) throw new Error("Unknown well-known chain")
+                addChainOptions = {
+                  chainSpec: chain.chainSpec,
+                  disableJsonRpc: false,
+                  potentialRelayChains: chain.relayChainGenesisHash
+                    ? [
+                        await smoldotClient.addChain({
+                          chainSpec:
+                            chains[chain.relayChainGenesisHash].chainSpec,
+                          disableJsonRpc: true,
+                          databaseContent: await storage.get({
+                            type: "databaseContent",
+                            genesisHash: chain.relayChainGenesisHash,
+                          }),
                         }),
-                      }),
-                    ]
-                  : [],
-                databaseContent: await storage.get({
-                  type: "databaseContent",
-                  genesisHash: chain.genesisHash,
-                }),
+                      ]
+                    : [],
+                  databaseContent: await storage.get({
+                    type: "databaseContent",
+                    genesisHash: chain.genesisHash,
+                  }),
+                }
+              } else {
+                const relayChainGenesisHashOrChainId =
+                  msg.potentialRelayChainIds[0]
+                addChainOptions = {
+                  chainSpec: msg.chainSpec,
+                  disableJsonRpc: false,
+                  potentialRelayChains: chains[relayChainGenesisHashOrChainId]
+                    ? [
+                        await smoldotClient.addChain({
+                          chainSpec:
+                            chains[relayChainGenesisHashOrChainId].chainSpec,
+                          disableJsonRpc: true,
+                          databaseContent: await storage.get({
+                            type: "databaseContent",
+                            genesisHash: relayChainGenesisHashOrChainId,
+                          }),
+                        }),
+                      ]
+                    : msg.potentialRelayChainIds
+                        .filter((chainId) => activeChains[tabId][chainId])
+                        .map((chainId) => activeChains[tabId][chainId].chain),
+                }
               }
-            } else {
-              const relayChainGenesisHashOrChainId =
-                msg.potentialRelayChainIds[0]
-              addChainOptions = {
-                chainSpec: msg.chainSpec,
-                disableJsonRpc: false,
-                potentialRelayChains: chains[relayChainGenesisHashOrChainId]
-                  ? [
-                      await smoldotClient.addChain({
-                        chainSpec:
-                          chains[relayChainGenesisHashOrChainId].chainSpec,
-                        disableJsonRpc: true,
-                        databaseContent: await storage.get({
-                          type: "databaseContent",
-                          genesisHash: relayChainGenesisHashOrChainId,
-                        }),
-                      }),
-                    ]
+
+              const [smoldotChain, { genesisHash, name, ss58Format }] =
+                await Promise.all([
+                  smoldotClient.addChain(addChainOptions),
+                  getChainData({ smoldotClient, addChainOptions }),
+                  awaitFinalized({ smoldotClient, addChainOptions }),
+                ])
+
+              ;(async () => {
+                while (true) {
+                  let jsonRpcMessage: string | undefined
+                  try {
+                    jsonRpcMessage = await smoldotChain.nextJsonRpcResponse()
+                  } catch (_) {
+                    break
+                  }
+
+                  if (isPortDisconnected) break
+
+                  // `nextJsonRpcResponse` throws an exception if we pass `disableJsonRpc: true` in the
+                  // config. We pass `disableJsonRpc: true` if `jsonRpcCallback` is undefined. Therefore,
+                  // this code is never reachable if `jsonRpcCallback` is undefined.
+                  try {
+                    postMessage({
+                      origin: "substrate-connect-extension",
+                      type: "rpc",
+                      chainId: msg.chainId,
+                      jsonRpcMessage,
+                    })
+                  } catch (error) {
+                    console.error(
+                      "JSON-RPC callback has thrown an exception:",
+                      error,
+                    )
+                  }
+                }
+              })()
+
+              if (!pendingAddChains[msg.chainId]) {
+                smoldotChain.remove()
+                return
+              }
+              delete pendingAddChains[msg.chainId]
+
+              // FIXME: double check this and dedupe from above
+              let relayChainGenesisHash: string | undefined = undefined
+              if (msg.type === "add-chain") {
+                const relayChainGenesisHashOrChainId =
+                  msg.potentialRelayChainIds[0]
+                relayChainGenesisHash = chains[relayChainGenesisHashOrChainId]
+                  ? chains[relayChainGenesisHashOrChainId].genesisHash
                   : msg.potentialRelayChainIds
                       .filter((chainId) => activeChains[tabId][chainId])
-                      .map((chainId) => activeChains[tabId][chainId].chain),
+                      .map(
+                        (chainId) => activeChains[tabId][chainId].genesisHash,
+                      )[0]
               }
-            }
 
-            const [smoldotChain, { genesisHash, name, ss58Format }] =
-              await Promise.all([
-                smoldotClient.addChain(addChainOptions),
-                getChainData({ smoldotClient, addChainOptions }),
-                awaitFinalized({ smoldotClient, addChainOptions }),
-              ])
-
-            ;(async () => {
-              while (true) {
-                let jsonRpcMessage: string | undefined
-                try {
-                  jsonRpcMessage = await smoldotChain.nextJsonRpcResponse()
-                } catch (_) {
-                  break
-                }
-
-                if (isPortDisconnected) break
-
-                // `nextJsonRpcResponse` throws an exception if we pass `disableJsonRpc: true` in the
-                // config. We pass `disableJsonRpc: true` if `jsonRpcCallback` is undefined. Therefore,
-                // this code is never reachable if `jsonRpcCallback` is undefined.
-                try {
-                  postMessage({
-                    origin: "substrate-connect-extension",
-                    type: "rpc",
-                    chainId: msg.chainId,
-                    jsonRpcMessage,
-                  })
-                } catch (error) {
-                  console.error(
-                    "JSON-RPC callback has thrown an exception:",
-                    error,
-                  )
-                }
+              activeChains[tabId][msg.chainId] = {
+                chain: smoldotChain,
+                genesisHash,
+                relayChainGenesisHash,
+                chainSpec: addChainOptions.chainSpec,
+                name,
+                ss58Format,
+                bootNodes:
+                  JSON.parse(addChainOptions.chainSpec)?.bootNodes ?? [],
               }
-            })()
 
-            if (!pendingAddChains[msg.chainId]) {
-              smoldotChain.remove()
-              return
-            }
-            delete pendingAddChains[msg.chainId]
-
-            // FIXME: double check this and dedupe from above
-            let relayChainGenesisHash: string | undefined = undefined
-            if (msg.type === "add-chain") {
-              const relayChainGenesisHashOrChainId =
-                msg.potentialRelayChainIds[0]
-              relayChainGenesisHash = chains[relayChainGenesisHashOrChainId]
-                ? chains[relayChainGenesisHashOrChainId].genesisHash
-                : msg.potentialRelayChainIds
-                    .filter((chainId) => activeChains[tabId][chainId])
-                    .map(
-                      (chainId) => activeChains[tabId][chainId].genesisHash,
-                    )[0]
+              postMessage({
+                origin: "substrate-connect-extension",
+                type: "chain-ready",
+                chainId: msg.chainId,
+              })
+            } catch (error) {
+              delete pendingAddChains[msg.chainId]
+              postMessage({
+                origin: "substrate-connect-extension",
+                type: "error",
+                chainId: msg.chainId,
+                errorMessage:
+                  error instanceof Error
+                    ? error.toString()
+                    : "Unknown error when adding chain",
+              })
             }
 
-            activeChains[tabId][msg.chainId] = {
-              chain: smoldotChain,
-              genesisHash,
-              relayChainGenesisHash,
-              chainSpec: addChainOptions.chainSpec,
-              name,
-              ss58Format,
-              bootNodes: JSON.parse(addChainOptions.chainSpec)?.bootNodes ?? [],
-            }
-
-            postMessage({
-              origin: "substrate-connect-extension",
-              type: "chain-ready",
-              chainId: msg.chainId,
-            })
-          } catch (error) {
-            delete pendingAddChains[msg.chainId]
-            postMessage({
-              origin: "substrate-connect-extension",
-              type: "error",
-              chainId: msg.chainId,
-              errorMessage:
-                error instanceof Error
-                  ? error.toString()
-                  : "Unknown error when adding chain",
-            })
+            break
           }
+          case "remove-chain": {
+            delete pendingAddChains[msg.chainId]
 
-          break
-        }
-        case "remove-chain": {
-          delete pendingAddChains[msg.chainId]
-
-          removeChain(tabId, msg.chainId)
-
-          break
-        }
-        case "rpc": {
-          const chain = activeChains?.[tabId]?.[msg.chainId]?.chain
-          if (!chain) return
-
-          try {
-            chain.sendJsonRpc(msg.jsonRpcMessage)
-          } catch (error) {
             removeChain(tabId, msg.chainId)
-            postMessage({
-              origin: "substrate-connect-extension",
-              type: "error",
-              chainId: msg.chainId,
-              errorMessage:
-                error instanceof Error
-                  ? error.toString()
-                  : "Unknown error when sending RPC message",
-            })
-          }
 
-          break
+            break
+          }
+          case "rpc": {
+            const chain = activeChains?.[tabId]?.[msg.chainId]?.chain
+            if (!chain) return
+
+            try {
+              chain.sendJsonRpc(msg.jsonRpcMessage)
+            } catch (error) {
+              removeChain(tabId, msg.chainId)
+              postMessage({
+                origin: "substrate-connect-extension",
+                type: "error",
+                chainId: msg.chainId,
+                errorMessage:
+                  error instanceof Error
+                    ? error.toString()
+                    : "Unknown error when sending RPC message",
+              })
+            }
+
+            break
+          }
+          default: {
+            const unrecognizedMsg: never = msg
+            console.warn("Unrecognized message", unrecognizedMsg)
+            break
+          }
         }
-        default: {
-          const unrecognizedMsg: never = msg
-          console.warn("Unrecognized message", unrecognizedMsg)
-          break
-        }
-      }
+      else console.warn("Unrecognized message", msg)
     })
   })
 
@@ -546,155 +558,6 @@ export const register = ({
     addChainByUserListener = onAddChainByUser
   }
 
-  const isHelperMessage = createIsHelperMessage<BackgroundRequest>([
-    CONTEXT.CONTENT_SCRIPT,
-    CONTEXT.EXTENSION_PAGE,
-  ])
-  chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (!isHelperMessage(msg)) return
-    switch (msg.type) {
-      case "isBackgroundScriptReady":
-        initialized.finally(() =>
-          sendBackgroundResponse(sendResponse, {
-            origin: CONTEXT.BACKGROUND,
-            type: "isBackgroundScriptReadyResponse",
-          }),
-        )
-        return true
-      case "getChain": {
-        ;(async () => {
-          const tabId = sender?.tab?.id
-          if (!tabId) return
-          try {
-            const chains = await storage.getChains()
-            const { chainSpec, relayChainGenesisHash } = msg
-            if (relayChainGenesisHash && !chains[relayChainGenesisHash])
-              throw new Error(
-                `Unknown relayChainGenesisHash ${relayChainGenesisHash}`,
-              )
-            const { genesisHash, name } = await getChainData({
-              smoldotClient,
-              chainSpec,
-              relayChainGenesisHash,
-            })
-
-            if (chains[genesisHash]) {
-              return sendBackgroundResponse(sendResponse, {
-                origin: CONTEXT.BACKGROUND,
-                type: "getChainResponse",
-                chain: chains[genesisHash],
-              })
-            }
-
-            const chain = {
-              genesisHash,
-              name,
-              chainSpec,
-              relayChainGenesisHash,
-            }
-
-            await addChainByUserListener?.(chain, tabId)
-
-            sendBackgroundResponse(sendResponse, {
-              origin: CONTEXT.BACKGROUND,
-              type: "getChainResponse",
-              chain,
-            })
-          } catch (error) {
-            console.error("background addChain error", error)
-            sendBackgroundErrorResponse(sendResponse, error)
-          }
-        })()
-        return true
-      }
-      case "deleteChain": {
-        lightClientPageHelper
-          .deleteChain(msg.genesisHash)
-          .then(() =>
-            sendBackgroundResponse(sendResponse, {
-              origin: CONTEXT.BACKGROUND,
-              type: "deleteChainResponse",
-            }),
-          )
-          .catch(handleBackgroundErrorResponse(sendResponse))
-        return true
-      }
-      case "persistChain": {
-        lightClientPageHelper
-          .persistChain(msg.chainSpec, msg.relayChainGenesisHash)
-          .then(() =>
-            sendBackgroundResponse(sendResponse, {
-              origin: CONTEXT.BACKGROUND,
-              type: "persistChainResponse",
-            }),
-          )
-          .catch(handleBackgroundErrorResponse(sendResponse))
-        return true
-      }
-      case "getChains": {
-        storage
-          .getChains()
-          .then((chains) => {
-            sendBackgroundResponse(sendResponse, {
-              origin: CONTEXT.BACKGROUND,
-              type: "getChainsResponse",
-              chains,
-            })
-          })
-          .catch(handleBackgroundErrorResponse(sendResponse))
-        return true
-      }
-      case "getActiveConnections": {
-        lightClientPageHelper
-          .getActiveConnections()
-          .then((connections) =>
-            sendBackgroundResponse(sendResponse, {
-              origin: CONTEXT.BACKGROUND,
-              type: "getActiveConnectionsResponse",
-              connections: connections.map(
-                ({ tabId, chain: { provider, ...chain } }) => ({
-                  tabId,
-                  chain,
-                }),
-              ),
-            }),
-          )
-          .catch(handleBackgroundErrorResponse(sendResponse))
-        return true
-      }
-      case "disconnect": {
-        lightClientPageHelper
-          .disconnect(msg.tabId, msg.genesisHash)
-          .then(() =>
-            sendBackgroundResponse(sendResponse, {
-              origin: CONTEXT.BACKGROUND,
-              type: "disconnectResponse",
-            }),
-          )
-          .catch(handleBackgroundErrorResponse(sendResponse))
-        return true
-      }
-      case "setBootNodes": {
-        lightClientPageHelper
-          .setBootNodes(msg.genesisHash, msg.bootNodes)
-          .then(() =>
-            sendBackgroundResponse(sendResponse, {
-              origin: CONTEXT.BACKGROUND,
-              type: "setBootNodesResponse",
-            }),
-          )
-          .catch(handleBackgroundErrorResponse(sendResponse))
-        return true
-      }
-      default: {
-        const unrecognizedMsg: never = msg
-        console.warn("Unrecognized message", unrecognizedMsg)
-        break
-      }
-    }
-    return
-  })
-
   const removeChain = (tabId: number, chainId: string) => {
     const chain = activeChains?.[tabId]?.[chainId]?.chain
     delete activeChains?.[tabId]?.[chainId]
@@ -707,17 +570,6 @@ export const register = ({
 
   return { lightClientPageHelper, addOnAddChainByUserListener }
 }
-
-storage.onChainsChanged(async (chains) => {
-  ;(await chrome.tabs.query({ url: ["https://*/*", "http://*/*"] })).forEach(
-    ({ id }) =>
-      chrome.tabs.sendMessage(id!, {
-        origin: CONTEXT.BACKGROUND,
-        type: "onAddChains",
-        chains,
-      } as ToPage),
-  )
-})
 
 const withClient =
   <T>(fn: (client: SubstrateClient) => T | Promise<T>) =>
@@ -827,32 +679,6 @@ const getFinalizedDatabase = withClientChainHead$(
 const awaitFinalized = withClientChainHead$(({ finalized$ }) =>
   firstValueFrom(finalized$),
 )
-
-const sendBackgroundResponse = <
-  T extends BackgroundResponse | BackgroundResponseError,
->(
-  sendResponse: (msg: any) => void,
-  msg: T,
-) => sendResponse(msg)
-
-const sendBackgroundErrorResponse = (
-  sendResponse: (msg: any) => void,
-  error: Error | string | unknown,
-) =>
-  sendBackgroundResponse(sendResponse, {
-    origin: CONTEXT.BACKGROUND,
-    type: "error",
-    error:
-      error instanceof Error
-        ? error.toString()
-        : typeof error === "string"
-          ? error
-          : "Unknown error getting chain data",
-  })
-
-const handleBackgroundErrorResponse =
-  (sendResponse: (msg: any) => void) => (error: Error | string | unknown) =>
-    sendBackgroundErrorResponse(sendResponse, error)
 
 const substrateClientRequest = <T>(
   client: SubstrateClient,

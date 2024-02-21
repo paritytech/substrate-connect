@@ -5,8 +5,8 @@
     "baseUrl": "./",
     "moduleResolution": "Bundler",
     "paths": {
-      "@/*": ["src/*"],
+      "@/*": ["src/*"]
     },
-    "noUncheckedIndexedAccess": false,
-  },
+    "noUncheckedIndexedAccess": false
+  }
 }

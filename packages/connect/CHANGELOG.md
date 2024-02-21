@@ -4,6 +4,13 @@
 
 ### Changed
 
+## 0.8.6 - 2024-02-21
+
+### Changed
+
+- Update smoldot@[version 2.0.21](https://github.com/smol-dot/smoldot/blob/main/wasm-node/CHANGELOG.md#2021---2024-02-06) [#1843](https://github.com/paritytech/substrate-connect/pull/1843)
+- Use LightClient provider announced by the extension with custom events [#1845](https://github.com/paritytech/substrate-connect/pull/1845)
+
 ## 0.8.5 - 2024-01-18
 
 ### Changed
