@@ -1,6 +1,6 @@
 import { test, expect } from "./fixtures"
 
-test("sanity", async ({ page: dappPage, extensionId, context }) => {
+test("sanity", async ({ page: dappPage, extensionId, context, browser }) => {
   test.setTimeout(5 * 60 * 1000)
 
   await dappPage.goto("/")

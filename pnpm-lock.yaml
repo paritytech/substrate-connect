@@ -232,25 +232,6 @@ importers:
         specifier: ^0.0.260
         version: 0.0.260
 
-  packages/secure-storage:
-    dependencies:
-      '@noble/ciphers':
-        specifier: ^0.5.1
-        version: 0.5.1
-      '@noble/hashes':
-        specifier: ^1.3.3
-        version: 1.3.3
-      '@polkadot-api/utils':
-        specifier: next
-        version: 0.0.1-febf4f5005db6670d1963b033cd95c8b8f7d079b.1.0
-    devDependencies:
-      eslint:
-        specifier: ^8.53.0
-        version: 8.56.0
-      vitest:
-        specifier: ^1.3.1
-        version: 1.3.1(@types/node@20.11.14)(jsdom@24.0.0)
-
   projects/burnr:
     dependencies:
       '@material-ui/core':
@@ -357,12 +338,18 @@ importers:
 
   projects/extension:
     dependencies:
+      '@noble/hashes':
+        specifier: ^1.3.3
+        version: 1.3.3
       '@polkadot-api/client':
         specifier: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
         version: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
         version: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
+      '@polkadot-api/utils':
+        specifier: next
+        version: 0.0.1-3143357b23eed376858d94747c35aed40a7292ca.1.0
       '@react-rxjs/core':
         specifier: ^0.10.7
         version: 0.10.7(react@18.2.0)(rxjs@7.8.1)
@@ -391,12 +378,21 @@ importers:
         specifier: 2.0.21
         version: 2.0.21
     devDependencies:
+      '@noble/ciphers':
+        specifier: ^0.5.1
+        version: 0.5.1
       '@playwright/test':
         specifier: ^1.41.1
         version: 1.41.1
+      '@types/webextension-polyfill':
+        specifier: ^0.10.7
+        version: 0.10.7
       '@vitejs/plugin-react-swc':
         specifier: ^3.6.0
         version: 3.6.0(vite@4.5.1)
+      '@vitest/browser':
+        specifier: ^1.3.1
+        version: 1.3.1(vitest@1.3.1)
       autoprefixer:
         specifier: ^10.4.17
         version: 10.4.17(postcss@8.4.35)
@@ -415,9 +411,15 @@ importers:
       vite:
         specifier: ^4.5.0
         version: 4.5.1(@types/node@20.11.14)
+      vitest:
+        specifier: ^1.3.1
+        version: 1.3.1(@types/node@20.11.14)(@vitest/browser@1.3.1)
       web-ext:
         specifier: ^7.11.0
         version: 7.11.0
+      webextension-polyfill:
+        specifier: ^0.10.0
+        version: 0.10.0
 
   zombienet-tests:
     dependencies:
@@ -2628,7 +2630,7 @@ packages:
 
   /@noble/ciphers@0.5.1:
     resolution: {integrity: sha512-aNE06lbe36ifvMbbWvmmF/8jx6EQPu2HVg70V95T+iGjOuYwPpAccwAQc2HlXO2D0aiQ3zavbMga4jjWnrpiPA==}
-    dev: false
+    dev: true
 
   /@noble/curves@1.3.0:
     resolution: {integrity: sha512-t01iSXPuN+Eqzb4eBX0S5oubSqXbK/xXa1Ne18Hj8f9pStxztHCE2gfboSp/dZRLSqfuLpRK2nDXDK+W9puocA==}
@@ -2703,6 +2705,10 @@ packages:
       config-chain: 1.1.13
     dev: true
 
+  /@polka/url@1.0.0-next.24:
+    resolution: {integrity: sha512-2LuNTFBIO0m7kKIQvvPHN6UE63VjpmL9rnEEaOOaiSPbZK+zUOYIzBAWcED+3XYzhYsd/0mD57VdxAEqqV52CQ==}
+    dev: true
+
   /@polkadot-api/client@0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0(rxjs@7.8.1):
     resolution: {integrity: sha512-WDSMp8zKNdp6/MhbrkvS1QFn7G9sOrjv8CDHLg6SrH3MlHWAysEWRgAz6U0I9wKklmXR1tMZR+zJ3NuiTAE10A==}
     peerDependencies:
@@ -2745,8 +2751,8 @@ packages:
     resolution: {integrity: sha512-H7hOfilvx65wYxMjAI130rK34GcAPzMEuoP5W693N0PsXYc1QeoEHSza5NSgoN1U4jGNzDBoxu0al2WGKo1B5g==}
     dev: false
 
-  /@polkadot-api/utils@0.0.1-febf4f5005db6670d1963b033cd95c8b8f7d079b.1.0:
-    resolution: {integrity: sha512-IUGTvL6iQm5WYhHuo155ywsANzf3izNaFK18ZOIF70QLwwBGAwHcJlhuLLol38bn5yk+kFQ7PdcPVmNSQ6RWDA==}
+  /@polkadot-api/utils@0.0.1-3143357b23eed376858d94747c35aed40a7292ca.1.0:
+    resolution: {integrity: sha512-F1Nvj52e7SuKb6tH9tBLBWaFooxaL+/MrcImaKvB4aCzs9f+8cSBeIj9/JPCkAaVZDZaEmHOGpdFlbNwzKh57Q==}
     dev: false
 
   /@polkadot/api-augment@10.11.2:
@@ -2925,7 +2931,7 @@ packages:
       nock: 13.4.0
       tslib: 2.6.2
     optionalDependencies:
-      '@substrate/connect': 0.8.5
+      '@substrate/connect': 0.8.6
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -3371,27 +3377,27 @@ packages:
     dev: false
     optional: true
 
-  /@substrate/connect-known-chains@1.0.6:
-    resolution: {integrity: sha512-2OhE6OdKmuKEE7J7zGnYTfGoVheHeuuE3OWmt9xcFU/nu81lRMDiK9zrgFJcfhBHcLJF9OyeGCbQaUlceVRWww==}
+  /@substrate/connect-known-chains@1.0.8:
+    resolution: {integrity: sha512-XXHhLWbIe15iNb9WXAGMKkyaaqwjltGTlKZAAmat+ENXp3jlyRMYe/qtZ8U9zTPK5JWyDI66xs1JuQPkJHXA0g==}
     requiresBuild: true
     dev: false
     optional: true
 
-  /@substrate/connect@0.8.5:
-    resolution: {integrity: sha512-CEagDaken8DRnB/jDBkekZS6dezXW90BqJpGTkhW6X/vlX7LchoHp3xcEYYdgZv8opJrZId+OWtQWm+wbWVolw==}
+  /@substrate/connect@0.8.6:
+    resolution: {integrity: sha512-OFkUmQERshcFEIakLmCLGCI3/49rj/YDQbfSLmiDLEuKCjLdiY1oL8JbU9Qel6tUVwx5Rv4MCkqfZGuwnhp8hA==}
     requiresBuild: true
     dependencies:
       '@substrate/connect-extension-protocol': 2.0.0
-      '@substrate/connect-known-chains': 1.0.6
-      '@substrate/light-client-extension-helpers': 0.0.2(smoldot@2.0.17)
-      smoldot: 2.0.17
+      '@substrate/connect-known-chains': 1.0.8
+      '@substrate/light-client-extension-helpers': 0.0.2(smoldot@2.0.21)
+      smoldot: 2.0.21
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
     dev: false
     optional: true
 
-  /@substrate/light-client-extension-helpers@0.0.2(smoldot@2.0.17):
+  /@substrate/light-client-extension-helpers@0.0.2(smoldot@2.0.21):
     resolution: {integrity: sha512-pXX2RNtyz0mY4oA8jl1cGnr4PLPcri90RyTqNphvDEOUIGxJWK+eZaWQQ6AqpEq48SYv8c7Ffosw1nxxCdHN7Q==}
     requiresBuild: true
     peerDependencies:
@@ -3402,9 +3408,9 @@ packages:
       '@polkadot-api/json-rpc-provider-proxy': 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
       '@polkadot-api/substrate-client': 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
       '@substrate/connect-extension-protocol': 2.0.0
-      '@substrate/connect-known-chains': 1.0.6
+      '@substrate/connect-known-chains': 1.0.8
       rxjs: 7.8.1
-      smoldot: 2.0.17
+      smoldot: 2.0.21
     dev: false
     optional: true
 
@@ -3684,6 +3690,10 @@ packages:
   /@types/stylis@4.2.0:
     resolution: {integrity: sha512-n4sx2bqL0mW1tvDf/loQ+aMX7GQD3lc3fkCMC55VFNDu/vBOabO+LTIeXKM14xK0ppk5TUGcWRjiSpIlUpghKw==}
     dev: false
+
+  /@types/webextension-polyfill@0.10.7:
+    resolution: {integrity: sha512-10ql7A0qzBmFB+F+qAke/nP1PIonS0TXZAOMVOxEUsm+lGSW6uwVcISFNa0I4Oyj0884TZVWGGMIWeXOVSNFHw==}
+    dev: true
 
   /@types/yauzl@2.10.3:
     resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
@@ -4038,6 +4048,27 @@ packages:
       vite: 4.5.1(@types/node@20.11.14)
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@vitest/browser@1.3.1(vitest@1.3.1):
+    resolution: {integrity: sha512-pRof8G8nqRWwg3ouyIctyhfIVk5jXgF056uF//sqdi37+pVtDz9kBI/RMu0xlc8tgCyJ2aEMfbgJZPUydlEVaQ==}
+    peerDependencies:
+      playwright: '*'
+      safaridriver: '*'
+      vitest: 1.3.1
+      webdriverio: '*'
+    peerDependenciesMeta:
+      playwright:
+        optional: true
+      safaridriver:
+        optional: true
+      webdriverio:
+        optional: true
+    dependencies:
+      '@vitest/utils': 1.3.1
+      magic-string: 0.30.5
+      sirv: 2.0.4
+      vitest: 1.3.1(@types/node@20.11.14)(@vitest/browser@1.3.1)
     dev: true
 
   /@vitest/expect@1.3.1:
@@ -7846,6 +7877,11 @@ packages:
     dev: true
     optional: true
 
+  /mrmime@2.0.0:
+    resolution: {integrity: sha512-eu38+hdgojoyq63s+yTpN4XMBdt5l8HhMhc4VKLO9KM5caLIBvUm4thi7fFaxyTmCKeNnXZ5pAlBwCUnhA09uw==}
+    engines: {node: '>=10'}
+    dev: true
+
   /ms@2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
     dev: true
@@ -9245,6 +9281,15 @@ packages:
       semver: 7.5.4
     dev: true
 
+  /sirv@2.0.4:
+    resolution: {integrity: sha512-94Bdh3cC2PKrbgSOUqTiGPWVZeSiXfKOVZNJniWoqrWrRkB1CJzBU3NEbiTsPcYy1lDsANA/THzS+9WBiy5nfQ==}
+    engines: {node: '>= 10'}
+    dependencies:
+      '@polka/url': 1.0.0-next.24
+      mrmime: 2.0.0
+      totalist: 3.0.1
+    dev: true
+
   /slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
@@ -9265,17 +9310,6 @@ packages:
       ansi-styles: 6.2.1
       is-fullwidth-code-point: 5.0.0
     dev: true
-
-  /smoldot@2.0.17:
-    resolution: {integrity: sha512-8lHuFcd941WMtpR7pfedkUSlgN0/IWPt8p203cEKxFvaZ8Y+QQegl7iiQTgP4w0zWPQcPBT1zqUKCyd42u4UCw==}
-    requiresBuild: true
-    dependencies:
-      ws: 8.16.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-    optional: true
 
   /smoldot@2.0.20:
     resolution: {integrity: sha512-vDuT0QZ3ds8HjJ0nDj/FdrPny5//oEWTJeNrj7a7H5OJlZx2M5HTPpbVqd1C3gjkPIdGRYNBYSe2WDOEul4b0g==}
@@ -9727,6 +9761,11 @@ packages:
   /tosource@1.0.0:
     resolution: {integrity: sha512-N6g8eQ1eerw6Y1pBhdgkubWIiPFwXa2POSUrlL8jth5CyyEWNWzoGKRkO3CaO7Jx27hlJP54muB3btIAbx4MPg==}
     engines: {node: '>=0.4.0'}
+    dev: true
+
+  /totalist@3.0.1:
+    resolution: {integrity: sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ==}
+    engines: {node: '>=6'}
     dev: true
 
   /touch@3.1.0:
@@ -10299,6 +10338,63 @@ packages:
       fsevents: 2.3.3
     dev: true
 
+  /vitest@1.3.1(@types/node@20.11.14)(@vitest/browser@1.3.1):
+    resolution: {integrity: sha512-/1QJqXs8YbCrfv/GPQ05wAZf2eakUPLPa18vkJAKE7RXOKfVHqMZZ1WlTjiwl6Gcn65M5vpNUB6EFLnEdRdEXQ==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@edge-runtime/vm': '*'
+      '@types/node': ^18.0.0 || >=20.0.0
+      '@vitest/browser': 1.3.1
+      '@vitest/ui': 1.3.1
+      happy-dom: '*'
+      jsdom: '*'
+    peerDependenciesMeta:
+      '@edge-runtime/vm':
+        optional: true
+      '@types/node':
+        optional: true
+      '@vitest/browser':
+        optional: true
+      '@vitest/ui':
+        optional: true
+      happy-dom:
+        optional: true
+      jsdom:
+        optional: true
+    dependencies:
+      '@types/node': 20.11.14
+      '@vitest/browser': 1.3.1(vitest@1.3.1)
+      '@vitest/expect': 1.3.1
+      '@vitest/runner': 1.3.1
+      '@vitest/snapshot': 1.3.1
+      '@vitest/spy': 1.3.1
+      '@vitest/utils': 1.3.1
+      acorn-walk: 8.3.2
+      chai: 4.3.10
+      debug: 4.3.4(supports-color@5.5.0)
+      execa: 8.0.1
+      local-pkg: 0.5.0
+      magic-string: 0.30.5
+      pathe: 1.1.1
+      picocolors: 1.0.0
+      std-env: 3.7.0
+      strip-literal: 2.0.0
+      tinybench: 2.5.1
+      tinypool: 0.8.2
+      vite: 5.0.11(@types/node@20.11.14)
+      vite-node: 1.3.1(@types/node@20.11.14)
+      why-is-node-running: 2.2.2
+    transitivePeerDependencies:
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+    dev: true
+
   /vitest@1.3.1(@types/node@20.11.14)(jsdom@24.0.0):
     resolution: {integrity: sha512-/1QJqXs8YbCrfv/GPQ05wAZf2eakUPLPa18vkJAKE7RXOKfVHqMZZ1WlTjiwl6Gcn65M5vpNUB6EFLnEdRdEXQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -10434,6 +10530,10 @@ packages:
   /web-streams-polyfill@3.3.0:
     resolution: {integrity: sha512-qGPA+g7LsFEF3dXQDJdZUSUBEuCONtE303GrFblnE+5BGTIim+h8CcOmYzylo/4in2GcdpirP/fBkM3/J6kWoQ==}
     engines: {node: '>= 18'}
+
+  /webextension-polyfill@0.10.0:
+    resolution: {integrity: sha512-c5s35LgVa5tFaHhrZDnr3FpQpjj1BB+RXhLTYUxGqBVN460HkbM8TBtEqdXWbpTKfzwCcjAZVF7zXCYSKtcp9g==}
+    dev: true
 
   /webidl-conversions@4.0.2:
     resolution: {integrity: sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==}
