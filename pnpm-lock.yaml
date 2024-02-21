@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@substrate/connect': 0.8.5
+  '@substrate/connect': 0.8.6
 
 importers:
 
@@ -287,7 +287,7 @@ importers:
         specifier: ^12.5.1
         version: 12.6.2(@polkadot/util@12.6.2)
       '@substrate/connect':
-        specifier: 0.8.5
+        specifier: 0.8.6
         version: link:../../packages/connect
       bn.js:
         specifier: ^5.2.1
@@ -339,7 +339,7 @@ importers:
         specifier: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
         version: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
       '@substrate/connect':
-        specifier: 0.8.5
+        specifier: 0.8.6
         version: link:../../packages/connect
       rxjs:
         specifier: ^7.8.1
@@ -428,7 +428,7 @@ importers:
         specifier: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
         version: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
       '@substrate/connect':
-        specifier: 0.8.5
+        specifier: 0.8.6
         version: link:../packages/connect
 
 packages:

@@ -4,6 +4,13 @@
 
 ### Changed
 
+## 0.4.0 - 2024-02-21
+
+### Changed
+
+- Use RPC messages between inpage script, content script, extension pages and background script [#1766](https://github.com/paritytech/substrate-connect/pull/1766)
+- Announce LightClient provider with custom events [#1845](https://github.com/paritytech/substrate-connect/pull/1845)
+
 ## 0.3.1 - 2024-01-18
 
 ### Changed
