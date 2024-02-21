@@ -382,8 +382,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-icons:
-        specifier: ^4.11.0
-        version: 4.12.0(react@18.2.0)
+        specifier: ^5.0.1
+        version: 5.0.1(react@18.2.0)
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
@@ -2727,7 +2727,7 @@ packages:
       nock: 13.4.0
       tslib: 2.6.2
     optionalDependencies:
-      '@substrate/connect': 0.8.5
+      '@substrate/connect': 0.8.6
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -3173,27 +3173,27 @@ packages:
     dev: false
     optional: true
 
-  /@substrate/connect-known-chains@1.0.6:
-    resolution: {integrity: sha512-2OhE6OdKmuKEE7J7zGnYTfGoVheHeuuE3OWmt9xcFU/nu81lRMDiK9zrgFJcfhBHcLJF9OyeGCbQaUlceVRWww==}
+  /@substrate/connect-known-chains@1.0.8:
+    resolution: {integrity: sha512-XXHhLWbIe15iNb9WXAGMKkyaaqwjltGTlKZAAmat+ENXp3jlyRMYe/qtZ8U9zTPK5JWyDI66xs1JuQPkJHXA0g==}
     requiresBuild: true
     dev: false
     optional: true
 
-  /@substrate/connect@0.8.5:
-    resolution: {integrity: sha512-CEagDaken8DRnB/jDBkekZS6dezXW90BqJpGTkhW6X/vlX7LchoHp3xcEYYdgZv8opJrZId+OWtQWm+wbWVolw==}
+  /@substrate/connect@0.8.6:
+    resolution: {integrity: sha512-OFkUmQERshcFEIakLmCLGCI3/49rj/YDQbfSLmiDLEuKCjLdiY1oL8JbU9Qel6tUVwx5Rv4MCkqfZGuwnhp8hA==}
     requiresBuild: true
     dependencies:
       '@substrate/connect-extension-protocol': 2.0.0
-      '@substrate/connect-known-chains': 1.0.6
-      '@substrate/light-client-extension-helpers': 0.0.2(smoldot@2.0.17)
-      smoldot: 2.0.17
+      '@substrate/connect-known-chains': 1.0.8
+      '@substrate/light-client-extension-helpers': 0.0.2(smoldot@2.0.21)
+      smoldot: 2.0.21
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
     dev: false
     optional: true
 
-  /@substrate/light-client-extension-helpers@0.0.2(smoldot@2.0.17):
+  /@substrate/light-client-extension-helpers@0.0.2(smoldot@2.0.21):
     resolution: {integrity: sha512-pXX2RNtyz0mY4oA8jl1cGnr4PLPcri90RyTqNphvDEOUIGxJWK+eZaWQQ6AqpEq48SYv8c7Ffosw1nxxCdHN7Q==}
     requiresBuild: true
     peerDependencies:
@@ -3204,9 +3204,9 @@ packages:
       '@polkadot-api/json-rpc-provider-proxy': 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
       '@polkadot-api/substrate-client': 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
       '@substrate/connect-extension-protocol': 2.0.0
-      '@substrate/connect-known-chains': 1.0.6
+      '@substrate/connect-known-chains': 1.0.8
       rxjs: 7.8.1
-      smoldot: 2.0.17
+      smoldot: 2.0.21
     dev: false
     optional: true
 
@@ -8453,8 +8453,8 @@ packages:
       scheduler: 0.23.0
     dev: false
 
-  /react-icons@4.12.0(react@18.2.0):
-    resolution: {integrity: sha512-IBaDuHiShdZqmfc/TwHu6+d6k2ltNCf3AszxNmjJc1KUfXdEeRJOKyNvLmAHaarhzGmTSVygNdyu8/opXv2gaw==}
+  /react-icons@5.0.1(react@18.2.0):
+    resolution: {integrity: sha512-WqLZJ4bLzlhmsvme6iFdgO8gfZP17rfjYEJ2m9RsZjZ+cc4k1hTzknEz63YS1MeT50kVzoa1Nz36f4BEx+Wigw==}
     peerDependencies:
       react: '*'
     dependencies:
@@ -9029,17 +9029,6 @@ packages:
       ansi-styles: 6.2.1
       is-fullwidth-code-point: 5.0.0
     dev: true
-
-  /smoldot@2.0.17:
-    resolution: {integrity: sha512-8lHuFcd941WMtpR7pfedkUSlgN0/IWPt8p203cEKxFvaZ8Y+QQegl7iiQTgP4w0zWPQcPBT1zqUKCyd42u4UCw==}
-    requiresBuild: true
-    dependencies:
-      ws: 8.16.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-    optional: true
 
   /smoldot@2.0.20:
     resolution: {integrity: sha512-vDuT0QZ3ds8HjJ0nDj/FdrPny5//oEWTJeNrj7a7H5OJlZx2M5HTPpbVqd1C3gjkPIdGRYNBYSe2WDOEul4b0g==}
