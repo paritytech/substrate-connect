@@ -1,5 +1,6 @@
 import { start } from "smoldot"
 import { register } from "@substrate/light-client-extension-helpers/background"
+import { ToyRpcSpec, createRpc } from "../shared"
 
 register({
   smoldotClient: start({ maxLogLevel: 4 }),
@@ -20,4 +21,15 @@ register({
         fetch(chrome.runtime.getURL(path)).then((response) => response.text()),
       ),
     ),
+})
+
+chrome.runtime.onConnect.addListener((port) => {
+  if (port.name !== "extension-template") return
+  const handlers: ToyRpcSpec = {
+    ping() {
+      return "pong from background-script"
+    },
+  }
+  const rpc = createRpc((msg) => port.postMessage(msg), handlers)
+  port.onMessage.addListener((msg) => rpc.handle(msg, {}))
 })

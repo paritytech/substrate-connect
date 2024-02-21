@@ -160,3 +160,23 @@ const ScProvider = (input: string, relayChainSpec?: string) => {
     }
   })
 }
+
+let rpcRequest: ((method: string, params: any[]) => Promise<any>) | undefined
+window.dispatchEvent(
+  new CustomEvent("lightClient:requestProvider", {
+    detail: {
+      onProvider(detail: any) {
+        if (
+          detail.info.rdns ===
+          "io.github.paritytech.SubstrateConnectLightClient"
+        ) {
+          rpcRequest = detail.rpcRequest
+        }
+      },
+    },
+  }),
+)
+
+if (rpcRequest) {
+  rpcRequest("ping", []).then((response: any) => console.log({ response }))
+}
