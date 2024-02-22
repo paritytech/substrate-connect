@@ -1,4 +1,5 @@
 import { toHex, fromHex } from "@polkadot-api/utils"
+import type Browser from "webextension-polyfill"
 
 export type Cipher = {
   encrypt(plaintext: Uint8Array): Uint8Array
@@ -6,10 +7,8 @@ export type Cipher = {
 }
 
 type StorageArea = {
-  get(
-    keys?: null | string | string[] | Record<string, any>,
-  ): Promise<Record<string, any>>
-  set(items: Record<string, any>): Promise<void>
+  get: Browser.Storage.StorageArea["get"]
+  set: Browser.Storage.StorageArea["set"]
 }
 
 export const createSecureLocalStorage = <T extends StorageArea>(
