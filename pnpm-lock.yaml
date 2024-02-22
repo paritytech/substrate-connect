@@ -21,11 +21,11 @@ importers:
         specifier: ^1.0.5
         version: 1.0.5
       '@types/react':
-        specifier: ^18.2.48
-        version: 18.2.48
+        specifier: ^18.2.57
+        version: 18.2.57
       '@types/react-dom':
-        specifier: ^18.2.15
-        version: 18.2.18
+        specifier: ^18.2.19
+        version: 18.2.19
       '@types/react-router-dom':
         specifier: ^5.3.3
         version: 5.3.3
@@ -51,8 +51,8 @@ importers:
         specifier: ^14.1.1
         version: 14.1.1
       husky:
-        specifier: ^9.0.7
-        version: 9.0.7
+        specifier: ^9.0.11
+        version: 9.0.11
       lint-staged:
         specifier: ^15.2.2
         version: 15.2.2
@@ -66,8 +66,8 @@ importers:
         specifier: ^2.6.2
         version: 2.6.2
       tsup:
-        specifier: ^8.0.1
-        version: 8.0.1(typescript@5.3.3)
+        specifier: ^8.0.2
+        version: 8.0.2(typescript@5.3.3)
       turbo:
         specifier: ^1.12.4
         version: 1.12.4
@@ -103,11 +103,11 @@ importers:
         version: 7.8.1
     devDependencies:
       '@types/react':
-        specifier: ^18.2.48
-        version: 18.2.48
+        specifier: ^18.2.57
+        version: 18.2.57
       '@types/react-dom':
-        specifier: ^18.2.7
-        version: 18.2.18
+        specifier: ^18.2.19
+        version: 18.2.19
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.20.0
         version: 6.20.0(@typescript-eslint/parser@7.0.2)(eslint@8.56.0)(typescript@5.3.3)
@@ -236,13 +236,13 @@ importers:
     dependencies:
       '@material-ui/core':
         specifier: ^4.12.4
-        version: 4.12.4(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
+        version: 4.12.4(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
       '@material-ui/icons':
         specifier: ^4.11.3
-        version: 4.11.3(@material-ui/core@4.12.4)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
+        version: 4.11.3(@material-ui/core@4.12.4)(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
       '@material-ui/lab':
         specifier: ^4.0.0-alpha.61
-        version: 4.0.0-alpha.61(@material-ui/core@4.12.4)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
+        version: 4.0.0-alpha.61(@material-ui/core@4.12.4)(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
       '@polkadot/api':
         specifier: ^10.10.1
         version: 10.11.2
@@ -2362,7 +2362,7 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /@material-ui/core@4.12.4(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0):
+  /@material-ui/core@4.12.4(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-tr7xekNlM9LjA6pagJmL8QCgZXaubWUwkJnoYcMKd4gw/t4XiyvnTkjdGrUVicyB2BsdaAv1tvow45bPM4sSwQ==}
     engines: {node: '>=8.0.0'}
     deprecated: Material UI v4 doesn't receive active development since September 2021. See the guide https://mui.com/material-ui/migration/migration-v4/ to upgrade to v5.
@@ -2375,11 +2375,11 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.23.7
-      '@material-ui/styles': 4.11.5(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
-      '@material-ui/system': 4.12.2(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
-      '@material-ui/types': 5.1.0(@types/react@18.2.48)
+      '@material-ui/styles': 4.11.5(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
+      '@material-ui/system': 4.12.2(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
+      '@material-ui/types': 5.1.0(@types/react@18.2.57)
       '@material-ui/utils': 4.11.3(react-dom@18.2.0)(react@18.2.0)
-      '@types/react': 18.2.48
+      '@types/react': 18.2.57
       '@types/react-transition-group': 4.4.10
       clsx: 1.2.1
       hoist-non-react-statics: 3.3.2
@@ -2391,7 +2391,7 @@ packages:
       react-transition-group: 4.4.5(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
-  /@material-ui/icons@4.11.3(@material-ui/core@4.12.4)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0):
+  /@material-ui/icons@4.11.3(@material-ui/core@4.12.4)(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-IKHlyx6LDh8n19vzwH5RtHIOHl9Tu90aAAxcbWME6kp4dmvODM3UvOHJeMIDzUbd4muuJKHmlNoBN+mDY4XkBA==}
     engines: {node: '>=8.0.0'}
     peerDependencies:
@@ -2404,13 +2404,13 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.23.7
-      '@material-ui/core': 4.12.4(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
-      '@types/react': 18.2.48
+      '@material-ui/core': 4.12.4(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
+      '@types/react': 18.2.57
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@material-ui/lab@4.0.0-alpha.61(@material-ui/core@4.12.4)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0):
+  /@material-ui/lab@4.0.0-alpha.61(@material-ui/core@4.12.4)(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-rSzm+XKiNUjKegj8bzt5+pygZeckNLOr+IjykH8sYdVk7dE9y2ZuUSofiMV2bJk3qU+JHwexmw+q0RyNZB9ugg==}
     engines: {node: '>=8.0.0'}
     deprecated: Material UI v4 doesn't receive active development since September 2021. See the guide https://mui.com/material-ui/migration/migration-v4/ to upgrade to v5.
@@ -2424,9 +2424,9 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.23.7
-      '@material-ui/core': 4.12.4(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
+      '@material-ui/core': 4.12.4(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
       '@material-ui/utils': 4.11.3(react-dom@18.2.0)(react@18.2.0)
-      '@types/react': 18.2.48
+      '@types/react': 18.2.57
       clsx: 1.2.1
       prop-types: 15.8.1
       react: 18.2.0
@@ -2434,7 +2434,7 @@ packages:
       react-is: 17.0.2
     dev: false
 
-  /@material-ui/styles@4.11.5(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0):
+  /@material-ui/styles@4.11.5(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-o/41ot5JJiUsIETME9wVLAJrmIWL3j0R0Bj2kCOLbSfqEkKf0fmaPt+5vtblUh5eXr2S+J/8J3DaCb10+CzPGA==}
     engines: {node: '>=8.0.0'}
     deprecated: Material UI v4 doesn't receive active development since September 2021. See the guide https://mui.com/material-ui/migration/migration-v4/ to upgrade to v5.
@@ -2448,9 +2448,9 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.7
       '@emotion/hash': 0.8.0
-      '@material-ui/types': 5.1.0(@types/react@18.2.48)
+      '@material-ui/types': 5.1.0(@types/react@18.2.57)
       '@material-ui/utils': 4.11.3(react-dom@18.2.0)(react@18.2.0)
-      '@types/react': 18.2.48
+      '@types/react': 18.2.57
       clsx: 1.2.1
       csstype: 2.6.21
       hoist-non-react-statics: 3.3.2
@@ -2467,7 +2467,7 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@material-ui/system@4.12.2(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0):
+  /@material-ui/system@4.12.2(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-6CSKu2MtmiJgcCGf6nBQpM8fLkuB9F55EKfbdTC80NND5wpTmKzwdhLYLH3zL4cLlK0gVaaltW7/wMuyTnN0Lw==}
     engines: {node: '>=8.0.0'}
     peerDependencies:
@@ -2480,14 +2480,14 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.7
       '@material-ui/utils': 4.11.3(react-dom@18.2.0)(react@18.2.0)
-      '@types/react': 18.2.48
+      '@types/react': 18.2.57
       csstype: 2.6.21
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@material-ui/types@5.1.0(@types/react@18.2.48):
+  /@material-ui/types@5.1.0(@types/react@18.2.57):
     resolution: {integrity: sha512-7cqRjrY50b8QzRSYyhSpx4WRw2YuO0KKIGQEVk5J8uoz2BanawykgZGoWEqKm7pVIbzFDN0SpPcVV4IhOFkl8A==}
     peerDependencies:
       '@types/react': '*'
@@ -2495,7 +2495,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@types/react': 18.2.48
+      '@types/react': 18.2.57
     dev: false
 
   /@material-ui/utils@4.11.3(react-dom@18.2.0)(react@18.2.0):
@@ -3542,20 +3542,20 @@ packages:
   /@types/qrcode.react@1.0.5:
     resolution: {integrity: sha512-BghPtnlwvrvq8QkGa1H25YnN+5OIgCKFuQruncGWLGJYOzeSKiix/4+B9BtfKF2wf5ja8yfyWYA3OXju995G8w==}
     dependencies:
-      '@types/react': 18.2.48
+      '@types/react': 18.2.57
     dev: true
 
-  /@types/react-dom@18.2.18:
-    resolution: {integrity: sha512-TJxDm6OfAX2KJWJdMEVTwWke5Sc/E/RlnPGvGfS0W7+6ocy2xhDVQVh/KvC2Uf7kACs+gDytdusDSdWfWkaNzw==}
+  /@types/react-dom@18.2.19:
+    resolution: {integrity: sha512-aZvQL6uUbIJpjZk4U8JZGbau9KDeAwMfmhyWorxgBkqDIEf6ROjRozcmPIicqsUwPUjbkDfHKgGee1Lq65APcA==}
     dependencies:
-      '@types/react': 18.2.48
+      '@types/react': 18.2.57
     dev: true
 
   /@types/react-router-dom@5.3.3:
     resolution: {integrity: sha512-kpqnYK4wcdm5UaWI3fLcELopqLrHgLqNsdpHauzlQktfkHL3npOSwtj1Uz9oKBAzs7lFtVkV8j83voAz2D8fhw==}
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 18.2.48
+      '@types/react': 18.2.57
       '@types/react-router': 5.1.20
     dev: true
 
@@ -3563,17 +3563,17 @@ packages:
     resolution: {integrity: sha512-jGjmu/ZqS7FjSH6owMcD5qpq19+1RS9DeVRqfl1FeBMxTDQAGwlMWOcs52NDoXaNKyG3d1cYQFMs9rCrb88o9Q==}
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 18.2.48
+      '@types/react': 18.2.57
     dev: true
 
   /@types/react-transition-group@4.4.10:
     resolution: {integrity: sha512-hT/+s0VQs2ojCX823m60m5f0sL5idt9SO6Tj6Dg+rdphGPIeJbJ6CxvBYkgkGKrYeDjvIpKTR38UzmtHJOGW3Q==}
     dependencies:
-      '@types/react': 18.2.48
+      '@types/react': 18.2.57
     dev: false
 
-  /@types/react@18.2.48:
-    resolution: {integrity: sha512-qboRCl6Ie70DQQG9hhNREz81jqC1cs9EVNcjQ1AU+jH6NFfSAhVVbrrY/+nSF+Bsk4AOwm9Qa61InvMCyV+H3w==}
+  /@types/react@18.2.57:
+    resolution: {integrity: sha512-ZvQsktJgSYrQiMirAN60y4O/LRevIV8hUzSOSNB6gfR3/o3wCBFQx3sPwIYtuDMeiVgsSS3UzCV26tEzgnfvQw==}
     dependencies:
       '@types/prop-types': 15.7.11
       '@types/scheduler': 0.16.8
@@ -7001,8 +7001,8 @@ packages:
     engines: {node: '>=16.17.0'}
     dev: true
 
-  /husky@9.0.7:
-    resolution: {integrity: sha512-vWdusw+y12DUEeoZqW1kplOFqk3tedGV8qlga8/SF6a3lOiWLqGZZQvfWvY0fQYdfiRi/u1DFNpudTSV9l1aCg==}
+  /husky@9.0.11:
+    resolution: {integrity: sha512-AB6lFlbwwyIqMdHYhwPe+kjOC3Oc5P3nThEoW/AaO2BX3vJDjWPFxYLxokUZOo6RNX20He3AaT8sESs9NJcmEw==}
     engines: {node: '>=18'}
     hasBin: true
     dev: true
@@ -10351,8 +10351,8 @@ packages:
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
 
-  /tsup@8.0.1(typescript@5.3.3):
-    resolution: {integrity: sha512-hvW7gUSG96j53ZTSlT4j/KL0q1Q2l6TqGBFc6/mu/L46IoNWqLLUzLRLP1R8Q7xrJTmkDxxDoojV5uCVs1sVOg==}
+  /tsup@8.0.2(typescript@5.3.3):
+    resolution: {integrity: sha512-NY8xtQXdH7hDUAZwcQdY/Vzlw9johQsaqf7iwZ6g1DOUlFYQ5/AtVAjTvihhEyeRlGo4dLRVHtrRaL35M1daqQ==}
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
