@@ -70,6 +70,27 @@ jobs:
         name: playwright-report-light-client-extension-helpers-extension-mv3-chrome
         path: ./examples/light-client-extension-helpers-extension/playwright-report
 
+  playwright-test-wallet-template:
+    needs: [build]
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - uses: ./.github/actions/turbo-build
+    - name: Build extension with Manifest v3 for Chrome
+      run: pnpm build:chrome
+      working-directory: ./projects/wallet-template
+    - run: pnpm playwright:install
+      working-directory: ./projects/wallet-template
+    - name: Test projects/wallet-template
+      run: pnpm playwright:chromium --trace on
+      working-directory: ./projects/wallet-template
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: playwright-report-substrate-connect-wallet-template-mv3-chrome
+        path: ./projects/wallet-template/playwright-report
+
   zombienet-tests:
     needs: [build]
     timeout-minutes: 10
@@ -167,7 +188,7 @@ jobs:
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
     # are successful.
-    needs: [build, playwright-test-extension, playwright-test-examples, zombienet-tests]
+    needs: [build, playwright-test-extension, playwright-test-examples, zombienet-tests, playwright-test-wallet-template]
     runs-on: ubuntu-latest
     steps:
      - run: echo Success

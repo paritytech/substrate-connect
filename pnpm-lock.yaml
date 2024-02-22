@@ -419,6 +419,70 @@ importers:
         specifier: ^7.11.0
         version: 7.11.0
 
+  projects/wallet-template:
+    dependencies:
+      '@polkadot-api/client':
+        specifier: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
+        version: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0(rxjs@7.8.1)
+      '@polkadot-api/substrate-client':
+        specifier: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
+        version: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
+      '@react-rxjs/core':
+        specifier: ^0.10.7
+        version: 0.10.7(react@18.2.0)(rxjs@7.8.1)
+      '@react-rxjs/utils':
+        specifier: ^0.9.7
+        version: 0.9.7(@react-rxjs/core@0.10.7)(react@18.2.0)(rxjs@7.8.1)
+      '@substrate/connect-extension-protocol':
+        specifier: workspace:*
+        version: link:../../packages/connect-extension-protocol
+      '@substrate/light-client-extension-helpers':
+        specifier: workspace:^
+        version: link:../../packages/light-client-extension-helpers
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      react-icons:
+        specifier: ^4.11.0
+        version: 4.12.0(react@18.2.0)
+      rxjs:
+        specifier: ^7.8.1
+        version: 7.8.1
+      smoldot:
+        specifier: 2.0.21
+        version: 2.0.21
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.41.2
+        version: 1.41.2
+      '@vitejs/plugin-react-swc':
+        specifier: ^3.6.0
+        version: 3.6.0(vite@5.1.4)
+      autoprefixer:
+        specifier: ^10.4.17
+        version: 10.4.17(postcss@8.4.35)
+      concurrently:
+        specifier: ^8.2.2
+        version: 8.2.2
+      eslint:
+        specifier: ^8.53.0
+        version: 8.56.0
+      postcss:
+        specifier: ^8.4.35
+        version: 8.4.35
+      tailwindcss:
+        specifier: ^3.4.1
+        version: 3.4.1
+      vite:
+        specifier: ^5.1.4
+        version: 5.1.4(@types/node@20.11.14)
+      web-ext:
+        specifier: ^7.11.0
+        version: 7.11.0
+
   zombienet-tests:
     dependencies:
       '@polkadot-api/json-rpc-provider-proxy':
