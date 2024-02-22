@@ -1,0 +1,49 @@
+{
+  "author": "Parity Team <admin@parity.io>",
+  "description": "Wallet template for substrate-based blockchain light clients",
+  "homepage_url": "https://github.com/paritytech/substrate-connect",
+  "name": "Substrate Connect Wallet Template",
+  "short_name": "substrate-connect-wallet-template",
+  "version": "0.0.0",
+  "manifest_version": 3,
+  "permissions": ["notifications", "storage", "tabs", "alarms"],
+  "background": {
+    "scripts": ["background/background.js"],
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Substrate Connect",
+    "default_popup": "ui/assets/popup.html"
+  },
+  "options_ui": {
+    "page": "ui/assets/options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "js": ["content/content.js"],
+      "matches": ["http://*/*", "https://*/*"],
+      "run_at": "document_start"
+    }
+  ],
+  "icons": {
+    "16": "./icons/icon-16.png",
+    "32": "./icons/icon-32.png",
+    "48": "./icons/icon-48.png",
+    "128": "./icons/icon-128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{9b4d20ed-b18a-4237-b5d0-ca71c2ce2060}"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["inpage/inpage.js"],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ]
+}
