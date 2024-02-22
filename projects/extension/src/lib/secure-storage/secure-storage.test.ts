@@ -17,19 +17,19 @@ describe("secure storage", async () => {
   const cipher = wxchacha(sha256(password))
 
   test("sanity", async () => {
-    const secureLocalStorage = createSecureLocalStorage(
-      cipher,
-      fakeBrowser.storage.local,
-    )
+    const storage = fakeBrowser.storage.local
+    const secureLocalStorage = createSecureLocalStorage(cipher, storage)
 
     await secureLocalStorage.set({ foo: "foobar", bar: "baz" })
 
+    await expect(storage.get("foo")).resolves.not.toEqual([["foo", "foobar"]])
     await expect(secureLocalStorage.get("foo")).resolves.toEqual([
       ["foo", "foobar"],
     ])
     await expect(secureLocalStorage.get("bar")).resolves.toEqual([
       ["bar", "baz"],
     ])
+    await expect(storage.get("bar")).not.resolves.toEqual([["bar", "baz"]])
 
     await secureLocalStorage.remove("foo")
     await expect(secureLocalStorage.get("foo")).resolves.toEqual([
