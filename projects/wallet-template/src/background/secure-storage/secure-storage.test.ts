@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from "vitest"
+import { beforeEach, describe, expect, it } from "vitest"
 import { createSecureLocalStorage } from "./secure-storage"
 import { managedNonce } from "@noble/ciphers/webcrypto"
 import { sha256 } from "@noble/hashes/sha256"
@@ -16,7 +16,7 @@ describe("secure storage", async () => {
   const password = textEncoder.encode("password")
   const cipher = wxchacha(sha256(password))
 
-  test("sanity", async () => {
+  it("should get and set values", async () => {
     const storage = fakeBrowser.storage.local
     const secureLocalStorage = createSecureLocalStorage(cipher, storage)
 
