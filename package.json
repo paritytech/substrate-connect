@@ -58,7 +58,7 @@
     "http-server": "^14.1.1",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
-    "nodemon": "^3.0.3",
+    "nodemon": "^3.1.0",
     "prettier": "^3.2.5",
     "tslib": "^2.6.2",
     "tsup": "^8.0.2",
@@ -67,7 +67,7 @@
     "typescript": "^5.2.2"
   },
   "resolutions": {
-    "@substrate/connect": "0.8.6"
+    "@substrate/connect": "0.8.7"
   },
   "packageManager": "pnpm@8.14.0"
 }

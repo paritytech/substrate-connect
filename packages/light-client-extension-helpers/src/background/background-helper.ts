@@ -424,7 +424,6 @@ export const register = ({
                 await Promise.all([
                   smoldotClient.addChain(addChainOptions),
                   getChainData({ smoldotClient, addChainOptions }),
-                  awaitFinalized({ smoldotClient, addChainOptions }),
                 ])
 
               ;(async () => {
@@ -674,10 +673,6 @@ const getFinalizedDatabase = withClientChainHead$(
     )
     return finalizedDatabase
   },
-)
-
-const awaitFinalized = withClientChainHead$(({ finalized$ }) =>
-  firstValueFrom(finalized$),
 )
 
 const substrateClientRequest = <T>(
