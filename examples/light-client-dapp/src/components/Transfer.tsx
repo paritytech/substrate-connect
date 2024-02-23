@@ -1,4 +1,18 @@
-export const Transfer = () => {
+import { useEffect, useState } from "react"
+import { Account, UnstableProvider } from "../types"
+
+type Props = {
+  provider: UnstableProvider
+}
+
+export const Transfer = ({ provider }: Props) => {
+  const [accounts, setAccounts] = useState<Account[]>([])
+  useEffect(() => {
+    provider.getAccounts().then((accounts) => {
+      setAccounts(accounts)
+    })
+  }, [provider])
+
   // TODO: handle form fields and submission with react
   // TODO: fetch accounts from extension
   // TODO: fetch selected account balance
@@ -11,12 +25,15 @@ export const Transfer = () => {
     <article>
       <header>Transfer funds</header>
       <form>
-        <select>
-          <option disabled selected>
+        <select defaultValue={""}>
+          <option disabled value={""}>
             Select Account...
           </option>
-          <option>Account 1</option>
-          <option>Account 2</option>
+          {accounts.map((account) => (
+            <option key={account.address} value={account.address}>
+              {account.address}
+            </option>
+          ))}
         </select>
         <small>Balance: 123456789</small>
         <input placeholder="to"></input>
