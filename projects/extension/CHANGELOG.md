@@ -4,6 +4,13 @@
 
 ### Changed
 
+## 0.4.1 - 2024-02-23
+
+### Changed
+
+- Updated chainspecs
+- Speed up chain initialization [#1877](https://github.com/paritytech/substrate-connect/pull/1877)
+
 ## 0.4.0 - 2024-02-21
 
 ### Changed
