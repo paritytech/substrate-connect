@@ -78,6 +78,46 @@ importers:
         specifier: ^5.2.2
         version: 5.3.3
 
+  examples/light-client-dapp:
+    dependencies:
+      '@picocss/pico':
+        specifier: ^2.0.3
+        version: 2.0.3
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+    devDependencies:
+      '@types/react':
+        specifier: ^18.2.56
+        version: 18.2.57
+      '@types/react-dom':
+        specifier: ^18.2.19
+        version: 18.2.19
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^7.0.2
+        version: 7.0.2(@typescript-eslint/parser@7.0.2)(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: ^7.0.2
+        version: 7.0.2(eslint@8.56.0)(typescript@5.3.3)
+      '@vitejs/plugin-react-swc':
+        specifier: ^3.5.0
+        version: 3.6.0(vite@5.1.4)
+      eslint:
+        specifier: ^8.56.0
+        version: 8.56.0
+      eslint-plugin-react-hooks:
+        specifier: ^4.6.0
+        version: 4.6.0(eslint@8.56.0)
+      eslint-plugin-react-refresh:
+        specifier: ^0.4.5
+        version: 0.4.5(eslint@8.56.0)
+      vite:
+        specifier: ^5.1.4
+        version: 5.1.4(@types/node@20.11.14)
+
   examples/light-client-extension-helpers-dapp:
     dependencies:
       '@picocss/pico':
@@ -2810,7 +2850,7 @@ packages:
       nock: 13.4.0
       tslib: 2.6.2
     optionalDependencies:
-      '@substrate/connect': 0.8.6
+      '@substrate/connect': 0.8.7
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -3276,13 +3316,13 @@ packages:
     dev: false
     optional: true
 
-  /@substrate/connect@0.8.6:
-    resolution: {integrity: sha512-OFkUmQERshcFEIakLmCLGCI3/49rj/YDQbfSLmiDLEuKCjLdiY1oL8JbU9Qel6tUVwx5Rv4MCkqfZGuwnhp8hA==}
+  /@substrate/connect@0.8.7:
+    resolution: {integrity: sha512-kJLSqiwsAC8eHsPBwUyVpp6cogs1b/4jxTiRfoWbbndmSSEqn3qkcwmYPmZud4pyJFX7FMXwzH28XaPRBGTaQQ==}
     requiresBuild: true
     dependencies:
       '@substrate/connect-extension-protocol': 2.0.0
       '@substrate/connect-known-chains': 1.0.8
-      '@substrate/light-client-extension-helpers': 0.0.2(smoldot@2.0.21)
+      '@substrate/light-client-extension-helpers': 0.0.3(smoldot@2.0.21)
       smoldot: 2.0.21
     transitivePeerDependencies:
       - bufferutil
@@ -3290,8 +3330,8 @@ packages:
     dev: false
     optional: true
 
-  /@substrate/light-client-extension-helpers@0.0.2(smoldot@2.0.21):
-    resolution: {integrity: sha512-pXX2RNtyz0mY4oA8jl1cGnr4PLPcri90RyTqNphvDEOUIGxJWK+eZaWQQ6AqpEq48SYv8c7Ffosw1nxxCdHN7Q==}
+  /@substrate/light-client-extension-helpers@0.0.3(smoldot@2.0.21):
+    resolution: {integrity: sha512-AkWX7Xpn0u8NdR7qAEwFzeobLvHiviqmsUTvN6wge8Rnlbk01Ftm2Ol8vdN6IhjWPTepF5MggibQVXKBUtZnZw==}
     requiresBuild: true
     peerDependencies:
       smoldot: 2.x
