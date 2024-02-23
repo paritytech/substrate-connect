@@ -4,6 +4,12 @@
 
 ### Changed
 
+## 0.8.7 - 2024-02-23
+
+### Changed
+
+- Update `@substrate/light-client-extension-helpers` to v0.0.3 [#1875](https://github.com/paritytech/substrate-connect/pull/1875)
+
 ## 0.8.6 - 2024-02-21
 
 ### Changed
