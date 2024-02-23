@@ -5,13 +5,11 @@ import {
   CONTEXT,
   KEEP_ALIVE_INTERVAL,
   PORT,
-  RpcMessage,
-  createRpc,
-  isRpcMessage,
   isRpcMessageWithOrigin,
   isSubstrateConnectToApplicationMessage,
   isSubstrateConnectToExtensionMessage,
 } from "@/shared"
+import { createRpc, isRpcMessage, type RpcMessage } from "@/utils"
 
 let isRegistered = false
 export const register = (channelId: string) => {

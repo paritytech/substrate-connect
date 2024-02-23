@@ -12,6 +12,7 @@
     "./content-script": "./dist/content-script/content-script-helper.mjs",
     "./extension-page": "./dist/extension-page/extension-page-helper.mjs",
     "./web-page": "./dist/web-page/web-page-helper.mjs",
+    "./utils": "./dist/utils/index.mjs",
     "./known-chain-specs": "./dist/known-chain-specs/index.mjs",
     "./known-chain-specs/polkadot": "./dist/known-chain-specs/polkadot.mjs",
     "./known-chain-specs/ksmcc3": "./dist/known-chain-specs/ksmcc3.mjs",
@@ -23,7 +24,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc --noEmit && tsup-node src/background/background-helper.ts src/content-script/content-script-helper.ts src/extension-page/extension-page-helper.ts src/web-page/web-page-helper.ts src/known-chain-specs/index.ts src/known-chain-specs/polkadot.ts src/known-chain-specs/ksmcc3.ts src/known-chain-specs/westend2.ts src/known-chain-specs/rococo_v2_2.ts src/smoldot/smoldot.ts --clean --sourcemap --platform neutral --target=es2020 --format esm --dts",
+    "build": "tsc --noEmit && tsup-node src/background/background-helper.ts src/content-script/content-script-helper.ts src/extension-page/extension-page-helper.ts src/web-page/web-page-helper.ts src/known-chain-specs/index.ts src/known-chain-specs/polkadot.ts src/known-chain-specs/ksmcc3.ts src/known-chain-specs/westend2.ts src/known-chain-specs/rococo_v2_2.ts src/utils/index.ts src/smoldot/smoldot.ts --clean --sourcemap --platform neutral --target=es2020 --format esm --dts",
     "dev": "pnpm build --watch",
     "lint": "prettier --check README.md \"src/**/*.{js,jsx,ts,tsx,json,md}\""
   },

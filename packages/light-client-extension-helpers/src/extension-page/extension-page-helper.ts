@@ -1,8 +1,5 @@
-import {
-  PORT,
-  createBackgroundClientConnectProvider,
-  createRpc,
-} from "@/shared"
+import { PORT, createBackgroundClientConnectProvider } from "@/shared"
+import { createRpc } from "@/utils"
 import * as storage from "@/storage"
 import type { LightClientPageHelper } from "./types"
 import type { BackgroundRpcSpec } from "@/background/types"
