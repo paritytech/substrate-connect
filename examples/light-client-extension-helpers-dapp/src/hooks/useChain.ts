@@ -11,11 +11,11 @@ export const useChain = (chain: RawChain) => {
 
   useEffect(() => {
     const client = getObservableClient(createClient(chain.connect))
-    const { unfollow, finalizedHeader$ } = client.chainHead$()
-    const subscription = finalizedHeader$.subscribe(({ hash, header }) =>
+    const { unfollow, finalized$ } = client.chainHead$()
+    const subscription = finalized$.subscribe(({ hash, number }) =>
       setState({
         finalized: hash,
-        blockHeight: header.number,
+        blockHeight: number,
       }),
     )
 
