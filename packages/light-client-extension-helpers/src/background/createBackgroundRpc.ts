@@ -4,14 +4,14 @@ import type {
   BackgroundRpcSpec as BackgroundRpcSpec,
   LightClientPageHelper,
 } from "./types"
+import { PORT } from "@/shared"
 import {
   createRpc,
-  PORT,
   RpcError,
   type RpcMethodHandlers,
   type RpcMessage,
   type RpcMethodMiddleware,
-} from "@/shared"
+} from "@/utils"
 import * as storage from "@/storage"
 import { WebPageRpcSpec } from "@/web-page/types"
 

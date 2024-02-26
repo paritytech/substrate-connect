@@ -1,7 +1,8 @@
 import { start } from "smoldot"
 import { register } from "@substrate/light-client-extension-helpers/background"
+import { createBackgroundRpc } from "./createBackgroundRpc"
 
-register({
+const { lightClientPageHelper } = register({
   smoldotClient: start({ maxLogLevel: 4 }),
   getWellKnownChainSpecs: () =>
     // Note that this list doesn't necessarily always have to match the list of well-known
@@ -20,4 +21,12 @@ register({
         fetch(chrome.runtime.getURL(path)).then((response) => response.text()),
       ),
     ),
+})
+
+chrome.runtime.onConnect.addListener((port) => {
+  if (port.name !== "substrate-wallet-template") return
+  const rpc = createBackgroundRpc((msg) => port.postMessage(msg))
+  port.onMessage.addListener((msg) =>
+    rpc.handle(msg, { lightClientPageHelper }),
+  )
 })

@@ -2,11 +2,10 @@ import type { ToExtensionMessage } from "@/protocol"
 import {
   CONTEXT,
   createBackgroundClientConnectProvider,
-  createRpc,
   isRpcMessageWithOrigin,
   isSubstrateConnectToApplicationMessage,
-  type RpcMethodHandlers,
 } from "@/shared"
+import { createRpc, type RpcMethodHandlers } from "@/utils"
 import type { LightClientProvider, RawChain, WebPageRpcSpec } from "./types"
 import type { BackgroundRpcSpec } from "@/background/types"
 import type { ToApplication } from "@substrate/connect-extension-protocol"

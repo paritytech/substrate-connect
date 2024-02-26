@@ -20,13 +20,8 @@ import type {
   PageChain,
 } from "./types"
 import { smoldotProvider } from "./smoldot-provider"
-import {
-  ALARM,
-  PORT,
-  isRpcMessage,
-  isSubstrateConnectToExtensionMessage,
-  type RpcMessage,
-} from "@/shared"
+import { ALARM, PORT, isSubstrateConnectToExtensionMessage } from "@/shared"
+import { isRpcMessage, type RpcMessage } from "@/utils"
 import * as storage from "@/storage"
 import { createBackgroundRpc } from "./createBackgroundRpc"
 

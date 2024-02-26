@@ -51,9 +51,9 @@ const followChainBestBlocks = (
       map((blocks) => blocks[0]),
       filter(Boolean),
     )
-    .subscribe(({ header }) => {
-      ui.setAttribute("data-blockheight", `${header.number}`)
-      ui.innerText = `#${header.number}`
+    .subscribe(({ number }) => {
+      ui.setAttribute("data-blockheight", `${number}`)
+      ui.innerText = `#${number}`
     })
 }
 
