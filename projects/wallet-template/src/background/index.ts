@@ -1,5 +1,10 @@
 import { start } from "smoldot"
 import { register } from "@substrate/light-client-extension-helpers/background"
+import {
+  type RpcMethodHandlers,
+  createRpc,
+} from "@substrate/light-client-extension-helpers/utils"
+import type { BackgroundRpcSpec } from "./types"
 
 register({
   smoldotClient: start({ maxLogLevel: 4 }),
@@ -20,4 +25,18 @@ register({
         fetch(chrome.runtime.getURL(path)).then((response) => response.text()),
       ),
     ),
+})
+
+chrome.runtime.onConnect.addListener((port) => {
+  if (port.name !== "substrate-wallet-template") return
+  const handlers: RpcMethodHandlers<BackgroundRpcSpec> = {
+    async getAccounts([_chainId]) {
+      return [{ address: "address-1" }, { address: "address-2" }]
+    },
+    async createTx([_chainId, _from, _callData]) {
+      return ""
+    },
+  }
+  const rpc = createRpc((msg) => port.postMessage(msg), handlers)
+  port.onMessage.addListener((msg) => rpc.handle(msg, undefined))
 })

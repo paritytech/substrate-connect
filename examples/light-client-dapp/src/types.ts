@@ -5,7 +5,8 @@ export type Account = {
 
 // FIXME: use correct type from PolkadotProvider
 export type UnstableProvider = {
-  getAccounts: () => Promise<Account[]>
+  getAccounts: (chainId: string) => Promise<Account[]>
+  createTx: (chainId: string, from: string, callData: string) => Promise<string>
 }
 
 // FIXME: use correct type from PolkadotProvider

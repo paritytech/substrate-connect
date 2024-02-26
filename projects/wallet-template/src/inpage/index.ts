@@ -1,8 +1,11 @@
 import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
+import { createRpc } from "@substrate/light-client-extension-helpers/utils"
 import {
   getLightClientProvider,
   type UnstableWalletProviderDiscovery,
 } from "@substrate/light-client-extension-helpers/web-page"
+
+import type { BackgroundRpcSpec } from "../background/types"
 
 const PROVIDER_INFO = {
   uuid: crypto.randomUUID(),
@@ -11,16 +14,22 @@ const PROVIDER_INFO = {
   rdns: "io.github.paritytech.SubstrateConnectWalletTemplate",
 }
 
+const rpc = createRpc((msg: any) =>
+  window.postMessage({ msg, origin: "substrate-wallet-template/web" }),
+).withClient<BackgroundRpcSpec>()
+window.addEventListener("message", ({ data }) => {
+  if (data?.origin !== "substrate-wallet-template/extension") return
+  rpc.handle(data.msg, undefined)
+})
+
 const provider = getLightClientProvider(DOM_ELEMENT_ID).then(
   (lightClientProvider) => ({
     ...lightClientProvider,
-    async getAccounts(): Promise<{ address: string }[]> {
-      // TODO: make rpc call
-      return [{ address: "address-1" }, { address: "address-2" }]
+    async getAccounts(chainId: string) {
+      return rpc.client.getAccounts(chainId)
     },
-    async createTx() {
-      // TODO: make rpc call
-      return "signed-tx"
+    async createTx(chainId: string, from: string, callData: string) {
+      return rpc.client.createTx(chainId, from, callData)
     },
   }),
 )

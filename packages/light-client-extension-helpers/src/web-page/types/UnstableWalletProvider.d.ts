@@ -15,11 +15,16 @@ export namespace UnstableWallet {
     // Registers a callback invoked when the list of available chains changes
     addChainsChangeListener: (listener: Callback<RawChains>) => UnsubscribeFn
 
-    // TODO: move inside RawChains
-    getAccounts: () => Promise<Account[]>
+    // TODO: move inside RawChains and remove chainId
+    getAccounts: (chainId: string) => Promise<Account[]>
 
-    // TODO: move inside RawChains
-    createTx: (from: string, callData: string) => Promise<string>
+    // TODO: move inside RawChains and remove chainId
+    createTx: (
+      chainId: string,
+      from: string,
+      // TODO: it should encode a Tuple<CallData, Extra, AdditionalSigned>
+      callData: string,
+    ) => Promise<string>
   }
 
   type Account = {
