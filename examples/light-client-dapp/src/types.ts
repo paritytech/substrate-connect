@@ -10,4 +10,5 @@ export type UnstableProvider = {
 }
 
 // FIXME: use correct type from PolkadotProvider
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type UnstableOnProvider = {}

@@ -9,6 +9,7 @@ export const useProvider = () => {
     window.dispatchEvent(
       new CustomEvent<UnstableOnProvider>("unstableWallet:requestProvider", {
         detail: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           async onProvider(detail: any) {
             if (
               detail.info.rdns ===

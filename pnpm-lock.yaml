@@ -451,6 +451,12 @@ importers:
       '@polkadot-api/utils':
         specifier: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
         version: 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
+      '@polkadot-labs/hdkd':
+        specifier: ^0.0.5
+        version: 0.0.5
+      '@polkadot-labs/hdkd-helpers':
+        specifier: ^0.0.5
+        version: 0.0.5
       '@react-rxjs/core':
         specifier: ^0.10.7
         version: 0.10.7(react@18.2.0)(rxjs@7.8.1)
@@ -2672,6 +2678,27 @@ packages:
 
   /@polkadot-api/utils@0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0:
     resolution: {integrity: sha512-H7hOfilvx65wYxMjAI130rK34GcAPzMEuoP5W693N0PsXYc1QeoEHSza5NSgoN1U4jGNzDBoxu0al2WGKo1B5g==}
+    dev: false
+
+  /@polkadot-labs/hdkd-helpers@0.0.5:
+    resolution: {integrity: sha512-xmHVa2GSEeHQvwNSrYWDBqM2ouxTAkL+dazMN2t5qV44LuK5T/1AkLDFwt24lhwtIVVAbCH5RhhtEkpnMar6PQ==}
+    dependencies:
+      '@noble/curves': 1.3.0
+      '@noble/hashes': 1.3.3
+      '@polkadot-labs/schnorrkel-wasm': 0.0.4
+      '@scure/base': 1.1.5
+      scale-ts: 1.6.0
+    dev: false
+
+  /@polkadot-labs/hdkd@0.0.5:
+    resolution: {integrity: sha512-pVZRSJP4zFwdVELjIfsbabZebWo/2HgiCj1t5iBFmozL6CnHTeCzb7kyRZS71CN/WwR+Bzg8hNZ+0c3GxHa1vQ==}
+    dependencies:
+      '@polkadot-labs/hdkd-helpers': 0.0.5
+      '@polkadot-labs/schnorrkel-wasm': 0.0.4
+    dev: false
+
+  /@polkadot-labs/schnorrkel-wasm@0.0.4:
+    resolution: {integrity: sha512-AKjnQaT3gZVSTXdICqKbYbhUpLttlSxtynTw8XITRvzKVa/xW+befpUExWxwLtJEOxeAs9V+Rw5KjTKuqgOIbg==}
     dev: false
 
   /@polkadot/api-augment@10.11.2:
@@ -9570,6 +9597,10 @@ packages:
 
   /scale-ts@1.4.3:
     resolution: {integrity: sha512-45xNR+ovE11s5TY2deCwqct83TwoHDHFiqUlBBWR4H9ukEa1GHGB/YZPoNkNho0dbi9XxtDrZf5M/YZdKa3M1Q==}
+    dev: false
+
+  /scale-ts@1.6.0:
+    resolution: {integrity: sha512-Ja5VCjNZR8TGKhUumy9clVVxcDpM+YFjAnkMuwQy68Hixio3VRRvWdE3g8T/yC+HXA0ZDQl2TGyUmtmbcVl40Q==}
     dev: false
 
   /scheduler@0.23.0:
