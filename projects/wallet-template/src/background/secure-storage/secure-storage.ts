@@ -6,8 +6,8 @@ export type Cipher = {
 }
 
 type StorageArea = {
-  get: chrome.Storage.StorageArea["get"]
-  set: chrome.Storage.StorageArea["set"]
+  get: chrome.storage.StorageArea["get"]
+  set: chrome.storage.StorageArea["set"]
 }
 
 export const createSecureLocalStorage = <T extends StorageArea>(
