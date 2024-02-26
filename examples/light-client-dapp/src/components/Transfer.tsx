@@ -37,7 +37,7 @@ export const Transfer = ({ provider }: Props) => {
       }
       setIsCreatingTransaction(false)
     },
-    [accounts],
+    [provider, accounts],
   )
 
   // TODO: handle form fields and submission with react
