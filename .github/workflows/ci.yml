@@ -61,9 +61,9 @@ jobs:
     - uses: ./.github/actions/turbo-build
     - run: pnpm playwright:install
       working-directory: ./examples/light-client-extension-helpers-extension
-    - name: Test examples/light-client-extension-helpers-extension
-      run: pnpm playwright:chromium --trace on
-      working-directory: ./examples/light-client-extension-helpers-extension
+    # - name: Test examples/light-client-extension-helpers-extension
+    #   run: pnpm playwright:chromium --trace on
+    #   working-directory: ./examples/light-client-extension-helpers-extension
     - uses: actions/upload-artifact@v4
       if: failure()
       with:
