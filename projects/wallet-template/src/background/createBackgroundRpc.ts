@@ -3,6 +3,7 @@ import {
   type RpcMessage,
   createRpc,
 } from "@substrate/light-client-extension-helpers/utils"
+import type { LightClientPageHelper } from "@substrate/light-client-extension-helpers/background"
 import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
 import {
   DEV_PHRASE,
@@ -10,6 +11,8 @@ import {
   mnemonicToEntropy,
   ss58Address,
 } from "@polkadot-labs/hdkd-helpers"
+import { toHex, fromHex } from "@polkadot-api/utils"
+import { UserSignedExtensions, getTxCreator } from "@polkadot-api/tx-helper"
 
 import type { BackgroundRpcSpec } from "./types"
 
@@ -27,14 +30,57 @@ const keypairs = [
 export const createBackgroundRpc = (
   sendMessage: (message: RpcMessage) => void,
 ) => {
-  const handlers: RpcMethodHandlers<BackgroundRpcSpec> = {
-    async getAccounts([_chainId]) {
+  type Context = { lightClientPageHelper: LightClientPageHelper }
+  const handlers: RpcMethodHandlers<BackgroundRpcSpec, Context> = {
+    async getAccounts([chainId], { lightClientPageHelper }) {
+      const chains = await lightClientPageHelper.getChains()
+      const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
+      if (!chain) throw new Error("unknown chain")
       return keypairs.map(({ publicKey }) => ({
-        address: ss58Address(publicKey, 42),
+        address: ss58Address(publicKey, chain.ss58Format),
       }))
     },
-    async createTx([_chainId, _from, _callData]) {
-      return ""
+    async createTx([chainId, from, callData], { lightClientPageHelper }) {
+      const chains = await lightClientPageHelper.getChains()
+      const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
+      if (!chain) throw new Error("unknown chain")
+      const keypair = keypairs.find(
+        ({ publicKey }) => toHex(publicKey) === from,
+      )
+      if (!keypair) throw new Error("unknown account")
+      // FIXME: trigger prompt to show the decoded transaction details
+      const txCreator = getTxCreator(
+        chain.provider,
+        ({ userSingedExtensionsName }, callback) => {
+          // FIXME: trigger prompt for signed extensions
+          const userSignedExtensionsData = Object.fromEntries(
+            userSingedExtensionsName.map((x) => {
+              if (x === "CheckMortality") {
+                const result: UserSignedExtensions["CheckMortality"] = {
+                  mortal: false,
+                  // period: 128,
+                }
+                return [x, result]
+              }
+
+              if (x === "ChargeTransactionPayment") return [x, 0n]
+              return [x, { tip: 0n }]
+            }),
+          )
+
+          callback({
+            userSignedExtensionsData,
+            overrides: {},
+            signingType: "Sr25519",
+            signer: async (value) => keypair.sign(value),
+          })
+        },
+      )
+      const tx = toHex(
+        await txCreator.createTx(fromHex(from), fromHex(callData)),
+      )
+      txCreator.destroy()
+      return tx
     },
   }
   return createRpc(sendMessage, handlers)
