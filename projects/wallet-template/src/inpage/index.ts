@@ -1,11 +1,9 @@
-import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
 import { createRpc } from "@substrate/light-client-extension-helpers/utils"
-import {
-  getLightClientProvider,
-  type UnstableWalletProviderDiscovery,
-} from "@substrate/light-client-extension-helpers/web-page"
+import { getLightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
+import type { UnstableWalletProviderDiscovery } from "@substrate/unstable-wallet-provider"
 
 import type { BackgroundRpcSpec } from "../background/types"
+import { CHANNEL_ID } from "../constants"
 
 const PROVIDER_INFO = {
   uuid: crypto.randomUUID(),
@@ -22,7 +20,7 @@ window.addEventListener("message", ({ data }) => {
   rpc.handle(data.msg, undefined)
 })
 
-const provider = getLightClientProvider(DOM_ELEMENT_ID).then(
+const provider = getLightClientProvider(CHANNEL_ID).then(
   (lightClientProvider) => ({
     ...lightClientProvider,
     async getAccounts(chainId: string) {

@@ -17,6 +17,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@substrate/unstable-wallet-provider": "workspace:^",
     "@types/react": "^18.2.56",
     "@types/react-dom": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^7.0.2",

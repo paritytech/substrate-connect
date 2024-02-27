@@ -1,5 +1,5 @@
 import { register } from "@substrate/light-client-extension-helpers/content-script"
-import { DOM_ELEMENT_ID } from "@substrate/connect-extension-protocol"
+import { CHANNEL_ID } from "../constants"
 
 try {
   const s = document.createElement("script")
@@ -10,7 +10,7 @@ try {
   console.error("error injecting inpage/inpage.js", error)
 }
 
-register(DOM_ELEMENT_ID)
+register(CHANNEL_ID)
 
 const port = chrome.runtime.connect({ name: "substrate-wallet-template" })
 port.onMessage.addListener((msg) =>
