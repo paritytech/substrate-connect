@@ -2,9 +2,51 @@ import { FormEvent, useCallback, useEffect, useState } from "react"
 import { ss58Decode } from "@polkadot-labs/hdkd-helpers"
 import { UnstableWallet } from "@substrate/unstable-wallet-provider"
 import { toHex } from "@polkadot-api/utils"
+import { filter, firstValueFrom } from "rxjs"
+import { getObservableClient } from "@polkadot-api/client"
+import { ConnectProvider, createClient } from "@polkadot-api/substrate-client"
+import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
+import Select from "react-select"
+
+type SystemAccountStorage = {
+  consumers: number
+  data: {
+    flags: bigint
+    free: bigint
+    frozen: bigint
+    reserved: bigint
+  }
+  nonce: number
+  providers: number
+  sufficients: number
+}
 
 type Props = {
   provider: UnstableWallet.Provider
+}
+
+const getBalance = (provider: ConnectProvider) => async (address: string) => {
+  const client = getObservableClient(createClient(provider))
+
+  const { metadata$, unfollow, storage$ } = client.chainHead$()
+
+  const metadata = await firstValueFrom(metadata$.pipe(filter(Boolean)))
+  const dynamicBuilder = getDynamicBuilder(metadata)
+  const storageAccount = dynamicBuilder.buildStorage("System", "Account")
+
+  const balanceQuery$ = storage$(null, "value", () =>
+    storageAccount.enc(address),
+  )
+
+  const storageResult = storageAccount.dec(
+    await firstValueFrom(balanceQuery$.pipe(filter(Boolean))),
+  ) as SystemAccountStorage
+  const balance = storageResult.data.free
+
+  unfollow()
+  client.destroy()
+
+  return balance
 }
 
 // FIXME: use dynamic chainId
@@ -14,6 +56,12 @@ const chainId =
 
 export const Transfer = ({ provider }: Props) => {
   const [accounts, setAccounts] = useState<UnstableWallet.Account[]>([])
+  const [selectedAccount, setSelectedAccount] = useState<{
+    value: string
+    label: string
+  } | null>(null)
+  const [balance, setBalance] = useState(0n)
+
   useEffect(() => {
     provider.getAccounts(chainId).then((accounts) => {
       setAccounts(accounts)
@@ -40,9 +88,23 @@ export const Transfer = ({ provider }: Props) => {
     [provider, accounts],
   )
 
+  const accountOptions = accounts.map((account) => ({
+    value: account.address,
+    label: account.address,
+  }))
+
+  useEffect(() => {
+    if (!selectedAccount) {
+      return
+    }
+
+    getBalance(provider.getChains()[chainId].connect)(
+      selectedAccount.value,
+    ).then(setBalance)
+  }, [provider, selectedAccount])
+
   // TODO: handle form fields and submission with react
   // TODO: fetch accounts from extension
-  // TODO: fetch selected account balance
   // TODO: validate destination address
   // TODO: use PAPI to encode the transaction calldata
   // TODO: transfer should trigger an extension popup that signs the transaction
@@ -52,17 +114,13 @@ export const Transfer = ({ provider }: Props) => {
     <article>
       <header>Transfer funds</header>
       <form onSubmit={handleOnSubmit}>
-        <select defaultValue={""}>
-          <option disabled value={""}>
-            Select Account...
-          </option>
-          {accounts.map((account) => (
-            <option key={account.address} value={account.address}>
-              {account.address}
-            </option>
-          ))}
-        </select>
-        <small>Balance: 123456789</small>
+        <Select
+          defaultValue={selectedAccount}
+          onChange={(account) => setSelectedAccount(account)}
+          options={accountOptions}
+        />
+
+        <small>Balance: {`${balance}`}</small>
         <input placeholder="to"></input>
         <input type="number" placeholder="amount"></input>
         <footer>
