@@ -278,6 +278,8 @@ importers:
         specifier: ^0.0.261
         version: 0.0.261
 
+  packages/unstable-wallet-provider: {}
+
   projects/burnr:
     dependencies:
       '@material-ui/core':

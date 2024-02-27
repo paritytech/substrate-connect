@@ -1,0 +1,10 @@
+{
+  "name": "@substrate/unstable-wallet-provider",
+  "private": "true",
+  "version": "0.0.1",
+  "description": "",
+  "types": "index.d.ts",
+  "keywords": [],
+  "author": "kratico (https://github.com/kratico)",
+  "license": "MIT"
+}
