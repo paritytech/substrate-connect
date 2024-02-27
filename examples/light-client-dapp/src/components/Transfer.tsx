@@ -2,6 +2,12 @@ import { FormEvent, useCallback, useEffect, useState } from "react"
 import { ss58Decode } from "@polkadot-labs/hdkd-helpers"
 import { UnstableWallet } from "@substrate/unstable-wallet-provider"
 import { toHex } from "@polkadot-api/utils"
+import { filter, firstValueFrom } from "rxjs"
+import { getObservableClient } from "@polkadot-api/client"
+import {
+  createClient,
+  type ConnectProvider,
+} from "@polkadot-api/substrate-client"
 
 type Props = {
   provider: UnstableWallet.Provider
@@ -12,12 +18,27 @@ type Props = {
 const chainId =
   "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e"
 
+const getMetadataCall = async (provider: ConnectProvider) => {
+  const client = getObservableClient(createClient(provider))
+  const { metadata$, unfollow } = client.chainHead$()
+  const metadata = await firstValueFrom(metadata$.pipe(filter(Boolean)))
+  unfollow()
+  client.destroy()
+  return metadata
+}
+
 export const Transfer = ({ provider }: Props) => {
   const [accounts, setAccounts] = useState<UnstableWallet.Account[]>([])
   useEffect(() => {
     provider.getAccounts(chainId).then((accounts) => {
       setAccounts(accounts)
     })
+  }, [provider])
+
+  useEffect(() => {
+    getMetadataCall(provider.getChains()[chainId].connect)
+      .then((metadata) => console.log({ metadata }))
+      .catch((error) => console.error(error))
   }, [provider])
 
   const [isCreatingTransaction, setIsCreatingTransaction] = useState(false)

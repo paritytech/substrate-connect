@@ -83,6 +83,12 @@ importers:
       '@picocss/pico':
         specifier: ^2.0.3
         version: 2.0.3
+      '@polkadot-api/client':
+        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0(rxjs@7.8.1)
+      '@polkadot-api/substrate-client':
+        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
       '@polkadot-api/utils':
         specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
         version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
@@ -95,6 +101,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      rxjs:
+        specifier: ^7.8.1
+        version: 7.8.1
     devDependencies:
       '@substrate/unstable-wallet-provider':
         specifier: workspace:^
