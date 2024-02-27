@@ -2,6 +2,8 @@ import { FormEvent, useCallback, useEffect, useState } from "react"
 import { ss58Decode } from "@polkadot-labs/hdkd-helpers"
 import { Account, UnstableProvider } from "../types"
 import { toHex } from "@polkadot-api/utils"
+import { useMetadata } from "../hooks"
+import { WellKnownChain } from "@polkadot-api/sc-provider"
 
 type Props = {
   provider: UnstableProvider
@@ -14,6 +16,13 @@ const chainId =
 
 export const Transfer = ({ provider }: Props) => {
   const [accounts, setAccounts] = useState<Account[]>([])
+  // TODO: set chain from input
+  const metadata = useMetadata(WellKnownChain.westend2)
+
+  useEffect(() => {
+    console.log("metadata", metadata)
+  }, [metadata])
+
   useEffect(() => {
     provider.getAccounts(chainId).then((accounts) => {
       setAccounts(accounts)

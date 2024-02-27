@@ -11,6 +11,10 @@
   },
   "dependencies": {
     "@picocss/pico": "^2.0.3",
+    "@polkadot-api/metadata-builders": "0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0",
+    "@polkadot-api/sc-provider": "0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0",
+    "@polkadot-api/substrate-bindings": "0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0",
+    "@polkadot-api/substrate-client": "0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0",
     "@polkadot-api/utils": "0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0",
     "@polkadot-labs/hdkd-helpers": "^0.0.5",
     "react": "^18.2.0",
