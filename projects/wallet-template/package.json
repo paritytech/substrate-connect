@@ -50,12 +50,15 @@
     "vite-plugin-web-extension": "^4.0.0",
     "vitest": "^1.3.1",
     "web-ext": "^7.11.0",
-    "wxt": "^0.16.11"
+    "wxt": "^0.17.1"
   },
   "dependencies": {
-    "@polkadot-api/client": "0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0",
-    "@polkadot-api/substrate-client": "0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0",
-    "@polkadot-api/utils": "0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0",
+    "@polkadot-api/client": "0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0",
+    "@polkadot-api/tx-helper": "0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0",
+    "@polkadot-api/substrate-client": "0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0",
+    "@polkadot-api/utils": "0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0",
+    "@polkadot-labs/hdkd": "^0.0.5",
+    "@polkadot-labs/hdkd-helpers": "^0.0.5",
     "@react-rxjs/core": "^0.10.7",
     "@react-rxjs/utils": "^0.9.7",
     "@substrate/connect-extension-protocol": "workspace:*",

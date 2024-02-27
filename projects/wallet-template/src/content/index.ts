@@ -11,3 +11,13 @@ try {
 }
 
 register(DOM_ELEMENT_ID)
+
+const port = chrome.runtime.connect({ name: "substrate-wallet-template" })
+port.onMessage.addListener((msg) =>
+  // origin is needed to filter from other postMessages
+  window.postMessage({ origin: "substrate-wallet-template/extension", msg }),
+)
+window.addEventListener("message", ({ data }) => {
+  if (data.origin !== "substrate-wallet-template/web") return
+  port.postMessage(data.msg)
+})
