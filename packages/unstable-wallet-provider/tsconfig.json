@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.base",
+  "files": [
+    "index.d.ts",
+    "UnstableWalletProvider.d.ts",
+    "UnstableWalletProviderDiscovery.d.ts"
+  ]
+}

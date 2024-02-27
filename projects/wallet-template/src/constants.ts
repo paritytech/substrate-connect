@@ -18,3 +18,5 @@ export const wellKnownChainIdByGenesisHash: Record<string, string> = {
   "0x6408de7737c59c238890533af25896a2c20608d8b380bb01029acb392781063e":
     "rococo_v2_2",
 }
+
+export const CHANNEL_ID = "substrate-wallet-template"

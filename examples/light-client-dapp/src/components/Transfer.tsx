@@ -1,10 +1,10 @@
 import { FormEvent, useCallback, useEffect, useState } from "react"
 import { ss58Decode } from "@polkadot-labs/hdkd-helpers"
-import { Account, UnstableProvider } from "../types"
+import { UnstableWallet } from "@substrate/unstable-wallet-provider"
 import { toHex } from "@polkadot-api/utils"
 
 type Props = {
-  provider: UnstableProvider
+  provider: UnstableWallet.Provider
 }
 
 // FIXME: use dynamic chainId
@@ -13,7 +13,7 @@ const chainId =
   "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e"
 
 export const Transfer = ({ provider }: Props) => {
-  const [accounts, setAccounts] = useState<Account[]>([])
+  const [accounts, setAccounts] = useState<UnstableWallet.Account[]>([])
   useEffect(() => {
     provider.getAccounts(chainId).then((accounts) => {
       setAccounts(accounts)
