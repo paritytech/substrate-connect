@@ -15,7 +15,8 @@ register({
         "./chainspecs/polkadot.json",
         "./chainspecs/ksmcc3.json",
         "./chainspecs/westend2.json",
-        "./chainspecs/rococo_v2_2.json",
+        // FIXME: remove comment once https://github.com/smol-dot/smoldot/issues/1691 is fixed
+        // "./chainspecs/rococo_v2_2.json",
       ].map((path) =>
         fetch(chrome.runtime.getURL(path)).then((response) => response.text()),
       ),
