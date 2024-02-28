@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@types/chrome": "^0.0.261",
-    "@types/node": "^20.11.20",
+    "@types/node": "^20.11.22",
     "@types/qrcode.react": "^1.0.5",
     "@types/react": "^18.2.60",
     "@types/react-dom": "^18.2.19",
@@ -63,7 +63,7 @@
     "tslib": "^2.6.2",
     "tsup": "^8.0.2",
     "turbo": "^1.12.4",
-    "typedoc": "^0.25.8",
+    "typedoc": "^0.25.9",
     "typescript": "^5.2.2"
   },
   "resolutions": {
