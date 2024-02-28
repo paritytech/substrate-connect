@@ -20,7 +20,10 @@ export const Transfer = ({ provider }: Props) => {
     value: string
     label: string
   } | null>(null)
-  const connect = useMemo(() => provider.getChains()[chainId].connect, [provider])
+  const connect = useMemo(
+    () => provider.getChains()[chainId].connect,
+    [provider],
+  )
   const accountStorage = useSystemAccount(
     connect,
     selectedAccount ? selectedAccount.value : null,
