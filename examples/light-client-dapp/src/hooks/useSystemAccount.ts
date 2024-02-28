@@ -1,4 +1,4 @@
-import { filter, firstValueFrom } from "rxjs"
+import { filter, first, map, mergeMap } from "rxjs"
 import { getObservableClient } from "@polkadot-api/client"
 import { ConnectProvider, createClient } from "@polkadot-api/substrate-client"
 import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
@@ -28,29 +28,42 @@ export const useSystemAccount = (
       return
     }
 
-    // eslint-disable-next-line no-extra-semi
-    ;(async () => {
-      const client = getObservableClient(createClient(provider))
+    const client = getObservableClient(createClient(provider))
 
-      const { metadata$, unfollow, storage$ } = client.chainHead$()
+    const { metadata$, unfollow, storage$ } = client.chainHead$()
 
-      const metadata = await firstValueFrom(metadata$.pipe(filter(Boolean)))
-      const dynamicBuilder = getDynamicBuilder(metadata)
-      const storageAccount = dynamicBuilder.buildStorage("System", "Account")
+    const subscription = metadata$
+      .pipe(
+        filter(Boolean),
+        first(),
+        mergeMap((metadata) => {
+          const dynamicBuilder = getDynamicBuilder(metadata)
+          const storageAccount = dynamicBuilder.buildStorage(
+            "System",
+            "Account",
+          )
 
-      const balanceQuery$ = storage$(null, "value", () =>
-        storageAccount.enc(address),
+          const storageQuery = storage$(null, "value", () =>
+            storageAccount.enc(address),
+          ).pipe(
+            filter(Boolean),
+            first(),
+            map((value) => storageAccount.dec(value) as SystemAccountStorage),
+            map((storageResult) => storageResult.data.free),
+          )
+
+          return storageQuery
+        }),
       )
+      .subscribe((balance) => {
+        setBalance(balance)
+      })
 
-      const storageResult = storageAccount.dec(
-        await firstValueFrom(balanceQuery$.pipe(filter(Boolean))),
-      ) as SystemAccountStorage
-
+    return () => {
+      subscription.unsubscribe()
       unfollow()
       client.destroy()
-
-      setBalance(storageResult.data.free)
-    })()
+    }
   }, [provider, address])
 
   return balance
