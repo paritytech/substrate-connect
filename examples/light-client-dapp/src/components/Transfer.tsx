@@ -1,9 +1,22 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react"
 import { ss58Decode } from "@polkadot-labs/hdkd-helpers"
 import { UnstableWallet } from "@substrate/unstable-wallet-provider"
-import { toHex } from "@polkadot-api/utils"
+import { mergeUint8, toHex } from "@polkadot-api/utils"
 import Select from "react-select"
 import { useSystemAccount } from "../hooks"
+import { Binary, getObservableClient } from "@polkadot-api/client"
+import { ConnectProvider, createClient } from "@polkadot-api/substrate-client"
+import {
+  Enum,
+  Struct,
+  Variant,
+  compact,
+  u8,
+} from "@polkadot-api/substrate-bindings"
+import { catchError, filter, first, map, mergeMap, tap } from "rxjs/operators"
+import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
+import { SS58String } from "@polkadot-api/substrate-bindings"
+import { AccountId } from "@polkadot-api/substrate-bindings"
 
 type Props = {
   provider: UnstableWallet.Provider
@@ -13,6 +26,50 @@ type Props = {
 // Westend chainId
 const chainId =
   "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e"
+
+const call = Struct({
+  module: u8,
+  method: u8,
+  args: Struct({
+    dest: Variant({
+      Id: AccountId(42),
+    }),
+    value: compact,
+  }),
+})
+
+// TODO: Extract to hook that creates and submits the tx while also managing
+// the tx lifecycle
+const createTransfer = (provider: ConnectProvider) => {
+  const client = getObservableClient(createClient(provider))
+  const { metadata$ } = client.chainHead$()
+  metadata$
+    .pipe(
+      filter(Boolean),
+      first(),
+      map((metadata) => {
+        const dynamicBuilder = getDynamicBuilder(metadata)
+        const { location, args } = dynamicBuilder.buildCall(
+          "Balances",
+          "transfer_allow_death",
+        )
+
+        return Binary.fromBytes(
+          mergeUint8(
+            new Uint8Array(location),
+            args.enc({
+              dest: Enum<any>(
+                "Id",
+                "5DyTf5gsCQG3ycM1venTzjoEPMUhKtoU9e9zg1MvnJddbye8",
+              ),
+              value: 1000000n,
+            }),
+          ),
+        )
+      }),
+    )
+    .subscribe((a) => console.log("a", a.asHex()))
+}
 
 export const Transfer = ({ provider }: Props) => {
   const [accounts, setAccounts] = useState<UnstableWallet.Account[]>([])
@@ -47,10 +104,11 @@ export const Transfer = ({ provider }: Props) => {
 
       setIsCreatingTransaction(true)
       try {
+        createTransfer(connect)
         const tx = await provider.createTx(
           chainId,
           toHex(ss58Decode(selectedAccount.value)[0]),
-          "0x04030012aed8a0f7425c9f4c71e75bf087e9c68ab701b1faa23a10e4785d722d962115070010a5d4e8",
+          "0x0400005478706d7da2c69c44b14beb981ee069c59ba83773ae02d8b0e8a714defcc26402093d00",
         )
         console.log({ tx })
       } catch (error) {
@@ -58,7 +116,7 @@ export const Transfer = ({ provider }: Props) => {
       }
       setIsCreatingTransaction(false)
     },
-    [provider, selectedAccount],
+    [provider, selectedAccount, connect],
   )
 
   const accountOptions = accounts.map((account) => ({
