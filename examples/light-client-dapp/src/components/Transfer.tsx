@@ -2,52 +2,11 @@ import { FormEvent, useCallback, useEffect, useState } from "react"
 import { ss58Decode } from "@polkadot-labs/hdkd-helpers"
 import { UnstableWallet } from "@substrate/unstable-wallet-provider"
 import { toHex } from "@polkadot-api/utils"
-import { filter, firstValueFrom } from "rxjs"
-import { getObservableClient } from "@polkadot-api/client"
-import { ConnectProvider, createClient } from "@polkadot-api/substrate-client"
-import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
 import Select from "react-select"
 import { useSystemAccount } from "../hooks"
 
-type SystemAccountStorage = {
-  consumers: number
-  data: {
-    flags: bigint
-    free: bigint
-    frozen: bigint
-    reserved: bigint
-  }
-  nonce: number
-  providers: number
-  sufficients: number
-}
-
 type Props = {
   provider: UnstableWallet.Provider
-}
-
-const getBalance = (provider: ConnectProvider) => async (address: string) => {
-  const client = getObservableClient(createClient(provider))
-
-  const { metadata$, unfollow, storage$ } = client.chainHead$()
-
-  const metadata = await firstValueFrom(metadata$.pipe(filter(Boolean)))
-  const dynamicBuilder = getDynamicBuilder(metadata)
-  const storageAccount = dynamicBuilder.buildStorage("System", "Account")
-
-  const balanceQuery$ = storage$(null, "value", () =>
-    storageAccount.enc(address),
-  )
-
-  const storageResult = storageAccount.dec(
-    await firstValueFrom(balanceQuery$.pipe(filter(Boolean))),
-  ) as SystemAccountStorage
-  const balance = storageResult.data.free
-
-  unfollow()
-  client.destroy()
-
-  return balance
 }
 
 // FIXME: use dynamic chainId
