@@ -298,7 +298,7 @@ importers:
         specifier: ^10.11.3
         version: 10.11.3
       '@polkadot/api-augment':
-        specifier: ^10.10.1
+        specifier: ^10.11.3
         version: 10.11.3
       '@polkadot/keyring':
         specifier: ^12.5.1
@@ -310,7 +310,7 @@ importers:
         specifier: ^10.11.3
         version: 10.11.3
       '@polkadot/types':
-        specifier: ^10.10.1
+        specifier: ^10.11.3
         version: 10.11.3
       '@polkadot/util':
         specifier: ^12.5.1
