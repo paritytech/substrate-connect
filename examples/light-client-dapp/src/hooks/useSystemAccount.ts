@@ -21,16 +21,18 @@ export const useSystemAccount = (
   provider: ConnectProvider,
   address: string | null,
 ) => {
-  const [balance, setBalance] = useState(0n)
+  const [systemAccount, setSystemAccount] = useState<SystemAccountStorage>()
 
   useEffect(() => {
     if (!address) {
       return
     }
 
+    setSystemAccount(undefined)
+
     const client = getObservableClient(createClient(provider))
 
-    const { metadata$, unfollow, storage$ } = client.chainHead$()
+    const { metadata$, finalized$, unfollow, storage$ } = client.chainHead$()
 
     const subscription = metadata$
       .pipe(
@@ -43,20 +45,25 @@ export const useSystemAccount = (
             "Account",
           )
 
-          const storageQuery = storage$(null, "value", () =>
-            storageAccount.enc(address),
-          ).pipe(
-            filter(Boolean),
-            first(),
-            map((value) => storageAccount.dec(value) as SystemAccountStorage),
-            map((storageResult) => storageResult.data.free),
+          const storageQuery = finalized$.pipe(
+            mergeMap((blockInfo) =>
+              storage$(blockInfo.hash, "value", () =>
+                storageAccount.enc(address),
+              ).pipe(
+                filter(Boolean),
+                first(),
+                map(
+                  (value) => storageAccount.dec(value) as SystemAccountStorage,
+                ),
+              ),
+            ),
           )
 
           return storageQuery
         }),
       )
-      .subscribe((balance) => {
-        setBalance(balance)
+      .subscribe((systemAccountStorage) => {
+        setSystemAccount(systemAccountStorage)
       })
 
     return () => {
@@ -66,5 +73,5 @@ export const useSystemAccount = (
     }
   }, [provider, address])
 
-  return balance
+  return systemAccount
 }
