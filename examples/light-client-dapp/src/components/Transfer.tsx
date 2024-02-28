@@ -7,6 +7,7 @@ import { getObservableClient } from "@polkadot-api/client"
 import { ConnectProvider, createClient } from "@polkadot-api/substrate-client"
 import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
 import Select from "react-select"
+import { useSystemAccount } from "../hooks"
 
 type SystemAccountStorage = {
   consumers: number
@@ -60,7 +61,10 @@ export const Transfer = ({ provider }: Props) => {
     value: string
     label: string
   } | null>(null)
-  const [balance, setBalance] = useState(0n)
+  const balance = useSystemAccount(
+    provider.getChains()[chainId].connect,
+    selectedAccount ? selectedAccount.value : null,
+  )
 
   useEffect(() => {
     provider.getAccounts(chainId).then((accounts) => {
@@ -93,16 +97,6 @@ export const Transfer = ({ provider }: Props) => {
     label: account.address,
   }))
 
-  useEffect(() => {
-    if (!selectedAccount) {
-      return
-    }
-
-    getBalance(provider.getChains()[chainId].connect)(
-      selectedAccount.value,
-    ).then(setBalance)
-  }, [provider, selectedAccount])
-
   // TODO: handle form fields and submission with react
   // TODO: fetch accounts from extension
   // TODO: validate destination address
@@ -116,7 +110,7 @@ export const Transfer = ({ provider }: Props) => {
       <form onSubmit={handleOnSubmit}>
         <Select
           defaultValue={selectedAccount}
-          onChange={(account) => setSelectedAccount(account)}
+          onChange={setSelectedAccount}
           options={accountOptions}
         />
 
