@@ -22,7 +22,7 @@
   "devDependencies": {
     "@playwright/test": "^1.41.2",
     "@types/chrome": "^0.0.261",
-    "@types/node": "^20.11.20",
+    "@types/node": "^20.11.22",
     "concurrently": "^8.2.2",
     "web-ext": "^7.11.0"
   }
