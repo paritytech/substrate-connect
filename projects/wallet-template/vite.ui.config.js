@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => ({
       input: {
         popup: "assets/popup.html",
         options: "assets/options.html",
+        walletPopup: "assets/wallet-popup.html",
       },
     },
   },

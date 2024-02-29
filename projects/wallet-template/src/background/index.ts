@@ -24,10 +24,16 @@ const { lightClientPageHelper } = register({
     ),
 })
 
+const signRequests = {}
+
 chrome.runtime.onConnect.addListener((port) => {
-  if (port.name !== "substrate-wallet-template") return
+  if (!port.name.startsWith("substrate-wallet-template")) return
   const rpc = createBackgroundRpc((msg) => port.postMessage(msg))
   port.onMessage.addListener((msg) =>
-    rpc.handle(msg, { lightClientPageHelper }),
+    rpc.handle(msg, {
+      lightClientPageHelper,
+      signRequests,
+      port,
+    }),
   )
 })
