@@ -7,9 +7,8 @@ import { useSystemAccount } from "../hooks"
 import { getObservableClient } from "@polkadot-api/client"
 import { ConnectProvider, createClient } from "@polkadot-api/substrate-client"
 import { Enum, SS58String } from "@polkadot-api/substrate-bindings"
-import { filter, first, map } from "rxjs/operators"
 import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
-import { firstValueFrom } from "rxjs"
+import { firstValueFrom, filter, map } from "rxjs"
 
 type Props = {
   provider: UnstableWallet.Provider
@@ -42,7 +41,6 @@ const createTransfer = (
   return firstValueFrom(
     metadata$.pipe(
       filter(Boolean),
-      first(),
       map((metadata) => {
         const dynamicBuilder = getDynamicBuilder(metadata)
         const { location, args } = dynamicBuilder.buildCall(
