@@ -1,7 +1,9 @@
 import {
   type RpcMethodHandlers,
   type RpcMessage,
+  type RpcMethodMiddleware,
   createRpc,
+  RpcError,
 } from "@substrate/light-client-extension-helpers/utils"
 import type { LightClientPageHelper } from "@substrate/light-client-extension-helpers/background"
 import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
@@ -14,7 +16,7 @@ import {
 import { toHex, fromHex } from "@polkadot-api/utils"
 import { UserSignedExtensions, getTxCreator } from "@polkadot-api/tx-helper"
 
-import type { BackgroundRpcSpec } from "./types"
+import type { BackgroundRpcSpec, SignRequest } from "./types"
 
 const entropy = mnemonicToEntropy(DEV_PHRASE)
 const miniSecret = entropyToMiniSecret(entropy)
@@ -27,10 +29,21 @@ const keypairs = [
   derive("//westend//2"),
 ]
 
+type InternalSignRequest = {
+  resolve: () => void
+  reject: (reason?: any) => void
+} & SignRequest
+
+let nextSignRequestId = 0
+
 export const createBackgroundRpc = (
   sendMessage: (message: RpcMessage) => void,
 ) => {
-  type Context = { lightClientPageHelper: LightClientPageHelper }
+  type Context = {
+    lightClientPageHelper: LightClientPageHelper
+    signRequests: Record<string, InternalSignRequest>
+    port: chrome.runtime.Port
+  }
   const handlers: RpcMethodHandlers<BackgroundRpcSpec, Context> = {
     async getAccounts([chainId], { lightClientPageHelper }) {
       const chains = await lightClientPageHelper.getChains()
@@ -40,7 +53,12 @@ export const createBackgroundRpc = (
         address: ss58Address(publicKey, chain.ss58Format),
       }))
     },
-    async createTx([chainId, from, callData], { lightClientPageHelper }) {
+    async createTx(
+      [chainId, from, callData],
+      { lightClientPageHelper, signRequests, port },
+    ) {
+      const url = port.sender?.url
+      if (!url) throw new Error("unknown url")
       const chains = await lightClientPageHelper.getChains()
       const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
       if (!chain) throw new Error("unknown chain")
@@ -48,7 +66,38 @@ export const createBackgroundRpc = (
         ({ publicKey }) => toHex(publicKey) === from,
       )
       if (!keypair) throw new Error("unknown account")
-      // FIXME: trigger prompt to show the decoded transaction details
+
+      const id = nextSignRequestId++
+      const signRequest = new Promise<void>(
+        (resolve, reject) =>
+          (signRequests[id] = {
+            resolve,
+            reject,
+            chainId,
+            url,
+            address: ss58Address(from, chain.ss58Format),
+            callData,
+          }),
+      )
+
+      const window = await chrome.windows.create({
+        focused: true,
+        height: 600,
+        left: 150,
+        top: 150,
+        type: "popup",
+        url: chrome.runtime.getURL(
+          `ui/assets/wallet-popup.html#signRequest/${id}`,
+        ),
+        width: 560,
+      })
+      try {
+        await signRequest
+      } finally {
+        delete signRequests[id]
+        chrome.windows.remove(window.id!)
+      }
+
       const txCreator = getTxCreator(
         chain.provider,
         ({ userSingedExtensionsName }, callback) => {
@@ -71,6 +120,7 @@ export const createBackgroundRpc = (
           callback({
             userSignedExtensionsData,
             overrides: {},
+            // FIXME: this should be inferred from the keypair signature scheme
             signingType: "Sr25519",
             signer: async (value) => keypair.sign(value),
           })
@@ -82,6 +132,31 @@ export const createBackgroundRpc = (
       txCreator.destroy()
       return tx
     },
+    async getSignRequests([], { signRequests }) {
+      return signRequests
+    },
+    async approveSignRequest([id], { signRequests }) {
+      signRequests[id]?.resolve()
+    },
+    async cancelSignRequest([id], { signRequests }) {
+      signRequests[id]?.reject()
+    },
   }
-  return createRpc(sendMessage, handlers)
+
+  type Method = keyof BackgroundRpcSpec
+  const ALLOWED_WEB_METHODS: Method[] = ["createTx", "getAccounts"]
+  const allowedMethodsMiddleware: RpcMethodMiddleware<Context> = async (
+    next,
+    request,
+    context,
+  ) => {
+    const { port } = context
+    if (
+      port.name === "substrate-wallet-template" &&
+      !ALLOWED_WEB_METHODS.includes(request.method as Method)
+    )
+      throw new RpcError("Method not found", -32601)
+    return next(request, context)
+  }
+  return createRpc(sendMessage, handlers, [allowedMethodsMiddleware])
 }
