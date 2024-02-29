@@ -132,7 +132,7 @@ export const createBackgroundRpc = (
       txCreator.destroy()
       return tx
     },
-    async getSignRequests([], { signRequests }) {
+    async getSignRequests(_, { signRequests }) {
       return signRequests
     },
     async approveSignRequest([id], { signRequests }) {

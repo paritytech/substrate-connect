@@ -24,7 +24,7 @@ export const useDecodedCallData = (chainId: string, callData: string) => {
       if (!isMounted()) return
       setDecodedCallData(builder.callDecoder(callData))
     })
-  }, [chainId, callData])
+  }, [chainId, callData, isMounted])
 
   return { decodedCallData }
 }

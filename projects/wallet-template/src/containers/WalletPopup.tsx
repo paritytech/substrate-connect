@@ -33,34 +33,34 @@ export const WalletPopup = () => {
         <h1 className="text-3xl font-bold">Sign Request #{signRequestId}</h1>
         <div className="my-4">
           <div className="my-2">
-            <div className="text-sm font-semibold">Origin</div>
-            <div>{signRequest.url}</div>
+            <div className="text-xs font-semibold">Origin</div>
+            <div className="text-sm">{signRequest.url}</div>
           </div>
           <div className="my-2 overflow-hidden">
-            <div className="text-sm font-semibold">Chain Id</div>
-            <pre className="overflow-auto">{signRequest.chainId}</pre>
+            <div className="text-xs font-semibold">Chain Id</div>
+            <pre className="text-sm overflow-auto">{signRequest.chainId}</pre>
           </div>
           <div className="my-2">
-            <div className="text-sm font-semibold">From</div>
-            <pre>{signRequest.address}</pre>
+            <div className="text-xs font-semibold">From</div>
+            <pre className="text-sm">{signRequest.address}</pre>
           </div>
           <div className="my-2 overflow-hidden">
-            <div className="text-sm font-semibold">Call data</div>
-            <pre className="overflow-auto">{signRequest.callData}</pre>
+            <div className="text-xs font-semibold">Call data</div>
+            <pre className="text-sm overflow-auto">{signRequest.callData}</pre>
           </div>
           <div className="my-2">
-            <div className="text-sm font-semibold">Decoded Call data</div>
+            <div className="text-xs font-semibold">Decoded Call data</div>
             <DecodedCallData
               chainId={signRequest.chainId}
               callData={signRequest.callData}
             />
           </div>
           <div className="my-2">
-            <div className="text-sm font-semibold">Signed extensions</div>
-            <div>coming soon...</div>
+            <div className="text-xs font-semibold">Signed extensions</div>
+            <div className="text-sm">coming soon...</div>
           </div>
         </div>
-        <div className="my-4 text-center">
+        <div className="flex justify-center space-x-4">
           <button
             onClick={() => rpc.client.approveSignRequest(signRequestId)}
             className="py-1.5 px-8 mr-4 text-sm rounded border border-[#24cc85] text-[#24cc85] hover:text-white
