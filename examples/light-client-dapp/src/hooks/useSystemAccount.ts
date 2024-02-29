@@ -1,4 +1,4 @@
-import { filter, first, map, mergeMap } from "rxjs"
+import { distinct, filter, first, map, mergeMap, tap } from "rxjs"
 import { getObservableClient } from "@polkadot-api/client"
 import { ConnectProvider, createClient } from "@polkadot-api/substrate-client"
 import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
@@ -51,7 +51,7 @@ export const useSystemAccount = (
                 storageAccount.enc(address),
               ).pipe(
                 filter(Boolean),
-                first(),
+                distinct(),
                 map(
                   (value) => storageAccount.dec(value) as SystemAccountStorage,
                 ),
@@ -61,10 +61,11 @@ export const useSystemAccount = (
 
           return storageQuery
         }),
+        tap((systemAccountStorage) => {
+          setSystemAccount(systemAccountStorage)
+        }),
       )
-      .subscribe((systemAccountStorage) => {
-        setSystemAccount(systemAccountStorage)
-      })
+      .subscribe()
 
     return () => {
       subscription.unsubscribe()
