@@ -4,11 +4,12 @@ import { UnstableWallet } from "@substrate/unstable-wallet-provider"
 import { mergeUint8, toHex } from "@polkadot-api/utils"
 import Select from "react-select"
 import { useSystemAccount } from "../hooks"
-import { Binary, getObservableClient } from "@polkadot-api/client"
+import { getObservableClient } from "@polkadot-api/client"
 import { ConnectProvider, createClient } from "@polkadot-api/substrate-client"
 import { Enum, SS58String } from "@polkadot-api/substrate-bindings"
 import { filter, first, map } from "rxjs/operators"
 import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
+import { firstValueFrom } from "rxjs"
 
 type Props = {
   provider: UnstableWallet.Provider
@@ -37,8 +38,9 @@ const createTransfer = (
 ) => {
   const client = getObservableClient(createClient(provider))
   const { metadata$ } = client.chainHead$()
-  metadata$
-    .pipe(
+
+  return firstValueFrom(
+    metadata$.pipe(
       filter(Boolean),
       first(),
       map((metadata) => {
@@ -48,7 +50,7 @@ const createTransfer = (
           "transfer_allow_death",
         )
 
-        return Binary.fromBytes(
+        return toHex(
           mergeUint8(
             new Uint8Array(location),
             args.enc({
@@ -58,8 +60,8 @@ const createTransfer = (
           ),
         )
       }),
-    )
-    .subscribe((a) => console.log("a", a.asHex()))
+    ),
+  )
 }
 
 export const Transfer = ({ provider }: Props) => {
@@ -97,11 +99,10 @@ export const Transfer = ({ provider }: Props) => {
 
       setIsCreatingTransaction(true)
       try {
-        createTransfer(connect, destination, amount)
         const tx = await provider.createTx(
           chainId,
           toHex(ss58Decode(selectedAccount.value)[0]),
-          "0x0400005478706d7da2c69c44b14beb981ee069c59ba83773ae02d8b0e8a714defcc26402093d00",
+          await createTransfer(connect, destination, amount),
         )
         console.log({ tx })
       } catch (error) {
