@@ -4,6 +4,7 @@ export type Account = {
 
 export type SignRequest = {
   url: string
+  chainId: string
   address: string
   callData: string
 }

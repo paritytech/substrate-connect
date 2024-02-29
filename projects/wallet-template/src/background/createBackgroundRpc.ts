@@ -73,6 +73,7 @@ export const createBackgroundRpc = (
           (signRequests[id] = {
             resolve,
             reject,
+            chainId,
             url,
             address: ss58Address(from, chain.ss58Format),
             callData,
@@ -119,6 +120,7 @@ export const createBackgroundRpc = (
           callback({
             userSignedExtensionsData,
             overrides: {},
+            // FIXME: this should be inferred from the keypair signature scheme
             signingType: "Sr25519",
             signer: async (value) => keypair.sign(value),
           })

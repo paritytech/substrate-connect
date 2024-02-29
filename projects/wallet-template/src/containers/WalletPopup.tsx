@@ -1,6 +1,7 @@
 import { createRpc } from "@substrate/light-client-extension-helpers/utils"
 import { useEffect, useState } from "react"
 import type { BackgroundRpcSpec, SignRequest } from "../background/types"
+import { DecodedCallData } from "./WalletPopup/components"
 
 // FIXME: use hook
 const port = chrome.runtime.connect({
@@ -35,17 +36,24 @@ export const WalletPopup = () => {
             <div className="text-sm font-semibold">Origin</div>
             <div>{signRequest.url}</div>
           </div>
+          <div className="my-2 overflow-hidden">
+            <div className="text-sm font-semibold">Chain Id</div>
+            <pre className="overflow-auto">{signRequest.chainId}</pre>
+          </div>
           <div className="my-2">
             <div className="text-sm font-semibold">From</div>
             <pre>{signRequest.address}</pre>
           </div>
-          <div className="my-2 text-wrap overflow-hidden">
+          <div className="my-2 overflow-hidden">
             <div className="text-sm font-semibold">Call data</div>
             <pre className="overflow-auto">{signRequest.callData}</pre>
           </div>
           <div className="my-2">
             <div className="text-sm font-semibold">Decoded Call data</div>
-            <div>coming soon...</div>
+            <DecodedCallData
+              chainId={signRequest.chainId}
+              callData={signRequest.callData}
+            />
           </div>
           <div className="my-2">
             <div className="text-sm font-semibold">Signed extensions</div>
