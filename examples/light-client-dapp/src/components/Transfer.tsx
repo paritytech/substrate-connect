@@ -1,7 +1,9 @@
-import { FormEvent, useCallback, useEffect, useState } from "react"
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react"
 import { ss58Decode } from "@polkadot-labs/hdkd-helpers"
 import { UnstableWallet } from "@substrate/unstable-wallet-provider"
 import { toHex } from "@polkadot-api/utils"
+import Select from "react-select"
+import { useSystemAccount } from "../hooks"
 
 type Props = {
   provider: UnstableWallet.Provider
@@ -14,6 +16,21 @@ const chainId =
 
 export const Transfer = ({ provider }: Props) => {
   const [accounts, setAccounts] = useState<UnstableWallet.Account[]>([])
+  const [selectedAccount, setSelectedAccount] = useState<{
+    value: string
+    label: string
+  } | null>(null)
+  const connect = useMemo(
+    () => provider.getChains()[chainId].connect,
+    [provider],
+  )
+  const accountStorage = useSystemAccount(
+    connect,
+    selectedAccount ? selectedAccount.value : null,
+  )
+
+  const balance = accountStorage?.data.free ?? 0n
+
   useEffect(() => {
     provider.getAccounts(chainId).then((accounts) => {
       setAccounts(accounts)
@@ -24,11 +41,15 @@ export const Transfer = ({ provider }: Props) => {
   const handleOnSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault()
+      if (!selectedAccount) {
+        return
+      }
+
       setIsCreatingTransaction(true)
       try {
         const tx = await provider.createTx(
           chainId,
-          toHex(ss58Decode(accounts[0].address)[0]),
+          toHex(ss58Decode(selectedAccount.value)[0]),
           "0x04030012aed8a0f7425c9f4c71e75bf087e9c68ab701b1faa23a10e4785d722d962115070010a5d4e8",
         )
         console.log({ tx })
@@ -37,12 +58,16 @@ export const Transfer = ({ provider }: Props) => {
       }
       setIsCreatingTransaction(false)
     },
-    [provider, accounts],
+    [provider, selectedAccount],
   )
+
+  const accountOptions = accounts.map((account) => ({
+    value: account.address,
+    label: account.address,
+  }))
 
   // TODO: handle form fields and submission with react
   // TODO: fetch accounts from extension
-  // TODO: fetch selected account balance
   // TODO: validate destination address
   // TODO: use PAPI to encode the transaction calldata
   // TODO: transfer should trigger an extension popup that signs the transaction
@@ -52,21 +77,19 @@ export const Transfer = ({ provider }: Props) => {
     <article>
       <header>Transfer funds</header>
       <form onSubmit={handleOnSubmit}>
-        <select defaultValue={""}>
-          <option disabled value={""}>
-            Select Account...
-          </option>
-          {accounts.map((account) => (
-            <option key={account.address} value={account.address}>
-              {account.address}
-            </option>
-          ))}
-        </select>
-        <small>Balance: 123456789</small>
+        <Select
+          defaultValue={selectedAccount}
+          onChange={setSelectedAccount}
+          options={accountOptions}
+        />
+        <small>Balance: {`${balance}`}</small>
         <input placeholder="to"></input>
         <input type="number" placeholder="amount"></input>
         <footer>
-          <button type="submit" disabled={isCreatingTransaction}>
+          <button
+            type="submit"
+            disabled={!selectedAccount || isCreatingTransaction}
+          >
             Transfer
           </button>
         </footer>
