@@ -7,16 +7,13 @@ import { useSystemAccount } from "../hooks"
 import { Binary, getObservableClient } from "@polkadot-api/client"
 import { ConnectProvider, createClient } from "@polkadot-api/substrate-client"
 import {
+  AccountId,
   Enum,
-  Struct,
+  SS58String,
   Variant,
-  compact,
-  u8,
 } from "@polkadot-api/substrate-bindings"
-import { catchError, filter, first, map, mergeMap, tap } from "rxjs/operators"
+import { filter, first, map } from "rxjs/operators"
 import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
-import { SS58String } from "@polkadot-api/substrate-bindings"
-import { AccountId } from "@polkadot-api/substrate-bindings"
 
 type Props = {
   provider: UnstableWallet.Provider
@@ -27,20 +24,13 @@ type Props = {
 const chainId =
   "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e"
 
-const call = Struct({
-  module: u8,
-  method: u8,
-  args: Struct({
-    dest: Variant({
-      Id: AccountId(42),
-    }),
-    value: compact,
-  }),
-})
-
 // TODO: Extract to hook that creates and submits the tx while also managing
 // the tx lifecycle
-const createTransfer = (provider: ConnectProvider) => {
+const createTransfer = (
+  provider: ConnectProvider,
+  destination: string,
+  amount: bigint,
+) => {
   const client = getObservableClient(createClient(provider))
   const { metadata$ } = client.chainHead$()
   metadata$
@@ -58,11 +48,14 @@ const createTransfer = (provider: ConnectProvider) => {
           mergeUint8(
             new Uint8Array(location),
             args.enc({
-              dest: Enum<any>(
-                "Id",
-                "5DyTf5gsCQG3ycM1venTzjoEPMUhKtoU9e9zg1MvnJddbye8",
-              ),
-              value: 1000000n,
+              dest: Enum<
+                {
+                  type: "Id"
+                  value: SS58String
+                },
+                "Id"
+              >("Id", destination),
+              value: amount,
             }),
           ),
         )
@@ -73,6 +66,8 @@ const createTransfer = (provider: ConnectProvider) => {
 
 export const Transfer = ({ provider }: Props) => {
   const [accounts, setAccounts] = useState<UnstableWallet.Account[]>([])
+  const [destination, setDestination] = useState<string>("")
+  const [amount, setAmount] = useState<bigint>(0n)
   const [selectedAccount, setSelectedAccount] = useState<{
     value: string
     label: string
@@ -104,7 +99,7 @@ export const Transfer = ({ provider }: Props) => {
 
       setIsCreatingTransaction(true)
       try {
-        createTransfer(connect)
+        createTransfer(connect, destination, amount)
         const tx = await provider.createTx(
           chainId,
           toHex(ss58Decode(selectedAccount.value)[0]),
@@ -116,7 +111,7 @@ export const Transfer = ({ provider }: Props) => {
       }
       setIsCreatingTransaction(false)
     },
-    [provider, selectedAccount, connect],
+    [provider, selectedAccount, connect, destination, amount],
   )
 
   const accountOptions = accounts.map((account) => ({
@@ -141,8 +136,17 @@ export const Transfer = ({ provider }: Props) => {
           options={accountOptions}
         />
         <small>Balance: {`${balance}`}</small>
-        <input placeholder="to"></input>
-        <input type="number" placeholder="amount"></input>
+        <input
+          placeholder="to"
+          value={destination}
+          onChange={(e) => setDestination(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="amount"
+          value={`${amount}`}
+          onChange={(e) => setAmount(BigInt(e.target.value))}
+        />
         <footer>
           <button
             type="submit"
