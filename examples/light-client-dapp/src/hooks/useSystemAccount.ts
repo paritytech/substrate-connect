@@ -1,4 +1,4 @@
-import { distinct, filter, first, map, mergeMap, tap } from "rxjs"
+import { distinct, filter, map, mergeMap, tap } from "rxjs"
 import { getObservableClient } from "@polkadot-api/client"
 import { ConnectProvider, createClient } from "@polkadot-api/substrate-client"
 import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
@@ -37,7 +37,6 @@ export const useSystemAccount = (
     const subscription = metadata$
       .pipe(
         filter(Boolean),
-        first(),
         mergeMap((metadata) => {
           const dynamicBuilder = getDynamicBuilder(metadata)
           const storageAccount = dynamicBuilder.buildStorage(
