@@ -6,12 +6,7 @@ import Select from "react-select"
 import { useSystemAccount } from "../hooks"
 import { Binary, getObservableClient } from "@polkadot-api/client"
 import { ConnectProvider, createClient } from "@polkadot-api/substrate-client"
-import {
-  AccountId,
-  Enum,
-  SS58String,
-  Variant,
-} from "@polkadot-api/substrate-bindings"
+import { Enum, SS58String } from "@polkadot-api/substrate-bindings"
 import { filter, first, map } from "rxjs/operators"
 import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
 
@@ -23,6 +18,15 @@ type Props = {
 // Westend chainId
 const chainId =
   "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e"
+
+const AccountId = (value: SS58String) =>
+  Enum<
+    {
+      type: "Id"
+      value: SS58String
+    },
+    "Id"
+  >("Id", value)
 
 // TODO: Extract to hook that creates and submits the tx while also managing
 // the tx lifecycle
@@ -48,13 +52,7 @@ const createTransfer = (
           mergeUint8(
             new Uint8Array(location),
             args.enc({
-              dest: Enum<
-                {
-                  type: "Id"
-                  value: SS58String
-                },
-                "Id"
-              >("Id", destination),
+              dest: AccountId(destination),
               value: amount,
             }),
           ),
