@@ -1,14 +1,8 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react"
-import { ss58Decode } from "@polkadot-labs/hdkd-helpers"
 import { UnstableWallet } from "@substrate/unstable-wallet-provider"
-import { mergeUint8, toHex } from "@polkadot-api/utils"
 import Select from "react-select"
-import { useSystemAccount } from "../hooks"
-import { getObservableClient } from "@polkadot-api/client"
-import { ConnectProvider, createClient } from "@polkadot-api/substrate-client"
-import { Enum, SS58String } from "@polkadot-api/substrate-bindings"
-import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
-import { firstValueFrom, filter, map } from "rxjs"
+import { useSystemAccount, useTransfer } from "../hooks"
+import { lastValueFrom, tap } from "rxjs"
 
 type Props = {
   provider: UnstableWallet.Provider
@@ -64,7 +58,9 @@ const createTransfer = (
 
 export const Transfer = ({ provider }: Props) => {
   const [accounts, setAccounts] = useState<UnstableWallet.Account[]>([])
-  const [destination, setDestination] = useState<string>("")
+  const [destination, setDestination] = useState<string>(
+    "5CofVLAGjwvdGXvBiP6ddtZYMVbhT5Xke8ZrshUpj2ZXAnND",
+  )
   const [amount, setAmount] = useState<bigint>(0n)
   const [selectedAccount, setSelectedAccount] = useState<{
     value: string
@@ -78,6 +74,10 @@ export const Transfer = ({ provider }: Props) => {
     connect,
     selectedAccount ? selectedAccount.value : null,
   )
+  const { transfer, subscriptions: transferSubscriptions } = useTransfer(
+    { ...provider, connect },
+    chainId,
+  )
 
   const balance = accountStorage?.data.free ?? 0n
 
@@ -87,7 +87,7 @@ export const Transfer = ({ provider }: Props) => {
     })
   }, [provider])
 
-  const [isCreatingTransaction, setIsCreatingTransaction] = useState(false)
+  const [isSubmittingTransaction, setIsSubmittingTransaction] = useState(false)
   const handleOnSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault()
@@ -95,20 +95,30 @@ export const Transfer = ({ provider }: Props) => {
         return
       }
 
-      setIsCreatingTransaction(true)
+      setIsSubmittingTransaction(true)
       try {
-        const tx = await provider.createTx(
-          chainId,
-          toHex(ss58Decode(selectedAccount.value)[0]),
-          await createTransfer(connect, destination, amount),
+        const sender = selectedAccount.value
+        const { txId, tx } = await transfer(sender, destination, amount)
+        console.log({ txId, tx })
+
+        lastValueFrom(
+          transferSubscriptions[txId].pipe(
+            tap({
+              next: (e) => {
+                console.log(`event:`, e)
+              },
+              error: (e) => {
+                console.error(`ERROR:`, e)
+              },
+            }),
+          ),
         )
-        console.log({ tx })
       } catch (error) {
         console.error(error)
       }
-      setIsCreatingTransaction(false)
+      setIsSubmittingTransaction(false)
     },
-    [provider, selectedAccount, connect, destination, amount],
+    [selectedAccount, transfer, destination, amount, transferSubscriptions],
   )
 
   const accountOptions = accounts.map((account) => ({
@@ -147,7 +157,7 @@ export const Transfer = ({ provider }: Props) => {
         <footer>
           <button
             type="submit"
-            disabled={!selectedAccount || isCreatingTransaction}
+            disabled={!selectedAccount || isSubmittingTransaction}
           >
             Transfer
           </button>
