@@ -566,8 +566,8 @@ importers:
         specifier: ^7.11.0
         version: 7.11.0
       wxt:
-        specifier: ^0.17.3
-        version: 0.17.3(@types/node@20.11.22)
+        specifier: ^0.17.5
+        version: 0.17.5(@types/node@20.11.22)
 
   zombienet-tests:
     dependencies:
@@ -11571,8 +11571,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  /wxt@0.17.3(@types/node@20.11.22):
-    resolution: {integrity: sha512-Hv0K6vsPJHKyMPh9PxlmQutQLoGKIu/8ccR8U9eNu129n89YCA/qiIwRJZQmzNB8aYYYzkp8Gy9dl+sopbD51A==}
+  /wxt@0.17.5(@types/node@20.11.22):
+    resolution: {integrity: sha512-0WCBhIhRwd5Ad7nveT+4JnGXTqH7tAZ+DcdE7A9LwTEaYJ9dr8v2QjdVmteKoxoovmwES5c/T54eBdeAVakIiA==}
     engines: {node: '>=18', pnpm: '>=8'}
     hasBin: true
     dependencies:
@@ -11598,10 +11598,12 @@ packages:
       is-wsl: 3.1.0
       jiti: 1.21.0
       json5: 2.2.3
+      jszip: 3.10.1
       linkedom: 0.16.8
       minimatch: 9.0.3
       natural-compare: 1.4.0
       normalize-path: 3.0.0
+      nypm: 0.3.6
       ora: 7.0.1
       picocolors: 1.0.0
       prompts: 2.4.2
@@ -11610,7 +11612,6 @@ packages:
       vite: 5.1.4(@types/node@20.11.22)
       web-ext-run: 0.2.0
       webextension-polyfill: 0.10.0
-      zip-dir: 2.0.0
     transitivePeerDependencies:
       - '@types/node'
       - bufferutil
