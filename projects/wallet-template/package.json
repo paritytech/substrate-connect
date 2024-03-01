@@ -54,11 +54,11 @@
     "wxt": "^0.17.3"
   },
   "dependencies": {
-    "@polkadot-api/client": "0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0",
-    "@polkadot-api/metadata-builders": "0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0",
-    "@polkadot-api/tx-helper": "0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0",
-    "@polkadot-api/substrate-client": "0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0",
-    "@polkadot-api/utils": "0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0",
+    "@polkadot-api/client": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
+    "@polkadot-api/metadata-builders": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
+    "@polkadot-api/tx-helper": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
+    "@polkadot-api/substrate-client": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
+    "@polkadot-api/utils": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@polkadot-labs/hdkd": "^0.0.5",
     "@polkadot-labs/hdkd-helpers": "^0.0.5",
     "@react-rxjs/core": "^0.10.7",

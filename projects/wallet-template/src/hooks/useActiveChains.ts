@@ -127,7 +127,7 @@ const createChainDetailObservable = (chain: PageChain) =>
       share(),
     )
     const bestBlockHeight$ = followAndBestBlocksWithRetry$.pipe(
-      map(([_, bestBlocks]) => bestBlocks[0]?.header.number),
+      map(([_, bestBlocks]) => bestBlocks[0]?.number),
       filter(Boolean),
       startWith(undefined),
     )
