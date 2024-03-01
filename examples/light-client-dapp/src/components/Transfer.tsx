@@ -8,6 +8,11 @@ type Props = {
   provider: UnstableWallet.Provider
 }
 
+type FinalizedTransaction = {
+  blockHash: string
+  index: number
+}
+
 // FIXME: use dynamic chainId
 // Westend chainId
 const chainId =
@@ -36,7 +41,8 @@ export const Transfer = ({ provider }: Props) => {
     chainId,
   )
   const [transactionStatus, setTransactionStatus] = useState("")
-  const [finalizedHash, setFinalizedHash] = useState("")
+  const [finalizedTransaction, setFinalizedTransaction] =
+    useState<FinalizedTransaction | null>()
 
   const balance = accountStorage?.data.free ?? 0n
 
@@ -56,7 +62,7 @@ export const Transfer = ({ provider }: Props) => {
 
       setIsSubmittingTransaction(true)
       setTransactionStatus("")
-      setFinalizedHash("")
+      setFinalizedTransaction(null)
 
       try {
         const sender = selectedAccount.value
@@ -74,7 +80,11 @@ export const Transfer = ({ provider }: Props) => {
               next: (e): void => {
                 setTransactionStatus(e.type)
                 if (e.type === "finalized") {
-                  setFinalizedHash(e.block.hash)
+                  e.block.index
+                  setFinalizedTransaction({
+                    blockHash: e.block.hash,
+                    index: e.block.index,
+                  })
                   cleanup()
                 }
               },
@@ -98,13 +108,7 @@ export const Transfer = ({ provider }: Props) => {
     label: account.address,
   }))
 
-  // TODO: handle form fields and submission with react
-  // TODO: fetch accounts from extension
   // TODO: validate destination address
-  // TODO: use PAPI to encode the transaction calldata
-  // TODO: transfer should trigger an extension popup that signs the transaction
-  // TODO: extract transaction submission into a hook
-  // TODO: follow transaction submission events until it is finalized
   return (
     <article>
       <header>Transfer funds</header>
@@ -138,10 +142,20 @@ export const Transfer = ({ provider }: Props) => {
               Transaction Status: <b>{`${transactionStatus}`}</b>
             </p>
           ) : null}
-          {finalizedHash ? (
-            <p>
-              Finalized Hash: <b>{`${finalizedHash}`}</b>
-            </p>
+          {finalizedTransaction ? (
+            <div>
+              <p>
+                Finalized Block Hash:{" "}
+                <b>
+                  <a
+                    href={`https://westend.subscan.io/block/${finalizedTransaction.blockHash}`}
+                  >{`${finalizedTransaction.blockHash}`}</a>
+                </b>
+              </p>
+              <p>
+                Transaction Index: <b>{finalizedTransaction.index}</b>
+              </p>
+            </div>
           ) : null}
         </footer>
       </form>
