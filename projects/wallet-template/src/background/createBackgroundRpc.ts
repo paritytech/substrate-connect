@@ -14,7 +14,11 @@ import {
   ss58Address,
 } from "@polkadot-labs/hdkd-helpers"
 import { toHex, fromHex } from "@polkadot-api/utils"
-import { UserSignedExtensions, getTxCreator } from "@polkadot-api/tx-helper"
+import {
+  GetTxCreator,
+  UserSignedExtensions,
+  getTxCreator,
+} from "@polkadot-api/tx-helper"
 
 import type { BackgroundRpcSpec, SignRequest } from "./types"
 
@@ -29,8 +33,12 @@ const keypairs = [
   derive("//westend//2"),
 ]
 
+type SignResponse = {
+  userSignedExtensions: Partial<UserSignedExtensions>
+}
+
 type InternalSignRequest = {
-  resolve: () => void
+  resolve: (props: SignResponse) => void
   reject: (reason?: any) => void
 } & SignRequest
 
@@ -67,56 +75,63 @@ export const createBackgroundRpc = (
       )
       if (!keypair) throw new Error("unknown account")
 
-      const id = nextSignRequestId++
-      const signRequest = new Promise<void>(
-        (resolve, reject) =>
-          (signRequests[id] = {
-            resolve,
-            reject,
-            chainId,
-            url,
-            address: ss58Address(from, chain.ss58Format),
-            callData,
-          }),
-      )
-
-      const window = await chrome.windows.create({
-        focused: true,
-        height: 600,
-        left: 150,
-        top: 150,
-        type: "popup",
-        url: chrome.runtime.getURL(
-          `ui/assets/wallet-popup.html#signRequest/${id}`,
-        ),
-        width: 560,
-      })
-      try {
-        await signRequest
-      } finally {
-        delete signRequests[id]
-        chrome.windows.remove(window.id!)
-      }
-
-      const txCreator = getTxCreator(
-        chain.provider,
-        ({ userSingedExtensionsName }, callback) => {
-          // FIXME: trigger prompt for signed extensions
+      const onCreateTx: Parameters<GetTxCreator>[1] = async (
+        { userSingedExtensionsName },
+        callback,
+      ) => {
+        const id = nextSignRequestId++
+        const signRequest = new Promise<
+          Parameters<InternalSignRequest["resolve"]>[0]
+        >(
+          (resolve, reject) =>
+            (signRequests[id] = {
+              resolve,
+              reject,
+              chainId,
+              url,
+              address: ss58Address(from, chain.ss58Format),
+              callData,
+              // TODO: revisit, it might be better to query the user signed extensions from the popup
+              userSignedExtensionNames: userSingedExtensionsName,
+            }),
+        )
+        // FIXME: if this throws, onCreateTx does not propagate the error
+        const window = await chrome.windows.create({
+          focused: true,
+          height: 700,
+          left: 150,
+          top: 150,
+          type: "popup",
+          url: chrome.runtime.getURL(
+            `ui/assets/wallet-popup.html#signRequest/${id}`,
+          ),
+          width: 560,
+        })
+        try {
+          const { userSignedExtensions } = await signRequest
           const userSignedExtensionsData = Object.fromEntries(
             userSingedExtensionsName.map((x) => {
-              if (x === "CheckMortality") {
-                const result: UserSignedExtensions["CheckMortality"] = {
-                  mortal: false,
-                  // period: 128,
+              switch (x) {
+                case "CheckMortality": {
+                  return [
+                    x,
+                    userSignedExtensions[x] ?? {
+                      mortal: true,
+                      period: 128,
+                    },
+                  ]
                 }
-                return [x, result]
+                case "ChargeTransactionPayment": {
+                  return [x, userSignedExtensions[x] ?? 0n]
+                }
+                case "ChargeAssetTxPayment": {
+                  return [x, userSignedExtensions[x] ?? { tip: 0n }]
+                }
+                default:
+                  throw new Error(`Unknown user signed extension: ${x}`)
               }
-
-              if (x === "ChargeTransactionPayment") return [x, 0n]
-              return [x, { tip: 0n }]
             }),
           )
-
           callback({
             userSignedExtensionsData,
             overrides: {},
@@ -124,8 +139,16 @@ export const createBackgroundRpc = (
             signingType: "Sr25519",
             signer: async (value) => keypair.sign(value),
           })
-        },
-      )
+        } catch (error) {
+          console.error(error)
+          // TODO: How to throw a custom error from onCreateTx?
+          callback(null)
+        } finally {
+          delete signRequests[id]
+          chrome.windows.remove(window.id!)
+        }
+      }
+      const txCreator = getTxCreator(chain.provider, onCreateTx)
       const tx = toHex(
         await txCreator.createTx(fromHex(from), fromHex(callData)),
       )
@@ -135,8 +158,10 @@ export const createBackgroundRpc = (
     async getSignRequests(_, { signRequests }) {
       return signRequests
     },
-    async approveSignRequest([id], { signRequests }) {
-      signRequests[id]?.resolve()
+    async approveSignRequest([id, userSignedExtensions], { signRequests }) {
+      signRequests[id]?.resolve({
+        userSignedExtensions,
+      })
     },
     async cancelSignRequest([id], { signRequests }) {
       signRequests[id]?.reject()

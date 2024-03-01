@@ -1,7 +1,9 @@
 import { createRpc } from "@substrate/light-client-extension-helpers/utils"
 import { useEffect, useState } from "react"
+import { UserSignedExtensions } from "@polkadot-api/tx-helper"
 import type { BackgroundRpcSpec, SignRequest } from "../background/types"
 import { DecodedCallData } from "./WalletPopup/components"
+import { UserSignedExtensionInputs } from "./WalletPopup/components/UserSignedExtensionInputs"
 
 // FIXME: use hook
 const port = chrome.runtime.connect({
@@ -15,6 +17,9 @@ port.onMessage.addListener(rpc.handle)
 export const WalletPopup = () => {
   const [signRequest, setSignRequest] = useState<SignRequest>()
   const [signRequestId, setSignRequestId] = useState<string>()
+  const [userSignedExtensions, setUserSignedExtensions] = useState<
+    Partial<UserSignedExtensions>
+  >({})
   useEffect(() => {
     const init = async () => {
       const signRequests = await rpc.client.getSignRequests()
@@ -57,12 +62,17 @@ export const WalletPopup = () => {
           </div>
           <div className="my-2">
             <div className="text-xs font-semibold">Signed extensions</div>
-            <div className="text-sm">coming soon...</div>
+            <UserSignedExtensionInputs
+              userSignedExtensionNames={signRequest.userSignedExtensionNames}
+              onChange={setUserSignedExtensions}
+            />
           </div>
         </div>
         <div className="flex justify-center space-x-4">
           <button
-            onClick={() => rpc.client.approveSignRequest(signRequestId)}
+            onClick={() =>
+              rpc.client.approveSignRequest(signRequestId, userSignedExtensions)
+            }
             className="py-1.5 px-8 mr-4 text-sm rounded border border-[#24cc85] text-[#24cc85] hover:text-white
                   hover:bg-[#24cc85]"
           >
