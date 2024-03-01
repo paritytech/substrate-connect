@@ -84,20 +84,20 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3
       '@polkadot-api/client':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0(rxjs@7.8.1)
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1)
       '@polkadot-api/metadata-builders':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@polkadot-api/substrate-bindings':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@polkadot-api/utils':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@polkadot-labs/hdkd-helpers':
         specifier: ^0.0.5
         version: 0.0.5
@@ -151,11 +151,11 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3
       '@polkadot-api/client':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0(rxjs@7.8.1)
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@substrate/light-client-extension-helpers':
         specifier: workspace:*
         version: link:../../packages/light-client-extension-helpers
@@ -271,17 +271,17 @@ importers:
   packages/light-client-extension-helpers:
     dependencies:
       '@polkadot-api/client':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0(rxjs@7.8.1)
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1)
       '@polkadot-api/json-rpc-provider':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@polkadot-api/json-rpc-provider-proxy':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@substrate/connect-extension-protocol':
         specifier: workspace:^
         version: link:../connect-extension-protocol
@@ -356,7 +356,7 @@ importers:
         version: 18.2.0
       react-router:
         specifier: ^6.22.1
-        version: 6.22.1(react@18.2.0)
+        version: 6.22.2(react@18.2.0)
       react-router-dom:
         specifier: ^6.22.2
         version: 6.22.2(react-dom@18.2.0)(react@18.2.0)
@@ -380,14 +380,14 @@ importers:
   projects/demo:
     dependencies:
       '@polkadot-api/client':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0(rxjs@7.8.1)
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1)
       '@polkadot-api/json-rpc-provider-proxy':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@substrate/connect':
         specifier: 0.8.7
         version: link:../../packages/connect
@@ -408,11 +408,11 @@ importers:
   projects/extension:
     dependencies:
       '@polkadot-api/client':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0(rxjs@7.8.1)
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@react-rxjs/core':
         specifier: ^0.10.7
         version: 0.10.7(react@18.2.0)(rxjs@7.8.1)
@@ -472,20 +472,20 @@ importers:
   projects/wallet-template:
     dependencies:
       '@polkadot-api/client':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0(rxjs@7.8.1)
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1)
       '@polkadot-api/metadata-builders':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@polkadot-api/tx-helper':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@polkadot-api/utils':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@polkadot-labs/hdkd':
         specifier: ^0.0.5
         version: 0.0.5
@@ -572,11 +572,11 @@ importers:
   zombienet-tests:
     dependencies:
       '@polkadot-api/json-rpc-provider-proxy':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@substrate/connect':
         specifier: 0.8.7
         version: link:../packages/connect
@@ -2810,15 +2810,15 @@ packages:
       rxjs: 7.8.1
     dev: false
 
-  /@polkadot-api/client@0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0(rxjs@7.8.1):
-    resolution: {integrity: sha512-GxPCTYmcP6hAtj5g//wWlJ7Q0EMXQ8nA91EXJGB4Y6E6ZpenRvrS6LKljaubzfPGFq5qXghDqme8R12pPmZidA==}
+  /@polkadot-api/client@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1):
+    resolution: {integrity: sha512-0fqK6pUKcGHSG2pBvY+gfSS+1mMdjd/qRygAcKI5d05tKsnZLRnmhb9laDguKmGEIB0Bz9vQqNK3gIN/cfvVwg==}
     peerDependencies:
       rxjs: '>=7.8.0'
     dependencies:
-      '@polkadot-api/metadata-builders': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-      '@polkadot-api/substrate-bindings': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-      '@polkadot-api/substrate-client': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-      '@polkadot-api/utils': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+      '@polkadot-api/metadata-builders': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+      '@polkadot-api/substrate-bindings': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+      '@polkadot-api/substrate-client': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+      '@polkadot-api/utils': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       rxjs: 7.8.1
     dev: false
 
@@ -2827,16 +2827,21 @@ packages:
     requiresBuild: true
     dev: false
 
+  /@polkadot-api/json-rpc-provider-proxy@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
+    resolution: {integrity: sha512-0hZ8vtjcsyCX8AyqP2sqUHa1TFFfxGWmlXJkit0Nqp9b32MwZqn5eaUAiV2rNuEpoglKOdKnkGtUF8t5MoodKw==}
+    dev: false
+
   /@polkadot-api/json-rpc-provider-proxy@0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0:
     resolution: {integrity: sha512-H5tZbY4mkNwgRCXMYqXp2jc6RuP4bT+MdBwjO2P+ywGUWgYLOz6zIqTqgx9+fjRm6juEuTtuiJD/8t1rRBicwA==}
+    dev: true
 
   /@polkadot-api/json-rpc-provider@0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0:
     resolution: {integrity: sha512-772gcl5MXdmIvXuhJwVqM/APp+6f6ocRGfzcYoFfdghJ4A68l9ir1SDny691vcJXE8CQ7NAcz5Gl3t1Gz1MIqg==}
     requiresBuild: true
     dev: false
 
-  /@polkadot-api/json-rpc-provider@0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0:
-    resolution: {integrity: sha512-ywEXON7szSu09VcrsagQg8nnvKVC3XUcx9PcLKrxVVypemU+TNRCkAZLdXPLN4YcYmCuZDynAjnImDqc0uPLRw==}
+  /@polkadot-api/json-rpc-provider@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
+    resolution: {integrity: sha512-EaUS9Fc3wsiUr6ZS43PQqaRScW7kM6DYbuM/ou0aYjm8N9MBqgDbGm2oL6RE1vAVmOfEuHcXZuZkhzWtyvQUtA==}
     dev: false
 
   /@polkadot-api/metadata-builders@0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0:
@@ -2847,17 +2852,17 @@ packages:
       '@polkadot-api/utils': 0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0
     dev: false
 
-  /@polkadot-api/metadata-builders@0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0:
-    resolution: {integrity: sha512-yIegcUA08JObXNU3Pf4T0iruAgBd/Wl492bDdY81FcbIPfxMR6re++wr/21g89RMeIvUumirG4OEjgc6/Hc11A==}
+  /@polkadot-api/metadata-builders@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
+    resolution: {integrity: sha512-BD7rruxChL1VXt0icC2gD45OtT9ofJlql0qIllHSRYgama1CR2Owt+ApInQxB+lWqM+xNOznZRpj8CXNDvKIMg==}
     dependencies:
-      '@polkadot-api/substrate-bindings': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-      '@polkadot-api/utils': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+      '@polkadot-api/substrate-bindings': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+      '@polkadot-api/utils': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
     dev: false
 
-  /@polkadot-api/sc-provider@0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0:
-    resolution: {integrity: sha512-BCU6mQlvunQt8ZfBelTNtr+ZzZmkCbPQZzRwwv5YPJyeuinIz3cGBE3A/oLLoA2cWL5+j58Ai3pMVkBEjZlQ3A==}
+  /@polkadot-api/sc-provider@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
+    resolution: {integrity: sha512-dGnUE1PdSrpXYaHCEeXt4dS+dcjiPrLiyWm1rWDt/e7Tp8PGKuRme5OIgRO+6JIYBrgj4qDeNwqWw6uMbx/qhA==}
     dependencies:
-      '@polkadot-api/json-rpc-provider-proxy': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+      '@polkadot-api/json-rpc-provider-proxy': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@substrate/connect': 0.8.7
     transitivePeerDependencies:
       - bufferutil
@@ -2874,11 +2879,11 @@ packages:
       scale-ts: 1.6.0
     dev: false
 
-  /@polkadot-api/substrate-bindings@0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0:
-    resolution: {integrity: sha512-aKEGkLo5w/nksSwtOGYczFCn9rEp0qi8NUuthRaxcDJWvD0pWJji9JMGwdZD3lZCqqrqcY7NkVkzzw0Zr+JHPg==}
+  /@polkadot-api/substrate-bindings@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
+    resolution: {integrity: sha512-N4vdrZopbsw8k57uG58ofO7nLXM4Ai7835XqakN27MkjXMp5H830A1KJE0L9sGQR7ukOCDEIHHcwXVrzmJ/PBg==}
     dependencies:
       '@noble/hashes': 1.3.3
-      '@polkadot-api/utils': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+      '@polkadot-api/utils': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@scure/base': 1.1.5
       scale-ts: 1.6.0
     dev: false
@@ -2888,20 +2893,24 @@ packages:
     requiresBuild: true
     dev: false
 
+  /@polkadot-api/substrate-client@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
+    resolution: {integrity: sha512-lcdvd2ssUmB1CPzF8s2dnNOqbrDa+nxaaGbuts+Vo8yjgSKwds2Lo7Oq+imZN4VKW7t9+uaVcKFLMF7PdH0RWw==}
+    dev: false
+
   /@polkadot-api/substrate-client@0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0:
     resolution: {integrity: sha512-NthTzQY8bJpruN97Ok46cXU5/8VZGog7UB7FLjsK/hqdkRaurxJAIrgvbXZcG64t3wG+BIz7UVY6f8midurMJw==}
 
-  /@polkadot-api/tx-helper@0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0:
-    resolution: {integrity: sha512-8CRPQT4y06Dhub1DvG0IMzMptqCpZCwn/36Lp7KY8gFKxh5wU5n1hu0/Kcov7JF8pBOg+aRXxazBXgKFbI/GrA==}
+  /@polkadot-api/tx-helper@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
+    resolution: {integrity: sha512-gaRxKcF0X7coUebw/ShJ34R8+KZ0GwBN8nWJcxvI6wy1579bcRyH+I9iI6t7Dt5lcTMTu9rxQDDWMq4+TN630A==}
     dependencies:
       '@noble/hashes': 1.3.3
-      '@polkadot-api/client': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0(rxjs@7.8.1)
-      '@polkadot-api/json-rpc-provider': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-      '@polkadot-api/metadata-builders': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-      '@polkadot-api/sc-provider': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-      '@polkadot-api/substrate-bindings': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-      '@polkadot-api/substrate-client': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-      '@polkadot-api/utils': 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+      '@polkadot-api/client': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1)
+      '@polkadot-api/json-rpc-provider': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+      '@polkadot-api/metadata-builders': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+      '@polkadot-api/sc-provider': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+      '@polkadot-api/substrate-bindings': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+      '@polkadot-api/substrate-client': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+      '@polkadot-api/utils': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       rxjs: 7.8.1
     transitivePeerDependencies:
       - bufferutil
@@ -2913,8 +2922,8 @@ packages:
     requiresBuild: true
     dev: false
 
-  /@polkadot-api/utils@0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0:
-    resolution: {integrity: sha512-febrO7BO5QiGpWtoQNYwqpJN71ZWQ0q/ffiO9u9rpQD6uEXQhJQawuftcpMsgvzYIn3+lZZp5fePrBEDXcJiHA==}
+  /@polkadot-api/utils@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
+    resolution: {integrity: sha512-0CYaCjfLQJTCRCiYvZ81OncHXEKPzAexCMoVloR+v2nl/O2JRya/361MtPkeNLC6XBoaEgLAG9pWQpH3WePzsw==}
     dev: false
 
   /@polkadot-labs/hdkd-helpers@0.0.5:
@@ -3405,11 +3414,6 @@ packages:
       '@react-rxjs/core': 0.10.7(react@18.2.0)(rxjs@7.8.1)
       react: 18.2.0
       rxjs: 7.8.1
-    dev: false
-
-  /@remix-run/router@1.15.1:
-    resolution: {integrity: sha512-zcU0gM3z+3iqj8UX45AmWY810l3oUmXM7uH4dt5xtzvMhRtYVhKGOmgOd1877dOPPepfCjUv57w+syamWIYe7w==}
-    engines: {node: '>=14.0.0'}
     dev: false
 
   /@remix-run/router@1.15.2:
@@ -9462,16 +9466,6 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-router: 6.22.2(react@18.2.0)
-    dev: false
-
-  /react-router@6.22.1(react@18.2.0):
-    resolution: {integrity: sha512-0pdoRGwLtemnJqn1K0XHUbnKiX0S4X8CgvVVmHGOWmofESj31msHo/1YiqcJWK7Wxfq2a4uvvtS01KAQyWK/CQ==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      react: '>=16.8'
-    dependencies:
-      '@remix-run/router': 1.15.1
-      react: 18.2.0
     dev: false
 
   /react-router@6.22.2(react@18.2.0):
