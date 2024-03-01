@@ -241,11 +241,11 @@ importers:
         version: 2.0.21
     devDependencies:
       '@polkadot-api/json-rpc-provider-proxy':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
-        version: 0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0
+        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
@@ -2829,11 +2829,6 @@ packages:
 
   /@polkadot-api/json-rpc-provider-proxy@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
     resolution: {integrity: sha512-0hZ8vtjcsyCX8AyqP2sqUHa1TFFfxGWmlXJkit0Nqp9b32MwZqn5eaUAiV2rNuEpoglKOdKnkGtUF8t5MoodKw==}
-    dev: false
-
-  /@polkadot-api/json-rpc-provider-proxy@0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0:
-    resolution: {integrity: sha512-H5tZbY4mkNwgRCXMYqXp2jc6RuP4bT+MdBwjO2P+ywGUWgYLOz6zIqTqgx9+fjRm6juEuTtuiJD/8t1rRBicwA==}
-    dev: true
 
   /@polkadot-api/json-rpc-provider@0.0.1-12c4b0432a814086c3c1a3b8052b31c72c2c9ad3.1.0:
     resolution: {integrity: sha512-772gcl5MXdmIvXuhJwVqM/APp+6f6ocRGfzcYoFfdghJ4A68l9ir1SDny691vcJXE8CQ7NAcz5Gl3t1Gz1MIqg==}
@@ -2895,10 +2890,10 @@ packages:
 
   /@polkadot-api/substrate-client@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
     resolution: {integrity: sha512-lcdvd2ssUmB1CPzF8s2dnNOqbrDa+nxaaGbuts+Vo8yjgSKwds2Lo7Oq+imZN4VKW7t9+uaVcKFLMF7PdH0RWw==}
-    dev: false
 
   /@polkadot-api/substrate-client@0.0.1-86c37582599a5aaa7c2dde1d765f8af5ef6def2a.1.0:
     resolution: {integrity: sha512-NthTzQY8bJpruN97Ok46cXU5/8VZGog7UB7FLjsK/hqdkRaurxJAIrgvbXZcG64t3wG+BIz7UVY6f8midurMJw==}
+    dev: false
 
   /@polkadot-api/tx-helper@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
     resolution: {integrity: sha512-gaRxKcF0X7coUebw/ShJ34R8+KZ0GwBN8nWJcxvI6wy1579bcRyH+I9iI6t7Dt5lcTMTu9rxQDDWMq4+TN630A==}
