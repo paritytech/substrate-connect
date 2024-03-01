@@ -56,6 +56,8 @@ export const Transfer = ({ provider }: Props) => {
 
       setIsSubmittingTransaction(true)
       setTransactionStatus("")
+      setFinalizedHash("")
+
       try {
         const sender = selectedAccount.value
         const { txId, destroy$ } = await transfer(sender, destination, amount)
