@@ -13,49 +13,6 @@ type Props = {
 const chainId =
   "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e"
 
-const AccountId = (value: SS58String) =>
-  Enum<
-    {
-      type: "Id"
-      value: SS58String
-    },
-    "Id"
-  >("Id", value)
-
-// TODO: Extract to hook that creates and submits the tx while also managing
-// the tx lifecycle
-const createTransfer = (
-  provider: ConnectProvider,
-  destination: string,
-  amount: bigint,
-) => {
-  const client = getObservableClient(createClient(provider))
-  const { metadata$ } = client.chainHead$()
-
-  return firstValueFrom(
-    metadata$.pipe(
-      filter(Boolean),
-      map((metadata) => {
-        const dynamicBuilder = getDynamicBuilder(metadata)
-        const { location, args } = dynamicBuilder.buildCall(
-          "Balances",
-          "transfer_allow_death",
-        )
-
-        return toHex(
-          mergeUint8(
-            new Uint8Array(location),
-            args.enc({
-              dest: AccountId(destination),
-              value: amount,
-            }),
-          ),
-        )
-      }),
-    ),
-  )
-}
-
 export const Transfer = ({ provider }: Props) => {
   const [accounts, setAccounts] = useState<UnstableWallet.Account[]>([])
   const [destination, setDestination] = useState<string>(
@@ -78,6 +35,8 @@ export const Transfer = ({ provider }: Props) => {
     { ...provider, connect },
     chainId,
   )
+  const [transactionStatus, setTransactionStatus] = useState("")
+  const [finalizedHash, setFinalizedHash] = useState("")
 
   const balance = accountStorage?.data.free ?? 0n
 
@@ -96,19 +55,30 @@ export const Transfer = ({ provider }: Props) => {
       }
 
       setIsSubmittingTransaction(true)
+      setTransactionStatus("")
       try {
         const sender = selectedAccount.value
-        const { txId, tx } = await transfer(sender, destination, amount)
-        console.log({ txId, tx })
+        const { txId, destroy$ } = await transfer(sender, destination, amount)
+
+        const cleanup = () => {
+          destroy$.next()
+          destroy$.complete()
+          delete transferSubscriptions[txId]
+        }
 
         lastValueFrom(
           transferSubscriptions[txId].pipe(
             tap({
-              next: (e) => {
-                console.log(`event:`, e)
+              next: (e): void => {
+                setTransactionStatus(e.type)
+                if (e.type === "finalized") {
+                  setFinalizedHash(e.block.hash)
+                  cleanup()
+                }
               },
               error: (e) => {
-                console.error(`ERROR:`, e)
+                setTransactionStatus(e.type)
+                cleanup()
               },
             }),
           ),
@@ -161,6 +131,16 @@ export const Transfer = ({ provider }: Props) => {
           >
             Transfer
           </button>
+          {transactionStatus ? (
+            <p>
+              Transaction Status: <b>{`${transactionStatus}`}</b>
+            </p>
+          ) : null}
+          {finalizedHash ? (
+            <p>
+              Finalized Hash: <b>{`${finalizedHash}`}</b>
+            </p>
+          ) : null}
         </footer>
       </form>
     </article>

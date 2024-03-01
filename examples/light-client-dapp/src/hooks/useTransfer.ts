@@ -67,8 +67,6 @@ export const useTransfer = (provider: Provider, chainId: string) => {
       ),
     )
 
-    console.log("sender", sender)
-
     const tx = await provider.createTx(
       chainId,
       toHex(ss58Decode(sender)[0]),
@@ -79,7 +77,7 @@ export const useTransfer = (provider: Provider, chainId: string) => {
 
     subscriptions[txId] = txEvents
 
-    const destroy$ = new Subject()
+    const destroy$ = new Subject<void>()
     client.tx$(tx).pipe(tap(txEvents), takeUntil(destroy$)).subscribe()
 
     return { txId, tx, destroy$ }
