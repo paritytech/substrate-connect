@@ -36,10 +36,7 @@ export const Transfer = ({ provider }: Props) => {
     connect,
     selectedAccount ? selectedAccount.value : null,
   )
-  const { transfer, subscriptions: transferSubscriptions } = useTransfer(
-    { ...provider, connect },
-    chainId,
-  )
+  const { transfer } = useTransfer({ ...provider, connect }, chainId)
   const [transactionStatus, setTransactionStatus] = useState("")
   const [finalizedTransaction, setFinalizedTransaction] =
     useState<FinalizedTransaction | null>()
@@ -66,16 +63,10 @@ export const Transfer = ({ provider }: Props) => {
 
       try {
         const sender = selectedAccount.value
-        const { txId, destroy$ } = await transfer(sender, destination, amount)
+        const { txEvents } = await transfer(sender, destination, amount)
 
-        const cleanup = () => {
-          destroy$.next()
-          destroy$.complete()
-          delete transferSubscriptions[txId]
-        }
-
-        lastValueFrom(
-          transferSubscriptions[txId].pipe(
+        await lastValueFrom(
+          txEvents.pipe(
             tap({
               next: (e): void => {
                 setTransactionStatus(e.type)
@@ -85,12 +76,10 @@ export const Transfer = ({ provider }: Props) => {
                     blockHash: e.block.hash,
                     index: e.block.index,
                   })
-                  cleanup()
                 }
               },
               error: (e) => {
                 setTransactionStatus(e.type)
-                cleanup()
               },
             }),
           ),
@@ -100,7 +89,7 @@ export const Transfer = ({ provider }: Props) => {
       }
       setIsSubmittingTransaction(false)
     },
-    [selectedAccount, transfer, destination, amount, transferSubscriptions],
+    [selectedAccount, transfer, destination, amount],
   )
 
   const accountOptions = accounts.map((account) => ({

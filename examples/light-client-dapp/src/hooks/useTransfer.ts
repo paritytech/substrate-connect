@@ -7,19 +7,9 @@ import {
   createClient,
 } from "@polkadot-api/substrate-client"
 import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
-import {
-  firstValueFrom,
-  filter,
-  map,
-  Observable,
-  tap,
-  ReplaySubject,
-  Subject,
-  takeUntil,
-} from "rxjs"
+import { firstValueFrom, filter, map, tap, ReplaySubject } from "rxjs"
 import { mergeUint8, toHex } from "@polkadot-api/utils"
 import { UnstableWallet } from "@substrate/unstable-wallet-provider"
-import { v4 as uuidv4 } from "uuid"
 import { ss58Decode } from "@polkadot-labs/hdkd-helpers"
 
 const AccountId = (value: SS58String) =>
@@ -34,8 +24,6 @@ const AccountId = (value: SS58String) =>
 type Provider = UnstableWallet.Provider & { connect: ConnectProvider }
 
 export const useTransfer = (provider: Provider, chainId: string) => {
-  const subscriptions: Record<string, Observable<TxEvent>> = {}
-
   const transfer = async (
     sender: SS58String,
     destination: SS58String,
@@ -72,16 +60,12 @@ export const useTransfer = (provider: Provider, chainId: string) => {
       toHex(ss58Decode(sender)[0]),
       callData,
     )
-    const txId = uuidv4()
     const txEvents = new ReplaySubject<TxEvent>()
 
-    subscriptions[txId] = txEvents
+    client.tx$(tx).pipe(tap(txEvents)).subscribe()
 
-    const destroy$ = new Subject<void>()
-    client.tx$(tx).pipe(tap(txEvents), takeUntil(destroy$)).subscribe()
-
-    return { txId, tx, destroy$ }
+    return { tx, txEvents }
   }
 
-  return { subscriptions, transfer }
+  return { transfer }
 }
