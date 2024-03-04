@@ -1,8 +1,9 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react"
 import { UnstableWallet } from "@substrate/unstable-wallet-provider"
 import Select from "react-select"
-import { useSystemAccount, useTransfer } from "../hooks"
-import { lastValueFrom, tap } from "rxjs"
+import { transaction, transferAllowDeathCallData } from "../transaction"
+import { lastValueFrom, mergeMap, tap } from "rxjs"
+import { useSystemAccount } from "../hooks"
 
 type Props = {
   provider: UnstableWallet.Provider
@@ -36,7 +37,6 @@ export const Transfer = ({ provider }: Props) => {
     connect,
     selectedAccount ? selectedAccount.value : null,
   )
-  const { transfer } = useTransfer({ ...provider, connect }, chainId)
   const [transactionStatus, setTransactionStatus] = useState("")
   const [finalizedTransaction, setFinalizedTransaction] =
     useState<FinalizedTransaction | null>()
@@ -61,35 +61,29 @@ export const Transfer = ({ provider }: Props) => {
       setTransactionStatus("")
       setFinalizedTransaction(null)
 
-      try {
-        const sender = selectedAccount.value
-        const { txEvents } = await transfer(sender, destination, amount)
+      const sender = selectedAccount.value
+      const connectProvider = { ...provider, connect }
 
-        await lastValueFrom(
-          txEvents.pipe(
-            tap({
-              next: (e): void => {
-                setTransactionStatus(e.type)
-                if (e.type === "finalized") {
-                  e.block.index
-                  setFinalizedTransaction({
-                    blockHash: e.block.hash,
-                    index: e.block.index,
-                  })
-                }
-              },
-              error: (e) => {
-                setTransactionStatus(e.type)
-              },
-            }),
+      await lastValueFrom(
+        transferAllowDeathCallData(connectProvider, destination, amount).pipe(
+          mergeMap((callData) =>
+            transaction(connectProvider, chainId, sender, callData),
           ),
-        )
-      } catch (error) {
-        console.error(error)
-      }
+          tap(({ txEvent }) => {
+            setTransactionStatus(txEvent.type)
+            if (txEvent.type === "finalized") {
+              setFinalizedTransaction({
+                blockHash: txEvent.block.hash,
+                index: txEvent.block.index,
+              })
+            }
+          }),
+        ),
+      )
+
       setIsSubmittingTransaction(false)
     },
-    [selectedAccount, transfer, destination, amount],
+    [selectedAccount, provider, connect, destination, amount],
   )
 
   const accountOptions = accounts.map((account) => ({
