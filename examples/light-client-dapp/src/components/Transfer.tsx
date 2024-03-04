@@ -1,17 +1,17 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react"
-import { ss58Decode } from "@polkadot-labs/hdkd-helpers"
 import { UnstableWallet } from "@substrate/unstable-wallet-provider"
-import { mergeUint8, toHex } from "@polkadot-api/utils"
 import Select from "react-select"
+import { transaction, transferAllowDeathCallData } from "../transaction"
+import { lastValueFrom, mergeMap, tap } from "rxjs"
 import { useSystemAccount } from "../hooks"
-import { getObservableClient } from "@polkadot-api/client"
-import { ConnectProvider, createClient } from "@polkadot-api/substrate-client"
-import { Enum, SS58String } from "@polkadot-api/substrate-bindings"
-import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
-import { firstValueFrom, filter, map } from "rxjs"
 
 type Props = {
   provider: UnstableWallet.Provider
+}
+
+type FinalizedTransaction = {
+  blockHash: string
+  index: number
 }
 
 // FIXME: use dynamic chainId
@@ -19,52 +19,11 @@ type Props = {
 const chainId =
   "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e"
 
-const AccountId = (value: SS58String) =>
-  Enum<
-    {
-      type: "Id"
-      value: SS58String
-    },
-    "Id"
-  >("Id", value)
-
-// TODO: Extract to hook that creates and submits the tx while also managing
-// the tx lifecycle
-const createTransfer = (
-  provider: ConnectProvider,
-  destination: string,
-  amount: bigint,
-) => {
-  const client = getObservableClient(createClient(provider))
-  const { metadata$ } = client.chainHead$()
-
-  return firstValueFrom(
-    metadata$.pipe(
-      filter(Boolean),
-      map((metadata) => {
-        const dynamicBuilder = getDynamicBuilder(metadata)
-        const { location, args } = dynamicBuilder.buildCall(
-          "Balances",
-          "transfer_allow_death",
-        )
-
-        return toHex(
-          mergeUint8(
-            new Uint8Array(location),
-            args.enc({
-              dest: AccountId(destination),
-              value: amount,
-            }),
-          ),
-        )
-      }),
-    ),
-  )
-}
-
 export const Transfer = ({ provider }: Props) => {
   const [accounts, setAccounts] = useState<UnstableWallet.Account[]>([])
-  const [destination, setDestination] = useState<string>("")
+  const [destination, setDestination] = useState<string>(
+    "5CofVLAGjwvdGXvBiP6ddtZYMVbhT5Xke8ZrshUpj2ZXAnND",
+  )
   const [amount, setAmount] = useState<bigint>(0n)
   const [selectedAccount, setSelectedAccount] = useState<{
     value: string
@@ -78,6 +37,10 @@ export const Transfer = ({ provider }: Props) => {
     connect,
     selectedAccount ? selectedAccount.value : null,
   )
+  const [transactionStatus, setTransactionStatus] = useState("")
+  const [finalizedTransaction, setFinalizedTransaction] =
+    useState<FinalizedTransaction | null>()
+  const [error, setError] = useState<{ type: string; error: string }>()
 
   const balance = accountStorage?.data.free ?? 0n
 
@@ -87,7 +50,7 @@ export const Transfer = ({ provider }: Props) => {
     })
   }, [provider])
 
-  const [isCreatingTransaction, setIsCreatingTransaction] = useState(false)
+  const [isSubmittingTransaction, setIsSubmittingTransaction] = useState(false)
   const handleOnSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault()
@@ -95,20 +58,43 @@ export const Transfer = ({ provider }: Props) => {
         return
       }
 
-      setIsCreatingTransaction(true)
+      setIsSubmittingTransaction(true)
+      setTransactionStatus("")
+      setFinalizedTransaction(null)
+
+      const sender = selectedAccount.value
+      const connectProvider = { ...provider, connect }
+
       try {
-        const tx = await provider.createTx(
-          chainId,
-          toHex(ss58Decode(selectedAccount.value)[0]),
-          await createTransfer(connect, destination, amount),
+        await lastValueFrom(
+          transferAllowDeathCallData(connectProvider, destination, amount).pipe(
+            mergeMap((callData) =>
+              transaction(connectProvider, chainId, sender, callData),
+            ),
+            tap(({ txEvent }) => {
+              setTransactionStatus(txEvent.type)
+              if (txEvent.type === "finalized") {
+                setFinalizedTransaction({
+                  blockHash: txEvent.block.hash,
+                  index: txEvent.block.index,
+                })
+              }
+              if (txEvent.type === "invalid" || txEvent.type === "dropped") {
+                setError({ type: txEvent.type, error: txEvent.error })
+              }
+            }),
+          ),
         )
-        console.log({ tx })
-      } catch (error) {
-        console.error(error)
+      } catch (err) {
+        if (err instanceof Error) {
+          setError({ type: "error", error: err.message })
+        }
+        console.error(err)
       }
-      setIsCreatingTransaction(false)
+
+      setIsSubmittingTransaction(false)
     },
-    [provider, selectedAccount, connect, destination, amount],
+    [selectedAccount, provider, connect, destination, amount],
   )
 
   const accountOptions = accounts.map((account) => ({
@@ -116,13 +102,7 @@ export const Transfer = ({ provider }: Props) => {
     label: account.address,
   }))
 
-  // TODO: handle form fields and submission with react
-  // TODO: fetch accounts from extension
   // TODO: validate destination address
-  // TODO: use PAPI to encode the transaction calldata
-  // TODO: transfer should trigger an extension popup that signs the transaction
-  // TODO: extract transaction submission into a hook
-  // TODO: follow transaction submission events until it is finalized
   return (
     <article>
       <header>Transfer funds</header>
@@ -147,10 +127,35 @@ export const Transfer = ({ provider }: Props) => {
         <footer>
           <button
             type="submit"
-            disabled={!selectedAccount || isCreatingTransaction}
+            disabled={!selectedAccount || isSubmittingTransaction}
           >
             Transfer
           </button>
+          {transactionStatus ? (
+            <p>
+              Transaction Status: <b>{`${transactionStatus}`}</b>
+            </p>
+          ) : null}
+          {finalizedTransaction ? (
+            <div>
+              <p>
+                Finalized Block Hash:{" "}
+                <b>
+                  <a
+                    href={`https://westend.subscan.io/block/${finalizedTransaction.blockHash}`}
+                  >{`${finalizedTransaction.blockHash}`}</a>
+                </b>
+              </p>
+              <p>
+                Transaction Index: <b>{finalizedTransaction.index}</b>
+              </p>
+            </div>
+          ) : null}
+          {error ? (
+            <p>
+              Error: <b>{`type: ${error.type}, error: ${error.error}`}</b>
+            </p>
+          ) : null}
         </footer>
       </form>
     </article>
