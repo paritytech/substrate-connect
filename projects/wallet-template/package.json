@@ -42,7 +42,7 @@
     "@substrate/unstable-wallet-provider": "workspace:^",
     "@vitejs/plugin-react-swc": "^3.6.0",
     "@webext-core/storage": "^1.2.0",
-    "autoprefixer": "^10.4.17",
+    "autoprefixer": "^10.4.18",
     "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
     "postcss": "^8.4.35",
@@ -51,7 +51,7 @@
     "vite-plugin-web-extension": "^4.0.0",
     "vitest": "^1.3.1",
     "web-ext": "^7.11.0",
-    "wxt": "^0.17.3"
+    "wxt": "^0.17.5"
   },
   "dependencies": {
     "@polkadot-api/client": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
