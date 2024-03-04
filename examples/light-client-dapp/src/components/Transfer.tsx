@@ -40,6 +40,7 @@ export const Transfer = ({ provider }: Props) => {
   const [transactionStatus, setTransactionStatus] = useState("")
   const [finalizedTransaction, setFinalizedTransaction] =
     useState<FinalizedTransaction | null>()
+  const [error, setError] = useState<{ type: string; error: string }>()
 
   const balance = accountStorage?.data.free ?? 0n
 
@@ -64,22 +65,32 @@ export const Transfer = ({ provider }: Props) => {
       const sender = selectedAccount.value
       const connectProvider = { ...provider, connect }
 
-      await lastValueFrom(
-        transferAllowDeathCallData(connectProvider, destination, amount).pipe(
-          mergeMap((callData) =>
-            transaction(connectProvider, chainId, sender, callData),
+      try {
+        await lastValueFrom(
+          transferAllowDeathCallData(connectProvider, destination, amount).pipe(
+            mergeMap((callData) =>
+              transaction(connectProvider, chainId, sender, callData),
+            ),
+            tap(({ txEvent }) => {
+              setTransactionStatus(txEvent.type)
+              if (txEvent.type === "finalized") {
+                setFinalizedTransaction({
+                  blockHash: txEvent.block.hash,
+                  index: txEvent.block.index,
+                })
+              }
+              if (txEvent.type === "invalid" || txEvent.type === "dropped") {
+                setError({ type: txEvent.type, error: txEvent.error })
+              }
+            }),
           ),
-          tap(({ txEvent }) => {
-            setTransactionStatus(txEvent.type)
-            if (txEvent.type === "finalized") {
-              setFinalizedTransaction({
-                blockHash: txEvent.block.hash,
-                index: txEvent.block.index,
-              })
-            }
-          }),
-        ),
-      )
+        )
+      } catch (err) {
+        if (err instanceof Error) {
+          setError({ type: "error", error: err.message })
+        }
+        console.error(err)
+      }
 
       setIsSubmittingTransaction(false)
     },
@@ -139,6 +150,11 @@ export const Transfer = ({ provider }: Props) => {
                 Transaction Index: <b>{finalizedTransaction.index}</b>
               </p>
             </div>
+          ) : null}
+          {error ? (
+            <p>
+              Error: <b>{`type: ${error.type}, error: ${error.error}`}</b>
+            </p>
           ) : null}
         </footer>
       </form>
