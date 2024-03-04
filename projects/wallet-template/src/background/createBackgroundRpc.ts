@@ -107,6 +107,15 @@ export const createBackgroundRpc = (
           ),
           width: 560,
         })
+        const removeWindow = () => chrome.windows.remove(window.id!)
+        port.onDisconnect.addListener(removeWindow)
+        const onWindowsRemoved = (windowId: number) => {
+          if (windowId !== window.id) return
+          const signRequest = signRequests[id]
+          if (!signRequest) return
+          signRequest.reject()
+        }
+        chrome.windows.onRemoved.addListener(onWindowsRemoved)
         try {
           const { userSignedExtensions } = await signRequest
           const userSignedExtensionsData = Object.fromEntries(
@@ -146,6 +155,8 @@ export const createBackgroundRpc = (
         } finally {
           delete signRequests[id]
           chrome.windows.remove(window.id!)
+          port.onDisconnect.removeListener(removeWindow)
+          chrome.windows.onRemoved.removeListener(onWindowsRemoved)
         }
       }
       const txCreator = getTxCreator(chain.provider, onCreateTx)
