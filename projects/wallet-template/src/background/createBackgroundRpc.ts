@@ -27,11 +27,14 @@ const miniSecret = entropyToMiniSecret(entropy)
 const derive = sr25519CreateDerive(miniSecret)
 
 // TODO: fetch from storage
-const keypairs = [
-  derive("//westend//0"),
-  derive("//westend//1"),
-  derive("//westend//2"),
-]
+const keyset = {
+  scheme: "Sr25519" as const,
+  keypairs: [
+    derive("//westend//0"),
+    derive("//westend//1"),
+    derive("//westend//2"),
+  ],
+}
 
 type SignResponse = {
   userSignedExtensions: Partial<UserSignedExtensions>
@@ -57,7 +60,7 @@ export const createBackgroundRpc = (
       const chains = await lightClientPageHelper.getChains()
       const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
       if (!chain) throw new Error("unknown chain")
-      return keypairs.map(({ publicKey }) => ({
+      return keyset.keypairs.map(({ publicKey }) => ({
         address: ss58Address(publicKey, chain.ss58Format),
       }))
     },
@@ -70,7 +73,7 @@ export const createBackgroundRpc = (
       const chains = await lightClientPageHelper.getChains()
       const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
       if (!chain) throw new Error("unknown chain")
-      const keypair = keypairs.find(
+      const keypair = keyset.keypairs.find(
         ({ publicKey }) => toHex(publicKey) === from,
       )
       if (!keypair) throw new Error("unknown account")
@@ -144,8 +147,7 @@ export const createBackgroundRpc = (
           callback({
             userSignedExtensionsData,
             overrides: {},
-            // FIXME: this should be inferred from the keypair signature scheme
-            signingType: "Sr25519",
+            signingType: keyset.scheme,
             signer: async (value) => keypair.sign(value),
           })
         } catch (error) {
