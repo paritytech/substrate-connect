@@ -106,7 +106,7 @@ export const createBackgroundRpc = (
           top: 150,
           type: "popup",
           url: chrome.runtime.getURL(
-            `ui/assets/wallet-popup.html#signRequest/${id}`,
+            `ui/assets/wallet-popup.html#/sign-request/${id}`,
           ),
           width: 560,
         })
