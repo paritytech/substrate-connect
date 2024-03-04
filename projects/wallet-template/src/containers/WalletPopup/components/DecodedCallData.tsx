@@ -119,13 +119,10 @@ const DecodedComplexValue = ({ value }: DecodedComplexProps) => {
       )
     }
     case "Result": {
-      // FIXME: What Result variant is value (Ok or Error)?
       return (
         <>
-          <div className="text-xs">Ok</div>
-          <DecodedValue value={value.value.ok} />
-          <div className="text-xs">Error</div>
-          <DecodedValue value={value.value.ko} />
+          <div className="text-xs">{value.value.success ? "Ok" : "Error"}</div>
+          <DecodedValue value={value.value.value} />
         </>
       )
     }
