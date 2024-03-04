@@ -27,11 +27,14 @@ const miniSecret = entropyToMiniSecret(entropy)
 const derive = sr25519CreateDerive(miniSecret)
 
 // TODO: fetch from storage
-const keypairs = [
-  derive("//westend//0"),
-  derive("//westend//1"),
-  derive("//westend//2"),
-]
+const keyset = {
+  scheme: "Sr25519" as const,
+  keypairs: [
+    derive("//westend//0"),
+    derive("//westend//1"),
+    derive("//westend//2"),
+  ],
+}
 
 type SignResponse = {
   userSignedExtensions: Partial<UserSignedExtensions>
@@ -57,7 +60,7 @@ export const createBackgroundRpc = (
       const chains = await lightClientPageHelper.getChains()
       const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
       if (!chain) throw new Error("unknown chain")
-      return keypairs.map(({ publicKey }) => ({
+      return keyset.keypairs.map(({ publicKey }) => ({
         address: ss58Address(publicKey, chain.ss58Format),
       }))
     },
@@ -70,7 +73,7 @@ export const createBackgroundRpc = (
       const chains = await lightClientPageHelper.getChains()
       const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
       if (!chain) throw new Error("unknown chain")
-      const keypair = keypairs.find(
+      const keypair = keyset.keypairs.find(
         ({ publicKey }) => toHex(publicKey) === from,
       )
       if (!keypair) throw new Error("unknown account")
@@ -103,10 +106,19 @@ export const createBackgroundRpc = (
           top: 150,
           type: "popup",
           url: chrome.runtime.getURL(
-            `ui/assets/wallet-popup.html#signRequest/${id}`,
+            `ui/assets/wallet-popup.html#/sign-request/${id}`,
           ),
           width: 560,
         })
+        const removeWindow = () => chrome.windows.remove(window.id!)
+        port.onDisconnect.addListener(removeWindow)
+        const onWindowsRemoved = (windowId: number) => {
+          if (windowId !== window.id) return
+          const signRequest = signRequests[id]
+          if (!signRequest) return
+          signRequest.reject()
+        }
+        chrome.windows.onRemoved.addListener(onWindowsRemoved)
         try {
           const { userSignedExtensions } = await signRequest
           const userSignedExtensionsData = Object.fromEntries(
@@ -135,8 +147,7 @@ export const createBackgroundRpc = (
           callback({
             userSignedExtensionsData,
             overrides: {},
-            // FIXME: this should be inferred from the keypair signature scheme
-            signingType: "Sr25519",
+            signingType: keyset.scheme,
             signer: async (value) => keypair.sign(value),
           })
         } catch (error) {
@@ -146,6 +157,8 @@ export const createBackgroundRpc = (
         } finally {
           delete signRequests[id]
           chrome.windows.remove(window.id!)
+          port.onDisconnect.removeListener(removeWindow)
+          chrome.windows.onRemoved.removeListener(onWindowsRemoved)
         }
       }
       const txCreator = getTxCreator(chain.provider, onCreateTx)
