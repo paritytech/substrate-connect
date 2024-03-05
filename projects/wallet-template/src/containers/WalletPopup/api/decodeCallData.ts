@@ -10,8 +10,11 @@ export const decodeCallData = async (chainId: string, callData: string) => {
   if (!chain) throw new Error("unkonwn chain")
   const client = getObservableClient(createClient(chain.provider))
   const { metadata$, unfollow } = client.chainHead$()
-  const metadata = await firstValueFrom(metadata$.pipe(filter(Boolean)))
-  unfollow()
-  client.destroy()
-  return getViewBuilder(metadata).callDecoder(callData)
+  try {
+    const metadata = await firstValueFrom(metadata$.pipe(filter(Boolean)))
+    return getViewBuilder(metadata).callDecoder(callData)
+  } finally {
+    unfollow()
+    client.destroy()
+  }
 }
