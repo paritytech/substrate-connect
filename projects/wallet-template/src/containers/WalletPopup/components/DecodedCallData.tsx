@@ -1,10 +1,12 @@
-import type {
-  ComplexDecoded,
-  Decoded,
-  PrimitiveDecoded,
+import {
+  DecodedCall,
+  type ComplexDecoded,
+  type Decoded,
+  type PrimitiveDecoded,
 } from "@polkadot-api/metadata-builders"
 import { toHex } from "@polkadot-api/utils"
-import { useDecodedCallData } from "../hooks"
+import { useEffect, useState } from "react"
+import { decodeCallData } from "../api"
 
 const jsonStringify = (value: any) =>
   JSON.stringify(
@@ -18,7 +20,10 @@ type Props = {
   callData: string
 }
 export const DecodedCallData = ({ chainId, callData }: Props) => {
-  const { decodedCallData } = useDecodedCallData(chainId, callData)
+  const [decodedCallData, setDecodedCallData] = useState<DecodedCall>()
+  useEffect(() => {
+    decodeCallData(chainId, callData).then(setDecodedCallData)
+  }, [chainId, callData])
   if (!decodedCallData) return <div>decoding...</div>
   return (
     <div>

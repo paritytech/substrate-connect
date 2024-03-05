@@ -1,18 +1,11 @@
-import { createRpc } from "@substrate/light-client-extension-helpers/utils"
 import { useEffect, useState } from "react"
 import { UserSignedExtensions } from "@polkadot-api/tx-helper"
-import type { BackgroundRpcSpec, SignRequest } from "../background/types"
-import { DecodedCallData } from "./WalletPopup/components"
-import { UserSignedExtensionInputs } from "./WalletPopup/components/UserSignedExtensionInputs"
-
-// FIXME: use hook
-const port = chrome.runtime.connect({
-  name: "substrate-wallet-template/wallet-popup",
-})
-const rpc = createRpc((msg) =>
-  port.postMessage(msg),
-).withClient<BackgroundRpcSpec>()
-port.onMessage.addListener(rpc.handle)
+import type { SignRequest } from "../background/types"
+import {
+  DecodedCallData,
+  UserSignedExtensionInputs,
+} from "./WalletPopup/components"
+import { rpc } from "./WalletPopup/api"
 
 export const WalletPopup = () => {
   const [signRequest, setSignRequest] = useState<{
