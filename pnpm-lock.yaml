@@ -394,6 +394,9 @@ importers:
       '@substrate/connect':
         specifier: 0.8.7
         version: link:../../packages/connect
+      '@substrate/connect-known-chains':
+        specifier: workspace:*
+        version: link:../../packages/connect-known-chains
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1

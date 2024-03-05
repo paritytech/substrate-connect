@@ -12,7 +12,7 @@
     "tokenDecimals": 12,
     "tokenSymbol": "ROC"
   },
-  "relay_chain": "rococo",
+  "relay_chain": "rococo_v2_2",
   "para_id": 1000,
   "codeSubstitutes": {},
   "genesis": {

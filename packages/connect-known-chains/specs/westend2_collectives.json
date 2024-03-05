@@ -35,7 +35,7 @@
     "tokenDecimals": 12,
     "tokenSymbol": "WND"
   },
-  "relay_chain": "westend",
+  "relay_chain": "westend2",
   "para_id": 1001,
   "codeSubstitutes": {},
   "genesis": {

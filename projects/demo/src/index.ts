@@ -12,9 +12,11 @@ import { filter, map } from "rxjs"
 
 import UI, { emojis } from "./view"
 
-import assetHubPolkadot from "./assets/asset-hub-polkadot.json?raw"
-import assetHubKusama from "./assets/asset-hub-kusama.json?raw"
-import assetHubWestend from "./assets/asset-hub-westend.json?raw"
+import {
+  polkadot_asset_hub as assetHubPolkadot,
+  westend2_asset_hub as assetHubKusama,
+  ksmcc3_asset_hub as assetHubWestend,
+} from "@substrate/connect-known-chains"
 
 window.onload = () => {
   ;(
@@ -22,6 +24,9 @@ window.onload = () => {
       [[WellKnownChain.polkadot], "polkadot"],
       [[WellKnownChain.ksmcc3], "kusama"],
       [[WellKnownChain.westend2], "westend"],
+      [[assetHubPolkadot, WellKnownChain.polkadot], "asset-hub-polkadot"],
+      [[assetHubKusama, WellKnownChain.ksmcc3], "asset-hub-kusama"],
+      [[assetHubWestend, WellKnownChain.westend2], "asset-hub-westend"],
       [[assetHubPolkadot, WellKnownChain.polkadot], "asset-hub-polkadot"],
       [[assetHubKusama, WellKnownChain.ksmcc3], "asset-hub-kusama"],
       [[assetHubWestend, WellKnownChain.westend2], "asset-hub-westend"],
