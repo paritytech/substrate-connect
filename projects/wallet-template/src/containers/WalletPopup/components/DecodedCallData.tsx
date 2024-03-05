@@ -1,11 +1,10 @@
-import {
-  DecodedCall,
-  type ComplexDecoded,
-  type Decoded,
-  type PrimitiveDecoded,
+import type {
+  ComplexDecoded,
+  Decoded,
+  PrimitiveDecoded,
 } from "@polkadot-api/metadata-builders"
 import { toHex } from "@polkadot-api/utils"
-import { useEffect, useState } from "react"
+import useSWR from "swr"
 import { decodeCallData } from "../api"
 
 const jsonStringify = (value: any) =>
@@ -20,19 +19,23 @@ type Props = {
   callData: string
 }
 export const DecodedCallData = ({ chainId, callData }: Props) => {
-  const [decodedCallData, setDecodedCallData] = useState<DecodedCall>()
-  useEffect(() => {
-    decodeCallData(chainId, callData).then(setDecodedCallData)
-  }, [chainId, callData])
-  if (!decodedCallData) return <div>decoding...</div>
+  const {
+    data: decodedCallData,
+    isLoading,
+    error,
+  } = useSWR([chainId, callData], ([chainId, callData]) =>
+    decodeCallData(chainId, callData),
+  )
+  if (error) return <div>error decoding {callData}</div>
+  if (isLoading) return <div>decoding...</div>
   return (
     <div>
       <div className="text-xs font-semibold">Pallet Call</div>
       <div className="px-2">
-        {decodedCallData.pallet.value.name} {decodedCallData.call.value.name}
+        {decodedCallData!.pallet.value.name} {decodedCallData!.call.value.name}
       </div>
       <div className="text-xs font-semibold">Args</div>
-      <DecodedValue value={decodedCallData.args.value} />
+      <DecodedValue value={decodedCallData!.args.value} />
     </div>
   )
 }
