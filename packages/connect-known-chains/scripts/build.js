@@ -14,32 +14,25 @@ const tsFiles = files.filter((file) => file.endsWith(".ts"))
 
 const paths = tsFiles.map((fileName) => `src/specs/${fileName}`)
 
-const child = spawn("tsup-node", [
-  "src/index.ts",
-  ...paths,
-  "--clean",
-  "--sourcemap",
-  "--platform",
-  "neutral",
-  "--target=es2015",
-  "--format",
-  "esm,cjs",
-  "--dts",
-])
+const tsupNode = spawn(
+  "tsup-node",
+  [
+    "src/index.ts",
+    ...paths,
+    "--clean",
+    "--sourcemap",
+    "--platform",
+    "neutral",
+    "--target=es2015",
+    "--format",
+    "esm,cjs",
+    "--dts",
+  ],
+  {
+    stdio: ["inherit", "inherit", "inherit"],
+  },
+)
 
-child.stdout.setEncoding("utf8")
-child.stdout.on("data", (data) => {
-  console.log(data)
-})
-
-child.stderr.setEncoding("utf8")
-child.stderr.on("data", (err) => console.error(err))
-
-child.on("close", (code) => {
-  if (code != null) {
-    console.log(`child process exited with code ${code}`)
-    process.exit(code)
-  } else {
-    process.exit(1)
-  }
+tsupNode.on("close", (code) => {
+  process.exitCode = code ?? 1
 })
