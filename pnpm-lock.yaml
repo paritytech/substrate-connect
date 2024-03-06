@@ -328,8 +328,8 @@ importers:
         specifier: ^10.11.3
         version: 10.11.3
       '@polkadot/types':
-        specifier: ^10.11.3
-        version: 10.11.3
+        specifier: ^10.12.1
+        version: 10.12.1
       '@polkadot/util':
         specifier: ^12.5.1
         version: 12.6.2
