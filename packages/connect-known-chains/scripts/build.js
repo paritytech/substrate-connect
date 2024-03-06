@@ -36,5 +36,10 @@ child.stderr.setEncoding("utf8")
 child.stderr.on("data", (err) => console.error(err))
 
 child.on("close", (code) => {
-  console.log(`child process exited with code ${code}`)
+  if (code != null) {
+    console.log(`child process exited with code ${code}`)
+    process.exit(code)
+  } else {
+    process.exit(1)
+  }
 })

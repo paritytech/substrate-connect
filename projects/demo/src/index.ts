@@ -14,8 +14,8 @@ import UI, { emojis } from "./view"
 
 import {
   polkadot_asset_hub as assetHubPolkadot,
-  westend2_asset_hub as assetHubKusama,
-  ksmcc3_asset_hub as assetHubWestend,
+  westend2_asset_hub as assetHubWestend,
+  ksmcc3_asset_hub as assetHubKusama,
 } from "@substrate/connect-known-chains"
 
 window.onload = () => {
@@ -24,9 +24,6 @@ window.onload = () => {
       [[WellKnownChain.polkadot], "polkadot"],
       [[WellKnownChain.ksmcc3], "kusama"],
       [[WellKnownChain.westend2], "westend"],
-      [[assetHubPolkadot, WellKnownChain.polkadot], "asset-hub-polkadot"],
-      [[assetHubKusama, WellKnownChain.ksmcc3], "asset-hub-kusama"],
-      [[assetHubWestend, WellKnownChain.westend2], "asset-hub-westend"],
       [[assetHubPolkadot, WellKnownChain.polkadot], "asset-hub-polkadot"],
       [[assetHubKusama, WellKnownChain.ksmcc3], "asset-hub-kusama"],
       [[assetHubWestend, WellKnownChain.westend2], "asset-hub-westend"],
