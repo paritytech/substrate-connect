@@ -24,8 +24,8 @@ importers:
         specifier: ^18.2.61
         version: 18.2.61
       '@types/react-dom':
-        specifier: ^18.2.19
-        version: 18.2.19
+        specifier: ^18.2.20
+        version: 18.2.20
       '@types/react-router-dom':
         specifier: ^5.3.3
         version: 5.3.3
@@ -81,8 +81,8 @@ importers:
   examples/light-client-dapp:
     dependencies:
       '@picocss/pico':
-        specifier: ^2.0.3
-        version: 2.0.3
+        specifier: ^2.0.6
+        version: 2.0.6
       '@polkadot-api/client':
         specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
         version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1)
@@ -121,8 +121,8 @@ importers:
         specifier: ^18.2.61
         version: 18.2.61
       '@types/react-dom':
-        specifier: ^18.2.19
-        version: 18.2.19
+        specifier: ^18.2.20
+        version: 18.2.20
       '@typescript-eslint/eslint-plugin':
         specifier: ^7.1.0
         version: 7.1.0(@typescript-eslint/parser@7.1.1)(eslint@8.57.0)(typescript@5.3.3)
@@ -148,8 +148,8 @@ importers:
   examples/light-client-extension-helpers-dapp:
     dependencies:
       '@picocss/pico':
-        specifier: ^2.0.3
-        version: 2.0.3
+        specifier: ^2.0.6
+        version: 2.0.6
       '@polkadot-api/client':
         specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
         version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1)
@@ -176,8 +176,8 @@ importers:
         specifier: ^18.2.61
         version: 18.2.61
       '@types/react-dom':
-        specifier: ^18.2.19
-        version: 18.2.19
+        specifier: ^18.2.20
+        version: 18.2.20
       '@typescript-eslint/eslint-plugin':
         specifier: ^7.1.0
         version: 7.1.0(@typescript-eslint/parser@7.1.1)(eslint@8.57.0)(typescript@5.3.3)
@@ -209,8 +209,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/light-client-extension-helpers
       smoldot:
-        specifier: 2.0.21
-        version: 2.0.21
+        specifier: 2.0.22
+        version: 2.0.22
     devDependencies:
       '@playwright/test':
         specifier: ^1.42.1
@@ -240,8 +240,8 @@ importers:
         specifier: workspace:^
         version: link:../light-client-extension-helpers
       smoldot:
-        specifier: 2.0.21
-        version: 2.0.21
+        specifier: 2.0.22
+        version: 2.0.22
     devDependencies:
       '@polkadot-api/json-rpc-provider-proxy':
         specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
@@ -331,8 +331,8 @@ importers:
         specifier: ^10.11.3
         version: 10.11.3
       '@polkadot/types':
-        specifier: ^10.11.3
-        version: 10.11.3
+        specifier: ^10.12.1
+        version: 10.12.1
       '@polkadot/util':
         specifier: ^12.5.1
         version: 12.6.2
@@ -444,8 +444,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.0.21
-        version: 2.0.21
+        specifier: 2.0.22
+        version: 2.0.22
     devDependencies:
       '@playwright/test':
         specifier: ^1.42.1
@@ -523,8 +523,11 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.0.21
-        version: 2.0.21
+        specifier: 2.0.22
+        version: 2.0.22
+      swr:
+        specifier: ^2.2.5
+        version: 2.2.5(react@18.2.0)
     devDependencies:
       '@noble/ciphers':
         specifier: ^0.5.1
@@ -572,8 +575,8 @@ importers:
         specifier: ^7.11.0
         version: 7.11.0
       wxt:
-        specifier: ^0.17.5
-        version: 0.17.5(@types/node@20.11.24)
+        specifier: ^0.17.7
+        version: 0.17.7(@types/node@20.11.24)
 
   zombienet-tests:
     dependencies:
@@ -2762,8 +2765,8 @@ packages:
       fastq: 1.16.0
     dev: true
 
-  /@picocss/pico@2.0.3:
-    resolution: {integrity: sha512-uIWvDcZnbA+oo4mpz8LeA05huCWbDnUz8Ad2NZXTFn6SrEXBtIdKDu+/bOD4oI8hJHp6dUEEvDLim2+qqSgruQ==}
+  /@picocss/pico@2.0.6:
+    resolution: {integrity: sha512-/d8qsykowelD6g8k8JYgmCagOIulCPHMEc2NC4u7OjmpQLmtSetLhEbt0j1n3fPNJVcrT84dRp0RfJBn3wJROA==}
     engines: {node: '>=18.19.0'}
     dev: false
 
@@ -3913,8 +3916,8 @@ packages:
       '@types/react': 18.2.61
     dev: true
 
-  /@types/react-dom@18.2.19:
-    resolution: {integrity: sha512-aZvQL6uUbIJpjZk4U8JZGbau9KDeAwMfmhyWorxgBkqDIEf6ROjRozcmPIicqsUwPUjbkDfHKgGee1Lq65APcA==}
+  /@types/react-dom@18.2.20:
+    resolution: {integrity: sha512-HXN/biJY8nv20Cn9ZbCFq3liERd4CozVZmKbaiZ9KiKTrWqsP7eoGDO6OOGvJQwoVFuiXaiJ7nBBjiFFbRmQMQ==}
     dependencies:
       '@types/react': 18.2.61
     dev: true
@@ -5253,6 +5256,10 @@ packages:
       slice-ansi: 5.0.0
       string-width: 7.0.0
     dev: true
+
+  /client-only@0.0.1:
+    resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
+    dev: false
 
   /cliui@7.0.4:
     resolution: {integrity: sha512-OcRE68cOsVMXp1Yvonl/fzkQOyjLSu/8bhPDfQt0e0/Eb283TKP20Fs2MqoPsr9SwA595rRCA+QMzYc9nBP+JQ==}
@@ -10173,6 +10180,15 @@ packages:
       - utf-8-validate
     dev: false
 
+  /smoldot@2.0.22:
+    resolution: {integrity: sha512-B50vRgTY6v3baYH6uCgL15tfaag5tcS2o/P5q1OiXcKGv1axZDfz2dzzMuIkVpyMR2ug11F6EAtQlmYBQd292g==}
+    dependencies:
+      ws: 8.16.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
   /sonic-boom@3.7.0:
     resolution: {integrity: sha512-IudtNvSqA/ObjN97tfgNmOKyDOs4dNcg4cUUsHDebqsgb8wGBBwb31LIgShNO8fye0dFI52X1+tFoKKI6Rq1Gg==}
     dependencies:
@@ -10527,6 +10543,16 @@ packages:
   /supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  /swr@2.2.5(react@18.2.0):
+    resolution: {integrity: sha512-QtxqyclFeAsxEUeZIYmsaQ0UjimSq1RZ9Un7I68/0ClKK/U3LoyQunwkQfJZr2fc22DfIXLNDc2wFyTEikCUpg==}
+    peerDependencies:
+      react: ^16.11.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      client-only: 0.0.1
+      react: 18.2.0
+      use-sync-external-store: 1.2.0(react@18.2.0)
+    dev: false
 
   /symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
@@ -11690,8 +11716,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  /wxt@0.17.5(@types/node@20.11.24):
-    resolution: {integrity: sha512-0WCBhIhRwd5Ad7nveT+4JnGXTqH7tAZ+DcdE7A9LwTEaYJ9dr8v2QjdVmteKoxoovmwES5c/T54eBdeAVakIiA==}
+  /wxt@0.17.7(@types/node@20.11.24):
+    resolution: {integrity: sha512-RSjn65tYUNhoHBtDwLjNmWrGtmQ62qLldekWCOtekl+Gzq1n/KcHm/M7QKhbJe7pxP8v5UvqcQEToW5oA9nwuA==}
     engines: {node: '>=18', pnpm: '>=8'}
     hasBin: true
     dependencies:

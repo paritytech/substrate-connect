@@ -51,13 +51,13 @@
     "vite-plugin-web-extension": "^4.0.0",
     "vitest": "^1.3.1",
     "web-ext": "^7.11.0",
-    "wxt": "^0.17.5"
+    "wxt": "^0.17.7"
   },
   "dependencies": {
     "@polkadot-api/client": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@polkadot-api/metadata-builders": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
-    "@polkadot-api/tx-helper": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@polkadot-api/substrate-client": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
+    "@polkadot-api/tx-helper": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@polkadot-api/utils": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@polkadot-labs/hdkd": "^0.0.5",
     "@polkadot-labs/hdkd-helpers": "^0.0.5",
@@ -69,6 +69,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
     "rxjs": "^7.8.1",
-    "smoldot": "2.0.21"
+    "smoldot": "2.0.22",
+    "swr": "^2.2.5"
   }
 }
