@@ -12,9 +12,11 @@ import { filter, map } from "rxjs"
 
 import UI, { emojis } from "./view"
 
-import assetHubPolkadot from "./assets/asset-hub-polkadot.json?raw"
-import assetHubKusama from "./assets/asset-hub-kusama.json?raw"
-import assetHubWestend from "./assets/asset-hub-westend.json?raw"
+import {
+  polkadot_asset_hub as assetHubPolkadot,
+  westend2_asset_hub as assetHubWestend,
+  ksmcc3_asset_hub as assetHubKusama,
+} from "@substrate/connect-known-chains"
 
 window.onload = () => {
   ;(

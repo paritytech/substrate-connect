@@ -12,9 +12,8 @@
     "clean": "rm -rf dist/ tsconfig.tsbuildinfo && mkdir -p dist/assets",
     "typecheck": "tsc -b",
     "typecheck:watch": "tsc -b --watch",
-    "copy-assets": "cp -R ./src/assets ./dist",
-    "build": "pnpm clean && pnpm copy-assets && pnpm typecheck && vite build --base=./",
-    "dev": "pnpm clean && pnpm copy-assets && vite serve",
+    "build": "pnpm clean && pnpm typecheck && vite build --base=./",
+    "dev": "pnpm clean && vite serve",
     "preview": "vite preview",
     "test": "exit 0; #No tests",
     "lint": "eslint . --ext .ts,.tsx"
@@ -24,6 +23,7 @@
     "@polkadot-api/json-rpc-provider-proxy": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@polkadot-api/substrate-client": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@substrate/connect": "workspace:*",
+    "@substrate/connect-known-chains": "workspace:*",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {

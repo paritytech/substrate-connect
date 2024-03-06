@@ -156,6 +156,9 @@ importers:
       '@polkadot-api/substrate-client':
         specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
         version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+      '@substrate/connect-known-chains':
+        specifier: workspace:*
+        version: link:../../packages/connect-known-chains
       '@substrate/light-client-extension-helpers':
         specifier: workspace:*
         version: link:../../packages/light-client-extension-helpers
@@ -391,6 +394,9 @@ importers:
       '@substrate/connect':
         specifier: 0.8.7
         version: link:../../packages/connect
+      '@substrate/connect-known-chains':
+        specifier: workspace:*
+        version: link:../../packages/connect-known-chains
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1

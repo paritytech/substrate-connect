@@ -1,9 +1,9 @@
-export * from "@substrate/connect-known-chains"
-
 import { chainSpec as polkadot } from "./polkadot"
 import { chainSpec as ksmcc3 } from "./ksmcc3"
 import { chainSpec as westend2 } from "./westend2"
 import { chainSpec as rococo_v2_2 } from "./rococo_v2_2"
+
+export * from "@substrate/connect-known-chains"
 
 export type WellKnownChainGenesisHash = keyof typeof wellKnownChainSpecs
 

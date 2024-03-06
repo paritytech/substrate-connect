@@ -28,6 +28,46 @@
     "./rococo_v2_2": {
       "import": "./dist/specs/rococo_v2_2.js",
       "require": "./dist/specs/rococo_v2_2.cjs"
+    },
+    "./ksmcc3_asset_hub": {
+      "import": "./dist/specs/ksmcc3_asset_hub.js",
+      "require": "./dist/specs/ksmcc3_asset_hub.cjs"
+    },
+    "./ksmcc3_bridge_hub": {
+      "import": "./dist/specs/ksmcc3_bridge_hub.js",
+      "require": "./dist/specs/ksmcc3_bridge_hub.cjs"
+    },
+    "./polkadot_asset_hub": {
+      "import": "./dist/specs/polkadot_asset_hub.js",
+      "require": "./dist/specs/polkadot_asset_hub.cjs"
+    },
+    "./polkadot_bridge_hub": {
+      "import": "./dist/specs/polkadot_bridge_hub.js",
+      "require": "./dist/specs/polkadot_bridge_hub.cjs"
+    },
+    "./polkadot_collectives": {
+      "import": "./dist/specs/polkadot_collectives.js",
+      "require": "./dist/specs/polkadot_collectives.cjs"
+    },
+    "./rococo_v2_2_asset_hub": {
+      "import": "./dist/specs/rococo_v2_2_asset_hub.js",
+      "require": "./dist/specs/rococo_v2_2_asset_hub.cjs"
+    },
+    "./rococo_v2_2_bridge_hub": {
+      "import": "./dist/specs/rococo_v2_2_bridge_hub.js",
+      "require": "./dist/specs/rococo_v2_2_bridge_hub.cjs"
+    },
+    "./westend2_asset_hub": {
+      "import": "./dist/specs/westend2_asset_hub.js",
+      "require": "./dist/specs/westend2_asset_hub.cjs"
+    },
+    "./westend2_bridge_hub": {
+      "import": "./dist/specs/westend2_bridge_hub.js",
+      "require": "./dist/specs/westend2_bridge_hub.cjs"
+    },
+    "./westend2_collectives": {
+      "import": "./dist/specs/westend2_collectives.js",
+      "require": "./dist/specs/westend2_collectives.cjs"
     }
   },
   "repository": {
@@ -43,7 +83,7 @@
     "test": "exit 0; #This package is only types",
     "deep-clean": "pnpm clean && rm -rf node_modules",
     "clean": "rm -rf dist",
-    "build": "pnpm build-js-specs && tsup-node src/index.ts src/specs/polkadot.ts src/specs/ksmcc3.ts src/specs/westend2.ts src/specs/rococo_v2_2.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
+    "build": "pnpm build-js-specs && node scripts/build.js",
     "lint": "eslint . --ext .js,.ts"
   },
   "devDependencies": {
