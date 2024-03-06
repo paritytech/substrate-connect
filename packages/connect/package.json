@@ -46,7 +46,7 @@
     "@substrate/light-client-extension-helpers": "workspace:^",
     "@substrate/connect-extension-protocol": "workspace:^",
     "@substrate/connect-known-chains": "workspace:^",
-    "smoldot": "2.0.21"
+    "smoldot": "2.0.22"
   },
   "devDependencies": {
     "@polkadot-api/json-rpc-provider-proxy": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
