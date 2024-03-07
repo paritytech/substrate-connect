@@ -1,11 +1,12 @@
 import { useState } from "react"
+import { useParams } from "react-router-dom"
 import { UserSignedExtensions } from "@polkadot-api/tx-helper"
 import useSWR from "swr"
 import { DecodedCallData, UserSignedExtensionInputs } from "../components"
 import { rpc } from "../api"
 
 export const SignRequest = () => {
-  const signRequestId = getSignRequestId()
+  const { signRequestId } = useParams<{ signRequestId: string }>()
   const [userSignedExtensions, setUserSignedExtensions] = useState<
     Partial<UserSignedExtensions>
   >({})
@@ -13,7 +14,7 @@ export const SignRequest = () => {
     data: signRequest,
     error,
     isLoading,
-  } = useSWR(signRequestId, getSignRequest)
+  } = useSWR(signRequestId ?? null, getSignRequest)
   if (!signRequestId) {
     window.close()
     return null
@@ -76,12 +77,6 @@ export const SignRequest = () => {
       </div>
     </div>
   )
-}
-
-const getSignRequestId = () => {
-  const match = window.location.hash.match(/^#\/sign-request\/(\d+)$/)
-  if (!match) return null
-  return match[1]
 }
 
 const getSignRequest = async (id: string) => {
