@@ -63,7 +63,7 @@
     "tslib": "^2.6.2",
     "tsup": "^8.0.2",
     "turbo": "^1.12.5",
-    "typedoc": "^0.25.9",
+    "typedoc": "^0.25.11",
     "typescript": "^5.2.2"
   },
   "resolutions": {
