@@ -47,7 +47,7 @@
     "@types/node": "^20.11.24",
     "@types/qrcode.react": "^1.0.5",
     "@types/react": "^18.2.64",
-    "@types/react-dom": "^18.2.20",
+    "@types/react-dom": "^18.2.21",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/parser": "^7.1.1",
     "concurrently": "^8.2.2",
