@@ -25,4 +25,7 @@ export type BackgroundRpcSpec = {
     userSignedExtensions: Partial<UserSignedExtensions>,
   ): Promise<void>
   cancelSignRequest(id: string): Promise<void>
+  lockKeyring(): Promise<void>
+  unlockKeyring(password: string): Promise<void>
+  isKeyringLocked(): Promise<boolean>
 }
