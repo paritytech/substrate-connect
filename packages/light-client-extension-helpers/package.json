@@ -34,7 +34,7 @@
     "trailingComma": "all"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.262"
+    "@types/chrome": "^0.0.263"
   },
   "peerDependencies": {
     "smoldot": "2.x"
