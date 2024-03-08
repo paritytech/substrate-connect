@@ -15,20 +15,22 @@ export const KeyringProvider = ({ children }: { children?: ReactNode }) => {
   const {
     data: isLocked,
     isLoading,
+    error,
     mutate,
   } = useSWR("isLocked", () => rpc.client.isKeyringLocked())
   const navigate = useNavigate()
   const location = useLocation()
-  if (isLoading) return null
+  // FIXME: on error, navigate to error page
+  if (isLoading || error) return null
   const unlock = async (password: string) => {
     await rpc.client.unlockKeyring(password)
     mutate(false)
-    navigate(location.state?.from?.pathname || "/lock")
+    navigate(location.state?.from?.pathname || "/lock-keyring")
   }
   const lock = async () => {
     await rpc.client.lockKeyring()
     mutate(true)
-    navigate("/", { replace: true })
+    navigate("/unlock-keyring", { replace: true })
   }
   const value = {
     isLocked: isLocked!,

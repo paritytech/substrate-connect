@@ -1,11 +1,53 @@
+import { useForm, SubmitHandler } from "react-hook-form"
 import { useKeyring } from "../hooks"
+
+type FormInputs = {
+  password: string
+}
 
 export const UnlockKeyring = () => {
   const { unlock } = useKeyring()
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { isSubmitting, errors },
+  } = useForm<FormInputs>()
+  const onSubmit: SubmitHandler<FormInputs> = ({ password }) => unlock(password)
   return (
     <div>
-      <h1>Unlocking in 2s...</h1>
-      <button onClick={() => unlock("123456")}>Unlock</button>
+      <div className="my-4 h-96 flex justify-center items-center">
+        <h1 className="text-3xl font-bold text-center">Unlock Wallet</h1>
+      </div>
+      <form
+        onSubmit={(e) =>
+          handleSubmit(onSubmit)(e).catch((e) =>
+            setError("password", { message: e.message ?? "Invalid password" }),
+          )
+        }
+      >
+        <div className="my-4">
+          <input
+            type="password"
+            placeholder="Enter password"
+            className="w-full p-3 text-lg border rounded"
+            autoFocus
+            {...register("password")}
+          />
+          {errors.password && (
+            <div className="text-red-500">{errors.password.message}</div>
+          )}
+        </div>
+        <div className="my-4">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full p-3 text-lg rounded border border-[#24cc85] text-[#24cc85] hover:text-white hover:bg-[#24cc85]"
+          >
+            {isSubmitting ? "Unlocking..." : "Unlock"}
+          </button>
+        </div>
+      </form>
     </div>
   )
 }
