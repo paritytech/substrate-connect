@@ -1,3 +1,4 @@
+export * from "./Debug"
 export * from "./SignRequest"
-export * from "./LockKeyring"
 export * from "./UnlockKeyring"
+export * from "./ChangePassword"

@@ -25,7 +25,7 @@ export const KeyringProvider = ({ children }: { children?: ReactNode }) => {
   const unlock = async (password: string) => {
     await rpc.client.unlockKeyring(password)
     mutate(false)
-    navigate(location.state?.from?.pathname || "/lock-keyring")
+    navigate(location.state?.from?.pathname || "/")
   }
   const lock = async () => {
     await rpc.client.lockKeyring()
