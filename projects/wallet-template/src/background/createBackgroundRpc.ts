@@ -36,6 +36,30 @@ const keyset = {
   ],
 }
 
+const createKeyring = () => {
+  let savedPassword = "123456"
+  let currentPassword: string | undefined
+  return {
+    unlock(password: string) {
+      if (password !== savedPassword) throw new Error("invalid password")
+      currentPassword = password
+    },
+    lock() {
+      currentPassword = undefined
+    },
+    isLocked() {
+      return !currentPassword
+    },
+    changePassword(currentPassword: string, newPassword: string) {
+      if (currentPassword !== savedPassword) throw new Error("invalid password")
+      // TODO: re-encrypt with new password
+      savedPassword = newPassword
+    },
+  }
+}
+
+const keyring = createKeyring()
+
 type SignResponse = {
   userSignedExtensions: Partial<UserSignedExtensions>
 }
@@ -178,6 +202,18 @@ export const createBackgroundRpc = (
     },
     async cancelSignRequest([id], { signRequests }) {
       signRequests[id]?.reject()
+    },
+    async lockKeyring() {
+      keyring.lock()
+    },
+    async unlockKeyring([password]) {
+      keyring.unlock(password)
+    },
+    async isKeyringLocked() {
+      return keyring.isLocked()
+    },
+    async changePassword([currentPassword, newPassword]) {
+      keyring.changePassword(currentPassword, newPassword)
     },
   }
 
