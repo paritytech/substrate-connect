@@ -28,4 +28,5 @@ export type BackgroundRpcSpec = {
   lockKeyring(): Promise<void>
   unlockKeyring(password: string): Promise<void>
   isKeyringLocked(): Promise<boolean>
+  changePassword(currentPassword: string, newPassword: string): Promise<void>
 }

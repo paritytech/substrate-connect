@@ -37,17 +37,23 @@ const keyset = {
 }
 
 const createKeyring = () => {
-  let password: string | undefined
+  let savedPassword = "123456"
+  let currentPassword: string | undefined
   return {
-    unlock(password_: string) {
-      if (password_ !== "123456") throw new Error("invalid password")
-      password = password_
+    unlock(password: string) {
+      if (password !== savedPassword) throw new Error("invalid password")
+      currentPassword = password
     },
     lock() {
-      password = undefined
+      currentPassword = undefined
     },
     isLocked() {
-      return !password
+      return !currentPassword
+    },
+    changePassword(currentPassword: string, newPassword: string) {
+      if (currentPassword !== savedPassword) throw new Error("invalid password")
+      // TODO: re-encrypt with new password
+      savedPassword = newPassword
     },
   }
 }
@@ -205,6 +211,9 @@ export const createBackgroundRpc = (
     },
     async isKeyringLocked() {
       return keyring.isLocked()
+    },
+    async changePassword([currentPassword, newPassword]) {
+      keyring.changePassword(currentPassword, newPassword)
     },
   }
 
