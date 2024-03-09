@@ -43,11 +43,11 @@
     "*.{js,jsx,ts,tsx,json,md}": "prettier --write"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.262",
-    "@types/node": "^20.11.24",
+    "@types/chrome": "^0.0.263",
+    "@types/node": "^20.11.25",
     "@types/qrcode.react": "^1.0.5",
-    "@types/react": "^18.2.61",
-    "@types/react-dom": "^18.2.20",
+    "@types/react": "^18.2.64",
+    "@types/react-dom": "^18.2.21",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/parser": "^7.1.1",
     "concurrently": "^8.2.2",
@@ -63,7 +63,7 @@
     "tslib": "^2.6.2",
     "tsup": "^8.0.2",
     "turbo": "^1.12.5",
-    "typedoc": "^0.25.9",
+    "typedoc": "^0.25.11",
     "typescript": "^5.2.2"
   },
   "resolutions": {

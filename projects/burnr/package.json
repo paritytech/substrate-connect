@@ -29,7 +29,7 @@
     "@polkadot/api-augment": "^10.12.1",
     "@polkadot/keyring": "^12.5.1",
     "@polkadot/react-identicon": "^3.6.5",
-    "@polkadot/rpc-provider": "^10.11.3",
+    "@polkadot/rpc-provider": "^10.12.1",
     "@polkadot/types": "^10.12.1",
     "@polkadot/util": "^12.5.1",
     "@polkadot/util-crypto": "^12.5.1",
@@ -39,8 +39,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "^18.2.0",
-    "react-router": "^6.22.1",
-    "react-router-dom": "^6.22.2",
+    "react-router": "^6.22.3",
+    "react-router-dom": "^6.22.3",
     "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
