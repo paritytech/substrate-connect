@@ -1,9 +1,13 @@
 import { ArrowRight, CheckCircle, Copy } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { StepIndicator } from "../../components"
-import { generateMnemonic } from "@polkadot-labs/hdkd-helpers"
+import {
+  generateMnemonic,
+  mnemonicToEntropy,
+} from "@polkadot-labs/hdkd-helpers"
 import { networks } from "./networks"
-import { useForm, SubmitHandler, Controller } from "react-hook-form"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { toHex } from "@polkadot-api/utils"
 
 type FormFields = {
   keysetName: string
@@ -16,13 +20,33 @@ export const Accounts = () => {
   const {
     handleSubmit,
     trigger,
-    control,
-    formState: { isSubmitting, errors, isSubmitSuccessful },
+    formState: { isSubmitting, errors },
     getValues,
     setValue,
     register,
     watch,
   } = useForm<FormFields>()
+
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    try {
+      const entropy = mnemonicToEntropy(mnemonic.join(" "))
+      const existingKeysets = await chrome.storage.local.get("keysets")
+      const derivationPaths = data.networks.map((network) => `//${network}//0`)
+      console.log("existingKeysets", existingKeysets)
+      await chrome.storage.local.set({
+        keysets: {
+          ...existingKeysets,
+          [data.keysetName]: {
+            scheme: "Sr25519",
+            entropy: toHex(entropy),
+            derivationPaths,
+          },
+        },
+      })
+    } finally {
+      console.log("done")
+    }
+  }
 
   register("networks", {
     required: "You must select at least one network",
@@ -144,6 +168,7 @@ export const Accounts = () => {
                     {index + 1}. {word}
                   </span>
                   <button
+                    type="button"
                     aria-label={`Copy word ${index + 1}`}
                     className="text-white"
                   >
@@ -164,12 +189,7 @@ export const Accounts = () => {
       <div className="max-w-md p-6 mx-auto bg-white rounded-lg shadow-lg">
         <h1 className="mb-4 text-2xl font-bold">Create A New Keyset</h1>
         <StepIndicator currentStep={currentStep} steps={3} />
-        <form
-          className="mt-4"
-          onSubmit={(e) => {
-            e.preventDefault()
-          }}
-        >
+        <form className="mt-4" onSubmit={handleSubmit(onSubmit)}>
           <StepContent />
           <div className="flex justify-between mt-6">
             {currentStep > 1 && (
@@ -193,6 +213,7 @@ export const Accounts = () => {
               <button
                 type="submit"
                 className="flex items-center px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
+                disabled={isSubmitting}
               >
                 Submit <CheckCircle size="16" className="ml-2" />
               </button>
