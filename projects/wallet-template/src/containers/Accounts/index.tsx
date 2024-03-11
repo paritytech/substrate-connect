@@ -9,6 +9,7 @@ import { networks } from "./networks"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { toHex } from "@polkadot-api/utils"
 import { rpc } from "./rpc"
+import { Keyset } from "../../background/types"
 
 type FormFields = {
   keysetName: string
@@ -17,6 +18,16 @@ type FormFields = {
 
 export const Accounts = () => {
   const [mnemonic, _] = useState(generateMnemonic(256).split(" "))
+  const [keysets, setKeysets] = useState<Record<string, Keyset>>({})
+  const [areKeysetsLoaded, setAreKeysetsLoaded] = useState(false)
+
+  useEffect(() => {
+    ;(async () => {
+      const existingKeySets = await rpc.client.listKeysets()
+      setKeysets(existingKeySets)
+      setAreKeysetsLoaded(true)
+    })()
+  }, [])
 
   const {
     handleSubmit,
@@ -88,6 +99,8 @@ export const Accounts = () => {
                 className="block w-full px-4 py-2 mt-1 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 {...register("keysetName", {
                   required: "You must specify a keyset name",
+                  validate: (v) =>
+                    keysets[v] === undefined || "Keyset already exists",
                   minLength: {
                     value: 1,
                     message: "Keyset must have at least 1 character",
@@ -197,6 +210,7 @@ export const Accounts = () => {
                 type="button"
                 onClick={nextStep}
                 className="flex items-center px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+                disabled={!areKeysetsLoaded || isSubmitting}
               >
                 Next <ArrowRight size="16" className="ml-2" />
               </button>
