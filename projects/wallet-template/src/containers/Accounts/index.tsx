@@ -2,67 +2,63 @@ import { ArrowRight, CheckCircle, Copy } from "lucide-react"
 import { useEffect, useState } from "react"
 import { StepIndicator } from "../../components"
 import { generateMnemonic } from "@polkadot-labs/hdkd-helpers"
+import { networks } from "./networks"
+import { useForm, SubmitHandler, Controller } from "react-hook-form"
 
-type Network = {
-  label: string
-  value: string
-  logo: string
+type FormFields = {
+  keysetName: string
+  networks: string[]
 }
-
-const networks: Network[] = [
-  {
-    value: "polkadot",
-    label: "Polkadot",
-    logo: "https://cryptologos.cc/logos/polkadot-new-dot-logo.svg",
-  },
-  {
-    value: "westend2",
-    label: "Westend",
-    logo: "https://i.imgur.com/Dwb1yMS.png",
-  },
-  {
-    value: "ksmcc3",
-    label: "Kusama",
-    logo: "https://cryptologos.cc/logos/kusama-ksm-logo.svg",
-  },
-  {
-    value: "polkadot_asset_hub",
-    label: "Polkadot Asset Hub",
-    logo: "https://i.imgur.com/Vu3xpq2.png",
-  },
-  {
-    value: "westend_asset_hub",
-    label: "Westend Asset Hub",
-    logo: "https://i.imgur.com/RkU4UQQ.png",
-  },
-  {
-    value: "kusama_asset_hub",
-    label: "Kusama Asset Hub",
-    logo: "https://i.imgur.com/Q1bH3U9.png",
-  },
-]
 
 export const Accounts = () => {
   const [mnemonic, _] = useState(generateMnemonic(256).split(" "))
 
-  const [selectedNetworks, setSelectedNetworks] = useState<string[]>([])
+  const {
+    handleSubmit,
+    trigger,
+    control,
+    formState: { isSubmitting, errors, isSubmitSuccessful },
+    getValues,
+    setValue,
+    register,
+    watch,
+  } = useForm<FormFields>()
 
-  const toggleNetwork = (network: string) => {
-    setSelectedNetworks((prev) =>
-      prev.includes(network)
-        ? prev.filter((n) => n !== network)
-        : [...prev, network],
-    )
-  }
+  register("networks", {
+    required: "You must select at least one network",
+    validate: (v) => v.length > 0,
+  })
 
   const [currentStep, setCurrentStep] = useState(1)
-  const nextStep = () => {
+  const nextStep = async () => {
+    switch (currentStep) {
+      case 1:
+        if (!(await trigger("keysetName"))) return
+        break
+      case 2:
+        if (!(await trigger("networks"))) return
+        break
+      default:
+        break
+    }
     setCurrentStep((prevStep) => Math.min(prevStep + 1, 3))
   }
 
   const prevStep = () => {
     setCurrentStep((prevStep) => Math.max(prevStep - 1, 1))
   }
+
+  const toggleNetwork = (network: string) => {
+    const prev = getValues("networks") ?? []
+    setValue(
+      "networks",
+      prev.includes(network)
+        ? prev.filter((n) => n !== network)
+        : [...prev, network],
+    )
+  }
+
+  const selectedNetworks = watch("networks", [])
 
   const StepContent = () => {
     switch (currentStep) {
@@ -75,7 +71,17 @@ export const Accounts = () => {
                 type="text"
                 placeholder="Enter keyset name"
                 className="block w-full px-4 py-2 mt-1 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                {...register("keysetName", {
+                  required: "You must specify a keyset name",
+                  minLength: {
+                    value: 1,
+                    message: "Keyset must have at least 1 character",
+                  },
+                })}
               />
+              {errors.keysetName && (
+                <div className="text-red-500">{errors.keysetName.message}</div>
+              )}
             </div>
           </div>
         )
@@ -114,6 +120,9 @@ export const Accounts = () => {
                   </label>
                 ))}
               </div>
+              {errors.networks && (
+                <div className="text-red-500">{errors.networks.message}</div>
+              )}
             </section>
           </div>
         )
@@ -153,7 +162,7 @@ export const Accounts = () => {
   return (
     <main className="p-4">
       <div className="max-w-md p-6 mx-auto bg-white rounded-lg shadow-lg">
-        <h1 className="mb-4 text-2xl font-bold">Create A Wallet</h1>
+        <h1 className="mb-4 text-2xl font-bold">Create A New Keyset</h1>
         <StepIndicator currentStep={currentStep} steps={3} />
         <form
           className="mt-4"
