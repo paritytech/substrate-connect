@@ -328,8 +328,8 @@ importers:
         specifier: ^3.6.5
         version: 3.6.5(@polkadot/keyring@12.6.2)(@polkadot/networks@12.6.2)(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)
       '@polkadot/rpc-provider':
-        specifier: ^10.12.1
-        version: 10.12.1
+        specifier: ^10.12.2
+        version: 10.12.2
       '@polkadot/types':
         specifier: ^10.12.1
         version: 10.12.1
