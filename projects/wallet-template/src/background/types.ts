@@ -7,6 +7,12 @@ export type Account = {
   address: string
 }
 
+export type Keyset = {
+  scheme: string
+  entropy: string
+  derivationPaths: string[]
+}
+
 export type SignRequest = {
   url: string
   chainId: string
@@ -29,4 +35,9 @@ export type BackgroundRpcSpec = {
   unlockKeyring(password: string): Promise<void>
   isKeyringLocked(): Promise<boolean>
   changePassword(currentPassword: string, newPassword: string): Promise<void>
+  insertKeyset(keysetName: string, keyset: Keyset): Promise<void>
+  getKeyset(keysetName: string): Promise<Keyset | undefined>
+  listKeysets(): Promise<Record<string, Keyset>>
+  removeKeyset(keysetName: string): Promise<void>
+  clearKeysets(): Promise<void>
 }

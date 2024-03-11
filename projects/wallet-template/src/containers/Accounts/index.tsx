@@ -1,5 +1,5 @@
 import { ArrowRight, CheckCircle, Copy } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { StepIndicator } from "../../components"
 import {
   generateMnemonic,
@@ -8,6 +8,7 @@ import {
 import { networks } from "./networks"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { toHex } from "@polkadot-api/utils"
+import { rpc } from "./rpc"
 
 type FormFields = {
   keysetName: string
@@ -28,24 +29,14 @@ export const Accounts = () => {
   } = useForm<FormFields>()
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    try {
-      const entropy = mnemonicToEntropy(mnemonic.join(" "))
-      const existingKeysets = await chrome.storage.local.get("keysets")
-      const derivationPaths = data.networks.map((network) => `//${network}//0`)
-      console.log("existingKeysets", existingKeysets)
-      await chrome.storage.local.set({
-        keysets: {
-          ...existingKeysets,
-          [data.keysetName]: {
-            scheme: "Sr25519",
-            entropy: toHex(entropy),
-            derivationPaths,
-          },
-        },
-      })
-    } finally {
-      console.log("done")
-    }
+    const entropy = mnemonicToEntropy(mnemonic.join(" "))
+    const derivationPaths = data.networks.map((network) => `//${network}//0`)
+
+    await rpc.client.insertKeyset(data.keysetName, {
+      scheme: "Sr25519",
+      entropy: toHex(entropy),
+      derivationPaths,
+    })
   }
 
   register("networks", {
