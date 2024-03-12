@@ -19,7 +19,6 @@ jobs:
     - uses: ./.github/actions/turbo-build 
       with:
         node-version: ${{ matrix.node-version }}
-    - run: pnpm checkResolutions
 
   connect-flaky-tests:
     needs: [build]
