@@ -36,7 +36,6 @@
     "dev:extension": "pnpm --filter @substrate/extension dev",
     "deploy-projects-and-docs": "./deploy.sh",
     "format": "prettier --write .",
-    "checkResolutions": "node ./.ensure-resolution.mjs",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -49,7 +48,7 @@
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
     "@types/react-router-dom": "^5.3.3",
-    "@typescript-eslint/parser": "^7.1.1",
+    "@typescript-eslint/parser": "^7.2.0",
     "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
@@ -65,9 +64,6 @@
     "turbo": "^1.12.5",
     "typedoc": "^0.25.11",
     "typescript": "^5.2.2"
-  },
-  "resolutions": {
-    "@substrate/connect": "0.8.7"
   },
   "packageManager": "pnpm@8.14.0"
 }
