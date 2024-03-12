@@ -93,6 +93,9 @@ export const Home = () => {
   }
 
   const Accounts = () => {
+    // TODO: use mutliple keysets
+    const [keysetName, keyset] = Object.entries(keysets)[0]
+
     return (
       <section>
         <div className="flex flex-col items-center px-4 py-4">
@@ -101,27 +104,20 @@ export const Home = () => {
             alt="Profile"
             className="w-24 h-24 rounded-full"
           />
-          <h1 className="text-2xl font-bold mt-2">Placeholder</h1>
-          <span className="text-gray-500">8UAVtmho...RzJzkCpr</span>
+          <h1 className="text-2xl font-bold mt-2">{keysetName}</h1>
+          {/*  <span className="text-gray-500">8UAVtmho...RzJzkCpr</span> */}
         </div>
         <div className="px-4">
           <h2 className="text-lg font-semibold mb-2">Derived Keys</h2>
           <div className="bg-white rounded-lg shadow">
-            <AccountItem
-              bgColor="bg-purple-200"
-              text="//westend"
-              subText="5CPK7eHK...DQBrH9Vx"
-            />
-            <AccountItem
-              bgColor="bg-blue-200"
-              text="//polkadot"
-              subText="13SvmWti...SUm1JUnx"
-            />
-            <AccountItem
-              bgColor="bg-green-200"
-              text="//kusama"
-              subText="FQBPYZFo...PvbgrCk5"
-            />
+            {keyset.derivationPaths.map((path) => (
+              <AccountItem
+                bgColor="bg-purple-200"
+                text={path}
+                subText=""
+                // subText="5CPK7eHK...DQBrH9Vx"
+              />
+            ))}
           </div>
         </div>
       </section>

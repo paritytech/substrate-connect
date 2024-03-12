@@ -141,10 +141,10 @@ export const AddAccount = () => {
                       <input
                         type="checkbox"
                         className="hidden"
-                        checked={selectedNetworks.includes(network.label)}
-                        onChange={() => toggleNetwork(network.label)}
+                        checked={selectedNetworks.includes(network.value)}
+                        onChange={() => toggleNetwork(network.value)}
                       />
-                      {selectedNetworks.includes(network.label) ? (
+                      {selectedNetworks.includes(network.value) ? (
                         <CheckCircle size="20" />
                       ) : (
                         <div className="w-6 h-6 border-2 border-gray-300 rounded-full" />
