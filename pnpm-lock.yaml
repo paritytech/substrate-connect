@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@substrate/connect': 0.8.7
-
 importers:
 
   .:
@@ -340,7 +337,7 @@ importers:
         specifier: ^12.5.1
         version: 12.6.2(@polkadot/util@12.6.2)
       '@substrate/connect':
-        specifier: 0.8.7
+        specifier: workspace:*
         version: link:../../packages/connect
       bn.js:
         specifier: ^5.2.1
@@ -392,7 +389,7 @@ importers:
         specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
         version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@substrate/connect':
-        specifier: 0.8.7
+        specifier: workspace:*
         version: link:../../packages/connect
       '@substrate/connect-known-chains':
         specifier: workspace:*
@@ -593,7 +590,7 @@ importers:
         specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
         version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@substrate/connect':
-        specifier: 0.8.7
+        specifier: workspace:*
         version: link:../packages/connect
 
 packages:

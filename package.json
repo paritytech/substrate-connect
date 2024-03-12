@@ -36,7 +36,6 @@
     "dev:extension": "pnpm --filter @substrate/extension dev",
     "deploy-projects-and-docs": "./deploy.sh",
     "format": "prettier --write .",
-    "checkResolutions": "node ./.ensure-resolution.mjs",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -65,9 +64,6 @@
     "turbo": "^1.12.5",
     "typedoc": "^0.25.11",
     "typescript": "^5.2.2"
-  },
-  "resolutions": {
-    "@substrate/connect": "0.8.7"
   },
   "packageManager": "pnpm@8.14.0"
 }

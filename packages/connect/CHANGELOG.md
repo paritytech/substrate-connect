@@ -4,6 +4,13 @@
 
 ### Changed
 
+## 0.8.8 - 2024-03-12
+
+### Changed
+
+- Update smoldot@[version 2.0.22](https://github.com/smol-dot/smoldot/blob/main/wasm-node/CHANGELOG.md#2022---2024-03-04) [#1936](https://github.com/paritytech/substrate-connect/pull/1936)
+- Update `@substrate/light-client-extension-helpers` to v0.0.4 [#1971](https://github.com/paritytech/substrate-connect/pull/1971)
+
 ## 0.8.7 - 2024-02-23
 
 ### Changed
