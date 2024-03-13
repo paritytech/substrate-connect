@@ -170,7 +170,7 @@ export const verifyPassword = (
 
 export const decrypt = (keystore: KeyStoreV4, password: string) => {
   const ciphertext = hexToBytes(keystore.crypto.cipher.message)
-  return bytesToHex(getCipher(keystore, password).decrypt(ciphertext))
+  return getCipher(keystore, password).decrypt(ciphertext)
 }
 
 const getCipher_ = (cipher: CipherModule, key: Uint8Array) => {

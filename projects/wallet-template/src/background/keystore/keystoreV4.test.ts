@@ -5,7 +5,7 @@ globalThis.crypto = crypto
 import { expect, it, describe } from "vitest"
 
 import { type KeyStoreV4, verifyPassword, decrypt, create } from "./keystoreV4"
-import { bytesToHex, randomBytes } from "@noble/hashes/utils"
+import { hexToBytes, randomBytes } from "@noble/hashes/utils"
 
 type TestVector = {
   password: string
@@ -109,8 +109,8 @@ describe.each(testVectors)("test vector", (testVector) => {
   })
 
   it("should decrypt", () => {
-    expect(decrypt(testVector.keystoreJson, testVector.password)).toBe(
-      testVector.secret,
+    expect(decrypt(testVector.keystoreJson, testVector.password)).toStrictEqual(
+      hexToBytes(testVector.secret),
     )
     expect(() => decrypt(testVector.keystoreJson, "invalid password")).toThrow()
   })
@@ -121,6 +121,6 @@ it("should create keystore", () => {
   const keystore = create("123456", secret)
   expect(verifyPassword(keystore, "123456")).toBe(true)
   expect(verifyPassword(keystore, "invalid password")).toBe(false)
-  expect(decrypt(keystore, "123456")).toBe(bytesToHex(secret))
+  expect(decrypt(keystore, "123456")).toStrictEqual(secret)
   expect(() => decrypt(keystore, "invalid password")).toThrow()
 })

@@ -19,8 +19,10 @@ import {
   UserSignedExtensions,
   getTxCreator,
 } from "@polkadot-api/tx-helper"
+import { randomBytes } from "@noble/hashes/utils"
 
 import type { BackgroundRpcSpec, SignRequest } from "./types"
+import { keystoreV4 } from "./keystore"
 
 const entropy = mnemonicToEntropy(DEV_PHRASE)
 const miniSecret = entropyToMiniSecret(entropy)
@@ -37,23 +39,30 @@ const keyset = {
 }
 
 const createKeyring = () => {
-  let savedPassword = "123456"
-  let currentPassword: string | undefined
+  // FIXME: fetch from storage
+  let keystore = keystoreV4.create("123456", randomBytes(32))
+  let isLocked = true
   return {
     unlock(password: string) {
-      if (password !== savedPassword) throw new Error("invalid password")
-      currentPassword = password
+      if (!keystoreV4.verifyPassword(keystore, password))
+        throw new Error("invalid password")
+      isLocked = false
     },
     lock() {
-      currentPassword = undefined
+      isLocked = true
     },
     isLocked() {
-      return !currentPassword
+      return isLocked
     },
     changePassword(currentPassword: string, newPassword: string) {
-      if (currentPassword !== savedPassword) throw new Error("invalid password")
-      // TODO: re-encrypt with new password
-      savedPassword = newPassword
+      if (!keystoreV4.verifyPassword(keystore, currentPassword))
+        throw new Error("invalid password")
+      keystore = keystoreV4.create(
+        newPassword,
+        keystoreV4.decrypt(keystore, currentPassword),
+      )
+
+      // TODO: re-encrypt accounts with new password
     },
   }
 }
