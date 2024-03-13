@@ -20,19 +20,4 @@ export const networks: Network[] = [
     label: "Kusama",
     logo: "https://cryptologos.cc/logos/kusama-ksm-logo.svg",
   },
-  {
-    value: "polkadot_asset_hub",
-    label: "Polkadot Asset Hub",
-    logo: "https://i.imgur.com/Vu3xpq2.png",
-  },
-  {
-    value: "westend_asset_hub",
-    label: "Westend Asset Hub",
-    logo: "https://i.imgur.com/RkU4UQQ.png",
-  },
-  {
-    value: "kusama_asset_hub",
-    label: "Kusama Asset Hub",
-    logo: "https://i.imgur.com/Q1bH3U9.png",
-  },
 ]

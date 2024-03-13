@@ -1,16 +1,16 @@
 import { ArrowRight, CheckCircle, Copy } from "lucide-react"
 import { useEffect, useState } from "react"
-import { StepIndicator } from "../../../components"
 import {
   generateMnemonic,
   mnemonicToEntropy,
 } from "@polkadot-labs/hdkd-helpers"
-import { networks } from "../networks"
+import { networks } from "./networks"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { toHex } from "@polkadot-api/utils"
-import { rpc } from "../rpc"
-import { Keyset } from "../../../background/types"
+import { Keyset } from "../../../../background/types"
 import { useNavigate } from "react-router-dom"
+import { rpc } from "../../api"
+import { StepIndicator } from "../../components"
 
 type FormFields = {
   keysetName: string
@@ -58,7 +58,7 @@ export const AddAccount = () => {
         derivationPaths,
       })
     } finally {
-      navigate("/")
+      navigate("/accounts")
     }
   }
 
@@ -222,7 +222,7 @@ export const AddAccount = () => {
               <button
                 type="button"
                 onClick={nextStep}
-                className="flex items-center px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+                className="flex items-center px-4 py-2 text-white bg-teal-500 rounded hover:bg-teal-600"
                 disabled={!areKeysetsLoaded || isSubmitting}
               >
                 Next <ArrowRight size="16" className="ml-2" />

@@ -7,11 +7,14 @@ import {
   PlusCircle,
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
-import { rpc } from "../rpc"
 import { ButtonHTMLAttributes, useEffect, useState } from "react"
 import { Keyset } from "../../../background/types"
+import { fromHex, toHex } from "@polkadot-api/utils"
+import { entropyToMiniSecret, ss58Address } from "@polkadot-labs/hdkd-helpers"
+import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
+import { rpc } from "../api"
 
-export const Home = () => {
+export const Accounts = () => {
   const navigate = useNavigate()
   const [keysets, setKeysets] = useState<Record<string, Keyset>>({})
 
@@ -78,10 +81,10 @@ export const Home = () => {
           <p className="mb-4 text-gray-600">
             You haven't added any accounts yet. Let's get started.
           </p>
-          <Link to={"/add"}>
+          <Link to={"/accounts/add"}>
             <button
               type="button"
-              className="inline-flex items-center justify-center px-4 py-2 text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="inline-flex items-center justify-center px-4 py-2 text-white bg-teal-600 border border-transparent rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
             >
               <PlusCircle className="w-5 h-5 mr-2" />
               Add Account
@@ -95,6 +98,11 @@ export const Home = () => {
   const Accounts = () => {
     // TODO: use mutliple keysets
     const [keysetName, keyset] = Object.entries(keysets)[0]
+    const miniSecret = entropyToMiniSecret(fromHex(keyset.entropy))
+    const derive = sr25519CreateDerive(miniSecret)
+    const keypairs = keyset.derivationPaths.map(
+      (path) => [path, ss58Address(toHex(derive(path).publicKey))] as const,
+    )
 
     return (
       <section>
@@ -110,12 +118,11 @@ export const Home = () => {
         <div className="px-4">
           <h2 className="text-lg font-semibold mb-2">Derived Keys</h2>
           <div className="bg-white rounded-lg shadow">
-            {keyset.derivationPaths.map((path) => (
+            {keypairs.map(([path, ss58Address]) => (
               <AccountItem
                 bgColor="bg-purple-200"
                 text={path}
-                subText=""
-                // subText="5CPK7eHK...DQBrH9Vx"
+                subText={ss58Address}
               />
             ))}
           </div>
@@ -126,7 +133,7 @@ export const Home = () => {
 
   return (
     <main className="p-4">
-      <div className="max-w-md p-6 mx-auto bg-white rounded-lg shadow-lg">
+      <div className="max-w-xl p-6 mx-auto bg-white rounded-lg shadow-lg">
         <div className="flex flex-col">
           <div className="bg-white px-4 py-2 flex items-center justify-between">
             <IconButton onClick={reset}>

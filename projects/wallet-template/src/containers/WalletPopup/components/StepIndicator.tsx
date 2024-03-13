@@ -16,7 +16,7 @@ export const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => (
         key={step}
         className={`w-8 h-8 rounded-full flex items-center justify-center ${
           currentStep >= step
-            ? "bg-blue-500 text-white"
+            ? "bg-teal-500 text-white"
             : "bg-gray-200 text-gray-500"
         }`}
       >
