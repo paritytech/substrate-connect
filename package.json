@@ -43,9 +43,9 @@
   },
   "devDependencies": {
     "@types/chrome": "^0.0.263",
-    "@types/node": "^20.11.25",
+    "@types/node": "^20.11.26",
     "@types/qrcode.react": "^1.0.5",
-    "@types/react": "^18.2.64",
+    "@types/react": "^18.2.65",
     "@types/react-dom": "^18.2.21",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/parser": "^7.2.0",
@@ -62,7 +62,7 @@
     "tslib": "^2.6.2",
     "tsup": "^8.0.2",
     "turbo": "^1.12.5",
-    "typedoc": "^0.25.11",
+    "typedoc": "^0.25.12",
     "typescript": "^5.2.2"
   },
   "packageManager": "pnpm@8.14.0"
