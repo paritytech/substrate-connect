@@ -12,17 +12,17 @@ importers:
         specifier: ^0.0.263
         version: 0.0.263
       '@types/node':
-        specifier: ^20.11.26
-        version: 20.11.26
+        specifier: ^20.11.27
+        version: 20.11.27
       '@types/qrcode.react':
         specifier: ^1.0.5
         version: 1.0.5
       '@types/react':
-        specifier: ^18.2.65
-        version: 18.2.65
+        specifier: ^18.2.66
+        version: 18.2.66
       '@types/react-dom':
-        specifier: ^18.2.21
-        version: 18.2.21
+        specifier: ^18.2.22
+        version: 18.2.22
       '@types/react-router-dom':
         specifier: ^5.3.3
         version: 5.3.3
@@ -106,7 +106,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       react-select:
         specifier: ^5.8.0
-        version: 5.8.0(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0)
+        version: 5.8.0(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0)
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
@@ -115,11 +115,11 @@ importers:
         specifier: workspace:^
         version: link:../../packages/unstable-wallet-provider
       '@types/react':
-        specifier: ^18.2.65
-        version: 18.2.65
+        specifier: ^18.2.66
+        version: 18.2.66
       '@types/react-dom':
-        specifier: ^18.2.21
-        version: 18.2.21
+        specifier: ^18.2.22
+        version: 18.2.22
       '@typescript-eslint/eslint-plugin':
         specifier: ^7.2.0
         version: 7.2.0(@typescript-eslint/parser@7.2.0)(eslint@8.57.0)(typescript@5.3.3)
@@ -136,11 +136,11 @@ importers:
         specifier: ^4.6.0
         version: 4.6.0(eslint@8.57.0)
       eslint-plugin-react-refresh:
-        specifier: ^0.4.5
-        version: 0.4.5(eslint@8.57.0)
+        specifier: ^0.4.6
+        version: 0.4.6(eslint@8.57.0)
       vite:
         specifier: ^5.1.6
-        version: 5.1.6(@types/node@20.11.26)
+        version: 5.1.6(@types/node@20.11.27)
 
   examples/light-client-extension-helpers-dapp:
     dependencies:
@@ -170,11 +170,11 @@ importers:
         version: 7.8.1
     devDependencies:
       '@types/react':
-        specifier: ^18.2.65
-        version: 18.2.65
+        specifier: ^18.2.66
+        version: 18.2.66
       '@types/react-dom':
-        specifier: ^18.2.21
-        version: 18.2.21
+        specifier: ^18.2.22
+        version: 18.2.22
       '@typescript-eslint/eslint-plugin':
         specifier: ^7.2.0
         version: 7.2.0(@typescript-eslint/parser@7.2.0)(eslint@8.57.0)(typescript@5.3.3)
@@ -191,11 +191,11 @@ importers:
         specifier: ^4.6.0
         version: 4.6.0(eslint@8.57.0)
       eslint-plugin-react-refresh:
-        specifier: ^0.4.3
-        version: 0.4.5(eslint@8.57.0)
+        specifier: ^0.4.6
+        version: 0.4.6(eslint@8.57.0)
       vite:
         specifier: ^5.1.6
-        version: 5.1.6(@types/node@20.11.26)
+        version: 5.1.6(@types/node@20.11.27)
 
   examples/light-client-extension-helpers-extension:
     dependencies:
@@ -216,8 +216,8 @@ importers:
         specifier: ^0.0.263
         version: 0.0.263
       '@types/node':
-        specifier: ^20.11.26
-        version: 20.11.26
+        specifier: ^20.11.27
+        version: 20.11.27
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
@@ -254,7 +254,7 @@ importers:
         version: 24.0.0
       vitest:
         specifier: ^1.3.1
-        version: 1.3.1(@types/node@20.11.26)(jsdom@24.0.0)
+        version: 1.3.1(@types/node@20.11.27)(jsdom@24.0.0)
 
   packages/connect-extension-protocol:
     devDependencies:
@@ -305,16 +305,16 @@ importers:
     dependencies:
       '@material-ui/core':
         specifier: ^4.12.4
-        version: 4.12.4(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0)
+        version: 4.12.4(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0)
       '@material-ui/icons':
         specifier: ^4.11.3
-        version: 4.11.3(@material-ui/core@4.12.4)(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0)
+        version: 4.11.3(@material-ui/core@4.12.4)(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0)
       '@material-ui/lab':
         specifier: ^4.0.0-alpha.61
-        version: 4.0.0-alpha.61(@material-ui/core@4.12.4)(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0)
+        version: 4.0.0-alpha.61(@material-ui/core@4.12.4)(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0)
       '@polkadot/api':
-        specifier: ^10.12.1
-        version: 10.12.1
+        specifier: ^10.12.2
+        version: 10.12.2
       '@polkadot/api-augment':
         specifier: ^10.12.2
         version: 10.12.2
@@ -372,7 +372,7 @@ importers:
         version: 8.57.0
       vite:
         specifier: ^5.1.6
-        version: 5.1.6(@types/node@20.11.26)
+        version: 5.1.6(@types/node@20.11.27)
       vite-plugin-html:
         specifier: ^3.2.2
         version: 3.2.2(vite@5.1.6)
@@ -403,7 +403,7 @@ importers:
         version: 8.57.0
       vite:
         specifier: ^5.1.6
-        version: 5.1.6(@types/node@20.11.26)
+        version: 5.1.6(@types/node@20.11.27)
       vite-plugin-html:
         specifier: ^3.2.2
         version: 3.2.2(vite@5.1.6)
@@ -467,7 +467,7 @@ importers:
         version: 3.4.1
       vite:
         specifier: ^5.1.6
-        version: 5.1.6(@types/node@20.11.26)
+        version: 5.1.6(@types/node@20.11.27)
       web-ext:
         specifier: ^7.11.0
         version: 7.11.0
@@ -573,19 +573,19 @@ importers:
         version: 3.4.1
       vite:
         specifier: ^5.1.6
-        version: 5.1.6(@types/node@20.11.26)
+        version: 5.1.6(@types/node@20.11.27)
       vite-plugin-web-extension:
-        specifier: ^4.1.2
-        version: 4.1.2(@types/node@20.11.26)
+        specifier: ^4.1.3
+        version: 4.1.3(@types/node@20.11.27)
       vitest:
         specifier: ^1.3.1
-        version: 1.3.1(@types/node@20.11.26)(jsdom@24.0.0)
+        version: 1.3.1(@types/node@20.11.27)(jsdom@24.0.0)
       web-ext:
         specifier: ^7.11.0
         version: 7.11.0
       wxt:
         specifier: ^0.17.7
-        version: 0.17.7(@types/node@20.11.26)
+        version: 0.17.7(@types/node@20.11.27)
 
   zombienet-tests:
     dependencies:
@@ -2163,7 +2163,7 @@ packages:
     resolution: {integrity: sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==}
     dev: false
 
-  /@emotion/react@11.11.4(@types/react@18.2.65)(react@18.2.0):
+  /@emotion/react@11.11.4(@types/react@18.2.66)(react@18.2.0):
     resolution: {integrity: sha512-t8AjMlF0gHpvvxk5mAtCqR4vmxiGHCeJBaQO6gncUSdklELOgtwjerNY2yuJNfwnc6vi16U/+uMF+afIawJ9iw==}
     peerDependencies:
       '@types/react': '*'
@@ -2179,7 +2179,7 @@ packages:
       '@emotion/use-insertion-effect-with-fallbacks': 1.0.1(react@18.2.0)
       '@emotion/utils': 1.2.1
       '@emotion/weak-memoize': 0.3.1
-      '@types/react': 18.2.65
+      '@types/react': 18.2.66
       hoist-non-react-statics: 3.3.2
       react: 18.2.0
     dev: false
@@ -2579,7 +2579,7 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /@material-ui/core@4.12.4(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0):
+  /@material-ui/core@4.12.4(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-tr7xekNlM9LjA6pagJmL8QCgZXaubWUwkJnoYcMKd4gw/t4XiyvnTkjdGrUVicyB2BsdaAv1tvow45bPM4sSwQ==}
     engines: {node: '>=8.0.0'}
     deprecated: Material UI v4 doesn't receive active development since September 2021. See the guide https://mui.com/material-ui/migration/migration-v4/ to upgrade to v5.
@@ -2592,11 +2592,11 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.23.9
-      '@material-ui/styles': 4.11.5(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0)
-      '@material-ui/system': 4.12.2(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0)
-      '@material-ui/types': 5.1.0(@types/react@18.2.65)
+      '@material-ui/styles': 4.11.5(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0)
+      '@material-ui/system': 4.12.2(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0)
+      '@material-ui/types': 5.1.0(@types/react@18.2.66)
       '@material-ui/utils': 4.11.3(react-dom@18.2.0)(react@18.2.0)
-      '@types/react': 18.2.65
+      '@types/react': 18.2.66
       '@types/react-transition-group': 4.4.10
       clsx: 1.2.1
       hoist-non-react-statics: 3.3.2
@@ -2608,7 +2608,7 @@ packages:
       react-transition-group: 4.4.5(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
-  /@material-ui/icons@4.11.3(@material-ui/core@4.12.4)(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0):
+  /@material-ui/icons@4.11.3(@material-ui/core@4.12.4)(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-IKHlyx6LDh8n19vzwH5RtHIOHl9Tu90aAAxcbWME6kp4dmvODM3UvOHJeMIDzUbd4muuJKHmlNoBN+mDY4XkBA==}
     engines: {node: '>=8.0.0'}
     peerDependencies:
@@ -2621,13 +2621,13 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.23.9
-      '@material-ui/core': 4.12.4(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0)
-      '@types/react': 18.2.65
+      '@material-ui/core': 4.12.4(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0)
+      '@types/react': 18.2.66
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@material-ui/lab@4.0.0-alpha.61(@material-ui/core@4.12.4)(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0):
+  /@material-ui/lab@4.0.0-alpha.61(@material-ui/core@4.12.4)(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-rSzm+XKiNUjKegj8bzt5+pygZeckNLOr+IjykH8sYdVk7dE9y2ZuUSofiMV2bJk3qU+JHwexmw+q0RyNZB9ugg==}
     engines: {node: '>=8.0.0'}
     deprecated: Material UI v4 doesn't receive active development since September 2021. See the guide https://mui.com/material-ui/migration/migration-v4/ to upgrade to v5.
@@ -2641,9 +2641,9 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.23.9
-      '@material-ui/core': 4.12.4(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0)
+      '@material-ui/core': 4.12.4(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0)
       '@material-ui/utils': 4.11.3(react-dom@18.2.0)(react@18.2.0)
-      '@types/react': 18.2.65
+      '@types/react': 18.2.66
       clsx: 1.2.1
       prop-types: 15.8.1
       react: 18.2.0
@@ -2651,7 +2651,7 @@ packages:
       react-is: 17.0.2
     dev: false
 
-  /@material-ui/styles@4.11.5(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0):
+  /@material-ui/styles@4.11.5(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-o/41ot5JJiUsIETME9wVLAJrmIWL3j0R0Bj2kCOLbSfqEkKf0fmaPt+5vtblUh5eXr2S+J/8J3DaCb10+CzPGA==}
     engines: {node: '>=8.0.0'}
     deprecated: Material UI v4 doesn't receive active development since September 2021. See the guide https://mui.com/material-ui/migration/migration-v4/ to upgrade to v5.
@@ -2665,9 +2665,9 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.9
       '@emotion/hash': 0.8.0
-      '@material-ui/types': 5.1.0(@types/react@18.2.65)
+      '@material-ui/types': 5.1.0(@types/react@18.2.66)
       '@material-ui/utils': 4.11.3(react-dom@18.2.0)(react@18.2.0)
-      '@types/react': 18.2.65
+      '@types/react': 18.2.66
       clsx: 1.2.1
       csstype: 2.6.21
       hoist-non-react-statics: 3.3.2
@@ -2684,7 +2684,7 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@material-ui/system@4.12.2(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0):
+  /@material-ui/system@4.12.2(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-6CSKu2MtmiJgcCGf6nBQpM8fLkuB9F55EKfbdTC80NND5wpTmKzwdhLYLH3zL4cLlK0gVaaltW7/wMuyTnN0Lw==}
     engines: {node: '>=8.0.0'}
     peerDependencies:
@@ -2697,14 +2697,14 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.9
       '@material-ui/utils': 4.11.3(react-dom@18.2.0)(react@18.2.0)
-      '@types/react': 18.2.65
+      '@types/react': 18.2.66
       csstype: 2.6.21
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@material-ui/types@5.1.0(@types/react@18.2.65):
+  /@material-ui/types@5.1.0(@types/react@18.2.66):
     resolution: {integrity: sha512-7cqRjrY50b8QzRSYyhSpx4WRw2YuO0KKIGQEVk5J8uoz2BanawykgZGoWEqKm7pVIbzFDN0SpPcVV4IhOFkl8A==}
     peerDependencies:
       '@types/react': '*'
@@ -2712,7 +2712,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@types/react': 18.2.65
+      '@types/react': 18.2.66
     dev: false
 
   /@material-ui/utils@4.11.3(react-dom@18.2.0)(react@18.2.0):
@@ -2956,23 +2956,6 @@ packages:
     resolution: {integrity: sha512-AKjnQaT3gZVSTXdICqKbYbhUpLttlSxtynTw8XITRvzKVa/xW+befpUExWxwLtJEOxeAs9V+Rw5KjTKuqgOIbg==}
     dev: false
 
-  /@polkadot/api-augment@10.12.1:
-    resolution: {integrity: sha512-M8W8L3A1AaCvbDOt6xQm0/6Ul1MTUAiO7gTdNrszP5acTJUxnetiHRziJoquClhhzldkrwD79qFbqlhXK42GaQ==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@polkadot/api-base': 10.12.1
-      '@polkadot/rpc-augment': 10.12.1
-      '@polkadot/types': 10.12.1
-      '@polkadot/types-augment': 10.12.1
-      '@polkadot/types-codec': 10.12.1
-      '@polkadot/util': 12.6.2
-      tslib: 2.6.2
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-    dev: false
-
   /@polkadot/api-augment@10.12.2:
     resolution: {integrity: sha512-bIz/HVKRcL5pJCg37cnf8ApWHJbRjAQBEvCubSDOquay/i25jG6Rs97zL4ptXHsp0md/TDeUQVloF5Feqn3/iQ==}
     engines: {node: '>=18'}
@@ -2983,21 +2966,6 @@ packages:
       '@polkadot/types-augment': 10.12.2
       '@polkadot/types-codec': 10.12.2
       '@polkadot/util': 12.6.2
-      tslib: 2.6.2
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-    dev: false
-
-  /@polkadot/api-base@10.12.1:
-    resolution: {integrity: sha512-USfcGxO8RBOLSwYDdUArNt9jLR/r8qVhCs8iGEGoGnaSkTcJrvT1YzZ0Qy+QF3ZjZ5GfsnzRonBg3N6drHo6fQ==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@polkadot/rpc-core': 10.12.1
-      '@polkadot/types': 10.12.1
-      '@polkadot/util': 12.6.2
-      rxjs: 7.8.1
       tslib: 2.6.2
     transitivePeerDependencies:
       - bufferutil
@@ -3020,16 +2988,16 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@polkadot/api-derive@10.12.1:
-    resolution: {integrity: sha512-tq03EmT8sgRnmbZW1E5GOIrdJGxGD+VhsJRP5kXMffpfzKGizzTbnMEOoCKg9fzB17ZtcwaJBJiLOQFTWy0O3g==}
+  /@polkadot/api-derive@10.12.2:
+    resolution: {integrity: sha512-TWUB+V31NrzxF+Ep7GucTyV20SbP0mUvDQGEannkENCTQpbL0JXIi1PHDCBNuShzdr1m6eQ5inLx1RmxvoOfDg==}
     engines: {node: '>=18'}
     dependencies:
-      '@polkadot/api': 10.12.1
-      '@polkadot/api-augment': 10.12.1
-      '@polkadot/api-base': 10.12.1
-      '@polkadot/rpc-core': 10.12.1
-      '@polkadot/types': 10.12.1
-      '@polkadot/types-codec': 10.12.1
+      '@polkadot/api': 10.12.2
+      '@polkadot/api-augment': 10.12.2
+      '@polkadot/api-base': 10.12.2
+      '@polkadot/rpc-core': 10.12.2
+      '@polkadot/types': 10.12.2
+      '@polkadot/types-codec': 10.12.2
       '@polkadot/util': 12.6.2
       '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
       rxjs: 7.8.1
@@ -3040,22 +3008,22 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@polkadot/api@10.12.1:
-    resolution: {integrity: sha512-6pZPpgyxSphse9PCZ/QxUygk0BYbcCNjr5ERZZsTE/F1znZ62Ce63A8AE0bwga9ITkiVISLDSU36hghKs3tVhA==}
+  /@polkadot/api@10.12.2:
+    resolution: {integrity: sha512-A03hpnbIko6CGC3R/rQBOg0aXNR5HFkynL2t5ueqzmYbxFQWx1e8gMXbJZnbVlwtwJJ6FIxzOA6mmZQr+yiLrw==}
     engines: {node: '>=18'}
     dependencies:
-      '@polkadot/api-augment': 10.12.1
-      '@polkadot/api-base': 10.12.1
-      '@polkadot/api-derive': 10.12.1
+      '@polkadot/api-augment': 10.12.2
+      '@polkadot/api-base': 10.12.2
+      '@polkadot/api-derive': 10.12.2
       '@polkadot/keyring': 12.6.2(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)
-      '@polkadot/rpc-augment': 10.12.1
-      '@polkadot/rpc-core': 10.12.1
-      '@polkadot/rpc-provider': 10.12.1
-      '@polkadot/types': 10.12.1
-      '@polkadot/types-augment': 10.12.1
-      '@polkadot/types-codec': 10.12.1
-      '@polkadot/types-create': 10.12.1
-      '@polkadot/types-known': 10.12.1
+      '@polkadot/rpc-augment': 10.12.2
+      '@polkadot/rpc-core': 10.12.2
+      '@polkadot/rpc-provider': 10.12.2
+      '@polkadot/types': 10.12.2
+      '@polkadot/types-augment': 10.12.2
+      '@polkadot/types-codec': 10.12.2
+      '@polkadot/types-create': 10.12.2
+      '@polkadot/types-known': 10.12.2
       '@polkadot/util': 12.6.2
       '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
       eventemitter3: 5.0.1
@@ -3116,21 +3084,6 @@ packages:
       - '@polkadot/networks'
     dev: false
 
-  /@polkadot/rpc-augment@10.12.1:
-    resolution: {integrity: sha512-4U4u5az6h7U4me2D7NYSNice++cpnG+6XUrE3UgSNQmvcQErB3DKAAln+P4iEQ9/Tj/Ex5jqjrfianCFJTlBcg==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@polkadot/rpc-core': 10.12.1
-      '@polkadot/types': 10.12.1
-      '@polkadot/types-codec': 10.12.1
-      '@polkadot/util': 12.6.2
-      tslib: 2.6.2
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-    dev: false
-
   /@polkadot/rpc-augment@10.12.2:
     resolution: {integrity: sha512-JXifdUrt1SfCQst7E5ifNVHiroonmG6CN0rf7i2eSLJt6u4/v90RpaNogHrMumN3ZIV0cLwV19eb6tYxFQo/GA==}
     engines: {node: '>=18'}
@@ -3139,22 +3092,6 @@ packages:
       '@polkadot/types': 10.12.2
       '@polkadot/types-codec': 10.12.2
       '@polkadot/util': 12.6.2
-      tslib: 2.6.2
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-    dev: false
-
-  /@polkadot/rpc-core@10.12.1:
-    resolution: {integrity: sha512-e8UViFN4p2STOhKL5HVxMI9ugzxrq1Ir85Pxpf2N29J8h4L8RwOuc6IPyn18uuKQakkl5b7EjsE2VKecjT4iUw==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@polkadot/rpc-augment': 10.12.1
-      '@polkadot/rpc-provider': 10.12.1
-      '@polkadot/types': 10.12.1
-      '@polkadot/util': 12.6.2
-      rxjs: 7.8.1
       tslib: 2.6.2
     transitivePeerDependencies:
       - bufferutil
@@ -3172,30 +3109,6 @@ packages:
       '@polkadot/util': 12.6.2
       rxjs: 7.8.1
       tslib: 2.6.2
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-    dev: false
-
-  /@polkadot/rpc-provider@10.12.1:
-    resolution: {integrity: sha512-fLUK/j9M/eBthx1w40NEC94wIMHbCzSEpT3jTgFHHT9fu3HrMjZZlFUXuwjGF2Dqkjj9lTuy1W0R/4kx1RMOHw==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@polkadot/keyring': 12.6.2(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)
-      '@polkadot/types': 10.12.1
-      '@polkadot/types-support': 10.12.1
-      '@polkadot/util': 12.6.2
-      '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
-      '@polkadot/x-fetch': 12.6.2
-      '@polkadot/x-global': 12.6.2
-      '@polkadot/x-ws': 12.6.2
-      eventemitter3: 5.0.1
-      mock-socket: 9.3.1
-      nock: 13.5.4
-      tslib: 2.6.2
-    optionalDependencies:
-      '@substrate/connect': 0.8.7
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -3226,16 +3139,6 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@polkadot/types-augment@10.12.1:
-    resolution: {integrity: sha512-FZFBP7u5fky7tB9K4D1MoKEU4yXJhysGpr+FItYFJ+y6R+R2KTA0LFjLHtGzXYmijDRNOoIdCFwRDWinkdpWZA==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@polkadot/types': 10.12.1
-      '@polkadot/types-codec': 10.12.1
-      '@polkadot/util': 12.6.2
-      tslib: 2.6.2
-    dev: false
-
   /@polkadot/types-augment@10.12.2:
     resolution: {integrity: sha512-g5YvuXclkefe4dqpJXWesv1ksNeSsgP2PT4qdW+atkayTiCJIFYM2m6scNn+iZ98TWx6B5OOjMUQmRgiNOrpBA==}
     engines: {node: '>=18'}
@@ -3243,15 +3146,6 @@ packages:
       '@polkadot/types': 10.12.2
       '@polkadot/types-codec': 10.12.2
       '@polkadot/util': 12.6.2
-      tslib: 2.6.2
-    dev: false
-
-  /@polkadot/types-codec@10.12.1:
-    resolution: {integrity: sha512-f6jVI0gIaPwelirtds4W3q4uLboNnzbi/2844/vwlVO4BRLvpoXU8Ee3KuUTU+Qclg14I+S0Zm491O/Op2vgGw==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@polkadot/util': 12.6.2
-      '@polkadot/x-bigint': 12.6.2
       tslib: 2.6.2
     dev: false
 
@@ -3264,15 +3158,6 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@polkadot/types-create@10.12.1:
-    resolution: {integrity: sha512-ZpWUNrDaJQO1iYwtOva68S2xlEzfpQOPW5IylqlnV6izmavQvClwr7i2y3vL52YjoFNa3ZPEhxvwH7o4NtWB0A==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@polkadot/types-codec': 10.12.1
-      '@polkadot/util': 12.6.2
-      tslib: 2.6.2
-    dev: false
-
   /@polkadot/types-create@10.12.2:
     resolution: {integrity: sha512-SZsnB3hePa7zQJpeCqK7rGpiptLr8BpVALU3TiXiY96Wg4aafA5pAdAz+TOp/hskQP5h9X42WdkMhkabFLtGiA==}
     engines: {node: '>=18'}
@@ -3282,22 +3167,14 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@polkadot/types-known@10.12.1:
-    resolution: {integrity: sha512-qmUZ1HqPRvgrCMmRGrJy7FYuSjACxG1Htf/SSJwfWkwR+prFXQeMmADEmG8L3d9KZ/L1Mat/MF/9it0FrzX6aA==}
+  /@polkadot/types-known@10.12.2:
+    resolution: {integrity: sha512-N8V82MZMjDZVXMzyDy4HEpwr8plht5VSYY0X6OJp+TSF+Y63bxZkHwpY14vq7d8eb57Ze8A8HKTuMfaP8bPC2g==}
     engines: {node: '>=18'}
     dependencies:
       '@polkadot/networks': 12.6.2
-      '@polkadot/types': 10.12.1
-      '@polkadot/types-codec': 10.12.1
-      '@polkadot/types-create': 10.12.1
-      '@polkadot/util': 12.6.2
-      tslib: 2.6.2
-    dev: false
-
-  /@polkadot/types-support@10.12.1:
-    resolution: {integrity: sha512-H9eR2BAjSjWE+eq2jYhd8w5fgdCKy8XKUWQJ6VNvgxDtVeVMoPgY4iqLFwZUeuQjFiZJVMshCR63zjlRM1x3fg==}
-    engines: {node: '>=18'}
-    dependencies:
+      '@polkadot/types': 10.12.2
+      '@polkadot/types-codec': 10.12.2
+      '@polkadot/types-create': 10.12.2
       '@polkadot/util': 12.6.2
       tslib: 2.6.2
     dev: false
@@ -3307,20 +3184,6 @@ packages:
     engines: {node: '>=18'}
     dependencies:
       '@polkadot/util': 12.6.2
-      tslib: 2.6.2
-    dev: false
-
-  /@polkadot/types@10.12.1:
-    resolution: {integrity: sha512-rQ3OdKPAw0YucjD+97dYoEmhKLPIGDj0jd2vIwvfazeowwy854Hp3uYcPyGBq74l5hPo+6xYMySEqq7o99Nc0Q==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@polkadot/keyring': 12.6.2(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)
-      '@polkadot/types-augment': 10.12.1
-      '@polkadot/types-codec': 10.12.1
-      '@polkadot/types-create': 10.12.1
-      '@polkadot/util': 12.6.2
-      '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
-      rxjs: 7.8.1
       tslib: 2.6.2
     dev: false
 
@@ -3923,7 +3786,7 @@ packages:
   /@types/bn.js@5.1.5:
     resolution: {integrity: sha512-V46N0zwKRF5Q00AZ6hWtN0T8gGmDUaUzLWQvHFo5yThtVwK/VCenFY3wXVbOvNfajEpsTfQM4IN9k/d6gUVX3A==}
     dependencies:
-      '@types/node': 20.11.26
+      '@types/node': 20.11.27
     dev: false
 
   /@types/chrome@0.0.263:
@@ -3971,8 +3834,8 @@ packages:
     resolution: {integrity: sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==}
     dev: true
 
-  /@types/node@20.11.26:
-    resolution: {integrity: sha512-YwOMmyhNnAWijOBQweOJnQPl068Oqd4K3OFbTc6AHJwzweUwwWG3GIFY74OKks2PJUDkQPeddOQES9mLn1CTEQ==}
+  /@types/node@20.11.27:
+    resolution: {integrity: sha512-qyUZfMnCg1KEz57r7pzFtSGt49f6RPkPBis3Vo4PbS7roQEDn22hiHzl/Lo1q4i4hDEgBJmBF/NTNg2XR0HbFg==}
     dependencies:
       undici-types: 5.26.5
 
@@ -3985,20 +3848,20 @@ packages:
   /@types/qrcode.react@1.0.5:
     resolution: {integrity: sha512-BghPtnlwvrvq8QkGa1H25YnN+5OIgCKFuQruncGWLGJYOzeSKiix/4+B9BtfKF2wf5ja8yfyWYA3OXju995G8w==}
     dependencies:
-      '@types/react': 18.2.65
+      '@types/react': 18.2.66
     dev: true
 
-  /@types/react-dom@18.2.21:
-    resolution: {integrity: sha512-gnvBA/21SA4xxqNXEwNiVcP0xSGHh/gi1VhWv9Bl46a0ItbTT5nFY+G9VSQpaG/8N/qdJpJ+vftQ4zflTtnjLw==}
+  /@types/react-dom@18.2.22:
+    resolution: {integrity: sha512-fHkBXPeNtfvri6gdsMYyW+dW7RXFo6Ad09nLFK0VQWR7yGLai/Cyvyj696gbwYvBnhGtevUG9cET0pmUbMtoPQ==}
     dependencies:
-      '@types/react': 18.2.65
+      '@types/react': 18.2.66
     dev: true
 
   /@types/react-router-dom@5.3.3:
     resolution: {integrity: sha512-kpqnYK4wcdm5UaWI3fLcELopqLrHgLqNsdpHauzlQktfkHL3npOSwtj1Uz9oKBAzs7lFtVkV8j83voAz2D8fhw==}
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 18.2.65
+      '@types/react': 18.2.66
       '@types/react-router': 5.1.20
     dev: true
 
@@ -4006,17 +3869,17 @@ packages:
     resolution: {integrity: sha512-jGjmu/ZqS7FjSH6owMcD5qpq19+1RS9DeVRqfl1FeBMxTDQAGwlMWOcs52NDoXaNKyG3d1cYQFMs9rCrb88o9Q==}
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 18.2.65
+      '@types/react': 18.2.66
     dev: true
 
   /@types/react-transition-group@4.4.10:
     resolution: {integrity: sha512-hT/+s0VQs2ojCX823m60m5f0sL5idt9SO6Tj6Dg+rdphGPIeJbJ6CxvBYkgkGKrYeDjvIpKTR38UzmtHJOGW3Q==}
     dependencies:
-      '@types/react': 18.2.65
+      '@types/react': 18.2.66
     dev: false
 
-  /@types/react@18.2.65:
-    resolution: {integrity: sha512-98TsY0aW4jqx/3RqsUXwMDZSWR1Z4CUlJNue8ueS2/wcxZOsz4xmW1X8ieaWVRHcmmQM3R8xVA4XWB3dJnWwDQ==}
+  /@types/react@18.2.66:
+    resolution: {integrity: sha512-OYTmMI4UigXeFMF/j4uv0lBBEbongSgptPrHBxqME44h9+yNov+oL6Z3ocJKo0WyXR84sQUNeyIp9MRfckvZpg==}
     dependencies:
       '@types/prop-types': 15.7.11
       '@types/scheduler': 0.16.8
@@ -4040,7 +3903,7 @@ packages:
   /@types/yauzl@2.10.3:
     resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
     dependencies:
-      '@types/node': 20.11.26
+      '@types/node': 20.11.27
     dev: true
 
   /@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.3.3):
@@ -4328,7 +4191,7 @@ packages:
       vite: ^4 || ^5
     dependencies:
       '@swc/core': 1.3.107
-      vite: 5.1.6(@types/node@20.11.26)
+      vite: 5.1.6(@types/node@20.11.27)
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: true
@@ -4344,7 +4207,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.7)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.0
-      vite: 5.1.6(@types/node@20.11.26)
+      vite: 5.1.6(@types/node@20.11.27)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5109,7 +4972,7 @@ packages:
   /canvas-renderer@2.2.1:
     resolution: {integrity: sha512-RrBgVL5qCEDIXpJ6NrzyRNoTnXxYarqm/cS/W6ERhUJts5UQtt/XPEosGN3rqUkZ4fjBArlnCbsISJ+KCFnIAg==}
     dependencies:
-      '@types/node': 20.11.26
+      '@types/node': 20.11.27
     dev: false
 
   /caseless@0.12.0:
@@ -5209,7 +5072,7 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
     dependencies:
-      '@types/node': 20.11.26
+      '@types/node': 20.11.27
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -5222,7 +5085,7 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
     dependencies:
-      '@types/node': 20.11.26
+      '@types/node': 20.11.27
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 2.0.1
@@ -6388,8 +6251,8 @@ packages:
       eslint: 8.57.0
     dev: true
 
-  /eslint-plugin-react-refresh@0.4.5(eslint@8.57.0):
-    resolution: {integrity: sha512-D53FYKJa+fDmZMtriODxvhwrO+IOqrxoEo21gMA0sjHdU6dPVH4OhyFip9ypl8HOF5RV5KdTo+rBQLvnY2cO8w==}
+  /eslint-plugin-react-refresh@0.4.6(eslint@8.57.0):
+    resolution: {integrity: sha512-NjGXdm7zgcKRkKMua34qVO9doI7VOxZ6ancSvBELJSSoX97jyndXcSoa8XBh69JoB31dNz3EEzlMcizZl7LaMA==}
     peerDependencies:
       eslint: '>=7'
     dependencies:
@@ -9645,7 +9508,7 @@ packages:
       react: 18.2.0
     dev: false
 
-  /react-select@5.8.0(@types/react@18.2.65)(react-dom@18.2.0)(react@18.2.0):
+  /react-select@5.8.0(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-TfjLDo58XrhP6VG5M/Mi56Us0Yt8X7xD6cDybC7yoRMUNm7BGO7qk8J0TLQOua/prb8vUOtsfnXZwfm30HGsAA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -9653,7 +9516,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.9
       '@emotion/cache': 11.11.0
-      '@emotion/react': 11.11.4(@types/react@18.2.65)(react@18.2.0)
+      '@emotion/react': 11.11.4(@types/react@18.2.66)(react@18.2.0)
       '@floating-ui/dom': 1.6.3
       '@types/react-transition-group': 4.4.10
       memoize-one: 6.0.0
@@ -9661,7 +9524,7 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-transition-group: 4.4.5(react-dom@18.2.0)(react@18.2.0)
-      use-isomorphic-layout-effect: 1.1.2(@types/react@18.2.65)(react@18.2.0)
+      use-isomorphic-layout-effect: 1.1.2(@types/react@18.2.66)(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
     dev: false
@@ -11198,7 +11061,7 @@ packages:
       requires-port: 1.0.0
     dev: true
 
-  /use-isomorphic-layout-effect@1.1.2(@types/react@18.2.65)(react@18.2.0):
+  /use-isomorphic-layout-effect@1.1.2(@types/react@18.2.66)(react@18.2.0):
     resolution: {integrity: sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==}
     peerDependencies:
       '@types/react': '*'
@@ -11207,7 +11070,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@types/react': 18.2.65
+      '@types/react': 18.2.66
       react: 18.2.0
     dev: false
 
@@ -11243,7 +11106,7 @@ packages:
       extsprintf: 1.3.0
     dev: true
 
-  /vite-node@1.3.1(@types/node@20.11.26):
+  /vite-node@1.3.1(@types/node@20.11.27):
     resolution: {integrity: sha512-azbRrqRxlWTJEVbzInZCTchx0X69M/XPTCz4H+TLvlTcR/xH/3hkRqhOakT41fMJCMzXTu4UvegkZiEoJAWvng==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -11252,7 +11115,7 @@ packages:
       debug: 4.3.4(supports-color@5.5.0)
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.1.6(@types/node@20.11.26)
+      vite: 5.1.6(@types/node@20.11.27)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -11281,11 +11144,11 @@ packages:
       html-minifier-terser: 6.1.0
       node-html-parser: 5.4.2
       pathe: 0.2.0
-      vite: 5.1.6(@types/node@20.11.26)
+      vite: 5.1.6(@types/node@20.11.27)
     dev: true
 
-  /vite-plugin-web-extension@4.1.2(@types/node@20.11.26):
-    resolution: {integrity: sha512-2i4iHgybAGG7fv0T6ZVpiyIqFMUp5M7Lbhg6E7vvAuFx5T6MxhK8NinxG0DARHsI358gAai3hIgUgGW0O1W2Fw==}
+  /vite-plugin-web-extension@4.1.3(@types/node@20.11.27):
+    resolution: {integrity: sha512-xX+RF9SWi1D3UgR512nf8htQH5iL3BsoNhREIE/MnjKV9WDa89xQAM1Hkhyssykd5DQZ50FYTAqnvr2PmyHffg==}
     engines: {node: '>=16'}
     dependencies:
       ajv: 8.12.0
@@ -11296,7 +11159,7 @@ packages:
       lodash.uniq: 4.5.0
       lodash.uniqby: 4.7.0
       md5: 2.3.0
-      vite: 5.1.6(@types/node@20.11.26)
+      vite: 5.1.6(@types/node@20.11.27)
       web-ext-run: 0.1.2
       webextension-polyfill: 0.10.0
       yaml: 2.3.4
@@ -11313,7 +11176,7 @@ packages:
       - utf-8-validate
     dev: true
 
-  /vite@5.1.6(@types/node@20.11.26):
+  /vite@5.1.6(@types/node@20.11.27):
     resolution: {integrity: sha512-yYIAZs9nVfRJ/AiOLCA91zzhjsHUgMjB+EigzFb6W2XTLO8JixBCKCjvhKZaye+NKYHCrkv3Oh50dH9EdLU2RA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -11341,7 +11204,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 20.11.26
+      '@types/node': 20.11.27
       esbuild: 0.19.11
       postcss: 8.4.35
       rollup: 4.9.2
@@ -11349,7 +11212,7 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vitest@1.3.1(@types/node@20.11.26)(jsdom@24.0.0):
+  /vitest@1.3.1(@types/node@20.11.27)(jsdom@24.0.0):
     resolution: {integrity: sha512-/1QJqXs8YbCrfv/GPQ05wAZf2eakUPLPa18vkJAKE7RXOKfVHqMZZ1WlTjiwl6Gcn65M5vpNUB6EFLnEdRdEXQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -11374,7 +11237,7 @@ packages:
       jsdom:
         optional: true
     dependencies:
-      '@types/node': 20.11.26
+      '@types/node': 20.11.27
       '@vitest/expect': 1.3.1
       '@vitest/runner': 1.3.1
       '@vitest/snapshot': 1.3.1
@@ -11393,8 +11256,8 @@ packages:
       strip-literal: 2.0.0
       tinybench: 2.5.1
       tinypool: 0.8.2
-      vite: 5.1.6(@types/node@20.11.26)
-      vite-node: 1.3.1(@types/node@20.11.26)
+      vite: 5.1.6(@types/node@20.11.27)
+      vite-node: 1.3.1(@types/node@20.11.27)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
@@ -11762,7 +11625,7 @@ packages:
       utf-8-validate:
         optional: true
 
-  /wxt@0.17.7(@types/node@20.11.26):
+  /wxt@0.17.7(@types/node@20.11.27):
     resolution: {integrity: sha512-RSjn65tYUNhoHBtDwLjNmWrGtmQ62qLldekWCOtekl+Gzq1n/KcHm/M7QKhbJe7pxP8v5UvqcQEToW5oA9nwuA==}
     engines: {node: '>=18', pnpm: '>=8'}
     hasBin: true
@@ -11800,7 +11663,7 @@ packages:
       prompts: 2.4.2
       publish-browser-extension: 2.1.3
       unimport: 3.7.1
-      vite: 5.1.6(@types/node@20.11.26)
+      vite: 5.1.6(@types/node@20.11.27)
       web-ext-run: 0.2.0
       webextension-polyfill: 0.10.0
     transitivePeerDependencies:
