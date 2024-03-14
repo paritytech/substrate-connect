@@ -23,6 +23,7 @@ import { randomBytes } from "@noble/hashes/utils"
 
 import type { BackgroundRpcSpec, SignRequest } from "./types"
 import { keystoreV4 } from "./keystore"
+import { assert } from "./utils"
 
 const entropy = mnemonicToEntropy(DEV_PHRASE)
 const miniSecret = entropyToMiniSecret(entropy)
@@ -40,21 +41,26 @@ const keyset = {
 
 const createKeyring = () => {
   // FIXME: fetch from storage
-  let keystore = keystoreV4.create("123456", randomBytes(32))
+  let keystore: keystoreV4.KeyStoreV4 | undefined = undefined
   let isLocked = true
+
   return {
     unlock(password: string) {
+      assert(keystore, "keyring must be setup")
       if (!keystoreV4.verifyPassword(keystore, password))
         throw new Error("invalid password")
       isLocked = false
     },
     lock() {
+      assert(keystore, "keyring must be setup")
       isLocked = true
     },
     isLocked() {
+      assert(keystore, "keyring must be setup")
       return isLocked
     },
     changePassword(currentPassword: string, newPassword: string) {
+      assert(keystore, "keyring must be setup")
       if (!keystoreV4.verifyPassword(keystore, currentPassword))
         throw new Error("invalid password")
       keystore = keystoreV4.create(
@@ -63,6 +69,15 @@ const createKeyring = () => {
       )
 
       // TODO: re-encrypt accounts with new password
+    },
+    setup(password: string) {
+      assert(!keystore, "keyring is already setup")
+      keystore = keystoreV4.create(password, randomBytes(32))
+      isLocked = false
+    },
+    reset() {
+      keystore = undefined
+      isLocked = true
     },
   }
 }
@@ -223,6 +238,9 @@ export const createBackgroundRpc = (
     },
     async changePassword([currentPassword, newPassword]) {
       keyring.changePassword(currentPassword, newPassword)
+    },
+    async createPassword([password]) {
+      keyring.setup(password)
     },
   }
 
