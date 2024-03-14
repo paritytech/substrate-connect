@@ -17,7 +17,7 @@ export type Cipher = {
   decrypt(ciphertext: Uint8Array): Uint8Array
 }
 
-export type KeyStoreV4 = {
+export type KeystoreV4 = {
   version: 4
   uuid: string
   description?: string
@@ -75,7 +75,7 @@ type Xsalsa20Poly1305 = {
   message: string
 }
 
-export const create = (password: string, secret: Uint8Array): KeyStoreV4 => {
+export const create = (password: string, secret: Uint8Array): KeystoreV4 => {
   const kdf = {
     function: "scrypt" as const,
     params: {
@@ -161,7 +161,7 @@ const verifyChecksum = (
 }
 
 export const verifyPassword = (
-  { crypto: { kdf, cipher, checksum } }: KeyStoreV4,
+  { crypto: { kdf, cipher, checksum } }: KeystoreV4,
   password: string,
 ) => {
   const decryptionKey = deriveKey(kdf, password)
@@ -169,7 +169,7 @@ export const verifyPassword = (
   return verifyChecksum(checksum, decryptionKey.slice(16, 32), ciphertext)
 }
 
-export const decrypt = (keystore: KeyStoreV4, password: string) => {
+export const decrypt = (keystore: KeystoreV4, password: string) => {
   const ciphertext = hexToBytes(keystore.crypto.cipher.message)
   return getCipher(keystore, password).decrypt(ciphertext)
 }
@@ -184,7 +184,7 @@ const getCipher_ = (cipher: CipherModule, key: Uint8Array) => {
 }
 
 export const getCipher = (
-  { crypto: { kdf, checksum, cipher } }: KeyStoreV4,
+  { crypto: { kdf, checksum, cipher } }: KeystoreV4,
   password: string,
 ): Cipher => {
   const ciphertext = hexToBytes(cipher.message)

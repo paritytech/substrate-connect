@@ -1,13 +1,13 @@
 import { expect, it, describe } from "vitest"
 
-import { type KeyStoreV4, verifyPassword, decrypt, create } from "./keystoreV4"
+import { type KeystoreV4, verifyPassword, decrypt, create } from "./keystoreV4"
 import { hexToBytes, randomBytes } from "@noble/hashes/utils"
 
 type TestVector = {
   password: string
   encodedPassword: string
   secret: string
-  keystoreJson: KeyStoreV4
+  keystoreJson: KeystoreV4
 }
 // From https://eips.ethereum.org/EIPS/eip-2335#test-cases
 const testVectors: TestVector[] = [
@@ -50,7 +50,7 @@ const testVectors: TestVector[] = [
       path: "m/12381/60/3141592653/589793238",
       uuid: "1d85ae20-35c5-4611-98e8-aa14a633906f",
       version: 4,
-    } as KeyStoreV4,
+    } as KeystoreV4,
   },
   {
     password: "𝔱𝔢𝔰𝔱𝔭𝔞𝔰𝔰𝔴𝔬𝔯𝔡🔑",
@@ -90,7 +90,7 @@ const testVectors: TestVector[] = [
       path: "m/12381/60/0/0",
       uuid: "64625def-3331-4eea-ab6f-782f3ed16a83",
       version: 4,
-    } as KeyStoreV4,
+    } as KeystoreV4,
   },
 ]
 

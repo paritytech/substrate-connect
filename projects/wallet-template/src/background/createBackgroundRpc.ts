@@ -22,8 +22,7 @@ import {
 import { randomBytes } from "@noble/hashes/utils"
 
 import type { BackgroundRpcSpec, SignRequest } from "./types"
-import { keystoreV4 } from "./keystore"
-import type { KeyStoreV4 } from "./keystore/keystoreV4"
+import { keystoreV4, type KeystoreV4 } from "./keystore"
 import { assert } from "./utils"
 import * as storage from "./storage"
 
@@ -43,7 +42,7 @@ const keyset = {
 
 const createKeyring = () => {
   const getKeystore = () => storage.get("password")
-  const setKeystore = (keystore: KeyStoreV4) =>
+  const setKeystore = (keystore: KeystoreV4) =>
     storage.set("password", keystore)
   const removeKeystore = () => storage.remove("password")
   let isLocked = true
