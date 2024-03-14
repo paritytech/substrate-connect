@@ -107,7 +107,6 @@ export const Accounts = () => {
             className="w-24 h-24 rounded-full"
           />
           <h1 className="text-2xl font-bold mt-2">{keysetName}</h1>
-          {/*  <span className="text-gray-500">8UAVtmho...RzJzkCpr</span> */}
         </div>
         <div className="px-4">
           <h2 className="text-lg font-semibold mb-2">Derived Keys</h2>
