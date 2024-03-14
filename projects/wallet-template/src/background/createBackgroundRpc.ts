@@ -23,7 +23,9 @@ import { randomBytes } from "@noble/hashes/utils"
 
 import type { BackgroundRpcSpec, SignRequest } from "./types"
 import { keystoreV4 } from "./keystore"
+import type { KeyStoreV4 } from "./keystore/keystoreV4"
 import { assert } from "./utils"
+import * as storage from "./storage"
 
 const entropy = mnemonicToEntropy(DEV_PHRASE)
 const miniSecret = entropyToMiniSecret(entropy)
@@ -40,43 +42,49 @@ const keyset = {
 }
 
 const createKeyring = () => {
-  // FIXME: fetch from storage
-  let keystore: keystoreV4.KeyStoreV4 | undefined = undefined
+  const getKeystore = () => storage.get("password")
+  const setKeystore = (keystore: KeyStoreV4) =>
+    storage.set("password", keystore)
+  const removeKeystore = () => storage.remove("password")
   let isLocked = true
 
   return {
-    unlock(password: string) {
+    async unlock(password: string) {
+      const keystore = await getKeystore()
       assert(keystore, "keyring must be setup")
       if (!keystoreV4.verifyPassword(keystore, password))
         throw new Error("invalid password")
       isLocked = false
     },
-    lock() {
-      assert(keystore, "keyring must be setup")
+    async lock() {
+      assert(await getKeystore(), "keyring must be setup")
       isLocked = true
     },
-    isLocked() {
-      assert(keystore, "keyring must be setup")
+    async isLocked() {
+      assert(getKeystore(), "keyring must be setup")
       return isLocked
     },
-    changePassword(currentPassword: string, newPassword: string) {
+    async changePassword(currentPassword: string, newPassword: string) {
+      const keystore = await getKeystore()
       assert(keystore, "keyring must be setup")
       if (!keystoreV4.verifyPassword(keystore, currentPassword))
         throw new Error("invalid password")
-      keystore = keystoreV4.create(
-        newPassword,
-        keystoreV4.decrypt(keystore, currentPassword),
+      await setKeystore(
+        keystoreV4.create(
+          newPassword,
+          keystoreV4.decrypt(keystore, currentPassword),
+        ),
       )
 
       // TODO: re-encrypt accounts with new password
     },
-    setup(password: string) {
-      assert(!keystore, "keyring is already setup")
-      keystore = keystoreV4.create(password, randomBytes(32))
+    async setup(password: string) {
+      assert(!(await getKeystore()), "keyring is already setup")
+      await setKeystore(keystoreV4.create(password, randomBytes(32)))
       isLocked = false
     },
-    reset() {
-      keystore = undefined
+    async reset() {
+      await removeKeystore()
       isLocked = true
     },
   }
@@ -228,19 +236,19 @@ export const createBackgroundRpc = (
       signRequests[id]?.reject()
     },
     async lockKeyring() {
-      keyring.lock()
+      return keyring.lock()
     },
     async unlockKeyring([password]) {
-      keyring.unlock(password)
+      return keyring.unlock(password)
     },
     async isKeyringLocked() {
       return keyring.isLocked()
     },
     async changePassword([currentPassword, newPassword]) {
-      keyring.changePassword(currentPassword, newPassword)
+      return keyring.changePassword(currentPassword, newPassword)
     },
     async createPassword([password]) {
-      keyring.setup(password)
+      return keyring.setup(password)
     },
   }
 
