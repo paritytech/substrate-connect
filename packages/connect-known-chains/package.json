@@ -1,6 +1,6 @@
 {
   "name": "@substrate/connect-known-chains",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Substrate-connect well known chain specifications",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
@@ -11,7 +11,7 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "require": "./dist/index.cjs"
     },
     "./polkadot": {
       "import": "./dist/specs/polkadot.js",
