@@ -1,7 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form"
 import { useKeyring } from "../hooks"
 
-type FormInputs = {
+type FormFields = {
   password: string
 }
 
@@ -12,8 +12,8 @@ export const UnlockKeyring = () => {
     handleSubmit,
     setError,
     formState: { isSubmitting, errors },
-  } = useForm<FormInputs>()
-  const onSubmit: SubmitHandler<FormInputs> = ({ password }) => unlock(password)
+  } = useForm<FormFields>()
+  const onSubmit: SubmitHandler<FormFields> = ({ password }) => unlock(password)
   return (
     <div>
       <div className="my-4 h-96 flex justify-center items-center">
