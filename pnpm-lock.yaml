@@ -528,9 +528,6 @@ importers:
       react-router-dom:
         specifier: ^6.22.3
         version: 6.22.3(react-dom@18.2.0)(react@18.2.0)
-      react-select:
-        specifier: ^5.8.0
-        version: 5.8.0(@types/react@18.2.64)(react-dom@18.2.0)(react@18.2.0)
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
