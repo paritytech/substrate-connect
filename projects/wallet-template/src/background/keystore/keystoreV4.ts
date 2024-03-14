@@ -8,6 +8,7 @@ import {
   hexToBytes,
   randomBytes,
 } from "@noble/hashes/utils"
+import { crypto } from "@noble/hashes/crypto"
 import { managedNonce } from "@noble/ciphers/webcrypto"
 import { xsalsa20poly1305 } from "@noble/ciphers/salsa"
 

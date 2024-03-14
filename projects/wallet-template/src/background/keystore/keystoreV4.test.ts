@@ -1,7 +1,3 @@
-import crypto from "node:crypto"
-// @ts-expect-error
-globalThis.crypto = crypto
-
 import { expect, it, describe } from "vitest"
 
 import { type KeyStoreV4, verifyPassword, decrypt, create } from "./keystoreV4"
