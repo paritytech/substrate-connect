@@ -7,30 +7,24 @@ import {
   PlusCircle,
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
-import { ButtonHTMLAttributes, useEffect, useState } from "react"
-import { Keyset } from "../../../background/types"
+import { ButtonHTMLAttributes } from "react"
 import { fromHex, toHex } from "@polkadot-api/utils"
 import { entropyToMiniSecret, ss58Address } from "@polkadot-labs/hdkd-helpers"
 import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
 import { rpc } from "../api"
+import useSWR from "swr"
 
 export const Accounts = () => {
   const navigate = useNavigate()
-  const [keysets, setKeysets] = useState<Record<string, Keyset>>({})
-
-  const keysetsLength = Object.keys(keysets).length
+  const { data: keysets } = useSWR("/rpc/keysets", async () => {
+    return rpc.client.listKeysets()
+  })
+  const keysetsLength = keysets ? Object.keys(keysets).length : 0
 
   const reset = async () => {
     await rpc.client.clearKeysets()
     navigate(0)
   }
-
-  useEffect(() => {
-    ;(async () => {
-      const existingKeySets = await rpc.client.listKeysets()
-      setKeysets(existingKeySets)
-    })()
-  }, [])
 
   const IconButton: React.FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
     onClick,
@@ -97,7 +91,7 @@ export const Accounts = () => {
 
   const Accounts = () => {
     // TODO: use mutliple keysets
-    const [keysetName, keyset] = Object.entries(keysets)[0]
+    const [keysetName, keyset] = Object.entries(keysets!)[0]
     const miniSecret = entropyToMiniSecret(fromHex(keyset.entropy))
     const derive = sr25519CreateDerive(miniSecret)
     const keypairs = keyset.derivationPaths.map(
