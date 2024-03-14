@@ -569,8 +569,8 @@ importers:
         specifier: ^5.1.6
         version: 5.1.6(@types/node@20.11.27)
       vite-plugin-web-extension:
-        specifier: ^4.1.2
-        version: 4.1.2(@types/node@20.11.27)
+        specifier: ^4.1.3
+        version: 4.1.3(@types/node@20.11.27)
       vitest:
         specifier: ^1.3.1
         version: 1.3.1(@types/node@20.11.27)(jsdom@24.0.0)
@@ -11133,8 +11133,8 @@ packages:
       vite: 5.1.6(@types/node@20.11.27)
     dev: true
 
-  /vite-plugin-web-extension@4.1.2(@types/node@20.11.27):
-    resolution: {integrity: sha512-2i4iHgybAGG7fv0T6ZVpiyIqFMUp5M7Lbhg6E7vvAuFx5T6MxhK8NinxG0DARHsI358gAai3hIgUgGW0O1W2Fw==}
+  /vite-plugin-web-extension@4.1.3(@types/node@20.11.27):
+    resolution: {integrity: sha512-xX+RF9SWi1D3UgR512nf8htQH5iL3BsoNhREIE/MnjKV9WDa89xQAM1Hkhyssykd5DQZ50FYTAqnvr2PmyHffg==}
     engines: {node: '>=16'}
     dependencies:
       ajv: 8.12.0
