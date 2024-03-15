@@ -59,7 +59,7 @@ type ChecksumModule = {
   message: string
 }
 
-type CipherModule = Aes128CtrCipherModule | Xsalsa20Poly1305
+type CipherModule = Aes128CtrCipherModule | Xsalsa20Poly1305CipherModule
 
 type Aes128CtrCipherModule = {
   function: "aes-128-ctr"
@@ -69,7 +69,7 @@ type Aes128CtrCipherModule = {
   message: string
 }
 
-type Xsalsa20Poly1305 = {
+type Xsalsa20Poly1305CipherModule = {
   function: "xsalsa20-poly1305"
   params: {}
   message: string
