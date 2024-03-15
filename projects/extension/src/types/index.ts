@@ -1,3 +1,11 @@
+declare global {
+  interface Navigator {
+    brave?: {
+      isBrave(): Promise<boolean>
+    }
+  }
+}
+
 export type NetworkStatus = "connected" | "disconnecting" | "disconnected"
 
 export interface TabInterface {

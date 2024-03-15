@@ -115,7 +115,7 @@ const AccordionItem = ({
 }
 
 export const Accordion = ({
-  origin = "popup",
+  origin: _origin = "popup",
   titles,
   contents,
   defaultExpanded,
