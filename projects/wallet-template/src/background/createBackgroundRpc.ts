@@ -19,7 +19,12 @@ import {
   UserSignedExtensions,
   getTxCreator,
 } from "@polkadot-api/tx-helper"
+import { randomBytes } from "@noble/hashes/utils"
 
+import type { BackgroundRpcSpec, SignRequest } from "./types"
+import { keystoreV4, type KeystoreV4 } from "./keystore"
+import { assert } from "./utils"
+import * as storage from "./storage"
 import type { BackgroundRpcSpec, Keyset, SignRequest } from "./types"
 
 const entropy = mnemonicToEntropy(DEV_PHRASE)
@@ -37,23 +42,50 @@ const keyset = {
 }
 
 const createKeyring = () => {
-  let savedPassword = "123456"
-  let currentPassword: string | undefined
+  const getKeystore = () => storage.get("password")
+  const setKeystore = (keystore: KeystoreV4) =>
+    storage.set("password", keystore)
+  const removeKeystore = () => storage.remove("password")
+  let isLocked = true
+
   return {
-    unlock(password: string) {
-      if (password !== savedPassword) throw new Error("invalid password")
-      currentPassword = password
+    async unlock(password: string) {
+      const keystore = await getKeystore()
+      assert(keystore, "keyring must be setup")
+      if (!keystoreV4.verifyPassword(keystore, password))
+        throw new Error("invalid password")
+      isLocked = false
     },
-    lock() {
-      currentPassword = undefined
+    async lock() {
+      assert(await getKeystore(), "keyring must be setup")
+      isLocked = true
     },
-    isLocked() {
-      return !currentPassword
+    async isLocked() {
+      assert(getKeystore(), "keyring must be setup")
+      return isLocked
     },
-    changePassword(currentPassword: string, newPassword: string) {
-      if (currentPassword !== savedPassword) throw new Error("invalid password")
-      // TODO: re-encrypt with new password
-      savedPassword = newPassword
+    async changePassword(currentPassword: string, newPassword: string) {
+      const keystore = await getKeystore()
+      assert(keystore, "keyring must be setup")
+      if (!keystoreV4.verifyPassword(keystore, currentPassword))
+        throw new Error("invalid password")
+      await setKeystore(
+        keystoreV4.create(
+          newPassword,
+          keystoreV4.decrypt(keystore, currentPassword),
+        ),
+      )
+
+      // TODO: re-encrypt accounts with new password
+    },
+    async setup(password: string) {
+      assert(!(await getKeystore()), "keyring is already setup")
+      await setKeystore(keystoreV4.create(password, randomBytes(32)))
+      isLocked = false
+    },
+    async reset() {
+      await removeKeystore()
+      isLocked = true
     },
   }
 }
@@ -210,16 +242,19 @@ export const createBackgroundRpc = (
       signRequests[id]?.reject()
     },
     async lockKeyring() {
-      keyring.lock()
+      return keyring.lock()
     },
     async unlockKeyring([password]) {
-      keyring.unlock(password)
+      return keyring.unlock(password)
     },
     async isKeyringLocked() {
       return keyring.isLocked()
     },
     async changePassword([currentPassword, newPassword]) {
-      keyring.changePassword(currentPassword, newPassword)
+      return keyring.changePassword(currentPassword, newPassword)
+    },
+    async createPassword([password]) {
+      return keyring.setup(password)
     },
     async insertKeyset([keysetName, keyset]) {
       const existingKeysets = await listKeysets()

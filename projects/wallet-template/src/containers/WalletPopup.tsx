@@ -5,6 +5,7 @@ import {
   SignRequest,
   Debug,
   ChangePassword,
+  Welcome,
   Accounts,
   AddAccount,
 } from "./WalletPopup/pages"
@@ -27,6 +28,7 @@ export const WalletPopup = () => (
               element={<SignRequest />}
             />
           </Route>
+          <Route path="/welcome" element={<Welcome />} />
           <Route path="/unlock-keyring" element={<UnlockKeyring />} />
         </Routes>
       </main>

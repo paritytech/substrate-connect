@@ -35,6 +35,7 @@ export type BackgroundRpcSpec = {
   unlockKeyring(password: string): Promise<void>
   isKeyringLocked(): Promise<boolean>
   changePassword(currentPassword: string, newPassword: string): Promise<void>
+  createPassword(password: string): Promise<void>
   insertKeyset(keysetName: string, keyset: Keyset): Promise<void>
   getKeyset(keysetName: string): Promise<Keyset | undefined>
   listKeysets(): Promise<Record<string, Keyset>>
