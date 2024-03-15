@@ -10,7 +10,7 @@
     "prep": "mkdir -p dist && cp -r ./assets/icons ./dist && cp -r ./assets/chainspecs ./dist",
     "prep:chrome": "pnpm prep && node scripts/generateManifest.js ./assets/manifest-v3-chrome.json ./dist/manifest.json",
     "prep:firefox": "pnpm prep && node scripts/generateManifest.js ./assets/manifest-v3-firefox.json ./dist/manifest.json",
-    "build": "pnpm build:chrome && pnpm build:firefox",
+    "build": "tsc --noEmit && pnpm build:chrome && pnpm build:firefox",
     "build:chrome": "pnpm clean && pnpm prep:chrome && concurrently \"pnpm:build-*\" && node scripts/checkExtensionScriptSizes.js",
     "build:firefox": "pnpm clean && pnpm prep:firefox && concurrently \"pnpm:build-*\" && node scripts/checkExtensionScriptSizes.js",
     "build-content": "INPUT=content pnpm exec vite build --config vite.script.config.js",
