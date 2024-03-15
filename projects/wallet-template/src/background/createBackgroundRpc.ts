@@ -86,6 +86,9 @@ const createKeyring = () => {
       await removeKeystore()
       isLocked = true
     },
+    async hasPassword() {
+      return !!(await getKeystore())
+    },
   }
 }
 
@@ -246,9 +249,6 @@ export const createBackgroundRpc = (
     async unlockKeyring([password]) {
       return keyring.unlock(password)
     },
-    async isKeyringLocked() {
-      return keyring.isLocked()
-    },
     async changePassword([currentPassword, newPassword]) {
       return keyring.changePassword(currentPassword, newPassword)
     },
@@ -276,6 +276,12 @@ export const createBackgroundRpc = (
     },
     async clearKeysets() {
       await chrome.storage.local.remove("keysets")
+    },
+    async getKeyringState() {
+      return {
+        isLocked: await keyring.isLocked(),
+        hasPassword: await keyring.hasPassword(),
+      }
     },
   }
 

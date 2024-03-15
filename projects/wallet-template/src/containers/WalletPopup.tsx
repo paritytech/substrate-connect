@@ -20,6 +20,7 @@ export const WalletPopup = () => (
         <Routes>
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Debug />} />
+            <Route path="/debug" element={<Debug />} />
             <Route path="/change-password" element={<ChangePassword />} />
             <Route path="/accounts" element={<Accounts />} />
             <Route path="/accounts/add" element={<AddAccount />} />
@@ -37,11 +38,14 @@ export const WalletPopup = () => (
 )
 
 const Header = () => {
-  const { isLocked } = useKeyring()
+  const {
+    keyring: { isLocked },
+  } = useKeyring()
+
   if (isLocked) return null
   return (
     <header className="w-[32rem] mx-auto px-6 py-2">
-      <Link to={"/"}>Debug</Link>
+      <Link to={"/debug"}>Debug</Link>
     </header>
   )
 }
