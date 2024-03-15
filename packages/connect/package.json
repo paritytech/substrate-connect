@@ -39,7 +39,7 @@
     "test:flaky": "vitest test/flaky",
     "deep-clean": "pnpm clean && rm -rf node_modules",
     "clean": "rm -rf dist",
-    "build": "tsup-node src/index.ts src/worker.ts src/worker-node.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
+    "build": "tsc --noEmit && tsup-node src/index.ts src/worker.ts src/worker-node.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
     "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {

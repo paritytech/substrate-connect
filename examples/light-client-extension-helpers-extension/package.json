@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "copy-assets": "mkdir -p dist && cp assets/* ./dist",
-    "build": "pnpm copy-assets && concurrently \"pnpm:build-*\"",
+    "build": "tsc --noEmit && pnpm copy-assets && concurrently \"pnpm:build-*\"",
     "build-background-script": "tsup src/background.ts src/background-smoldot.code-split.ts --clean --out-dir dist/js/background --platform neutral --target=es2020 --format esm",
     "build-extension-scripts": "tsup src/content.ts src/inpage.ts src/options.ts --clean --out-dir dist/js --platform neutral --target=es2020 --format iife",
     "dev": "pnpm copy-assets && concurrently \"pnpm:build-* --sourcemap inline --watch\"",

@@ -29,6 +29,10 @@ setInterval(async () => {
 }, 5000)
 ;(async () => {
   const [chain] = await helper.getChains()
+  if (!chain) {
+    return
+  }
+
   const client = createClient(chain.provider)
 
   let count = 0

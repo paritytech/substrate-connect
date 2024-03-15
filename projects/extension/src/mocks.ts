@@ -90,12 +90,12 @@ export class MockedChain implements Chain {
     this.options = options
   }
 
-  sendJsonRpc(rpc: string) {
-    this.receivedMessages.push(rpc)
+  async nextJsonRpcResponse(): Promise<string> {
+    return ""
   }
 
-  _sendResponse(message: string) {
-    this.options.jsonRpcCallback?.(message)
+  sendJsonRpc(rpc: string) {
+    this.receivedMessages.push(rpc)
   }
 
   databaseContent() {

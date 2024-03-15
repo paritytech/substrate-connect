@@ -83,7 +83,7 @@
     "test": "exit 0; #This package is only types",
     "deep-clean": "pnpm clean && rm -rf node_modules",
     "clean": "rm -rf dist",
-    "build": "pnpm build-js-specs && node scripts/build.js",
+    "build": "pnpm build-js-specs && tsc --noEmit && node scripts/build.js",
     "lint": "eslint . --ext .js,.ts"
   },
   "devDependencies": {
