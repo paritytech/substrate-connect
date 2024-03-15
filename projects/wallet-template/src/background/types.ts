@@ -7,10 +7,15 @@ export type Account = {
   address: string
 }
 
+type DerivationPath = {
+  chainId: string
+  path: string
+  publicKey: string
+}
+
 export type Keyset = {
   scheme: string
-  entropy: string
-  derivationPaths: string[]
+  derivationPaths: DerivationPath[]
 }
 
 export type SignRequest = {

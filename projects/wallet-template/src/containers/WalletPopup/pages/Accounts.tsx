@@ -8,9 +8,7 @@ import {
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { ButtonHTMLAttributes } from "react"
-import { fromHex, toHex } from "@polkadot-api/utils"
-import { entropyToMiniSecret, ss58Address } from "@polkadot-labs/hdkd-helpers"
-import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
+import { ss58Address } from "@polkadot-labs/hdkd-helpers"
 import { rpc } from "../api"
 import useSWR from "swr"
 
@@ -49,19 +47,26 @@ export const Accounts = () => {
     bgColor,
     text,
     subText,
-  }) => (
-    <div className="flex items-center px-4 py-2 border-b">
-      <div
-        className={`flex-shrink-0 w-10 h-10 rounded-full ${bgColor} mr-3`}
-      ></div>
-      <div className="flex-grow">
-        <div className="text-sm font-medium">{text}</div>
-        <div className="text-xs text-gray-500">{subText}</div>
-      </div>
-      <ChevronRight className="text-gray-400" />
-    </div>
-  )
+  }) => {
+    const maxLength = 20 // Maximum length before adding ellipsis
+    const ellipsisText =
+      subText.length > maxLength
+        ? `${subText.substring(0, maxLength / 2)}...${subText.substring(subText.length - maxLength / 2, subText.length)}`
+        : subText
 
+    return (
+      <div className="flex items-center px-4 py-2 border-b">
+        <div
+          className={`flex-shrink-0 w-10 h-10 rounded-full ${bgColor} mr-3`}
+        ></div>
+        <div className="flex-grow">
+          <div className="text-sm font-medium">{text}</div>
+          <div className="text-xs text-gray-500">{ellipsisText}</div>
+        </div>
+        <ChevronRight className="text-gray-400" />
+      </div>
+    )
+  }
   const EmptyAccounts = () => {
     return (
       <section>
@@ -92,10 +97,8 @@ export const Accounts = () => {
   const Accounts = () => {
     // TODO: use mutliple keysets
     const [keysetName, keyset] = Object.entries(keysets!)[0]
-    const miniSecret = entropyToMiniSecret(fromHex(keyset.entropy))
-    const derive = sr25519CreateDerive(miniSecret)
     const keypairs = keyset.derivationPaths.map(
-      (path) => [path, ss58Address(toHex(derive(path).publicKey))] as const,
+      ({ path, publicKey }) => [path, ss58Address(publicKey)] as const,
     )
 
     return (

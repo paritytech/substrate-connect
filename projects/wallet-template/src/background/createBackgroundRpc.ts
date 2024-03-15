@@ -25,7 +25,6 @@ import type { BackgroundRpcSpec, SignRequest } from "./types"
 import { keystoreV4, type KeystoreV4 } from "./keystore"
 import { assert } from "./utils"
 import * as storage from "./storage"
-import type { BackgroundRpcSpec, Keyset, SignRequest } from "./types"
 
 const entropy = mnemonicToEntropy(DEV_PHRASE)
 const miniSecret = entropyToMiniSecret(entropy)

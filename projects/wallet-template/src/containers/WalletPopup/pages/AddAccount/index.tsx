@@ -1,6 +1,7 @@
 import { ArrowRight, CheckCircle, Copy } from "lucide-react"
 import { useState } from "react"
 import {
+  entropyToMiniSecret,
   generateMnemonic,
   mnemonicToEntropy,
 } from "@polkadot-labs/hdkd-helpers"
@@ -11,6 +12,7 @@ import { useNavigate } from "react-router-dom"
 import { rpc } from "../../api"
 import { StepIndicator } from "../../components"
 import useSWR from "swr"
+import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
 
 type FormFields = {
   keysetName: string
@@ -47,11 +49,22 @@ export const AddAccount = () => {
 
     try {
       const entropy = mnemonicToEntropy(mnemonic.join(" "))
-      const derivationPaths = data.networks.map((network) => `//${network}//0`)
+      const miniSecret = entropyToMiniSecret(entropy)
+      const derive = sr25519CreateDerive(miniSecret)
+      const selectedNetworks = data.networks.map(
+        (network) => networks.find(({ value }) => network === value)!,
+      )
+      const derivationPaths = selectedNetworks.map((network) => {
+        const path = `//${network.value}//0`
+        return {
+          chainId: network.chainId,
+          path,
+          publicKey: toHex(derive(`//${network.value}//0`).publicKey),
+        }
+      })
 
       await rpc.client.insertKeyset(data.keysetName, {
         scheme: "Sr25519",
-        entropy: toHex(entropy),
         derivationPaths,
       })
     } finally {
