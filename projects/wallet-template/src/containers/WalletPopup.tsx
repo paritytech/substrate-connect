@@ -5,6 +5,7 @@ import {
   SignRequest,
   Debug,
   ChangePassword,
+  Welcome,
 } from "./WalletPopup/pages"
 import { ProtectedRoute } from "./WalletPopup/components"
 import { KeyringProvider, useKeyring } from "./WalletPopup/hooks"
@@ -23,6 +24,7 @@ export const WalletPopup = () => (
               element={<SignRequest />}
             />
           </Route>
+          <Route path="/welcome" element={<Welcome />} />
           <Route path="/unlock-keyring" element={<UnlockKeyring />} />
         </Routes>
       </main>

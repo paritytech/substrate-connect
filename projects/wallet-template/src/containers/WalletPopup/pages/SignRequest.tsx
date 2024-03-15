@@ -11,17 +11,20 @@ export const SignRequest = () => {
     Partial<UserSignedExtensions>
   >({})
   const {
-    data: signRequest,
+    data: signRequests,
     error,
     isLoading,
-  } = useSWR(signRequestId ?? null, getSignRequest)
+  } = useSWR(signRequestId ? ["getSignRequest"] : null, () =>
+    rpc.client.getSignRequests(),
+  )
   if (!signRequestId) {
     window.close()
     return null
   }
   if (isLoading) return null
-  if (error) return <div>error fetching sign request: {signRequestId}</div>
-  const request = signRequest!
+  const request = signRequests?.[signRequestId]
+  if (error || !request)
+    return <div>error fetching sign request: {signRequestId}</div>
   return (
     <div>
       <h1 className="text-3xl font-bold">Sign Request #{signRequestId}</h1>
@@ -77,11 +80,4 @@ export const SignRequest = () => {
       </div>
     </div>
   )
-}
-
-const getSignRequest = async (id: string) => {
-  const signRequests = await rpc.client.getSignRequests()
-  const signRequest = signRequests[id]
-  if (!signRequest) throw new Error(`unknown sign request: ${id}`)
-  return signRequest
 }

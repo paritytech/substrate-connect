@@ -1,6 +1,7 @@
 import { start } from "smoldot"
 import { register } from "@substrate/light-client-extension-helpers/background"
 import { createBackgroundRpc } from "./createBackgroundRpc"
+import * as storage from "./storage"
 
 const { lightClientPageHelper } = register({
   smoldotClient: start({ maxLogLevel: 4 }),
@@ -36,4 +37,14 @@ chrome.runtime.onConnect.addListener((port) => {
       port,
     }),
   )
+})
+
+chrome.runtime.onInstalled.addListener(async ({ reason }) => {
+  if (reason === chrome.runtime.OnInstalledReason.INSTALL) {
+    const password = await storage.get("password")
+    if (password) return
+    chrome.tabs.create({
+      url: chrome.runtime.getURL(`ui/assets/wallet-popup.html#/welcome`),
+    })
+  }
 })
