@@ -60,7 +60,7 @@
     "@polkadot-api/tx-helper": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@polkadot-api/utils": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@substrate/connect-known-chains": "workspace:^",
-    "@polkadot-labs/hdkd": "^0.0.5",
+    "@polkadot-labs/hdkd": "^0.0.6",
     "@polkadot-labs/hdkd-helpers": "^0.0.5",
     "@react-rxjs/core": "^0.10.7",
     "@react-rxjs/utils": "^0.9.7",
