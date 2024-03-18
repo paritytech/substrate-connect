@@ -7,6 +7,17 @@ export type Account = {
   address: string
 }
 
+type DerivationPath = {
+  chainId: string
+  path: string
+  publicKey: string
+}
+
+export type Keyset = {
+  scheme: string
+  derivationPaths: DerivationPath[]
+}
+
 export type SignRequest = {
   url: string
   chainId: string
@@ -30,4 +41,9 @@ export type BackgroundRpcSpec = {
   isKeyringLocked(): Promise<boolean>
   changePassword(currentPassword: string, newPassword: string): Promise<void>
   createPassword(password: string): Promise<void>
+  insertKeyset(keysetName: string, keyset: Keyset): Promise<void>
+  getKeyset(keysetName: string): Promise<Keyset | undefined>
+  listKeysets(): Promise<Record<string, Keyset>>
+  removeKeyset(keysetName: string): Promise<void>
+  clearKeysets(): Promise<void>
 }

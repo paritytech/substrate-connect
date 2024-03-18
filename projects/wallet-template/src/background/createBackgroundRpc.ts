@@ -110,6 +110,12 @@ export const createBackgroundRpc = (
     signRequests: Record<string, InternalSignRequest>
     port: chrome.runtime.Port
   }
+
+  const listKeysets = async () => {
+    const keysets = (await chrome.storage.local.get("keysets")) || {}
+    return keysets["keysets"] || {}
+  }
+
   const handlers: RpcMethodHandlers<BackgroundRpcSpec, Context> = {
     async getAccounts([chainId], { lightClientPageHelper }) {
       const chains = await lightClientPageHelper.getChains()
@@ -248,6 +254,28 @@ export const createBackgroundRpc = (
     },
     async createPassword([password]) {
       return keyring.setup(password)
+    },
+    async insertKeyset([keysetName, keyset]) {
+      const existingKeysets = await listKeysets()
+      await chrome.storage.local.set({
+        keysets: {
+          ...existingKeysets,
+          [keysetName]: keyset,
+        },
+      })
+    },
+    async getKeyset([keysetName]) {
+      const keysets = await listKeysets()
+      return keysets[keysetName]
+    },
+    listKeysets,
+    async removeKeyset([keysetName]) {
+      const keysets = await listKeysets()
+      delete keysets[keysetName]
+      await chrome.storage.local.set({ keysets })
+    },
+    async clearKeysets() {
+      await chrome.storage.local.remove("keysets")
     },
   }
 

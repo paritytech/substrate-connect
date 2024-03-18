@@ -8,6 +8,14 @@ export const Debug = () => {
       <h1 className="text-3xl font-bold">Wallet</h1>
       <div className="my-4 flex space-x-4">
         <Link
+          to={"/accounts"}
+          className="py-1.5 px-8 text-sm rounded border border-[#24cc85] text-[#24cc85] hover:text-white hover:bg-[#24cc85]"
+        >
+          Accounts
+        </Link>
+      </div>
+      <div className="my-4 flex space-x-4">
+        <Link
           to={"/change-password"}
           className="py-1.5 px-8 text-sm rounded border border-[#24cc85] text-[#24cc85] hover:text-white hover:bg-[#24cc85]"
         >
