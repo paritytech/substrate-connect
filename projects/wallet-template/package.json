@@ -69,7 +69,7 @@
     "lucide-react": "^0.352.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hook-form": "^7.51.0",
+    "react-hook-form": "^7.51.1",
     "react-icons": "^4.11.0",
     "react-router-dom": "^6.22.3",
     "rxjs": "^7.8.1",
