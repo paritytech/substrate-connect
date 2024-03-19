@@ -1,8 +1,9 @@
 import { User } from "lucide-react"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import useSWR from "swr"
 import { rpc } from "../api"
 import { useNavigate } from "react-router-dom"
+import { RadioGroup } from "@headlessui/react"
 
 type AccountTabProps = {
   keysetName: string
@@ -24,35 +25,42 @@ const AccountTab: React.FC<AccountTabProps> = ({ keysetName }) => {
   )
 }
 
-export const SwitchAccount: React.FC<{}> = () => {
-  const navigate = useNavigate()
+export const SwitchAccount: React.FC = () => {
   const { data: keysets, isLoading } = useSWR("/rpc/keysets", async () => {
     return rpc.client.listKeysets()
   })
-
-  useEffect(() => {
-    if (!isLoading && !keysets) {
-      navigate("/accounts")
-    }
-  }, [keysets, isLoading, navigate])
+  const [selectedKeyset, setSelectedKeyset] = useState<string>()
 
   const keysetNames = Object.keys(keysets ?? {})
-
-  useEffect(() => {
-    console.log("keysets", keysets)
-  }, [keysets])
 
   return (
     <main className="p-4">
       <div className="max-w-xl p-6 mx-auto bg-white rounded-lg shadow-lg">
         <h1 className="mb-4 text-2xl font-bold">Switch Account</h1>
-        <div className="space-y-4">
-          {keysetNames.map((keysetName) => (
-            <AccountTab keysetName={keysetName} />
-          ))}
-        </div>
+        <RadioGroup value={selectedKeyset} onChange={setSelectedKeyset}>
+          <RadioGroup.Label className="sr-only">Keyset</RadioGroup.Label>
+          <div className="space-y-2">
+            {keysetNames.map((keysetName) => (
+              <RadioGroup.Option
+                key={keysetName}
+                value={keysetName}
+                className={({ active, checked }) =>
+                  `${
+                    active
+                      ? "ring-2 ring-white/60 ring-offset-2 ring-offset-black"
+                      : ""
+                  }
+                  ${checked ? "bg-black/75 text-white" : "bg-white"}
+                    relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
+                }
+              >
+                {() => <span className="text-lg">{keysetName}</span>}
+              </RadioGroup.Option>
+            ))}
+          </div>
+        </RadioGroup>
         <div className="mt-6">
-          <button className="w-full bg-teal-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors">
+          <button className="w-full bg-teal-500 text-white py-2 rounded-lg hover:bg-teal-600 transition-colors">
             Switch
           </button>
         </div>

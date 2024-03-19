@@ -135,7 +135,10 @@ export const Accounts = () => {
                 </IconButton>
               </Link>
               <IconButton disabled={keysetsLength === 0}>
-                <Link to="/accounts/switch">
+                <Link
+                  to="/accounts/switch"
+                  className={keysetsLength === 0 ? "pointer-events-none" : ""}
+                >
                   <ArrowRightLeft />
                 </Link>
               </IconButton>
