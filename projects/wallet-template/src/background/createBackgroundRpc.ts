@@ -112,8 +112,9 @@ export const createBackgroundRpc = (
   }
 
   const listKeysets = async () => {
-    const keysets = (await chrome.storage.local.get("keysets")) || {}
-    return keysets["keysets"] || {}
+    const keysets = (await storage.get("keysets")) || {}
+
+    return keysets
   }
 
   const handlers: RpcMethodHandlers<BackgroundRpcSpec, Context> = {
@@ -257,11 +258,9 @@ export const createBackgroundRpc = (
     },
     async insertKeyset([keysetName, keyset]) {
       const existingKeysets = await listKeysets()
-      await chrome.storage.local.set({
-        keysets: {
-          ...existingKeysets,
-          [keysetName]: keyset,
-        },
+      await storage.set("keysets", {
+        ...existingKeysets,
+        [keysetName]: keyset,
       })
     },
     async getKeyset([keysetName]) {
@@ -272,10 +271,16 @@ export const createBackgroundRpc = (
     async removeKeyset([keysetName]) {
       const keysets = await listKeysets()
       delete keysets[keysetName]
-      await chrome.storage.local.set({ keysets })
+      await storage.set("keysets", keysets)
     },
     async clearKeysets() {
-      await chrome.storage.local.remove("keysets")
+      await storage.remove("keysets")
+    },
+    async getPrimaryKeysetName() {
+      return storage.get("primaryKeysetName")
+    },
+    async setPrimaryKeysetName([keysetName]) {
+      await storage.set("primaryKeysetName", keysetName)
     },
   }
 

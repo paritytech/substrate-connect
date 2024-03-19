@@ -46,4 +46,6 @@ export type BackgroundRpcSpec = {
   listKeysets(): Promise<Record<string, Keyset>>
   removeKeyset(keysetName: string): Promise<void>
   clearKeysets(): Promise<void>
+  getPrimaryKeysetName(): Promise<string | undefined>
+  setPrimaryKeysetName(keysetName: string): Promise<void>
 }
