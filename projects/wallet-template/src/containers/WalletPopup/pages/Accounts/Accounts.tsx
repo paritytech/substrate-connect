@@ -8,10 +8,10 @@ import {
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { ss58Address } from "@polkadot-labs/hdkd-helpers"
-import { rpc } from "../api"
+import { rpc } from "../../api"
 import useSWR from "swr"
-import { IconButton } from "../../../components"
-import { Keyset } from "../../../background/types"
+import { IconButton } from "../../../../components"
+import { Keyset } from "../../../../background/types"
 
 type AccountItemProps = {
   bgColor: string

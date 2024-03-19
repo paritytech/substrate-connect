@@ -1,28 +1,12 @@
 import { User } from "lucide-react"
 import React, { useEffect, useState } from "react"
 import useSWR from "swr"
-import { rpc } from "../api"
+import { rpc } from "../../api"
 import { useNavigate } from "react-router-dom"
 import { RadioGroup } from "@headlessui/react"
 
 type AccountTabProps = {
   keysetName: string
-}
-
-const AccountTab: React.FC<AccountTabProps> = ({ keysetName }) => {
-  return (
-    <div
-      className="p-2 rounded-lg hover:bg-gray-50 flex items-center cursor-pointer"
-      tabIndex={0}
-    >
-      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-        <User className="text-gray-600" />
-      </div>
-      <div>
-        <p className="text-gray-800">{keysetName}</p>
-      </div>
-    </div>
-  )
 }
 
 export const SwitchAccount: React.FC = () => {
