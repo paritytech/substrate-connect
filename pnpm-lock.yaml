@@ -510,6 +510,9 @@ importers:
       '@react-rxjs/utils':
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.7)(react@18.2.0)(rxjs@7.8.1)
+      '@std/ulid':
+        specifier: npm:@jsr/std__ulid@^0.220.1
+        version: /@jsr/std__ulid@0.220.1
       '@substrate/connect-extension-protocol':
         specifier: workspace:*
         version: link:../../packages/connect-extension-protocol
@@ -2594,6 +2597,10 @@ packages:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
+
+  /@jsr/std__ulid@0.220.1:
+    resolution: {integrity: sha512-o+cTvQSXzVVCYCtZVSqxIxWMlNagLKJPZjvLs0cumuGNFlGJH1nRCE1izpQP+5eXMyky/1qQbFYKppB5kN83Xw==, tarball: https://npm.jsr.io/~/7/@jsr/std__ulid/0.220.1.tgz}
+    dev: false
 
   /@material-ui/core@4.12.4(@types/react@18.2.66)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-tr7xekNlM9LjA6pagJmL8QCgZXaubWUwkJnoYcMKd4gw/t4XiyvnTkjdGrUVicyB2BsdaAv1tvow45bPM4sSwQ==}

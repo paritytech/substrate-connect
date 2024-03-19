@@ -6,12 +6,14 @@ import {
   RotateCcw,
   PlusCircle,
 } from "lucide-react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import { ss58Address } from "@polkadot-labs/hdkd-helpers"
 import { rpc } from "../../api"
 import useSWR from "swr"
 import { IconButton } from "../../../../components"
 import { Keyset } from "../../../../background/types"
+import { useEffect, useState } from "react"
+import { ulid } from "@std/ulid"
 
 type AccountItemProps = {
   bgColor: string
@@ -72,12 +74,11 @@ const EmptyAccounts: React.FC = () => {
 }
 
 type AccountsListProps = {
-  keysets: Record<string, Keyset>
+  keysetName: string
+  keyset: Keyset
 }
 
-const AccountsList: React.FC<AccountsListProps> = ({ keysets }) => {
-  // TODO: use mutliple keysets
-  const [keysetName, keyset] = Object.entries(keysets)[0]
+const AccountsList: React.FC<AccountsListProps> = ({ keysetName, keyset }) => {
   const keypairs = keyset.derivationPaths.map(
     ({ path, publicKey }) => [path, ss58Address(publicKey)] as const,
   )
@@ -110,10 +111,24 @@ const AccountsList: React.FC<AccountsListProps> = ({ keysets }) => {
 
 export const Accounts = () => {
   const navigate = useNavigate()
-  const { data: keysets } = useSWR("/rpc/keysets", async () => {
-    return rpc.client.listKeysets()
+  const location = useLocation()
+  const [fetchId, setFetchId] = useState(ulid())
+  const { data } = useSWR(`/rpc/keysets/:primary/${fetchId}`, async () => {
+    const primaryKeysetName = await rpc.client.getPrimaryKeysetName()
+    const keysets = await rpc.client.listKeysets()
+
+    if (primaryKeysetName && keysets[primaryKeysetName]) {
+      return [primaryKeysetName, keysets[primaryKeysetName]] as const
+    } else if (keysets && Object.entries(keysets).length > 0) {
+      return Object.entries(keysets)[0]
+    } else {
+      return
+    }
   })
-  const keysetsLength = keysets ? Object.keys(keysets).length : 0
+
+  useEffect(() => {
+    setFetchId(ulid())
+  }, [location])
 
   const reset = async () => {
     await rpc.client.clearKeysets()
@@ -134,10 +149,10 @@ export const Accounts = () => {
                   <Plus />
                 </IconButton>
               </Link>
-              <IconButton disabled={keysetsLength === 0}>
+              <IconButton disabled={!data}>
                 <Link
                   to="/accounts/switch"
-                  className={keysetsLength === 0 ? "pointer-events-none" : ""}
+                  className={!data ? "pointer-events-none" : ""}
                 >
                   <ArrowRightLeft />
                 </Link>
@@ -148,8 +163,8 @@ export const Accounts = () => {
             </div>
           </div>
         </div>
-        {keysetsLength > 0 ? (
-          <AccountsList keysets={keysets ?? {}} />
+        {data ? (
+          <AccountsList keysetName={data[0]} keyset={data[1]} />
         ) : (
           <EmptyAccounts />
         )}
