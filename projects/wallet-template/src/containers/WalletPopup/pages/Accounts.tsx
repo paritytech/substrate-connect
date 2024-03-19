@@ -129,13 +129,15 @@ export const Accounts = () => {
               <RotateCcw />
             </IconButton>
             <div className="flex items-center">
-              <Link to="/add">
+              <Link to="/accounts/add">
                 <IconButton>
                   <Plus />
                 </IconButton>
               </Link>
-              <IconButton>
-                <ArrowRightLeft />
+              <IconButton disabled={keysetsLength === 0}>
+                <Link to="/accounts/switch">
+                  <ArrowRightLeft />
+                </Link>
               </IconButton>
               <IconButton>
                 <Settings />
