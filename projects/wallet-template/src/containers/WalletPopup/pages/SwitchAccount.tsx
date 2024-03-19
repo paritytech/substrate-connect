@@ -54,7 +54,12 @@ export const SwitchAccount: React.FC = () => {
                     relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
                 }
               >
-                {() => <span className="text-lg">{keysetName}</span>}
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                  <User className="text-gray-600" />
+                </div>
+                <div className="flex items-center justify-center">
+                  <span className="text-lg">{keysetName}</span>
+                </div>
               </RadioGroup.Option>
             ))}
           </div>
