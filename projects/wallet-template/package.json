@@ -49,7 +49,7 @@
     "vite-plugin-web-extension": "^4.1.3",
     "vitest": "^1.4.0",
     "web-ext": "^7.11.0",
-    "wxt": "^0.17.7"
+    "wxt": "^0.17.9"
   },
   "dependencies": {
     "@noble/ciphers": "^0.5.1",
