@@ -64,7 +64,6 @@
     "@polkadot-labs/hdkd-helpers": "^0.0.6",
     "@react-rxjs/core": "^0.10.7",
     "@react-rxjs/utils": "^0.9.7",
-    "@std/ulid": "npm:@jsr/std__ulid@^0.220.1",
     "@substrate/connect-extension-protocol": "workspace:*",
     "@substrate/connect-known-chains": "workspace:^",
     "@substrate/light-client-extension-helpers": "workspace:^",

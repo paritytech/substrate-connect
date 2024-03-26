@@ -12,6 +12,7 @@ import { rpc } from "../../api"
 import useSWR, { useSWRConfig } from "swr"
 import { IconButton } from "../../../../components"
 import { Keyset } from "../../../../background/types"
+import { useEffect } from "react"
 
 type AccountItemProps = {
   bgColor: string
@@ -116,22 +117,23 @@ export const Accounts = () => {
     { revalidateOnFocus: true },
   )
   const { data: primaryKeysetName } = useSWR(
-    "/rpc/primaryKeysetName",
+    keysets ? "/rpc/primaryKeysetName" : null,
     () => rpc.client.getPrimaryKeysetName(),
     { revalidateOnFocus: true },
   )
-  const { data: keyset } = useSWR(
-    keysets && primaryKeysetName ? `/rpc/keysets/${primaryKeysetName}` : null,
-    async () => {
-      if (keysets![primaryKeysetName!]) {
-        return [primaryKeysetName!, keysets![primaryKeysetName!]] as const
-      } else if (keysets && Object.entries(keysets).length > 0) {
-        return Object.entries(keysets)[0]
-      } else {
-        return
-      }
-    },
-  )
+
+  const keyset = (() => {
+    if (!keysets || !primaryKeysetName) {
+      return
+    }
+    if (keysets![primaryKeysetName!]) {
+      return [primaryKeysetName!, keysets![primaryKeysetName!]] as const
+    } else if (keysets && Object.entries(keysets).length > 0) {
+      return Object.entries(keysets)[0]
+    } else {
+      return
+    }
+  })()
 
   const reset = async () => {
     await rpc.client.clearKeysets()

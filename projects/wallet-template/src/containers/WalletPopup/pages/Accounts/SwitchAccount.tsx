@@ -15,18 +15,20 @@ export const SwitchAccount: React.FC = () => {
     () => rpc.client.listKeysets(),
     { revalidateOnFocus: true },
   )
+  const { data: primaryKeysetName } = useSWR(
+    keysets ? "/rpc/primaryKeysetName" : null,
+    () => rpc.client.getPrimaryKeysetName(),
+    { revalidateOnFocus: true },
+  )
 
   const [selectedKeysetName, setSelectedKeysetName] = useState<string>("")
   const { handleSubmit } = useForm()
 
   useEffect(() => {
-    ;(async () => {
-      const primaryKeysetName = await rpc.client.getPrimaryKeysetName()
-      if (primaryKeysetName && keysets?.[primaryKeysetName]) {
-        setSelectedKeysetName(primaryKeysetName)
-      }
-    })()
-  }, [keysets])
+    if (primaryKeysetName) {
+      setSelectedKeysetName(primaryKeysetName)
+    }
+  }, [primaryKeysetName])
 
   const onSubmit: SubmitHandler<Record<string, any>> = async () => {
     try {

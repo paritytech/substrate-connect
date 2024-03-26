@@ -66,9 +66,10 @@ export const AddAccount = () => {
       await rpc.client.insertKeyset(data.keysetName, {
         scheme: "Sr25519",
         derivationPaths,
+        createdAt: new Date(),
       })
       await rpc.client.setPrimaryKeysetName(data.keysetName)
-      mutate(["/rpc/keysets", "/rpc/primaryKeysetName"])
+      await mutate(["/rpc/keysets", "/rpc/primaryKeysetName"])
     } finally {
       navigate("/accounts")
     }
