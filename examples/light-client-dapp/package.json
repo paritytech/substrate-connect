@@ -16,7 +16,7 @@
     "@polkadot-api/substrate-bindings": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@polkadot-api/substrate-client": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@polkadot-api/utils": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
-    "@polkadot-labs/hdkd-helpers": "^0.0.5",
+    "@polkadot-labs/hdkd-helpers": "^0.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-select": "^5.8.0",
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@substrate/unstable-wallet-provider": "workspace:^",
-    "@types/react": "^18.2.69",
+    "@types/react": "^18.2.70",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@typescript-eslint/parser": "^7.3.1",
@@ -32,6 +32,6 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
-    "vite": "^5.1.6"
+    "vite": "^5.2.6"
   }
 }
