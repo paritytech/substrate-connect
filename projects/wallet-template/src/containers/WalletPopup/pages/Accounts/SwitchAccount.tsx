@@ -1,6 +1,6 @@
 import { User } from "lucide-react"
 import React, { useEffect, useState } from "react"
-import useSWR from "swr"
+import useSWR, { useSWRConfig } from "swr"
 import { rpc } from "../../api"
 import { RadioGroup } from "@headlessui/react"
 import { SubmitHandler, useForm } from "react-hook-form"
@@ -9,9 +9,12 @@ import { useNavigate } from "react-router-dom"
 export const SwitchAccount: React.FC = () => {
   const navigate = useNavigate()
 
-  const { data: keysets } = useSWR("/rpc/keysets", async () => {
-    return rpc.client.listKeysets()
-  })
+  const { mutate } = useSWRConfig()
+  const { data: keysets } = useSWR(
+    "/rpc/keysets",
+    () => rpc.client.listKeysets(),
+    { revalidateOnFocus: true },
+  )
 
   const [selectedKeysetName, setSelectedKeysetName] = useState<string>("")
   const { handleSubmit } = useForm()
@@ -28,6 +31,7 @@ export const SwitchAccount: React.FC = () => {
   const onSubmit: SubmitHandler<Record<string, any>> = async () => {
     try {
       await rpc.client.setPrimaryKeysetName(selectedKeysetName)
+      await mutate("/rpc/primaryKeysetName")
     } finally {
       navigate("/accounts")
     }
