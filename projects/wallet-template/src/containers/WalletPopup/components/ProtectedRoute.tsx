@@ -3,9 +3,13 @@ import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { useKeyring } from "../hooks"
 
 export const ProtectedRoute = ({ children }: { children?: ReactNode }) => {
-  const { isLocked } = useKeyring()
+  const {
+    keyring: { isLocked, hasPassword },
+  } = useKeyring()
   const location = useLocation()
-  return isLocked ? (
+  return !hasPassword ? (
+    <Navigate to="/welcome" replace />
+  ) : isLocked ? (
     <Navigate
       to="/unlock-keyring"
       replace

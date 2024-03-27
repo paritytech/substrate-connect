@@ -86,6 +86,9 @@ const createKeyring = () => {
       await removeKeystore()
       isLocked = true
     },
+    async hasPassword() {
+      return !!(await getKeystore())
+    },
   }
 }
 
@@ -247,9 +250,6 @@ export const createBackgroundRpc = (
     async unlockKeyring([password]) {
       return keyring.unlock(password)
     },
-    async isKeyringLocked() {
-      return keyring.isLocked()
-    },
     async changePassword([currentPassword, newPassword]) {
       return keyring.changePassword(currentPassword, newPassword)
     },
@@ -281,6 +281,12 @@ export const createBackgroundRpc = (
     },
     async setPrimaryKeysetName([keysetName]) {
       await storage.set("primaryKeysetName", keysetName)
+    },
+    async getKeyringState() {
+      return {
+        isLocked: await keyring.isLocked(),
+        hasPassword: await keyring.hasPassword(),
+      }
     },
   }
 
