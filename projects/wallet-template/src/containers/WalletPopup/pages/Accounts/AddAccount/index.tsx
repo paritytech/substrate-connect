@@ -9,9 +9,9 @@ import { networks } from "./networks"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { toHex } from "@polkadot-api/utils"
 import { useNavigate } from "react-router-dom"
-import { rpc } from "../../api"
-import { StepIndicator } from "../../components"
-import useSWR from "swr"
+import { rpc } from "../../../api"
+import { StepIndicator } from "../../../components"
+import useSWR, { useSWRConfig } from "swr"
 import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
 
 type FormFields = {
@@ -22,11 +22,11 @@ type FormFields = {
 export const AddAccount = () => {
   const navigate = useNavigate()
   const [mnemonic, _] = useState(generateMnemonic(256).split(" "))
-  const { data: keysets, isLoading: isKeysetsLoading } = useSWR(
+  const { mutate } = useSWRConfig()
+  const { data: keysets, isLoading: areKeysetsLoading } = useSWR(
     "/rpc/keysets",
-    async () => {
-      return rpc.client.listKeysets()
-    },
+    () => rpc.client.listKeysets(),
+    { revalidateOnFocus: true },
   )
 
   // HACK: work around for double submit
@@ -66,7 +66,10 @@ export const AddAccount = () => {
       await rpc.client.insertKeyset(data.keysetName, {
         scheme: "Sr25519",
         derivationPaths,
+        createdAt: Date.now(),
       })
+      await rpc.client.setPrimaryKeysetName(data.keysetName)
+      await mutate(["/rpc/keysets", "/rpc/primaryKeysetName"])
     } finally {
       navigate("/accounts")
     }
@@ -234,7 +237,7 @@ export const AddAccount = () => {
                 type="button"
                 onClick={nextStep}
                 className="flex items-center px-4 py-2 text-white bg-teal-500 rounded hover:bg-teal-600"
-                disabled={isKeysetsLoading || isSubmitting}
+                disabled={areKeysetsLoading || isSubmitting}
               >
                 Next <ArrowRight size="16" className="ml-2" />
               </button>

@@ -8,10 +8,10 @@ import {
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { ss58Address } from "@polkadot-labs/hdkd-helpers"
-import { rpc } from "../api"
-import useSWR from "swr"
-import { IconButton } from "../../../components"
-import { Keyset } from "../../../background/types"
+import { rpc } from "../../api"
+import useSWR, { useSWRConfig } from "swr"
+import { IconButton } from "../../../../components"
+import { Keyset } from "../../../../background/types"
 
 type AccountItemProps = {
   bgColor: string
@@ -72,12 +72,11 @@ const EmptyAccounts: React.FC = () => {
 }
 
 type AccountsListProps = {
-  keysets: Record<string, Keyset>
+  keysetName: string
+  keyset: Keyset
 }
 
-const AccountsList: React.FC<AccountsListProps> = ({ keysets }) => {
-  // TODO: use mutliple keysets
-  const [keysetName, keyset] = Object.entries(keysets)[0]
+const AccountsList: React.FC<AccountsListProps> = ({ keysetName, keyset }) => {
   const keypairs = keyset.derivationPaths.map(
     ({ path, publicKey }) => [path, ss58Address(publicKey)] as const,
   )
@@ -110,13 +109,26 @@ const AccountsList: React.FC<AccountsListProps> = ({ keysets }) => {
 
 export const Accounts = () => {
   const navigate = useNavigate()
-  const { data: keysets } = useSWR("/rpc/keysets", async () => {
-    return rpc.client.listKeysets()
-  })
-  const keysetsLength = keysets ? Object.keys(keysets).length : 0
+  const { mutate } = useSWRConfig()
+  const { data: primaryKeysetName } = useSWR(
+    "/rpc/primaryKeysetName",
+    () => rpc.client.getPrimaryKeysetName(),
+    { revalidateOnFocus: true },
+  )
+  const { data: keyset } = useSWR(
+    primaryKeysetName ? `/rpc/getKeyset/${primaryKeysetName}` : null,
+    async () => {
+      const keyset = await rpc.client.getKeyset(primaryKeysetName!)
+      if (!keyset) return
+
+      return [primaryKeysetName!, keyset!] as const
+    },
+    { revalidateOnFocus: true },
+  )
 
   const reset = async () => {
     await rpc.client.clearKeysets()
+    await mutate(["/rpc/keysets", "/rpc/primaryKeysetName"])
     navigate(0)
   }
 
@@ -129,13 +141,18 @@ export const Accounts = () => {
               <RotateCcw />
             </IconButton>
             <div className="flex items-center">
-              <Link to="/add">
+              <Link to="/accounts/add">
                 <IconButton>
                   <Plus />
                 </IconButton>
               </Link>
-              <IconButton>
-                <ArrowRightLeft />
+              <IconButton disabled={!keyset}>
+                <Link
+                  to="/accounts/switch"
+                  className={!keyset ? "pointer-events-none" : ""}
+                >
+                  <ArrowRightLeft />
+                </Link>
               </IconButton>
               <IconButton>
                 <Settings />
@@ -143,8 +160,8 @@ export const Accounts = () => {
             </div>
           </div>
         </div>
-        {keysetsLength > 0 ? (
-          <AccountsList keysets={keysets ?? {}} />
+        {keyset ? (
+          <AccountsList keysetName={keyset[0]} keyset={keyset[1]} />
         ) : (
           <EmptyAccounts />
         )}

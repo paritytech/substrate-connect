@@ -1,9 +1,14 @@
 import type { KeystoreV4 } from "./keystore"
+import { Keyset } from "./types"
 
 const STORAGE_PREFIX = "wallet-template/"
 
 type StorageConfig = {
   password: KeystoreV4
+  keysets: {
+    [key: string]: Keyset
+  }
+  primaryKeysetName: string
   // TODO: add other entries
 }
 

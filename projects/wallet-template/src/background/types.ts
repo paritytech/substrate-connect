@@ -16,6 +16,7 @@ type DerivationPath = {
 export type Keyset = {
   scheme: string
   derivationPaths: DerivationPath[]
+  createdAt: number
 }
 
 export type SignRequest = {
@@ -51,4 +52,6 @@ export type BackgroundRpcSpec = {
   removeKeyset(keysetName: string): Promise<void>
   clearKeysets(): Promise<void>
   getKeyringState(): Promise<KeyringState>
+  getPrimaryKeysetName(): Promise<string | undefined>
+  setPrimaryKeysetName(keysetName: string): Promise<void>
 }
