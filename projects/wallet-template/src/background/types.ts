@@ -16,6 +16,7 @@ type DerivationPath = {
 export type Keyset = {
   name: string
   scheme: string
+  miniSecret: string
   derivationPaths: DerivationPath[]
   createdAt: number
 }

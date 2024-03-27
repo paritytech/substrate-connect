@@ -14,6 +14,7 @@ import { StepIndicator } from "../../../components"
 import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
 import useSWR from "swr"
 import { fetchKeysets } from "../fetch"
+import { bytesToHex } from "@noble/ciphers/utils"
 
 type FormFields = {
   keysetName: string
@@ -70,6 +71,7 @@ export const AddAccount = () => {
         scheme: "Sr25519",
         derivationPaths,
         createdAt: Date.now(),
+        miniSecret: bytesToHex(miniSecret),
       })
       await mutate()
     } finally {
