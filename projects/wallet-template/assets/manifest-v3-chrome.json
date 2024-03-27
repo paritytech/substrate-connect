@@ -13,7 +13,7 @@
   },
   "action": {
     "default_title": "Substrate Connect",
-    "default_popup": "ui/assets/popup.html"
+    "default_popup": "ui/assets/wallet-popup.html"
   },
   "options_ui": {
     "page": "ui/assets/options.html",

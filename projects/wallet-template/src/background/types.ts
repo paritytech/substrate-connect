@@ -26,6 +26,11 @@ export type SignRequest = {
   userSignedExtensionNames: UserSignedExtensionName[]
 }
 
+type KeyringState = {
+  isLocked: boolean
+  hasPassword: boolean
+}
+
 export type BackgroundRpcSpec = {
   getAccounts(chainId: string): Promise<Account[]>
   createTx(chainId: string, from: string, callData: string): Promise<string>
@@ -38,7 +43,6 @@ export type BackgroundRpcSpec = {
   cancelSignRequest(id: string): Promise<void>
   lockKeyring(): Promise<void>
   unlockKeyring(password: string): Promise<void>
-  isKeyringLocked(): Promise<boolean>
   changePassword(currentPassword: string, newPassword: string): Promise<void>
   createPassword(password: string): Promise<void>
   insertKeyset(keysetName: string, keyset: Keyset): Promise<void>
@@ -46,4 +50,5 @@ export type BackgroundRpcSpec = {
   listKeysets(): Promise<Record<string, Keyset>>
   removeKeyset(keysetName: string): Promise<void>
   clearKeysets(): Promise<void>
+  getKeyringState(): Promise<KeyringState>
 }

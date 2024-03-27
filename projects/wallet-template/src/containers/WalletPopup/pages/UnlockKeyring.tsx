@@ -16,7 +16,7 @@ export const UnlockKeyring = () => {
   const onSubmit: SubmitHandler<FormFields> = ({ password }) => unlock(password)
   return (
     <div>
-      <div className="my-4 h-96 flex justify-center items-center">
+      <div className="my-4 h-80 flex justify-center items-center">
         <h1 className="text-3xl font-bold text-center">Unlock Wallet</h1>
       </div>
       <form

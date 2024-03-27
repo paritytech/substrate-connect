@@ -4,7 +4,10 @@ import useSWR from "swr"
 import { rpc } from "../api"
 
 type Context = {
-  isLocked: boolean
+  keyring: {
+    isLocked: boolean
+    hasPassword: boolean
+  }
   unlock(password: string): Promise<void>
   lock(): Promise<void>
   refresh(): Promise<void>
@@ -14,11 +17,11 @@ const LockContext = createContext({} as Context)
 
 export const KeyringProvider = ({ children }: { children?: ReactNode }) => {
   const {
-    data: isLocked,
+    data: keyring,
     isLoading,
     error,
     mutate,
-  } = useSWR("rpc.isKeyringLocked", () => rpc.client.isKeyringLocked())
+  } = useSWR("rpc.getKeyringState", () => rpc.client.getKeyringState())
   const navigate = useNavigate()
   const location = useLocation()
   // FIXME: on error, navigate to error page
@@ -34,10 +37,10 @@ export const KeyringProvider = ({ children }: { children?: ReactNode }) => {
   const lock = async () => {
     await rpc.client.lockKeyring()
     await refresh()
-    navigate("/unlock-keyring", { replace: true })
+    navigate("/unlock-keyring")
   }
   const value = {
-    isLocked: isLocked!,
+    keyring: keyring!,
     unlock,
     lock,
     refresh,
