@@ -16,7 +16,7 @@ type DerivationPath = {
 export type Keyset = {
   scheme: string
   derivationPaths: DerivationPath[]
-  createdAt: Date
+  createdAt: number
 }
 
 export type SignRequest = {

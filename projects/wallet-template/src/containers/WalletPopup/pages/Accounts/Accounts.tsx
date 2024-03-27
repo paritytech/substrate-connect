@@ -12,7 +12,6 @@ import { rpc } from "../../api"
 import useSWR, { useSWRConfig } from "swr"
 import { IconButton } from "../../../../components"
 import { Keyset } from "../../../../background/types"
-import { useEffect } from "react"
 
 type AccountItemProps = {
   bgColor: string
@@ -111,33 +110,25 @@ const AccountsList: React.FC<AccountsListProps> = ({ keysetName, keyset }) => {
 export const Accounts = () => {
   const navigate = useNavigate()
   const { mutate } = useSWRConfig()
-  const { data: keysets } = useSWR(
-    "/rpc/keysets",
-    () => rpc.client.listKeysets(),
-    { revalidateOnFocus: true },
-  )
   const { data: primaryKeysetName } = useSWR(
-    keysets ? "/rpc/primaryKeysetName" : null,
+    "/rpc/primaryKeysetName",
     () => rpc.client.getPrimaryKeysetName(),
     { revalidateOnFocus: true },
   )
+  const { data: keyset } = useSWR(
+    primaryKeysetName ? `/rpc/getKeyset/${primaryKeysetName}` : null,
+    async () => {
+      const keyset = await rpc.client.getKeyset(primaryKeysetName!)
+      if (!keyset) return
 
-  const keyset = (() => {
-    if (!keysets || !primaryKeysetName) {
-      return
-    }
-    if (keysets![primaryKeysetName!]) {
-      return [primaryKeysetName!, keysets![primaryKeysetName!]] as const
-    } else if (keysets && Object.entries(keysets).length > 0) {
-      return Object.entries(keysets)[0]
-    } else {
-      return
-    }
-  })()
+      return [primaryKeysetName!, keyset!] as const
+    },
+    { revalidateOnFocus: true },
+  )
 
   const reset = async () => {
     await rpc.client.clearKeysets()
-    await mutate("/rpc/keysets")
+    await mutate(["/rpc/keysets", "/rpc/primaryKeysetName"])
     navigate(0)
   }
 

@@ -115,9 +115,9 @@ export const createBackgroundRpc = (
   }
 
   const listKeysets = async () => {
-    const keysets = (await storage.get("keysets")) || {}
+    const keysets = await storage.get("keysets")
 
-    return keysets
+    return keysets ?? {}
   }
 
   const handlers: RpcMethodHandlers<BackgroundRpcSpec, Context> = {
@@ -275,6 +275,7 @@ export const createBackgroundRpc = (
     },
     async clearKeysets() {
       await storage.remove("keysets")
+      await storage.remove("primaryKeysetName")
     },
     async getPrimaryKeysetName() {
       return storage.get("primaryKeysetName")
