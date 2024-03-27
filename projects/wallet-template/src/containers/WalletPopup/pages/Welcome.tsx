@@ -26,7 +26,7 @@ export const Welcome = () => {
   }
   return (
     <div>
-      {isSubmitSuccessful && <Navigate to="/" replace={true} />}
+      {isSubmitSuccessful && <Navigate to="/accounts" replace={true} />}
       <div className="my-4">
         <h1 className="text-3xl font-bold text-center">Welcome</h1>
       </div>
