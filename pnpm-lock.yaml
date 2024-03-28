@@ -513,9 +513,6 @@ importers:
       '@substrate/connect-extension-protocol':
         specifier: workspace:*
         version: link:../../packages/connect-extension-protocol
-      '@substrate/connect-known-chains':
-        specifier: workspace:^
-        version: link:../../packages/connect-known-chains
       '@substrate/light-client-extension-helpers':
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers

@@ -111,24 +111,29 @@ export const Accounts = () => {
   const navigate = useNavigate()
   const { mutate } = useSWRConfig()
   const { data: primaryKeysetName } = useSWR(
-    "/rpc/primaryKeysetName",
+    ["/rpc/keysets/primaryName"],
     () => rpc.client.getPrimaryKeysetName(),
     { revalidateOnFocus: true },
   )
   const { data: keyset } = useSWR(
-    primaryKeysetName ? `/rpc/getKeyset/${primaryKeysetName}` : null,
-    async () => {
-      const keyset = await rpc.client.getKeyset(primaryKeysetName!)
+    primaryKeysetName ? ["/rpc/keysets/getKeyset", primaryKeysetName] : null,
+    async ([_, keysetName]) => {
+      const keyset = await rpc.client.getKeyset(keysetName)
       if (!keyset) return
 
-      return [primaryKeysetName!, keyset!] as const
+      return [keysetName, keyset] as const
     },
     { revalidateOnFocus: true },
   )
 
   const reset = async () => {
     await rpc.client.clearKeysets()
-    await mutate(["/rpc/keysets", "/rpc/primaryKeysetName"])
+    await mutate(
+      (key) =>
+        Array.isArray(key) &&
+        typeof key[0] === "string" &&
+        key[0].startsWith("/rpc/keysets"),
+    )
     navigate(0)
   }
 

@@ -24,7 +24,7 @@ export const AddAccount = () => {
   const [mnemonic, _] = useState(generateMnemonic(256).split(" "))
   const { mutate } = useSWRConfig()
   const { data: keysets, isLoading: areKeysetsLoading } = useSWR(
-    "/rpc/keysets",
+    ["/rpc/keysets"],
     () => rpc.client.listKeysets(),
     { revalidateOnFocus: true },
   )
@@ -69,7 +69,12 @@ export const AddAccount = () => {
         createdAt: Date.now(),
       })
       await rpc.client.setPrimaryKeysetName(data.keysetName)
-      await mutate(["/rpc/keysets", "/rpc/primaryKeysetName"])
+      await mutate(
+        (key) =>
+          Array.isArray(key) &&
+          typeof key[0] === "string" &&
+          key[0].startsWith("/rpc/keysets"),
+      )
     } finally {
       navigate("/accounts")
     }
