@@ -52,6 +52,7 @@
     "wxt": "^0.17.9"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.18",
     "@noble/ciphers": "^0.5.2",
     "@noble/hashes": "^1.4.0",
     "@polkadot-api/client": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
@@ -59,7 +60,6 @@
     "@polkadot-api/substrate-client": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@polkadot-api/tx-helper": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@polkadot-api/utils": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
-    "@substrate/connect-known-chains": "workspace:^",
     "@polkadot-labs/hdkd": "^0.0.6",
     "@polkadot-labs/hdkd-helpers": "^0.0.6",
     "@react-rxjs/core": "^0.10.7",

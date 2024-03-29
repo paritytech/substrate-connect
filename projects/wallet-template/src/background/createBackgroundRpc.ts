@@ -115,8 +115,9 @@ export const createBackgroundRpc = (
   }
 
   const listKeysets = async () => {
-    const keysets = (await chrome.storage.local.get("keysets")) || {}
-    return keysets["keysets"] || {}
+    const keysets = await storage.get("keysets")
+
+    return keysets ?? []
   }
 
   const handlers: RpcMethodHandlers<BackgroundRpcSpec, Context> = {
@@ -255,27 +256,33 @@ export const createBackgroundRpc = (
     async createPassword([password]) {
       return keyring.setup(password)
     },
-    async insertKeyset([keysetName, keyset]) {
-      const existingKeysets = await listKeysets()
-      await chrome.storage.local.set({
-        keysets: {
-          ...existingKeysets,
-          [keysetName]: keyset,
-        },
-      })
+    async upsertKeyset([keyset]) {
+      const keysets = await listKeysets()
+      const existingIdx = keysets.findIndex(
+        (existing) => existing.name === keyset.name,
+      )
+      if (existingIdx !== -1) {
+        keysets.splice(existingIdx, 1)
+      }
+      await storage.set("keysets", [...keysets, keyset])
     },
     async getKeyset([keysetName]) {
       const keysets = await listKeysets()
-      return keysets[keysetName]
+      return keysets.find((keyset) => keyset.name === keysetName)
     },
     listKeysets,
     async removeKeyset([keysetName]) {
       const keysets = await listKeysets()
-      delete keysets[keysetName]
-      await chrome.storage.local.set({ keysets })
+      const existingIdx = keysets.findIndex(
+        (keyset) => keyset.name === keysetName,
+      )
+      if (existingIdx !== -1) {
+        keysets.splice(existingIdx, 1)
+      }
+      await storage.set("keysets", keysets)
     },
     async clearKeysets() {
-      await chrome.storage.local.remove("keysets")
+      await storage.remove("keysets")
     },
     async getKeyringState() {
       return {

@@ -8,10 +8,11 @@ import {
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { ss58Address } from "@polkadot-labs/hdkd-helpers"
-import { rpc } from "../api"
+import { rpc } from "../../api"
+import { IconButton } from "../../../../components"
+import { Keyset } from "../../../../background/types"
 import useSWR from "swr"
-import { IconButton } from "../../../components"
-import { Keyset } from "../../../background/types"
+import { fetchKeysets } from "./fetch"
 
 type AccountItemProps = {
   bgColor: string
@@ -72,12 +73,10 @@ const EmptyAccounts: React.FC = () => {
 }
 
 type AccountsListProps = {
-  keysets: Record<string, Keyset>
+  keyset: Keyset
 }
 
-const AccountsList: React.FC<AccountsListProps> = ({ keysets }) => {
-  // TODO: use mutliple keysets
-  const [keysetName, keyset] = Object.entries(keysets)[0]
+const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
   const keypairs = keyset.derivationPaths.map(
     ({ path, publicKey }) => [path, ss58Address(publicKey)] as const,
   )
@@ -90,7 +89,7 @@ const AccountsList: React.FC<AccountsListProps> = ({ keysets }) => {
           alt="Profile"
           className="w-24 h-24 rounded-full"
         />
-        <h1 className="text-2xl font-bold mt-2">{keysetName}</h1>
+        <h1 className="text-2xl font-bold mt-2">{keyset.name}</h1>
       </div>
       <div className="px-4">
         <h2 className="text-lg font-semibold mb-2">Derived Keys</h2>
@@ -110,13 +109,13 @@ const AccountsList: React.FC<AccountsListProps> = ({ keysets }) => {
 
 export const Accounts = () => {
   const navigate = useNavigate()
-  const { data: keysets } = useSWR("/rpc/keysets", async () => {
-    return rpc.client.listKeysets()
+  const { data: keysetData, mutate } = useSWR("rpc.keysets", fetchKeysets, {
+    revalidateOnFocus: true,
   })
-  const keysetsLength = keysets ? Object.keys(keysets).length : 0
 
   const reset = async () => {
     await rpc.client.clearKeysets()
+    await mutate()
     navigate(0)
   }
 
@@ -129,13 +128,18 @@ export const Accounts = () => {
               <RotateCcw />
             </IconButton>
             <div className="flex items-center">
-              <Link to="/add">
+              <Link to="/accounts/add">
                 <IconButton>
                   <Plus />
                 </IconButton>
               </Link>
-              <IconButton>
-                <ArrowRightLeft />
+              <IconButton disabled={!keysetData}>
+                <Link
+                  to="/accounts/switch"
+                  className={!keysetData ? "pointer-events-none" : ""}
+                >
+                  <ArrowRightLeft />
+                </Link>
               </IconButton>
               <IconButton>
                 <Settings />
@@ -143,8 +147,8 @@ export const Accounts = () => {
             </div>
           </div>
         </div>
-        {keysetsLength > 0 ? (
-          <AccountsList keysets={keysets ?? {}} />
+        {keysetData ? (
+          <AccountsList keyset={keysetData[0]} />
         ) : (
           <EmptyAccounts />
         )}

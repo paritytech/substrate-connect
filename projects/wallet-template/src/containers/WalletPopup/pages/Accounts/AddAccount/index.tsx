@@ -9,10 +9,11 @@ import { networks } from "./networks"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { toHex } from "@polkadot-api/utils"
 import { useNavigate } from "react-router-dom"
-import { rpc } from "../../api"
-import { StepIndicator } from "../../components"
-import useSWR from "swr"
+import { rpc } from "../../../api"
+import { StepIndicator } from "../../../components"
 import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
+import useSWR from "swr"
+import { fetchKeysets } from "../fetch"
 
 type FormFields = {
   keysetName: string
@@ -22,12 +23,13 @@ type FormFields = {
 export const AddAccount = () => {
   const navigate = useNavigate()
   const [mnemonic, _] = useState(generateMnemonic(256).split(" "))
-  const { data: keysets, isLoading: isKeysetsLoading } = useSWR(
-    "/rpc/keysets",
-    async () => {
-      return rpc.client.listKeysets()
-    },
-  )
+  const {
+    data: keysetsData,
+    isLoading: areKeysetsLoading,
+    mutate,
+  } = useSWR("rpc.keysets", fetchKeysets, {
+    revalidateOnFocus: true,
+  })
 
   // HACK: work around for double submit
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -63,10 +65,13 @@ export const AddAccount = () => {
         }
       })
 
-      await rpc.client.insertKeyset(data.keysetName, {
+      await rpc.client.upsertKeyset({
+        name: data.keysetName,
         scheme: "Sr25519",
         derivationPaths,
+        createdAt: Date.now(),
       })
+      await mutate()
     } finally {
       navigate("/accounts")
     }
@@ -123,8 +128,8 @@ export const AddAccount = () => {
                 {...register("keysetName", {
                   required: "You must specify a keyset name",
                   validate: (v) =>
-                    (keysets && keysets[v] === undefined) ||
-                    "Keyset already exists",
+                    keysetsData?.[1].find((keyset) => keyset.name === v) ===
+                      undefined || "Keyset already exists",
                   minLength: {
                     value: 1,
                     message: "Keyset must have at least 1 character",
@@ -234,7 +239,7 @@ export const AddAccount = () => {
                 type="button"
                 onClick={nextStep}
                 className="flex items-center px-4 py-2 text-white bg-teal-500 rounded hover:bg-teal-600"
-                disabled={isKeysetsLoading || isSubmitting}
+                disabled={areKeysetsLoading || isSubmitting}
               >
                 Next <ArrowRight size="16" className="ml-2" />
               </button>

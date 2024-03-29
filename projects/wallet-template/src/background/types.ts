@@ -14,8 +14,10 @@ type DerivationPath = {
 }
 
 export type Keyset = {
+  name: string
   scheme: string
   derivationPaths: DerivationPath[]
+  createdAt: number
 }
 
 export type SignRequest = {
@@ -45,9 +47,9 @@ export type BackgroundRpcSpec = {
   unlockKeyring(password: string): Promise<void>
   changePassword(currentPassword: string, newPassword: string): Promise<void>
   createPassword(password: string): Promise<void>
-  insertKeyset(keysetName: string, keyset: Keyset): Promise<void>
+  upsertKeyset(keyset: Keyset): Promise<void>
   getKeyset(keysetName: string): Promise<Keyset | undefined>
-  listKeysets(): Promise<Record<string, Keyset>>
+  listKeysets(): Promise<Keyset[]>
   removeKeyset(keysetName: string): Promise<void>
   clearKeysets(): Promise<void>
   getKeyringState(): Promise<KeyringState>
