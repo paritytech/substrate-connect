@@ -5,10 +5,7 @@ const STORAGE_PREFIX = "wallet-template/"
 
 type StorageConfig = {
   password: KeystoreV4
-  keysets: {
-    [key: string]: Keyset
-  }
-  primaryKeysetName: string
+  keysets: Keyset[]
   // TODO: add other entries
 }
 

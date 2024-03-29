@@ -1,45 +1,41 @@
 import { User } from "lucide-react"
 import React, { useEffect, useState } from "react"
-import useSWR from "swr"
 import { rpc } from "../../api"
 import { RadioGroup } from "@headlessui/react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
+import useSWR from "swr"
+import { fetchKeysets } from "./fetch"
 
 export const SwitchAccount: React.FC = () => {
   const navigate = useNavigate()
 
-  const { data: keysets } = useSWR(
-    ["/rpc/keysets"],
-    () => rpc.client.listKeysets(),
-    { revalidateOnFocus: true },
-  )
-  const { data: primaryKeysetName, mutate } = useSWR(
-    ["/rpc/keysets/primaryName"],
-    () => rpc.client.getPrimaryKeysetName(),
-    { revalidateOnFocus: true },
-  )
+  const { data: keysetData, mutate } = useSWR("rpc.keysets", fetchKeysets, {
+    revalidateOnFocus: true,
+  })
 
   const [selectedKeysetName, setSelectedKeysetName] = useState<string>("")
   const { handleSubmit } = useForm()
 
   useEffect(() => {
-    if (primaryKeysetName) {
-      setSelectedKeysetName(primaryKeysetName)
+    if (keysetData && selectedKeysetName === "") {
+      setSelectedKeysetName(() => keysetData[0].name)
     }
-  }, [primaryKeysetName])
+  }, [selectedKeysetName, keysetData])
 
   const onSubmit: SubmitHandler<Record<string, any>> = async () => {
     try {
-      await rpc.client.setPrimaryKeysetName(selectedKeysetName)
+      if (!keysetData) return
+      await rpc.client.upsertKeyset(
+        keysetData[1].find((keyset) => keyset.name === selectedKeysetName)!,
+      )
       await mutate()
     } finally {
       navigate("/accounts")
     }
   }
 
-  const keysetNames = Object.keys(keysets ?? {})
-
+  const keysetNames = keysetData?.[1]?.map((keyset) => keyset.name) ?? []
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4">
       <div className="max-w-xl p-6 mx-auto bg-white rounded-lg shadow-lg">

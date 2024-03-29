@@ -9,9 +9,10 @@ import {
 import { Link, useNavigate } from "react-router-dom"
 import { ss58Address } from "@polkadot-labs/hdkd-helpers"
 import { rpc } from "../../api"
-import useSWR, { useSWRConfig } from "swr"
 import { IconButton } from "../../../../components"
 import { Keyset } from "../../../../background/types"
+import useSWR from "swr"
+import { fetchKeysets } from "./fetch"
 
 type AccountItemProps = {
   bgColor: string
@@ -72,11 +73,10 @@ const EmptyAccounts: React.FC = () => {
 }
 
 type AccountsListProps = {
-  keysetName: string
   keyset: Keyset
 }
 
-const AccountsList: React.FC<AccountsListProps> = ({ keysetName, keyset }) => {
+const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
   const keypairs = keyset.derivationPaths.map(
     ({ path, publicKey }) => [path, ss58Address(publicKey)] as const,
   )
@@ -89,7 +89,7 @@ const AccountsList: React.FC<AccountsListProps> = ({ keysetName, keyset }) => {
           alt="Profile"
           className="w-24 h-24 rounded-full"
         />
-        <h1 className="text-2xl font-bold mt-2">{keysetName}</h1>
+        <h1 className="text-2xl font-bold mt-2">{keyset.name}</h1>
       </div>
       <div className="px-4">
         <h2 className="text-lg font-semibold mb-2">Derived Keys</h2>
@@ -109,31 +109,13 @@ const AccountsList: React.FC<AccountsListProps> = ({ keysetName, keyset }) => {
 
 export const Accounts = () => {
   const navigate = useNavigate()
-  const { mutate } = useSWRConfig()
-  const { data: primaryKeysetName } = useSWR(
-    ["/rpc/keysets/primaryName"],
-    () => rpc.client.getPrimaryKeysetName(),
-    { revalidateOnFocus: true },
-  )
-  const { data: keyset } = useSWR(
-    primaryKeysetName ? ["/rpc/keysets/getKeyset", primaryKeysetName] : null,
-    async ([_, keysetName]) => {
-      const keyset = await rpc.client.getKeyset(keysetName)
-      if (!keyset) return
-
-      return [keysetName, keyset] as const
-    },
-    { revalidateOnFocus: true },
-  )
+  const { data: keysetData, mutate } = useSWR("rpc.keysets", fetchKeysets, {
+    revalidateOnFocus: true,
+  })
 
   const reset = async () => {
     await rpc.client.clearKeysets()
-    await mutate(
-      (key) =>
-        Array.isArray(key) &&
-        typeof key[0] === "string" &&
-        key[0].startsWith("/rpc/keysets"),
-    )
+    await mutate()
     navigate(0)
   }
 
@@ -151,10 +133,10 @@ export const Accounts = () => {
                   <Plus />
                 </IconButton>
               </Link>
-              <IconButton disabled={!keyset}>
+              <IconButton disabled={!keysetData}>
                 <Link
                   to="/accounts/switch"
-                  className={!keyset ? "pointer-events-none" : ""}
+                  className={!keysetData ? "pointer-events-none" : ""}
                 >
                   <ArrowRightLeft />
                 </Link>
@@ -165,8 +147,8 @@ export const Accounts = () => {
             </div>
           </div>
         </div>
-        {keyset ? (
-          <AccountsList keysetName={keyset[0]} keyset={keyset[1]} />
+        {keysetData ? (
+          <AccountsList keyset={keysetData[0]} />
         ) : (
           <EmptyAccounts />
         )}

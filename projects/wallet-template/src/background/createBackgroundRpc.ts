@@ -117,7 +117,7 @@ export const createBackgroundRpc = (
   const listKeysets = async () => {
     const keysets = await storage.get("keysets")
 
-    return keysets ?? {}
+    return keysets ?? []
   }
 
   const handlers: RpcMethodHandlers<BackgroundRpcSpec, Context> = {
@@ -256,32 +256,33 @@ export const createBackgroundRpc = (
     async createPassword([password]) {
       return keyring.setup(password)
     },
-    async insertKeyset([keysetName, keyset]) {
-      const existingKeysets = await listKeysets()
-      await storage.set("keysets", {
-        ...existingKeysets,
-        [keysetName]: keyset,
-      })
+    async upsertKeyset([keyset]) {
+      const keysets = await listKeysets()
+      const existingIdx = keysets.findIndex(
+        (existing) => existing.name === keyset.name,
+      )
+      if (existingIdx !== -1) {
+        keysets.splice(existingIdx, 1)
+      }
+      await storage.set("keysets", [...keysets, keyset])
     },
     async getKeyset([keysetName]) {
       const keysets = await listKeysets()
-      return keysets[keysetName]
+      return keysets.find((keyset) => keyset.name === keysetName)
     },
     listKeysets,
     async removeKeyset([keysetName]) {
       const keysets = await listKeysets()
-      delete keysets[keysetName]
+      const existingIdx = keysets.findIndex(
+        (keyset) => keyset.name === keysetName,
+      )
+      if (existingIdx !== -1) {
+        keysets.splice(existingIdx, 1)
+      }
       await storage.set("keysets", keysets)
     },
     async clearKeysets() {
       await storage.remove("keysets")
-      await storage.remove("primaryKeysetName")
-    },
-    async getPrimaryKeysetName() {
-      return storage.get("primaryKeysetName")
-    },
-    async setPrimaryKeysetName([keysetName]) {
-      await storage.set("primaryKeysetName", keysetName)
     },
     async getKeyringState() {
       return {
