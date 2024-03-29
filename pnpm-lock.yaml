@@ -584,8 +584,8 @@ importers:
         specifier: ^7.11.0
         version: 7.11.0
       wxt:
-        specifier: ^0.17.9
-        version: 0.17.9(@types/node@20.11.30)
+        specifier: ^0.17.10
+        version: 0.17.10(@types/node@20.11.30)
 
   zombienet-tests:
     dependencies:
@@ -12058,8 +12058,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  /wxt@0.17.9(@types/node@20.11.30):
-    resolution: {integrity: sha512-ybMnwPDDXgoa2dJV5j0anm3mjfIf6oH0skBDhto78a3jkwABxxQHi30mi1xmGb3Nb/vVdHN/PWPQ3sT5ZFh8qw==}
+  /wxt@0.17.10(@types/node@20.11.30):
+    resolution: {integrity: sha512-HvVcaoqBPgNNKK9VylqGDSBp3Qicjq+m6T9ac6J/2atZwvyp4N4H6fNagbMX9+nypQM7XayOyrTP+DMR/mX7wA==}
     engines: {node: '>=18', pnpm: '>=8'}
     hasBin: true
     dependencies:
