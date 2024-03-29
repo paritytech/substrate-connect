@@ -1,5 +1,5 @@
 import { ArrowRight, CheckCircle, Copy } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import {
   entropyToMiniSecret,
   generateMnemonic,
@@ -30,10 +30,6 @@ export const AddAccount = () => {
   } = useSWR("rpc.keysets", fetchKeysets, {
     revalidateOnFocus: true,
   })
-
-  useEffect(() => {
-    console.log("keysets", keysetsData)
-  }, [keysetsData])
 
   // HACK: work around for double submit
   const [isSubmitted, setIsSubmitted] = useState(false)
