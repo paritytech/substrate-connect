@@ -126,35 +126,31 @@ export const Accounts = () => {
   }
 
   return (
-    <main className="p-4">
-      <div className="max-w-xl p-6 mx-auto bg-white rounded-lg shadow-lg">
-        <div className="flex flex-col">
-          <div className="bg-white px-4 py-2 flex items-center justify-between">
-            <IconButton onClick={reset}>
-              <RotateCcw />
+    <main className="max-w-xl flex flex-col">
+      <div className="bg-white px-4 py-2 flex items-center justify-between">
+        <IconButton onClick={reset}>
+          <RotateCcw />
+        </IconButton>
+        <div className="flex items-center">
+          <Link to="/accounts/add">
+            <IconButton>
+              <Plus />
             </IconButton>
-            <div className="flex items-center">
-              <Link to="/accounts/add">
-                <IconButton>
-                  <Plus />
-                </IconButton>
-              </Link>
-              <IconButton disabled={!keyset}>
-                <Link
-                  to="/accounts/switch"
-                  className={!keyset ? "pointer-events-none" : ""}
-                >
-                  <ArrowRightLeft />
-                </Link>
-              </IconButton>
-              <IconButton>
-                <Settings />
-              </IconButton>
-            </div>
-          </div>
+          </Link>
+          <IconButton disabled={!keyset}>
+            <Link
+              to="/accounts/switch"
+              className={!keyset ? "pointer-events-none" : ""}
+            >
+              <ArrowRightLeft />
+            </Link>
+          </IconButton>
+          <IconButton>
+            <Settings />
+          </IconButton>
         </div>
-        {keyset ? <AccountsList keyset={keyset} /> : <EmptyAccounts />}
       </div>
+      {keyset ? <AccountsList keyset={keyset} /> : <EmptyAccounts />}
     </main>
   )
 }
