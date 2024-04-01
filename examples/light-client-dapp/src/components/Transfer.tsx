@@ -1,134 +1,113 @@
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react"
-import { UnstableWallet } from "@substrate/unstable-wallet-provider"
-import Select from "react-select"
-import { transaction, transferAllowDeathCallData } from "../transaction"
-import { lastValueFrom, mergeMap, tap } from "rxjs"
-import { useSystemAccount } from "../hooks"
-
-type Props = {
-  provider: UnstableWallet.Provider
-}
+import { type FormEvent, useCallback, useState, useEffect } from "react"
+import { lastValueFrom, tap } from "rxjs"
+import {
+  createTransaction,
+  submitTransaction$,
+  transferAllowDeathCallData,
+} from "../api"
+import { useUnstableProvider } from "../hooks"
 
 type FinalizedTransaction = {
   blockHash: string
   index: number
 }
 
-// FIXME: use dynamic chainId
-// Westend chainId
-const chainId =
-  "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e"
-
-export const Transfer = ({ provider }: Props) => {
-  const [accounts, setAccounts] = useState<UnstableWallet.Account[]>([])
+export const Transfer = () => {
+  const { account, provider, chainId } = useUnstableProvider()
   const [destination, setDestination] = useState<string>(
     "5CofVLAGjwvdGXvBiP6ddtZYMVbhT5Xke8ZrshUpj2ZXAnND",
   )
   const [amount, setAmount] = useState<bigint>(0n)
-  const [selectedAccount, setSelectedAccount] = useState<{
-    value: string
-    label: string
-  } | null>(null)
-  const connect = useMemo(
-    () => provider.getChains()[chainId].connect,
-    [provider],
-  )
-  const accountStorage = useSystemAccount(
-    connect,
-    selectedAccount ? selectedAccount.value : null,
-  )
   const [transactionStatus, setTransactionStatus] = useState("")
   const [finalizedTransaction, setFinalizedTransaction] =
-    useState<FinalizedTransaction | null>()
+    useState<FinalizedTransaction>()
   const [error, setError] = useState<{ type: string; error: string }>()
-
-  const balance = accountStorage?.data.free ?? 0n
-
-  useEffect(() => {
-    provider.getAccounts(chainId).then((accounts) => {
-      setAccounts(accounts)
-    })
-  }, [provider])
 
   const [isSubmittingTransaction, setIsSubmittingTransaction] = useState(false)
   const handleOnSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault()
-      if (!selectedAccount) {
+      if (!account || !provider) {
         return
       }
 
       setIsSubmittingTransaction(true)
       setTransactionStatus("")
-      setFinalizedTransaction(null)
-
-      const sender = selectedAccount.value
-      const connectProvider = { ...provider, connect }
+      setFinalizedTransaction(undefined)
 
       try {
-        await lastValueFrom(
-          transferAllowDeathCallData(connectProvider, destination, amount).pipe(
-            mergeMap((callData) =>
-              transaction(connectProvider, chainId, sender, callData),
-            ),
+        const callData = await transferAllowDeathCallData(
+          provider,
+          chainId,
+          destination,
+          amount,
+        )
+        const tx = await createTransaction(
+          provider,
+          chainId,
+          account.address,
+          callData,
+        )
+        const { txEvent } = await lastValueFrom(
+          submitTransaction$(provider, chainId, tx).pipe(
             tap(({ txEvent }) => {
               setTransactionStatus(txEvent.type)
-              if (txEvent.type === "finalized") {
-                setFinalizedTransaction({
-                  blockHash: txEvent.block.hash,
-                  index: txEvent.block.index,
-                })
-              }
-              if (txEvent.type === "invalid" || txEvent.type === "dropped") {
-                setError({ type: txEvent.type, error: txEvent.error })
-              }
             }),
           ),
         )
+        if (txEvent.type === "finalized")
+          setFinalizedTransaction({
+            blockHash: txEvent.block.hash,
+            index: txEvent.block.index,
+          })
+        else if (txEvent.type === "invalid" || txEvent.type === "dropped")
+          setError({ type: txEvent.type, error: txEvent.error })
       } catch (err) {
-        if (err instanceof Error) {
+        if (err instanceof Error)
           setError({ type: "error", error: err.message })
-        }
         console.error(err)
       }
 
       setIsSubmittingTransaction(false)
     },
-    [selectedAccount, provider, connect, destination, amount],
+    [account, provider, chainId, destination, amount],
   )
 
-  const accountOptions = accounts.map((account) => ({
-    value: account.address,
-    label: account.address,
-  }))
+  useEffect(() => {
+    if (account) return
+    setAmount(0n)
+    setTransactionStatus("")
+    setFinalizedTransaction(undefined)
+  }, [account])
 
   // TODO: validate destination address
   return (
     <article>
       <header>Transfer funds</header>
       <form onSubmit={handleOnSubmit}>
-        <Select
-          defaultValue={selectedAccount}
-          onChange={setSelectedAccount}
-          options={accountOptions}
-        />
-        <small>Balance: {`${balance}`}</small>
-        <input
-          placeholder="to"
-          value={destination}
-          onChange={(e) => setDestination(e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="amount"
-          value={`${amount}`}
-          onChange={(e) => setAmount(BigInt(e.target.value))}
-        />
+        <fieldset>
+          <label>
+            To
+            <input
+              placeholder="to"
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+            />
+          </label>
+        </fieldset>
+        <fieldset>
+          <label>
+            Amount
+            <input
+              type="number"
+              placeholder="amount"
+              value={`${amount}`}
+              onChange={(e) => setAmount(BigInt(e.target.value))}
+            />
+          </label>
+        </fieldset>
         <footer>
-          <button
-            type="submit"
-            disabled={!selectedAccount || isSubmittingTransaction}
-          >
+          <button type="submit" disabled={!account || isSubmittingTransaction}>
             Transfer
           </button>
           {transactionStatus ? (
@@ -136,7 +115,7 @@ export const Transfer = ({ provider }: Props) => {
               Transaction Status: <b>{`${transactionStatus}`}</b>
             </p>
           ) : null}
-          {finalizedTransaction ? (
+          {finalizedTransaction && (
             <div>
               <p>
                 Finalized Block Hash:{" "}
@@ -150,7 +129,7 @@ export const Transfer = ({ provider }: Props) => {
                 Transaction Index: <b>{finalizedTransaction.index}</b>
               </p>
             </div>
-          ) : null}
+          )}
           {error ? (
             <p>
               Error: <b>{`type: ${error.type}, error: ${error.error}`}</b>

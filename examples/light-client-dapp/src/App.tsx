@@ -1,15 +1,21 @@
-import { Transfer } from "./components/Transfer"
-import { useProvider } from "./hooks"
+import { Transfer, ConnectedAccount } from "./components"
+import { UnstableProviderProvider } from "./hooks/useUnstableProvider"
 
-function App() {
-  const { provider } = useProvider()
-  if (!provider) return null
+// FIXME: use dynamic chainId
+// Westend chainId
+const chainId =
+  "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e"
+
+export const App = () => {
   return (
-    <main className="container" style={{ maxWidth: "700px" }}>
-      <h1>Light Client DApp</h1>
-      <Transfer provider={provider} />
-    </main>
+    <UnstableProviderProvider chainId={chainId}>
+      <main className="container" style={{ maxWidth: "700px" }}>
+        <header>
+          <h1>Light Client DApp</h1>
+        </header>
+        <ConnectedAccount />
+        <Transfer />
+      </main>
+    </UnstableProviderProvider>
   )
 }
-
-export default App
