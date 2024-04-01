@@ -65,8 +65,6 @@ export const createKeyring = () => {
         ),
         meta: keystore.meta,
       })
-
-      // TODO: re-encrypt accounts with new password
     },
     async setup(password: string) {
       assert(!(await getKeystore()), "keyring is already setup")
@@ -113,7 +111,6 @@ export const createKeyring = () => {
         ],
       })
     },
-
     getKeysets,
     async getKeyset(name: string) {
       return (await getKeysets())?.find(
@@ -141,7 +138,6 @@ export const createKeyring = () => {
       })
     },
     async clearKeysets() {
-      // update secrets/meta
       const keystore = await getKeystore()
       assert(keystore, "keyring must be setup")
       assert(currentPassword, "keyring must be unlocked")
