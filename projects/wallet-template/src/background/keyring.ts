@@ -4,10 +4,12 @@ import {
   ed25519CreateDerive,
   sr25519CreateDerive,
 } from "@polkadot-labs/hdkd"
+import { sr25519, ed25519, ecdsa } from "@polkadot-labs/hdkd-helpers"
 import { keystoreV4, type KeystoreV4WithMeta } from "./keystore"
 import { assert } from "./utils"
 import * as storage from "./storage"
-import { Keyset } from "./types"
+import { InsertKeysetArgs } from "./types"
+import { toHex } from "@polkadot-api/utils"
 
 const createDeriveFnMap = {
   Sr25519: sr25519CreateDerive,
@@ -20,8 +22,38 @@ export const createKeyring = () => {
   const setKeystore = (keystore: KeystoreV4WithMeta) =>
     storage.set("keystore", keystore)
   const removeKeystore = () => storage.remove("keystore")
-  const getKeysets = async () =>
-    (await getKeystore())?.meta.filter((m) => m.type === "keyset") ?? []
+  const getKeysets = async () => {
+    const keysets = (await getKeystore())?.meta ?? []
+
+    return keysets.map((meta) => ({
+      name: meta.name,
+      scheme: meta.scheme,
+      accounts: [
+        ...meta.derivationPaths.map((d) => ({
+          ...d,
+          _type: "DerivationPath" as const,
+        })),
+        ...meta.importedPrivateKeys.map((privateKey) => {
+          const publicKey = toHex(
+            meta.scheme === "Ecdsa"
+              ? ecdsa.getPublicKey(privateKey)
+              : meta.scheme === "Ed25519"
+                ? ed25519.getPublicKey(privateKey)
+                : sr25519.getPublicKey(privateKey),
+          )
+          return {
+            _type: "SignOnly" as const,
+            publicKey,
+          }
+        }),
+        ...meta.importedPublicKeys.map((publicKey) => ({
+          _type: "ViewOnly" as const,
+          publicKey,
+        })),
+      ],
+      createdAt: meta.createdAt,
+    }))
+  }
   const decodeSecrets = (secrets: Uint8Array) =>
     JSON.parse(new TextDecoder().decode(secrets)) as string[]
   const encodeSecrets = (secrets: string[]) =>
@@ -85,12 +117,12 @@ export const createKeyring = () => {
       return !!(await getKeystore())
     },
     getAccounts,
-    async addKeyset(keyset: Keyset, miniSecret: string) {
+    async insertKeyset(args: InsertKeysetArgs) {
       const keystore = await getKeystore()
       assert(keystore, "keyring must be setup")
       assert(currentPassword, "keyring must be unlocked")
       assert(
-        ["Sr25519", "Ed25519", "Ecdsa"].includes(keyset.scheme),
+        ["Sr25519", "Ed25519", "Ecdsa"].includes(args.scheme),
         "invalid signature scheme",
       )
       const secrets = decodeSecrets(
@@ -98,24 +130,24 @@ export const createKeyring = () => {
       )
       const newKeystore = keystoreV4.create(
         currentPassword,
-        encodeSecrets([...secrets, miniSecret]),
+        encodeSecrets([...secrets, args.miniSecret]),
       )
       setKeystore({
         ...newKeystore,
         meta: [
           ...keystore.meta,
           {
-            type: "keyset",
-            ...keyset,
+            ...args,
+            derivationPaths: args.derivationPaths ?? [],
+            importedPrivateKeys: args.importedPrivateKeys ?? [],
+            importedPublicKeys: args.importedPublicKeys ?? [],
           },
         ],
       })
     },
     getKeysets,
     async getKeyset(name: string) {
-      return (await getKeysets())?.find(
-        (m) => m.type === "keyset" && m.name === name,
-      )
+      return (await getKeysets())?.find((m) => m.name === name)
     },
     async removeKeyset(name: string) {
       const keystore = await getKeystore()
@@ -142,8 +174,8 @@ export const createKeyring = () => {
       assert(keystore, "keyring must be setup")
       assert(currentPassword, "keyring must be unlocked")
       const keysetIndices = keystore.meta
-        ?.reduce((acc, { type }, i) => {
-          if (type === "keyset") acc.push(i)
+        ?.reduce((acc, _, i) => {
+          acc.push(i)
           return acc
         }, [] as number[])
         .reverse()
@@ -166,13 +198,10 @@ export const createKeyring = () => {
     async getKeypair(chainId: string, publicKey: string) {
       const keystore = await getKeystore()
       assert(keystore, "keyring must be setup")
-      const keysetIndex = keystore.meta.findIndex(
-        ({ type, derivationPaths }) =>
-          // FIXME: support plain accounts
-          type === "keyset" &&
-          derivationPaths.some(
-            (d) => d.chainId === chainId && d.publicKey === publicKey,
-          ),
+      const keysetIndex = keystore.meta.findIndex(({ derivationPaths }) =>
+        derivationPaths.some(
+          (d) => d.chainId === chainId && d.publicKey === publicKey,
+        ),
       )
       if (keysetIndex === -1) throw new Error("unknown account")
       assert(currentPassword, "keyring must be unlocked")

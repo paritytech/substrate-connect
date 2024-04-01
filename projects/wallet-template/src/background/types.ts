@@ -7,7 +7,12 @@ export type Account = {
   address: string
 }
 
-type DerivationPath = {
+export type KeysetAccount =
+  | ({ _type: "DerivationPath" } & DerivationPath)
+  | { _type: "SignOnly"; publicKey: string }
+  | { _type: "ViewOnly"; publicKey: string }
+
+export type DerivationPath = {
   chainId: string
   path: string
   publicKey: string
@@ -15,8 +20,8 @@ type DerivationPath = {
 
 export type Keyset = {
   name: string
-  scheme: string
-  derivationPaths: DerivationPath[]
+  scheme: "Sr25519" | "Ed25519" | "Ecdsa"
+  accounts: KeysetAccount[]
   createdAt: number
 }
 
@@ -28,13 +33,23 @@ export type SignRequest = {
   userSignedExtensionNames: UserSignedExtensionName[]
 }
 
+export type InsertKeysetArgs = {
+  name: string
+  scheme: "Sr25519" | "Ed25519" | "Ecdsa"
+  createdAt: number
+  miniSecret: string
+  derivationPaths?: DerivationPath[]
+  importedPrivateKeys?: string[]
+  importedPublicKeys?: string[]
+}
+
 type KeyringState = {
   isLocked: boolean
   hasPassword: boolean
 }
 
 export type BackgroundRpcSpec = {
-  getAccounts(chainId: string): Promise<Account[]>
+  getAccounts(chainId: string, keysetName?: string): Promise<Account[]>
   createTx(chainId: string, from: string, callData: string): Promise<string>
   // private methods
   getSignRequests(): Promise<Record<string, SignRequest>>
@@ -48,7 +63,7 @@ export type BackgroundRpcSpec = {
   changePassword(currentPassword: string, newPassword: string): Promise<void>
   createPassword(password: string): Promise<void>
   getKeysets(): Promise<Keyset[]>
-  insertKeyset(keyset: Keyset, miniSecret: string): Promise<void>
+  insertKeyset(keyset: InsertKeysetArgs): Promise<void>
   updateKeyset(keyset: Keyset): Promise<void>
   getKeyset(keysetName: string): Promise<Keyset | undefined>
   removeKeyset(keysetName: string): Promise<void>

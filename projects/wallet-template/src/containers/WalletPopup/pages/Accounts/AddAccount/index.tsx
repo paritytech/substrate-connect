@@ -65,15 +65,13 @@ export const AddAccount = () => {
         }
       })
 
-      await rpc.client.insertKeyset(
-        {
-          name: data.keysetName,
-          scheme: "Sr25519",
-          derivationPaths,
-          createdAt: Date.now(),
-        },
-        bytesToHex(miniSecret),
-      )
+      await rpc.client.insertKeyset({
+        name: data.keysetName,
+        scheme: "Sr25519",
+        createdAt: Date.now(),
+        miniSecret: bytesToHex(miniSecret),
+        derivationPaths,
+      })
       await mutate()
       window.localStorage.setItem("selectedKeysetName", data.keysetName)
     } finally {

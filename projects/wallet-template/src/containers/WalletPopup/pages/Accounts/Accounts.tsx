@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { ss58Address } from "@polkadot-labs/hdkd-helpers"
 import { rpc } from "../../api"
 import { IconButton } from "../../../../components"
-import { Keyset } from "../../../../background/types"
+import { Keyset, KeysetAccount } from "../../../../background/types"
 import useSWR from "swr"
 
 type AccountItemProps = {
@@ -76,9 +76,14 @@ type AccountsListProps = {
 }
 
 const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
-  const keypairs = keyset.derivationPaths.map(
-    ({ path, publicKey }) => [path, ss58Address(publicKey)] as const,
-  )
+  const accounts = keyset.accounts
+    .filter(
+      (
+        account,
+      ): account is Extract<KeysetAccount, { _type: "DerivationPath" }> =>
+        account._type === "DerivationPath",
+    )
+    .map(({ path, publicKey }) => [path, ss58Address(publicKey)] as const)
 
   return (
     <section>
@@ -93,7 +98,7 @@ const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
       <div className="px-4">
         <h2 className="text-lg font-semibold mb-2">Derived Keys</h2>
         <div className="bg-white rounded-lg shadow">
-          {keypairs.map(([path, ss58Address]) => (
+          {accounts.map(([path, ss58Address]) => (
             <AccountItem
               bgColor="bg-purple-200"
               text={path}

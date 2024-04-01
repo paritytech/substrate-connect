@@ -171,11 +171,11 @@ export const createBackgroundRpc = (
     async createPassword([password]) {
       return keyring.setup(password)
     },
-    async insertKeyset([keyset, miniSecret]) {
-      const existingKeyset = await keyring.getKeyset(keyset.name)
+    async insertKeyset([args]) {
+      const existingKeyset = await keyring.getKeyset(args.name)
       if (existingKeyset)
-        throw new Error(`keyset "${keyset.name}" already exists`)
-      await keyring.addKeyset(keyset, miniSecret)
+        throw new Error(`keyset "${args.name}" already exists`)
+      await keyring.insertKeyset(args)
     },
     async updateKeyset([_keyset]) {
       throw new Error("not implemented")
