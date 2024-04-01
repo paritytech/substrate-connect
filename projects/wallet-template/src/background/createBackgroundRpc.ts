@@ -6,91 +6,16 @@ import {
   RpcError,
 } from "@substrate/light-client-extension-helpers/utils"
 import type { LightClientPageHelper } from "@substrate/light-client-extension-helpers/background"
-import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
-import {
-  DEV_PHRASE,
-  entropyToMiniSecret,
-  mnemonicToEntropy,
-  ss58Address,
-} from "@polkadot-labs/hdkd-helpers"
+import { ss58Address } from "@polkadot-labs/hdkd-helpers"
 import { toHex, fromHex } from "@polkadot-api/utils"
 import {
   GetTxCreator,
   UserSignedExtensions,
   getTxCreator,
 } from "@polkadot-api/tx-helper"
-import { randomBytes } from "@noble/hashes/utils"
 
 import type { BackgroundRpcSpec, SignRequest } from "./types"
-import { keystoreV4, type KeystoreV4 } from "./keystore"
-import { assert } from "./utils"
-import * as storage from "./storage"
-
-const entropy = mnemonicToEntropy(DEV_PHRASE)
-const miniSecret = entropyToMiniSecret(entropy)
-const derive = sr25519CreateDerive(miniSecret)
-
-// TODO: fetch from storage
-const keyset = {
-  scheme: "Sr25519" as const,
-  keypairs: [
-    derive("//westend//0"),
-    derive("//westend//1"),
-    derive("//westend//2"),
-  ],
-}
-
-const createKeyring = () => {
-  const getKeystore = () => storage.get("password")
-  const setKeystore = (keystore: KeystoreV4) =>
-    storage.set("password", keystore)
-  const removeKeystore = () => storage.remove("password")
-  let isLocked = true
-
-  return {
-    async unlock(password: string) {
-      const keystore = await getKeystore()
-      assert(keystore, "keyring must be setup")
-      if (!keystoreV4.verifyPassword(keystore, password))
-        throw new Error("invalid password")
-      isLocked = false
-    },
-    async lock() {
-      assert(await getKeystore(), "keyring must be setup")
-      isLocked = true
-    },
-    async isLocked() {
-      assert(getKeystore(), "keyring must be setup")
-      return isLocked
-    },
-    async changePassword(currentPassword: string, newPassword: string) {
-      const keystore = await getKeystore()
-      assert(keystore, "keyring must be setup")
-      if (!keystoreV4.verifyPassword(keystore, currentPassword))
-        throw new Error("invalid password")
-      await setKeystore(
-        keystoreV4.create(
-          newPassword,
-          keystoreV4.decrypt(keystore, currentPassword),
-        ),
-      )
-
-      // TODO: re-encrypt accounts with new password
-    },
-    async setup(password: string) {
-      assert(!(await getKeystore()), "keyring is already setup")
-      await setKeystore(keystoreV4.create(password, randomBytes(32)))
-      isLocked = false
-    },
-    async reset() {
-      await removeKeystore()
-      isLocked = true
-    },
-    async hasPassword() {
-      return !!(await getKeystore())
-    },
-  }
-}
+import { createKeyring } from "./keyring"
 
 const keyring = createKeyring()
 
@@ -114,18 +39,12 @@ export const createBackgroundRpc = (
     port: chrome.runtime.Port
   }
 
-  const listKeysets = async () => {
-    const keysets = await storage.get("keysets")
-
-    return keysets ?? []
-  }
-
   const handlers: RpcMethodHandlers<BackgroundRpcSpec, Context> = {
     async getAccounts([chainId], { lightClientPageHelper }) {
       const chains = await lightClientPageHelper.getChains()
       const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
       if (!chain) throw new Error("unknown chain")
-      return keyset.keypairs.map(({ publicKey }) => ({
+      return (await keyring.getAccounts(chainId)).map(({ publicKey }) => ({
         address: ss58Address(publicKey, chain.ss58Format),
       }))
     },
@@ -138,11 +57,7 @@ export const createBackgroundRpc = (
       const chains = await lightClientPageHelper.getChains()
       const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
       if (!chain) throw new Error("unknown chain")
-      const keypair = keyset.keypairs.find(
-        ({ publicKey }) => toHex(publicKey) === from,
-      )
-      if (!keypair) throw new Error("unknown account")
-
+      const [keypair, scheme] = await keyring.getKeypair(chainId, from)
       const onCreateTx: Parameters<GetTxCreator>[1] = async (
         { userSingedExtensionsName },
         callback,
@@ -212,7 +127,7 @@ export const createBackgroundRpc = (
           callback({
             userSignedExtensionsData,
             overrides: {},
-            signingType: keyset.scheme,
+            signingType: scheme,
             signer: async (value) => keypair.sign(value),
           })
         } catch (error) {
@@ -256,33 +171,26 @@ export const createBackgroundRpc = (
     async createPassword([password]) {
       return keyring.setup(password)
     },
-    async upsertKeyset([keyset]) {
-      const keysets = await listKeysets()
-      const existingIdx = keysets.findIndex(
-        (existing) => existing.name === keyset.name,
-      )
-      if (existingIdx !== -1) {
-        keysets.splice(existingIdx, 1)
-      }
-      await storage.set("keysets", [...keysets, keyset])
+    async insertKeyset([keyset, miniSecret]) {
+      const existingKeyset = await keyring.getKeyset(keyset.name)
+      if (existingKeyset)
+        throw new Error(`keyset "${keyset.name}" already exists`)
+      await keyring.addKeyset(keyset, miniSecret)
+    },
+    async updateKeyset([_keyset]) {
+      throw new Error("not implemented")
     },
     async getKeyset([keysetName]) {
-      const keysets = await listKeysets()
-      return keysets.find((keyset) => keyset.name === keysetName)
+      return keyring.getKeyset(keysetName)
     },
-    listKeysets,
+    async getKeysets() {
+      return keyring.getKeysets()
+    },
     async removeKeyset([keysetName]) {
-      const keysets = await listKeysets()
-      const existingIdx = keysets.findIndex(
-        (keyset) => keyset.name === keysetName,
-      )
-      if (existingIdx !== -1) {
-        keysets.splice(existingIdx, 1)
-      }
-      await storage.set("keysets", keysets)
+      await keyring.removeKeyset(keysetName)
     },
     async clearKeysets() {
-      await storage.remove("keysets")
+      await keyring.clearKeysets()
     },
     async getKeyringState() {
       return {

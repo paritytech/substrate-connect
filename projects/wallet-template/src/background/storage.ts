@@ -1,12 +1,9 @@
-import type { KeystoreV4 } from "./keystore"
-import { Keyset } from "./types"
+import type { KeystoreV4WithMeta } from "./keystore"
 
 const STORAGE_PREFIX = "wallet-template/"
 
 type StorageConfig = {
-  password: KeystoreV4
-  keysets: Keyset[]
-  // TODO: add other entries
+  keystore: KeystoreV4WithMeta
 }
 
 type StorageKey = keyof StorageConfig

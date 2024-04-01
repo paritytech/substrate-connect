@@ -13,7 +13,7 @@ import { rpc } from "../../../api"
 import { StepIndicator } from "../../../components"
 import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
 import useSWR from "swr"
-import { fetchKeysets } from "../fetch"
+import { bytesToHex } from "@noble/ciphers/utils"
 
 type FormFields = {
   keysetName: string
@@ -24,10 +24,10 @@ export const AddAccount = () => {
   const navigate = useNavigate()
   const [mnemonic, _] = useState(generateMnemonic(256).split(" "))
   const {
-    data: keysetsData,
+    data: keysets,
     isLoading: areKeysetsLoading,
     mutate,
-  } = useSWR("rpc.keysets", fetchKeysets, {
+  } = useSWR("rpc.getKeysets", () => rpc.client.getKeysets(), {
     revalidateOnFocus: true,
   })
 
@@ -65,13 +65,17 @@ export const AddAccount = () => {
         }
       })
 
-      await rpc.client.upsertKeyset({
-        name: data.keysetName,
-        scheme: "Sr25519",
-        derivationPaths,
-        createdAt: Date.now(),
-      })
+      await rpc.client.insertKeyset(
+        {
+          name: data.keysetName,
+          scheme: "Sr25519",
+          derivationPaths,
+          createdAt: Date.now(),
+        },
+        bytesToHex(miniSecret),
+      )
       await mutate()
+      window.localStorage.setItem("selectedKeysetName", data.keysetName)
     } finally {
       navigate("/accounts")
     }
@@ -128,7 +132,7 @@ export const AddAccount = () => {
                 {...register("keysetName", {
                   required: "You must specify a keyset name",
                   validate: (v) =>
-                    keysetsData?.[1].find((keyset) => keyset.name === v) ===
+                    keysets?.find((keyset) => keyset.name === v) ===
                       undefined || "Keyset already exists",
                   minLength: {
                     value: 1,

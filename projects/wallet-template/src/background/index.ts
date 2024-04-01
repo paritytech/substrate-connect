@@ -41,8 +41,8 @@ chrome.runtime.onConnect.addListener((port) => {
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   if (reason === chrome.runtime.OnInstalledReason.INSTALL) {
-    const password = await storage.get("password")
-    if (password) return
+    const keystore = await storage.get("keystore")
+    if (keystore) return
     chrome.tabs.create({
       url: chrome.runtime.getURL(`ui/assets/wallet-popup.html#/welcome`),
     })

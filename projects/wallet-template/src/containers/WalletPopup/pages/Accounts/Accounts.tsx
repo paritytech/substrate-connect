@@ -12,7 +12,6 @@ import { rpc } from "../../api"
 import { IconButton } from "../../../../components"
 import { Keyset } from "../../../../background/types"
 import useSWR from "swr"
-import { fetchKeysets } from "./fetch"
 
 type AccountItemProps = {
   bgColor: string
@@ -109,9 +108,16 @@ const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
 
 export const Accounts = () => {
   const navigate = useNavigate()
-  const { data: keysetData, mutate } = useSWR("rpc.keysets", fetchKeysets, {
-    revalidateOnFocus: true,
-  })
+  const { data: keysets, mutate } = useSWR(
+    "rpc.getKeysets",
+    () => rpc.client.getKeysets(),
+    {
+      revalidateOnFocus: true,
+    },
+  )
+  const selectedKeysetName = window.localStorage.getItem("selectedKeysetName")
+  const keyset =
+    keysets?.find((k) => k.name === selectedKeysetName) ?? keysets?.[0]
 
   const reset = async () => {
     await rpc.client.clearKeysets()
@@ -133,10 +139,10 @@ export const Accounts = () => {
                   <Plus />
                 </IconButton>
               </Link>
-              <IconButton disabled={!keysetData}>
+              <IconButton disabled={!keyset}>
                 <Link
                   to="/accounts/switch"
-                  className={!keysetData ? "pointer-events-none" : ""}
+                  className={!keyset ? "pointer-events-none" : ""}
                 >
                   <ArrowRightLeft />
                 </Link>
@@ -147,11 +153,7 @@ export const Accounts = () => {
             </div>
           </div>
         </div>
-        {keysetData ? (
-          <AccountsList keyset={keysetData[0]} />
-        ) : (
-          <EmptyAccounts />
-        )}
+        {keyset ? <AccountsList keyset={keyset} /> : <EmptyAccounts />}
       </div>
     </main>
   )
