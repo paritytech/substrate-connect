@@ -49,7 +49,7 @@ type KeyringState = {
 }
 
 export type BackgroundRpcSpec = {
-  getAccounts(chainId: string, keysetName?: string): Promise<Account[]>
+  getAccounts(chainId: string): Promise<Account[]>
   createTx(chainId: string, from: string, callData: string): Promise<string>
   // private methods
   getSignRequests(): Promise<Record<string, SignRequest>>
