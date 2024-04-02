@@ -9,6 +9,7 @@ import {
   Accounts,
   AddAccount,
   SwitchAccount,
+  ImportAccounts,
 } from "./WalletPopup/pages"
 import { ProtectedRoute } from "./WalletPopup/components"
 import { KeyringProvider, useKeyring } from "./WalletPopup/hooks"
@@ -27,6 +28,7 @@ export const WalletPopup = () => (
             <Route path="/accounts" element={<Accounts />} />
             <Route path="/accounts/add" element={<AddAccount />} />
             <Route path="/accounts/switch" element={<SwitchAccount />} />
+            <Route path="/accounts/import" element={<ImportAccounts />} />
             <Route
               path="/sign-request/:signRequestId"
               element={<SignRequest />}
