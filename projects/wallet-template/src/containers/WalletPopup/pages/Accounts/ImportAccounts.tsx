@@ -7,6 +7,7 @@ import { useState } from "react"
 
 type FormFields = {
   key: string
+  scheme?: "Sr25519" | "Ed25519" | "Ecdsa"
   keysetName: string
 }
 
@@ -27,8 +28,8 @@ export function ImportAccounts() {
       revalidateOnFocus: true,
     },
   )
-
   const keysetNames = keysets?.map((keyset) => keyset.name) ?? []
+
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     console.log(data)
     // Here you would typically handle the import wallet process
@@ -37,6 +38,7 @@ export function ImportAccounts() {
   const validateKey = (value: string) => {
     return /^(0x)?[0-9a-fA-F]{64,66}$/.test(value) || "Invalid key format"
   }
+
   return (
     <main className="flex flex-col items-center justify-center p-4">
       <section className="text-center w-full max-w-lg">
@@ -92,7 +94,7 @@ export function ImportAccounts() {
           )}
         </div>
 
-        <div className="mb-6">
+        <div className="mb-4">
           <label
             htmlFor="keysetNameInput"
             className="block text-sm font-medium"
@@ -137,6 +139,27 @@ export function ImportAccounts() {
             </>
           )}
         </div>
+        {keysetNames.length === 0 ? (
+          <div className="mb-4">
+            <label htmlFor="schemeInput" className="block text-sm font-medium">
+              Scheme
+            </label>
+            <select
+              id="schemeInput"
+              {...register("scheme")}
+              className="mt-1 p-2 w-full border border-gray-300"
+            >
+              {["Sr25519", "Ed25519", "Ecdsa"].map((scheme, index) => (
+                <option value={scheme} key={index}>
+                  {scheme}
+                </option>
+              ))}
+            </select>
+            {errors.scheme && (
+              <p className="text-red-500 text-xs">{errors.scheme.message}</p>
+            )}
+          </div>
+        ) : null}
 
         <button
           type="submit"
