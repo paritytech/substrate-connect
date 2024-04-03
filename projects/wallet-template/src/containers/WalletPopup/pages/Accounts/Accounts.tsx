@@ -77,7 +77,7 @@ type AccountsListProps = {
 }
 
 const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
-  const accounts = keyset.accounts
+  const derivationPathAccounts = keyset.accounts
     .filter(
       (
         account,
@@ -85,6 +85,12 @@ const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
         account._type === "DerivationPath",
     )
     .map(({ path, publicKey }) => [path, ss58Address(publicKey)] as const)
+  const signOnlyAccounts = keyset.accounts
+    .filter(
+      (account): account is Extract<KeysetAccount, { _type: "SignOnly" }> =>
+        account._type === "SignOnly",
+    )
+    .map(({ publicKey }) => ss58Address(publicKey))
 
   return (
     <section>
@@ -99,10 +105,19 @@ const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
       <div className="px-4">
         <h2 className="text-lg font-semibold mb-2">Derived Keys</h2>
         <div className="bg-white rounded-lg shadow">
-          {accounts.map(([path, ss58Address]) => (
+          {derivationPathAccounts.map(([path, ss58Address]) => (
             <AccountItem
               bgColor="bg-purple-200"
               text={path}
+              subText={ss58Address}
+            />
+          ))}
+        </div>
+        <div className="bg-white rounded-lg shadow">
+          {signOnlyAccounts.map(([ss58Address]) => (
+            <AccountItem
+              bgColor="bg-purple-200"
+              text={"global consensus"}
               subText={ss58Address}
             />
           ))}
@@ -138,16 +153,16 @@ export const Accounts = () => {
           <RotateCcw />
         </IconButton>
         <div className="flex items-center">
-          <Link to="/accounts/import">
-            <IconButton>
+          <IconButton disabled={!keysets || keysets.length === 0}>
+            <Link to="/accounts/import">
               <Import />
-            </IconButton>
-          </Link>
-          <Link to="/accounts/add">
-            <IconButton>
+            </Link>
+          </IconButton>
+          <IconButton>
+            <Link to="/accounts/add">
               <Plus />
-            </IconButton>
-          </Link>
+            </Link>
+          </IconButton>
           <IconButton disabled={!keyset}>
             <Link
               to="/accounts/switch"

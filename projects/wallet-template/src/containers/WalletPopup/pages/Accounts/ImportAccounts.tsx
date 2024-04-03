@@ -3,7 +3,7 @@ import useSWR from "swr"
 import { rpc } from "../../api"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {} from "@polkadot-labs/hdkd-helpers"
 
 type FormFields = {
@@ -13,7 +13,7 @@ type FormFields = {
 
 export function ImportAccounts() {
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState("private")
+  const [activeTab, setActiveTab] = useState<"private" | "public">("private")
   const {
     register,
     handleSubmit,
@@ -30,9 +30,26 @@ export function ImportAccounts() {
   )
   const keysetNames = keysets?.map((keyset) => keyset.name) ?? []
 
+  useEffect(() => {
+    if (keysets?.length === 0) {
+      navigate(-1)
+    }
+  }, [keysets, navigate])
+
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     console.log(data)
-
+    switch (activeTab) {
+      case "private":
+        await rpc.client.importPrivateKey({
+          keysetName: data.keysetName,
+          privatekey: data.key,
+        })
+        await navigate("/accounts")
+        console.log("good")
+        break
+      case "public":
+        break
+    }
     // Here you would typically handle the import wallet process
   }
 

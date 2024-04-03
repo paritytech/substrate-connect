@@ -215,6 +215,25 @@ export const createKeyring = () => {
         meta: keystore.meta,
       })
     },
+    async importPrivateKey(keysetName: string, privateKey: string) {
+      assert(currentPassword, "keyring must be unlocked")
+      const keystore = await getKeystore()
+      assert(keystore, "keyring must be setup")
+      const keysets = keystore.meta ?? []
+
+      const keyset = keysets.find((m) => m.name === keysetName)
+      if (!keyset) {
+        throw new Error(`keyset "${keysetName}" does not exist`)
+      }
+      if (keyset.importedPrivateKeys.includes(privateKey)) return
+      keyset.importedPrivateKeys.push(privateKey)
+      const idx = keysets.findIndex((m) => m.name === keysetName)
+      keysets.splice(idx, 1, keyset)
+
+      keystore.meta = keysets
+
+      setKeystore(keystore)
+    },
     async getKeypair(chainId: string, publicKey: string) {
       assert(currentPassword, "keyring must be unlocked")
       const keystore = await getKeystore()
