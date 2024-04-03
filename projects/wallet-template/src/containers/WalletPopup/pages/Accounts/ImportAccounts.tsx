@@ -4,7 +4,8 @@ import { rpc } from "../../api"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
-import {} from "@polkadot-labs/hdkd-helpers"
+import { sr25519 } from "@polkadot-labs/hdkd-helpers"
+import { fromHex } from "@polkadot-api/utils"
 
 type FormFields = {
   key: string
@@ -37,14 +38,15 @@ export function ImportAccounts() {
   }, [keysets, navigate])
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    console.log(data)
+    console.log(fromHex(data.key), fromHex(data.key).length)
+    console.log("aaa", sr25519.getPublicKey(data.key))
     switch (activeTab) {
       case "private":
         await rpc.client.importPrivateKey({
           keysetName: data.keysetName,
           privatekey: data.key,
         })
-        await navigate("/accounts")
+        navigate("/accounts")
         console.log("good")
         break
       case "public":
@@ -54,7 +56,7 @@ export function ImportAccounts() {
   }
 
   const validateKey = (value: string) => {
-    return /^(0x)?[0-9a-fA-F]{64,66}$/.test(value) || "Invalid key format"
+    return /^(0x)?[0-9a-fA-F]{128}$/.test(value) || "Invalid key format"
   }
 
   return (

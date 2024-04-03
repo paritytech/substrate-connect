@@ -173,6 +173,7 @@ export const createBackgroundRpc = (
     },
     async insertKeyset([args]) {
       const existingKeyset = await keyring.getKeyset(args.name)
+
       if (existingKeyset)
         throw new Error(`keyset "${args.name}" already exists`)
       await keyring.insertKeyset(args)

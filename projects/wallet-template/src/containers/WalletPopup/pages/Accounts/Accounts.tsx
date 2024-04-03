@@ -92,6 +92,8 @@ const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
     )
     .map(({ publicKey }) => ss58Address(publicKey))
 
+  console.log("signOnlyAccounts", signOnlyAccounts)
+
   return (
     <section>
       <div className="flex flex-col items-center px-4 py-4">
@@ -114,7 +116,7 @@ const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
           ))}
         </div>
         <div className="bg-white rounded-lg shadow">
-          {signOnlyAccounts.map(([ss58Address]) => (
+          {signOnlyAccounts.map((ss58Address) => (
             <AccountItem
               bgColor="bg-purple-200"
               text={"global consensus"}

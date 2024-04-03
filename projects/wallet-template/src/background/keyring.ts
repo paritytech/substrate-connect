@@ -88,6 +88,52 @@ export const createKeyring = () => {
     )
   }
 
+  const insertKeyset = async (args: InsertKeysetArgs) => {
+    const keystore = await getKeystore()
+    assert(keystore, "keyring must be setup")
+    assert(currentPassword, "keyring must be unlocked")
+    assert(
+      ["Sr25519", "Ed25519", "Ecdsa"].includes(args.scheme),
+      "invalid signature scheme",
+    )
+    const secrets = decodeSecrets(keystoreV4.decrypt(keystore, currentPassword))
+    const newKeystore = keystoreV4.create(
+      currentPassword,
+      encodeSecrets([...secrets, args.miniSecret]),
+    )
+    setKeystore({
+      ...newKeystore,
+      meta: [
+        ...keystore.meta,
+        {
+          ...args,
+          derivationPaths: args.derivationPaths ?? [],
+          importedPrivateKeys: args.importedPrivateKeys ?? [],
+          importedPublicKeys: args.importedPublicKeys ?? [],
+        },
+      ],
+    })
+  }
+
+  const removeKeyset = async (name: string) => {
+    const keystore = await getKeystore()
+    assert(keystore, "keyring must be setup")
+    assert(currentPassword, "keyring must be unlocked")
+    const keysetIndex = keystore.meta?.findIndex((m) => m.name === name) ?? -1
+    if (keysetIndex === -1) return
+    const secrets = decodeSecrets(keystoreV4.decrypt(keystore, currentPassword))
+    secrets.splice(keysetIndex)
+    const newKeystore = keystoreV4.create(
+      currentPassword,
+      encodeSecrets(secrets),
+    )
+    keystore.meta.splice(keysetIndex)
+    setKeystore({
+      ...newKeystore,
+      meta: keystore.meta,
+    })
+  }
+
   let currentPassword: string | undefined
 
   return {
@@ -169,26 +215,7 @@ export const createKeyring = () => {
     async getKeyset(name: string) {
       return (await getKeysets())?.find((m) => m.name === name)
     },
-    async removeKeyset(name: string) {
-      const keystore = await getKeystore()
-      assert(keystore, "keyring must be setup")
-      assert(currentPassword, "keyring must be unlocked")
-      const keysetIndex = keystore.meta?.findIndex((m) => m.name === name) ?? -1
-      if (keysetIndex === -1) return
-      const secrets = decodeSecrets(
-        keystoreV4.decrypt(keystore, currentPassword),
-      )
-      secrets.splice(keysetIndex)
-      const newKeystore = keystoreV4.create(
-        currentPassword,
-        encodeSecrets(secrets),
-      )
-      keystore.meta.splice(keysetIndex)
-      setKeystore({
-        ...newKeystore,
-        meta: keystore.meta,
-      })
-    },
+    removeKeyset,
     async clearKeysets() {
       const keystore = await getKeystore()
       assert(keystore, "keyring must be setup")
@@ -222,15 +249,30 @@ export const createKeyring = () => {
       const keysets = keystore.meta ?? []
 
       const keyset = keysets.find((m) => m.name === keysetName)
+      const keysetIndex = keysets.findIndex((m) => m.name === keysetName)
       if (!keyset) {
         throw new Error(`keyset "${keysetName}" does not exist`)
       }
+      const secret = decodeSecrets(
+        keystoreV4.decrypt(keystore, currentPassword),
+      )[keysetIndex]
+
       if (keyset.importedPrivateKeys.includes(privateKey)) return
       keyset.importedPrivateKeys.push(privateKey)
-      const idx = keysets.findIndex((m) => m.name === keysetName)
-      keysets.splice(idx, 1, keyset)
 
-      keystore.meta = keysets
+      console.log("keysetName", keysetName)
+
+      // TODO: make atomic?
+      await removeKeyset(keysetName)
+      await insertKeyset({
+        name: keysetName,
+        scheme: keyset.scheme,
+        createdAt: keyset.createdAt,
+        miniSecret: secret,
+        derivationPaths: keyset.derivationPaths,
+        importedPrivateKeys: keyset.importedPrivateKeys,
+        importedPublicKeys: keyset.importedPublicKeys,
+      })
 
       setKeystore(keystore)
     },
