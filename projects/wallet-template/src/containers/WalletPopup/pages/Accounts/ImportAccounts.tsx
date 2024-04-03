@@ -4,10 +4,10 @@ import { rpc } from "../../api"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
+import {} from "@polkadot-labs/hdkd-helpers"
 
 type FormFields = {
   key: string
-  scheme?: "Sr25519" | "Ed25519" | "Ecdsa"
   keysetName: string
 }
 
@@ -30,8 +30,9 @@ export function ImportAccounts() {
   )
   const keysetNames = keysets?.map((keyset) => keyset.name) ?? []
 
-  const onSubmit: SubmitHandler<FormFields> = (data) => {
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
     console.log(data)
+
     // Here you would typically handle the import wallet process
   }
 
@@ -80,7 +81,7 @@ export function ImportAccounts() {
           </label>
           <input
             id="keyInput"
-            placeholder="Enter your private or public key"
+            placeholder={`Enter your ${activeTab} key`}
             {...register("key", {
               required: "Key is required",
               validate: validateKey,
@@ -101,7 +102,7 @@ export function ImportAccounts() {
           >
             Keyset Name
           </label>
-          {keysetNames.length > 0 ? (
+          {
             <>
               <select
                 id="keysetNameInput"
@@ -120,47 +121,8 @@ export function ImportAccounts() {
                 </p>
               )}
             </>
-          ) : (
-            <>
-              <input
-                type="text"
-                placeholder="Enter a name for this keyset"
-                className={`mt-1 p-2 w-full border ${
-                  errors.keysetName ? "border-red-500" : "border-gray-300"
-                }`}
-                id="keysetName"
-                {...register("keysetName")}
-              />
-              {errors.keysetName && (
-                <p className="text-red-500 text-xs">
-                  {errors.keysetName.message}
-                </p>
-              )}
-            </>
-          )}
+          }
         </div>
-        {keysetNames.length === 0 ? (
-          <div className="mb-4">
-            <label htmlFor="schemeInput" className="block text-sm font-medium">
-              Scheme
-            </label>
-            <select
-              id="schemeInput"
-              {...register("scheme")}
-              className="mt-1 p-2 w-full border border-gray-300"
-            >
-              {["Sr25519", "Ed25519", "Ecdsa"].map((scheme, index) => (
-                <option value={scheme} key={index}>
-                  {scheme}
-                </option>
-              ))}
-            </select>
-            {errors.scheme && (
-              <p className="text-red-500 text-xs">{errors.scheme.message}</p>
-            )}
-          </div>
-        ) : null}
-
         <button
           type="submit"
           disabled={!isValid}

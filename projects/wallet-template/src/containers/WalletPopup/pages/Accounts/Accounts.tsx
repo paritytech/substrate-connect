@@ -5,6 +5,7 @@ import {
   ArrowRightLeft,
   RotateCcw,
   PlusCircle,
+  Import,
 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { ss58Address } from "@polkadot-labs/hdkd-helpers"
@@ -137,6 +138,11 @@ export const Accounts = () => {
           <RotateCcw />
         </IconButton>
         <div className="flex items-center">
+          <Link to="/accounts/import">
+            <IconButton>
+              <Import />
+            </IconButton>
+          </Link>
           <Link to="/accounts/add">
             <IconButton>
               <Plus />

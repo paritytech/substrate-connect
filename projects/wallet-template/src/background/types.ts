@@ -43,6 +43,11 @@ export type InsertKeysetArgs = {
   importedPublicKeys?: string[]
 }
 
+export type ImportPrivateKeyArgs = {
+  keysetName: string
+  privatekey: string
+}
+
 type KeyringState = {
   isLocked: boolean
   hasPassword: boolean
@@ -68,5 +73,6 @@ export type BackgroundRpcSpec = {
   getKeyset(keysetName: string): Promise<Keyset | undefined>
   removeKeyset(keysetName: string): Promise<void>
   clearKeysets(): Promise<void>
+  importPrivateKey(args: ImportPrivateKeyArgs): Promise<void>
   getKeyringState(): Promise<KeyringState>
 }

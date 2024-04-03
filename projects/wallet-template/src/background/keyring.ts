@@ -4,18 +4,31 @@ import {
   ed25519CreateDerive,
   sr25519CreateDerive,
 } from "@polkadot-labs/hdkd"
-import { sr25519, ed25519, ecdsa } from "@polkadot-labs/hdkd-helpers"
+import { sr25519, ed25519, ecdsa, KeyPair } from "@polkadot-labs/hdkd-helpers"
 import { keystoreV4, type KeystoreV4WithMeta } from "./keystore"
 import { assert } from "./utils"
 import * as storage from "./storage"
 import { InsertKeysetArgs } from "./types"
-import { toHex } from "@polkadot-api/utils"
+import { fromHex, toHex } from "@polkadot-api/utils"
 
 const createDeriveFnMap = {
   Sr25519: sr25519CreateDerive,
   Ed25519: ed25519CreateDerive,
   Ecdsa: ecdsaCreateDerive,
 } as Record<string, CreateDeriveFn>
+
+const privateKeyToPublicKey = (privateKey: string, scheme: string) => {
+  switch (scheme) {
+    case "Sr25519":
+      return toHex(sr25519.getPublicKey(privateKey))
+    case "Ed25519":
+      return toHex(ed25519.getPublicKey(privateKey))
+    case "Ecdsa":
+      return toHex(ecdsa.getPublicKey(privateKey))
+    default:
+      throw new Error("unsupported scheme")
+  }
+}
 
 export const createKeyring = () => {
   const getKeystore = () => storage.get("keystore")
@@ -34,13 +47,7 @@ export const createKeyring = () => {
           _type: "DerivationPath" as const,
         })),
         ...meta.importedPrivateKeys.map((privateKey) => {
-          const publicKey = toHex(
-            meta.scheme === "Ecdsa"
-              ? ecdsa.getPublicKey(privateKey)
-              : meta.scheme === "Ed25519"
-                ? ed25519.getPublicKey(privateKey)
-                : sr25519.getPublicKey(privateKey),
-          )
+          const publicKey = privateKeyToPublicKey(privateKey, meta.scheme)
           return {
             _type: "SignOnly" as const,
             publicKey,
@@ -61,10 +68,23 @@ export const createKeyring = () => {
   const getAccounts = async (chainId: string) => {
     const keystore = await getKeystore()
     if (!keystore) return []
-    return keystore.meta.flatMap(({ derivationPaths }) =>
-      derivationPaths
-        .filter((d) => d.chainId === chainId)
-        .map(({ publicKey }) => ({ publicKey })),
+    return keystore.meta.flatMap(
+      ({
+        scheme,
+        derivationPaths,
+        importedPrivateKeys,
+        importedPublicKeys,
+      }) => [
+        ...derivationPaths
+          .filter((d) => d.chainId === chainId)
+          .map(({ publicKey }) => ({ publicKey })),
+        ...importedPrivateKeys.map(
+          (privateKey) => ({
+            publicKey: privateKeyToPublicKey(privateKey, scheme),
+          }),
+          ...importedPublicKeys.map((publicKey) => ({ publicKey })),
+        ),
+      ],
     )
   }
 
@@ -196,28 +216,59 @@ export const createKeyring = () => {
       })
     },
     async getKeypair(chainId: string, publicKey: string) {
+      assert(currentPassword, "keyring must be unlocked")
       const keystore = await getKeystore()
       assert(keystore, "keyring must be setup")
+
       const keysetIndex = keystore.meta.findIndex(({ derivationPaths }) =>
         derivationPaths.some(
           (d) => d.chainId === chainId && d.publicKey === publicKey,
         ),
       )
-      if (keysetIndex === -1) throw new Error("unknown account")
-      assert(currentPassword, "keyring must be unlocked")
-      const secret = decodeSecrets(
-        keystoreV4.decrypt(keystore, currentPassword),
-      )[keysetIndex]
-      const { derivationPaths, scheme } = keystore.meta[keysetIndex]
-      const derivationPath = derivationPaths.find(
-        (d) => d.publicKey === publicKey,
-      )!
-      const createDeriveFn = createDeriveFnMap[scheme]
-      if (!createDeriveFn) throw new Error("invalid signature scheme")
-      return [
-        createDeriveFn(secret)(derivationPath.path),
-        scheme as "Sr25519" | "Ed25519" | "Ecdsa",
-      ] as const
+      if (keysetIndex !== -1) {
+        const secret = decodeSecrets(
+          keystoreV4.decrypt(keystore, currentPassword),
+        )[keysetIndex]
+        const { derivationPaths, scheme } = keystore.meta[keysetIndex]
+        const derivationPath = derivationPaths.find(
+          (d) => d.publicKey === publicKey,
+        )!
+        const createDeriveFn = createDeriveFnMap[scheme]
+        if (!createDeriveFn) throw new Error("invalid signature scheme")
+        return [
+          createDeriveFn(secret)(derivationPath.path),
+          scheme as "Sr25519" | "Ed25519" | "Ecdsa",
+        ] as const
+      }
+
+      for (const keyset of keystore.meta) {
+        for (const privateKey of keyset.importedPrivateKeys) {
+          const keypairPublicKey = privateKeyToPublicKey(
+            privateKey,
+            keyset.scheme,
+          )
+          if (keypairPublicKey === publicKey) {
+            const publicKeyBytes = fromHex(keypairPublicKey)
+            let keypair: KeyPair = {
+              publicKey: publicKeyBytes,
+              sign: (msg) => {
+                switch (keyset.scheme) {
+                  case "Sr25519":
+                    return sr25519.sign(fromHex(privateKey), msg)
+                  case "Ed25519":
+                    return ed25519.sign(fromHex(privateKey), msg)
+                  case "Ecdsa":
+                    return ecdsa.sign(fromHex(privateKey), msg)
+                }
+              },
+            }
+
+            return [keypair, keyset.scheme] as const
+          }
+        }
+      }
+
+      throw new Error("unknown account")
     },
   }
 }

@@ -189,6 +189,7 @@ export const createBackgroundRpc = (
     async removeKeyset([keysetName]) {
       await keyring.removeKeyset(keysetName)
     },
+    async importPrivateKey([args]) {},
     async clearKeysets() {
       await keyring.clearKeysets()
     },
