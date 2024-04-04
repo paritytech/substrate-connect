@@ -115,11 +115,16 @@ const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
             />
           ))}
         </div>
+
+        <div className="my-4 border-t border-gray-200 text-center">
+          <span className="bg-white px-2 text-gray-500">Signer Keys</span>
+        </div>
+
         <div className="bg-white rounded-lg shadow">
           {signOnlyAccounts.map((ss58Address) => (
             <AccountItem
               bgColor="bg-purple-200"
-              text={"global consensus"}
+              text={"//*"}
               subText={ss58Address}
             />
           ))}
