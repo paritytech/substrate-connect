@@ -1,11 +1,11 @@
 import { ArrowLeft, Key, Lock } from "lucide-react"
-import useSWR from "swr"
 import { rpc } from "../../api"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
-import { sr25519 } from "@polkadot-labs/hdkd-helpers"
+import { useState } from "react"
+import { entropyToMiniSecret } from "@polkadot-labs/hdkd-helpers"
 import { fromHex } from "@polkadot-api/utils"
+import { bytesToHex } from "@noble/ciphers/utils"
 
 type FormFields = {
   key: string
@@ -22,29 +22,17 @@ export function ImportAccounts() {
   } = useForm<FormFields>({
     mode: "onChange",
   })
-  const { data: keysets } = useSWR(
-    "rpc.getKeysets",
-    () => rpc.client.getKeysets(),
-    {
-      revalidateOnFocus: true,
-    },
-  )
-  const keysetNames = keysets?.map((keyset) => keyset.name) ?? []
-
-  useEffect(() => {
-    if (keysets?.length === 0) {
-      navigate(-1)
-    }
-  }, [keysets, navigate])
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    console.log(fromHex(data.key), fromHex(data.key).length)
-    console.log("aaa", sr25519.getPublicKey(data.key))
     switch (activeTab) {
       case "private":
-        await rpc.client.importPrivateKey({
-          keysetName: data.keysetName,
+        await rpc.client.insertKeyset({
+          _type: "PrivateKey",
+          name: data.keysetName,
+          scheme: "Sr25519",
+          miniSecret: bytesToHex(entropyToMiniSecret(fromHex(data.key))),
           privatekey: data.key,
+          createdAt: Date.now(),
         })
         navigate("/accounts")
         console.log("good")
@@ -122,24 +110,16 @@ export function ImportAccounts() {
             Keyset Name
           </label>
           {
-            <>
-              <select
-                id="keysetNameInput"
-                {...register("keysetName")}
-                className="mt-1 p-2 w-full border border-gray-300"
-              >
-                {keysetNames.map((keyset, index) => (
-                  <option value={keyset} key={index}>
-                    {keyset}
-                  </option>
-                ))}
-              </select>
-              {errors.keysetName && (
-                <p className="text-red-500 text-xs">
-                  {errors.keysetName.message}
-                </p>
-              )}
-            </>
+            <input
+              id="keysetNameInput"
+              placeholder={`Enter a keyset name`}
+              {...register("keysetName", {
+                required: "keysetName is required",
+              })}
+              className={`mt-1 p-2 w-full border ${
+                errors.keysetName ? "border-red-500" : "border-gray-300"
+              }`}
+            />
           }
         </div>
         <button

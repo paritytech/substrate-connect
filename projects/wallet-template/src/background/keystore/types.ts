@@ -6,14 +6,23 @@ export type DerivationPath = {
   publicKey: string
 }
 
-export type KeystoreMeta = {
+export type BaseKeystore = {
   name: string
   scheme: "Sr25519" | "Ed25519" | "Ecdsa"
-  derivationPaths: DerivationPath[]
-  importedPrivateKeys: string[]
-  importedPublicKeys: string[]
   createdAt: number
 }
+
+export type DerivationPathKeystore = BaseKeystore & {
+  _type: "DerivationPathKeystore"
+  derivationPaths: DerivationPath[]
+}
+
+export type PrivateKeyKeystore = BaseKeystore & {
+  _type: "PrivateKeyKeystore"
+  privateKey: string
+}
+
+export type KeystoreMeta = DerivationPathKeystore | PrivateKeyKeystore
 
 export type KeystoreV4WithMeta = KeystoreV4 & {
   meta: KeystoreMeta[]

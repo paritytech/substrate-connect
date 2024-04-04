@@ -87,8 +87,8 @@ const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
     .map(({ path, publicKey }) => [path, ss58Address(publicKey)] as const)
   const signOnlyAccounts = keyset.accounts
     .filter(
-      (account): account is Extract<KeysetAccount, { _type: "SignOnly" }> =>
-        account._type === "SignOnly",
+      (account): account is Extract<KeysetAccount, { _type: "Keypair" }> =>
+        account._type === "Keypair",
     )
     .map(({ publicKey }) => ss58Address(publicKey))
 

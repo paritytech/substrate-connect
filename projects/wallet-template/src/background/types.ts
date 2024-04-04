@@ -9,8 +9,7 @@ export type Account = {
 
 export type KeysetAccount =
   | ({ _type: "DerivationPath" } & DerivationPath)
-  | { _type: "SignOnly"; publicKey: string }
-  | { _type: "ViewOnly"; publicKey: string }
+  | { _type: "Keypair"; publicKey: string }
 
 export type DerivationPath = {
   chainId: string
@@ -38,15 +37,16 @@ export type InsertKeysetArgs = {
   scheme: "Sr25519" | "Ed25519" | "Ecdsa"
   createdAt: number
   miniSecret: string
-  derivationPaths?: DerivationPath[]
-  importedPrivateKeys?: string[]
-  importedPublicKeys?: string[]
-}
-
-export type ImportPrivateKeyArgs = {
-  keysetName: string
-  privatekey: string
-}
+} & (
+  | {
+      _type: "DerivationPath"
+      derivationPaths: DerivationPath[]
+    }
+  | {
+      _type: "PrivateKey"
+      privatekey: string
+    }
+)
 
 type KeyringState = {
   isLocked: boolean
@@ -73,6 +73,5 @@ export type BackgroundRpcSpec = {
   getKeyset(keysetName: string): Promise<Keyset | undefined>
   removeKeyset(keysetName: string): Promise<void>
   clearKeysets(): Promise<void>
-  importPrivateKey(args: ImportPrivateKeyArgs): Promise<void>
   getKeyringState(): Promise<KeyringState>
 }
