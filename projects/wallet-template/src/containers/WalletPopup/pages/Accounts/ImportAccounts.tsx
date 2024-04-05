@@ -1,4 +1,11 @@
-import { ArrowLeft, Key, NotepadText, ChevronDown } from "lucide-react"
+import {
+  ArrowLeft,
+  Key,
+  NotepadText,
+  ChevronDown,
+  ChevronUp,
+  Check,
+} from "lucide-react"
 import { rpc } from "../../api"
 import { SubmitHandler, useForm, Controller } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
@@ -10,6 +17,9 @@ import { bytesToHex } from "@noble/ciphers/utils"
 type FormFields = {
   key: string
   scheme: "Sr25519" | "Ed25519" | "Ecdsa"
+  polkadot: boolean
+  westend: boolean
+  kusama: boolean
   keysetName: string
 }
 
@@ -29,7 +39,10 @@ export function ImportAccounts() {
     mode: "onSubmit",
     reValidateMode: "onSubmit",
     defaultValues: {
-      scheme: "Sr25519", // initial default value
+      scheme: "Sr25519",
+      polkadot: false,
+      westend: false,
+      kusama: false,
     },
   })
 
@@ -56,7 +69,6 @@ export function ImportAccounts() {
       case "mnemonic":
         break
     }
-    // Here you would typically handle the import wallet process
   }
 
   const validateKey = (value: string) => {
@@ -166,7 +178,7 @@ export function ImportAccounts() {
 
         <div className="mb-4">
           <label
-            htmlFor="cryptography"
+            htmlFor="scheme"
             className="block mb-2 text-sm font-medium text-gray-900"
           >
             Scheme
@@ -178,7 +190,7 @@ export function ImportAccounts() {
               <div className="relative">
                 <select
                   {...field}
-                  id="cryptography"
+                  id="scheme"
                   className="block w-full appearance-none bg-white border border-gray-300 text-base rounded-md py-2 pl-3 pr-10 hover:border-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   aria-label="Select cryptography"
                   aria-expanded="true"
@@ -193,6 +205,52 @@ export function ImportAccounts() {
               </div>
             )}
           />
+        </div>
+
+        <div className="mb-4">
+          <fieldset className="p-4 border-2 border-gray-200 rounded-lg">
+            <legend className="font-semibold">Networks</legend>
+            <div className="flex flex-col gap-4">
+              {(["polkadot", "westend", "kusama"] as const).map(
+                (chain, idx) => (
+                  <Controller
+                    key={idx}
+                    name={chain}
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field }) => (
+                      <label
+                        htmlFor={chain}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        <input
+                          {...field}
+                          id={chain}
+                          value={undefined}
+                          type="checkbox"
+                          className="appearance-none h-6 w-6 border-2 border-gray-300 rounded-sm checked:border-blue-500 focus:outline-none cursor-pointer"
+                          aria-checked={field.value}
+                          onClick={() => field.onChange(!field.value)}
+                        />
+                        {field.value && (
+                          <Check className="absolute text-blue-500" size={24} />
+                        )}
+                        <span className="text-sm">
+                          {chain.charAt(0).toUpperCase() + chain.slice(1)}
+                        </span>
+                      </label>
+                    )}
+                  />
+                ),
+              )}
+            </div>
+          </fieldset>
+          <p className="text-red-500 mt-2">
+            {Object.values(errors).length > 0 &&
+              "At least one option must be selected."}
+          </p>
         </div>
 
         <button
