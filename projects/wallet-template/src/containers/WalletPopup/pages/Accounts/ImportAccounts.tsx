@@ -1,6 +1,6 @@
-import { ArrowLeft, Key, Lock } from "lucide-react"
+import { ArrowLeft, Key, NotepadText, ChevronDown } from "lucide-react"
 import { rpc } from "../../api"
-import { SubmitHandler, useForm } from "react-hook-form"
+import { SubmitHandler, useForm, Controller } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { entropyToMiniSecret } from "@polkadot-labs/hdkd-helpers"
@@ -9,19 +9,35 @@ import { bytesToHex } from "@noble/ciphers/utils"
 
 type FormFields = {
   key: string
+  scheme: "Sr25519" | "Ed25519" | "Ecdsa"
   keysetName: string
 }
 
+type Tab = "private" | "mnemonic"
+
 export function ImportAccounts() {
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState<"private" | "public">("private")
+  const [activeTab, setActiveTab] = useState<Tab>("private")
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
+    clearErrors,
     formState: { errors, isValid },
   } = useForm<FormFields>({
-    mode: "onChange",
+    mode: "onSubmit",
+    reValidateMode: "onSubmit",
+    defaultValues: {
+      scheme: "Sr25519", // initial default value
+    },
   })
+
+  const onActiveTabChanged = (tab: Tab) => {
+    setActiveTab(tab)
+    clearErrors("key")
+    setValue("key", "")
+  }
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     switch (activeTab) {
@@ -37,7 +53,7 @@ export function ImportAccounts() {
         navigate("/accounts")
         console.log("good")
         break
-      case "public":
+      case "mnemonic":
         break
     }
     // Here you would typically handle the import wallet process
@@ -58,7 +74,7 @@ export function ImportAccounts() {
         </button>
         <h1 className="text-xl font-bold mt-4">Import Wallet</h1>
         <p className="text-gray-600 mt-2">
-          Enter your private or public key to access your wallet
+          Enter your private key or mnemonic to access your wallet
         </p>
       </section>
 
@@ -66,37 +82,62 @@ export function ImportAccounts() {
         <div className="flex justify-center gap-4 mb-4">
           <button
             type="button"
-            onClick={() => setActiveTab("private")}
+            onClick={() => onActiveTabChanged("private")}
             className={`p-2 ${activeTab === "private" ? "font-semibold" : ""}`}
           >
             <Key className="inline-block mr-2" />
-            Private Key
+            Expanded Private Key
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab("public")}
-            className={`p-2 ${activeTab === "public" ? "font-semibold" : ""}`}
+            onClick={() => onActiveTabChanged("mnemonic")}
+            className={`p-2 ${activeTab === "mnemonic" ? "font-semibold" : ""}`}
           >
-            <Lock className="inline-block mr-2" />
-            Public Key
+            <NotepadText className="inline-block mr-2" />
+            Mnemonic
           </button>
         </div>
 
         <div className="mb-4">
-          <label htmlFor="keyInput" className="block text-sm font-medium">
-            Key
-          </label>
-          <input
-            id="keyInput"
-            placeholder={`Enter your ${activeTab} key`}
-            {...register("key", {
-              required: "Key is required",
-              validate: validateKey,
-            })}
-            className={`mt-1 p-2 w-full border ${
-              errors.key ? "border-red-500" : "border-gray-300"
-            }`}
-          />
+          {activeTab === "private" && (
+            <>
+              <label htmlFor="keyInput" className="block text-sm font-medium">
+                Key
+              </label>
+              <input
+                id="keyInput"
+                placeholder={`Enter your expanded private key`}
+                {...register("key", {
+                  required: "Private Key is required",
+                  validate: validateKey,
+                })}
+                className={`mt-1 p-2 w-full border ${
+                  errors.key ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+            </>
+          )}
+          {activeTab === "mnemonic" && (
+            <>
+              <label
+                htmlFor="mnemonicInput"
+                className="block text-sm font-medium"
+              >
+                Key
+              </label>
+              <input
+                id="mnemonicInput"
+                placeholder={`Enter your mnemonic`}
+                {...register("key", {
+                  required: "Mnemonic is required",
+                  validate: validateKey,
+                })}
+                className={`mt-1 p-2 w-full border ${
+                  errors.key ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+            </>
+          )}
           {errors.key && (
             <p className="text-red-500 text-xs">{errors.key.message}</p>
           )}
@@ -122,6 +163,38 @@ export function ImportAccounts() {
             />
           }
         </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="cryptography"
+            className="block mb-2 text-sm font-medium text-gray-900"
+          >
+            Scheme
+          </label>
+          <Controller
+            name="scheme"
+            control={control}
+            render={({ field }) => (
+              <div className="relative">
+                <select
+                  {...field}
+                  id="cryptography"
+                  className="block w-full appearance-none bg-white border border-gray-300 text-base rounded-md py-2 pl-3 pr-10 hover:border-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  aria-label="Select cryptography"
+                  aria-expanded="true"
+                >
+                  <option value="Sr25519">Sr25519</option>
+                  <option value="Ed25519">Ed25519</option>
+                  <option value="Ecdsa">Ecdsa</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <ChevronDown />
+                </div>
+              </div>
+            )}
+          />
+        </div>
+
         <button
           type="submit"
           disabled={!isValid}

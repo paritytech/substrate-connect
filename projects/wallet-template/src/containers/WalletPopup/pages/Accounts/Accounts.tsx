@@ -92,8 +92,6 @@ const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
     )
     .map(({ publicKey }) => ss58Address(publicKey))
 
-  console.log("signOnlyAccounts", signOnlyAccounts)
-
   return (
     <section>
       <div className="flex flex-col items-center px-4 py-4">
