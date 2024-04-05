@@ -15,10 +15,12 @@ export type SystemAccountStorage = {
   sufficients: number
 }
 
-export const useSystemAccount = (address?: string) => {
-  const { provider, chainId } = useUnstableProvider()
+export const useSystemAccount = () => {
+  const { provider, chainId, account } = useUnstableProvider()
   const { data: systemAccount } = useSWRSubscription(
-    provider && address ? ["systemAccount", provider, chainId, address] : null,
+    provider && account
+      ? ["systemAccount", provider, chainId, account.address]
+      : null,
     ([_, provider, chainId, address], { next }) => {
       const subscription = systemAccount$(provider, chainId, address).subscribe(
         {

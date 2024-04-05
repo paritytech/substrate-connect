@@ -18,8 +18,8 @@ export const ConnectedAccount = () => {
 const Account = () => {
   const { account, disconnectAccount } = useUnstableProvider()
   const { handleOpen } = useModal()
-  const systemStorage = useSystemAccount(account?.address)
-  const balance = !account ? "N/A" : systemStorage?.data.free ?? 0n
+  const systemAccount = useSystemAccount()
+  const balance = !account ? "N/A" : systemAccount?.data.free ?? 0n
   return (
     <article>
       <header>
