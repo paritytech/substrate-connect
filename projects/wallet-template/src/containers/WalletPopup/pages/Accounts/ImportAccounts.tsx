@@ -1,21 +1,20 @@
-import {
-  ArrowLeft,
-  Key,
-  NotepadText,
-  ChevronDown,
-  ChevronUp,
-  Check,
-} from "lucide-react"
+import { ArrowLeft, Key, NotepadText, ChevronDown, Check } from "lucide-react"
 import { rpc } from "../../api"
 import { SubmitHandler, useForm, Controller } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
-import { entropyToMiniSecret } from "@polkadot-labs/hdkd-helpers"
+import {
+  entropyToMiniSecret,
+  sr25519,
+  ed25519,
+  ecdsa,
+} from "@polkadot-labs/hdkd-helpers"
 import { fromHex } from "@polkadot-api/utils"
 import { bytesToHex } from "@noble/ciphers/utils"
 
 type FormFields = {
-  key: string
+  mnemonicInput?: string
+  key?: string
   scheme: "Sr25519" | "Ed25519" | "Ecdsa"
   polkadot: boolean
   westend: boolean
@@ -34,7 +33,8 @@ export function ImportAccounts() {
     control,
     setValue,
     clearErrors,
-    formState: { errors, isValid },
+    getValues,
+    formState: { errors },
   } = useForm<FormFields>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
@@ -54,25 +54,44 @@ export function ImportAccounts() {
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     switch (activeTab) {
-      case "private":
+      case "private": {
         await rpc.client.insertKeyset({
           _type: "PrivateKey",
           name: data.keysetName,
-          scheme: "Sr25519",
-          miniSecret: bytesToHex(entropyToMiniSecret(fromHex(data.key))),
-          privatekey: data.key,
+          scheme: data.scheme,
+          miniSecret: bytesToHex(entropyToMiniSecret(fromHex(data.key!))),
+          privatekey: data.key!,
           createdAt: Date.now(),
         })
         navigate("/accounts")
-        console.log("good")
         break
+      }
       case "mnemonic":
         break
     }
   }
 
-  const validateKey = (value: string) => {
-    return /^(0x)?[0-9a-fA-F]{128}$/.test(value) || "Invalid key format"
+  const validatePrivateKey = (value: string | undefined) => {
+    if (!value) return "Private Key is required"
+
+    const { scheme } = getValues()
+    const bytes = fromHex(value)
+    try {
+      switch (scheme) {
+        case "Ecdsa":
+          ecdsa.getPublicKey(bytes)
+          break
+        case "Ed25519":
+          ed25519.getPublicKey(bytes)
+          break
+        case "Sr25519":
+          sr25519.getPublicKey(bytes)
+          break
+      }
+      return true
+    } catch (_) {
+      return "Invalid private format"
+    }
   }
 
   return (
@@ -121,7 +140,7 @@ export function ImportAccounts() {
                 placeholder={`Enter your expanded private key`}
                 {...register("key", {
                   required: "Private Key is required",
-                  validate: validateKey,
+                  validate: validatePrivateKey,
                 })}
                 className={`mt-1 p-2 w-full border ${
                   errors.key ? "border-red-500" : "border-gray-300"
@@ -137,12 +156,13 @@ export function ImportAccounts() {
               >
                 Key
               </label>
-              <input
+              <textarea
                 id="mnemonicInput"
+                rows={4}
                 placeholder={`Enter your mnemonic`}
                 {...register("key", {
                   required: "Mnemonic is required",
-                  validate: validateKey,
+                  validate: validatePrivateKey,
                 })}
                 className={`mt-1 p-2 w-full border ${
                   errors.key ? "border-red-500" : "border-gray-300"
@@ -207,55 +227,59 @@ export function ImportAccounts() {
           />
         </div>
 
-        <div className="mb-4">
-          <fieldset className="p-4 border-2 border-gray-200 rounded-lg">
-            <legend className="font-semibold">Networks</legend>
-            <div className="flex flex-col gap-4">
-              {(["polkadot", "westend", "kusama"] as const).map(
-                (chain, idx) => (
-                  <Controller
-                    key={idx}
-                    name={chain}
-                    control={control}
-                    rules={{
-                      required: true,
-                    }}
-                    render={({ field }) => (
-                      <label
-                        htmlFor={chain}
-                        className="flex items-center gap-2 cursor-pointer"
-                      >
-                        <input
-                          {...field}
-                          id={chain}
-                          value={undefined}
-                          type="checkbox"
-                          className="appearance-none h-6 w-6 border-2 border-gray-300 rounded-sm checked:border-blue-500 focus:outline-none cursor-pointer"
-                          aria-checked={field.value}
-                          onClick={() => field.onChange(!field.value)}
-                        />
-                        {field.value && (
-                          <Check className="absolute text-blue-500" size={24} />
-                        )}
-                        <span className="text-sm">
-                          {chain.charAt(0).toUpperCase() + chain.slice(1)}
-                        </span>
-                      </label>
-                    )}
-                  />
-                ),
-              )}
-            </div>
-          </fieldset>
-          <p className="text-red-500 mt-2">
-            {Object.values(errors).length > 0 &&
-              "At least one option must be selected."}
-          </p>
-        </div>
+        {activeTab === "mnemonic" && (
+          <div className="mb-4">
+            <fieldset className="p-4 border-2 border-gray-200 rounded-lg">
+              <legend className="font-semibold">Networks</legend>
+              <div className="flex flex-col gap-4">
+                {(["polkadot", "westend", "kusama"] as const).map(
+                  (chain, idx) => (
+                    <Controller
+                      key={idx}
+                      name={chain}
+                      control={control}
+                      rules={{
+                        required: true,
+                      }}
+                      render={({ field }) => (
+                        <label
+                          htmlFor={chain}
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
+                          <input
+                            {...field}
+                            id={chain}
+                            value={undefined}
+                            type="checkbox"
+                            className="appearance-none h-6 w-6 border-2 border-gray-300 rounded-sm checked:border-blue-500 focus:outline-none cursor-pointer"
+                            aria-checked={field.value}
+                            onClick={() => field.onChange(!field.value)}
+                          />
+                          {field.value && (
+                            <Check
+                              className="absolute text-blue-500"
+                              size={24}
+                            />
+                          )}
+                          <span className="text-sm">
+                            {chain.charAt(0).toUpperCase() + chain.slice(1)}
+                          </span>
+                        </label>
+                      )}
+                    />
+                  ),
+                )}
+              </div>
+            </fieldset>
+            <p className="text-red-500 mt-2">
+              {Object.values(errors).length > 0 &&
+                "At least one option must be selected."}
+            </p>
+          </div>
+        )}
 
         <button
           type="submit"
-          disabled={!isValid}
           className="w-full p-3 bg-blue-500 text-white disabled:opacity-50"
         >
           Import Wallet

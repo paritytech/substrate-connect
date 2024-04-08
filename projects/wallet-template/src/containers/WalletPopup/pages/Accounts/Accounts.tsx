@@ -16,20 +16,20 @@ import useSWR from "swr"
 
 type AccountItemProps = {
   bgColor: string
-  text: string
-  subText: string
+  heading?: string
+  ss58Address: string
 }
 
 const AccountItem: React.FC<AccountItemProps> = ({
   bgColor,
-  text,
-  subText,
+  heading,
+  ss58Address,
 }) => {
-  const maxLength = 20 // Maximum length before adding ellipsis
+  const maxLength = 32
   const ellipsisText =
-    subText.length > maxLength
-      ? `${subText.substring(0, maxLength / 2)}...${subText.substring(subText.length - maxLength / 2, subText.length)}`
-      : subText
+    ss58Address.length > maxLength
+      ? `${ss58Address.substring(0, maxLength / 2)}...${ss58Address.substring(ss58Address.length - maxLength / 2, ss58Address.length)}`
+      : ss58Address
 
   return (
     <div className="flex items-center px-4 py-2 border-b">
@@ -37,8 +37,14 @@ const AccountItem: React.FC<AccountItemProps> = ({
         className={`flex-shrink-0 w-10 h-10 rounded-full ${bgColor} mr-3`}
       ></div>
       <div className="flex-grow">
-        <div className="text-sm font-medium">{text}</div>
-        <div className="text-xs text-gray-500">{ellipsisText}</div>
+        {heading ? (
+          <>
+            <div className="text-sm font-medium">{heading}</div>
+            <div className="text-xs text-gray-500">{ellipsisText}</div>
+          </>
+        ) : (
+          <div className="font-medium text-gray-500">{ellipsisText}</div>
+        )}
       </div>
       <ChevronRight className="text-gray-400" />
     </div>
@@ -85,7 +91,7 @@ const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
         account._type === "DerivationPath",
     )
     .map(({ path, publicKey }) => [path, ss58Address(publicKey)] as const)
-  const signOnlyAccounts = keyset.accounts
+  const keypairAccounts = keyset.accounts
     .filter(
       (account): account is Extract<KeysetAccount, { _type: "Keypair" }> =>
         account._type === "Keypair",
@@ -103,28 +109,20 @@ const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
         <h1 className="text-2xl font-bold mt-2">{keyset.name}</h1>
       </div>
       <div className="px-4">
-        <h2 className="text-lg font-semibold mb-2">Derived Keys</h2>
-        <div className="bg-white rounded-lg shadow">
+        <h2 className="text-lg font-semibold mb-2">Keypairs</h2>
+        <div className="bg-white rounded-lg shadow mb-4">
           {derivationPathAccounts.map(([path, ss58Address]) => (
             <AccountItem
               bgColor="bg-purple-200"
-              text={path}
-              subText={ss58Address}
+              heading={path}
+              ss58Address={ss58Address}
             />
           ))}
         </div>
 
-        <div className="my-4 border-t border-gray-200 text-center">
-          <span className="bg-white px-2 text-gray-500">Signer Keys</span>
-        </div>
-
-        <div className="bg-white rounded-lg shadow">
-          {signOnlyAccounts.map((ss58Address) => (
-            <AccountItem
-              bgColor="bg-purple-200"
-              text={"//*"}
-              subText={ss58Address}
-            />
+        <div className="bg-white rounded-lg shadow mb-4">
+          {keypairAccounts.map((ss58Address) => (
+            <AccountItem bgColor="bg-purple-200" ss58Address={ss58Address} />
           ))}
         </div>
       </div>
