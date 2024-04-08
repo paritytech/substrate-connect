@@ -120,6 +120,7 @@ export const createKeyring = () => {
     setKeystore({
       ...newKeystore,
       meta: [
+        ...keystore.meta,
         {
           name: args.name,
           scheme: args.scheme,

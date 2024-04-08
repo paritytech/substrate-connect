@@ -8,17 +8,22 @@ import {
   sr25519,
   ed25519,
   ecdsa,
+  mnemonicToEntropy,
 } from "@polkadot-labs/hdkd-helpers"
-import { fromHex } from "@polkadot-api/utils"
+import { fromHex, toHex } from "@polkadot-api/utils"
 import { bytesToHex } from "@noble/ciphers/utils"
+import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
+import { networks } from "./networks"
 
 type FormFields = {
   mnemonicInput?: string
   key?: string
   scheme: "Sr25519" | "Ed25519" | "Ecdsa"
-  polkadot: boolean
-  westend: boolean
-  kusama: boolean
+  networks: {
+    polkadot: boolean
+    westend: boolean
+    kusama: boolean
+  }
   keysetName: string
 }
 
@@ -40,11 +45,21 @@ export function ImportAccounts() {
     reValidateMode: "onSubmit",
     defaultValues: {
       scheme: "Sr25519",
-      polkadot: false,
-      westend: false,
-      kusama: false,
+      networks: {
+        polkadot: false,
+        westend: false,
+        kusama: false,
+      },
     },
   })
+
+  const handleChange = (chain: "kusama" | "polkadot" | "westend") => {
+    const newValue = !getValues(`networks.${chain}`)
+    return {
+      ...getValues("networks"),
+      [chain]: newValue,
+    }
+  }
 
   const onActiveTabChanged = (tab: Tab) => {
     setActiveTab(tab)
@@ -63,12 +78,40 @@ export function ImportAccounts() {
           privatekey: data.key!,
           createdAt: Date.now(),
         })
-        navigate("/accounts")
         break
       }
-      case "mnemonic":
+      case "mnemonic": {
+        const entropy = mnemonicToEntropy(data.mnemonicInput!)
+        const miniSecret = entropyToMiniSecret(entropy)
+        // TODO: Add support for Ed25519 and Ecdsa
+        const derive = sr25519CreateDerive(miniSecret)
+        const derivationPaths = Object.entries(data.networks)
+          .filter(([_, selected]) => selected)
+          .map(([networkId, _]) => {
+            const network = networks.find(
+              ({ label }) => networkId.toLowerCase() === label.toLowerCase(),
+            )!
+            const path = `//${network.value}//0`
+            return {
+              chainId: network.chainId,
+              path,
+              publicKey: toHex(derive(`//${network.value}//0`).publicKey),
+            }
+          })
+
+        await rpc.client.insertKeyset({
+          _type: "DerivationPath",
+          name: data.keysetName,
+          scheme: data.scheme,
+          miniSecret: bytesToHex(miniSecret),
+          derivationPaths,
+          createdAt: Date.now(),
+        })
         break
+      }
     }
+    window.localStorage.setItem("selectedKeysetName", data.keysetName)
+    navigate("/accounts")
   }
 
   const validatePrivateKey = (value: string | undefined) => {
@@ -91,6 +134,17 @@ export function ImportAccounts() {
       return true
     } catch (_) {
       return "Invalid private format"
+    }
+  }
+
+  const validateMnemonic = (value: string | undefined) => {
+    if (!value) return "Mnemonic is required"
+
+    try {
+      mnemonicToEntropy(value)
+      return true
+    } catch (_) {
+      return "Invalid mnemonic"
     }
   }
 
@@ -160,9 +214,9 @@ export function ImportAccounts() {
                 id="mnemonicInput"
                 rows={4}
                 placeholder={`Enter your mnemonic`}
-                {...register("key", {
+                {...register("mnemonicInput", {
                   required: "Mnemonic is required",
-                  validate: validatePrivateKey,
+                  validate: validateMnemonic,
                 })}
                 className={`mt-1 p-2 w-full border ${
                   errors.key ? "border-red-500" : "border-gray-300"
@@ -170,8 +224,10 @@ export function ImportAccounts() {
               />
             </>
           )}
-          {errors.key && (
-            <p className="text-red-500 text-xs">{errors.key.message}</p>
+          {errors.mnemonicInput && (
+            <p className="text-red-500 text-xs">
+              {errors.mnemonicInput.message}
+            </p>
           )}
         </div>
 
@@ -231,31 +287,32 @@ export function ImportAccounts() {
           <div className="mb-4">
             <fieldset className="p-4 border-2 border-gray-200 rounded-lg">
               <legend className="font-semibold">Networks</legend>
-              <div className="flex flex-col gap-4">
-                {(["polkadot", "westend", "kusama"] as const).map(
-                  (chain, idx) => (
-                    <Controller
-                      key={idx}
-                      name={chain}
-                      control={control}
-                      rules={{
-                        required: true,
-                      }}
-                      render={({ field }) => (
+              <Controller
+                name="networks"
+                control={control}
+                rules={{
+                  validate: (value) =>
+                    Object.values(value).some((v) => v) ||
+                    "At least one option must be selected.",
+                }}
+                render={({ field }) => (
+                  <div className="flex flex-col gap-4">
+                    {(["polkadot", "westend", "kusama"] as const).map(
+                      (chain, idx) => (
                         <label
                           htmlFor={chain}
+                          key={idx}
                           className="flex items-center gap-2 cursor-pointer"
                         >
                           <input
-                            {...field}
                             id={chain}
-                            value={undefined}
                             type="checkbox"
+                            checked={field.value[chain]}
+                            onChange={() => field.onChange(handleChange(chain))}
                             className="appearance-none h-6 w-6 border-2 border-gray-300 rounded-sm checked:border-blue-500 focus:outline-none cursor-pointer"
-                            aria-checked={field.value}
-                            onClick={() => field.onChange(!field.value)}
+                            aria-checked={field.value[chain]}
                           />
-                          {field.value && (
+                          {field.value[chain] && (
                             <Check
                               className="absolute text-blue-500"
                               size={24}
@@ -265,16 +322,15 @@ export function ImportAccounts() {
                             {chain.charAt(0).toUpperCase() + chain.slice(1)}
                           </span>
                         </label>
-                      )}
-                    />
-                  ),
+                      ),
+                    )}
+                  </div>
                 )}
-              </div>
+              />
             </fieldset>
-            <p className="text-red-500 mt-2">
-              {Object.values(errors).length > 0 &&
-                "At least one option must be selected."}
-            </p>
+            {errors.networks && (
+              <p className="text-red-500 mt-2">{errors.networks.message}</p>
+            )}
           </div>
         )}
 
