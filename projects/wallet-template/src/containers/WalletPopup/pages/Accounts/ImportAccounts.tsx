@@ -53,7 +53,7 @@ export function ImportAccounts() {
     },
   })
 
-  const handleChange = (chain: "kusama" | "polkadot" | "westend") => {
+  const onNetworkChanged = (chain: "kusama" | "polkadot" | "westend") => {
     const newValue = !getValues(`networks.${chain}`)
     return {
       ...getValues("networks"),
