@@ -74,7 +74,6 @@ export function ImportAccounts() {
           _type: "PrivateKey",
           name: data.keysetName,
           scheme: data.scheme,
-          miniSecret: bytesToHex(entropyToMiniSecret(fromHex(data.key!))),
           privatekey: data.key!,
           createdAt: Date.now(),
         })
@@ -308,7 +307,9 @@ export function ImportAccounts() {
                             id={chain}
                             type="checkbox"
                             checked={field.value[chain]}
-                            onChange={() => field.onChange(handleChange(chain))}
+                            onChange={() =>
+                              field.onChange(onNetworkChanged(chain))
+                            }
                             className="appearance-none h-6 w-6 border-2 border-gray-300 rounded-sm checked:border-blue-500 focus:outline-none cursor-pointer"
                             aria-checked={field.value[chain]}
                           />

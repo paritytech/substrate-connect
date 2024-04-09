@@ -36,10 +36,10 @@ export type InsertKeysetArgs = {
   name: string
   scheme: "Sr25519" | "Ed25519" | "Ecdsa"
   createdAt: number
-  miniSecret: string
 } & (
   | {
       _type: "DerivationPath"
+      miniSecret: string
       derivationPaths: DerivationPath[]
     }
   | {
