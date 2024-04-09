@@ -83,7 +83,7 @@ type AccountsListProps = {
 }
 
 const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
-  const derivationPathAccounts = keyset.accounts
+  const keysetAccounts = keyset.accounts
     .filter(
       (account): account is Extract<KeystoreAccount, { type: "Keyset" }> =>
         account.type === "Keyset",
@@ -109,7 +109,7 @@ const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
       <div className="px-4">
         <h2 className="text-lg font-semibold mb-2">Keypairs</h2>
         <div className="bg-white rounded-lg shadow mb-4">
-          {derivationPathAccounts.map(([path, ss58Address]) => (
+          {keysetAccounts.map(([path, ss58Address]) => (
             <AccountItem
               bgColor="bg-purple-200"
               heading={path}
