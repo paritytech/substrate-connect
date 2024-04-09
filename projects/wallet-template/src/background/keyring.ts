@@ -4,29 +4,40 @@ import {
   ed25519CreateDerive,
   sr25519CreateDerive,
 } from "@polkadot-labs/hdkd"
-import { sr25519, ed25519, ecdsa, KeyPair } from "@polkadot-labs/hdkd-helpers"
+import {
+  sr25519,
+  ed25519,
+  ecdsa,
+  KeyPair,
+  Curve,
+} from "@polkadot-labs/hdkd-helpers"
 import { KeystoreMeta, keystoreV4, type KeystoreV4WithMeta } from "./keystore"
 import { assert } from "./utils"
 import * as storage from "./storage"
 import { InsertKeysetArgs, KeystoreAccount } from "./types"
-import { fromHex, toHex } from "@polkadot-api/utils"
+import { toHex } from "@polkadot-api/utils"
 
-const createDeriveFnMap = {
+const createDeriveFnMap: Record<string, CreateDeriveFn> = {
   Sr25519: sr25519CreateDerive,
   Ed25519: ed25519CreateDerive,
   Ecdsa: ecdsaCreateDerive,
-} as Record<string, CreateDeriveFn>
+}
 
-const privateKeyToPublicKey = (privateKey: string, scheme: string) => {
-  switch (scheme) {
-    case "Sr25519":
-      return toHex(sr25519.getPublicKey(privateKey))
-    case "Ed25519":
-      return toHex(ed25519.getPublicKey(privateKey))
-    case "Ecdsa":
-      return toHex(ecdsa.getPublicKey(privateKey))
-    default:
-      throw new Error("unsupported scheme")
+const curveFnMap: Record<string, Curve> = {
+  Sr25519: sr25519,
+  Ed25519: ed25519,
+  Ecdsa: ecdsa,
+}
+
+const createKeyPair = (privateKey: string, scheme: string): KeyPair => {
+  const curve = curveFnMap[scheme]
+  if (!curve) throw new Error("unsupported signature scheme")
+
+  return {
+    publicKey: curve.getPublicKey(privateKey),
+    sign(message) {
+      return curve.sign(message, privateKey)
+    },
   }
 }
 
@@ -109,7 +120,9 @@ export const createKeyring = () => {
         : args.type === "Keypair"
           ? {
               type: "KeypairKeyStore" as const,
-              publicKey: privateKeyToPublicKey(args.privatekey, args.scheme),
+              publicKey: toHex(
+                createKeyPair(args.privatekey, args.scheme).publicKey,
+              ),
             }
           : undefined
     if (!newKeyset) throw new Error("invalid keystore type")
@@ -269,20 +282,7 @@ export const createKeyring = () => {
           ] as const
         }
         case "KeypairKeyStore": {
-          const privateKey = fromHex(secret)
-          let keypair: KeyPair = {
-            publicKey: fromHex(keyset.publicKey),
-            sign: (msg) => {
-              switch (keyset.scheme) {
-                case "Sr25519":
-                  return sr25519.sign(privateKey, msg)
-                case "Ed25519":
-                  return ed25519.sign(privateKey, msg)
-                case "Ecdsa":
-                  return ecdsa.sign(privateKey, msg)
-              }
-            },
-          }
+          let keypair = createKeyPair(secret, keyset.scheme)
 
           return [keypair, keyset.scheme] as const
         }

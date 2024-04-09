@@ -2,7 +2,6 @@ import { ArrowLeft, Key, NotepadText, ChevronDown, Check } from "lucide-react"
 import { rpc } from "../../api"
 import { SubmitHandler, useForm, Controller } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
-import { useState } from "react"
 import {
   entropyToMiniSecret,
   sr25519,
@@ -12,26 +11,78 @@ import {
 } from "@polkadot-labs/hdkd-helpers"
 import { fromHex, toHex } from "@polkadot-api/utils"
 import { bytesToHex } from "@noble/ciphers/utils"
-import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
+import {
+  CreateDeriveFn,
+  ecdsaCreateDerive,
+  ed25519CreateDerive,
+  sr25519CreateDerive,
+} from "@polkadot-labs/hdkd"
 import { networks } from "./networks"
 
+const createDeriveFnMap: Record<Scheme, CreateDeriveFn> = {
+  Sr25519: sr25519CreateDerive,
+  Ed25519: ed25519CreateDerive,
+  Ecdsa: ecdsaCreateDerive,
+}
+
+type Scheme = "Sr25519" | "Ed25519" | "Ecdsa"
+
+type Tab =
+  | {
+      _type: "mnemonic"
+      mnemonic: string
+    }
+  | {
+      _type: "privateKey"
+      privateKey: string
+    }
+
 type FormFields = {
-  mnemonic?: string
-  privateKey?: string
-  scheme: "Sr25519" | "Ed25519" | "Ecdsa"
+  keysetName: string
+  scheme: Scheme
+  tab: Tab
   networks: {
     polkadot: boolean
     westend: boolean
     kusama: boolean
   }
-  keysetName: string
 }
 
-type Tab = "private" | "mnemonic"
+const validatePrivateKey = (value: string | undefined, scheme: string) => {
+  if (!value) return "Private Key is required"
+
+  const bytes = fromHex(value)
+  try {
+    switch (scheme) {
+      case "Ecdsa":
+        ecdsa.getPublicKey(bytes)
+        break
+      case "Ed25519":
+        ed25519.getPublicKey(bytes)
+        break
+      case "Sr25519":
+        sr25519.getPublicKey(bytes)
+        break
+    }
+    return true
+  } catch (_) {
+    return "Invalid private key"
+  }
+}
+
+const validateMnemonic = (value: string | undefined) => {
+  if (!value) return "Mnemonic is required"
+
+  try {
+    mnemonicToEntropy(value)
+    return true
+  } catch (_) {
+    return "Invalid mnemonic"
+  }
+}
 
 export function ImportAccounts() {
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState<Tab>("private")
   const {
     register,
     handleSubmit,
@@ -39,12 +90,17 @@ export function ImportAccounts() {
     setValue,
     clearErrors,
     getValues,
+    watch,
     formState: { errors },
   } = useForm<FormFields>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
     defaultValues: {
       scheme: "Sr25519",
+      tab: {
+        _type: "privateKey",
+        privateKey: "",
+      },
       networks: {
         polkadot: false,
         westend: false,
@@ -52,6 +108,8 @@ export function ImportAccounts() {
       },
     },
   })
+
+  const activeTab = watch("tab._type")
 
   const onNetworkChanged = (chain: "kusama" | "polkadot" | "westend") => {
     const newValue = !getValues(`networks.${chain}`)
@@ -61,39 +119,27 @@ export function ImportAccounts() {
     }
   }
 
-  const onActiveTabChanged = (tab: Tab) => {
-    switch (tab) {
-      case "private":
-        clearErrors("privateKey")
-        setValue("privateKey", "")
-        break
-      case "mnemonic":
-        clearErrors("mnemonic")
-        setValue("mnemonic", "")
-        break
-      default:
-        break
-    }
-    setActiveTab(tab)
+  const onActiveTabChanged = (tab: Tab["_type"]) => {
+    clearErrors()
+    setValue("tab._type", tab)
   }
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    switch (activeTab) {
-      case "private": {
+    switch (data.tab._type) {
+      case "privateKey": {
         await rpc.client.insertKeyset({
           type: "Keypair",
           name: data.keysetName,
           scheme: data.scheme,
-          privatekey: data.privateKey!,
+          privatekey: data.tab.privateKey!,
           createdAt: Date.now(),
         })
         break
       }
       case "mnemonic": {
-        const entropy = mnemonicToEntropy(data.mnemonic!)
+        const entropy = mnemonicToEntropy(data.tab.mnemonic!)
         const miniSecret = entropyToMiniSecret(entropy)
-        // TODO: Add support for Ed25519 and Ecdsa
-        const derive = sr25519CreateDerive(miniSecret)
+        const derive = createDeriveFnMap[data.scheme](miniSecret)
         const derivationPaths = Object.entries(data.networks)
           .filter(([_, selected]) => selected)
           .map(([networkId, _]) => {
@@ -123,40 +169,6 @@ export function ImportAccounts() {
     navigate("/accounts")
   }
 
-  const validatePrivateKey = (value: string | undefined) => {
-    if (!value) return "Private Key is required"
-
-    const { scheme } = getValues()
-    const bytes = fromHex(value)
-    try {
-      switch (scheme) {
-        case "Ecdsa":
-          ecdsa.getPublicKey(bytes)
-          break
-        case "Ed25519":
-          ed25519.getPublicKey(bytes)
-          break
-        case "Sr25519":
-          sr25519.getPublicKey(bytes)
-          break
-      }
-      return true
-    } catch (_) {
-      return "Invalid private format"
-    }
-  }
-
-  const validateMnemonic = (value: string | undefined) => {
-    if (!value) return "Mnemonic is required"
-
-    try {
-      mnemonicToEntropy(value)
-      return true
-    } catch (_) {
-      return "Invalid mnemonic"
-    }
-  }
-
   return (
     <main className="flex flex-col items-center justify-center p-4">
       <section className="text-center w-full max-w-lg">
@@ -176,8 +188,8 @@ export function ImportAccounts() {
         <div className="flex justify-center gap-4 mb-4">
           <button
             type="button"
-            onClick={() => onActiveTabChanged("private")}
-            className={`p-2 ${activeTab === "private" ? "font-semibold" : ""}`}
+            onClick={() => onActiveTabChanged("privateKey")}
+            className={`p-2 ${activeTab === "privateKey" ? "font-semibold" : ""}`}
           >
             <Key className="inline-block mr-2" />
             Expanded Private Key
@@ -193,48 +205,79 @@ export function ImportAccounts() {
         </div>
 
         <div className="mb-4">
-          {activeTab === "private" && (
-            <>
-              <label htmlFor="keyInput" className="block text-sm font-medium">
-                Key
-              </label>
-              <input
-                id="keyInput"
-                placeholder={`Enter your expanded private key`}
-                {...register("privateKey", {
-                  required: "Private Key is required",
-                  validate: validatePrivateKey,
-                })}
-                className={`mt-1 p-2 w-full border ${
-                  errors.mnemonic ? "border-red-500" : "border-gray-300"
-                }`}
-              />
-            </>
+          {activeTab === "privateKey" && (
+            <Controller
+              control={control}
+              name="tab.privateKey"
+              rules={{
+                required: "Private Key is required",
+                validate: (value) =>
+                  validatePrivateKey(value, getValues("scheme")),
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <>
+                  <label
+                    htmlFor="privateKeyInput"
+                    className="block text-sm font-medium"
+                  >
+                    Private Key
+                  </label>
+                  <input
+                    {...field}
+                    id="privateKeyInput"
+                    placeholder="Enter your expanded private key"
+                    {...register("tab.privateKey", {
+                      required: "Private Key is required",
+                      validate: (value) =>
+                        validatePrivateKey(value, getValues("scheme")),
+                    })}
+                    className={`mt-1 p-2 w-full border ${
+                      error?.message ? "border-red-500" : "border-gray-300"
+                    }`}
+                  />
+                  {error?.message && (
+                    <p className="text-red-500 text-xs">{error.message}</p>
+                  )}
+                </>
+              )}
+            />
           )}
           {activeTab === "mnemonic" && (
-            <>
-              <label
-                htmlFor="mnemonicInput"
-                className="block text-sm font-medium"
-              >
-                Key
-              </label>
-              <textarea
-                id="mnemonicInput"
-                rows={4}
-                placeholder={`Enter your mnemonic`}
-                {...register("mnemonic", {
-                  required: "Mnemonic is required",
-                  validate: validateMnemonic,
-                })}
-                className={`mt-1 p-2 w-full border ${
-                  errors.privateKey ? "border-red-500" : "border-gray-300"
-                }`}
-              />
-            </>
-          )}
-          {errors.mnemonic && (
-            <p className="text-red-500 text-xs">{errors.mnemonic.message}</p>
+            <Controller
+              control={control}
+              name="tab.mnemonic"
+              rules={{
+                required: "Private Key is required",
+                validate: (value) =>
+                  validatePrivateKey(value, getValues("scheme")),
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <>
+                  <label
+                    htmlFor="mnemonicInput"
+                    className="block text-sm font-medium"
+                  >
+                    Mnemonic
+                  </label>
+                  <textarea
+                    {...field}
+                    id="mnemonicInput"
+                    rows={4}
+                    placeholder="Enter your mnemonic"
+                    {...register("tab.mnemonic", {
+                      required: "Mnemonic is required",
+                      validate: validateMnemonic,
+                    })}
+                    className={`mt-1 p-2 w-full border ${
+                      error?.message ? "border-red-500" : "border-gray-300"
+                    }`}
+                  />
+                  {error?.message && (
+                    <p className="text-red-500 text-xs">{error.message}</p>
+                  )}
+                </>
+              )}
+            />
           )}
         </div>
 
@@ -245,18 +288,19 @@ export function ImportAccounts() {
           >
             Keyset Name
           </label>
-          {
-            <input
-              id="keysetNameInput"
-              placeholder={`Enter a keyset name`}
-              {...register("keysetName", {
-                required: "keysetName is required",
-              })}
-              className={`mt-1 p-2 w-full border ${
-                errors.keysetName ? "border-red-500" : "border-gray-300"
-              }`}
-            />
-          }
+          <input
+            id="keysetNameInput"
+            placeholder={`Enter a keyset name`}
+            {...register("keysetName", {
+              required: "Keyset Name is required",
+            })}
+            className={`mt-1 p-2 w-full border ${
+              errors.keysetName ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors?.keysetName?.message && (
+            <p className="text-red-500 text-xs">{errors?.keysetName.message}</p>
+          )}
         </div>
 
         <div className="mb-4">
