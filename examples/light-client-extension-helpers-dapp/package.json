@@ -20,7 +20,7 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@types/react": "^18.2.74",
+    "@types/react": "^18.2.75",
     "@types/react-dom": "^18.2.24",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
     "@typescript-eslint/parser": "^7.4.0",
