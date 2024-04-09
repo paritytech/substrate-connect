@@ -1,4 +1,4 @@
-import type { ConnectProvider } from "@polkadot-api/json-rpc-provider"
+import type { JsonRpcProvider } from "@polkadot-api/json-rpc-provider"
 import type { AddChainOptions, Client } from "smoldot"
 
 type SmoldotProviderOptions =
@@ -14,7 +14,7 @@ type SmoldotProviderOptions =
 export const smoldotProvider = async ({
   smoldotClient,
   ...options
-}: SmoldotProviderOptions): Promise<ConnectProvider> => {
+}: SmoldotProviderOptions): Promise<JsonRpcProvider> => {
   const chain = await smoldotClient.addChain(
     "addChainOptions" in options
       ? options.addChainOptions
