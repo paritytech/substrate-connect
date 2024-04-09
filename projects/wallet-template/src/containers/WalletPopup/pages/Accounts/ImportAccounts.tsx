@@ -49,7 +49,7 @@ type FormFields = {
 }
 
 const validatePrivateKey = (value: string | undefined, scheme: string) => {
-  if (!value) return "Private Key is required"
+  if (!value) return "Private Key is required."
 
   const bytes = fromHex(value)
   try {
@@ -66,18 +66,18 @@ const validatePrivateKey = (value: string | undefined, scheme: string) => {
     }
     return true
   } catch (_) {
-    return "Invalid private key"
+    return "Invalid private key."
   }
 }
 
 const validateMnemonic = (value: string | undefined) => {
-  if (!value) return "Mnemonic is required"
+  if (!value) return "Mnemonic is required."
 
   try {
     mnemonicToEntropy(value)
     return true
   } catch (_) {
-    return "Invalid mnemonic"
+    return "Invalid mnemonic."
   }
 }
 
@@ -210,7 +210,7 @@ export function ImportAccounts() {
               control={control}
               name="tab.privateKey"
               rules={{
-                required: "Private Key is required",
+                required: "Private Key is required.",
                 validate: (value) =>
                   validatePrivateKey(value, getValues("scheme")),
               }}
@@ -227,7 +227,7 @@ export function ImportAccounts() {
                     id="privateKeyInput"
                     placeholder="Enter your expanded private key"
                     {...register("tab.privateKey", {
-                      required: "Private Key is required",
+                      required: "Private Key is required.",
                       validate: (value) =>
                         validatePrivateKey(value, getValues("scheme")),
                     })}
@@ -247,7 +247,7 @@ export function ImportAccounts() {
               control={control}
               name="tab.mnemonic"
               rules={{
-                required: "Private Key is required",
+                required: "Private Key is required.",
                 validate: (value) =>
                   validatePrivateKey(value, getValues("scheme")),
               }}
@@ -265,7 +265,7 @@ export function ImportAccounts() {
                     rows={4}
                     placeholder="Enter your mnemonic"
                     {...register("tab.mnemonic", {
-                      required: "Mnemonic is required",
+                      required: "Mnemonic is required.",
                       validate: validateMnemonic,
                     })}
                     className={`mt-1 p-2 w-full border ${
@@ -292,7 +292,7 @@ export function ImportAccounts() {
             id="keysetNameInput"
             placeholder={`Enter a keyset name`}
             {...register("keysetName", {
-              required: "Keyset Name is required",
+              required: "Keyset Name is required.",
             })}
             className={`mt-1 p-2 w-full border ${
               errors.keysetName ? "border-red-500" : "border-gray-300"
@@ -344,7 +344,7 @@ export function ImportAccounts() {
                 rules={{
                   validate: (value) =>
                     Object.values(value).some((v) => v) ||
-                    "At least one option must be selected.",
+                    "At least one network must be selected.",
                 }}
                 render={({ field }) => (
                   <div className="flex flex-col gap-4">
