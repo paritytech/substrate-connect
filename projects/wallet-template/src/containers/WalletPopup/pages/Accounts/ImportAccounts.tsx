@@ -16,8 +16,8 @@ import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
 import { networks } from "./networks"
 
 type FormFields = {
-  mnemonicInput?: string
-  key?: string
+  mnemonic?: string
+  privateKey?: string
   scheme: "Sr25519" | "Ed25519" | "Ecdsa"
   networks: {
     polkadot: boolean
@@ -62,9 +62,19 @@ export function ImportAccounts() {
   }
 
   const onActiveTabChanged = (tab: Tab) => {
+    switch (tab) {
+      case "private":
+        clearErrors("privateKey")
+        setValue("privateKey", "")
+        break
+      case "mnemonic":
+        clearErrors("mnemonic")
+        setValue("mnemonic", "")
+        break
+      default:
+        break
+    }
     setActiveTab(tab)
-    clearErrors("key")
-    setValue("key", "")
   }
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
@@ -74,13 +84,13 @@ export function ImportAccounts() {
           type: "Keypair",
           name: data.keysetName,
           scheme: data.scheme,
-          privatekey: data.key!,
+          privatekey: data.privateKey!,
           createdAt: Date.now(),
         })
         break
       }
       case "mnemonic": {
-        const entropy = mnemonicToEntropy(data.mnemonicInput!)
+        const entropy = mnemonicToEntropy(data.mnemonic!)
         const miniSecret = entropyToMiniSecret(entropy)
         // TODO: Add support for Ed25519 and Ecdsa
         const derive = sr25519CreateDerive(miniSecret)
@@ -191,12 +201,12 @@ export function ImportAccounts() {
               <input
                 id="keyInput"
                 placeholder={`Enter your expanded private key`}
-                {...register("key", {
+                {...register("privateKey", {
                   required: "Private Key is required",
                   validate: validatePrivateKey,
                 })}
                 className={`mt-1 p-2 w-full border ${
-                  errors.key ? "border-red-500" : "border-gray-300"
+                  errors.mnemonic ? "border-red-500" : "border-gray-300"
                 }`}
               />
             </>
@@ -213,20 +223,18 @@ export function ImportAccounts() {
                 id="mnemonicInput"
                 rows={4}
                 placeholder={`Enter your mnemonic`}
-                {...register("mnemonicInput", {
+                {...register("mnemonic", {
                   required: "Mnemonic is required",
                   validate: validateMnemonic,
                 })}
                 className={`mt-1 p-2 w-full border ${
-                  errors.key ? "border-red-500" : "border-gray-300"
+                  errors.privateKey ? "border-red-500" : "border-gray-300"
                 }`}
               />
             </>
           )}
-          {errors.mnemonicInput && (
-            <p className="text-red-500 text-xs">
-              {errors.mnemonicInput.message}
-            </p>
+          {errors.mnemonic && (
+            <p className="text-red-500 text-xs">{errors.mnemonic.message}</p>
           )}
         </div>
 
@@ -342,9 +350,6 @@ export function ImportAccounts() {
           Import Wallet
         </button>
       </form>
-
-      {/* This is where you'd display error messages from the import process */}
-      {/* Example: <p className="text-red-500">Error importing wallet</p> */}
     </main>
   )
 }
