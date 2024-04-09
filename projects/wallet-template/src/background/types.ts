@@ -8,8 +8,8 @@ export type Account = {
 }
 
 export type KeystoreAccount =
-  | ({ _type: "Keyset" } & DerivationPath)
-  | { _type: "Keypair"; publicKey: string }
+  | ({ type: "Keyset" } & DerivationPath)
+  | { type: "Keypair"; publicKey: string }
 
 export type DerivationPath = {
   chainId: string
@@ -38,12 +38,12 @@ export type InsertKeysetArgs = {
   createdAt: number
 } & (
   | {
-      _type: "Keyset"
+      type: "Keyset"
       miniSecret: string
       derivationPaths: DerivationPath[]
     }
   | {
-      _type: "Keypair"
+      type: "Keypair"
       privatekey: string
     }
 )

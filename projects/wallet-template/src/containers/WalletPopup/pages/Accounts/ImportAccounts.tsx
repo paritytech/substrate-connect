@@ -71,7 +71,7 @@ export function ImportAccounts() {
     switch (activeTab) {
       case "private": {
         await rpc.client.insertKeyset({
-          _type: "Keypair",
+          type: "Keypair",
           name: data.keysetName,
           scheme: data.scheme,
           privatekey: data.key!,
@@ -99,7 +99,7 @@ export function ImportAccounts() {
           })
 
         await rpc.client.insertKeyset({
-          _type: "Keyset",
+          type: "Keyset",
           name: data.keysetName,
           scheme: data.scheme,
           miniSecret: bytesToHex(miniSecret),

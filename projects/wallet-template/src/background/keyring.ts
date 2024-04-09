@@ -39,16 +39,16 @@ export const createKeyring = () => {
   const getKeyStoreAccounts = (
     keystoreMeta: KeystoreMeta,
   ): KeystoreAccount[] => {
-    switch (keystoreMeta._type) {
+    switch (keystoreMeta.type) {
       case "KeysetKeystore":
         return keystoreMeta.derivationPaths.map((d) => ({
           ...d,
-          _type: "Keyset",
+          type: "Keyset",
         }))
       case "KeypairKeyStore":
         return [
           {
-            _type: "Keypair",
+            type: "Keypair",
             publicKey: keystoreMeta.publicKey,
           },
         ]
@@ -79,8 +79,8 @@ export const createKeyring = () => {
       .flatMap(getKeyStoreAccounts)
       .filter(
         (account) =>
-          (account._type === "Keyset" && account.chainId === chainId) ||
-          account._type !== "Keyset",
+          (account.type === "Keyset" && account.chainId === chainId) ||
+          account.type !== "Keyset",
       )
   }
 
@@ -94,21 +94,21 @@ export const createKeyring = () => {
     )
 
     const secrets = decodeSecrets(keystoreV4.decrypt(keystore, currentPassword))
-    const secret = args._type === "Keyset" ? args.miniSecret : args.privatekey
+    const secret = args.type === "Keyset" ? args.miniSecret : args.privatekey
     const newKeystore = keystoreV4.create(
       currentPassword,
       encodeSecrets([...secrets, secret]),
     )
 
     const newKeyset =
-      args._type === "Keyset"
+      args.type === "Keyset"
         ? {
-            _type: "KeysetKeystore" as const,
+            type: "KeysetKeystore" as const,
             derivationPaths: args.derivationPaths,
           }
-        : args._type === "Keypair"
+        : args.type === "Keypair"
           ? {
-              _type: "KeypairKeyStore" as const,
+              type: "KeypairKeyStore" as const,
               publicKey: privateKeyToPublicKey(args.privatekey, args.scheme),
             }
           : undefined
@@ -234,7 +234,7 @@ export const createKeyring = () => {
       assert(keystore, "keyring must be setup")
 
       const keysetIndex = keystore.meta.findIndex((keyset) => {
-        switch (keyset._type) {
+        switch (keyset.type) {
           case "KeysetKeystore":
             return keyset.derivationPaths.some(
               (d) => d.chainId === chainId && d.publicKey === publicKey,
@@ -255,7 +255,7 @@ export const createKeyring = () => {
       )[keysetIndex]
 
       const keyset = keystore.meta[keysetIndex]
-      switch (keyset._type) {
+      switch (keyset.type) {
         case "KeysetKeystore": {
           const { derivationPaths, scheme } = keyset
           const derivationPath = derivationPaths.find(

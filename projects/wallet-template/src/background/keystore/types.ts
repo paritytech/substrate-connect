@@ -13,12 +13,12 @@ export type BaseKeystore = {
 }
 
 export type KeysetKeystore = BaseKeystore & {
-  _type: "KeysetKeystore"
+  type: "KeysetKeystore"
   derivationPaths: DerivationPath[]
 }
 
 export type KeypairKeystore = BaseKeystore & {
-  _type: "KeypairKeyStore"
+  type: "KeypairKeyStore"
   publicKey: string
 }
 

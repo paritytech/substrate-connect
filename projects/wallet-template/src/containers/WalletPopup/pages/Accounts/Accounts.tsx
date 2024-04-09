@@ -85,14 +85,14 @@ type AccountsListProps = {
 const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
   const derivationPathAccounts = keyset.accounts
     .filter(
-      (account): account is Extract<KeystoreAccount, { _type: "Keyset" }> =>
-        account._type === "Keyset",
+      (account): account is Extract<KeystoreAccount, { type: "Keyset" }> =>
+        account.type === "Keyset",
     )
     .map(({ path, publicKey }) => [path, ss58Address(publicKey)] as const)
   const keypairAccounts = keyset.accounts
     .filter(
-      (account): account is Extract<KeystoreAccount, { _type: "Keypair" }> =>
-        account._type === "Keypair",
+      (account): account is Extract<KeystoreAccount, { type: "Keypair" }> =>
+        account.type === "Keypair",
     )
     .map(({ publicKey }) => ss58Address(publicKey))
 
