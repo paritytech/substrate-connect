@@ -8,7 +8,7 @@ import { sr25519, ed25519, ecdsa, KeyPair } from "@polkadot-labs/hdkd-helpers"
 import { KeystoreMeta, keystoreV4, type KeystoreV4WithMeta } from "./keystore"
 import { assert } from "./utils"
 import * as storage from "./storage"
-import { InsertKeysetArgs, KeysetAccount } from "./types"
+import { InsertKeysetArgs, KeystoreAccount } from "./types"
 import { fromHex, toHex } from "@polkadot-api/utils"
 
 const createDeriveFnMap = {
@@ -36,21 +36,20 @@ export const createKeyring = () => {
     storage.set("keystore", keystore)
   const removeKeystore = () => storage.remove("keystore")
 
-  const getKeyStoreAccounts = (keystoreMeta: KeystoreMeta): KeysetAccount[] => {
+  const getKeyStoreAccounts = (
+    keystoreMeta: KeystoreMeta,
+  ): KeystoreAccount[] => {
     switch (keystoreMeta._type) {
-      case "DerivationPathKeystore":
+      case "KeysetKeystore":
         return keystoreMeta.derivationPaths.map((d) => ({
           ...d,
-          _type: "DerivationPath",
+          _type: "Keyset",
         }))
-      case "PrivateKeyKeystore":
+      case "KeypairKeyStore":
         return [
           {
             _type: "Keypair",
-            publicKey: privateKeyToPublicKey(
-              keystoreMeta.privateKey,
-              keystoreMeta.scheme,
-            ),
+            publicKey: keystoreMeta.publicKey,
           },
         ]
     }
@@ -80,8 +79,8 @@ export const createKeyring = () => {
       .flatMap(getKeyStoreAccounts)
       .filter(
         (account) =>
-          (account._type === "DerivationPath" && account.chainId === chainId) ||
-          account._type !== "DerivationPath",
+          (account._type === "Keyset" && account.chainId === chainId) ||
+          account._type !== "Keyset",
       )
   }
 
@@ -93,26 +92,24 @@ export const createKeyring = () => {
       ["Sr25519", "Ed25519", "Ecdsa"].includes(args.scheme),
       "invalid signature scheme",
     )
-    if (args._type === "PrivateKey") {
-      // validate private key
-      privateKeyToPublicKey(args.privatekey, args.scheme)
-    }
+
     const secrets = decodeSecrets(keystoreV4.decrypt(keystore, currentPassword))
+    const secret = args._type === "Keyset" ? args.miniSecret : args.privatekey
     const newKeystore = keystoreV4.create(
       currentPassword,
-      encodeSecrets([...secrets, args.miniSecret]),
+      encodeSecrets([...secrets, secret]),
     )
 
     const newKeyset =
-      args._type === "DerivationPath"
+      args._type === "Keyset"
         ? {
-            _type: "DerivationPathKeystore" as const,
+            _type: "KeysetKeystore" as const,
             derivationPaths: args.derivationPaths,
           }
-        : args._type === "PrivateKey"
+        : args._type === "Keypair"
           ? {
-              _type: "PrivateKeyKeystore" as const,
-              privateKey: args.privatekey,
+              _type: "KeypairKeyStore" as const,
+              publicKey: privateKeyToPublicKey(args.privatekey, args.scheme),
             }
           : undefined
     if (!newKeyset) throw new Error("invalid keystore type")
@@ -238,15 +235,12 @@ export const createKeyring = () => {
 
       const keysetIndex = keystore.meta.findIndex((keyset) => {
         switch (keyset._type) {
-          case "DerivationPathKeystore":
+          case "KeysetKeystore":
             return keyset.derivationPaths.some(
               (d) => d.chainId === chainId && d.publicKey === publicKey,
             )
-          case "PrivateKeyKeystore":
-            return (
-              privateKeyToPublicKey(keyset.privateKey, keyset.scheme) ===
-              publicKey
-            )
+          case "KeypairKeyStore":
+            return keyset.publicKey === publicKey
           default:
             throw new Error("invalid keystore type")
         }
@@ -262,7 +256,7 @@ export const createKeyring = () => {
 
       const keyset = keystore.meta[keysetIndex]
       switch (keyset._type) {
-        case "DerivationPathKeystore": {
+        case "KeysetKeystore": {
           const { derivationPaths, scheme } = keyset
           const derivationPath = derivationPaths.find(
             (d) => d.publicKey === publicKey,
@@ -274,13 +268,10 @@ export const createKeyring = () => {
             scheme as "Sr25519" | "Ed25519" | "Ecdsa",
           ] as const
         }
-        case "PrivateKeyKeystore": {
-          const { privateKey } = keyset
-          const publicKey = fromHex(
-            privateKeyToPublicKey(keyset.privateKey, keyset.scheme),
-          )
+        case "KeypairKeyStore": {
+          const privateKey = fromHex(secret)
           let keypair: KeyPair = {
-            publicKey,
+            publicKey: fromHex(keyset.publicKey),
             sign: (msg) => {
               switch (keyset.scheme) {
                 case "Sr25519":

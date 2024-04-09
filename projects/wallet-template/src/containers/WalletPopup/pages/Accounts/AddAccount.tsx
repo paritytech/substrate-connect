@@ -66,7 +66,7 @@ export const AddAccount = () => {
       })
 
       await rpc.client.insertKeyset({
-        _type: "DerivationPath",
+        _type: "Keyset",
         name: data.keysetName,
         scheme: "Sr25519",
         createdAt: Date.now(),

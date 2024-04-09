@@ -12,17 +12,17 @@ export type BaseKeystore = {
   createdAt: number
 }
 
-export type DerivationPathKeystore = BaseKeystore & {
-  _type: "DerivationPathKeystore"
+export type KeysetKeystore = BaseKeystore & {
+  _type: "KeysetKeystore"
   derivationPaths: DerivationPath[]
 }
 
-export type PrivateKeyKeystore = BaseKeystore & {
-  _type: "PrivateKeyKeystore"
-  privateKey: string
+export type KeypairKeystore = BaseKeystore & {
+  _type: "KeypairKeyStore"
+  publicKey: string
 }
 
-export type KeystoreMeta = DerivationPathKeystore | PrivateKeyKeystore
+export type KeystoreMeta = KeysetKeystore | KeypairKeystore
 
 export type KeystoreV4WithMeta = KeystoreV4 & {
   meta: KeystoreMeta[]

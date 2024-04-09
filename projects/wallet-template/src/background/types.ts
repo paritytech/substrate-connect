@@ -7,8 +7,8 @@ export type Account = {
   address: string
 }
 
-export type KeysetAccount =
-  | ({ _type: "DerivationPath" } & DerivationPath)
+export type KeystoreAccount =
+  | ({ _type: "Keyset" } & DerivationPath)
   | { _type: "Keypair"; publicKey: string }
 
 export type DerivationPath = {
@@ -20,7 +20,7 @@ export type DerivationPath = {
 export type Keyset = {
   name: string
   scheme: "Sr25519" | "Ed25519" | "Ecdsa"
-  accounts: KeysetAccount[]
+  accounts: KeystoreAccount[]
   createdAt: number
 }
 
@@ -38,12 +38,12 @@ export type InsertKeysetArgs = {
   createdAt: number
 } & (
   | {
-      _type: "DerivationPath"
+      _type: "Keyset"
       miniSecret: string
       derivationPaths: DerivationPath[]
     }
   | {
-      _type: "PrivateKey"
+      _type: "Keypair"
       privatekey: string
     }
 )

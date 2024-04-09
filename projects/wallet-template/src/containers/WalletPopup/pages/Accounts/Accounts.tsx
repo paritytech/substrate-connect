@@ -11,7 +11,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { ss58Address } from "@polkadot-labs/hdkd-helpers"
 import { rpc } from "../../api"
 import { IconButton } from "../../../../components"
-import { Keyset, KeysetAccount } from "../../../../background/types"
+import { Keyset, KeystoreAccount } from "../../../../background/types"
 import useSWR from "swr"
 
 type AccountItemProps = {
@@ -85,15 +85,13 @@ type AccountsListProps = {
 const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
   const derivationPathAccounts = keyset.accounts
     .filter(
-      (
-        account,
-      ): account is Extract<KeysetAccount, { _type: "DerivationPath" }> =>
-        account._type === "DerivationPath",
+      (account): account is Extract<KeystoreAccount, { _type: "Keyset" }> =>
+        account._type === "Keyset",
     )
     .map(({ path, publicKey }) => [path, ss58Address(publicKey)] as const)
   const keypairAccounts = keyset.accounts
     .filter(
-      (account): account is Extract<KeysetAccount, { _type: "Keypair" }> =>
+      (account): account is Extract<KeystoreAccount, { _type: "Keypair" }> =>
         account._type === "Keypair",
     )
     .map(({ publicKey }) => ss58Address(publicKey))
