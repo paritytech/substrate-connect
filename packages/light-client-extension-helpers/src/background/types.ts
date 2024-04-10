@@ -1,4 +1,4 @@
-import { ConnectProvider } from "@polkadot-api/json-rpc-provider"
+import { JsonRpcProvider } from "@polkadot-api/json-rpc-provider"
 
 export type AddOnAddChainByUserListener = (
   // A callback invoked when a dApp developer tries to add a new Chain.
@@ -34,7 +34,7 @@ export interface PageChain {
   name: string
   ss58Format: number
   bootNodes: Array<string>
-  provider: ConnectProvider
+  provider: JsonRpcProvider
 }
 
 export type BackgroundRpcSpec = {
