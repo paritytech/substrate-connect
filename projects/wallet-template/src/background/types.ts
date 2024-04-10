@@ -17,7 +17,7 @@ export type DerivationPath = {
   publicKey: string
 }
 
-export type Keyset = {
+export type CryptoKey = {
   name: string
   scheme: "Sr25519" | "Ed25519" | "Ecdsa"
   accounts: KeystoreAccount[]
@@ -32,7 +32,7 @@ export type SignRequest = {
   userSignedExtensionNames: UserSignedExtensionName[]
 }
 
-export type InsertKeysetArgs = {
+export type InsertCryptoKeyArgs = {
   name: string
   scheme: "Sr25519" | "Ed25519" | "Ecdsa"
   createdAt: number
@@ -67,11 +67,12 @@ export type BackgroundRpcSpec = {
   unlockKeyring(password: string): Promise<void>
   changePassword(currentPassword: string, newPassword: string): Promise<void>
   createPassword(password: string): Promise<void>
-  getKeysets(): Promise<Keyset[]>
-  insertKeyset(keyset: InsertKeysetArgs): Promise<void>
-  updateKeyset(keyset: Keyset): Promise<void>
-  getKeyset(keysetName: string): Promise<Keyset | undefined>
-  removeKeyset(keysetName: string): Promise<void>
-  clearKeysets(): Promise<void>
+  getCryptoKeys(): Promise<CryptoKey[]>
+  insertCryptoKey(args: InsertCryptoKeyArgs): Promise<void>
+  // TODO: implement updateCryptographicKey
+  updateCryptoKey(args: never): Promise<void>
+  getCryptoKey(name: string): Promise<CryptoKey | undefined>
+  removeCryptoKey(name: string): Promise<void>
+  clearCryptoKeys(): Promise<void>
   getKeyringState(): Promise<KeyringState>
 }

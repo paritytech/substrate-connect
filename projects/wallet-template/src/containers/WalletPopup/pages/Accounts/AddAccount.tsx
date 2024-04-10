@@ -24,10 +24,10 @@ export const AddAccount = () => {
   const navigate = useNavigate()
   const [mnemonic, _] = useState(generateMnemonic(256).split(" "))
   const {
-    data: keysets,
-    isLoading: areKeysetsLoading,
+    data: cryptoKeys,
+    isLoading: areCryptoKeysLoading,
     mutate,
-  } = useSWR("rpc.getKeysets", () => rpc.client.getKeysets(), {
+  } = useSWR("rpc.getCryptoKeys", () => rpc.client.getCryptoKeys(), {
     revalidateOnFocus: true,
   })
 
@@ -65,7 +65,7 @@ export const AddAccount = () => {
         }
       })
 
-      await rpc.client.insertKeyset({
+      await rpc.client.insertCryptoKey({
         type: "Keyset",
         name: data.keysetName,
         scheme: "Sr25519",
@@ -74,7 +74,7 @@ export const AddAccount = () => {
         derivationPaths,
       })
       await mutate()
-      window.localStorage.setItem("selectedKeysetName", data.keysetName)
+      window.localStorage.setItem("selectedCryptoKeyName", data.keysetName)
     } finally {
       navigate("/accounts")
     }
@@ -131,7 +131,7 @@ export const AddAccount = () => {
                 {...register("keysetName", {
                   required: "You must specify a keyset name",
                   validate: (v) =>
-                    keysets?.find((keyset) => keyset.name === v) ===
+                    cryptoKeys?.find((keyset) => keyset.name === v) ===
                       undefined || "Keyset already exists",
                   minLength: {
                     value: 1,
@@ -241,7 +241,7 @@ export const AddAccount = () => {
               type="button"
               onClick={nextStep}
               className="flex items-center px-4 py-2 text-white bg-teal-500 rounded hover:bg-teal-600"
-              disabled={areKeysetsLoading || isSubmitting}
+              disabled={areCryptoKeysLoading || isSubmitting}
             >
               Next <ArrowRight size="16" className="ml-2" />
             </button>

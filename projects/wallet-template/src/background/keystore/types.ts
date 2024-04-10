@@ -18,7 +18,7 @@ export type KeysetKeystore = BaseKeystore & {
 }
 
 export type KeypairKeystore = BaseKeystore & {
-  type: "KeypairKeyStore"
+  type: "KeypairKeystore"
   publicKey: string
 }
 

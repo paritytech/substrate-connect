@@ -11,7 +11,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { ss58Address } from "@polkadot-labs/hdkd-helpers"
 import { rpc } from "../../api"
 import { IconButton } from "../../../../components"
-import { Keyset, KeystoreAccount } from "../../../../background/types"
+import { CryptoKey, KeystoreAccount } from "../../../../background/types"
 import useSWR from "swr"
 
 type AccountItemProps = {
@@ -79,17 +79,17 @@ const EmptyAccounts: React.FC = () => {
 }
 
 type AccountsListProps = {
-  keyset: Keyset
+  cryptoKey: CryptoKey
 }
 
-const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
-  const keysetAccounts = keyset.accounts
+const AccountsList: React.FC<AccountsListProps> = ({ cryptoKey }) => {
+  const keysetAccounts = cryptoKey.accounts
     .filter(
       (account): account is Extract<KeystoreAccount, { type: "Keyset" }> =>
         account.type === "Keyset",
     )
     .map(({ path, publicKey }) => [path, ss58Address(publicKey)] as const)
-  const keypairAccounts = keyset.accounts
+  const keypairAccounts = cryptoKey.accounts
     .filter(
       (account): account is Extract<KeystoreAccount, { type: "Keypair" }> =>
         account.type === "Keypair",
@@ -104,10 +104,10 @@ const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
           alt="Profile"
           className="w-24 h-24 rounded-full"
         />
-        <h1 className="text-2xl font-bold mt-2">{keyset.name}</h1>
+        <h1 className="text-2xl font-bold mt-2">{cryptoKey.name}</h1>
       </div>
       <div className="px-4">
-        <h2 className="text-lg font-semibold mb-2">Keypairs</h2>
+        <h2 className="text-lg font-semibold mb-2">Crypto Keys</h2>
         <div className="bg-white rounded-lg shadow mb-4">
           {keysetAccounts.map(([path, ss58Address]) => (
             <AccountItem
@@ -130,19 +130,21 @@ const AccountsList: React.FC<AccountsListProps> = ({ keyset }) => {
 
 export const Accounts = () => {
   const navigate = useNavigate()
-  const { data: keysets, mutate } = useSWR(
-    "rpc.getKeysets",
-    () => rpc.client.getKeysets(),
+  const { data: cryptoKeys, mutate } = useSWR(
+    "rpc.getCryptoKeys",
+    () => rpc.client.getCryptoKeys(),
     {
       revalidateOnFocus: true,
     },
   )
-  const selectedKeysetName = window.localStorage.getItem("selectedKeysetName")
-  const keyset =
-    keysets?.find((k) => k.name === selectedKeysetName) ?? keysets?.[0]
+  const selectedCryptoKeyName = window.localStorage.getItem(
+    "selectedCryptoKeyName",
+  )
+  const cryptoKey =
+    cryptoKeys?.find((k) => k.name === selectedCryptoKeyName) ?? cryptoKeys?.[0]
 
   const reset = async () => {
-    await rpc.client.clearKeysets()
+    await rpc.client.clearCryptoKeys()
     await mutate()
     navigate(0)
   }
@@ -154,7 +156,7 @@ export const Accounts = () => {
           <RotateCcw />
         </IconButton>
         <div className="flex items-center">
-          <IconButton disabled={!keysets || keysets.length === 0}>
+          <IconButton disabled={!cryptoKeys || cryptoKeys.length === 0}>
             <Link to="/accounts/import">
               <Import />
             </Link>
@@ -164,10 +166,10 @@ export const Accounts = () => {
               <Plus />
             </Link>
           </IconButton>
-          <IconButton disabled={!keyset}>
+          <IconButton disabled={!cryptoKey}>
             <Link
               to="/accounts/switch"
-              className={!keyset ? "pointer-events-none" : ""}
+              className={!cryptoKey ? "pointer-events-none" : ""}
             >
               <ArrowRightLeft />
             </Link>
@@ -177,7 +179,7 @@ export const Accounts = () => {
           </IconButton>
         </div>
       </div>
-      {keyset ? <AccountsList keyset={keyset} /> : <EmptyAccounts />}
+      {cryptoKey ? <AccountsList cryptoKey={cryptoKey} /> : <EmptyAccounts />}
     </main>
   )
 }

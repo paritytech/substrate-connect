@@ -38,7 +38,7 @@ type Tab =
     }
 
 type FormFields = {
-  keysetName: string
+  cryptoKeyName: string
   scheme: Scheme
   tab: Tab
   networks: {
@@ -127,9 +127,9 @@ export function ImportAccounts() {
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     switch (data.tab._type) {
       case "privateKey": {
-        await rpc.client.insertKeyset({
+        await rpc.client.insertCryptoKey({
           type: "Keypair",
-          name: data.keysetName,
+          name: data.cryptoKeyName,
           scheme: data.scheme,
           privatekey: data.tab.privateKey!,
           createdAt: Date.now(),
@@ -154,9 +154,9 @@ export function ImportAccounts() {
             }
           })
 
-        await rpc.client.insertKeyset({
+        await rpc.client.insertCryptoKey({
           type: "Keyset",
-          name: data.keysetName,
+          name: data.cryptoKeyName,
           scheme: data.scheme,
           miniSecret: bytesToHex(miniSecret),
           derivationPaths,
@@ -165,7 +165,7 @@ export function ImportAccounts() {
         break
       }
     }
-    window.localStorage.setItem("selectedKeysetName", data.keysetName)
+    window.localStorage.setItem("selectedCryptoKeyName", data.cryptoKeyName)
     navigate("/accounts")
   }
 
@@ -282,24 +282,23 @@ export function ImportAccounts() {
         </div>
 
         <div className="mb-4">
-          <label
-            htmlFor="keysetNameInput"
-            className="block text-sm font-medium"
-          >
-            Keyset Name
+          <label htmlFor="cryptoKeyInput" className="block text-sm font-medium">
+            Crypto Key Name
           </label>
           <input
-            id="keysetNameInput"
-            placeholder={`Enter a keyset name`}
-            {...register("keysetName", {
-              required: "Keyset Name is required.",
+            id="cryptoKeyInput"
+            placeholder={`Enter a crypto key name`}
+            {...register("cryptoKeyName", {
+              required: "crypto key Name is required.",
             })}
             className={`mt-1 p-2 w-full border ${
-              errors.keysetName ? "border-red-500" : "border-gray-300"
+              errors.cryptoKeyName ? "border-red-500" : "border-gray-300"
             }`}
           />
-          {errors?.keysetName?.message && (
-            <p className="text-red-500 text-xs">{errors?.keysetName.message}</p>
+          {errors?.cryptoKeyName?.message && (
+            <p className="text-red-500 text-xs">
+              {errors?.cryptoKeyName.message}
+            </p>
           )}
         </div>
 

@@ -14,7 +14,7 @@ import {
 import { KeystoreMeta, keystoreV4, type KeystoreV4WithMeta } from "./keystore"
 import { assert } from "./utils"
 import * as storage from "./storage"
-import { InsertKeysetArgs, KeystoreAccount } from "./types"
+import { InsertCryptoKeyArgs, KeystoreAccount } from "./types"
 import { toHex } from "@polkadot-api/utils"
 
 const createDeriveFnMap: Record<string, CreateDeriveFn> = {
@@ -47,7 +47,7 @@ export const createKeyring = () => {
     storage.set("keystore", keystore)
   const removeKeystore = () => storage.remove("keystore")
 
-  const getKeyStoreAccounts = (
+  const getKeystoreAccounts = (
     keystoreMeta: KeystoreMeta,
   ): KeystoreAccount[] => {
     switch (keystoreMeta.type) {
@@ -56,7 +56,7 @@ export const createKeyring = () => {
           ...d,
           type: "Keyset",
         }))
-      case "KeypairKeyStore":
+      case "KeypairKeystore":
         return [
           {
             type: "Keypair",
@@ -66,13 +66,13 @@ export const createKeyring = () => {
     }
   }
 
-  const getKeysets = async () => {
-    const keysets = (await getKeystore())?.meta ?? []
+  const getCryptoKeys = async () => {
+    const keys = (await getKeystore())?.meta ?? []
 
-    return keysets.map((meta) => ({
+    return keys.map((meta) => ({
       name: meta.name,
       scheme: meta.scheme,
-      accounts: getKeyStoreAccounts(meta),
+      accounts: getKeystoreAccounts(meta),
       createdAt: meta.createdAt,
     }))
   }
@@ -87,7 +87,7 @@ export const createKeyring = () => {
     if (!keystore) return []
 
     return keystore.meta
-      .flatMap(getKeyStoreAccounts)
+      .flatMap(getKeystoreAccounts)
       .filter(
         (account) =>
           (account.type === "Keyset" && account.chainId === chainId) ||
@@ -95,7 +95,7 @@ export const createKeyring = () => {
       )
   }
 
-  const insertKeyset = async (args: InsertKeysetArgs) => {
+  const insertCryptoKey = async (args: InsertCryptoKeyArgs) => {
     const keystore = await getKeystore()
     assert(keystore, "keyring must be setup")
     assert(currentPassword, "keyring must be unlocked")
@@ -111,7 +111,7 @@ export const createKeyring = () => {
       encodeSecrets([...secrets, secret]),
     )
 
-    const newKeyset =
+    const newCryptoKey =
       args.type === "Keyset"
         ? {
             type: "KeysetKeystore" as const,
@@ -119,13 +119,13 @@ export const createKeyring = () => {
           }
         : args.type === "Keypair"
           ? {
-              type: "KeypairKeyStore" as const,
+              type: "KeypairKeystore" as const,
               publicKey: toHex(
                 createKeyPair(args.privatekey, args.scheme).publicKey,
               ),
             }
           : undefined
-    if (!newKeyset) throw new Error("invalid keystore type")
+    if (!newCryptoKey) throw new Error("invalid keystore type")
 
     setKeystore({
       ...newKeystore,
@@ -135,25 +135,26 @@ export const createKeyring = () => {
           name: args.name,
           scheme: args.scheme,
           createdAt: args.createdAt,
-          ...newKeyset,
+          ...newCryptoKey,
         },
       ],
     })
   }
 
-  const removeKeyset = async (name: string) => {
+  const removeCryptoKey = async (name: string) => {
     const keystore = await getKeystore()
     assert(keystore, "keyring must be setup")
     assert(currentPassword, "keyring must be unlocked")
-    const keysetIndex = keystore.meta?.findIndex((m) => m.name === name) ?? -1
-    if (keysetIndex === -1) return
+    const cryptoKeyIndex =
+      keystore.meta?.findIndex((m) => m.name === name) ?? -1
+    if (cryptoKeyIndex === -1) return
     const secrets = decodeSecrets(keystoreV4.decrypt(keystore, currentPassword))
-    secrets.splice(keysetIndex)
+    secrets.splice(cryptoKeyIndex)
     const newKeystore = keystoreV4.create(
       currentPassword,
       encodeSecrets(secrets),
     )
-    keystore.meta.splice(keysetIndex)
+    keystore.meta.splice(cryptoKeyIndex)
     setKeystore({
       ...newKeystore,
       meta: keystore.meta,
@@ -209,13 +210,13 @@ export const createKeyring = () => {
       return !!(await getKeystore())
     },
     getAccounts,
-    insertKeyset,
-    getKeysets,
-    async getKeyset(name: string) {
-      return (await getKeysets())?.find((m) => m.name === name)
+    insertCryptoKey,
+    getCryptoKeys,
+    async getCryptoKey(name: string) {
+      return (await getCryptoKeys())?.find((m) => m.name === name)
     },
-    removeKeyset,
-    async clearKeysets() {
+    removeCryptoKey,
+    async clearCryptoKeys() {
       const keystore = await getKeystore()
       assert(keystore, "keyring must be setup")
       assert(currentPassword, "keyring must be unlocked")
@@ -252,7 +253,7 @@ export const createKeyring = () => {
             return keyset.derivationPaths.some(
               (d) => d.chainId === chainId && d.publicKey === publicKey,
             )
-          case "KeypairKeyStore":
+          case "KeypairKeystore":
             return keyset.publicKey === publicKey
           default:
             throw new Error("invalid keystore type")
@@ -267,10 +268,10 @@ export const createKeyring = () => {
         keystoreV4.decrypt(keystore, currentPassword),
       )[keysetIndex]
 
-      const keyset = keystore.meta[keysetIndex]
-      switch (keyset.type) {
+      const cryptoKey = keystore.meta[keysetIndex]
+      switch (cryptoKey.type) {
         case "KeysetKeystore": {
-          const { derivationPaths, scheme } = keyset
+          const { derivationPaths, scheme } = cryptoKey
           const derivationPath = derivationPaths.find(
             (d) => d.publicKey === publicKey,
           )!
@@ -281,10 +282,10 @@ export const createKeyring = () => {
             scheme as "Sr25519" | "Ed25519" | "Ecdsa",
           ] as const
         }
-        case "KeypairKeyStore": {
-          let keypair = createKeyPair(secret, keyset.scheme)
+        case "KeypairKeystore": {
+          let keypair = createKeyPair(secret, cryptoKey.scheme)
 
-          return [keypair, keyset.scheme] as const
+          return [keypair, cryptoKey.scheme] as const
         }
       }
     },
