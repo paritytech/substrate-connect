@@ -3,7 +3,7 @@ import {
   type SubstrateClient,
   createClient,
 } from "@polkadot-api/substrate-client"
-import { getObservableClient } from "@polkadot-api/client"
+import { getObservableClient } from "@polkadot-api/observable-client"
 import { getSyncProvider } from "@polkadot-api/json-rpc-provider-proxy"
 import type { AddChainOptions, Chain, Client } from "smoldot"
 import {

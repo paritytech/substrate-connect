@@ -92,7 +92,7 @@ export const Welcome = () => {
           </div>
         </div>
         {isSubmitSuccessful && (
-          <div className="my-4">Password created succesfully</div>
+          <div className="my-4">Password created successfully</div>
         )}
       </form>
     </div>

@@ -7,7 +7,7 @@ import { filter, firstValueFrom } from "rxjs"
 export const decodeCallData = async (chainId: string, callData: string) => {
   const chains = await helper.getChains()
   const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
-  if (!chain) throw new Error("unkonwn chain")
+  if (!chain) throw new Error("unknown chain")
   const client = getObservableClient(createClient(chain.provider))
   const { metadata$, unfollow } = client.chainHead$()
   try {
