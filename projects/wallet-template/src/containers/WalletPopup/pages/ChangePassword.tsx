@@ -104,7 +104,7 @@ export const ChangePassword = () => {
           </div>
         </div>
         {isSubmitSuccessful && (
-          <div className="my-4">Password updated succesfully</div>
+          <div className="my-4">Password updated successfully</div>
         )}
       </form>
     </div>
