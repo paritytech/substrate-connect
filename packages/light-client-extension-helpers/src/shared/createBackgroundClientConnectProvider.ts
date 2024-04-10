@@ -1,4 +1,4 @@
-import { ConnectProvider } from "@polkadot-api/json-rpc-provider"
+import { JsonRpcProvider } from "@polkadot-api/json-rpc-provider"
 import { getSyncProvider } from "@polkadot-api/json-rpc-provider-proxy"
 import { getRandomChainId } from "./getRandomChainId"
 import {
@@ -25,7 +25,7 @@ export const createBackgroundClientConnectProvider = ({
   postMessage,
   addOnMessageListener,
   addOnDisconnectListener,
-}: CreateBackgroundClientConnectProviderOptions): ConnectProvider =>
+}: CreateBackgroundClientConnectProviderOptions): JsonRpcProvider =>
   getSyncProvider(async () => {
     const chainId = getRandomChainId()
     await new Promise<void>((resolve, reject) => {
