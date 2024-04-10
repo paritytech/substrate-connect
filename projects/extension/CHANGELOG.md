@@ -4,6 +4,14 @@
 
 ### Changed
 
+## 0.4.3 - 2024-04-10
+
+### Changed
+
+- Update @polkadot-api/client to v0.0.1 [#2073](https://github.com/paritytech/substrate-connect/pull/2073)
+- Update @polkadot-api/substrate-client to v0.0.1 [#2073](https://github.com/paritytech/substrate-connect/pull/2073)
+- Update @substrate/light-client-extension-helpers to v0.0.5 [#2072](https://github.com/paritytech/substrate-connect/pull/2072)
+
 ## 0.4.2 - 2024-03-12
 
 ### Changed

@@ -411,11 +411,11 @@ importers:
   projects/extension:
     dependencies:
       '@polkadot-api/client':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1)
+        specifier: 0.0.1
+        version: 0.0.1(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        specifier: 0.0.1
+        version: 0.0.1
       '@react-rxjs/core':
         specifier: ^0.10.7
         version: 0.10.7(react@18.2.0)(rxjs@7.8.1)
@@ -2940,6 +2940,20 @@ packages:
       config-chain: 1.1.13
     dev: true
 
+  /@polkadot-api/client@0.0.1(rxjs@7.8.1):
+    resolution: {integrity: sha512-BDfzVUQuVbwuEY29OeV+nSkG9LPtar/OaxBmJRGzZMxk7cyBPzadly0Wy2HXVeTj2jYtpeUf1mvuan8Pyfw4Fw==}
+    peerDependencies:
+      rxjs: '>=7.8.0'
+    dependencies:
+      '@polkadot-api/json-rpc-provider': 0.0.1
+      '@polkadot-api/metadata-builders': 0.0.1
+      '@polkadot-api/polkadot-signer': 0.0.1
+      '@polkadot-api/substrate-bindings': 0.0.1
+      '@polkadot-api/substrate-client': 0.0.1
+      '@polkadot-api/utils': 0.0.1
+      rxjs: 7.8.1
+    dev: false
+
   /@polkadot-api/client@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1):
     resolution: {integrity: sha512-0fqK6pUKcGHSG2pBvY+gfSS+1mMdjd/qRygAcKI5d05tKsnZLRnmhb9laDguKmGEIB0Bz9vQqNK3gIN/cfvVwg==}
     requiresBuild: true
@@ -2994,6 +3008,14 @@ packages:
       '@polkadot-api/substrate-client': 0.0.1
       '@polkadot-api/utils': 0.0.1
       rxjs: 7.8.1
+    dev: false
+
+  /@polkadot-api/polkadot-signer@0.0.1:
+    resolution: {integrity: sha512-A1axSuurYG3FtM9xY6v/rM4VXoDnk8PqW+Q1+innUcR7kmAIMWZw21uUxF0Iwzu29hKHCHucSF9YJZ1yAP7JNw==}
+    dependencies:
+      '@polkadot-api/metadata-builders': 0.0.1
+      '@polkadot-api/substrate-bindings': 0.0.1
+      '@polkadot-api/utils': 0.0.1
     dev: false
 
   /@polkadot-api/sc-provider@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
