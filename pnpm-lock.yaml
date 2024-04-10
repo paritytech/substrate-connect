@@ -299,19 +299,6 @@ importers:
         specifier: ^0.0.263
         version: 0.0.263
 
-  packages/sc-provider:
-    dependencies:
-      '@polkadot-api/json-rpc-provider-proxy':
-        specifier: 0.0.1
-        version: 0.0.1
-    devDependencies:
-      '@polkadot-api/json-rpc-provider':
-        specifier: 0.0.1
-        version: 0.0.1
-      '@substrate/connect':
-        specifier: workspace:*
-        version: link:../connect
-
   packages/unstable-wallet-provider: {}
 
   projects/burnr:
@@ -2975,6 +2962,7 @@ packages:
 
   /@polkadot-api/json-rpc-provider@0.0.1:
     resolution: {integrity: sha512-/SMC/l7foRjpykLTUTacIH05H3mr9ip8b5xxfwXlVezXrNVLp3Cv0GX6uItkKd+ZjzVPf3PFrDF2B2/HLSNESA==}
+    dev: false
 
   /@polkadot-api/json-rpc-provider@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
     resolution: {integrity: sha512-EaUS9Fc3wsiUr6ZS43PQqaRScW7kM6DYbuM/ou0aYjm8N9MBqgDbGm2oL6RE1vAVmOfEuHcXZuZkhzWtyvQUtA==}
