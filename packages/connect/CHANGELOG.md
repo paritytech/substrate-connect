@@ -4,6 +4,13 @@
 
 ### Changed
 
+## 0.8.9 - 2024-04-10
+
+### Changed
+
+- Update @polkadot-api/json-rpc-provider-proxy to v0.0.1 [#2072](https://github.com/paritytech/substrate-connect/pull/2072)
+- Update @polkadot-api/substrate-client to v0.0.1 [#2072](https://github.com/paritytech/substrate-connect/pull/2072)
+
 ## 0.8.8 - 2024-03-12
 
 ### Changed
