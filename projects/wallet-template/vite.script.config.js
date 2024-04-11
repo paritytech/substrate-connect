@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => ({
       output: {
         entryFileNames: (chunk) => `${chunk.name}.js`,
         inlineDynamicImports: true,
+        format: "iife",
       },
     },
   },

@@ -6,16 +6,17 @@ import {
   RpcError,
 } from "@substrate/light-client-extension-helpers/utils"
 import type { LightClientPageHelper } from "@substrate/light-client-extension-helpers/background"
-import { ss58Address } from "@polkadot-labs/hdkd-helpers"
-import { toHex, fromHex } from "@polkadot-api/utils"
+import { ss58Address, ss58Decode } from "@polkadot-labs/hdkd-helpers"
 import {
   GetTxCreator,
   UserSignedExtensions,
   getTxCreator,
 } from "@polkadot-api/tx-helper"
-
+import { toHex, fromHex } from "@polkadot-api/utils"
+import { Bytes, Variant } from "@polkadot-api/substrate-bindings"
 import type { BackgroundRpcSpec, SignRequest } from "./types"
 import { createKeyring } from "./keyring"
+import { getSignaturePayload, getUserSignedExtensions } from "./pjs"
 
 const keyring = createKeyring()
 
@@ -39,15 +40,20 @@ export const createBackgroundRpc = (
     port: chrome.runtime.Port
   }
 
+  const getAccounts: RpcMethodHandlers<
+    BackgroundRpcSpec,
+    Context
+  >["getAccounts"] = async ([chainId], { lightClientPageHelper }) => {
+    const chains = await lightClientPageHelper.getChains()
+    const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
+    if (!chain) throw new Error("unknown chain")
+    return (await keyring.getAccounts(chainId)).map(({ publicKey }) => ({
+      address: ss58Address(publicKey, chain.ss58Format),
+    }))
+  }
+
   const handlers: RpcMethodHandlers<BackgroundRpcSpec, Context> = {
-    async getAccounts([chainId], { lightClientPageHelper }) {
-      const chains = await lightClientPageHelper.getChains()
-      const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
-      if (!chain) throw new Error("unknown chain")
-      return (await keyring.getAccounts(chainId)).map(({ publicKey }) => ({
-        address: ss58Address(publicKey, chain.ss58Format),
-      }))
-    },
+    getAccounts,
     async createTx(
       [chainId, from, callData],
       { lightClientPageHelper, signRequests, port },
@@ -75,7 +81,10 @@ export const createBackgroundRpc = (
               address: ss58Address(from, chain.ss58Format),
               callData,
               // TODO: revisit, it might be better to query the user signed extensions from the popup
-              userSignedExtensionNames: userSingedExtensionsName,
+              userSignedExtensions: {
+                type: "names",
+                names: userSingedExtensionsName,
+              },
             }),
         )
         // FIXME: if this throws, onCreateTx does not propagate the error
@@ -148,6 +157,85 @@ export const createBackgroundRpc = (
       txCreator.destroy()
       return tx
     },
+    async pjsSignPayload(
+      [payload],
+      { port, lightClientPageHelper, signRequests },
+    ) {
+      const url = port.sender?.url
+      if (!url) throw new Error("unknown url")
+      const chains = await lightClientPageHelper.getChains()
+      const chain = chains.find(
+        ({ genesisHash }) => genesisHash === payload.genesisHash,
+      )
+      if (!chain) throw new Error("unknown chain")
+      const publicKey = toHex(ss58Decode(payload.address)[0])
+      const [keypair, scheme] = await keyring.getKeypair(
+        payload.genesisHash,
+        publicKey,
+      )
+      const id = nextSignRequestId++
+      const signRequest = new Promise<
+        Parameters<InternalSignRequest["resolve"]>[0]
+      >(
+        (resolve, reject) =>
+          (signRequests[id] = {
+            resolve,
+            reject,
+            chainId: payload.genesisHash,
+            url,
+            address: payload.address,
+            callData: payload.method,
+            userSignedExtensions: {
+              type: "values",
+              values: getUserSignedExtensions(payload),
+            },
+          }),
+      )
+      const window = await chrome.windows.create({
+        focused: true,
+        height: 700,
+        left: 150,
+        top: 150,
+        type: "popup",
+        url: chrome.runtime.getURL(
+          `ui/assets/wallet-popup.html#/sign-request/${id}`,
+        ),
+        width: 560,
+      })
+      const removeWindow = () => chrome.windows.remove(window.id!)
+      port.onDisconnect.addListener(removeWindow)
+      const onWindowsRemoved = (windowId: number) => {
+        if (windowId !== window.id) return
+        const signRequest = signRequests[id]
+        if (!signRequest) return
+        signRequest.reject()
+      }
+      chrome.windows.onRemoved.addListener(onWindowsRemoved)
+      try {
+        await signRequest
+      } finally {
+        delete signRequests[id]
+        chrome.windows.remove(window.id!)
+        port.onDisconnect.removeListener(removeWindow)
+        chrome.windows.onRemoved.removeListener(onWindowsRemoved)
+      }
+      const signaturePayload = await getSignaturePayload(
+        chain.provider,
+        payload,
+      )
+      const multiSignatureEncoder = Variant({
+        Ed25519: Bytes(64),
+        Sr25519: Bytes(64),
+        Ecdsa: Bytes(65),
+      }).enc
+      return toHex(
+        // @ts-expect-error scheme type is incompatible with type
+        multiSignatureEncoder({
+          type: scheme,
+          value: keypair.sign(signaturePayload),
+        }),
+      )
+    },
     async getSignRequests(_, { signRequests }) {
       return signRequests
     },
@@ -202,7 +290,11 @@ export const createBackgroundRpc = (
   }
 
   type Method = keyof BackgroundRpcSpec
-  const ALLOWED_WEB_METHODS: Method[] = ["createTx", "getAccounts"]
+  const ALLOWED_WEB_METHODS: Method[] = [
+    "createTx",
+    "getAccounts",
+    "pjsSignPayload",
+  ]
   const allowedMethodsMiddleware: RpcMethodMiddleware<Context> = async (
     next,
     request,

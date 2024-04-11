@@ -4,6 +4,7 @@ import type { UnstableWalletProviderDiscovery } from "@substrate/unstable-wallet
 
 import type { BackgroundRpcSpec } from "../background/types"
 import { CHANNEL_ID } from "../constants"
+import { pjsInject } from "./pjsInject"
 
 const PROVIDER_INFO = {
   uuid: crypto.randomUUID(),
@@ -47,3 +48,10 @@ window.dispatchEvent(
     detail,
   }),
 )
+
+pjsInject({
+  name: PROVIDER_INFO.name,
+  version: "0.0.1",
+  rpc: rpc.client,
+  lightClientProviderPromise: provider,
+})
