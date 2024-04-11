@@ -5,7 +5,6 @@ on:
     - cron: '0 8 * * *'  # every day at 8am
   workflow_dispatch: # allow triggering through the UI
 
-
 jobs:
   download-spec:
     runs-on: ubuntu-latest
@@ -82,10 +81,7 @@ jobs:
     - run: cp -r ./chain-spec-*/* ./repo
     - uses: peter-evans/create-pull-request@v6
       with:
-        # We use a custom secret (rather than the default GITHUB_TOKEN) so that opening the pull
-        # request triggers other actions such as the CI checks. GitHub prevents actions that use
-        # GITHUB_TOKEN from triggering further actions, to avoid recursive actions.
-        token: ${{ secrets.GH_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
         committer: CICD team <cicd-team@parity.io>
         author: CICD team <cicd-team@parity.io>
         path: repo
@@ -103,3 +99,19 @@ jobs:
           chain. If this pull request looks suspicious, please be cautious.
         commit-message: Update checkpoints in chain specifications
         delete-branch: true
+    - uses: nickderobertis/check-if-issue-exists-action@master
+      name: Check if Report Failure Issue Exists
+      id: check_if_issue_exists
+      with:
+        repo: ${{ github.repository}}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        title: 'failure: update-chain-specs failed'
+    - name: Report failure
+      if: ${{ failure() && steps.check_if_issue_exists.outputs.exists == 'false' }}
+      run: >
+        gh issue create
+        -l failure
+        -t 'failure: update-chain-specs failed'
+        -b "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
