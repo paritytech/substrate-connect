@@ -206,8 +206,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/light-client-extension-helpers
       smoldot:
-        specifier: 2.0.22
-        version: 2.0.22
+        specifier: 2.0.23
+        version: 2.0.23
     devDependencies:
       '@playwright/test':
         specifier: ^1.43.0
@@ -237,8 +237,8 @@ importers:
         specifier: workspace:^
         version: link:../light-client-extension-helpers
       smoldot:
-        specifier: 2.0.22
-        version: 2.0.22
+        specifier: 2.0.23
+        version: 2.0.23
     devDependencies:
       '@polkadot-api/json-rpc-provider-proxy':
         specifier: 0.0.1
@@ -441,8 +441,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.0.22
-        version: 2.0.22
+        specifier: 2.0.23
+        version: 2.0.23
     devDependencies:
       '@playwright/test':
         specifier: ^1.43.0
@@ -538,8 +538,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.0.22
-        version: 2.0.22
+        specifier: 2.0.23
+        version: 2.0.23
       swr:
         specifier: ^2.2.5
         version: 2.2.5(react@18.2.0)
@@ -10530,6 +10530,15 @@ packages:
 
   /smoldot@2.0.22:
     resolution: {integrity: sha512-B50vRgTY6v3baYH6uCgL15tfaag5tcS2o/P5q1OiXcKGv1axZDfz2dzzMuIkVpyMR2ug11F6EAtQlmYBQd292g==}
+    dependencies:
+      ws: 8.16.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
+  /smoldot@2.0.23:
+    resolution: {integrity: sha512-rZOHZoL6iSdjl3nEHaZmIAvFjaSsK/pkI2G6m46Ua1xNurcIZByyjLnMrlY5jm1rasdJDHFnNmasGBgeQFyLcQ==}
     dependencies:
       ws: 8.16.0
     transitivePeerDependencies:
