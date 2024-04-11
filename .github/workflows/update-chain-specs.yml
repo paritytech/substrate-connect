@@ -65,9 +65,8 @@ jobs:
 
   create-pr:
     runs-on: ubuntu-latest
-    if: ${{ always() }}   # Run this job even if one of the steps of download-spec has failed
+    if: ${{ always() }} # Run this job even if one of the steps of download-spec has failed
     needs: download-spec
-
     steps:
     - uses: actions/checkout@v4.1.2
       with:
@@ -80,6 +79,7 @@ jobs:
         path: .
     - run: cp -r ./chain-spec-*/* ./repo
     - uses: peter-evans/create-pull-request@v6
+      id: create-pr
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         committer: CICD team <cicd-team@parity.io>
@@ -87,7 +87,7 @@ jobs:
         path: repo
         branch: automatic-checkpoints-update
         base: main
-        title: Update checkpoints in chain specifications
+        title: "chore: update checkpoints in chain specifications"
         # Note that the `download-spec` job above fails if the downloaded specification doesn't
         # correspond to an existing file. It is therefore impossible that the pull request
         # accidentally adds new specifications.
@@ -99,19 +99,21 @@ jobs:
           chain. If this pull request looks suspicious, please be cautious.
         commit-message: Update checkpoints in chain specifications
         delete-branch: true
-    - uses: nickderobertis/check-if-issue-exists-action@master
-      name: Check if Report Failure Issue Exists
-      id: check_if_issue_exists
+    - name: Check PR creation status
+      if: steps.create-pr.outcome != 'success'
+      run: |
+        echo "Failed to create pull request"
+        exit 1
+    - name: Create issue on failure
+      if: failure()
+      uses: actions/github-script@v6
       with:
-        repo: ${{ github.repository}}
-        token: ${{ secrets.GITHUB_TOKEN }}
-        title: 'failure: update-chain-specs failed'
-    - name: Report failure
-      if: ${{ failure() && steps.check_if_issue_exists.outputs.exists == 'false' }}
-      run: >
-        gh issue create
-        -l failure
-        -t 'failure: update-chain-specs failed'
-        -b "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: 'Failed to create pull request for updating chain specifications',
+            body: 'The create-pr step failed in the chain-specs-periodic-update workflow. Please investigate the issue.',
+            labels: ['bug']
+          })
