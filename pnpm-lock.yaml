@@ -584,8 +584,8 @@ importers:
         specifier: ^7.11.0
         version: 7.11.0
       wxt:
-        specifier: ^0.17.11
-        version: 0.17.11(@types/node@20.12.7)
+        specifier: ^0.17.12
+        version: 0.17.12(@types/node@20.12.7)
 
   zombienet-tests:
     dependencies:
@@ -12044,8 +12044,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  /wxt@0.17.11(@types/node@20.12.7):
-    resolution: {integrity: sha512-WCOK4bf6KpZXpgyQhRc+j4/IoRCs97SAq4kTo3PP7fSegxyoIDkJTyz/k0sGOhcFf5BHRT0PSXBV+ml86t25xQ==}
+  /wxt@0.17.12(@types/node@20.12.7):
+    resolution: {integrity: sha512-VedEvueLVP8Pi9DH0ikSqhQyGJ6uRWVycSicdLNxeGUmPTbExj7hhH5ZZM+SIgsIh9yQgVm7MPnVnobzmeJHJw==}
     engines: {node: '>=18', pnpm: '>=8'}
     hasBin: true
     dependencies:
@@ -12074,7 +12074,7 @@ packages:
       json5: 2.2.3
       jszip: 3.10.1
       linkedom: 0.16.8
-      minimatch: 9.0.3
+      minimatch: 9.0.4
       natural-compare: 1.4.0
       normalize-path: 3.0.0
       nypm: 0.3.6
