@@ -97,7 +97,8 @@ jobs:
 
           Keep in mind that introducing a malicious checkpoint can redirect users to the wrong
           chain. If this pull request looks suspicious, please be cautious.
-        commit-message: Update checkpoints in chain specifications
+        labels: "automerge"
+        commit-message: "chore: update checkpoints in chain specifications"
         delete-branch: true
     - name: Check PR creation status
       if: steps.create-pr.outcome != 'success'
