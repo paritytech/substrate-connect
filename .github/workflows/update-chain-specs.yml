@@ -99,3 +99,19 @@ jobs:
           chain. If this pull request looks suspicious, please be cautious.
         commit-message: Update checkpoints in chain specifications
         delete-branch: true
+    - uses: nickderobertis/check-if-issue-exists-action@master
+      name: Check if Report Failure Issue Exists
+      id: check_if_issue_exists
+      with:
+        repo: ${{ github.repository}}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        title: 'failure: update-chain-specs failed'
+    - name: Report failure
+      if: ${{ failure() && steps.check_if_issue_exists.outputs.exists == 'false' }}
+      run: >
+        gh issue create
+        -l failure
+        -t 'failure: update-chain-specs failed'
+        -b "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
