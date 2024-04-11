@@ -20,7 +20,7 @@
     "smoldot": "2.0.22"
   },
   "devDependencies": {
-    "@playwright/test": "^1.42.1",
+    "@playwright/test": "^1.43.0",
     "@types/chrome": "^0.0.263",
     "@types/node": "^20.12.7",
     "concurrently": "^8.2.2",
