@@ -9,46 +9,53 @@ import useSWR from "swr"
 export const SwitchAccount: React.FC = () => {
   const navigate = useNavigate()
 
-  const { data: keysets } = useSWR(
-    "rpc.getKeysets",
-    () => rpc.client.getKeysets(),
+  const { data: cryptoKeys } = useSWR(
+    "rpc.getCryptoKeys",
+    () => rpc.client.getCryptoKeys(),
     {
       revalidateOnFocus: true,
     },
   )
 
-  const [selectedKeysetName, setSelectedKeysetName] = useState<string>("")
+  const [selectedCryptoKeyName, setSelectedCryptoKeyName] = useState<string>("")
   const { handleSubmit } = useForm()
 
   useEffect(() => {
-    if (keysets && selectedKeysetName === "") {
-      setSelectedKeysetName(
+    if (cryptoKeys && selectedCryptoKeyName === "") {
+      setSelectedCryptoKeyName(
         () =>
-          window.localStorage.getItem("selectedKeysetName") ?? keysets[0].name,
+          window.localStorage.getItem("selectedCryptoKeyName") ??
+          cryptoKeys[0].name,
       )
     }
-  }, [selectedKeysetName, keysets])
+  }, [selectedCryptoKeyName, cryptoKeys])
 
   const onSubmit: SubmitHandler<Record<string, any>> = async () => {
     try {
-      if (!keysets) return
-      window.localStorage.setItem("selectedKeysetName", selectedKeysetName)
+      if (!cryptoKeys) return
+      window.localStorage.setItem(
+        "selectedCryptoKeyName",
+        selectedCryptoKeyName,
+      )
     } finally {
       navigate("/accounts")
     }
   }
 
-  const keysetNames = keysets?.map(({ name }) => name) ?? []
+  const cryptoKeyNames = cryptoKeys?.map(({ name }) => name) ?? []
   return (
     <form className="max-w-xl p-6 mx-auto" onSubmit={handleSubmit(onSubmit)}>
       <h1 className="mb-4 text-2xl font-bold">Switch Account</h1>
-      <RadioGroup value={selectedKeysetName} onChange={setSelectedKeysetName}>
-        <RadioGroup.Label className="sr-only">Keyset</RadioGroup.Label>
+      <RadioGroup
+        value={selectedCryptoKeyName}
+        onChange={setSelectedCryptoKeyName}
+      >
+        <RadioGroup.Label className="sr-only">Crypto Key</RadioGroup.Label>
         <div className="space-y-2">
-          {keysetNames.map((keysetName) => (
+          {cryptoKeyNames.map((name) => (
             <RadioGroup.Option
-              key={keysetName}
-              value={keysetName}
+              key={name}
+              value={name}
               className={({ active, checked }) =>
                 `${
                   active
@@ -63,7 +70,7 @@ export const SwitchAccount: React.FC = () => {
                 <User className="text-gray-600" />
               </div>
               <div className="flex items-center justify-center">
-                <span className="text-lg">{keysetName}</span>
+                <span className="text-lg">{name}</span>
               </div>
             </RadioGroup.Option>
           ))}

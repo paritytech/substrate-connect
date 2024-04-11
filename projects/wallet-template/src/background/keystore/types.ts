@@ -1,10 +1,28 @@
-import { Keyset } from "../types"
 import { KeystoreV4 } from "./keystoreV4"
 
-type KeystoreMeta = {
-  // TODO: support single account
-  type: "keyset"
-} & Keyset
+export type DerivationPath = {
+  chainId: string
+  path: string
+  publicKey: string
+}
+
+export type BaseKeystore = {
+  name: string
+  scheme: "Sr25519" | "Ed25519" | "Ecdsa"
+  createdAt: number
+}
+
+export type KeysetKeystore = BaseKeystore & {
+  type: "KeysetKeystore"
+  derivationPaths: DerivationPath[]
+}
+
+export type KeypairKeystore = BaseKeystore & {
+  type: "KeypairKeystore"
+  publicKey: string
+}
+
+export type KeystoreMeta = KeysetKeystore | KeypairKeystore
 
 export type KeystoreV4WithMeta = KeystoreV4 & {
   meta: KeystoreMeta[]

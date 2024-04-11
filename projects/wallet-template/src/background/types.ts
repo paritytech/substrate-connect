@@ -7,16 +7,20 @@ export type Account = {
   address: string
 }
 
-type DerivationPath = {
+export type KeystoreAccount =
+  | ({ type: "Keyset" } & DerivationPath)
+  | { type: "Keypair"; publicKey: string }
+
+export type DerivationPath = {
   chainId: string
   path: string
   publicKey: string
 }
 
-export type Keyset = {
+export type CryptoKey = {
   name: string
-  scheme: string
-  derivationPaths: DerivationPath[]
+  scheme: "Sr25519" | "Ed25519" | "Ecdsa"
+  accounts: KeystoreAccount[]
   createdAt: number
 }
 
@@ -27,6 +31,22 @@ export type SignRequest = {
   callData: string
   userSignedExtensionNames: UserSignedExtensionName[]
 }
+
+export type InsertCryptoKeyArgs = {
+  name: string
+  scheme: "Sr25519" | "Ed25519" | "Ecdsa"
+  createdAt: number
+} & (
+  | {
+      type: "Keyset"
+      miniSecret: string
+      derivationPaths: DerivationPath[]
+    }
+  | {
+      type: "Keypair"
+      privatekey: string
+    }
+)
 
 type KeyringState = {
   isLocked: boolean
@@ -47,11 +67,12 @@ export type BackgroundRpcSpec = {
   unlockKeyring(password: string): Promise<void>
   changePassword(currentPassword: string, newPassword: string): Promise<void>
   createPassword(password: string): Promise<void>
-  getKeysets(): Promise<Keyset[]>
-  insertKeyset(keyset: Keyset, miniSecret: string): Promise<void>
-  updateKeyset(keyset: Keyset): Promise<void>
-  getKeyset(keysetName: string): Promise<Keyset | undefined>
-  removeKeyset(keysetName: string): Promise<void>
-  clearKeysets(): Promise<void>
+  getCryptoKeys(): Promise<CryptoKey[]>
+  insertCryptoKey(args: InsertCryptoKeyArgs): Promise<void>
+  // TODO: implement updateCryptographicKey
+  updateCryptoKey(args: never): Promise<void>
+  getCryptoKey(name: string): Promise<CryptoKey | undefined>
+  removeCryptoKey(name: string): Promise<void>
+  clearCryptoKeys(): Promise<void>
   getKeyringState(): Promise<KeyringState>
 }

@@ -171,26 +171,27 @@ export const createBackgroundRpc = (
     async createPassword([password]) {
       return keyring.setup(password)
     },
-    async insertKeyset([keyset, miniSecret]) {
-      const existingKeyset = await keyring.getKeyset(keyset.name)
-      if (existingKeyset)
-        throw new Error(`keyset "${keyset.name}" already exists`)
-      await keyring.addKeyset(keyset, miniSecret)
+    async insertCryptoKey([args]) {
+      const existingKey = await keyring.getCryptoKey(args.name)
+
+      if (existingKey)
+        throw new Error(`crypto key "${args.name}" already exists`)
+      await keyring.insertCryptoKey(args)
     },
-    async updateKeyset([_keyset]) {
+    async updateCryptoKey([_]) {
       throw new Error("not implemented")
     },
-    async getKeyset([keysetName]) {
-      return keyring.getKeyset(keysetName)
+    async getCryptoKey([name]) {
+      return keyring.getCryptoKey(name)
     },
-    async getKeysets() {
-      return keyring.getKeysets()
+    async getCryptoKeys() {
+      return keyring.getCryptoKeys()
     },
-    async removeKeyset([keysetName]) {
-      await keyring.removeKeyset(keysetName)
+    async removeCryptoKey([name]) {
+      await keyring.removeCryptoKey(name)
     },
-    async clearKeysets() {
-      await keyring.clearKeysets()
+    async clearCryptoKeys() {
+      await keyring.clearCryptoKeys()
     },
     async getKeyringState() {
       return {
