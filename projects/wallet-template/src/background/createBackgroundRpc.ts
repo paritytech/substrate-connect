@@ -76,7 +76,6 @@ export const createBackgroundRpc = (
       const chains = await lightClientPageHelper.getChains()
       const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
       if (!chain) throw new Error("unknown chain")
-      const [keypair, scheme] = await keyring.getKeypair(chainId, from)
       const onCreateTx: Parameters<GetTxCreator>[1] = async (
         { userSingedExtensionsName },
         callback,
@@ -146,6 +145,7 @@ export const createBackgroundRpc = (
               }
             }),
           )
+          const [keypair, scheme] = await keyring.getKeypair(chainId, from)
           callback({
             userSignedExtensionsData,
             overrides: {},
@@ -181,11 +181,6 @@ export const createBackgroundRpc = (
         ({ genesisHash }) => genesisHash === payload.genesisHash,
       )
       if (!chain) throw new Error("unknown chain")
-      const publicKey = toHex(ss58Decode(payload.address)[0])
-      const [keypair, scheme] = await keyring.getKeypair(
-        payload.genesisHash,
-        publicKey,
-      )
       const id = nextSignRequestId++
       const signRequest = new Promise<
         Parameters<InternalSignRequest["resolve"]>[0]
@@ -241,6 +236,10 @@ export const createBackgroundRpc = (
         Sr25519: Bytes(64),
         Ecdsa: Bytes(65),
       }).enc
+      const [keypair, scheme] = await keyring.getKeypair(
+        payload.genesisHash,
+        toHex(ss58Decode(payload.address)[0]),
+      )
       return toHex(
         // @ts-expect-error scheme type is incompatible with type
         multiSignatureEncoder({
