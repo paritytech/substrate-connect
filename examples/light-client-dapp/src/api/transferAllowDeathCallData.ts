@@ -26,14 +26,14 @@ export const transferAllowDeathCallData = (
       .metadata$.pipe(
         filter(Boolean),
         map((metadata) => {
-          const { location, args } = getDynamicBuilder(metadata).buildCall(
+          const { codec, location } = getDynamicBuilder(metadata).buildCall(
             "Balances",
             "transfer_allow_death",
           )
           return toHex(
             mergeUint8(
               new Uint8Array(location),
-              args.enc({
+              codec.enc({
                 dest: AccountId(destination),
                 value: amount,
               }),
