@@ -2,25 +2,27 @@ import type {
   Injected,
   InjectedAccount,
 } from "@polkadot/extension-inject/types"
-import type { LightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
-import type { BackgroundRpcSpec } from "../background/types"
+import type { Account, BackgroundRpcSpec } from "../background/types"
+import type { UnstableWallet } from "@substrate/unstable-wallet-provider"
 
 type PjsInjectOpts = {
   name: string
   version: string
   rpc: BackgroundRpcSpec
-  lightClientProviderPromise: Promise<LightClientProvider>
+  providerPromise: Promise<UnstableWallet.Provider>
+  subscribeOnAccountsChanged: (cb: (accounts: Account[]) => void) => () => void
 }
 export const pjsInject = ({
   name,
   version,
   rpc,
-  lightClientProviderPromise,
+  providerPromise,
+  subscribeOnAccountsChanged,
 }: PjsInjectOpts) =>
   injectExtension(
     async (_origin) => {
       // TODO: validate allowed origin
-      const lightClientProvider = await lightClientProviderPromise
+      const provider = await providerPromise
       let requestId = 0
       return {
         accounts: {
@@ -28,7 +30,7 @@ export const pjsInject = ({
           async get(_anyType) {
             return (
               await Promise.all(
-                Object.values(lightClientProvider.getChains()).map(
+                Object.values(provider.getChains()).map(
                   async ({ genesisHash }) =>
                     [genesisHash, await rpc.getAccounts(genesisHash)] as const,
                 ),
@@ -37,17 +39,13 @@ export const pjsInject = ({
               accounts.map(
                 ({ address }) =>
                   ({
-                    type: "sr25519",
                     address,
                     genesisHash,
                   }) as InjectedAccount,
               ),
             )
           },
-          subscribe(_cb) {
-            // TODO: implement
-            return () => {}
-          },
+          subscribe: subscribeOnAccountsChanged,
         },
         signer: {
           async signPayload(payload) {

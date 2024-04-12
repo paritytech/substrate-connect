@@ -14,9 +14,10 @@ import {
 } from "@polkadot-api/tx-helper"
 import { toHex, fromHex } from "@polkadot-api/utils"
 import { Bytes, Variant } from "@polkadot-api/substrate-bindings"
-import type { BackgroundRpcSpec, SignRequest } from "./types"
+import type { Account, BackgroundRpcSpec, SignRequest } from "./types"
 import { createKeyring } from "./keyring"
 import { getSignaturePayload, getUserSignedExtensions } from "./pjs"
+import type { InPageRpcSpec } from "../inpage/types"
 
 const keyring = createKeyring()
 
@@ -38,6 +39,7 @@ export const createBackgroundRpc = (
     lightClientPageHelper: LightClientPageHelper
     signRequests: Record<string, InternalSignRequest>
     port: chrome.runtime.Port
+    notifyOnAccountsChanged: (accounts: Account[]) => void
   }
 
   const getAccounts: RpcMethodHandlers<
@@ -51,6 +53,17 @@ export const createBackgroundRpc = (
       address: ss58Address(publicKey, chain.ss58Format),
     }))
   }
+
+  const notifyOnAccountsChanged = async (context: Context) =>
+    context.notifyOnAccountsChanged(
+      (
+        await Promise.all(
+          (await context.lightClientPageHelper.getChains()).map(
+            ({ genesisHash }) => getAccounts([genesisHash], context),
+          ),
+        )
+      ).flatMap((accounts) => accounts),
+    )
 
   const handlers: RpcMethodHandlers<BackgroundRpcSpec, Context> = {
     getAccounts,
@@ -259,12 +272,13 @@ export const createBackgroundRpc = (
     async createPassword([password]) {
       return keyring.setup(password)
     },
-    async insertCryptoKey([args]) {
+    async insertCryptoKey([args], context) {
       const existingKey = await keyring.getCryptoKey(args.name)
 
       if (existingKey)
         throw new Error(`crypto key "${args.name}" already exists`)
       await keyring.insertCryptoKey(args)
+      notifyOnAccountsChanged(context)
     },
     async updateCryptoKey([_]) {
       throw new Error("not implemented")
@@ -275,11 +289,13 @@ export const createBackgroundRpc = (
     async getCryptoKeys() {
       return keyring.getCryptoKeys()
     },
-    async removeCryptoKey([name]) {
+    async removeCryptoKey([name], context) {
       await keyring.removeCryptoKey(name)
+      notifyOnAccountsChanged(context)
     },
-    async clearCryptoKeys() {
+    async clearCryptoKeys([], context) {
       await keyring.clearCryptoKeys()
+      notifyOnAccountsChanged(context)
     },
     async getKeyringState() {
       return {
@@ -308,5 +324,7 @@ export const createBackgroundRpc = (
       throw new RpcError("Method not found", -32601)
     return next(request, context)
   }
-  return createRpc(sendMessage, handlers, [allowedMethodsMiddleware])
+  return createRpc(sendMessage, handlers, [
+    allowedMethodsMiddleware,
+  ]).withClient<InPageRpcSpec>()
 }

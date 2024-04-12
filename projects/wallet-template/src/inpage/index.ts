@@ -1,10 +1,14 @@
-import { createRpc } from "@substrate/light-client-extension-helpers/utils"
+import {
+  type RpcMethodHandlers,
+  createRpc,
+} from "@substrate/light-client-extension-helpers/utils"
 import { getLightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
 import type { UnstableWalletProviderDiscovery } from "@substrate/unstable-wallet-provider"
 
-import type { BackgroundRpcSpec } from "../background/types"
+import type { Account, BackgroundRpcSpec } from "../background/types"
 import { CHANNEL_ID } from "../constants"
 import { pjsInject } from "./pjsInject"
+import type { InPageRpcSpec } from "./types"
 
 const PROVIDER_INFO = {
   uuid: crypto.randomUUID(),
@@ -13,8 +17,22 @@ const PROVIDER_INFO = {
   rdns: "io.github.paritytech.SubstrateConnectWalletTemplate",
 }
 
-const rpc = createRpc((msg: any) =>
-  window.postMessage({ msg, origin: "substrate-wallet-template/web" }),
+type OnAccountsChangedCallback = (accounts: Account[]) => void
+const onAccountsChangedCallbacks: OnAccountsChangedCallback[] = []
+const subscribeOnAccountsChanged = (cb: OnAccountsChangedCallback) => {
+  return () => {
+    onAccountsChangedCallbacks.splice(onAccountsChangedCallbacks.indexOf(cb), 1)
+  }
+}
+const handlers: RpcMethodHandlers<InPageRpcSpec> = {
+  onAccountsChanged([accounts]) {
+    onAccountsChangedCallbacks.forEach((cb) => cb(accounts))
+  },
+}
+const rpc = createRpc(
+  (msg: any) =>
+    window.postMessage({ msg, origin: "substrate-wallet-template/web" }),
+  handlers,
 ).withClient<BackgroundRpcSpec>()
 window.addEventListener("message", ({ data }) => {
   if (data?.origin !== "substrate-wallet-template/extension") return
@@ -53,5 +71,6 @@ pjsInject({
   name: PROVIDER_INFO.name,
   version: "0.0.1",
   rpc: rpc.client,
-  lightClientProviderPromise: provider,
+  providerPromise: provider,
+  subscribeOnAccountsChanged,
 })
