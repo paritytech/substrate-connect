@@ -3,7 +3,6 @@ import {
   createClient,
 } from "@polkadot-api/substrate-client"
 import { getObservableClient } from "@polkadot-api/client"
-import { filter, firstValueFrom } from "rxjs"
 import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
 import {
   Bytes,
@@ -16,6 +15,8 @@ import {
 } from "@polkadot-api/substrate-bindings"
 import { fromHex, mergeUint8 } from "@polkadot-api/utils"
 import { UserSignedExtensions } from "@polkadot-api/tx-helper"
+import { filter, firstValueFrom } from "rxjs"
+import { blake2b256 } from "@polkadot-labs/hdkd-helpers"
 import type { Pjs } from "./types"
 
 export const getSignaturePayload = async (
@@ -88,7 +89,14 @@ export const getSignaturePayload = async (
     },
     [[], []],
   )
-  return mergeUint8(fromHex(payload.method), ...extra, ...additionalSigned)
+  const signaturePayload = mergeUint8(
+    fromHex(payload.method),
+    ...extra,
+    ...additionalSigned,
+  )
+  return signaturePayload.length > 256
+    ? blake2b256(signaturePayload)
+    : signaturePayload
 }
 
 export const getUserSignedExtensions = (payload: Pjs.SignerPayloadJSON) => {
