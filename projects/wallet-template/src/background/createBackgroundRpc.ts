@@ -292,7 +292,7 @@ export const createBackgroundRpc = (
       await keyring.removeCryptoKey(name)
       notifyOnAccountsChanged(context)
     },
-    async clearCryptoKeys([], context) {
+    async clearCryptoKeys(_, context) {
       await keyring.clearCryptoKeys()
       notifyOnAccountsChanged(context)
     },

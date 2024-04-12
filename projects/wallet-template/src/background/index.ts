@@ -28,9 +28,16 @@ const { lightClientPageHelper } = register({
 
 const signRequests = {}
 
-const connectedRpcs: ReturnType<typeof createBackgroundRpc>[] = []
+type BackgroundRpc = ReturnType<typeof createBackgroundRpc>
+const connectedRpcs: BackgroundRpc[] = []
 const notifyOnAccountsChanged = (accounts: Account[]) =>
   connectedRpcs.forEach((rpc) => rpc.notify("onAccountsChanged", [accounts]))
+const subscribeOnAccountsChanged = (rpc: BackgroundRpc) => {
+  connectedRpcs.push(rpc)
+  return () => {
+    connectedRpcs.splice(connectedRpcs.indexOf(rpc), 1)
+  }
+}
 
 chrome.runtime.onConnect.addListener((port) => {
   if (!port.name.startsWith("substrate-wallet-template")) return
@@ -43,10 +50,7 @@ chrome.runtime.onConnect.addListener((port) => {
       notifyOnAccountsChanged,
     }),
   )
-  connectedRpcs.push(rpc)
-  port.onDisconnect.addListener(() =>
-    connectedRpcs.splice(connectedRpcs.indexOf(rpc), 1),
-  )
+  port.onDisconnect.addListener(subscribeOnAccountsChanged(rpc))
 })
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {

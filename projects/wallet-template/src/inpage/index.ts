@@ -20,6 +20,7 @@ const PROVIDER_INFO = {
 type OnAccountsChangedCallback = (accounts: Account[]) => void
 const onAccountsChangedCallbacks: OnAccountsChangedCallback[] = []
 const subscribeOnAccountsChanged = (cb: OnAccountsChangedCallback) => {
+  onAccountsChangedCallbacks.push(cb)
   return () => {
     onAccountsChangedCallbacks.splice(onAccountsChangedCallbacks.indexOf(cb), 1)
   }
