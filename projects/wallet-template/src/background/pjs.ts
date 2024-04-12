@@ -103,6 +103,7 @@ export const getUserSignedExtensions = (payload: Pjs.SignerPayloadJSON) => {
   const userSignedExtensions: Partial<UserSignedExtensions> = {}
   const mortality = fromHex(payload.era)
   userSignedExtensions.CheckMortality =
+    // Ser mortality encoding https://spec.polkadot.network/id-extrinsics#sect-mortality-encoding
     mortality.length === 1
       ? { mortal: false }
       : { mortal: true, period: 2 << u16.dec(mortality) % (1 << 4) }
