@@ -64,7 +64,7 @@ importers:
         version: 2.6.2
       tsup:
         specifier: ^8.0.2
-        version: 8.0.2(typescript@5.4.5)
+        version: 8.0.2(postcss@8.4.38)(typescript@5.4.5)
       turbo:
         specifier: ^1.13.2
         version: 1.13.2
@@ -82,7 +82,7 @@ importers:
         version: 2.0.6
       '@polkadot-api/client':
         specifier: ^0.1.0
-        version: 0.1.0(@substrate/connect@packages+connect)(rxjs@7.8.1)(smoldot@2.0.22)
+        version: 0.1.0(@substrate/connect@packages+connect)(postcss@8.4.38)(rxjs@7.8.1)(smoldot@2.0.22)
       '@polkadot-api/metadata-builders':
         specifier: 0.0.1
         version: 0.0.1
@@ -487,20 +487,26 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       '@polkadot-api/client':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1)
+        specifier: 0.1.0
+        version: 0.1.0(@substrate/connect@packages+connect)(postcss@8.4.38)(rxjs@7.8.1)(smoldot@2.0.22)
       '@polkadot-api/metadata-builders':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        specifier: 0.0.1
+        version: 0.0.1
+      '@polkadot-api/observable-client':
+        specifier: 0.1.0
+        version: 0.1.0(rxjs@7.8.1)
+      '@polkadot-api/signer':
+        specifier: ^0.0.1
+        version: 0.0.1
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-      '@polkadot-api/tx-helper':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        specifier: 0.0.1
+        version: 0.0.1
       '@polkadot-api/utils':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        specifier: 0.0.1
+        version: 0.0.1
+      '@polkadot-api/view-builder':
+        specifier: ^0.0.1
+        version: 0.0.1
       '@polkadot-labs/hdkd':
         specifier: ^0.0.6
         version: 0.0.6
@@ -2915,7 +2921,7 @@ packages:
       config-chain: 1.1.13
     dev: true
 
-  /@polkadot-api/cli@0.1.0:
+  /@polkadot-api/cli@0.1.0(postcss@8.4.38):
     resolution: {integrity: sha512-9fnb9PXuNiumxYXaTlwTIqMf9OmqGX3uj6DYVvs8ldNrLoUuPaB2vgYZPogM1X/JgRMvBxnAQ8SGSMLdm6eGrw==}
     hasBin: true
     dependencies:
@@ -2939,7 +2945,7 @@ packages:
       rxjs: 7.8.1
       scale-ts: 1.6.0
       tsc-prog: 2.3.0(typescript@5.4.5)
-      tsup: 8.0.2(typescript@5.4.5)
+      tsup: 8.0.2(postcss@8.4.38)(typescript@5.4.5)
       typescript: 5.4.5
       write-pkg: 6.0.1
       ws: 8.16.0
@@ -2980,13 +2986,13 @@ packages:
       rxjs: 7.8.1
     dev: false
 
-  /@polkadot-api/client@0.1.0(@substrate/connect@packages+connect)(rxjs@7.8.1)(smoldot@2.0.22):
+  /@polkadot-api/client@0.1.0(@substrate/connect@packages+connect)(postcss@8.4.38)(rxjs@7.8.1)(smoldot@2.0.22):
     resolution: {integrity: sha512-01LfWzTE0BGA//rkDXvNC+CVy1hly2dyuHhVBJQ4a2FlR22BtjeOhAVfd5UBpkzKTP/bqzYGmjEl5vf4S+MFnQ==}
     hasBin: true
     peerDependencies:
       rxjs: '>=7.8.0'
     dependencies:
-      '@polkadot-api/cli': 0.1.0
+      '@polkadot-api/cli': 0.1.0(postcss@8.4.38)
       '@polkadot-api/json-rpc-provider': 0.0.1
       '@polkadot-api/logs-provider': 0.0.1
       '@polkadot-api/metadata-builders': 0.0.1
@@ -3110,16 +3116,6 @@ packages:
       '@substrate/connect': link:packages/connect
     dev: false
 
-  /@polkadot-api/sc-provider@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
-    resolution: {integrity: sha512-dGnUE1PdSrpXYaHCEeXt4dS+dcjiPrLiyWm1rWDt/e7Tp8PGKuRme5OIgRO+6JIYBrgj4qDeNwqWw6uMbx/qhA==}
-    dependencies:
-      '@polkadot-api/json-rpc-provider-proxy': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-      '@substrate/connect': 0.8.8
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
   /@polkadot-api/signer@0.0.1:
     resolution: {integrity: sha512-TZHGlVKf1TR2IWcSDMPJBAl/Lsp0z5vGGQr4xSwIwVVvuJw60+d2EfpnUltCTSqE9hMRaoBLl6P+dQbxdkPg4Q==}
     dependencies:
@@ -3164,23 +3160,6 @@ packages:
     resolution: {integrity: sha512-lcdvd2ssUmB1CPzF8s2dnNOqbrDa+nxaaGbuts+Vo8yjgSKwds2Lo7Oq+imZN4VKW7t9+uaVcKFLMF7PdH0RWw==}
     dev: false
 
-  /@polkadot-api/tx-helper@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
-    resolution: {integrity: sha512-gaRxKcF0X7coUebw/ShJ34R8+KZ0GwBN8nWJcxvI6wy1579bcRyH+I9iI6t7Dt5lcTMTu9rxQDDWMq4+TN630A==}
-    dependencies:
-      '@noble/hashes': 1.4.0
-      '@polkadot-api/client': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1)
-      '@polkadot-api/json-rpc-provider': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-      '@polkadot-api/metadata-builders': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-      '@polkadot-api/sc-provider': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-      '@polkadot-api/substrate-bindings': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-      '@polkadot-api/substrate-client': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-      '@polkadot-api/utils': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-      rxjs: 7.8.1
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
   /@polkadot-api/utils@0.0.1:
     resolution: {integrity: sha512-3j+pRmlF9SgiYDabSdZsBSsN5XHbpXOAce1lWj56IEEaFZVjsiCaxDOA7C9nCcgfVXuvnbxqqEGQvnY+QfBAUw==}
     dev: false
@@ -3188,6 +3167,14 @@ packages:
   /@polkadot-api/utils@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
     resolution: {integrity: sha512-0CYaCjfLQJTCRCiYvZ81OncHXEKPzAexCMoVloR+v2nl/O2JRya/361MtPkeNLC6XBoaEgLAG9pWQpH3WePzsw==}
     requiresBuild: true
+    dev: false
+
+  /@polkadot-api/view-builder@0.0.1:
+    resolution: {integrity: sha512-mC8Vf9Z4mgxlWPmdrW+Y/zUYBvznWwqfA8VMFq2lHoFHpxcHVV4++t3VnkohLx7h765F1Bj/ipy5C4ox3hiOgw==}
+    dependencies:
+      '@polkadot-api/metadata-builders': 0.0.1
+      '@polkadot-api/substrate-bindings': 0.0.1
+      '@polkadot-api/utils': 0.0.1
     dev: false
 
   /@polkadot-api/ws-provider@0.0.1:
@@ -11180,7 +11167,7 @@ packages:
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
 
-  /tsup@8.0.2(typescript@5.4.5):
+  /tsup@8.0.2(postcss@8.4.38)(typescript@5.4.5):
     resolution: {integrity: sha512-NY8xtQXdH7hDUAZwcQdY/Vzlw9johQsaqf7iwZ6g1DOUlFYQ5/AtVAjTvihhEyeRlGo4dLRVHtrRaL35M1daqQ==}
     engines: {node: '>=18'}
     hasBin: true
@@ -11207,6 +11194,7 @@ packages:
       execa: 5.1.1
       globby: 11.1.0
       joycon: 3.1.1
+      postcss: 8.4.38
       postcss-load-config: 4.0.2(postcss@8.4.38)
       resolve-from: 5.0.0
       rollup: 4.9.2

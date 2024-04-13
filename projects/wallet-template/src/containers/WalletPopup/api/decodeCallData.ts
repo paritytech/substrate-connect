@@ -1,5 +1,5 @@
-import { getObservableClient } from "@polkadot-api/client"
-import { getViewBuilder } from "@polkadot-api/metadata-builders"
+import { getObservableClient } from "@polkadot-api/observable-client"
+import { getViewBuilder } from "@polkadot-api/view-builder"
 import { createClient } from "@polkadot-api/substrate-client"
 import { helper } from "@substrate/light-client-extension-helpers/extension-page"
 import { filter, firstValueFrom } from "rxjs"

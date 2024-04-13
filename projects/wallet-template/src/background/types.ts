@@ -1,7 +1,7 @@
-import type {
-  UserSignedExtensions,
+import {
   UserSignedExtensionName,
-} from "@polkadot-api/tx-helper"
+  UserSignedExtensions,
+} from "../types/UserSignedExtension"
 
 export type Account = {
   address: string
