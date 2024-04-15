@@ -495,8 +495,14 @@ importers:
       '@polkadot-api/observable-client':
         specifier: 0.1.0
         version: 0.1.0(rxjs@7.8.1)
+      '@polkadot-api/polkadot-signer':
+        specifier: ^0.0.1
+        version: 0.0.1
       '@polkadot-api/signer':
         specifier: ^0.0.1
+        version: 0.0.1
+      '@polkadot-api/substrate-bindings':
+        specifier: 0.0.1
         version: 0.0.1
       '@polkadot-api/substrate-client':
         specifier: 0.0.1
