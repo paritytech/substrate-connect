@@ -147,12 +147,12 @@ importers:
       '@picocss/pico':
         specifier: ^2.0.6
         version: 2.0.6
-      '@polkadot-api/client':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1)
+      '@polkadot-api/observable-client':
+        specifier: 0.1.0
+        version: 0.1.0(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        specifier: 0.0.1
+        version: 0.0.1
       '@substrate/connect-known-chains':
         specifier: workspace:*
         version: link:../../packages/connect-known-chains
@@ -200,8 +200,8 @@ importers:
   examples/light-client-extension-helpers-extension:
     dependencies:
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        specifier: 0.0.1
+        version: 0.0.1
       '@substrate/light-client-extension-helpers':
         specifier: workspace:*
         version: link:../../packages/light-client-extension-helpers
@@ -379,15 +379,15 @@ importers:
 
   projects/demo:
     dependencies:
-      '@polkadot-api/client':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1)
       '@polkadot-api/json-rpc-provider-proxy':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        specifier: 0.0.1
+        version: 0.0.1
+      '@polkadot-api/observable-client':
+        specifier: 0.1.0
+        version: 0.1.0(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        specifier: 0.0.1
+        version: 0.0.1
       '@substrate/connect':
         specifier: workspace:*
         version: link:../../packages/connect
@@ -602,11 +602,11 @@ importers:
   zombienet-tests:
     dependencies:
       '@polkadot-api/json-rpc-provider-proxy':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        specifier: 0.0.1
+        version: 0.0.1
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
-        version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+        specifier: 0.0.1
+        version: 0.0.1
       '@substrate/connect':
         specifier: workspace:*
         version: link:../packages/connect
