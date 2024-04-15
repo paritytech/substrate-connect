@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { useParams } from "react-router-dom"
-import { UserSignedExtensions as UserSignedExtensionsTy } from "@polkadot-api/tx-helper"
 import useSWR from "swr"
 import {
   DecodedCallData,
@@ -8,6 +7,7 @@ import {
   UserSignedExtensions,
 } from "../components"
 import { rpc } from "../api"
+import { UserSignedExtensions as UserSignedExtensionsTy } from "../../../types/UserSignedExtension"
 
 export const SignRequest = () => {
   const { signRequestId } = useParams<{ signRequestId: string }>()
