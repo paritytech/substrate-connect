@@ -166,11 +166,15 @@ export const createBackgroundRpc = (
           )
           const createTx = getCreateTx(chainHead$)
 
-          const mortality = userSignedExtensions.CheckMortality
+          const mortality = userSignedExtensions.CheckMortality ?? {
+            mortal: true,
+            period: 128,
+          }
           const asset = userSignedExtensions.ChargeAssetTxPayment?.asset
-          const tip = asset
-            ? userSignedExtensions.ChargeAssetTxPayment?.tip
-            : userSignedExtensions.ChargeTransactionPayment
+          const tip =
+            (asset
+              ? userSignedExtensions.ChargeAssetTxPayment?.tip
+              : userSignedExtensions.ChargeTransactionPayment) ?? 0n
 
           const tx = await firstValueFrom(
             createTx(signer, fromHex(callData), atBlock, {
