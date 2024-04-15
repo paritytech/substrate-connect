@@ -1,5 +1,5 @@
-import { getObservableClient as getObservableClient_ } from "@polkadot-api/client"
 import { createClient } from "@polkadot-api/substrate-client"
+import { getObservableClient as getObservableClient_ } from "@polkadot-api/observable-client"
 import { UnstableWallet } from "@substrate/unstable-wallet-provider"
 
 export const getObservableClient = (
