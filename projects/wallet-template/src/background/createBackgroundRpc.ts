@@ -15,7 +15,7 @@ import { createKeyring } from "./keyring"
 import { UserSignedExtensions } from "../types/UserSignedExtension"
 import { createClient } from "@polkadot-api/substrate-client"
 import { getObservableClient } from "@polkadot-api/observable-client"
-import { filter, firstValueFrom } from "rxjs"
+import { filter, firstValueFrom, map, take } from "rxjs"
 import { getCreateTx } from "./tx-helper"
 
 const keyring = createKeyring()
@@ -61,82 +61,94 @@ export const createBackgroundRpc = (
       const [keypair, scheme] = await keyring.getKeypair(chainId, from)
 
       const id = nextSignRequestId++
-
-      const signRequest = new Promise<
-        Parameters<InternalSignRequest["resolve"]>[0]
-      >(
-        (resolve, reject) =>
-          (signRequests[id] = {
-            resolve,
-            reject,
-            chainId,
-            url,
-            address: ss58Address(from, chain.ss58Format),
-            callData,
-            // TODO: revisit, it might be better to query the user signed extensions from the popup
-            userSignedExtensionNames: [],
-          }),
-      )
-
-      const window = await chrome.windows.create({
-        focused: true,
-        height: 700,
-        left: 150,
-        top: 150,
-        type: "popup",
-        url: chrome.runtime.getURL(
-          `ui/assets/wallet-popup.html#/sign-request/${id}`,
-        ),
-        width: 560,
-      })
-
-      const removeWindow = () => chrome.windows.remove(window.id!)
-      port.onDisconnect.addListener(removeWindow)
-      const onWindowsRemoved = (windowId: number) => {
-        if (windowId !== window.id) return
-        const signRequest = signRequests[id]
-        if (!signRequest) return
-        signRequest.reject()
-      }
-      chrome.windows.onRemoved.addListener(onWindowsRemoved)
-
       const client = getObservableClient(createClient(chain.provider))
       const chainHead$ = client.chainHead$()
+      const atBlock = await firstValueFrom(
+        chainHead$.best$.pipe(filter(Boolean)),
+      )
+
+      const userSignedExtensionNames = await firstValueFrom(
+        chainHead$.getRuntimeContext$(atBlock.hash).pipe(
+          take(1),
+          map(({ metadata }) =>
+            metadata.extrinsic.signedExtensions.map(
+              ({ identifier }) => identifier,
+            ),
+          ),
+          filter(Boolean),
+        ),
+      )
 
       try {
-        const { userSignedExtensions } = await signRequest
-
-        const signer = getPolkadotSigner(
-          keypair.publicKey,
-          scheme,
-          keypair.sign,
-        )
-        const createTx = getCreateTx(chainHead$)
-
-        const atBlock = await firstValueFrom(
-          chainHead$.best$.pipe(filter(Boolean)),
-        )
-
-        const mortality = userSignedExtensions.CheckMortality
-        const asset = userSignedExtensions.ChargeAssetTxPayment?.asset
-        const tip = asset
-          ? userSignedExtensions.ChargeAssetTxPayment?.tip
-          : userSignedExtensions.ChargeTransactionPayment
-
-        const tx = await firstValueFrom(
-          createTx(signer, fromHex(callData), atBlock, {
-            mortality,
-            asset,
-            tip,
-          }).pipe(filter(Boolean)),
+        const signRequest = new Promise<
+          Parameters<InternalSignRequest["resolve"]>[0]
+        >(
+          (resolve, reject) =>
+            (signRequests[id] = {
+              resolve,
+              reject,
+              chainId,
+              url,
+              address: ss58Address(from, chain.ss58Format),
+              callData,
+              userSignedExtensionNames,
+            }),
         )
 
-        return toHex(tx)
+        const window = await chrome.windows.create({
+          focused: true,
+          height: 700,
+          left: 150,
+          top: 150,
+          type: "popup",
+          url: chrome.runtime.getURL(
+            `ui/assets/wallet-popup.html#/sign-request/${id}`,
+          ),
+          width: 560,
+        })
+
+        const removeWindow = () => chrome.windows.remove(window.id!)
+        port.onDisconnect.addListener(removeWindow)
+        const onWindowsRemoved = (windowId: number) => {
+          if (windowId !== window.id) return
+          const signRequest = signRequests[id]
+          if (!signRequest) return
+          signRequest.reject()
+        }
+        chrome.windows.onRemoved.addListener(onWindowsRemoved)
+
+        try {
+          const { userSignedExtensions } = await signRequest
+
+          const signer = getPolkadotSigner(
+            keypair.publicKey,
+            scheme,
+            keypair.sign,
+          )
+          const createTx = getCreateTx(chainHead$)
+
+          const mortality = userSignedExtensions.CheckMortality
+          const asset = userSignedExtensions.ChargeAssetTxPayment?.asset
+          const tip = asset
+            ? userSignedExtensions.ChargeAssetTxPayment?.tip
+            : userSignedExtensions.ChargeTransactionPayment
+
+          const tx = await firstValueFrom(
+            createTx(signer, fromHex(callData), atBlock, {
+              mortality,
+              asset,
+              tip,
+            }).pipe(filter(Boolean)),
+          )
+
+          return toHex(tx)
+        } finally {
+          delete signRequests[id]
+          chrome.windows.remove(window.id!)
+          port.onDisconnect.removeListener(removeWindow)
+          chrome.windows.onRemoved.removeListener(onWindowsRemoved)
+        }
       } finally {
-        delete signRequests[id]
-        chrome.windows.remove(window.id!)
-        port.onDisconnect.removeListener(removeWindow)
-        chrome.windows.onRemoved.removeListener(onWindowsRemoved)
         chainHead$.unfollow()
         client.destroy()
       }

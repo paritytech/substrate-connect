@@ -16,7 +16,7 @@ const reducer = (
 })
 
 type Props = {
-  userSignedExtensionNames: UserSignedExtensionName[]
+  userSignedExtensionNames: string[]
   onChange(userSignedExtensions: Partial<UserSignedExtensions>): void
 }
 export const UserSignedExtensionInputs = ({

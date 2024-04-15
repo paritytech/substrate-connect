@@ -1,7 +1,4 @@
-import {
-  UserSignedExtensionName,
-  UserSignedExtensions,
-} from "../types/UserSignedExtension"
+import { UserSignedExtensions } from "../types/UserSignedExtension"
 
 export type Account = {
   address: string
@@ -29,7 +26,7 @@ export type SignRequest = {
   chainId: string
   address: string
   callData: string
-  userSignedExtensionNames: UserSignedExtensionName[]
+  userSignedExtensionNames: string[]
 }
 
 export type InsertCryptoKeyArgs = {
