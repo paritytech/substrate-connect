@@ -2,6 +2,7 @@ import { start } from "smoldot"
 import { register } from "@substrate/light-client-extension-helpers/background"
 import { createBackgroundRpc } from "./createBackgroundRpc"
 import * as storage from "./storage"
+import type { Account } from "./types"
 
 const { lightClientPageHelper } = register({
   smoldotClient: start({ maxLogLevel: 4 }),
@@ -27,6 +28,17 @@ const { lightClientPageHelper } = register({
 
 const signRequests = {}
 
+type BackgroundRpc = ReturnType<typeof createBackgroundRpc>
+const connectedRpcs: BackgroundRpc[] = []
+const notifyOnAccountsChanged = (accounts: Account[]) =>
+  connectedRpcs.forEach((rpc) => rpc.notify("onAccountsChanged", [accounts]))
+const subscribeOnAccountsChanged = (rpc: BackgroundRpc) => {
+  connectedRpcs.push(rpc)
+  return () => {
+    connectedRpcs.splice(connectedRpcs.indexOf(rpc), 1)
+  }
+}
+
 chrome.runtime.onConnect.addListener((port) => {
   if (!port.name.startsWith("substrate-wallet-template")) return
   const rpc = createBackgroundRpc((msg) => port.postMessage(msg))
@@ -35,8 +47,10 @@ chrome.runtime.onConnect.addListener((port) => {
       lightClientPageHelper,
       signRequests,
       port,
+      notifyOnAccountsChanged,
     }),
   )
+  port.onDisconnect.addListener(subscribeOnAccountsChanged(rpc))
 })
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {

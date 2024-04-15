@@ -1,4 +1,8 @@
-import { UserSignedExtensions } from "../types/UserSignedExtension"
+import type { Injected } from "@polkadot/extension-inject/types"
+import {
+  UserSignedExtensionName,
+  UserSignedExtensions,
+} from "../types/UserSignedExtension"
 
 export type Account = {
   address: string
@@ -26,7 +30,9 @@ export type SignRequest = {
   chainId: string
   address: string
   callData: string
-  userSignedExtensionNames: string[]
+  userSignedExtensions:
+    | { type: "names"; names: UserSignedExtensionName[] }
+    | { type: "values"; values: Partial<UserSignedExtensions> }
 }
 
 export type InsertCryptoKeyArgs = {
@@ -50,9 +56,19 @@ type KeyringState = {
   hasPassword: boolean
 }
 
+export namespace Pjs {
+  export type SignerPayloadJSON = Parameters<
+    Exclude<Injected["signer"]["signPayload"], undefined>
+  >[0]
+  export type SignerPayloadRaw = Parameters<
+    Exclude<Injected["signer"]["signRaw"], undefined>
+  >[0]
+}
+
 export type BackgroundRpcSpec = {
   getAccounts(chainId: string): Promise<Account[]>
   createTx(chainId: string, from: string, callData: string): Promise<string>
+  pjsSignPayload(payload: Pjs.SignerPayloadJSON): Promise<string>
   // private methods
   getSignRequests(): Promise<Record<string, SignRequest>>
   approveSignRequest(

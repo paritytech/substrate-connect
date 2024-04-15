@@ -6,17 +6,31 @@ import {
   RpcError,
 } from "@substrate/light-client-extension-helpers/utils"
 import type { LightClientPageHelper } from "@substrate/light-client-extension-helpers/background"
-import { ss58Address } from "@polkadot-labs/hdkd-helpers"
+import { ss58Address, ss58Decode } from "@polkadot-labs/hdkd-helpers"
 import { toHex, fromHex } from "@polkadot-api/utils"
 import { getPolkadotSigner } from "@polkadot-api/signer"
 
-import type { BackgroundRpcSpec, SignRequest } from "./types"
+import type { Account, BackgroundRpcSpec, SignRequest } from "./types"
 import { createKeyring } from "./keyring"
-import { UserSignedExtensions } from "../types/UserSignedExtension"
+import {
+  UserSignedExtensionName,
+  UserSignedExtensions,
+} from "../types/UserSignedExtension"
 import { createClient } from "@polkadot-api/substrate-client"
 import { getObservableClient } from "@polkadot-api/observable-client"
 import { filter, firstValueFrom, map, take } from "rxjs"
 import { getCreateTx } from "./tx-helper"
+import * as pjs from "./pjs"
+import { Bytes, Variant } from "@polkadot-api/substrate-bindings"
+import { InPageRpcSpec } from "../inpage/types"
+
+const isUserSignedExtensionName = (s: string): s is UserSignedExtensionName => {
+  return (
+    s === "CheckMortality" ||
+    s === "ChargeTransactionPayment" ||
+    s === "ChargeAssetTxPayment"
+  )
+}
 
 const keyring = createKeyring()
 
@@ -38,17 +52,34 @@ export const createBackgroundRpc = (
     lightClientPageHelper: LightClientPageHelper
     signRequests: Record<string, InternalSignRequest>
     port: chrome.runtime.Port
+    notifyOnAccountsChanged: (accounts: Account[]) => void
   }
 
+  const getAccounts: RpcMethodHandlers<
+    BackgroundRpcSpec,
+    Context
+  >["getAccounts"] = async ([chainId], { lightClientPageHelper }) => {
+    const chains = await lightClientPageHelper.getChains()
+    const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
+    if (!chain) throw new Error("unknown chain")
+    return (await keyring.getAccounts(chainId)).map(({ publicKey }) => ({
+      address: ss58Address(publicKey, chain.ss58Format),
+    }))
+  }
+
+  const notifyOnAccountsChanged = async (context: Context) =>
+    context.notifyOnAccountsChanged(
+      (
+        await Promise.all(
+          (await context.lightClientPageHelper.getChains()).map(
+            ({ genesisHash }) => getAccounts([genesisHash], context),
+          ),
+        )
+      ).flatMap((accounts) => accounts),
+    )
+
   const handlers: RpcMethodHandlers<BackgroundRpcSpec, Context> = {
-    async getAccounts([chainId], { lightClientPageHelper }) {
-      const chains = await lightClientPageHelper.getChains()
-      const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
-      if (!chain) throw new Error("unknown chain")
-      return (await keyring.getAccounts(chainId)).map(({ publicKey }) => ({
-        address: ss58Address(publicKey, chain.ss58Format),
-      }))
-    },
+    getAccounts,
     async createTx(
       [chainId, from, callData],
       { lightClientPageHelper, signRequests, port },
@@ -71,9 +102,9 @@ export const createBackgroundRpc = (
         chainHead$.getRuntimeContext$(atBlock.hash).pipe(
           take(1),
           map(({ metadata }) =>
-            metadata.extrinsic.signedExtensions.map(
-              ({ identifier }) => identifier,
-            ),
+            metadata.extrinsic.signedExtensions
+              .map(({ identifier }) => identifier)
+              .filter(isUserSignedExtensionName),
           ),
           filter(Boolean),
         ),
@@ -91,7 +122,10 @@ export const createBackgroundRpc = (
               url,
               address: ss58Address(from, chain.ss58Format),
               callData,
-              userSignedExtensionNames,
+              userSignedExtensions: {
+                type: "names",
+                names: userSignedExtensionNames,
+              },
             }),
         )
 
@@ -153,6 +187,84 @@ export const createBackgroundRpc = (
         client.destroy()
       }
     },
+    async pjsSignPayload(
+      [payload],
+      { port, lightClientPageHelper, signRequests },
+    ) {
+      const url = port.sender?.url
+      if (!url) throw new Error("unknown url")
+      const chains = await lightClientPageHelper.getChains()
+      const chain = chains.find(
+        ({ genesisHash }) => genesisHash === payload.genesisHash,
+      )
+      if (!chain) throw new Error("unknown chain")
+      const id = nextSignRequestId++
+      const signRequest = new Promise<
+        Parameters<InternalSignRequest["resolve"]>[0]
+      >(
+        (resolve, reject) =>
+          (signRequests[id] = {
+            resolve,
+            reject,
+            chainId: payload.genesisHash,
+            url,
+            address: payload.address,
+            callData: payload.method,
+            userSignedExtensions: {
+              type: "values",
+              values: pjs.getUserSignedExtensions(payload),
+            },
+          }),
+      )
+      const window = await chrome.windows.create({
+        focused: true,
+        height: 700,
+        left: 150,
+        top: 150,
+        type: "popup",
+        url: chrome.runtime.getURL(
+          `ui/assets/wallet-popup.html#/sign-request/${id}`,
+        ),
+        width: 560,
+      })
+      const removeWindow = () => chrome.windows.remove(window.id!)
+      port.onDisconnect.addListener(removeWindow)
+      const onWindowsRemoved = (windowId: number) => {
+        if (windowId !== window.id) return
+        const signRequest = signRequests[id]
+        if (!signRequest) return
+        signRequest.reject()
+      }
+      chrome.windows.onRemoved.addListener(onWindowsRemoved)
+      try {
+        await signRequest
+      } finally {
+        delete signRequests[id]
+        chrome.windows.remove(window.id!)
+        port.onDisconnect.removeListener(removeWindow)
+        chrome.windows.onRemoved.removeListener(onWindowsRemoved)
+      }
+      const signaturePayload = await pjs.getSignaturePayload(
+        chain.provider,
+        payload,
+      )
+      const multiSignatureEncoder = Variant({
+        Ed25519: Bytes(64),
+        Sr25519: Bytes(64),
+        Ecdsa: Bytes(65),
+      }).enc
+      const [keypair, scheme] = await keyring.getKeypair(
+        payload.genesisHash,
+        toHex(ss58Decode(payload.address)[0]),
+      )
+      return toHex(
+        // @ts-expect-error scheme type is incompatible with type
+        multiSignatureEncoder({
+          type: scheme,
+          value: keypair.sign(signaturePayload),
+        }),
+      )
+    },
     async getSignRequests(_, { signRequests }) {
       return signRequests
     },
@@ -176,12 +288,13 @@ export const createBackgroundRpc = (
     async createPassword([password]) {
       return keyring.setup(password)
     },
-    async insertCryptoKey([args]) {
+    async insertCryptoKey([args], context) {
       const existingKey = await keyring.getCryptoKey(args.name)
 
       if (existingKey)
         throw new Error(`crypto key "${args.name}" already exists`)
       await keyring.insertCryptoKey(args)
+      notifyOnAccountsChanged(context)
     },
     async updateCryptoKey([_]) {
       throw new Error("not implemented")
@@ -192,11 +305,13 @@ export const createBackgroundRpc = (
     async getCryptoKeys() {
       return keyring.getCryptoKeys()
     },
-    async removeCryptoKey([name]) {
+    async removeCryptoKey([name], context) {
       await keyring.removeCryptoKey(name)
+      notifyOnAccountsChanged(context)
     },
-    async clearCryptoKeys() {
+    async clearCryptoKeys(_, context) {
       await keyring.clearCryptoKeys()
+      notifyOnAccountsChanged(context)
     },
     async getKeyringState() {
       return {
@@ -207,7 +322,11 @@ export const createBackgroundRpc = (
   }
 
   type Method = keyof BackgroundRpcSpec
-  const ALLOWED_WEB_METHODS: Method[] = ["createTx", "getAccounts"]
+  const ALLOWED_WEB_METHODS: Method[] = [
+    "createTx",
+    "getAccounts",
+    "pjsSignPayload",
+  ]
   const allowedMethodsMiddleware: RpcMethodMiddleware<Context> = async (
     next,
     request,
@@ -221,5 +340,7 @@ export const createBackgroundRpc = (
       throw new RpcError("Method not found", -32601)
     return next(request, context)
   }
-  return createRpc(sendMessage, handlers, [allowedMethodsMiddleware])
+  return createRpc(sendMessage, handlers, [
+    allowedMethodsMiddleware,
+  ]).withClient<InPageRpcSpec>()
 }

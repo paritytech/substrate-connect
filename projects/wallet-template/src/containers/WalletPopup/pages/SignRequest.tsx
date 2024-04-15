@@ -1,14 +1,18 @@
 import { useState } from "react"
 import { useParams } from "react-router-dom"
 import useSWR from "swr"
-import { DecodedCallData, UserSignedExtensionInputs } from "../components"
+import {
+  DecodedCallData,
+  UserSignedExtensionInputs,
+  UserSignedExtensions,
+} from "../components"
 import { rpc } from "../api"
-import { UserSignedExtensions } from "../../../types/UserSignedExtension"
+import { UserSignedExtensions as UserSignedExtensionsTy } from "../../../types/UserSignedExtension"
 
 export const SignRequest = () => {
   const { signRequestId } = useParams<{ signRequestId: string }>()
   const [userSignedExtensions, setUserSignedExtensions] = useState<
-    Partial<UserSignedExtensions>
+    Partial<UserSignedExtensionsTy>
   >({})
   const {
     data: signRequests,
@@ -54,10 +58,16 @@ export const SignRequest = () => {
         </div>
         <div className="my-2">
           <div className="text-xs font-semibold">Signed extensions</div>
-          <UserSignedExtensionInputs
-            userSignedExtensionNames={request.userSignedExtensionNames}
-            onChange={setUserSignedExtensions}
-          />
+          {request.userSignedExtensions.type === "names" ? (
+            <UserSignedExtensionInputs
+              userSignedExtensionNames={request.userSignedExtensions.names}
+              onChange={setUserSignedExtensions}
+            />
+          ) : (
+            <UserSignedExtensions
+              userSignedExtensions={request.userSignedExtensions.values}
+            />
+          )}
         </div>
       </div>
       <div className="flex justify-center space-x-4">
