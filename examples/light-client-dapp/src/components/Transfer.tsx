@@ -60,8 +60,6 @@ export const Transfer = () => {
             blockHash: txEvent.block.hash,
             index: txEvent.block.index,
           })
-        else if (txEvent.type === "invalid" || txEvent.type === "dropped")
-          setError({ type: txEvent.type, error: txEvent.error })
       } catch (err) {
         if (err instanceof Error)
           setError({ type: "error", error: err.message })

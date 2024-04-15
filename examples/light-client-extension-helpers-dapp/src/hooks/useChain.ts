@@ -1,4 +1,4 @@
-import { getObservableClient } from "@polkadot-api/client"
+import { getObservableClient } from "@polkadot-api/observable-client"
 import type { RawChain } from "@substrate/light-client-extension-helpers/web-page"
 import { createClient } from "@polkadot-api/substrate-client"
 import { useEffect, useState } from "react"

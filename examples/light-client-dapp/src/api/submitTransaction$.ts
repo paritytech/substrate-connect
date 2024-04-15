@@ -1,12 +1,12 @@
 import { map } from "rxjs"
 import type { UnstableWallet } from "@substrate/unstable-wallet-provider"
-import { getObservableClient } from "./getObservableClient"
+import { getClient } from "./getClient"
 
 export const submitTransaction$ = (
   provider: UnstableWallet.Provider,
   chainId: string,
   tx: string,
 ) =>
-  getObservableClient(provider, chainId)
-    .tx$(tx)
+  getClient(provider, chainId)
+    .submitAndWatch(tx)
     .pipe(map((txEvent) => ({ tx, txEvent })))
