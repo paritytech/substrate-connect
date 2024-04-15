@@ -489,6 +489,12 @@ importers:
       '@polkadot-api/metadata-builders':
         specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
         version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
+      '@polkadot-api/observable-client':
+        specifier: 0.1.0
+        version: 0.1.0(rxjs@7.8.1)
+      '@polkadot-api/polkadot-signer':
+        specifier: ^0.0.1
+        version: 0.0.1
       '@polkadot-api/substrate-bindings':
         specifier: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
         version: 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0

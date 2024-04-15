@@ -57,6 +57,8 @@
     "@noble/hashes": "^1.4.0",
     "@polkadot-api/client": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@polkadot-api/metadata-builders": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
+    "@polkadot-api/observable-client": "0.1.0",
+    "@polkadot-api/polkadot-signer": "^0.0.1",
     "@polkadot-api/substrate-bindings": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@polkadot-api/substrate-client": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
     "@polkadot-api/tx-helper": "0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0",
