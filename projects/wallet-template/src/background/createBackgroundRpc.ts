@@ -16,6 +16,7 @@ import { UserSignedExtensions } from "../types/UserSignedExtension"
 import { createClient } from "@polkadot-api/substrate-client"
 import { getObservableClient } from "@polkadot-api/observable-client"
 import { filter, firstValueFrom } from "rxjs"
+import { getCreateTx } from "./tx-helper"
 
 const keyring = createKeyring()
 
@@ -59,9 +60,23 @@ export const createBackgroundRpc = (
       if (!chain) throw new Error("unknown chain")
       const [keypair, scheme] = await keyring.getKeypair(chainId, from)
 
-      const signer = getPolkadotSigner(keypair.publicKey, scheme, keypair.sign)
-      const client = getObservableClient(createClient(chain.provider))
       const id = nextSignRequestId++
+
+      const signRequest = new Promise<
+        Parameters<InternalSignRequest["resolve"]>[0]
+      >(
+        (resolve, reject) =>
+          (signRequests[id] = {
+            resolve,
+            reject,
+            chainId,
+            url,
+            address: ss58Address(from, chain.ss58Format),
+            callData,
+            // TODO: revisit, it might be better to query the user signed extensions from the popup
+            userSignedExtensionNames: [],
+          }),
+      )
 
       const window = await chrome.windows.create({
         focused: true,
@@ -85,24 +100,44 @@ export const createBackgroundRpc = (
       }
       chrome.windows.onRemoved.addListener(onWindowsRemoved)
 
-      const { metadata$, best$, unfollow } = client.chainHead$()
+      const client = getObservableClient(createClient(chain.provider))
+      const chainHead$ = client.chainHead$()
+
       try {
-        const metadata = await firstValueFrom(metadata$.pipe(filter(Boolean)))
-        const best = await firstValueFrom(best$.pipe(filter(Boolean)))
-        const tx = await signer.sign(
-          fromHex(callData),
-          // TODO: wait for getCreateTx to be exported from polkadot api
-          {} as unknown,
-          metadata,
-          best,
+        const { userSignedExtensions } = await signRequest
+
+        const signer = getPolkadotSigner(
+          keypair.publicKey,
+          scheme,
+          keypair.sign,
+        )
+        const createTx = getCreateTx(chainHead$)
+
+        const atBlock = await firstValueFrom(
+          chainHead$.best$.pipe(filter(Boolean)),
+        )
+
+        const mortality = userSignedExtensions.CheckMortality
+        const asset = userSignedExtensions.ChargeAssetTxPayment?.asset
+        const tip = asset
+          ? userSignedExtensions.ChargeAssetTxPayment?.tip
+          : userSignedExtensions.ChargeTransactionPayment
+
+        const tx = await firstValueFrom(
+          createTx(signer, fromHex(callData), atBlock, {
+            mortality,
+            asset,
+            tip,
+          }).pipe(filter(Boolean)),
         )
 
         return toHex(tx)
-      } catch (err) {
-        console.error(err)
-        throw err
       } finally {
-        unfollow()
+        delete signRequests[id]
+        chrome.windows.remove(window.id!)
+        port.onDisconnect.removeListener(removeWindow)
+        chrome.windows.onRemoved.removeListener(onWindowsRemoved)
+        chainHead$.unfollow()
         client.destroy()
       }
     },

@@ -14,7 +14,7 @@ export type UserSignedExtensions = {
       }
   ChargeTransactionPayment: bigint
   ChargeAssetTxPayment: {
-    tip: number | bigint
+    tip: bigint
     asset?: Uint8Array
   }
 }
