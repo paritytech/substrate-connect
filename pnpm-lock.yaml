@@ -87,8 +87,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       '@polkadot-api/observable-client':
-        specifier: ^0.1.0
-        version: 0.1.0(rxjs@7.8.1)
+        specifier: ^0.1.1
+        version: 0.1.1(rxjs@7.8.1)
       '@polkadot-api/substrate-bindings':
         specifier: 0.0.1
         version: 0.0.1
@@ -151,8 +151,8 @@ importers:
         specifier: ^2.0.6
         version: 2.0.6
       '@polkadot-api/observable-client':
-        specifier: 0.1.0
-        version: 0.1.0(rxjs@7.8.1)
+        specifier: 0.1.1
+        version: 0.1.1(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: 0.0.1
         version: 0.0.1
@@ -280,8 +280,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       '@polkadot-api/observable-client':
-        specifier: 0.1.0
-        version: 0.1.0(rxjs@7.8.1)
+        specifier: 0.1.1
+        version: 0.1.1(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: 0.0.1
         version: 0.0.1
@@ -386,8 +386,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       '@polkadot-api/observable-client':
-        specifier: 0.1.0
-        version: 0.1.0(rxjs@7.8.1)
+        specifier: 0.1.1
+        version: 0.1.1(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: 0.0.1
         version: 0.0.1
