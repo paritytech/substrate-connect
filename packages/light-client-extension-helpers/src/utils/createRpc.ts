@@ -75,7 +75,7 @@ export const createRpc = <TContext>(
       try {
         await methodHandler(message, context)
       } catch (error) {
-        console.error("error hanlding message:", message, error)
+        console.error("error handling message:", message, error)
       }
     } else if ("id" in message) {
       const { id } = message
