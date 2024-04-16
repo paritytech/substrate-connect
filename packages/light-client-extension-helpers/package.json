@@ -40,7 +40,7 @@
     "smoldot": "2.x"
   },
   "dependencies": {
-    "@polkadot-api/observable-client": "0.1.0",
+    "@polkadot-api/observable-client": "0.1.1",
     "@polkadot-api/json-rpc-provider": "0.0.1",
     "@polkadot-api/json-rpc-provider-proxy": "0.0.1",
     "@polkadot-api/substrate-client": "0.0.1",

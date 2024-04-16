@@ -2,7 +2,7 @@ import type {
   ComplexDecoded,
   Decoded,
   PrimitiveDecoded,
-} from "@polkadot-api/metadata-builders"
+} from "@polkadot-api/view-builder"
 import { toHex } from "@polkadot-api/utils"
 import useSWR from "swr"
 import { decodeCallData } from "../api"

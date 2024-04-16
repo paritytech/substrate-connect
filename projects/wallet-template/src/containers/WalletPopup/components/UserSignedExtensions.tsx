@@ -1,4 +1,4 @@
-import { type UserSignedExtensions as UserSignedExtensionsTy } from "@polkadot-api/tx-helper"
+import { type UserSignedExtensions as UserSignedExtensionsTy } from "../../../types/UserSignedExtension"
 
 type Props = {
   userSignedExtensions: Partial<UserSignedExtensionsTy>
