@@ -119,11 +119,10 @@ const DecodedComplexValue = ({ value }: DecodedComplexProps) => {
       )
     }
     case "Option": {
-      // FIXME: What Option variant is value (Some or None)?
-      return value.value.codec === "_void" ? (
-        <div>None</div>
-      ) : (
+      return value.value ? (
         <DecodedValue value={value.value} />
+      ) : (
+        <div>None</div>
       )
     }
     case "Result": {
