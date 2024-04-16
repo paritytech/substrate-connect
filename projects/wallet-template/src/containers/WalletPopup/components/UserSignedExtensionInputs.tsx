@@ -1,8 +1,8 @@
+import { useEffect, useReducer } from "react"
 import {
   UserSignedExtensionName,
   UserSignedExtensions,
-} from "@polkadot-api/tx-helper"
-import { useEffect, useReducer } from "react"
+} from "../../../types/UserSignedExtension"
 
 const reducer = (
   state: Partial<UserSignedExtensions>,
@@ -16,7 +16,7 @@ const reducer = (
 })
 
 type Props = {
-  userSignedExtensionNames: UserSignedExtensionName[]
+  userSignedExtensionNames: string[]
   onChange(userSignedExtensions: Partial<UserSignedExtensions>): void
 }
 export const UserSignedExtensionInputs = ({

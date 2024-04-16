@@ -7,17 +7,30 @@ import {
 } from "@substrate/light-client-extension-helpers/utils"
 import type { LightClientPageHelper } from "@substrate/light-client-extension-helpers/background"
 import { ss58Address, ss58Decode } from "@polkadot-labs/hdkd-helpers"
-import {
-  GetTxCreator,
-  UserSignedExtensions,
-  getTxCreator,
-} from "@polkadot-api/tx-helper"
 import { toHex, fromHex } from "@polkadot-api/utils"
-import { Bytes, Variant } from "@polkadot-api/substrate-bindings"
+import { getPolkadotSigner } from "@polkadot-api/signer"
+
 import type { Account, BackgroundRpcSpec, SignRequest } from "./types"
 import { createKeyring } from "./keyring"
-import { getSignaturePayload, getUserSignedExtensions } from "./pjs"
-import type { InPageRpcSpec } from "../inpage/types"
+import {
+  UserSignedExtensionName,
+  UserSignedExtensions,
+} from "../types/UserSignedExtension"
+import { createClient } from "@polkadot-api/substrate-client"
+import { getObservableClient } from "@polkadot-api/observable-client"
+import { filter, firstValueFrom, map, mergeMap, take } from "rxjs"
+import { getCreateTx } from "./tx-helper"
+import * as pjs from "./pjs"
+import { Bytes, Variant } from "@polkadot-api/substrate-bindings"
+import { InPageRpcSpec } from "../inpage/types"
+
+const isUserSignedExtensionName = (s: string): s is UserSignedExtensionName => {
+  return (
+    s === "CheckMortality" ||
+    s === "ChargeTransactionPayment" ||
+    s === "ChargeAssetTxPayment"
+  )
+}
 
 const keyring = createKeyring()
 
@@ -76,11 +89,33 @@ export const createBackgroundRpc = (
       const chains = await lightClientPageHelper.getChains()
       const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
       if (!chain) throw new Error("unknown chain")
-      const onCreateTx: Parameters<GetTxCreator>[1] = async (
-        { userSingedExtensionsName },
-        callback,
-      ) => {
-        const id = nextSignRequestId++
+      const [keypair, scheme] = await keyring.getKeypair(chainId, from)
+
+      const id = nextSignRequestId++
+      const client = getObservableClient(createClient(chain.provider))
+      const chainHead$ = client.chainHead$()
+
+      const { best: atBlock, userSignedExtensionNames } = await firstValueFrom(
+        chainHead$.best$.pipe(
+          mergeMap((blockInfo) =>
+            chainHead$.getRuntimeContext$(blockInfo.hash).pipe(
+              take(1),
+              map(({ metadata }) =>
+                metadata.extrinsic.signedExtensions
+                  .map(({ identifier }) => identifier)
+                  .filter(isUserSignedExtensionName),
+              ),
+              map((userSignedExtensionNames) => ({
+                best: blockInfo,
+                userSignedExtensionNames,
+              })),
+            ),
+          ),
+          filter(Boolean),
+        ),
+      )
+
+      try {
         const signRequest = new Promise<
           Parameters<InternalSignRequest["resolve"]>[0]
         >(
@@ -92,14 +127,13 @@ export const createBackgroundRpc = (
               url,
               address: ss58Address(from, chain.ss58Format),
               callData,
-              // TODO: revisit, it might be better to query the user signed extensions from the popup
               userSignedExtensions: {
                 type: "names",
-                names: userSingedExtensionsName,
+                names: userSignedExtensionNames,
               },
             }),
         )
-        // FIXME: if this throws, onCreateTx does not propagate the error
+
         const window = await chrome.windows.create({
           focused: true,
           height: 700,
@@ -111,6 +145,7 @@ export const createBackgroundRpc = (
           ),
           width: 560,
         })
+
         const removeWindow = () => chrome.windows.remove(window.id!)
         port.onDisconnect.addListener(removeWindow)
         const onWindowsRemoved = (windowId: number) => {
@@ -120,55 +155,46 @@ export const createBackgroundRpc = (
           signRequest.reject()
         }
         chrome.windows.onRemoved.addListener(onWindowsRemoved)
+
         try {
           const { userSignedExtensions } = await signRequest
-          const userSignedExtensionsData = Object.fromEntries(
-            userSingedExtensionsName.map((x) => {
-              switch (x) {
-                case "CheckMortality": {
-                  return [
-                    x,
-                    userSignedExtensions[x] ?? {
-                      mortal: true,
-                      period: 128,
-                    },
-                  ]
-                }
-                case "ChargeTransactionPayment": {
-                  return [x, userSignedExtensions[x] ?? 0n]
-                }
-                case "ChargeAssetTxPayment": {
-                  return [x, userSignedExtensions[x] ?? { tip: 0n }]
-                }
-                default:
-                  throw new Error(`Unknown user signed extension: ${x}`)
-              }
-            }),
+
+          const signer = getPolkadotSigner(
+            keypair.publicKey,
+            scheme,
+            keypair.sign,
           )
-          const [keypair, scheme] = await keyring.getKeypair(chainId, from)
-          callback({
-            userSignedExtensionsData,
-            overrides: {},
-            signingType: scheme,
-            signer: async (value) => keypair.sign(value),
-          })
-        } catch (error) {
-          console.error(error)
-          // TODO: How to throw a custom error from onCreateTx?
-          callback(null)
+          const createTx = getCreateTx(chainHead$)
+
+          const mortality = userSignedExtensions.CheckMortality ?? {
+            mortal: true,
+            period: 128,
+          }
+          const asset = userSignedExtensions.ChargeAssetTxPayment?.asset
+          const tip =
+            (asset
+              ? userSignedExtensions.ChargeAssetTxPayment?.tip
+              : userSignedExtensions.ChargeTransactionPayment) ?? 0n
+
+          const tx = await firstValueFrom(
+            createTx(signer, fromHex(callData), atBlock, {
+              mortality,
+              asset,
+              tip,
+            }).pipe(filter(Boolean)),
+          )
+
+          return toHex(tx)
         } finally {
           delete signRequests[id]
           chrome.windows.remove(window.id!)
           port.onDisconnect.removeListener(removeWindow)
           chrome.windows.onRemoved.removeListener(onWindowsRemoved)
         }
+      } finally {
+        chainHead$.unfollow()
+        client.destroy()
       }
-      const txCreator = getTxCreator(chain.provider, onCreateTx)
-      const tx = toHex(
-        await txCreator.createTx(fromHex(from), fromHex(callData)),
-      )
-      txCreator.destroy()
-      return tx
     },
     async pjsSignPayload(
       [payload],
@@ -195,7 +221,7 @@ export const createBackgroundRpc = (
             callData: payload.method,
             userSignedExtensions: {
               type: "values",
-              values: getUserSignedExtensions(payload),
+              values: pjs.getUserSignedExtensions(payload),
             },
           }),
       )
@@ -227,7 +253,7 @@ export const createBackgroundRpc = (
         port.onDisconnect.removeListener(removeWindow)
         chrome.windows.onRemoved.removeListener(onWindowsRemoved)
       }
-      const signaturePayload = await getSignaturePayload(
+      const signaturePayload = await pjs.getSignaturePayload(
         chain.provider,
         payload,
       )

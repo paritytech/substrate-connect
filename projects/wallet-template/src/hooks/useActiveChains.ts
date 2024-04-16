@@ -2,7 +2,7 @@ import {
   helper,
   PageChain,
 } from "@substrate/light-client-extension-helpers/extension-page"
-import { getObservableClient } from "@polkadot-api/client"
+import { getObservableClient } from "@polkadot-api/observable-client"
 import { createClient } from "@polkadot-api/substrate-client"
 import { useEffect, useState } from "react"
 import { combineKeys } from "@react-rxjs/utils"

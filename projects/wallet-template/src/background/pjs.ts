@@ -1,8 +1,5 @@
-import {
-  type ConnectProvider,
-  createClient,
-} from "@polkadot-api/substrate-client"
-import { getObservableClient } from "@polkadot-api/client"
+import { createClient } from "@polkadot-api/substrate-client"
+import { getObservableClient } from "@polkadot-api/observable-client"
 import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
 import {
   Bytes,
@@ -14,13 +11,14 @@ import {
   u16,
 } from "@polkadot-api/substrate-bindings"
 import { fromHex, mergeUint8 } from "@polkadot-api/utils"
-import { UserSignedExtensions } from "@polkadot-api/tx-helper"
 import { filter, firstValueFrom } from "rxjs"
 import { blake2b256 } from "@polkadot-labs/hdkd-helpers"
 import type { Pjs } from "./types"
+import { UserSignedExtensions } from "../types/UserSignedExtension"
+import type { JsonRpcProvider } from "@polkadot-api/json-rpc-provider"
 
 export const getSignaturePayload = async (
-  provider: ConnectProvider,
+  provider: JsonRpcProvider,
   payload: Pjs.SignerPayloadJSON,
 ) => {
   const { metadata$, unfollow } = getObservableClient(

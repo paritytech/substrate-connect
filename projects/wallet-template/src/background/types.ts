@@ -1,8 +1,8 @@
-import type {
-  UserSignedExtensions,
-  UserSignedExtensionName,
-} from "@polkadot-api/tx-helper"
 import type { Injected } from "@polkadot/extension-inject/types"
+import {
+  UserSignedExtensionName,
+  UserSignedExtensions,
+} from "../types/UserSignedExtension"
 
 export type Account = {
   address: string
