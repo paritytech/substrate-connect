@@ -413,9 +413,9 @@ importers:
 
   projects/extension:
     dependencies:
-      '@polkadot-api/client':
-        specifier: 0.0.1
-        version: 0.0.1(rxjs@7.8.1)
+      '@polkadot-api/observable-client':
+        specifier: 0.1.0
+        version: 0.1.0(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: 0.0.1
         version: 0.0.1
@@ -2966,20 +2966,6 @@ packages:
       - supports-color
       - ts-node
       - utf-8-validate
-    dev: false
-
-  /@polkadot-api/client@0.0.1(rxjs@7.8.1):
-    resolution: {integrity: sha512-BDfzVUQuVbwuEY29OeV+nSkG9LPtar/OaxBmJRGzZMxk7cyBPzadly0Wy2HXVeTj2jYtpeUf1mvuan8Pyfw4Fw==}
-    peerDependencies:
-      rxjs: '>=7.8.0'
-    dependencies:
-      '@polkadot-api/json-rpc-provider': 0.0.1
-      '@polkadot-api/metadata-builders': 0.0.1
-      '@polkadot-api/polkadot-signer': 0.0.1
-      '@polkadot-api/substrate-bindings': 0.0.1
-      '@polkadot-api/substrate-client': 0.0.1
-      '@polkadot-api/utils': 0.0.1
-      rxjs: 7.8.1
     dev: false
 
   /@polkadot-api/client@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1):
