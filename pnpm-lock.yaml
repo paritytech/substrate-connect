@@ -493,8 +493,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       '@polkadot-api/observable-client':
-        specifier: 0.1.0
-        version: 0.1.0(rxjs@7.8.1)
+        specifier: 0.1.1
+        version: 0.1.1(rxjs@7.8.1)
       '@polkadot-api/polkadot-signer':
         specifier: ^0.0.1
         version: 0.0.1
@@ -3080,6 +3080,18 @@ packages:
 
   /@polkadot-api/observable-client@0.1.0(rxjs@7.8.1):
     resolution: {integrity: sha512-GBCGDRztKorTLna/unjl/9SWZcRmvV58o9jwU2Y038VuPXZcr01jcw/1O3x+yeAuwyGzbucI/mLTDa1QoEml3A==}
+    peerDependencies:
+      rxjs: '>=7.8.0'
+    dependencies:
+      '@polkadot-api/metadata-builders': 0.0.1
+      '@polkadot-api/substrate-bindings': 0.0.1
+      '@polkadot-api/substrate-client': 0.0.1
+      '@polkadot-api/utils': 0.0.1
+      rxjs: 7.8.1
+    dev: false
+
+  /@polkadot-api/observable-client@0.1.1(rxjs@7.8.1):
+    resolution: {integrity: sha512-dzUMCgiWE1fAkBKoWT/LIkha5C+zXn+LUu/10H/+2tmQQhkcnZsHQkm112srnUIhSBJ7B2iA9eZRGWZ9Wq+5vg==}
     peerDependencies:
       rxjs: '>=7.8.0'
     dependencies:
