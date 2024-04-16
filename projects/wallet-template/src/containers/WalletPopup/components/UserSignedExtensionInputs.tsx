@@ -94,7 +94,7 @@ const TipInput = ({ onChange, defaultValue = 0 }: TipInputProps) => {
 const VALID_MORTALITIES = Array(10)
   .fill(0)
   .map((_, i) => "" + Math.pow(2, i + 2))
-VALID_MORTALITIES.unshift("Immortal")
+VALID_MORTALITIES.unshift("Inmortal")
 
 type MortalityInputProps = {
   onChange(value: UserSignedExtensions["CheckMortality"]): void
@@ -113,7 +113,7 @@ const MortalityInput = ({
           defaultValue={defaultValue.mortal ? defaultValue.period : 64}
           onChange={(e) =>
             onChange(
-              e.target.value === "Immortal"
+              e.target.value === "Inmortal"
                 ? { mortal: false }
                 : { mortal: true, period: +e.target.value },
             )
