@@ -414,8 +414,8 @@ importers:
   projects/extension:
     dependencies:
       '@polkadot-api/observable-client':
-        specifier: 0.1.0
-        version: 0.1.0(rxjs@7.8.1)
+        specifier: 0.1.1
+        version: 0.1.1(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: 0.0.1
         version: 0.0.1
