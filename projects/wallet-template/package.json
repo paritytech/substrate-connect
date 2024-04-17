@@ -52,7 +52,7 @@
     "wxt": "^0.17.12"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.18",
+    "@headlessui/react": "^1.7.19",
     "@noble/ciphers": "^0.5.2",
     "@noble/hashes": "^1.4.0",
     "@polkadot-api/json-rpc-provider": "0.0.1",
