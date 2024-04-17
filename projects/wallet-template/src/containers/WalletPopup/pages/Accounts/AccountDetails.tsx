@@ -1,5 +1,5 @@
 import { Clipboard, CheckCircle, ArrowLeft } from "lucide-react"
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { useCopyToClipboard } from "usehooks-ts"
 
@@ -8,24 +8,29 @@ export const AccountDetails: React.FC = () => {
   const { accountId } = useParams<{ accountId: string }>()
   const [copied, setCopied] = useState(false)
   const [_, copy] = useCopyToClipboard()
+  const onCopyToClipboardTimer = useRef(0)
+
+  useEffect(() => {
+    return () => {
+      window.clearTimeout(onCopyToClipboardTimer.current)
+    }
+  }, [])
 
   if (!accountId) {
     return null
   }
 
   const onCopyToClipboard = async () => {
+    window.clearTimeout(onCopyToClipboardTimer.current)
     setCopied(true)
-    setTimeout(() => {
+    onCopyToClipboardTimer.current = window.setTimeout(() => {
       setCopied(false)
     }, 2000)
     await copy(accountId)
   }
 
   return (
-    <section
-      aria-label="Account Details"
-      className="mb-8 mx-auto bg-white shadow rounded-lg"
-    >
+    <section aria-label="Account Details" className="mx-auto p-4">
       <section className="text-center w-full max-w-lg">
         <button
           className="flex items-center font-semibold"
@@ -59,7 +64,7 @@ export const AccountDetails: React.FC = () => {
           </button>
         </div>
         <p className="text-xs mb-4 bg-gray-200 p-3 rounded text-center">
-          {accountId?.toUpperCase()}
+          {accountId}
         </p>
       </div>
     </section>
