@@ -414,8 +414,8 @@ importers:
   projects/extension:
     dependencies:
       '@polkadot-api/client':
-        specifier: 0.0.1
-        version: 0.0.1(rxjs@7.8.1)
+        specifier: 0.1.0
+        version: 0.1.0(@substrate/connect@packages+connect)(postcss@8.4.38)(rxjs@7.8.1)(smoldot@2.0.22)
       '@polkadot-api/substrate-client':
         specifier: 0.0.1
         version: 0.0.1
@@ -2968,18 +2968,42 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@polkadot-api/client@0.0.1(rxjs@7.8.1):
-    resolution: {integrity: sha512-BDfzVUQuVbwuEY29OeV+nSkG9LPtar/OaxBmJRGzZMxk7cyBPzadly0Wy2HXVeTj2jYtpeUf1mvuan8Pyfw4Fw==}
-    peerDependencies:
-      rxjs: '>=7.8.0'
+  /@polkadot-api/cli@0.1.0(postcss@8.4.38):
+    resolution: {integrity: sha512-9fnb9PXuNiumxYXaTlwTIqMf9OmqGX3uj6DYVvs8ldNrLoUuPaB2vgYZPogM1X/JgRMvBxnAQ8SGSMLdm6eGrw==}
+    hasBin: true
     dependencies:
+      '@commander-js/extra-typings': 12.0.1(commander@12.0.0)
+      '@polkadot-api/codegen': 0.0.1
       '@polkadot-api/json-rpc-provider': 0.0.1
+      '@polkadot-api/json-rpc-provider-proxy': 0.0.1
       '@polkadot-api/metadata-builders': 0.0.1
-      '@polkadot-api/polkadot-signer': 0.0.1
+      '@polkadot-api/observable-client': 0.1.0(rxjs@7.8.1)
+      '@polkadot-api/sc-provider': 0.0.1(@substrate/connect@0.8.8)
       '@polkadot-api/substrate-bindings': 0.0.1
       '@polkadot-api/substrate-client': 0.0.1
       '@polkadot-api/utils': 0.0.1
+      '@polkadot-api/ws-provider': 0.0.1
+      '@substrate/connect': 0.8.8
+      '@types/node': 20.12.7
+      commander: 12.0.0
+      fs.promises.exists: 1.1.4
+      ora: 7.0.1
+      read-pkg: 8.1.0
       rxjs: 7.8.1
+      scale-ts: 1.6.0
+      tsc-prog: 2.3.0(typescript@5.4.5)
+      tsup: 8.0.2(postcss@8.4.38)(typescript@5.4.5)
+      typescript: 5.4.5
+      write-pkg: 6.0.1
+      ws: 8.16.0
+    transitivePeerDependencies:
+      - '@microsoft/api-extractor'
+      - '@swc/core'
+      - bufferutil
+      - postcss
+      - supports-color
+      - ts-node
+      - utf-8-validate
     dev: false
 
   /@polkadot-api/client@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0(rxjs@7.8.1):
@@ -2993,6 +3017,39 @@ packages:
       '@polkadot-api/substrate-client': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       '@polkadot-api/utils': 0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0
       rxjs: 7.8.1
+    dev: false
+
+  /@polkadot-api/client@0.1.0(@substrate/connect@packages+connect)(postcss@8.4.38)(rxjs@7.8.1)(smoldot@2.0.22):
+    resolution: {integrity: sha512-01LfWzTE0BGA//rkDXvNC+CVy1hly2dyuHhVBJQ4a2FlR22BtjeOhAVfd5UBpkzKTP/bqzYGmjEl5vf4S+MFnQ==}
+    hasBin: true
+    peerDependencies:
+      rxjs: '>=7.8.0'
+    dependencies:
+      '@polkadot-api/cli': 0.1.0(postcss@8.4.38)
+      '@polkadot-api/json-rpc-provider': 0.0.1
+      '@polkadot-api/logs-provider': 0.0.1
+      '@polkadot-api/metadata-builders': 0.0.1
+      '@polkadot-api/observable-client': 0.1.0(rxjs@7.8.1)
+      '@polkadot-api/pjs-signer': 0.1.0
+      '@polkadot-api/polkadot-signer': 0.0.1
+      '@polkadot-api/sc-provider': 0.0.1(@substrate/connect@packages+connect)
+      '@polkadot-api/signer': 0.0.1
+      '@polkadot-api/sm-provider': 0.0.1(smoldot@2.0.22)
+      '@polkadot-api/substrate-bindings': 0.0.1
+      '@polkadot-api/substrate-client': 0.0.1
+      '@polkadot-api/utils': 0.0.1
+      '@polkadot-api/ws-provider': 0.0.1
+      rxjs: 7.8.1
+    transitivePeerDependencies:
+      - '@microsoft/api-extractor'
+      - '@substrate/connect'
+      - '@swc/core'
+      - bufferutil
+      - postcss
+      - smoldot
+      - supports-color
+      - ts-node
+      - utf-8-validate
     dev: false
 
   /@polkadot-api/client@0.1.0(@substrate/connect@packages+connect)(rxjs@7.8.1)(smoldot@2.0.22):
@@ -3825,7 +3882,6 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@rollup/rollup-android-arm-eabi@4.9.2:
@@ -3840,7 +3896,6 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@rollup/rollup-android-arm64@4.9.2:
@@ -3855,7 +3910,6 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@rollup/rollup-darwin-arm64@4.9.2:
@@ -3870,7 +3924,6 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@rollup/rollup-darwin-x64@4.9.2:
@@ -3885,7 +3938,6 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@rollup/rollup-linux-arm-gnueabihf@4.9.2:
@@ -3900,7 +3952,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@rollup/rollup-linux-arm64-gnu@4.9.2:
@@ -3915,7 +3966,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@rollup/rollup-linux-arm64-musl@4.9.2:
@@ -3930,7 +3980,6 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@rollup/rollup-linux-riscv64-gnu@4.9.2:
@@ -3945,7 +3994,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@rollup/rollup-linux-x64-gnu@4.9.2:
@@ -3960,7 +4008,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@rollup/rollup-linux-x64-musl@4.9.2:
@@ -3975,7 +4022,6 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@rollup/rollup-win32-arm64-msvc@4.9.2:
@@ -3990,7 +4036,6 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@rollup/rollup-win32-ia32-msvc@4.9.2:
@@ -4005,7 +4050,6 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@rollup/rollup-win32-x64-msvc@4.9.2:
@@ -4272,7 +4316,6 @@ packages:
 
   /@types/estree@1.0.5:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
-    dev: true
 
   /@types/filesystem@0.0.35:
     resolution: {integrity: sha512-1eKvCaIBdrD2mmMgy5dwh564rVvfEhZTWVQQGRNn0Nt4ZEnJ0C8oSUCzvMKRA4lGde5oEVo+q2MrTTbV/GHDCQ==}
@@ -10309,7 +10352,6 @@ packages:
       '@rollup/rollup-win32-ia32-msvc': 4.13.0
       '@rollup/rollup-win32-x64-msvc': 4.13.0
       fsevents: 2.3.3
-    dev: true
 
   /rollup@4.9.2:
     resolution: {integrity: sha512-66RB8OtFKUTozmVEh3qyNfH+b+z2RXBVloqO2KCC/pjFaGaHtxP9fVfOQKPSGXg2mElmjmxjW/fZ7iKrEpMH5Q==}
@@ -11200,6 +11242,46 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+
+  /tsup@8.0.2(postcss@8.4.38)(typescript@5.4.5):
+    resolution: {integrity: sha512-NY8xtQXdH7hDUAZwcQdY/Vzlw9johQsaqf7iwZ6g1DOUlFYQ5/AtVAjTvihhEyeRlGo4dLRVHtrRaL35M1daqQ==}
+    engines: {node: '>=18'}
+    hasBin: true
+    peerDependencies:
+      '@microsoft/api-extractor': ^7.36.0
+      '@swc/core': ^1
+      postcss: ^8.4.12
+      typescript: '>=4.5.0'
+    peerDependenciesMeta:
+      '@microsoft/api-extractor':
+        optional: true
+      '@swc/core':
+        optional: true
+      postcss:
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      bundle-require: 4.0.2(esbuild@0.19.11)
+      cac: 6.7.14
+      chokidar: 3.5.3
+      debug: 4.3.4(supports-color@5.5.0)
+      esbuild: 0.19.11
+      execa: 5.1.1
+      globby: 11.1.0
+      joycon: 3.1.1
+      postcss: 8.4.38
+      postcss-load-config: 4.0.2(postcss@8.4.38)
+      resolve-from: 5.0.0
+      rollup: 4.13.0
+      source-map: 0.8.0-beta.0
+      sucrase: 3.35.0
+      tree-kill: 1.2.2
+      typescript: 5.4.5
+    transitivePeerDependencies:
+      - supports-color
+      - ts-node
+    dev: false
 
   /tsup@8.0.2(typescript@5.4.5):
     resolution: {integrity: sha512-NY8xtQXdH7hDUAZwcQdY/Vzlw9johQsaqf7iwZ6g1DOUlFYQ5/AtVAjTvihhEyeRlGo4dLRVHtrRaL35M1daqQ==}
