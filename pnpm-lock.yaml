@@ -535,8 +535,8 @@ importers:
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers
       lucide-react:
-        specifier: ^0.365.0
-        version: 0.365.0(react@18.2.0)
+        specifier: ^0.370.0
+        version: 0.370.0(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -8774,8 +8774,8 @@ packages:
     dependencies:
       yallist: 4.0.0
 
-  /lucide-react@0.365.0(react@18.2.0):
-    resolution: {integrity: sha512-sJYpPyyzGHI4B3pys+XSFnE4qtSWc68rFnDLxbNNKjkLST5XSx9DNn5+1Z3eFgFiw39PphNRiVBSVb+AL3oKwA==}
+  /lucide-react@0.370.0(react@18.2.0):
+    resolution: {integrity: sha512-659R7tNK+QY3Af/hikV/+MdIWOQJ5GDfKdrs+5k08hWPlWNAoshUtvNuGl9PMeC3J1NZ07bUnyWd0eJR2okHOg==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
