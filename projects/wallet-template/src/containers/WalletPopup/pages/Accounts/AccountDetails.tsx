@@ -1,4 +1,4 @@
-import { Globe, Clipboard, CheckCircle, ArrowLeft } from "lucide-react"
+import { Clipboard, CheckCircle, ArrowLeft } from "lucide-react"
 import React, { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { useCopyToClipboard } from "usehooks-ts"
@@ -61,20 +61,6 @@ export const AccountDetails: React.FC = () => {
         <p className="text-xs mb-4 bg-gray-200 p-3 rounded text-center">
           {accountId?.toUpperCase()}
         </p>
-
-        <div className="space-y-4">
-          <div>
-            <h3 className="text-lg font-semibold">Networks</h3>
-            <div className="mt-2 flex items-center">
-              <Globe className="mr-2" size={20} />
-              <p className="text-lg">Polkadot</p>
-            </div>
-            <div className="mt-2 flex items-center">
-              <Globe className="mr-2" size={20} />
-              <p className="text-lg">Westend</p>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   )
