@@ -10,7 +10,7 @@ import {
   Networks,
   Bootnodes,
 } from "../components"
-import { Chainspecs } from "./WalletPopup/Options/Chainspecs"
+import { ChainSpecs } from "./WalletPopup/pages/Options/Chainspecs"
 
 type MenuItemTypes = "item" | "title" | "icon"
 
@@ -158,7 +158,7 @@ export const Options: FunctionComponent = () => {
           ) : menu === 1 ? (
             <Bootnodes />
           ) : menu === 2 ? (
-            <Chainspecs />
+            <ChainSpecs />
           ) : null}
         </MenuContent>
       </div>

@@ -13,9 +13,8 @@ export const addChainSpecHandler: RpcMethodHandlers<
   Context
 >["addChainSpec"] = async ([chainSpec], { lightClientPageHelper }) => {
   const chainSpecParsed = chainSpecSchema.parse(JSON.parse(chainSpec))
-  const { relay_chain: relayChainId } = chainSpecParsed
 
-  const relayChain = await lightClientPageHelper
+  const relayChainChainSpec = await lightClientPageHelper
     .getChains()
     .then((chains) =>
       chains.map((chain) => ({
@@ -23,11 +22,19 @@ export const addChainSpecHandler: RpcMethodHandlers<
         genesisHash: chain.genesisHash,
       })),
     )
-    .then((chains) => chains.find((chain) => chain.id === relayChainId))
+    .then((chains) =>
+      chains.find((chain) => chain.id === chainSpecParsed.relay_chain),
+    )
 
-  if (relayChain?.relay_chain) {
+  if (chainSpecParsed.relay_chain && !relayChainChainSpec) {
+    throw new Error("relay chain not found")
+  }
+  if (relayChainChainSpec?.relay_chain) {
     throw new Error("relay chain cannot be a parachain")
   }
 
-  await lightClientPageHelper.persistChain(chainSpec, relayChain?.genesisHash)
+  await lightClientPageHelper.persistChain(
+    chainSpec,
+    relayChainChainSpec?.genesisHash,
+  )
 }
