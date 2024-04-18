@@ -1,36 +1,31 @@
-import { Clipboard, CheckCircle, ArrowLeft } from "lucide-react"
-import React, { useEffect, useRef, useState } from "react"
+import { ArrowLeft, ClipboardCheck, ClipboardCopyIcon } from "lucide-react"
+import * as clipboard from "@zag-js/clipboard"
+import { useMachine, normalizeProps } from "@zag-js/react"
+import React, { useId } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { useCopyToClipboard } from "usehooks-ts"
 
 export const AccountDetails: React.FC = () => {
   const navigate = useNavigate()
   const { accountId } = useParams<{ accountId: string }>()
-  const [copied, setCopied] = useState(false)
-  const [_, copy] = useCopyToClipboard()
-  const onCopyToClipboardTimer = useRef(0)
+  const [state, send] = useMachine(
+    clipboard.machine({
+      id: useId(),
+      value: accountId,
+    }),
+  )
 
-  useEffect(() => {
-    return () => {
-      window.clearTimeout(onCopyToClipboardTimer.current)
-    }
-  }, [])
+  const api = clipboard.connect(state, send, normalizeProps)
 
   if (!accountId) {
     return null
   }
 
-  const onCopyToClipboard = async () => {
-    window.clearTimeout(onCopyToClipboardTimer.current)
-    setCopied(true)
-    onCopyToClipboardTimer.current = window.setTimeout(() => {
-      setCopied(false)
-    }, 2000)
-    await copy(accountId)
-  }
-
   return (
-    <section aria-label="Account Details" className="mx-auto p-4">
+    <section
+      aria-label="Account Details"
+      className="mx-auto p-4"
+      {...api.rootProps}
+    >
       <section className="text-center w-full max-w-lg">
         <button
           className="flex items-center font-semibold"
@@ -47,20 +42,13 @@ export const AccountDetails: React.FC = () => {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold">Wallet Address</h2>
           <button
-            type="button"
-            className={`p-2 rounded flex items-center justify-center space-x-2 ${copied ? "bg-green-200" : ""}`}
+            className={`p-2 rounded flex items-center justify-center space-x-2 ${api.isCopied ? "bg-green-200" : ""}`}
             aria-label="Copy to clipboard"
-            onClick={onCopyToClipboard}
+            {...api.triggerProps}
           >
-            {copied ? (
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="text-green-500" size={24} />
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <Clipboard size={24} />
-              </div>
-            )}
+            <div className="flex items-center space-x-2">
+              {api.isCopied ? <ClipboardCheck /> : <ClipboardCopyIcon />}
+            </div>
           </button>
         </div>
         <p className="text-xs mb-4 bg-gray-200 p-3 rounded text-center">
