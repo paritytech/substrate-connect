@@ -414,8 +414,8 @@ importers:
   projects/extension:
     dependencies:
       '@polkadot-api/observable-client':
-        specifier: 0.1.0
-        version: 0.1.0(rxjs@7.8.1)
+        specifier: 0.1.1
+        version: 0.1.1(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: 0.0.1
         version: 0.0.1
@@ -478,8 +478,8 @@ importers:
   projects/wallet-template:
     dependencies:
       '@headlessui/react':
-        specifier: ^1.7.18
-        version: 1.7.18(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.7.19
+        version: 1.7.19(react-dom@18.2.0)(react@18.2.0)
       '@noble/ciphers':
         specifier: ^0.5.2
         version: 0.5.2
@@ -534,6 +534,9 @@ importers:
       '@substrate/light-client-extension-helpers':
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers
+      '@zag-js/clipboard':
+        specifier: ^0.47.0
+        version: 0.47.0
       '@zag-js/react':
         specifier: ^0.47.0
         version: 0.47.0(react-dom@18.2.0)(react@18.2.0)
@@ -2623,8 +2626,8 @@ packages:
     engines: {node: '>=14.0.0', npm: '>=7.0.0'}
     dev: true
 
-  /@headlessui/react@1.7.18(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-4i5DOrzwN4qSgNsL4Si61VMkUcWbcSKueUV7sFhpHzQcSShdlHENE5+QBntMSRvHt8NyoFO2AGG8si9lq+w4zQ==}
+  /@headlessui/react@1.7.19(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-Ll+8q3OlMJfJbAKM/+/Y2q6PPYbryqNTXDbryx7SXLIDamkF6iQFbriYHga0dY44PvDhvvBWCx1Xj4U5+G4hOw==}
     engines: {node: '>=10'}
     peerDependencies:
       react: ^16 || ^17 || ^18
@@ -4743,6 +4746,16 @@ packages:
 
   /@zag-js/anatomy@0.47.0:
     resolution: {integrity: sha512-RzYUfjYeHI8fftH+iZXiFukdz9LWu1W4mewhn30yxTqhsUzn7NLUGbA/+e1zGe1yCOvv1aaRGgXCEn3dA53iCw==}
+    dev: false
+
+  /@zag-js/clipboard@0.47.0:
+    resolution: {integrity: sha512-CeGkWjEyOeJZUOtq98CfnCNB8j4vewideZC2KJB/EIdJxITe1TALOnrLZyosmllNp1S8eIn21qPlMUklNxL/jg==}
+    dependencies:
+      '@zag-js/anatomy': 0.47.0
+      '@zag-js/core': 0.47.0
+      '@zag-js/dom-query': 0.47.0
+      '@zag-js/types': 0.47.0
+      '@zag-js/utils': 0.47.0
     dev: false
 
   /@zag-js/core@0.47.0:

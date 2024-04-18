@@ -46,7 +46,11 @@ const AccountItem: React.FC<AccountItemProps> = ({
           <div className="font-medium text-gray-500">{ellipsisText}</div>
         )}
       </div>
-      <ChevronRight className="text-gray-400" />
+      <Link to={`/accounts/${ss58Address}`}>
+        <button type="button">
+          <ChevronRight className="text-gray-400" />
+        </button>
+      </Link>
     </div>
   )
 }

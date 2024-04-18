@@ -52,7 +52,7 @@
     "wxt": "^0.17.12"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.18",
+    "@headlessui/react": "^1.7.19",
     "@noble/ciphers": "^0.5.2",
     "@noble/hashes": "^1.4.0",
     "@polkadot-api/json-rpc-provider": "0.0.1",
@@ -71,6 +71,7 @@
     "@react-rxjs/utils": "^0.9.7",
     "@substrate/connect-extension-protocol": "workspace:*",
     "@substrate/light-client-extension-helpers": "workspace:^",
+    "@zag-js/clipboard": "^0.47.0",
     "@zag-js/react": "^0.47.0",
     "@zag-js/tabs": "^0.47.0",
     "lucide-react": "^0.365.0",
