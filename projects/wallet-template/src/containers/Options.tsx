@@ -10,7 +10,7 @@ import {
   Networks,
   Bootnodes,
 } from "../components"
-import { Chainspecs } from "./Options/Chainspecs"
+import { Chainspecs } from "./WalletPopup/Options/Chainspecs"
 
 type MenuItemTypes = "item" | "title" | "icon"
 

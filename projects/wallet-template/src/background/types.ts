@@ -88,4 +88,6 @@ export type BackgroundRpcSpec = {
   removeCryptoKey(name: string): Promise<void>
   clearCryptoKeys(): Promise<void>
   getKeyringState(): Promise<KeyringState>
+
+  addChainSpec(chainSpec: string): Promise<void>
 }

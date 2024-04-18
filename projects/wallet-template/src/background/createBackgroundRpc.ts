@@ -5,17 +5,13 @@ import {
   createRpc,
   RpcError,
 } from "@substrate/light-client-extension-helpers/utils"
-import type { LightClientPageHelper } from "@substrate/light-client-extension-helpers/background"
 import { ss58Address, ss58Decode } from "@polkadot-labs/hdkd-helpers"
 import { toHex, fromHex } from "@polkadot-api/utils"
 import { getPolkadotSigner } from "@polkadot-api/signer"
 
-import type { Account, BackgroundRpcSpec, SignRequest } from "./types"
+import type { BackgroundRpcSpec } from "./types"
 import { createKeyring } from "./keyring"
-import {
-  UserSignedExtensionName,
-  UserSignedExtensions,
-} from "../types/UserSignedExtension"
+import { UserSignedExtensionName } from "../types/UserSignedExtension"
 import { createClient } from "@polkadot-api/substrate-client"
 import { getObservableClient } from "@polkadot-api/observable-client"
 import { filter, firstValueFrom, map, mergeMap, take } from "rxjs"
@@ -23,6 +19,8 @@ import { getCreateTx } from "./tx-helper"
 import * as pjs from "./pjs"
 import { Bytes, Variant } from "@polkadot-api/substrate-bindings"
 import { InPageRpcSpec } from "../inpage/types"
+import { Context, InternalSignRequest } from "./rpc/types"
+import { addChainSpecHandler } from "./rpc/chainspec"
 
 const isUserSignedExtensionName = (s: string): s is UserSignedExtensionName => {
   return (
@@ -34,27 +32,11 @@ const isUserSignedExtensionName = (s: string): s is UserSignedExtensionName => {
 
 const keyring = createKeyring()
 
-type SignResponse = {
-  userSignedExtensions: Partial<UserSignedExtensions>
-}
-
-type InternalSignRequest = {
-  resolve: (props: SignResponse) => void
-  reject: (reason?: any) => void
-} & SignRequest
-
 let nextSignRequestId = 0
 
 export const createBackgroundRpc = (
   sendMessage: (message: RpcMessage) => void,
 ) => {
-  type Context = {
-    lightClientPageHelper: LightClientPageHelper
-    signRequests: Record<string, InternalSignRequest>
-    port: chrome.runtime.Port
-    notifyOnAccountsChanged: (accounts: Account[]) => void
-  }
-
   const getAccounts: RpcMethodHandlers<
     BackgroundRpcSpec,
     Context
@@ -328,6 +310,7 @@ export const createBackgroundRpc = (
         hasPassword: await keyring.hasPassword(),
       }
     },
+    addChainSpec: addChainSpecHandler,
   }
 
   type Method = keyof BackgroundRpcSpec
