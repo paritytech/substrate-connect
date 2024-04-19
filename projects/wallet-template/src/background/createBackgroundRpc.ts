@@ -20,7 +20,11 @@ import * as pjs from "./pjs"
 import { Bytes, Variant } from "@polkadot-api/substrate-bindings"
 import { InPageRpcSpec } from "../inpage/types"
 import { Context, InternalSignRequest } from "./rpc/types"
-import { addChainSpecHandler, listChainSpecsHandler } from "./rpc/chainspec"
+import {
+  addChainSpecHandler,
+  listChainSpecsHandler,
+  removeChainSpecHandler,
+} from "./rpc/chainspec"
 
 const isUserSignedExtensionName = (s: string): s is UserSignedExtensionName => {
   return (
@@ -312,6 +316,7 @@ export const createBackgroundRpc = (
     },
     getChainSpecs: listChainSpecsHandler,
     addChainSpec: addChainSpecHandler,
+    removeChainSpec: removeChainSpecHandler,
   }
 
   type Method = keyof BackgroundRpcSpec

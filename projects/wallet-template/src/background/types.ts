@@ -10,6 +10,7 @@ import {
 export type ChainSpec = {
   name: string
   id: string
+  genesisHash: string
   relay_chain?: string
   isWellKnown: boolean
   raw: string
@@ -102,4 +103,5 @@ export type BackgroundRpcSpec = {
 
   getChainSpecs(): Promise<ChainSpec[]>
   addChainSpec(chainSpec: string): Promise<void>
+  removeChainSpec(genesisHash: string): Promise<void>
 }

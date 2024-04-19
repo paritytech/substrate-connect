@@ -11,6 +11,25 @@ const chainSpecSchema = z.object({
   relay_chain: z.string().optional(),
 })
 
+export const listChainSpecsHandler: RpcMethodHandlers<
+  BackgroundRpcSpec,
+  Context
+>["getChainSpecs"] = async (_, { lightClientPageHelper }) => {
+  const chains = await lightClientPageHelper.getChains()
+  const chainSpecs = chains.map((chain) => {
+    const parsed = chainSpecSchema.parse(JSON.parse(chain.chainSpec))
+
+    return {
+      ...parsed,
+      genesisHash: chain.genesisHash,
+      isWellKnown: !!wellKnownGenesisHashByChainId[parsed.id],
+      raw: chain.chainSpec,
+    }
+  })
+
+  return chainSpecs
+}
+
 export const addChainSpecHandler: RpcMethodHandlers<
   BackgroundRpcSpec,
   Context
@@ -42,20 +61,9 @@ export const addChainSpecHandler: RpcMethodHandlers<
   )
 }
 
-export const listChainSpecsHandler: RpcMethodHandlers<
+export const removeChainSpecHandler: RpcMethodHandlers<
   BackgroundRpcSpec,
   Context
->["getChainSpecs"] = async (_, { lightClientPageHelper }) => {
-  const chains = await lightClientPageHelper.getChains()
-  const chainSpecs = chains.map((chain) => {
-    const parsed = chainSpecSchema.parse(JSON.parse(chain.chainSpec))
-
-    return {
-      ...parsed,
-      isWellKnown: !!wellKnownGenesisHashByChainId[parsed.id],
-      raw: chain.chainSpec,
-    }
-  })
-
-  return chainSpecs
+>["removeChainSpec"] = async ([genesisHash], { lightClientPageHelper }) => {
+  await lightClientPageHelper.deleteChain(genesisHash)
 }

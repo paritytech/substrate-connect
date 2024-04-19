@@ -1,12 +1,6 @@
-import {
-  Clipboard,
-  ClipboardCheck,
-  ClipboardCopyIcon,
-  Trash,
-} from "lucide-react"
+import { ClipboardCheck, ClipboardCopyIcon, Trash } from "lucide-react"
 import * as clipboard from "@zag-js/clipboard"
 import { useMachine, normalizeProps } from "@zag-js/react"
-import { useId } from "react"
 import useSWR from "swr"
 
 import { rpc } from "../../api"
@@ -14,12 +8,16 @@ import { ChainSpec } from "../../../../background/types"
 
 type ChainSpecListItemProps = {
   chainSpec: ChainSpec
+  onDeleteChainSpec: (chainSpec: ChainSpec) => unknown
 }
 
-const ChainSpecListItem = ({ chainSpec }: ChainSpecListItemProps) => {
+const ChainSpecListItem = ({
+  chainSpec,
+  onDeleteChainSpec,
+}: ChainSpecListItemProps) => {
   const [state, send] = useMachine(
     clipboard.machine({
-      id: useId(),
+      id: chainSpec.id,
       value: chainSpec.raw,
     }),
   )
@@ -42,7 +40,9 @@ const ChainSpecListItem = ({ chainSpec }: ChainSpecListItemProps) => {
           )}
         </button>
         {!chainSpec.isWellKnown && (
-          <Trash className="stroke-current text-red-600" />
+          <button onClick={() => onDeleteChainSpec(chainSpec)}>
+            <Trash className="stroke-current text-red-600" />
+          </button>
         )}
       </div>
     </section>
@@ -50,11 +50,18 @@ const ChainSpecListItem = ({ chainSpec }: ChainSpecListItemProps) => {
 }
 
 export const ListChainSpecs = () => {
-  const { data: chainSpecs } = useSWR(
+  const { data: chainSpecs, mutate } = useSWR(
     "rpc.getChainSpecs",
     () => rpc.client.getChainSpecs(),
     { revalidateOnFocus: true },
   )
+
+  const onDeleteChainSpec = async (chainSpec: ChainSpec) => {
+    // TODO: error handling
+    await rpc.client.removeChainSpec(chainSpec.genesisHash)
+    await mutate()
+    console.log(`chain spec ${chainSpec.id} removed`)
+  }
 
   const relayChains = chainSpecs?.filter((chainSpec) => !chainSpec.relay_chain)
   const parachains = chainSpecs?.filter((chainSpec) => !!chainSpec.relay_chain)
@@ -69,7 +76,10 @@ export const ListChainSpecs = () => {
           <ul className="space-y-4">
             {relayChains?.map((chainSpec) => (
               <li className="bg-white p-4 shadow rounded-lg">
-                <ChainSpecListItem chainSpec={chainSpec} />
+                <ChainSpecListItem
+                  chainSpec={chainSpec}
+                  onDeleteChainSpec={onDeleteChainSpec}
+                />
               </li>
             ))}
           </ul>
@@ -83,7 +93,10 @@ export const ListChainSpecs = () => {
             <ul className="space-y-4">
               {parachains?.map((chainSpec) => (
                 <li className="bg-white p-4 shadow rounded-lg">
-                  <ChainSpecListItem chainSpec={chainSpec} />
+                  <ChainSpecListItem
+                    chainSpec={chainSpec}
+                    onDeleteChainSpec={onDeleteChainSpec}
+                  />
                 </li>
               ))}
             </ul>
