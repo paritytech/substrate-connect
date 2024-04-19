@@ -601,6 +601,9 @@ importers:
       tailwindcss:
         specifier: ^3.4.3
         version: 3.4.3
+      type-fest:
+        specifier: ^4.15.0
+        version: 4.15.0
       vite:
         specifier: ^5.2.8
         version: 5.2.8(@types/node@20.12.7)
@@ -11452,7 +11455,6 @@ packages:
   /type-fest@4.15.0:
     resolution: {integrity: sha512-tB9lu0pQpX5KJq54g+oHOLumOx+pMep4RaM6liXh2PKmVRFF+/vAtUP0ZaJ0kOySfVNjF6doBWPHhBhISKdlIA==}
     engines: {node: '>=16'}
-    dev: false
 
   /typed-array-buffer@1.0.0:
     resolution: {integrity: sha512-Y8KTSIglk9OZEr8zywiIHG/kmQ7KWyjseXs1CbSo8vC42w7hg2HgYTxSWwP0+is7bWDc1H+Fo026CpHFwm8tkw==}

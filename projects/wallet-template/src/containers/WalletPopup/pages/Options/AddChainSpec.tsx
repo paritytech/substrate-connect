@@ -1,6 +1,7 @@
 import React from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { CheckCircle, Loader } from "lucide-react"
+import { useSWRConfig } from "swr"
 
 import { rpc } from "../../api"
 
@@ -14,8 +15,11 @@ export const AddChainSpec: React.FC = () => {
     handleSubmit,
     formState: { isSubmitting, errors, isSubmitted, isSubmitSuccessful },
   } = useForm<FormFields>()
+  const { mutate } = useSWRConfig()
+
   const onSubmit: SubmitHandler<FormFields> = async ({ chainSpec }) => {
     await rpc.client.addChainSpec(chainSpec)
+    await mutate("rpc.getChainSpecs")
   }
 
   return (

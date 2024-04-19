@@ -20,7 +20,7 @@ import * as pjs from "./pjs"
 import { Bytes, Variant } from "@polkadot-api/substrate-bindings"
 import { InPageRpcSpec } from "../inpage/types"
 import { Context, InternalSignRequest } from "./rpc/types"
-import { addChainSpecHandler } from "./rpc/chainspec"
+import { addChainSpecHandler, listChainSpecsHandler } from "./rpc/chainspec"
 
 const isUserSignedExtensionName = (s: string): s is UserSignedExtensionName => {
   return (
@@ -310,6 +310,7 @@ export const createBackgroundRpc = (
         hasPassword: await keyring.hasPassword(),
       }
     },
+    getChainSpecs: listChainSpecsHandler,
     addChainSpec: addChainSpecHandler,
   }
 

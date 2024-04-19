@@ -1,9 +1,12 @@
 import { RpcMethodHandlers } from "@substrate/light-client-extension-helpers/utils"
-import { Context } from "./types"
-import { BackgroundRpcSpec } from "../types"
 import { z } from "zod"
 
+import { BackgroundRpcSpec } from "../types"
+import { wellKnownGenesisHashByChainId } from "../../constants"
+import { Context } from "./types"
+
 const chainSpecSchema = z.object({
+  name: z.string(),
   id: z.string(),
   relay_chain: z.string().optional(),
 })
@@ -37,4 +40,22 @@ export const addChainSpecHandler: RpcMethodHandlers<
     chainSpec,
     relayChainChainSpec?.genesisHash,
   )
+}
+
+export const listChainSpecsHandler: RpcMethodHandlers<
+  BackgroundRpcSpec,
+  Context
+>["getChainSpecs"] = async (_, { lightClientPageHelper }) => {
+  const chains = await lightClientPageHelper.getChains()
+  const chainSpecs = chains.map((chain) => {
+    const parsed = chainSpecSchema.parse(JSON.parse(chain.chainSpec))
+
+    return {
+      ...parsed,
+      isWellKnown: !!wellKnownGenesisHashByChainId[parsed.id],
+      raw: chain.chainSpec,
+    }
+  })
+
+  return chainSpecs
 }
