@@ -10,6 +10,7 @@ import {
   Networks,
   Bootnodes,
 } from "../components"
+import { ChainSpecs } from "./WalletPopup/pages/Options/Chainspecs"
 
 type MenuItemTypes = "item" | "title" | "icon"
 
@@ -68,7 +69,7 @@ const cName = (type: MenuItemTypes, menu = 0, reqMenu: number) => {
 }
 
 export const Options: FunctionComponent = () => {
-  const [menu, setMenu] = useState<0 | 1>(0)
+  const [menu, setMenu] = useState<0 | 1 | 2>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [actionResult, setActionResult] = useState<string>("")
 
@@ -120,6 +121,16 @@ export const Options: FunctionComponent = () => {
               <span className={cName("title", menu, 1)}>Bootnodes</span>
             </a>
           </li>
+          <li className="relative">
+            <a
+              className={cName("item", menu, 2)}
+              href="#!"
+              onClick={() => setMenu(2)}
+            >
+              <MdOutlineOnlinePrediction className={cName("icon", menu, 2)} />
+              <span className={cName("title", menu, 2)}>Chainspecs</span>
+            </a>
+          </li>
         </ul>
         <div className="text-center bottom-0 absolute w-full">
           <hr className="m-0" />
@@ -142,7 +153,13 @@ export const Options: FunctionComponent = () => {
       </div>
       <div className="ml-60 absolute w-[calc(100%-15rem)] h-[100vh] overflow-auto">
         <MenuContent>
-          {menu === 0 ? <Networks /> : menu === 1 ? <Bootnodes /> : null}
+          {menu === 0 ? (
+            <Networks />
+          ) : menu === 1 ? (
+            <Bootnodes />
+          ) : menu === 2 ? (
+            <ChainSpecs />
+          ) : null}
         </MenuContent>
       </div>
     </>

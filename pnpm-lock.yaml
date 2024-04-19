@@ -540,6 +540,9 @@ importers:
       '@zag-js/react':
         specifier: ^0.47.0
         version: 0.47.0(react-dom@18.2.0)(react@18.2.0)
+      '@zag-js/tabs':
+        specifier: ^0.47.0
+        version: 0.47.0
       lucide-react:
         specifier: ^0.365.0
         version: 0.365.0(react@18.2.0)
@@ -567,6 +570,9 @@ importers:
       swr:
         specifier: ^2.2.5
         version: 2.2.5(react@18.2.0)
+      zod:
+        specifier: ^3.22.4
+        version: 3.22.4
     devDependencies:
       '@playwright/test':
         specifier: ^1.43.1
@@ -4896,8 +4902,20 @@ packages:
       klona: 2.0.6
     dev: false
 
+  /@zag-js/dom-event@0.47.0:
+    resolution: {integrity: sha512-QUBfaWMe86i6QZ3KjlLlYVkp/sbd6k/I0bdJZTFQ7jfhdIfNGnlu3tP/Oyz16ddzvC4Xky2jCtIvBh+oqDq1YA==}
+    dependencies:
+      '@zag-js/dom-query': 0.47.0
+      '@zag-js/text-selection': 0.47.0
+      '@zag-js/types': 0.47.0
+    dev: false
+
   /@zag-js/dom-query@0.47.0:
     resolution: {integrity: sha512-B1wZ3o/8uHOn75BkfcT45zwc23hqZJ/gUF7Z6UrmxWFNpr6JKiDNvOW+QaAKzYNEpvz3NnUOB4tEY0IhDms7Sg==}
+    dev: false
+
+  /@zag-js/element-rect@0.47.0:
+    resolution: {integrity: sha512-WWCRbrw/Z6l5NhMiqdOUhfeXDTyjl5m3vGcEsTVrAKYdsl81O0aTaNTgUU+UFZtYthYZ4AsDk6HNNbIlahTF8A==}
     dev: false
 
   /@zag-js/react@0.47.0(react-dom@18.2.0)(react@18.2.0):
@@ -4918,6 +4936,31 @@ packages:
     resolution: {integrity: sha512-0z8gCGulz+mpMRpt3wYrieyDyi2kGuV2r6Roht1m2af3WhZMSlDqNhLj6yA9zyaP/O0e1pNl3Qb9cJ0W9wu47g==}
     dependencies:
       proxy-compare: 2.6.0
+    dev: false
+
+  /@zag-js/tabbable@0.47.0:
+    resolution: {integrity: sha512-AUZ4zGHBKU4E+s46Jb0ImcsGMW3eqZ33juANi9ovRhOJTLFeJlmmLRIyzDPsbvj+9E8iUBBqBvvqwpknbRmPwA==}
+    dependencies:
+      '@zag-js/dom-query': 0.47.0
+    dev: false
+
+  /@zag-js/tabs@0.47.0:
+    resolution: {integrity: sha512-h7XVpwPQh+vtMIFCEwZrB0lVc8IpntvPgByfV1I5MPoMmCyFYpQ4j//DhsXpSBJRLSajDXsmAVTIubft1izIEA==}
+    dependencies:
+      '@zag-js/anatomy': 0.47.0
+      '@zag-js/core': 0.47.0
+      '@zag-js/dom-event': 0.47.0
+      '@zag-js/dom-query': 0.47.0
+      '@zag-js/element-rect': 0.47.0
+      '@zag-js/tabbable': 0.47.0
+      '@zag-js/types': 0.47.0
+      '@zag-js/utils': 0.47.0
+    dev: false
+
+  /@zag-js/text-selection@0.47.0:
+    resolution: {integrity: sha512-s02if9GtPhBSS+4qlJdEGTxxJ3ImjjYi3488xT/OpWpNj+tf+U3vvlu5oU8J3eg+GGOBC0SHCxXzIF00yBf6Dw==}
+    dependencies:
+      '@zag-js/dom-query': 0.47.0
     dev: false
 
   /@zag-js/types@0.47.0:
@@ -12534,4 +12577,3 @@ packages:
 
   /zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
-    dev: true
