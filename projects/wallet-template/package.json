@@ -73,6 +73,7 @@
     "@substrate/light-client-extension-helpers": "workspace:^",
     "@zag-js/clipboard": "^0.47.0",
     "@zag-js/react": "^0.47.0",
+    "@zag-js/tabs": "^0.47.0",
     "lucide-react": "^0.365.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -81,6 +82,7 @@
     "react-router-dom": "^6.22.3",
     "rxjs": "^7.8.1",
     "smoldot": "2.0.22",
-    "swr": "^2.2.5"
+    "swr": "^2.2.5",
+    "zod": "^3.22.4"
   }
 }
