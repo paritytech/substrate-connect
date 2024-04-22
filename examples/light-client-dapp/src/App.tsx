@@ -1,4 +1,5 @@
 import { Transfer, ConnectedAccount } from "./components"
+import { RelayChainNetworkSelector } from "./components/RelayChainSelector"
 import { UnstableProviderProvider } from "./hooks/useUnstableProvider"
 
 // FIXME: use dynamic chainId
@@ -13,6 +14,7 @@ export const App = () => {
         <header>
           <h1>Light Client DApp</h1>
         </header>
+        <RelayChainNetworkSelector />
         <ConnectedAccount />
         <Transfer />
       </main>
