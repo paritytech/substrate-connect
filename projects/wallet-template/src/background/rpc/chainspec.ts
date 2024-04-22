@@ -2,7 +2,10 @@ import { RpcMethodHandlers } from "@substrate/light-client-extension-helpers/uti
 import { z } from "zod"
 
 import { BackgroundRpcSpec } from "../types"
-import { wellKnownGenesisHashByChainId } from "../../constants"
+import {
+  wellKnownChainIdByGenesisHash,
+  wellKnownGenesisHashByChainId,
+} from "../../constants"
 import { Context } from "./types"
 
 const chainSpecSchema = z.object({
@@ -65,5 +68,18 @@ export const removeChainSpecHandler: RpcMethodHandlers<
   BackgroundRpcSpec,
   Context
 >["removeChainSpec"] = async ([genesisHash], { lightClientPageHelper }) => {
-  await lightClientPageHelper.deleteChain(genesisHash)
+  if (genesisHash && wellKnownChainIdByGenesisHash[genesisHash]) {
+    throw new Error("cannot remove well-known chain")
+  }
+
+  const chains = await lightClientPageHelper.getChains()
+  const parachains = chains
+    .filter((chain) => chain.relayChainGenesisHash === genesisHash)
+    .map((chain) => chain.genesisHash)
+
+  await Promise.all(
+    [...parachains, genesisHash].map((hash) =>
+      lightClientPageHelper.deleteChain(hash),
+    ),
+  )
 }
