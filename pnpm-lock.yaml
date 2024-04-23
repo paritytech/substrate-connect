@@ -337,8 +337,8 @@ importers:
         specifier: ^10.12.4
         version: 10.12.4
       '@polkadot/types':
-        specifier: ^10.12.6
-        version: 10.12.6
+        specifier: ^10.13.1
+        version: 10.13.1
       '@polkadot/util':
         specifier: ^12.5.1
         version: 12.6.2
@@ -3371,7 +3371,7 @@ packages:
     dependencies:
       '@polkadot/api': 10.12.6
       '@polkadot/rpc-provider': 10.12.6
-      '@polkadot/types': 10.12.6
+      '@polkadot/types': 10.13.1
       '@polkadot/util': 12.6.2
       '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
       '@polkadot/x-global': 12.6.2
