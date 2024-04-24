@@ -15,7 +15,7 @@ jobs:
         node-version: [18.x, 20.x]
 
     steps:
-    - uses: actions/checkout@v4.1.3
+    - uses: actions/checkout@v4.1.4
     - uses: ./.github/actions/turbo-build 
       with:
         node-version: ${{ matrix.node-version }}
@@ -25,7 +25,7 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.1.3
+    - uses: actions/checkout@v4.1.4
     - uses: ./.github/actions/turbo-build
     - run: pnpm test:flaky
       working-directory: ./packages/connect
@@ -35,7 +35,7 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.1.3
+    - uses: actions/checkout@v4.1.4
     - uses: ./.github/actions/turbo-build
     - name: Build extension with Manifest v3 for Chrome
       run: pnpm build:chrome
@@ -56,7 +56,7 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.1.3
+    - uses: actions/checkout@v4.1.4
     - uses: ./.github/actions/turbo-build
     - run: pnpm playwright:install
       working-directory: ./examples/light-client-extension-helpers-extension
@@ -74,7 +74,7 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.1.3
+    - uses: actions/checkout@v4.1.4
     - uses: ./.github/actions/turbo-build
     - name: Build extension with Manifest v3 for Chrome
       run: pnpm build:chrome
@@ -95,7 +95,7 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.3
+      - uses: actions/checkout@v4.1.4
       - uses: ./.github/actions/turbo-build
       - name: Get zombienet
         run: |
@@ -129,7 +129,7 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.3
+      - uses: actions/checkout@v4.1.4
       - uses: ./.github/actions/turbo-build
       - name: "@substrate/connect Publish"
         id: publish_connect
@@ -167,7 +167,7 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.3
+      - uses: actions/checkout@v4.1.4
       - uses: actions/upload-artifact@v4
         with:
           name: substrate-connect-extension-source-code
