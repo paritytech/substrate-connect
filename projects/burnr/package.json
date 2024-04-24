@@ -29,7 +29,7 @@
     "@polkadot/api-augment": "^10.13.1",
     "@polkadot/keyring": "^12.5.1",
     "@polkadot/react-identicon": "^3.6.6",
-    "@polkadot/rpc-provider": "^10.12.4",
+    "@polkadot/rpc-provider": "^11.0.1",
     "@polkadot/types": "^10.12.6",
     "@polkadot/util": "^12.5.1",
     "@polkadot/util-crypto": "^12.5.1",
