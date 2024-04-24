@@ -18,6 +18,7 @@ type Context = {
   disconnectAccount(): void
   provider?: UnstableWallet.Provider
   chainId: string
+  setChainId: (chainId: string) => void
 }
 
 const UnstableProvider = createContext<Context>(null!)
@@ -27,10 +28,10 @@ export const useUnstableProvider = () => useContext(UnstableProvider)
 
 export const UnstableProviderProvider = ({
   children,
-  chainId,
+  defaultChainId,
 }: {
   children: ReactNode
-  chainId: string
+  defaultChainId: string
 }) => {
   const { data: providerDetails } = useSWR("getProviders", getProviders)
   const [providerDetail, setProviderDetail] =
@@ -39,6 +40,8 @@ export const UnstableProviderProvider = ({
     () => `providerDetail.${providerDetail!.info.uuid}.provider`,
     () => providerDetail!.provider,
   )
+
+  const [chainId, setChainId_] = useState(defaultChainId)
   const { data: accounts } = useSWR(
     () =>
       `providerDetail.${providerDetail!.info.uuid}.provider.getAccounts(${chainId})`,
@@ -49,6 +52,10 @@ export const UnstableProviderProvider = ({
   const disconnectProviderDetail = () => {
     disconnectAccount()
     setProviderDetail(undefined)
+  }
+  const setChainId = (chainId: string) => {
+    setChainId_(chainId)
+    disconnectProviderDetail()
   }
 
   return (
@@ -64,6 +71,7 @@ export const UnstableProviderProvider = ({
         disconnectAccount,
         provider,
         chainId,
+        setChainId,
       }}
     >
       {children}
