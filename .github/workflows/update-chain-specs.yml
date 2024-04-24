@@ -21,7 +21,7 @@ jobs:
       fail-fast: false   # Don't automatically cancel the jobs of the other RPC nodes if one fails
 
     steps:
-    - uses: actions/checkout@v4.1.3
+    - uses: actions/checkout@v4.1.4
       with:
         persist-credentials: false
         path: repo
@@ -68,7 +68,7 @@ jobs:
     if: ${{ always() }} # Run this job even if one of the steps of download-spec has failed
     needs: download-spec
     steps:
-    - uses: actions/checkout@v4.1.3
+    - uses: actions/checkout@v4.1.4
       with:
         path: repo
         ref: main
