@@ -343,8 +343,8 @@ importers:
         specifier: ^10.12.4
         version: 10.12.4
       '@polkadot/types':
-        specifier: ^10.12.6
-        version: 10.12.6
+        specifier: ^11.0.2
+        version: 11.0.2
       '@polkadot/util':
         specifier: ^12.5.1
         version: 12.6.2
@@ -3380,7 +3380,7 @@ packages:
     dependencies:
       '@polkadot/api': 10.12.6
       '@polkadot/rpc-provider': 10.12.6
-      '@polkadot/types': 10.12.6
+      '@polkadot/types': 10.13.1
       '@polkadot/util': 12.6.2
       '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
       '@polkadot/x-global': 12.6.2
@@ -3604,6 +3604,16 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /@polkadot/types-augment@11.0.2:
+    resolution: {integrity: sha512-36C1LNWrd/IJu4y4xJFsklw7qmyBMnH16WLkIoma7W7tCkPyuvKpl9btTcNpY9UE0FLb3AEhO0shrz3KUANk/g==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/types': 11.0.2
+      '@polkadot/types-codec': 11.0.2
+      '@polkadot/util': 12.6.2
+      tslib: 2.6.2
+    dev: false
+
   /@polkadot/types-codec@10.12.4:
     resolution: {integrity: sha512-8SEwgQT+JfmI62C9MZisA/1oQFuQW1OySvZFZlSqkaoRooK+JMl7Sp9fnRhCuiHMiz08YO4lX16O+aAu0/bmmw==}
     engines: {node: '>=18'}
@@ -3624,6 +3634,15 @@ packages:
 
   /@polkadot/types-codec@10.13.1:
     resolution: {integrity: sha512-AiQ2Vv2lbZVxEdRCN8XSERiWlOWa2cTDLnpAId78EnCtx4HLKYQSd+Jk9Y4BgO35R79mchK4iG+w6gZ+ukG2bg==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/util': 12.6.2
+      '@polkadot/x-bigint': 12.6.2
+      tslib: 2.6.2
+    dev: false
+
+  /@polkadot/types-codec@11.0.2:
+    resolution: {integrity: sha512-OL7jM9JNzmRo+gLNIWllvyv3I4k+2dywKchC9gw/D5OCkFD+B5T3oHUw99zzER0C/r7/vTH9RM3w79yeW0UYKA==}
     engines: {node: '>=18'}
     dependencies:
       '@polkadot/util': 12.6.2
@@ -3654,6 +3673,15 @@ packages:
     engines: {node: '>=18'}
     dependencies:
       '@polkadot/types-codec': 10.13.1
+      '@polkadot/util': 12.6.2
+      tslib: 2.6.2
+    dev: false
+
+  /@polkadot/types-create@11.0.2:
+    resolution: {integrity: sha512-yx5Gef3QkbJjzbEGoyOxv74XslGEK1Uo0IC8qSmwHsqO2+QoAEU7uJ9QpSNxHAcRrjx1W3+MdJAsfXtnwOiOeQ==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/types-codec': 11.0.2
       '@polkadot/util': 12.6.2
       tslib: 2.6.2
     dev: false
@@ -3730,6 +3758,20 @@ packages:
       '@polkadot/types-augment': 10.13.1
       '@polkadot/types-codec': 10.13.1
       '@polkadot/types-create': 10.13.1
+      '@polkadot/util': 12.6.2
+      '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
+      rxjs: 7.8.1
+      tslib: 2.6.2
+    dev: false
+
+  /@polkadot/types@11.0.2:
+    resolution: {integrity: sha512-jYORxnbR9cOoLW2KI7OAbHlC8bQr+Anj34CqgtlEikRSZBlmmx1CLD08hZSnSHkVAQgqHB6SLfFIW5VTI2YaqA==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/keyring': 12.6.2(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)
+      '@polkadot/types-augment': 11.0.2
+      '@polkadot/types-codec': 11.0.2
+      '@polkadot/types-create': 11.0.2
       '@polkadot/util': 12.6.2
       '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
       rxjs: 7.8.1
