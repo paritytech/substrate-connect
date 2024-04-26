@@ -1,7 +1,7 @@
 import { useUnstableProvider } from "../hooks"
 import * as select from "@zag-js/select"
 import { useMachine, normalizeProps } from "@zag-js/react"
-import { useEffect, useId } from "react"
+import { useId } from "react"
 import {
   polkadot,
   ksmcc3,
@@ -9,6 +9,9 @@ import {
   polkadot_asset_hub,
   westend2_asset_hub,
   ksmcc3_asset_hub,
+  polkadot_bridge_hub,
+  westend2_bridge_hub,
+  ksmcc3_bridge_hub,
 } from "@substrate/connect-known-chains"
 import { useChains } from "../hooks/useChains"
 import { useToast } from "./Toast"
@@ -36,6 +39,41 @@ const chainData = [
     relayChainGenesisHash:
       "0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3",
   },
+  {
+    label: "Westend Asset Hub",
+    value: "0x67f9723393ef76214df0118c34bbbd3dbebc8ed46a10973a8c969d48fe7598c9",
+    chainSpec: westend2_asset_hub,
+    relayChainGenesisHash:
+      "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e",
+  },
+  {
+    label: "Kusama Asset Hub",
+    value: "0x48239ef607d7928874027a43a67689209727dfb3d3dc5e5b03a39bdc2eda771a",
+    chainSpec: ksmcc3_asset_hub,
+    relayChainGenesisHash:
+      "0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe",
+  },
+  {
+    label: "Polkadot Bridge Hub",
+    value: "0xdcf691b5a3fbe24adc99ddc959c0561b973e329b1aef4c4b22e7bb2ddecb4464",
+    chainSpec: polkadot_bridge_hub,
+    relayChainGenesisHash:
+      "0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3",
+  },
+  {
+    label: "Westend Bridge Hub",
+    value: "0x0441383e31d1266a92b4cb2ddd4c2e3661ac476996db7e5844c52433b81fe782",
+    chainSpec: westend2_bridge_hub,
+    relayChainGenesisHash:
+      "0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e",
+  },
+  {
+    label: "Kusama Bridge Hub",
+    value: "0x00dcb981df86429de8bbacf9803401f09485366c44efbf53af9ecfab03adc7e5",
+    chainSpec: ksmcc3_bridge_hub,
+    relayChainGenesisHash:
+      "0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe",
+  },
 ]
 
 export const ChainSelect = () => {
@@ -51,17 +89,14 @@ export const ChainSelect = () => {
     const chain = chainData.find((chain) => chain.value === chainId)!
     // TODO: error handling
     try {
-      const getChain = await provider?.getChain(
-        chain.chainSpec,
-        chain.relayChainGenesisHash,
-      )
+      await provider?.getChain(chain.chainSpec, chain.relayChainGenesisHash)
       toast.success({
-        title: "Chainspec added successfully",
+        title: "Chain Specification added successfully",
         placement: "bottom-end",
       })
     } catch (err) {
       toast.error({
-        title: "Failed to add chainspec",
+        title: "Failed to add Chain Specification",
         description: err instanceof Error ? err.message : undefined,
         placement: "bottom-end",
       })
