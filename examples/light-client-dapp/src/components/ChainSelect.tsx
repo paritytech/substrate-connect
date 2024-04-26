@@ -87,7 +87,6 @@ export const ChainSelect = () => {
 
   const onAddChainSpec = async () => {
     const chain = chainData.find((chain) => chain.value === chainId)!
-    // TODO: error handling
     try {
       await provider?.getChain(chain.chainSpec, chain.relayChainGenesisHash)
       toast.success({
