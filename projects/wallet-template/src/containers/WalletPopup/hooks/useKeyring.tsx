@@ -2,6 +2,7 @@ import { ReactNode, createContext, useContext } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import useSWR from "swr"
 import { rpc } from "../api"
+import { z } from "zod"
 
 type Context = {
   keyring: {
@@ -12,6 +13,11 @@ type Context = {
   lock(): Promise<void>
   refresh(): Promise<void>
 }
+
+const LocationStateSchema = z.object({
+  pathname: z.string(),
+  search: z.string().optional(),
+})
 
 const LockContext = createContext({} as Context)
 
@@ -32,7 +38,17 @@ export const KeyringProvider = ({ children }: { children?: ReactNode }) => {
   const unlock = async (password: string) => {
     await rpc.client.unlockKeyring(password)
     await refresh()
-    navigate(location.state?.from?.pathname || "/")
+
+    const locationResult = LocationStateSchema.safeParse(location.state)
+    if (locationResult.success) {
+      console.log("locationResult.data.pathName", locationResult.data.pathname)
+      navigate({
+        pathname: locationResult.data.pathname,
+        search: locationResult.data.search,
+      })
+    } else {
+      navigate("/")
+    }
   }
   const lock = async () => {
     await rpc.client.lockKeyring()
