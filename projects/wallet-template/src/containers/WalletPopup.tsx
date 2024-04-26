@@ -11,6 +11,7 @@ import {
   SwitchAccount,
   ImportAccounts,
   AccountDetails,
+  AddChainByUser,
 } from "./WalletPopup/pages"
 import { ProtectedRoute } from "./WalletPopup/components"
 import { KeyringProvider, useKeyring } from "./WalletPopup/hooks"
@@ -35,6 +36,7 @@ export const WalletPopup = () => (
               path="/sign-request/:signRequestId"
               element={<SignRequest />}
             />
+            <Route path="/add-chain-by-user" element={<AddChainByUser />} />
           </Route>
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/unlock-keyring" element={<UnlockKeyring />} />

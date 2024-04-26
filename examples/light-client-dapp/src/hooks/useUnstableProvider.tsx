@@ -55,7 +55,7 @@ export const UnstableProviderProvider = ({
   }
   const setChainId = (chainId: string) => {
     setChainId_(chainId)
-    disconnectProviderDetail()
+    disconnectAccount()
   }
 
   return (

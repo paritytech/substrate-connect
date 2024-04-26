@@ -117,7 +117,6 @@ type SelectAccountProps = {
 const SelectAccount = ({ onClose }: SelectAccountProps) => {
   const { accounts, connectAccount, disconnectProviderDetail } =
     useUnstableProvider()
-  if (!accounts) return null
   return (
     <article>
       <header>
@@ -125,7 +124,7 @@ const SelectAccount = ({ onClose }: SelectAccountProps) => {
         <h4>Select Account</h4>
       </header>
       <div>
-        {accounts.length > 0 ? (
+        {accounts && accounts.length > 0 ? (
           accounts.map((account) => (
             <div
               key={account.address}

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import { register } from "@substrate/light-client-extension-helpers/content-script"
 import { CHANNEL_ID } from "../constants"
 
