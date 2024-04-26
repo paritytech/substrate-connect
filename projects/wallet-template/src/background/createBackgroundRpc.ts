@@ -48,7 +48,13 @@ export const createBackgroundRpc = (
     const chains = await lightClientPageHelper.getChains()
     const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
     if (!chain) throw new Error("unknown chain")
-    return (await keyring.getAccounts(chainId)).map(({ publicKey }) => ({
+    return (
+      await keyring.getAccounts(
+        chain.relayChainGenesisHash
+          ? chain.relayChainGenesisHash
+          : chain.genesisHash,
+      )
+    ).map(({ publicKey }) => ({
       address: ss58Address(publicKey, chain.ss58Format),
     }))
   }

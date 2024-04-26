@@ -1,7 +1,7 @@
 import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
 
 import { UnstableWallet } from "@substrate/unstable-wallet-provider"
-import { distinct, filter, finalize, map, mergeMap } from "rxjs"
+import { combineLatest, distinct, filter, finalize, map, mergeMap } from "rxjs"
 import { getObservableClient } from "./getObservableClient"
 
 export type SystemAccount = {
@@ -24,23 +24,21 @@ export const systemAccount$ = (
 ) => {
   const client = getObservableClient(provider, chainId)
   const { metadata$, finalized$, unfollow, storage$ } = client.chainHead$()
-  return metadata$.pipe(
-    filter(Boolean),
-    mergeMap((metadata) => {
+  return combineLatest([
+    metadata$.pipe(filter(Boolean)),
+    finalized$.pipe(filter(Boolean)),
+  ]).pipe(
+    mergeMap(([metadata, blockInfo]) => {
       const storageAccount = getDynamicBuilder(metadata).buildStorage(
         "System",
         "Account",
       )
-      return finalized$.pipe(
-        mergeMap((blockInfo) =>
-          storage$(blockInfo.hash, "value", () =>
-            storageAccount.enc(address),
-          ).pipe(
-            filter(Boolean),
-            distinct(),
-            map((value) => storageAccount.dec(value) as SystemAccount),
-          ),
-        ),
+      return storage$(blockInfo.hash, "value", () =>
+        storageAccount.enc(address),
+      ).pipe(
+        filter(Boolean),
+        distinct(),
+        map((value) => storageAccount.dec(value) as SystemAccount),
       )
     }),
     finalize(unfollow),
