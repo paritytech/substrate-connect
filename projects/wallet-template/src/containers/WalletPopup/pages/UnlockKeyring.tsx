@@ -14,6 +14,7 @@ export const UnlockKeyring = () => {
     formState: { isSubmitting, errors },
   } = useForm<FormFields>()
   const onSubmit: SubmitHandler<FormFields> = ({ password }) => unlock(password)
+
   return (
     <div>
       <div className="my-4 h-80 flex justify-center items-center">
