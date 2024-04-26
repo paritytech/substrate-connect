@@ -64,7 +64,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   }
 })
 
-addOnAddChainByUserListener(async (inputChain, tabId) => {
+addOnAddChainByUserListener(async (inputChain) => {
   const window = await chrome.windows.create({
     focused: true,
     height: 700,

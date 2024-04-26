@@ -1,6 +1,6 @@
 import { Clipboard, ArrowRightCircle } from "lucide-react"
 import { useEffect, useState } from "react"
-import { useNavigate, useSearchParams } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 import ReactJson from "react-json-view"
 import { z } from "zod"
 import { rpc } from "../api"
@@ -30,10 +30,6 @@ export const AddChainByUser: React.FC = () => {
   const params = searchParams.get("params")
 
   const [inputChain, setInputChain] = useState<InputChain>()
-
-  useEffect(() => {
-    console.log("searchParams", searchParams)
-  }, [searchParams])
 
   useEffect(() => {
     if (!params) {
