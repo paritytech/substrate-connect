@@ -553,8 +553,8 @@ importers:
         specifier: ^0.47.0
         version: 0.47.0(react-dom@18.2.0)(react@18.2.0)
       '@zag-js/tabs':
-        specifier: ^0.47.0
-        version: 0.47.0
+        specifier: ^0.48.0
+        version: 0.48.0
       lucide-react:
         specifier: ^0.365.0
         version: 0.365.0(react@18.2.0)
@@ -5003,14 +5003,6 @@ packages:
       '@zag-js/utils': 0.48.0
     dev: false
 
-  /@zag-js/dom-event@0.47.0:
-    resolution: {integrity: sha512-QUBfaWMe86i6QZ3KjlLlYVkp/sbd6k/I0bdJZTFQ7jfhdIfNGnlu3tP/Oyz16ddzvC4Xky2jCtIvBh+oqDq1YA==}
-    dependencies:
-      '@zag-js/dom-query': 0.47.0
-      '@zag-js/text-selection': 0.47.0
-      '@zag-js/types': 0.47.0
-    dev: false
-
   /@zag-js/dom-event@0.48.0:
     resolution: {integrity: sha512-uE2S9yYyUnWmYjzebj5egTR/tLBOIQUGEpa4jaSDql+HVeJQnx4RI/HoT4ocD19Ne5i6uc6qPg1IJPIxXoGWhQ==}
     dependencies:
@@ -5027,8 +5019,8 @@ packages:
     resolution: {integrity: sha512-pUM+BHOZIWPtHgqEqBXN+1YJzhYhn6F8er3Rfr27chlgE+76bLkT8k7FRnp2TQW30uur9TqM2RTdWlvpw7Wjrw==}
     dev: false
 
-  /@zag-js/element-rect@0.47.0:
-    resolution: {integrity: sha512-WWCRbrw/Z6l5NhMiqdOUhfeXDTyjl5m3vGcEsTVrAKYdsl81O0aTaNTgUU+UFZtYthYZ4AsDk6HNNbIlahTF8A==}
+  /@zag-js/element-rect@0.48.0:
+    resolution: {integrity: sha512-voz6vxDvZz6Jlr9YnwbKWhO3MvLUhBoij7NH/gjXcyy7x3gZ9kFrDxvAulysagN0K08woSZb9ddwGNksaL8GDQ==}
     dev: false
 
   /@zag-js/form-utils@0.48.0:
@@ -5107,35 +5099,23 @@ packages:
       proxy-compare: 2.6.0
     dev: false
 
-  /@zag-js/tabbable@0.47.0:
-    resolution: {integrity: sha512-AUZ4zGHBKU4E+s46Jb0ImcsGMW3eqZ33juANi9ovRhOJTLFeJlmmLRIyzDPsbvj+9E8iUBBqBvvqwpknbRmPwA==}
-    dependencies:
-      '@zag-js/dom-query': 0.47.0
-    dev: false
-
   /@zag-js/tabbable@0.48.0:
     resolution: {integrity: sha512-3Dqx/ZT3psDsJd5g5RFfp1DNjsAdTsbW2C2JsTIQrc4/VzRf6YwwWVaeEIbUaHd849JtCykAwePg/gYgif7Hzg==}
     dependencies:
       '@zag-js/dom-query': 0.48.0
     dev: false
 
-  /@zag-js/tabs@0.47.0:
-    resolution: {integrity: sha512-h7XVpwPQh+vtMIFCEwZrB0lVc8IpntvPgByfV1I5MPoMmCyFYpQ4j//DhsXpSBJRLSajDXsmAVTIubft1izIEA==}
+  /@zag-js/tabs@0.48.0:
+    resolution: {integrity: sha512-RPJqVfllZFIO16xTF384d1VZMXeb9W83hewqpHh/zEhg9EvptyToSpwjYed4xBdLA2uXt/js5EI8fnbveDH1cg==}
     dependencies:
-      '@zag-js/anatomy': 0.47.0
-      '@zag-js/core': 0.47.0
-      '@zag-js/dom-event': 0.47.0
-      '@zag-js/dom-query': 0.47.0
-      '@zag-js/element-rect': 0.47.0
-      '@zag-js/tabbable': 0.47.0
-      '@zag-js/types': 0.47.0
-      '@zag-js/utils': 0.47.0
-    dev: false
-
-  /@zag-js/text-selection@0.47.0:
-    resolution: {integrity: sha512-s02if9GtPhBSS+4qlJdEGTxxJ3ImjjYi3488xT/OpWpNj+tf+U3vvlu5oU8J3eg+GGOBC0SHCxXzIF00yBf6Dw==}
-    dependencies:
-      '@zag-js/dom-query': 0.47.0
+      '@zag-js/anatomy': 0.48.0
+      '@zag-js/core': 0.48.0
+      '@zag-js/dom-event': 0.48.0
+      '@zag-js/dom-query': 0.48.0
+      '@zag-js/element-rect': 0.48.0
+      '@zag-js/tabbable': 0.48.0
+      '@zag-js/types': 0.48.0
+      '@zag-js/utils': 0.48.0
     dev: false
 
   /@zag-js/text-selection@0.48.0:
