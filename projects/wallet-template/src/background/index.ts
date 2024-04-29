@@ -3,6 +3,7 @@ import { register } from "@substrate/light-client-extension-helpers/background"
 import { createBackgroundRpc } from "./createBackgroundRpc"
 import * as storage from "./storage"
 import type { Account } from "./types"
+import { startHeartbeat } from "./heartbeat"
 
 const { lightClientPageHelper, addOnAddChainByUserListener } = register({
   smoldotClient: start({ maxLogLevel: 4 }),
@@ -95,3 +96,5 @@ addOnAddChainByUserListener(async (inputChain) => {
     throw new Error("User rejected")
   }
 })
+
+startHeartbeat()
