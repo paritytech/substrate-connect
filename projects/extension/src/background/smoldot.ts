@@ -10,6 +10,7 @@ import {
   Schedule,
   SynchronizedRef,
   pipe,
+  Duration,
 } from "effect"
 import {
   AlreadyDestroyedError,
@@ -45,9 +46,19 @@ const parseChainSpec = (chainSpec: string) => {
   })
 }
 
+type StartOptions = ClientOptions & {
+  monitoring?: {
+    restartCooldown?: Duration.DurationInput
+    pollingInterval?: Duration.DurationInput
+  }
+}
+
 export const start = (
-  options: ClientOptions,
+  options: StartOptions,
 ): Effect.Effect<Client, never, never> => {
+  const restartCooldown = options.monitoring?.restartCooldown ?? "10 seconds"
+  const pollingInterval = options.monitoring?.pollingInterval ?? "5 seconds"
+
   return Effect.gen(function* (_) {
     const chainMonitorsRef = yield* SynchronizedRef.make(
       HashMap.empty<
@@ -72,7 +83,7 @@ export const start = (
       Effect.andThen(SynchronizedRef.make),
     )
 
-    const restartCooldown = yield* SynchronizedRef.make(false)
+    const isRestartingRef = yield* SynchronizedRef.make(false)
     const restart = SynchronizedRef.updateEffect(clientRef, (oldClient) =>
       Effect.gen(function* (_) {
         yield* Console.warn("restarting smoldot")
@@ -115,15 +126,15 @@ export const start = (
     )
 
     const tryRestart = SynchronizedRef.updateEffect(
-      restartCooldown,
+      isRestartingRef,
       (isRestarting) =>
         Effect.gen(function* (_) {
           if (isRestarting) return true
 
           yield* Fiber.join(yield* restart)
           yield* _(
-            Effect.sleep("10 seconds"),
-            Effect.andThen(() => SynchronizedRef.set(restartCooldown, false)),
+            Effect.sleep(restartCooldown),
+            Effect.andThen(() => SynchronizedRef.set(isRestartingRef, false)),
           )
 
           return true
@@ -221,7 +232,9 @@ export const start = (
           ),
           Effect.andThen(() => Console.debug(`heartbeat: ${options.name}`)),
         ).pipe(
-          Effect.repeat(Schedule.addDelay(Schedule.forever, () => "5 seconds")),
+          Effect.repeat(
+            Schedule.addDelay(Schedule.forever, () => pollingInterval),
+          ),
         )
       })
 
