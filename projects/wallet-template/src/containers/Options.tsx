@@ -11,6 +11,7 @@ import {
   Bootnodes,
 } from "../components"
 import { ChainSpecs } from "./WalletPopup/pages/Options/Chainspecs"
+import { Link } from "react-router-dom"
 
 type MenuItemTypes = "item" | "title" | "icon"
 
@@ -102,24 +103,34 @@ export const Options: FunctionComponent = () => {
         </div>
         <ul className="relative px-1 pt-10">
           <li className="relative">
-            <a
+            <Link
+              to=""
               className={cName("item", menu, 0)}
-              href="#!"
               onClick={() => setMenu(0)}
             >
               <MdOutlineNetworkCell className={cName("icon", menu, 0)} />
               <span className={cName("title", menu, 0)}>Networks</span>
-            </a>
+            </Link>
           </li>
           <li className="relative">
-            <a
+            <Link
+              to=""
               className={cName("item", menu, 1)}
-              href="#!"
               onClick={() => setMenu(1)}
             >
               <MdOutlineOnlinePrediction className={cName("icon", menu, 1)} />
               <span className={cName("title", menu, 1)}>Bootnodes</span>
-            </a>
+            </Link>
+          </li>
+          <li className="relative">
+            <Link
+              to=""
+              className={cName("item", menu, 2)}
+              onClick={() => setMenu(2)}
+            >
+              <MdOutlineOnlinePrediction className={cName("icon", menu, 2)} />
+              <span className={cName("title", menu, 2)}>Chainspecs</span>
+            </Link>
           </li>
           <li className="relative">
             <a

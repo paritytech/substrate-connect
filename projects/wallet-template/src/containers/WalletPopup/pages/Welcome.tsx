@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form"
 
 import { rpc } from "../api"
 import { useKeyring } from "../hooks"
+import { Layout } from "../../../components/Layout"
 
 type FormFields = {
   password: string
@@ -25,7 +26,7 @@ export const Welcome = () => {
     reset()
   }
   return (
-    <div>
+    <Layout>
       {isSubmitSuccessful && <Navigate to="/accounts" replace={true} />}
       <div className="my-4">
         <h1 className="text-3xl font-bold text-center">Welcome</h1>
@@ -95,6 +96,6 @@ export const Welcome = () => {
           <div className="my-4">Password created successfully</div>
         )}
       </form>
-    </div>
+    </Layout>
   )
 }
