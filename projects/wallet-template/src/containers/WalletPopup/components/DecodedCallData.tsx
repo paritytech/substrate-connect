@@ -2,7 +2,7 @@ import type {
   ComplexDecoded,
   Decoded,
   PrimitiveDecoded,
-} from "@polkadot-api/metadata-builders"
+} from "@polkadot-api/view-builder"
 import { toHex } from "@polkadot-api/utils"
 import useSWR from "swr"
 import { decodeCallData } from "../api"
@@ -119,11 +119,10 @@ const DecodedComplexValue = ({ value }: DecodedComplexProps) => {
       )
     }
     case "Option": {
-      // FIXME: What Option variant is value (Some or None)?
-      return value.value.codec === "_void" ? (
-        <div>None</div>
-      ) : (
+      return value.value ? (
         <DecodedValue value={value.value} />
+      ) : (
+        <div>None</div>
       )
     }
     case "Result": {

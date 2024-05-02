@@ -1,5 +1,6 @@
 import { useForm, SubmitHandler } from "react-hook-form"
 import { rpc } from "../api"
+import { Layout } from "../../../components/Layout"
 
 type FormFields = {
   currentPassword: string
@@ -24,7 +25,7 @@ export const ChangePassword = () => {
     reset()
   }
   return (
-    <div>
+    <Layout>
       <div className="my-4">
         <h1 className="text-3xl font-bold text-center">Change Password</h1>
       </div>
@@ -107,6 +108,6 @@ export const ChangePassword = () => {
           <div className="my-4">Password updated successfully</div>
         )}
       </form>
-    </div>
+    </Layout>
   )
 }

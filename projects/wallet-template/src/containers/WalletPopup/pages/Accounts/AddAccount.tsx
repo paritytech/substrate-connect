@@ -14,6 +14,7 @@ import { StepIndicator } from "../../components"
 import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
 import useSWR from "swr"
 import { bytesToHex } from "@noble/ciphers/utils"
+import { Layout } from "../../../../components/Layout"
 
 type FormFields = {
   keysetName: string
@@ -221,42 +222,44 @@ export const AddAccount = () => {
   }
 
   return (
-    <main className="max-w-xl p-6 mx-auto">
-      <h1 className="mb-4 text-2xl font-bold">Create A New Keyset</h1>
-      <StepIndicator currentStep={currentStep} steps={3} />
-      <form className="mt-4" onSubmit={handleSubmit(onSubmit)}>
-        <StepContent />
-        <div className="flex justify-between mt-6">
-          {currentStep > 1 && (
-            <button
-              type="button"
-              onClick={prevStep}
-              className="px-4 py-2 text-gray-800 bg-gray-200 rounded hover:bg-gray-300"
-            >
-              Back
-            </button>
-          )}
-          {currentStep < 3 ? (
-            <button
-              type="button"
-              onClick={nextStep}
-              className="flex items-center px-4 py-2 text-white bg-teal-500 rounded hover:bg-teal-600"
-              disabled={areCryptoKeysLoading || isSubmitting}
-            >
-              Next <ArrowRight size="16" className="ml-2" />
-            </button>
-          ) : (
-            <button
-              type="submit"
-              className="flex items-center px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
-              disabled={isSubmitting}
-              onClick={() => setIsSubmitted(true)}
-            >
-              Submit <CheckCircle size="16" className="ml-2" />
-            </button>
-          )}
-        </div>
-      </form>
-    </main>
+    <Layout>
+      <div className="max-w-xl p-6 mx-auto">
+        <h1 className="mb-4 text-2xl font-bold">Create A New Keyset</h1>
+        <StepIndicator currentStep={currentStep} steps={3} />
+        <form className="mt-4" onSubmit={handleSubmit(onSubmit)}>
+          <StepContent />
+          <div className="flex justify-between mt-6">
+            {currentStep > 1 && (
+              <button
+                type="button"
+                onClick={prevStep}
+                className="px-4 py-2 text-gray-800 bg-gray-200 rounded hover:bg-gray-300"
+              >
+                Back
+              </button>
+            )}
+            {currentStep < 3 ? (
+              <button
+                type="button"
+                onClick={nextStep}
+                className="flex items-center px-4 py-2 text-white bg-teal-500 rounded hover:bg-teal-600"
+                disabled={areCryptoKeysLoading || isSubmitting}
+              >
+                Next <ArrowRight size="16" className="ml-2" />
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="flex items-center px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
+                disabled={isSubmitting}
+                onClick={() => setIsSubmitted(true)}
+              >
+                Submit <CheckCircle size="16" className="ml-2" />
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
+    </Layout>
   )
 }

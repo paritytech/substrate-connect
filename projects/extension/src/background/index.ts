@@ -1,5 +1,6 @@
 import { start } from "smoldot"
 import { register } from "@substrate/light-client-extension-helpers/background"
+import { startHeartbeat } from "./heartbeat"
 
 register({
   smoldotClient: start({ maxLogLevel: 4 }),
@@ -22,3 +23,5 @@ register({
       ),
     ),
 })
+
+startHeartbeat()

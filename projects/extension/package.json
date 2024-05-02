@@ -1,6 +1,6 @@
 {
   "name": "@substrate/extension",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Browser extension to manage substrate-based blockchain light clients",
   "main": "dist/src/index.js",
   "author": "Parity Technologies",
@@ -36,7 +36,7 @@
   },
   "keywords": [],
   "devDependencies": {
-    "@playwright/test": "^1.43.0",
+    "@playwright/test": "^1.43.1",
     "@vitejs/plugin-react-swc": "^3.6.0",
     "autoprefixer": "^10.4.19",
     "concurrently": "^8.2.2",
@@ -47,7 +47,7 @@
     "web-ext": "^7.11.0"
   },
   "dependencies": {
-    "@polkadot-api/client": "0.0.1",
+    "@polkadot-api/observable-client": "0.1.1",
     "@polkadot-api/substrate-client": "0.0.1",
     "@react-rxjs/core": "^0.10.7",
     "@react-rxjs/utils": "^0.9.7",

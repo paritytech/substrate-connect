@@ -13,6 +13,7 @@ import { rpc } from "../../api"
 import { IconButton } from "../../../../components"
 import { CryptoKey, KeystoreAccount } from "../../../../background/types"
 import useSWR from "swr"
+import { Layout } from "../../../../components/Layout"
 
 type AccountItemProps = {
   bgColor: string
@@ -46,7 +47,11 @@ const AccountItem: React.FC<AccountItemProps> = ({
           <div className="font-medium text-gray-500">{ellipsisText}</div>
         )}
       </div>
-      <ChevronRight className="text-gray-400" />
+      <Link to={`/accounts/${ss58Address}`}>
+        <button type="button">
+          <ChevronRight className="text-gray-400" />
+        </button>
+      </Link>
     </div>
   )
 }
@@ -150,36 +155,40 @@ export const Accounts = () => {
   }
 
   return (
-    <main className="max-w-xl flex flex-col">
-      <div className="bg-white px-4 py-2 flex items-center justify-between">
-        <IconButton onClick={reset}>
-          <RotateCcw />
-        </IconButton>
-        <div className="flex items-center">
-          <IconButton disabled={!cryptoKeys || cryptoKeys.length === 0}>
-            <Link to="/accounts/import">
-              <Import />
-            </Link>
+    <Layout>
+      <div className="max-w-xl flex flex-col">
+        <div className="bg-white px-4 py-2 flex items-center justify-between">
+          <IconButton onClick={reset}>
+            <RotateCcw />
           </IconButton>
-          <IconButton>
-            <Link to="/accounts/add">
-              <Plus />
-            </Link>
-          </IconButton>
-          <IconButton disabled={!cryptoKey}>
-            <Link
-              to="/accounts/switch"
-              className={!cryptoKey ? "pointer-events-none" : ""}
-            >
-              <ArrowRightLeft />
-            </Link>
-          </IconButton>
-          <IconButton>
-            <Settings />
-          </IconButton>
+          <div className="flex items-center">
+            <IconButton disabled={!cryptoKeys || cryptoKeys.length === 0}>
+              <Link to="/accounts/import">
+                <Import />
+              </Link>
+            </IconButton>
+            <IconButton>
+              <Link to="/accounts/add">
+                <Plus />
+              </Link>
+            </IconButton>
+            <IconButton disabled={!cryptoKey}>
+              <Link
+                to="/accounts/switch"
+                className={!cryptoKey ? "pointer-events-none" : ""}
+              >
+                <ArrowRightLeft />
+              </Link>
+            </IconButton>
+            <IconButton>
+              <Link to="/accounts/options" target="_blank">
+                <Settings />
+              </Link>
+            </IconButton>
+          </div>
         </div>
+        {cryptoKey ? <AccountsList cryptoKey={cryptoKey} /> : <EmptyAccounts />}
       </div>
-      {cryptoKey ? <AccountsList cryptoKey={cryptoKey} /> : <EmptyAccounts />}
-    </main>
+    </Layout>
   )
 }

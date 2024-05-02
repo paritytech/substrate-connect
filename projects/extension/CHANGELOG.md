@@ -4,6 +4,13 @@
 
 ### Changed
 
+## 0.4.4 - 2024-04-24
+
+### Changed
+
+- Update chainspecs
+- Change usage of @polkadot-api/client 0.0.1 to @polkadot-api/observable-client 0.0.1 [#2118](https://github.com/paritytech/substrate-connect/pull/2118)
+
 ## 0.4.3 - 2024-04-10
 
 ### Changed

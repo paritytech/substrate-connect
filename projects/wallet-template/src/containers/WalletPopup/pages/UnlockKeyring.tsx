@@ -1,5 +1,6 @@
 import { useForm, SubmitHandler } from "react-hook-form"
 import { useKeyring } from "../hooks"
+import { Layout } from "../../../components/Layout"
 
 type FormFields = {
   password: string
@@ -14,8 +15,9 @@ export const UnlockKeyring = () => {
     formState: { isSubmitting, errors },
   } = useForm<FormFields>()
   const onSubmit: SubmitHandler<FormFields> = ({ password }) => unlock(password)
+
   return (
-    <div>
+    <Layout>
       <div className="my-4 h-80 flex justify-center items-center">
         <h1 className="text-3xl font-bold text-center">Unlock Wallet</h1>
       </div>
@@ -48,6 +50,6 @@ export const UnlockKeyring = () => {
           </button>
         </div>
       </form>
-    </div>
+    </Layout>
   )
 }

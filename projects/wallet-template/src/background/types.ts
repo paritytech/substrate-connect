@@ -1,8 +1,20 @@
-import type {
-  UserSignedExtensions,
-  UserSignedExtensionName,
-} from "@polkadot-api/tx-helper"
 import type { Injected } from "@polkadot/extension-inject/types"
+import {
+  UserSignedExtensionName,
+  UserSignedExtensions,
+} from "../types/UserSignedExtension"
+
+/**
+ * 1:1 representation of chain spec JSON format with addition fields
+ */
+export type ChainSpec = {
+  name: string
+  id: string
+  genesisHash: string
+  relay_chain?: string
+  isWellKnown: boolean
+  raw: string
+}
 
 export type Account = {
   address: string
@@ -88,4 +100,8 @@ export type BackgroundRpcSpec = {
   removeCryptoKey(name: string): Promise<void>
   clearCryptoKeys(): Promise<void>
   getKeyringState(): Promise<KeyringState>
+
+  getChainSpecs(): Promise<ChainSpec[]>
+  addChainSpec(chainSpec: string): Promise<void>
+  removeChainSpec(genesisHash: string): Promise<void>
 }

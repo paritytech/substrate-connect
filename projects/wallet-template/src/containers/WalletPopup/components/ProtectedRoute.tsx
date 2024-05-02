@@ -13,7 +13,11 @@ export const ProtectedRoute = ({ children }: { children?: ReactNode }) => {
     <Navigate
       to="/unlock-keyring"
       replace
-      state={{ from: location, pathname: location.pathname }}
+      state={{
+        from: location,
+        pathname: location.pathname,
+        search: location.search,
+      }}
     />
   ) : (
     children ?? <Outlet />

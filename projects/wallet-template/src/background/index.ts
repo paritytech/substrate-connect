@@ -3,8 +3,9 @@ import { register } from "@substrate/light-client-extension-helpers/background"
 import { createBackgroundRpc } from "./createBackgroundRpc"
 import * as storage from "./storage"
 import type { Account } from "./types"
+import { startHeartbeat } from "./heartbeat"
 
-const { lightClientPageHelper } = register({
+const { lightClientPageHelper, addOnAddChainByUserListener } = register({
   smoldotClient: start({ maxLogLevel: 4 }),
   getWellKnownChainSpecs: () =>
     // Note that this list doesn't necessarily always have to match the list of well-known
@@ -50,6 +51,7 @@ chrome.runtime.onConnect.addListener((port) => {
       notifyOnAccountsChanged,
     }),
   )
+
   port.onDisconnect.addListener(subscribeOnAccountsChanged(rpc))
 })
 
@@ -62,3 +64,37 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     })
   }
 })
+
+addOnAddChainByUserListener(async (inputChain) => {
+  const window = await chrome.windows.create({
+    focused: true,
+    height: 700,
+    left: 150,
+    top: 150,
+    type: "popup",
+    url: chrome.runtime.getURL(
+      `ui/assets/wallet-popup.html#/add-chain-by-user?params=${encodeURIComponent(JSON.stringify(inputChain))}`,
+    ),
+    width: 560,
+  })
+  const onWindowsRemoved = (windowId: number) => {
+    if (windowId !== window.id) return
+    resolveWindowClosed()
+  }
+  chrome.windows.onRemoved.addListener(onWindowsRemoved)
+
+  const { promise: windowClosedPromise, resolve: resolveWindowClosed } =
+    Promise.withResolvers<void>()
+
+  await windowClosedPromise
+
+  const persistedChain = (await lightClientPageHelper.getChains()).find(
+    (chain) => chain.genesisHash === inputChain.genesisHash,
+  )
+
+  if (!persistedChain) {
+    throw new Error("User rejected")
+  }
+})
+
+startHeartbeat()
