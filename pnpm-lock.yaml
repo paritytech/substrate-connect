@@ -425,9 +425,9 @@ importers:
 
   projects/extension:
     dependencies:
-      '@effect/experimental':
-        specifier: ^0.15.14
-        version: 0.15.14(@effect/platform@0.51.0(@effect/schema@0.66.12(effect@3.1.1)(fast-check@3.18.0))(effect@3.1.1)(ws@8.16.0))(@effect/schema@0.66.12(effect@3.1.1)(fast-check@3.18.0))(effect@3.1.1)(ws@8.16.0)
+      '@effect/platform-browser':
+        specifier: ^0.33.12
+        version: 0.33.12(@effect/platform@0.52.2(@effect/schema@0.66.12(effect@3.1.1)(fast-check@3.18.0))(effect@3.1.1)(ws@8.16.0))(effect@3.1.1)
       '@polkadot-api/json-rpc-provider':
         specifier: 0.0.1
         version: 0.0.1
@@ -1425,31 +1425,17 @@ packages:
     engines: {node: '>= 0.10.4'}
     hasBin: true
 
-  '@effect/experimental@0.15.14':
-    resolution: {integrity: sha512-w0E0DE5Tj6Pq6dQgKU3qcdkA/1HSqEpA+uFsS+jxjtLBu/7/FJ8U6qpZ3Hscnl7JMz/MWheFZZK3RDTiwpX1VQ==}
+  '@effect/platform-browser@0.33.12':
+    resolution: {integrity: sha512-rOsKN8dDiSFj51sLyYwWo/FCb2HBveG1Z5RXgwBX5gRFYq0AwJHQpt4mT+pyVzhnutIiFwIQZA6x2/rpbAT9Ug==}
     peerDependencies:
-      '@effect/platform': ^0.51.0
-      '@effect/platform-node': ^0.48.0
-      '@effect/schema': ^0.66.12
-      effect: ^3.1.0
-      ioredis: ^5
-      lmdb: ^3
-      ws: ^8
-    peerDependenciesMeta:
-      '@effect/platform-node':
-        optional: true
-      ioredis:
-        optional: true
-      lmdb:
-        optional: true
-      ws:
-        optional: true
+      '@effect/platform': ^0.52.2
+      effect: ^3.1.2
 
-  '@effect/platform@0.51.0':
-    resolution: {integrity: sha512-j5kV5jNsMYjBARYiCYdxuLe5FVqnOpYo8Ox3K0QupmsyUS0bvZ9v+xdhc29e+1Rn7Vtm1YlBsoY8Gi7HZPJAiw==}
+  '@effect/platform@0.52.2':
+    resolution: {integrity: sha512-1XOyE10gJdL5EsV8L29gpDQp1BbbZ3MPJOQD3vy+r02LfPprtGLm+xG2mpaBc60p2QlxpC4ZRXsXiA89LsYu+w==}
     peerDependencies:
-      '@effect/schema': ^0.66.12
-      effect: ^3.1.0
+      '@effect/schema': ^0.66.14
+      effect: ^3.1.2
 
   '@effect/schema@0.66.12':
     resolution: {integrity: sha512-14X3D2FxTFDtll41MWw5OkLQCWqcs6pLYhs38oRK1o7rQ9gM2fdL4sw/gJu4dayAqv122GMgoIEOrzO5PyBuYA==}
@@ -1904,36 +1890,6 @@ packages:
 
   '@mdn/browser-compat-data@5.5.7':
     resolution: {integrity: sha512-DoHTZ/TjtNfUu9eiqJd+x3IcCQrhS+yOYU436TKUnlE36jZwNbK535D1CmTsSYdi/UcdCWNm5KRQZ9g1tlZCPw==}
-
-  '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.2':
-    resolution: {integrity: sha512-9bfjwDxIDWmmOKusUcqdS4Rw+SETlp9Dy39Xui9BEGEk19dDwH0jhipwFzEff/pFg95NKymc6TOTbRKcWeRqyQ==}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.2':
-    resolution: {integrity: sha512-lwriRAHm1Yg4iDf23Oxm9n/t5Zpw1lVnxYU3HnJPTi2lJRkKTrps1KVgvL6m7WvmhYVt/FIsssWay+k45QHeuw==}
-    cpu: [x64]
-    os: [darwin]
-
-  '@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.2':
-    resolution: {integrity: sha512-FU20Bo66/f7He9Fp9sP2zaJ1Q8L9uLPZQDub/WlUip78JlPeMbVL8546HbZfcW9LNciEXc8d+tThSJjSC+tmsg==}
-    cpu: [arm64]
-    os: [linux]
-
-  '@msgpackr-extract/msgpackr-extract-linux-arm@3.0.2':
-    resolution: {integrity: sha512-MOI9Dlfrpi2Cuc7i5dXdxPbFIgbDBGgKR5F2yWEa6FVEtSWncfVNKW5AKjImAQ6CZlBK9tympdsZJ2xThBiWWA==}
-    cpu: [arm]
-    os: [linux]
-
-  '@msgpackr-extract/msgpackr-extract-linux-x64@3.0.2':
-    resolution: {integrity: sha512-gsWNDCklNy7Ajk0vBBf9jEx04RUxuDQfBse918Ww+Qb9HCPoGzS+XJTLe96iN3BVK7grnLiYghP/M4L8VsaHeA==}
-    cpu: [x64]
-    os: [linux]
-
-  '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.2':
-    resolution: {integrity: sha512-O+6Gs8UeDbyFpbSh2CPEz/UOrrdWPTBYNblZK5CxxLisYt4kGX3Sc+czffFonyjiGSq3jWLwJS/CCJc7tBr4sQ==}
-    cpu: [x64]
-    os: [win32]
 
   '@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1':
     resolution: {integrity: sha512-54/JRvkLIzzDWshCWfuhadfrfZVPiElY8Fcgmg1HroEly/EDSszzhBAsarCux+D/kOslTRquNzuyGSmUSTTHGg==}
@@ -4192,8 +4148,8 @@ packages:
     resolution: {integrity: sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==}
     engines: {node: '>=8'}
 
-  find-my-way-ts@0.1.1:
-    resolution: {integrity: sha512-nXUdq29JRQ1tYa1/n+DHTVChMARJHz+gi7sDZibwQukzHP7Hrr6s+sxKbaIM8xB3LzhSBJy5yLb0JhIUmHmOiA==}
+  find-my-way-ts@0.1.2:
+    resolution: {integrity: sha512-AWsH49RGcyayzzxSAkwQKC1bToY5ForAfNreix88slo7wijg1wwTtCPvUUoVm/qhIY3UVSHBKApw8mOGPxsvSg==}
 
   find-up@5.0.0:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
@@ -5280,19 +5236,12 @@ packages:
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
-  msgpackr-extract@3.0.2:
-    resolution: {integrity: sha512-SdzXp4kD/Qf8agZ9+iTu6eql0m3kWm1A2y1hkpTeVNENutaB0BwHlSvAIaMxwntmRUAUjon2V4L8Z/njd0Ct8A==}
-    hasBin: true
-
-  msgpackr@1.10.1:
-    resolution: {integrity: sha512-r5VRLv9qouXuLiIBrLpl2d5ZvPt8svdQTl5/vMvE4nzDMyEX4sgW5yWhuBBj5UmgwOTWj8CIdSXn5sAfsHAWIQ==}
-
   multimatch@6.0.0:
     resolution: {integrity: sha512-I7tSVxHGPlmPN/enE3mS1aOSo6bWBfls+3HmuEeCUBCE7gWnm3cBXCBkpurzFjVRwC6Kld8lLaZ1Iv5vOcjvcQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  multipasta@0.2.0:
-    resolution: {integrity: sha512-MNAym1D9GTpY0/CKYJFDmaJ3TfhblfsQyyipCCSsgasMZCAyR2fCNDJhR7lACfJ0YMwQSDi5RHeIdJcsze6WMg==}
+  multipasta@0.2.1:
+    resolution: {integrity: sha512-0NR15o5iewJFMsZ4jN6cztCd4izTLZPyHUfBrakbg/x70B8zplPE6qumbs+A7LmhGtQMzpN/K8MOOdifMgAKFA==}
 
   mv@2.1.1:
     resolution: {integrity: sha512-at/ZndSy3xEGJ8i0ygALh8ru9qy7gWW1cmkaqBN29JmMlIvM//MEO9y1sk/avxuwnPcfhkejkLsuPxH81BrkSg==}
@@ -5353,10 +5302,6 @@ packages:
   node-forge@1.3.1:
     resolution: {integrity: sha512-dPEtOeMvF9VMcYV/1Wb8CPoVAXtp6MKMlcbAt4ddqmGqUJ6fQZFXkNZNkNlfevtNkGtaSoXf/vNNNSvgrdXwtA==}
     engines: {node: '>= 6.13.0'}
-
-  node-gyp-build-optional-packages@5.0.7:
-    resolution: {integrity: sha512-YlCCc6Wffkx0kHkmam79GKvDQ6x+QZkMjFGrIMxgFNILFvGSbCp2fCBC55pGTT9gVaz8Na5CLmxt/urtzRv36w==}
-    hasBin: true
 
   node-html-parser@5.4.2:
     resolution: {integrity: sha512-RaBPP3+51hPne/OolXxcz89iYvQvKOydaqoePpOgXcrOKZhjVIzmpKZz+Hd/RBO2/zN2q6CNJhQzucVz+u3Jyw==}
@@ -8039,22 +7984,19 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@effect/experimental@0.15.14(@effect/platform@0.51.0(@effect/schema@0.66.12(effect@3.1.1)(fast-check@3.18.0))(effect@3.1.1)(ws@8.16.0))(@effect/schema@0.66.12(effect@3.1.1)(fast-check@3.18.0))(effect@3.1.1)(ws@8.16.0)':
+  '@effect/platform-browser@0.33.12(@effect/platform@0.52.2(@effect/schema@0.66.12(effect@3.1.1)(fast-check@3.18.0))(effect@3.1.1)(ws@8.16.0))(effect@3.1.1)':
     dependencies:
-      '@effect/platform': 0.51.0(@effect/schema@0.66.12(effect@3.1.1)(fast-check@3.18.0))(effect@3.1.1)(ws@8.16.0)
-      '@effect/schema': 0.66.12(effect@3.1.1)(fast-check@3.18.0)
+      '@effect/platform': 0.52.2(@effect/schema@0.66.12(effect@3.1.1)(fast-check@3.18.0))(effect@3.1.1)(ws@8.16.0)
       effect: 3.1.1
-      msgpackr: 1.10.1
-    optionalDependencies:
-      ws: 8.16.0
+      multipasta: 0.2.1
 
-  '@effect/platform@0.51.0(@effect/schema@0.66.12(effect@3.1.1)(fast-check@3.18.0))(effect@3.1.1)(ws@8.16.0)':
+  '@effect/platform@0.52.2(@effect/schema@0.66.12(effect@3.1.1)(fast-check@3.18.0))(effect@3.1.1)(ws@8.16.0)':
     dependencies:
       '@effect/schema': 0.66.12(effect@3.1.1)(fast-check@3.18.0)
       effect: 3.1.1
-      find-my-way-ts: 0.1.1
+      find-my-way-ts: 0.1.2
       isows: 1.0.4(ws@8.16.0)
-      multipasta: 0.2.0
+      multipasta: 0.2.1
       path-browserify: 1.0.1
     transitivePeerDependencies:
       - ws
@@ -8397,24 +8339,6 @@ snapshots:
       react-is: 17.0.2
 
   '@mdn/browser-compat-data@5.5.7': {}
-
-  '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.2':
-    optional: true
-
-  '@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.2':
-    optional: true
-
-  '@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.2':
-    optional: true
-
-  '@msgpackr-extract/msgpackr-extract-linux-arm@3.0.2':
-    optional: true
-
-  '@msgpackr-extract/msgpackr-extract-linux-x64@3.0.2':
-    optional: true
-
-  '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.2':
-    optional: true
 
   '@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1':
     dependencies:
@@ -11467,7 +11391,7 @@ snapshots:
     dependencies:
       to-regex-range: 5.0.1
 
-  find-my-way-ts@0.1.1:
+  find-my-way-ts@0.1.2:
     dependencies:
       fast-querystring: 1.1.2
 
@@ -12578,22 +12502,6 @@ snapshots:
 
   ms@2.1.3: {}
 
-  msgpackr-extract@3.0.2:
-    dependencies:
-      node-gyp-build-optional-packages: 5.0.7
-    optionalDependencies:
-      '@msgpackr-extract/msgpackr-extract-darwin-arm64': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-darwin-x64': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-linux-arm': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-linux-arm64': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-linux-x64': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-win32-x64': 3.0.2
-    optional: true
-
-  msgpackr@1.10.1:
-    optionalDependencies:
-      msgpackr-extract: 3.0.2
-
   multimatch@6.0.0:
     dependencies:
       '@types/minimatch': 3.0.5
@@ -12601,7 +12509,7 @@ snapshots:
       array-union: 3.0.1
       minimatch: 3.1.2
 
-  multipasta@0.2.0: {}
+  multipasta@0.2.1: {}
 
   mv@2.1.1:
     dependencies:
@@ -12662,9 +12570,6 @@ snapshots:
       formdata-polyfill: 4.0.10
 
   node-forge@1.3.1: {}
-
-  node-gyp-build-optional-packages@5.0.7:
-    optional: true
 
   node-html-parser@5.4.2:
     dependencies:

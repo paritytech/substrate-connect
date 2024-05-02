@@ -47,7 +47,7 @@
     "web-ext": "^7.11.0"
   },
   "dependencies": {
-    "@effect/experimental": "^0.15.14",
+    "@effect/platform-browser": "^0.33.12",
     "@polkadot-api/json-rpc-provider": "0.0.1",
     "@polkadot-api/json-rpc-provider-proxy": "0.0.1",
     "@polkadot-api/observable-client": "0.1.1",

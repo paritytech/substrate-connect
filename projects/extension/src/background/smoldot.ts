@@ -73,7 +73,7 @@ export const start = (
       _(
         Effect.sync(() => startSmoldotClient(options)),
         Effect.andThen((client) => Deferred.succeed(deferredClient, client)),
-        Effect.tap(() => Effect.log("smoldot created successfully")),
+        Effect.tap(() => Console.info("smoldot created successfully")),
         Effect.withSpan("smoldot/create"),
       ),
     )
@@ -93,11 +93,11 @@ export const start = (
             yield* Fiber.interruptAll(fibers)
             return HashMap.empty()
           }),
-        ).pipe(Effect.tap(() => Effect.log("chain monitors interrupted")))
+        ).pipe(Effect.tap(() => Console.log("chain monitors interrupted")))
 
         const newClient = yield* pipe(
           Effect.sync(() => startSmoldotClient(options)),
-          Effect.tap(() => Effect.log("smoldot restarted")),
+          Effect.tap(() => Console.log("smoldot restarted")),
         )
         yield* Effect.tryPromise({
           try: () => oldClient.terminate(),
@@ -113,7 +113,7 @@ export const start = (
           },
         }).pipe(
           // don't crash if already terminated
-          Effect.catchAll(Effect.logError),
+          Effect.catchAll(Console.error),
         )
 
         return newClient

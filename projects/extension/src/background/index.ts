@@ -1,8 +1,8 @@
 import { start } from "./smoldot"
 import { register } from "@substrate/light-client-extension-helpers/background"
 import { Effect } from "effect"
-import { ExtensionRuntime } from "./runtime"
 import { startHeartbeat } from "./heartbeat"
+import { BrowserRuntime } from "@effect/platform-browser"
 
 const main = Effect.gen(function* (_) {
   const smoldotClient = yield* start({ maxLogLevel: 4 })
@@ -34,4 +34,4 @@ const main = Effect.gen(function* (_) {
   yield* Effect.forkDaemon(Effect.promise(() => startHeartbeat()))
 })
 
-ExtensionRuntime.runPromiseExit(main)
+BrowserRuntime.runMain(main)
