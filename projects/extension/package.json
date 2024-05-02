@@ -47,16 +47,21 @@
     "web-ext": "^7.11.0"
   },
   "dependencies": {
+    "@effect/experimental": "^0.15.14",
+    "@polkadot-api/json-rpc-provider": "0.0.1",
+    "@polkadot-api/json-rpc-provider-proxy": "0.0.1",
     "@polkadot-api/observable-client": "0.1.1",
     "@polkadot-api/substrate-client": "0.0.1",
     "@react-rxjs/core": "^0.10.7",
     "@react-rxjs/utils": "^0.9.7",
     "@substrate/connect-extension-protocol": "workspace:*",
     "@substrate/light-client-extension-helpers": "workspace:^",
+    "effect": "^3.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
     "rxjs": "^7.8.1",
-    "smoldot": "2.0.22"
+    "smoldot": "2.0.22",
+    "zod": "^3.22.4"
   }
 }
