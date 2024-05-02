@@ -132,6 +132,16 @@ export const Options: FunctionComponent = () => {
               <span className={cName("title", menu, 2)}>Chainspecs</span>
             </Link>
           </li>
+          <li className="relative">
+            <a
+              className={cName("item", menu, 2)}
+              href="#!"
+              onClick={() => setMenu(2)}
+            >
+              <MdOutlineOnlinePrediction className={cName("icon", menu, 2)} />
+              <span className={cName("title", menu, 2)}>Chainspecs</span>
+            </a>
+          </li>
         </ul>
         <div className="text-center bottom-0 absolute w-full">
           <hr className="m-0" />
