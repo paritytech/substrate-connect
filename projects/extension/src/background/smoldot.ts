@@ -218,8 +218,13 @@ export const start = (
           },
         )
 
-        const substrateClient = yield* Effect.sync(() =>
-          createSubstrateClient(provider),
+        const substrateClient = yield* Effect.acquireRelease(
+          Effect.try(() => createSubstrateClient(provider)),
+          (client) =>
+            Effect.try(() => client.destroy()).pipe(
+              // ignore error if already destroyed
+              Effect.catchAll(Console.error),
+            ),
         )
 
         yield* pipe(
@@ -236,7 +241,7 @@ export const start = (
             Schedule.addDelay(Schedule.forever, () => pollingInterval),
           ),
         )
-      })
+      }).pipe(Effect.scoped)
 
     const tryMonitorChain = (options: Parameters<Client["addChain"]>[0]) =>
       Effect.gen(function* (_) {
