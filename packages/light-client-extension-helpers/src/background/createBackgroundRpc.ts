@@ -1,7 +1,7 @@
 import { ContentScriptRpcSpec } from "@/content-script/types"
 import type {
   AddOnAddChainByUserListener,
-  BackgroundRpcSpec,
+  BackgroundRpcSpec as BackgroundRpcSpec,
   LightClientPageHelper,
 } from "./types"
 import { PORT } from "@/shared"

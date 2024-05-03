@@ -212,14 +212,12 @@ export const register = ({
           bootNodes:
             (await storage.get({ type: "bootNodes", genesisHash })) ??
             (JSON.parse(chain.chainSpec).bootNodes as string[]),
-          provider: getSyncProvider(() =>
-            createSmoldotProvider({
-              smoldotClient,
-              chainSpec: chain.chainSpec,
-              genesisHash: chain.genesisHash,
-              relayChainGenesisHash: chain.relayChainGenesisHash,
-            }),
-          ),
+          provider: await createSmoldotProvider({
+            smoldotClient,
+            chainSpec: chain.chainSpec,
+            genesisHash: chain.genesisHash,
+            relayChainGenesisHash: chain.relayChainGenesisHash,
+          }),
         })),
       )
     },
@@ -580,26 +578,24 @@ const withClient =
         },
   ) => {
     const client = createClient(
-      getSyncProvider(async () =>
-        smoldotProvider(
-          "addChainOptions" in options
-            ? options
-            : {
-                smoldotClient: options.smoldotClient,
-                chainSpec: options.chainSpec,
-                databaseContent: options.databaseContent,
-                relayChainSpec: options.relayChainGenesisHash
-                  ? (await storage.getChains())[options.relayChainGenesisHash]
-                      .chainSpec
-                  : undefined,
-                relayChainDatabaseContent: options.relayChainGenesisHash
-                  ? await storage.get({
-                      type: "databaseContent",
-                      genesisHash: options.relayChainGenesisHash,
-                    })
-                  : undefined,
-              },
-        ),
+      await smoldotProvider(
+        "addChainOptions" in options
+          ? options
+          : {
+              smoldotClient: options.smoldotClient,
+              chainSpec: options.chainSpec,
+              databaseContent: options.databaseContent,
+              relayChainSpec: options.relayChainGenesisHash
+                ? (await storage.getChains())[options.relayChainGenesisHash]
+                    .chainSpec
+                : undefined,
+              relayChainDatabaseContent: options.relayChainGenesisHash
+                ? await storage.get({
+                    type: "databaseContent",
+                    genesisHash: options.relayChainGenesisHash,
+                  })
+                : undefined,
+            },
       ),
     )
     try {
