@@ -135,7 +135,7 @@ export const start = (
           yield* _(
             Effect.sleep(restartCooldown),
             Effect.andThen(() => SynchronizedRef.set(isRestartingRef, false)),
-          )
+          ).pipe(Effect.uninterruptible, Effect.forkDaemon)
 
           return true
         }),
