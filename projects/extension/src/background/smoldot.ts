@@ -1,5 +1,4 @@
 import {
-  Cause,
   Console,
   Deferred,
   Effect,
@@ -20,7 +19,11 @@ import {
   JsonRpcDisabledError,
   start as startSmoldotClient,
 } from "smoldot"
-import { createClient as createSubstrateClient } from "@polkadot-api/substrate-client"
+import {
+  createClient as createSubstrateClient,
+  FollowEventWithoutRuntime,
+  FollowResponse,
+} from "@polkadot-api/substrate-client"
 import { z } from "zod"
 import {
   JsonRpcConnection,
@@ -61,10 +64,7 @@ export const start = (
 
   return Effect.gen(function* (_) {
     const chainMonitorsRef = yield* SynchronizedRef.make(
-      HashMap.empty<
-        string,
-        Fiber.Fiber<void, Cause.UnknownException | Cause.TimeoutException>
-      >(),
+      HashMap.empty<string, Fiber.Fiber<void, Error>>(),
     )
 
     const deferredClient = yield* Deferred.make<Client>()
@@ -227,16 +227,29 @@ export const start = (
             ),
         )
 
+        const deferredFollowResponse = yield* Deferred.make<FollowResponse>()
         yield* pipe(
-          Effect.tryPromise((abortSignal) =>
-            substrateClient.request(
-              "chainSpec_v1_genesisHash",
-              [],
-              abortSignal,
+          Effect.async<FollowEventWithoutRuntime, Error>((resume) => {
+            const followResponse = substrateClient.chainHead(
+              false,
+              (event) => resume(Effect.succeed(event)),
+              (err) => resume(Effect.fail(err)),
+            )
+            runPromise(Deferred.succeed(deferredFollowResponse, followResponse))
+          }),
+          Effect.timeout("5 seconds"),
+          Effect.tap(() =>
+            pipe(
+              Deferred.await(deferredFollowResponse),
+              Effect.andThen((followResponse) =>
+                Effect.try(() => followResponse.unfollow()),
+              ),
+              Effect.catchAll(() => Effect.void),
             ),
           ),
-          Effect.andThen(() => Console.debug(`heartbeat: ${options.name}`)),
         ).pipe(
+          Effect.tapError((err) => Console.error(err)),
+          Effect.tapError(() => tryRestart),
           Effect.repeat(
             Schedule.addDelay(Schedule.forever, () => pollingInterval),
           ),
