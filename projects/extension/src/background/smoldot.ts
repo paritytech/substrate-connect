@@ -83,17 +83,20 @@ export const start = (
       Effect.andThen(SynchronizedRef.make),
     )
 
-    const isRestartingRef = yield* SynchronizedRef.make(false)
+    const interruptChainMonitors = SynchronizedRef.updateEffect(
+      chainMonitorsRef,
+      (chainMonitors) =>
+        Effect.gen(function* (_) {
+          const fibers = Array.fromIterable(HashMap.values(chainMonitors))
+          yield* Fiber.interruptAll(fibers)
+          return HashMap.empty()
+        }),
+    ).pipe(Effect.tap(() => Console.log("chain monitors interrupted")))
+
     const restart = SynchronizedRef.updateEffect(clientRef, (oldClient) =>
       Effect.gen(function* (_) {
         yield* Console.warn("restarting smoldot")
-        yield* SynchronizedRef.updateEffect(chainMonitorsRef, (chainMonitors) =>
-          Effect.gen(function* (_) {
-            const fibers = Array.fromIterable(HashMap.values(chainMonitors))
-            yield* Fiber.interruptAll(fibers)
-            return HashMap.empty()
-          }),
-        ).pipe(Effect.tap(() => Console.log("chain monitors interrupted")))
+        yield* interruptChainMonitors
 
         const newClient = yield* pipe(
           Effect.sync(() => startSmoldotClient(options)),
@@ -125,11 +128,12 @@ export const start = (
       Effect.forkDaemon,
     )
 
+    const isRestartingRef = yield* SynchronizedRef.make(false)
     const tryRestart = SynchronizedRef.updateEffect(
       isRestartingRef,
       (isRestarting) =>
         Effect.gen(function* (_) {
-          if (isRestarting) return true
+          if (isRestarting) return isRestarting
 
           yield* Fiber.join(yield* restart)
           yield* _(
@@ -281,8 +285,14 @@ export const start = (
 
     const terminate: Client["terminate"] = () =>
       Effect.gen(function* (_) {
-        const client = yield* clientRef.get
-        return yield* Effect.tryPromise(() => client.terminate())
+        yield* Effect.fork(interruptChainMonitors)
+
+        return yield* _(
+          clientRef.get,
+          Effect.andThen((client) =>
+            Effect.tryPromise(() => client.terminate()),
+          ),
+        )
       }).pipe(runPromise)
 
     return {
