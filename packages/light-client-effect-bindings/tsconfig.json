@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base",
+  "include": ["src"],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "stripInternal": true,
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "noUncheckedIndexedAccess": false
+  }
+}
