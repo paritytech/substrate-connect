@@ -39,32 +39,32 @@ git clone https://github.com/paritytech/substrate-connect.git
 2. Install all dependencies
 
 ```bash
-pnpm install
+corepack pnpm install
 ```
 
 3. Compile all packages and projects
 
 ```bash
-pnpm build
+corepack pnpm build
 ```
 
 To clean up all build artefacts in workspaces in the repository, run:
 
 ```bash
-pnpm clean
+corepack pnpm clean
 ```
 
 To clean up all build artefacts and dependencies in workspaces in the repository, run:
 
 ```bash
-pnpm deep-clean
+corepack pnpm deep-clean
 ```
 
 ## Run local version of Smoldot Extension
 Running the following command will build all necessary dependencies and run the Smoldot Extension in development mode with hot reloading enabled. Once run a new (Chrome) browser will appear with the extension added.
 
 ```bash
-pnpm dev:extension
+corepack pnpm dev:extension
 ```
 
 (Make sure to run `$ pnpm install` before.)
@@ -73,7 +73,7 @@ pnpm dev:extension
 Running the following command will build all necessary dependencies and run the Substrate Burnr Wallet in development mode with hot reloading enabled. It will be served on http://localhost:1234/
 
 ```bash
-pnpm dev:burnr
+corepack pnpm dev:burnr
 ```
 
 (Make sure to run `$ pnpm install` before.)
