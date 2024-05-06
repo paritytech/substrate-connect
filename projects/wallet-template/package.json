@@ -56,7 +56,7 @@
     "@noble/ciphers": "^0.5.2",
     "@noble/hashes": "^1.4.0",
     "@polkadot-api/json-rpc-provider": "0.0.1",
-    "@polkadot-api/metadata-builders": "0.0.1",
+    "@polkadot-api/metadata-builders": "0.3.0",
     "@polkadot-api/observable-client": "0.1.1",
     "@polkadot-api/polkadot-signer": "^0.0.1",
     "@polkadot-api/signer": "^0.0.1",

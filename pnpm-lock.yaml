@@ -84,8 +84,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0(@substrate/connect@packages+connect)(rxjs@7.8.1)(smoldot@2.0.22)
       '@polkadot-api/metadata-builders':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: 0.3.0
+        version: 0.3.0
       '@polkadot-api/observable-client':
         specifier: ^0.1.1
         version: 0.1.1(rxjs@7.8.1)
@@ -502,8 +502,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       '@polkadot-api/metadata-builders':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: 0.3.0
+        version: 0.3.0
       '@polkadot-api/observable-client':
         specifier: 0.1.1
         version: 0.1.1(rxjs@7.8.1)
@@ -3113,6 +3113,13 @@ packages:
     dev: false
     optional: true
 
+  /@polkadot-api/metadata-builders@0.3.0:
+    resolution: {integrity: sha512-WUxKGy2hzClESEcQWnnDp4IzlYiEXmYgSaa08zW1J3uX7rmLADDeKkfRH9TNRLAMEr9TaFt71W+OzHJtdwR6bw==}
+    dependencies:
+      '@polkadot-api/substrate-bindings': 0.4.0
+      '@polkadot-api/utils': 0.0.1
+    dev: false
+
   /@polkadot-api/observable-client@0.1.0(rxjs@7.8.1):
     resolution: {integrity: sha512-GBCGDRztKorTLna/unjl/9SWZcRmvV58o9jwU2Y038VuPXZcr01jcw/1O3x+yeAuwyGzbucI/mLTDa1QoEml3A==}
     peerDependencies:
@@ -3209,6 +3216,15 @@ packages:
       scale-ts: 1.6.0
     dev: false
     optional: true
+
+  /@polkadot-api/substrate-bindings@0.4.0:
+    resolution: {integrity: sha512-7eaZABXpUp22W5GcXr51pNL4v1d8Pw8w92DbKwWs+eOGzcoZG/btEyUhPWy2OI2k7Oak3wTkvGXLSze1KyrPgQ==}
+    dependencies:
+      '@noble/hashes': 1.4.0
+      '@polkadot-api/utils': 0.0.1
+      '@scure/base': 1.1.5
+      scale-ts: 1.6.0
+    dev: false
 
   /@polkadot-api/substrate-client@0.0.1:
     resolution: {integrity: sha512-9Bg9SGc3AwE+wXONQoW8GC00N3v6lCZLW74HQzqB6ROdcm5VAHM4CB/xRzWSUF9CXL78ugiwtHx3wBcpx4H4Wg==}
