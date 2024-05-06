@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom"
 import { useKeyring } from "../hooks"
+import { Layout } from "../../../components/Layout"
 
 export const Debug = () => {
   const { lock } = useKeyring()
   return (
-    <div>
+    <Layout>
       <h1 className="text-3xl font-bold">Wallet</h1>
       <div className="my-4 flex space-x-4">
         <Link
@@ -28,6 +29,6 @@ export const Debug = () => {
           Lock
         </button>
       </div>
-    </div>
+    </Layout>
   )
 }

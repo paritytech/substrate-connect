@@ -8,6 +8,7 @@ import {
 } from "../components"
 import { rpc } from "../api"
 import { UserSignedExtensions as UserSignedExtensionsTy } from "../../../types/UserSignedExtension"
+import { Layout } from "../../../components/Layout"
 
 export const SignRequest = () => {
   const { signRequestId } = useParams<{ signRequestId: string }>()
@@ -30,7 +31,7 @@ export const SignRequest = () => {
   if (error || !request)
     return <div>error fetching sign request: {signRequestId}</div>
   return (
-    <div>
+    <Layout>
       <h1 className="text-3xl font-bold">Sign Request #{signRequestId}</h1>
       <div className="my-4">
         <div className="my-2">
@@ -88,6 +89,6 @@ export const SignRequest = () => {
           Cancel
         </button>
       </div>
-    </div>
+    </Layout>
   )
 }
