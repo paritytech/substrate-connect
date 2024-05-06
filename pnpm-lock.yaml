@@ -450,8 +450,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.3.1)
       react-icons:
-        specifier: ^4.11.0
-        version: 4.12.0(react@18.3.1)
+        specifier: ^5.2.0
+        version: 5.2.0(react@18.3.1)
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
@@ -568,8 +568,8 @@ importers:
         specifier: ^7.51.3
         version: 7.51.3(react@18.3.1)
       react-icons:
-        specifier: ^4.11.0
-        version: 4.12.0(react@18.3.1)
+        specifier: ^5.2.0
+        version: 5.2.0(react@18.3.1)
       react-json-view:
         specifier: ^1.21.3
         version: 1.21.3(@types/react@18.3.1)(react-dom@18.2.0)(react@18.3.1)
@@ -10493,8 +10493,8 @@ packages:
       react: 18.3.1
     dev: false
 
-  /react-icons@4.12.0(react@18.3.1):
-    resolution: {integrity: sha512-IBaDuHiShdZqmfc/TwHu6+d6k2ltNCf3AszxNmjJc1KUfXdEeRJOKyNvLmAHaarhzGmTSVygNdyu8/opXv2gaw==}
+  /react-icons@5.2.0(react@18.3.1):
+    resolution: {integrity: sha512-n52Y7Eb4MgQZHsSZOhSXv1zs2668/hBYKfSRIvKh42yExjyhZu0d1IK2CLLZ3BZB1oo13lDfwx2vOh2z9FTV6Q==}
     peerDependencies:
       react: '*'
     dependencies:
