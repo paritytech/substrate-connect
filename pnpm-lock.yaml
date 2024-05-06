@@ -93,8 +93,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: 0.1.1
+        version: 0.1.1
       '@polkadot-api/utils':
         specifier: 0.0.1
         version: 0.0.1
@@ -166,8 +166,8 @@ importers:
         specifier: 0.1.1
         version: 0.1.1(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: 0.1.1
+        version: 0.1.1
       '@substrate/connect-known-chains':
         specifier: workspace:*
         version: link:../../packages/connect-known-chains
@@ -215,8 +215,8 @@ importers:
   examples/light-client-extension-helpers-extension:
     dependencies:
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: 0.1.1
+        version: 0.1.1
       '@substrate/light-client-extension-helpers':
         specifier: workspace:*
         version: link:../../packages/light-client-extension-helpers
@@ -259,8 +259,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: 0.1.1
+        version: 0.1.1
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
@@ -295,8 +295,8 @@ importers:
         specifier: 0.1.1
         version: 0.1.1(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: 0.1.1
+        version: 0.1.1
       '@substrate/connect-extension-protocol':
         specifier: workspace:^
         version: link:../connect-extension-protocol
@@ -401,8 +401,8 @@ importers:
         specifier: 0.1.1
         version: 0.1.1(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: 0.1.1
+        version: 0.1.1
       '@substrate/connect':
         specifier: workspace:*
         version: link:../../packages/connect
@@ -429,8 +429,8 @@ importers:
         specifier: 0.1.1
         version: 0.1.1(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: 0.1.1
+        version: 0.1.1
       '@react-rxjs/core':
         specifier: ^0.10.7
         version: 0.10.7(react@18.3.1)(rxjs@7.8.1)
@@ -517,8 +517,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: 0.1.1
+        version: 0.1.1
       '@polkadot-api/utils':
         specifier: 0.0.1
         version: 0.0.1
@@ -638,8 +638,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       '@polkadot-api/substrate-client':
-        specifier: 0.0.1
-        version: 0.0.1
+        specifier: 0.1.1
+        version: 0.1.1
       '@substrate/connect':
         specifier: workspace:*
         version: link:../packages/connect
@@ -3212,12 +3212,16 @@ packages:
 
   /@polkadot-api/substrate-client@0.0.1:
     resolution: {integrity: sha512-9Bg9SGc3AwE+wXONQoW8GC00N3v6lCZLW74HQzqB6ROdcm5VAHM4CB/xRzWSUF9CXL78ugiwtHx3wBcpx4H4Wg==}
+    dev: false
 
   /@polkadot-api/substrate-client@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
     resolution: {integrity: sha512-lcdvd2ssUmB1CPzF8s2dnNOqbrDa+nxaaGbuts+Vo8yjgSKwds2Lo7Oq+imZN4VKW7t9+uaVcKFLMF7PdH0RWw==}
     requiresBuild: true
     dev: false
     optional: true
+
+  /@polkadot-api/substrate-client@0.1.1:
+    resolution: {integrity: sha512-B/ikjSscxcJnusVvSsIeVTmOtRstf1QBLFDgg4Z6tUp3TPaTcpzIHEkthV7oAIVJy4WgVV9OqXiGL4ZLlCs6xg==}
 
   /@polkadot-api/utils@0.0.1:
     resolution: {integrity: sha512-3j+pRmlF9SgiYDabSdZsBSsN5XHbpXOAce1lWj56IEEaFZVjsiCaxDOA7C9nCcgfVXuvnbxqqEGQvnY+QfBAUw==}

@@ -21,7 +21,7 @@
   "dependencies": {
     "@polkadot-api/observable-client": "0.1.1",
     "@polkadot-api/json-rpc-provider-proxy": "0.0.1",
-    "@polkadot-api/substrate-client": "0.0.1",
+    "@polkadot-api/substrate-client": "0.1.1",
     "@substrate/connect": "workspace:*",
     "@substrate/connect-known-chains": "workspace:*",
     "rxjs": "^7.8.1"
