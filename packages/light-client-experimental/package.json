@@ -1,0 +1,44 @@
+{
+  "name": "@substrate/light-client-experimental",
+  "version": "0.0.1",
+  "author": "Ryan Lee (https://github.com/ryanleecode)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paritytech/substrate-connect.git"
+  },
+  "license": "MIT",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./smoldot": "./dist/smoldot/index.mjs",
+    "./json-rpc-provider": "./dist/json-rpc-provider/index.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --noEmit && tsup-node src/index.ts src/smoldot/index.ts src/json-rpc-provider/index.ts --clean --sourcemap --platform neutral --target=es2020 --format esm --dts",
+    "dev": "pnpm build --watch",
+    "lint": "prettier --check README.md \"src/**/*.{js,jsx,ts,tsx,json,md}\""
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": false,
+    "trailingComma": "all"
+  },
+  "devDependencies": {
+    "@effect/experimental": "^0.15.18",
+    "@effect/platform-node": "^0.48.4",
+    "@polkadot-api/json-rpc-provider": "^0.0.1",
+    "@polkadot-api/json-rpc-provider-proxy": "^0.1.0",
+    "@polkadot-api/substrate-client": "^0.1.0",
+    "@substrate/connect-known-chains": "workspace:^",
+    "effect": "^3.1.2",
+    "effect-log": "^0.31.1",
+    "rxjs": "7.8.1",
+    "smoldot": "2.0.25"
+  },
+  "peerDependencies": {
+    "effect": "^3.1",
+    "smoldot": "2.x"
+  }
+}
