@@ -8,7 +8,6 @@ import {
   flow as _,
   Schedule,
   SynchronizedRef,
-  Runtime,
 } from "effect"
 import { NodeRuntime } from "@effect/platform-node"
 import {
@@ -27,7 +26,6 @@ import {
 } from "@substrate/light-client-experimental/json-rpc-provider"
 import { createClient as createSubstrateClient } from "@polkadot-api/substrate-client"
 import { JsonRpcProvider } from "@polkadot-api/json-rpc-provider"
-import { config } from "rxjs"
 
 const logger = PrettyLogger.layer({
   showFiberId: true,
@@ -37,15 +35,6 @@ const logger = PrettyLogger.layer({
 })
 
 const main = Effect.gen(function* (_) {
-  const runtime = yield* Effect.runtime<never>()
-  const runSync = Runtime.runSync(runtime)
-  yield* Effect.sync(() => {
-    config.onUnhandledError = (err) =>
-      runSync(
-        $(Effect.logError(err), Effect.withLogSpan("rxjs-unhandled-error")),
-      )
-  })
-
   const smoldotRef = yield* SynchronizedRef.make(
     yield* Smoldot.start({ maxLogLevel: 4 }),
   )

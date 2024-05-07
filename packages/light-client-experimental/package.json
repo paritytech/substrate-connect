@@ -34,7 +34,6 @@
     "@substrate/connect-known-chains": "workspace:^",
     "effect": "^3.1.2",
     "effect-log": "^0.31.1",
-    "rxjs": "7.8.1",
     "smoldot": "2.0.25"
   },
   "peerDependencies": {
