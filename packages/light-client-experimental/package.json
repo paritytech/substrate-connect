@@ -29,9 +29,7 @@
   "devDependencies": {
     "@effect/experimental": "^0.15.18",
     "@effect/platform-node": "^0.48.4",
-    "@polkadot-api/json-rpc-provider": "^0.0.1",
     "@polkadot-api/json-rpc-provider-proxy": "^0.1.0",
-    "@polkadot-api/substrate-client": "^0.1.0",
     "@substrate/connect-known-chains": "workspace:^",
     "effect": "^3.1.2",
     "effect-log": "^0.31.1",
@@ -42,6 +40,8 @@
     "smoldot": "2.x"
   },
   "dependencies": {
+    "@polkadot-api/json-rpc-provider": "^0.0.1",
+    "@polkadot-api/substrate-client": "^0.1.0",
     "@effect/schema": "^0.66.15"
   }
 }

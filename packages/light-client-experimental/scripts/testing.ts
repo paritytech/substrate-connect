@@ -6,7 +6,6 @@ import {
   LogLevel,
   pipe as $,
   flow as _,
-  Schedule,
   SynchronizedRef,
   Deferred,
   Console,
@@ -27,8 +26,6 @@ import {
   SmoldotClient,
 } from "@substrate/light-client-experimental/json-rpc-provider"
 import { make as makeRPCClient } from "@substrate/light-client-experimental/rpc-client"
-import { createClient as createSubstrateClient } from "@polkadot-api/substrate-client"
-import { JsonRpcProvider } from "@polkadot-api/json-rpc-provider"
 
 const logger = PrettyLogger.layer({
   showFiberId: true,
@@ -44,60 +41,44 @@ const main = Effect.gen(function* (_) {
 
   const deferredChainheadConnect = yield* Deferred.make()
 
-  const createClient = (provider: JsonRpcProvider) =>
-    Effect.acquireRelease(
-      Effect.try(() => $(provider, createSubstrateClient)),
-      (client) =>
-        $(
-          Effect.try(() => client.destroy()),
-          Effect.catchAll(() => Effect.void),
-        ),
-    )
-
   const fiber = yield* Effect.gen(function* (_) {
     const polkadotClient = yield* $(
       makeJsonRpcProvider({ chainSpec: polkadot }),
-      Effect.map(createClient),
-      Effect.andThen(makeRPCClient),
+      makeRPCClient,
       Effect.withLogSpan("polkadot"),
       Effect.withSpan("polkadot"),
     )
 
     const westendClient = yield* $(
       makeJsonRpcProvider({ chainSpec: westend2 }),
-      Effect.map(createClient),
-      Effect.andThen(makeRPCClient),
+      makeRPCClient,
       Effect.withLogSpan("westend"),
       Effect.withSpan("westend"),
     )
     const ksmClient = yield* $(
       makeJsonRpcProvider({ chainSpec: ksmcc3 }),
-      Effect.map(createClient),
-      Effect.andThen(makeRPCClient),
+      makeRPCClient,
       Effect.withLogSpan("ksmcc3"),
       Effect.withSpan("ksmcc3"),
     )
 
     const polkadotAssetHubClient = yield* $(
       makeJsonRpcProvider({ chainSpec: polkadot_asset_hub }),
-      Effect.map(createClient),
-      Effect.andThen(makeRPCClient),
+      makeRPCClient,
       Effect.withLogSpan("polkadot-asset-hub"),
       Effect.withSpan("polkadot-asset-hub"),
     )
 
     const westendAssetHubClient = yield* $(
       makeJsonRpcProvider({ chainSpec: westend2_asset_hub }),
-      Effect.map(createClient),
-      Effect.andThen(makeRPCClient),
+      makeRPCClient,
       Effect.withLogSpan("westend-asset-hub"),
       Effect.withSpan("westend-asset-hub"),
     )
 
     const kscmc3AssetHubClient = yield* $(
       makeJsonRpcProvider({ chainSpec: ksmcc3_asset_hub }),
-      Effect.map(createClient),
-      Effect.andThen(makeRPCClient),
+      makeRPCClient,
       Effect.withLogSpan("kusama-asset-hub"),
       Effect.withSpan("kusama-asset-hub"),
     )
@@ -115,7 +96,7 @@ const main = Effect.gen(function* (_) {
       ),
     ]
 
-    for (let i = 1; i < 10; i++) {
+    for (let i = 1; i < 3; i++) {
       massSubscribe.push(
         $(
           polkadotClient.chainhead,
