@@ -75,7 +75,7 @@ export const make = (
 
       // wait until the message queue is flushed
       yield* $(
-        Effect.void,
+        Effect.yieldNow(),
         Effect.repeat({
           until: () => Queue.isEmpty(messageQueue),
           schedule: Schedule.forever,
@@ -109,8 +109,9 @@ export const make = (
       Effect.scoped,
       Effect.retry(
         $(
-          Schedule.spaced("1 second"),
-          Schedule.jitteredWith({ min: 0.8, max: 1.5 }),
+          Schedule.exponential("500 millis"),
+          Schedule.union(Schedule.spaced("5 seconds")),
+          Schedule.jittered,
         ),
       ),
       Effect.onExit(() => Effect.log("Daemon has stopped.")),

@@ -284,10 +284,14 @@ importers:
         version: 8.57.0
 
   packages/light-client-experimental:
+    dependencies:
+      '@effect/schema':
+        specifier: ^0.66.15
+        version: 0.66.15(effect@3.1.2)(fast-check@3.18.0)
     devDependencies:
       '@effect/experimental':
         specifier: ^0.15.18
-        version: 0.15.18(@effect/platform-node@0.48.4)(@effect/platform@0.52.3)(@effect/schema@0.66.14)(effect@3.1.2)(ws@8.17.0)
+        version: 0.15.18(@effect/platform-node@0.48.4)(@effect/platform@0.52.3)(@effect/schema@0.66.15)(effect@3.1.2)(ws@8.17.0)
       '@effect/platform-node':
         specifier: ^0.48.4
         version: 0.48.4(@effect/platform@0.52.3)(effect@3.1.2)
@@ -2218,7 +2222,7 @@ packages:
       - supports-color
     dev: true
 
-  /@effect/experimental@0.15.18(@effect/platform-node@0.48.4)(@effect/platform@0.52.3)(@effect/schema@0.66.14)(effect@3.1.2)(ws@8.17.0):
+  /@effect/experimental@0.15.18(@effect/platform-node@0.48.4)(@effect/platform@0.52.3)(@effect/schema@0.66.15)(effect@3.1.2)(ws@8.17.0):
     resolution: {integrity: sha512-ELLsIkwgYt9X1ozA6IwAMxqa8qLsj3XL/LmgXsn/moCPBhI4p7TwCE9x9MUi8+0k/75k/tkjPix8mtYBmbkGsQ==}
     peerDependencies:
       '@effect/platform': ^0.52.3
@@ -2238,9 +2242,9 @@ packages:
       ws:
         optional: true
     dependencies:
-      '@effect/platform': 0.52.3(@effect/schema@0.66.14)(effect@3.1.2)(ws@8.17.0)
+      '@effect/platform': 0.52.3(@effect/schema@0.66.15)(effect@3.1.2)(ws@8.17.0)
       '@effect/platform-node': 0.48.4(@effect/platform@0.52.3)(effect@3.1.2)
-      '@effect/schema': 0.66.14(effect@3.1.2)(fast-check@3.18.0)
+      '@effect/schema': 0.66.15(effect@3.1.2)(fast-check@3.18.0)
       effect: 3.1.2
       msgpackr: 1.10.1
       ws: 8.17.0
@@ -2252,7 +2256,7 @@ packages:
       '@effect/platform': ^0.52.3
       effect: ^3.1.2
     dependencies:
-      '@effect/platform': 0.52.3(@effect/schema@0.66.14)(effect@3.1.2)(ws@8.17.0)
+      '@effect/platform': 0.52.3(@effect/schema@0.66.15)(effect@3.1.2)(ws@8.17.0)
       '@parcel/watcher': 2.4.1
       effect: 3.1.2
       multipasta: 0.2.1
@@ -2264,7 +2268,7 @@ packages:
       '@effect/platform': ^0.52.3
       effect: ^3.1.2
     dependencies:
-      '@effect/platform': 0.52.3(@effect/schema@0.66.14)(effect@3.1.2)(ws@8.17.0)
+      '@effect/platform': 0.52.3(@effect/schema@0.66.15)(effect@3.1.2)(ws@8.17.0)
       '@effect/platform-node-shared': 0.4.18(@effect/platform@0.52.3)(effect@3.1.2)
       effect: 3.1.2
       mime: 3.0.0
@@ -2275,13 +2279,13 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@effect/platform@0.52.3(@effect/schema@0.66.14)(effect@3.1.2)(ws@8.17.0):
+  /@effect/platform@0.52.3(@effect/schema@0.66.15)(effect@3.1.2)(ws@8.17.0):
     resolution: {integrity: sha512-pDLssAZn/N2Ae80XKoNh2YSfYUz9b7KIsMMsuGYt0d5+A7KjotMQ7id/rFv9/QdY/8UXOOMkE5/Iby8KZKhpdA==}
     peerDependencies:
       '@effect/schema': ^0.66.14
       effect: ^3.1.2
     dependencies:
-      '@effect/schema': 0.66.14(effect@3.1.2)(fast-check@3.18.0)
+      '@effect/schema': 0.66.15(effect@3.1.2)(fast-check@3.18.0)
       effect: 3.1.2
       find-my-way-ts: 0.1.2
       isows: 1.0.4(ws@8.17.0)
@@ -2291,15 +2295,14 @@ packages:
       - ws
     dev: true
 
-  /@effect/schema@0.66.14(effect@3.1.2)(fast-check@3.18.0):
-    resolution: {integrity: sha512-2Yc6gnXpcMmwQnbU2JUwDl0ckeOJmFZzteXn2jjVWuNi9PGv+jp2yK7jxv0pALcieuYwdR5tKkCRI7STuhEwfg==}
+  /@effect/schema@0.66.15(effect@3.1.2)(fast-check@3.18.0):
+    resolution: {integrity: sha512-7dNBbCIo+pGs4V3edW9ujqK+f5ZbmzZn4Cm1euRN4NWPBAuPTXuToKLNR370ojimbis6OsuQbpGBNgzEGFMvrg==}
     peerDependencies:
       effect: ^3.1.2
       fast-check: ^3.13.2
     dependencies:
       effect: 3.1.2
       fast-check: 3.18.0
-    dev: true
 
   /@emotion/hash@0.8.0:
     resolution: {integrity: sha512-kBJtf7PH6aWwZ6fka3zQ0p6SBYzx4fl1LoZXE2RrnYST9Xljm7WfKJrU4g/Xr3Beg72MLrp1AWNUmuYJTL7Cow==}
@@ -6890,7 +6893,6 @@ packages:
 
   /effect@3.1.2:
     resolution: {integrity: sha512-XakSWck6w6ROqKyEys0tKE9K6Gx2p8W/09u2ZTEZZrneO5Z3QEdPhXzWTyC73kD5zUvfJinZLVIas8I1xoHaTg==}
-    dev: true
 
   /ejs@3.1.10:
     resolution: {integrity: sha512-UeJmFfOrAQS8OJWPZ4qtgHyWExa088/MtK5UEyoJGFH67cDEXkZSviOiKRCZ4Xij0zxI3JECgYs3oKx+AizQBA==}
@@ -7734,7 +7736,6 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       pure-rand: 6.1.0
-    dev: true
 
   /fast-decode-uri-component@1.0.1:
     resolution: {integrity: sha512-WKgKWg5eUxvRZGwW8FvfbaH7AXSh2cL+3j5fMGzUMCxWBJ3dV3a7Wz8y2f/uQ0e3B6WmodD3oS54jTQ9HVTIIg==}
@@ -10710,7 +10711,6 @@ packages:
 
   /pure-rand@6.1.0:
     resolution: {integrity: sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==}
-    dev: true
 
   /qrcode.react@3.1.0(react@18.3.1):
     resolution: {integrity: sha512-oyF+Urr3oAMUG/OiOuONL3HXM+53wvuH3mtIWQrYmsXoAq0DkvZp2RYUWFSMFtbdOpuS++9v+WAkzNVkMlNW6Q==}

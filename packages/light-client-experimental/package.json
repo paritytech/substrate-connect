@@ -10,13 +10,14 @@
   "exports": {
     ".": "./dist/index.mjs",
     "./smoldot": "./dist/smoldot/index.mjs",
-    "./json-rpc-provider": "./dist/json-rpc-provider/index.mjs"
+    "./json-rpc-provider": "./dist/json-rpc-provider/index.mjs",
+    "./rpc-client": "./dist/rpc-client/index.mjs"
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc --noEmit && tsup-node src/index.ts src/smoldot/index.ts src/json-rpc-provider/index.ts --clean --sourcemap --platform neutral --target=es2020 --format esm --dts",
+    "build": "tsc --noEmit && tsup-node src/index.ts src/smoldot/index.ts src/json-rpc-provider/index.ts src/rpc-client/index.ts --clean --sourcemap --platform neutral --target=es2020 --format esm --dts",
     "dev": "pnpm build --watch",
     "lint": "prettier --check README.md \"src/**/*.{js,jsx,ts,tsx,json,md}\""
   },
@@ -39,5 +40,8 @@
   "peerDependencies": {
     "effect": "^3.1",
     "smoldot": "2.x"
+  },
+  "dependencies": {
+    "@effect/schema": "^0.66.15"
   }
 }
