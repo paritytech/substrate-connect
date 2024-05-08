@@ -95,8 +95,10 @@ export const make = (
       Effect.scoped,
       Effect.retry(
         $(
-          Schedule.exponential("500 millis"),
-          Schedule.union(Schedule.spaced("5 seconds")),
+          Schedule.union(
+            Schedule.exponential("500 millis"),
+            Schedule.spaced("5 seconds"),
+          ),
           Schedule.jittered,
         ),
       ),
