@@ -8,7 +8,8 @@ import {
   flow as _,
   SynchronizedRef,
   Deferred,
-  Console,
+  Scope,
+  ExecutionStrategy,
 } from "effect"
 import { NodeRuntime } from "@effect/platform-node"
 import {
@@ -38,8 +39,6 @@ const main = Effect.gen(function* () {
   const smoldotRef = yield* SynchronizedRef.make(
     yield* Smoldot.start({ maxLogLevel: 4 }),
   )
-
-  const deferredChainheadConnect = yield* Deferred.make()
 
   const fiber = yield* Effect.gen(function* () {
     const polkadotClient = yield* $(
@@ -82,7 +81,7 @@ const main = Effect.gen(function* () {
       Effect.withLogSpan("kusama-asset-hub"),
       Effect.withSpan("kusama-asset-hub"),
     )
-
+    /* 
     const chainName = yield* polkadotClient.chainSpec.chainName
 
     yield* Effect.log(yield* polkadotClient.chainSpec.genesisHash)
@@ -94,39 +93,9 @@ const main = Effect.gen(function* () {
       Effect.withLogSpan(`${chainName.toLowerCase()}-${0}`),
     )
 
-    /*     const massSubscribe = [
-      sub0
-    ]
-
-    for (let i = 1; i < 3; i++) {
-      massSubscribe.push(
-        $(
-          polkadotClient.chainhead,
-          Effect.withLogSpan(`${chainName.toLowerCase()}-${i}`),
-          Effect.delay(i * 1000),
-        ),
-      )
-    }
-
-    yield* Console.log(massSubscribe.length)
-
-    yield* Effect.all(massSubscribe, { concurrency: "unbounded" }) */
-
     yield* sub0.finalizedDatabase()
 
-    yield* Console.log("dumped")
-
-    /*     const chainheadSubscription = yield* $(
-      polkadotClient.chainhead,
-      Effect.withLogSpan(chainName.toLowerCase()),
-    )
-    yield* chainheadSubscription.finalizedDatabase({
-      maxSizeBytes: 1024 * 1024,
-    })
-
-    yield* Effect.log("Dumped")
-
-    yield* Deferred.succeed(deferredChainheadConnect, undefined) */
+    yield* Console.log("dumped") */
 
     yield* Effect.never
   }).pipe(
@@ -135,13 +104,11 @@ const main = Effect.gen(function* () {
     Effect.provideService(SmoldotClient, smoldotRef),
   )
 
-  yield* Deferred.await(deferredChainheadConnect)
-
   yield* Effect.sleep(Duration.seconds(5))
-  /*   yield* SynchronizedRef.updateEffect(
+  yield* SynchronizedRef.updateEffect(
     smoldotRef,
     (oldSmoldot) => oldSmoldot.restart,
-  ) */
+  )
 
   yield* Effect.never
 }).pipe(

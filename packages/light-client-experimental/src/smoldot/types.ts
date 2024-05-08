@@ -19,9 +19,9 @@ export type Client = Readonly<{
   ): Effect.Effect<
     Chain,
     AddChainError | AlreadyDestroyedError | CrashError | Cause.UnknownException,
-    Scope.Scope
+    never
   >
-  restart: Effect.Effect<Client, never, never>
+  restart: Effect.Effect<Client, never, Scope.Scope>
 }> &
   Brand.Brand<"Client">
 export type ClientOptions = Readonly<Omit<Smoldot.ClientOptions, "logCallback">>
@@ -51,5 +51,6 @@ export type Chain = Readonly<{
     | Cause.UnknownException,
     never
   >
+  remove: Effect.Effect<void, never, never>
 }> &
   Brand.Brand<"Chain">

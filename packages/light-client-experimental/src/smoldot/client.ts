@@ -14,6 +14,7 @@ import {
   Exit,
   flow as _,
   Metric,
+  ExecutionStrategy,
 } from "effect"
 import {
   Client,
@@ -35,7 +36,7 @@ const restartFailureCount = Metric.counter("smoldot/restart_failures", {
 
 export const start = (
   options?: ClientOptions,
-): Effect.Effect<Client, never, never> => {
+): Effect.Effect<Client, never, Scope.Scope> => {
   const Client = Brand.nominal<Client>()
   const Chain = Brand.nominal<Chain>()
 
@@ -43,7 +44,10 @@ export const start = (
     yield* Metric.incrementBy(restartSuccessCount, 0)
     yield* Metric.incrementBy(restartFailureCount, 0)
 
-    const scope = yield* Scope.make()
+    const scope = yield* Scope.fork(
+      yield* Effect.scope,
+      ExecutionStrategy.sequential,
+    )
     const ChainRefId = Brand.nominal<ChainRefId>()
     const nextChainRefId = yield* Ref.make<ChainRefId>(ChainRefId(0))
     const chainsMap = yield* SynchronizedRef.make(
@@ -62,48 +66,50 @@ export const start = (
     )
 
     const addChain: Client["addChain"] = (options: AddChainOptions) => {
-      return SynchronizedRef.modifyEffect(chainsMap, (oldChains) =>
-        Effect.gen(function* () {
-          const potentialRelayChains = $(
-            HashMap.values(oldChains),
-            Array.fromIterable,
-            Array.map(({ _original }) => _original),
-          )
+      return Effect.gen(function* () {
+        const chainScope = yield* Scope.fork(
+          scope,
+          ExecutionStrategy.sequential,
+        )
 
-          const chainRefId = yield* $(
-            nextChainRefId,
-            Ref.updateAndGet((n) => ChainRefId(n + 1)),
-          )
+        return yield* SynchronizedRef.modifyEffect(chainsMap, (oldChains) =>
+          Effect.gen(function* () {
+            const potentialRelayChains = $(
+              HashMap.values(oldChains),
+              Array.fromIterable,
+              Array.map(({ _original }) => _original),
+            )
 
-          const chain = yield* $(
-            Effect.acquireRelease(
-              $(
-                resources.chain.acquire({
-                  ...options,
-                  potentialRelayChains,
-                  client,
-                }),
-                Effect.withLogSpan("smoldot/chain"),
-              ),
-              _(resources.chain.release, Effect.withLogSpan("smoldot/chain")),
-            ),
-            Scope.extend(scope),
-          )
+            const chainRefId = yield* $(
+              nextChainRefId,
+              Ref.updateAndGet((n) => ChainRefId(n + 1)),
+            )
 
-          const newChains = HashMap.set(oldChains, chainRefId, chain)
+            const chain = yield* Effect.acquireRelease(
+              resources.chain.acquire({
+                ...options,
+                potentialRelayChains,
+                client,
+              }),
+              resources.chain.release,
+            )
 
-          const mappedChain = Chain({
-            _refId: chainRefId,
-            sendJsonRpc: chain.sendJsonRpc,
-            nextJsonRpcResponse: chain.nextJsonRpcResponse,
-          })
+            const newChains = HashMap.set(oldChains, chainRefId, chain)
 
-          return [mappedChain, newChains]
-        }),
-      )
+            const mappedChain = Chain({
+              _refId: chainRefId,
+              sendJsonRpc: chain.sendJsonRpc,
+              nextJsonRpcResponse: chain.nextJsonRpcResponse,
+              remove: Scope.close(chainScope, Exit.void),
+            })
+
+            return [mappedChain, newChains]
+          }),
+        ).pipe(Scope.extend(chainScope))
+      })
     }
 
-    const restart: Effect.Effect<Client, never, never> = $(
+    const restart: Effect.Effect<Client, never, Scope.Scope> = $(
       $(
         Effect.logWarning("Smoldot is restarting..."),
         Effect.withLogSpan("smoldot"),

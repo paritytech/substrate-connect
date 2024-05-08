@@ -10,8 +10,6 @@ export const make = <E, R>(
   makeJsonRpcProvider: Effect.Effect<JsonRpcProvider, E, R | Scope.Scope>,
 ): Effect.Effect<RPCClient, E, R | Scope.Scope> => {
   return Effect.gen(function* () {
-    const scope = yield* Effect.scope
-
     const substrateClient = yield* Effect.acquireRelease(
       $(makeJsonRpcProvider, Effect.andThen(makeSubstrateClient)),
       (client) =>
@@ -19,7 +17,7 @@ export const make = <E, R>(
           Effect.try(() => client.destroy()),
           Effect.catchAll(() => Effect.void),
         ),
-    ).pipe(Scope.extend(scope))
+    )
 
     return {
       chainSpec: yield* ChainSpec.make(substrateClient),

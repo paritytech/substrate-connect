@@ -47,19 +47,22 @@ export const make = (
     const errorPubSub = yield* PubSub.sliding<void>(1)
 
     //#region Validate Add Chain Options
-    const validateScope = yield* Scope.make()
     const chainRef: SynchronizedRef.SynchronizedRef<smoldot.Chain> = yield* $(
       SmoldotClient,
       Effect.andThen(SynchronizedRef.get),
-      Effect.andThen((client) =>
-        client.addChain(options).pipe(Scope.extend(validateScope)),
-      ),
+      Effect.andThen((client) => client.addChain(options)),
       Effect.andThen(SynchronizedRef.make),
     )
     //#endregion
 
     //#region JSON RPC Daemon
     const daemon = yield* Effect.gen(function* () {
+      yield* Effect.addFinalizer(() =>
+        $(
+          SynchronizedRef.get(chainRef),
+          Effect.andThen((chain) => chain.remove),
+        ),
+      )
       yield* Effect.addFinalizer(() => Queue.takeAll(readySignal))
       yield* Effect.addFinalizer(() => PubSub.publish(errorPubSub, undefined))
 
@@ -68,14 +71,17 @@ export const make = (
         Effect.andThen(SynchronizedRef.get),
       )
 
-      const chain = yield* SynchronizedRef.updateAndGetEffect(chainRef, () =>
-        smoldotClient.addChain(options),
+      const chain = yield* SynchronizedRef.updateAndGetEffect(
+        chainRef,
+        (oldChain) =>
+          smoldotClient
+            .addChain(options)
+            .pipe(Effect.tap(() => oldChain.remove)),
       )
-      yield* Scope.close(validateScope, Exit.void)
 
       // wait until the message queue is flushed
       yield* $(
-        Effect.yieldNow(),
+        Effect.void,
         Effect.repeat({
           until: () => Queue.isEmpty(messageQueue),
           schedule: Schedule.forever,
@@ -198,6 +204,8 @@ export const make = (
       }),
     )
     //#endregion
+
+    yield* Effect.yieldNow()
 
     return provider
   }).pipe(Effect.withLogSpan("json-rpc-provider"))
