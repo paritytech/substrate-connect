@@ -107,16 +107,9 @@ export const make = (
       )
     }).pipe(
       Effect.scoped,
-      Effect.retry(
-        $(
-          Schedule.exponential("500 millis"),
-          Schedule.union(Schedule.spaced("5 seconds")),
-          Schedule.jittered,
-        ),
-      ),
+      Effect.retry($(Schedule.spaced("1 second"), Schedule.jittered)),
       Effect.onExit(() => Effect.log("Daemon has stopped.")),
-      Effect.scoped,
-      Effect.forkScoped,
+      Effect.fork,
       Effect.interruptible,
     )
     //#endregion
@@ -148,12 +141,6 @@ export const make = (
                     $(
                       Effect.try(() => onMessage(message)),
                       Effect.catchAll(() => Effect.void),
-                      Effect.catchAllDefect((err) =>
-                        $(
-                          Effect.logError(err),
-                          Effect.withLogSpan("onMessage"),
-                        ),
-                      ),
                     ),
                   ),
                 ),

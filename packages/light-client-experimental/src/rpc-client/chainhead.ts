@@ -2,7 +2,6 @@ import type * as SubstrateClient from "@polkadot-api/substrate-client"
 import * as S from "@effect/schema/Schema"
 
 import {
-  Option,
   Effect,
   Deferred,
   Runtime,
@@ -38,13 +37,14 @@ export const make = (
 ): Effect.Effect<ChainHeadRPC, never, Scope.Scope> => {
   return Effect.gen(function* () {
     const chainHeadSubscription = yield* Ref.make(
-      Option.none<SubstrateClient.FollowResponse>(),
+      yield* Deferred.make<SubstrateClient.FollowResponse>(),
     )
 
     const subscriptionDaemon = yield* Effect.gen(function* () {
       yield* Effect.addFinalizer(() =>
         Effect.gen(function* () {
-          yield* Ref.set(chainHeadSubscription, Option.none())
+          const cleared = yield* Deferred.make<SubstrateClient.FollowResponse>()
+          yield* Ref.set(chainHeadSubscription, cleared)
           yield* Effect.log("Chainhead disconnected")
         }),
       )
@@ -81,7 +81,10 @@ export const make = (
         {
           onSelfDone: () =>
             Effect.gen(function* () {
-              yield* Ref.set(chainHeadSubscription, Option.some(subscription))
+              yield* $(
+                Ref.get(chainHeadSubscription),
+                Effect.andThen(Deferred.succeed(subscription)),
+              )
               yield* Effect.log("Chainhead connected")
             }),
           onOtherDone: () => Effect.void,
@@ -93,15 +96,7 @@ export const make = (
       yield* Effect.fail("Chainhead interrupted")
     }).pipe(
       Effect.scoped,
-      Effect.retry(
-        $(
-          Schedule.union(
-            Schedule.exponential("500 millis"),
-            Schedule.spaced("5 seconds"),
-          ),
-          Schedule.jittered,
-        ),
-      ),
+      Effect.retry($(Schedule.spaced("1 second"), Schedule.jittered)),
       Effect.catchAll(() => Effect.never),
       Effect.fork,
     )
@@ -110,10 +105,7 @@ export const make = (
 
     const waitForChainHead = $(
       Ref.get(chainHeadSubscription),
-      Effect.flatten,
-      Effect.onError(() => Effect.yieldNow()),
-      Effect.retry({ schedule: Schedule.forever }),
-      Effect.catchAll(() => Effect.never),
+      Effect.andThen(Deferred.await),
     )
 
     const finalizedDatabase: ChainHeadRPC["finalizedDatabase"] = ({

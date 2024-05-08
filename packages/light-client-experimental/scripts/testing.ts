@@ -34,14 +34,14 @@ const logger = PrettyLogger.layer({
   enableColors: true,
 })
 
-const main = Effect.gen(function* (_) {
+const main = Effect.gen(function* () {
   const smoldotRef = yield* SynchronizedRef.make(
     yield* Smoldot.start({ maxLogLevel: 4 }),
   )
 
   const deferredChainheadConnect = yield* Deferred.make()
 
-  const fiber = yield* Effect.gen(function* (_) {
+  const fiber = yield* Effect.gen(function* () {
     const polkadotClient = yield* $(
       makeJsonRpcProvider({ chainSpec: polkadot }),
       makeRPCClient,
@@ -89,11 +89,13 @@ const main = Effect.gen(function* (_) {
     yield* Effect.log(yield* polkadotClient.chainSpec.chainName)
     yield* Effect.log(yield* polkadotClient.chainSpec.properties)
 
-    const massSubscribe = [
-      $(
-        polkadotClient.chainhead,
-        Effect.withLogSpan(`${chainName.toLowerCase()}-${0}`),
-      ),
+    const sub0 = yield* $(
+      polkadotClient.chainhead,
+      Effect.withLogSpan(`${chainName.toLowerCase()}-${0}`),
+    )
+
+    /*     const massSubscribe = [
+      sub0
     ]
 
     for (let i = 1; i < 3; i++) {
@@ -108,7 +110,11 @@ const main = Effect.gen(function* (_) {
 
     yield* Console.log(massSubscribe.length)
 
-    yield* Effect.all(massSubscribe, { concurrency: "unbounded" })
+    yield* Effect.all(massSubscribe, { concurrency: "unbounded" }) */
+
+    yield* sub0.finalizedDatabase()
+
+    yield* Console.log("dumped")
 
     /*     const chainheadSubscription = yield* $(
       polkadotClient.chainhead,
@@ -122,7 +128,7 @@ const main = Effect.gen(function* (_) {
 
     yield* Deferred.succeed(deferredChainheadConnect, undefined) */
 
-    yield* $(Effect.yieldNow(), Effect.forever)
+    yield* Effect.never
   }).pipe(
     Effect.tapError(Effect.logError),
     Effect.fork,
@@ -137,7 +143,7 @@ const main = Effect.gen(function* (_) {
     (oldSmoldot) => oldSmoldot.restart,
   ) */
 
-  yield* $(Effect.yieldNow(), Effect.forever)
+  yield* Effect.never
 }).pipe(
   Effect.tapErrorCause((cause) => Effect.logError(Cause.pretty(cause))),
   Effect.tapDefect((cause) => Effect.logFatal(Cause.pretty(cause))),
