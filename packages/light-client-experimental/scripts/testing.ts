@@ -109,14 +109,17 @@ const main = Effect.gen(function* (_) {
     yield* Effect.log(yield* polkadotClient.chainSpec.properties)
 
     const massSubscribe = [
-      $(polkadotClient.chainhead, Effect.withLogSpan(chainName.toLowerCase())),
+      $(
+        polkadotClient.chainhead,
+        Effect.withLogSpan(`${chainName.toLowerCase()}-${0}`),
+      ),
     ]
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 1; i < 10; i++) {
       massSubscribe.push(
         $(
           polkadotClient.chainhead,
-          Effect.withLogSpan(chainName.toLowerCase()),
+          Effect.withLogSpan(`${chainName.toLowerCase()}-${i}`),
           Effect.delay(i * 1000),
         ),
       )

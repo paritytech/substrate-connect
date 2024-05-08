@@ -52,6 +52,7 @@ export const make = (
       const runtime = yield* Effect.runtime<never>()
       const runPromise = Runtime.runPromise(runtime)
 
+      const initializedSignal = yield* Deferred.make<void>()
       const exitSignal = yield* Deferred.make<Error>()
 
       const subscription: SubstrateClient.FollowResponse =
@@ -59,17 +60,12 @@ export const make = (
           Effect.try(() =>
             client.chainHead(
               true,
-              () =>
-                runPromise(
-                  Effect.gen(function* () {
-                    yield* Ref.set(
-                      chainHeadSubscription,
-                      Option.some(subscription),
-                    )
-                    yield* Effect.log("Chainhead connected")
-                  }),
-                ),
-              (err) => runPromise(Deferred.succeed(exitSignal, err)),
+              () => {
+                runPromise(Deferred.succeed(initializedSignal, undefined))
+              },
+              (err) => {
+                runPromise(Deferred.succeed(exitSignal, err))
+              },
             ),
           ),
           (followResponse) =>
@@ -79,15 +75,22 @@ export const make = (
             ),
         )
 
-      yield* $(
+      yield* Effect.raceWith(
+        Deferred.await(initializedSignal),
         Deferred.await(exitSignal),
-        Effect.andThen((err) =>
-          $(
-            Effect.logError(err, err.message),
-            Effect.andThen(Effect.fail("Chainhead interrupted")),
-          ),
-        ),
+        {
+          onSelfDone: () =>
+            Effect.gen(function* () {
+              yield* Ref.set(chainHeadSubscription, Option.some(subscription))
+              yield* Effect.log("Chainhead connected")
+            }),
+          onOtherDone: () => Effect.void,
+        },
       )
+
+      const err = yield* Deferred.await(exitSignal)
+      yield* Effect.logError(err, err.message)
+      yield* Effect.fail("Chainhead interrupted")
     }).pipe(
       Effect.scoped,
       Effect.retry(
