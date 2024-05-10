@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@polkadot-api/json-rpc-provider-proxy": "0.0.1",
-    "@polkadot-api/substrate-client": "0.0.1",
+    "@polkadot-api/substrate-client": "0.1.2",
     "eslint": "^8.57.0",
     "jsdom": "^24.0.0",
     "vitest": "^1.5.0"

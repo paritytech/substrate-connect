@@ -12,7 +12,7 @@
   "dependencies": {
     "@picocss/pico": "^2.0.6",
     "@polkadot-api/observable-client": "0.1.1",
-    "@polkadot-api/substrate-client": "0.0.1",
+    "@polkadot-api/substrate-client": "0.1.2",
     "@substrate/light-client-extension-helpers": "workspace:*",
     "@substrate/connect-known-chains": "workspace:*",
     "react": "^18.3.1",
