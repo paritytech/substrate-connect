@@ -1,16 +1,15 @@
 # Deploying docs and releasing substrate connect
 
-## Releasing
-
-TODO
+TODO: This is out of date. Update this to reflect the new release steps once we
+get to doing a release.
 
 ## Deploy Smoldot browser demo to Github Pages
 
 Before deploying make sure you have a clean working copy with no staged changes.
 The deploy script will deploy the last commit on your current branch.
 
-The deployment will build the smoldot browser demo into the dist folder and 
-construct a commit containing just that folder with a message containing a 
+The deployment will build the smoldot browser demo into the dist folder and
+construct a commit containing just that folder with a message containing a
 reference to the SHA of the commit it came from and push that to the gh-pages
 branch. The dist folder remains ignored by git.
 
