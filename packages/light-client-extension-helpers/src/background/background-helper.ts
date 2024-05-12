@@ -23,12 +23,7 @@ import { ALARM, PORT, isSubstrateConnectToExtensionMessage } from "@/shared"
 import { isRpcMessage, type RpcMessage } from "@/utils"
 import * as storage from "@/storage"
 import { createBackgroundRpc } from "./createBackgroundRpc"
-import {
-  Client,
-  Chain,
-  AddChainOptions,
-  AddChainError,
-} from "@substrate/light-client-experimental/smoldot"
+import { Client, Chain, AddChainOptions, AddChainError } from "../smoldot"
 import { Console, Effect, Schedule } from "effect"
 
 export type * from "./types"

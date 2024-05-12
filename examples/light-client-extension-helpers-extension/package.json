@@ -17,7 +17,6 @@
   "dependencies": {
     "@polkadot-api/substrate-client": "0.0.1",
     "@substrate/light-client-extension-helpers": "workspace:*",
-    "@substrate/light-client-experimental": "workspace:*",
     "smoldot": "2.0.22"
   },
   "devDependencies": {

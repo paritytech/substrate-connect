@@ -1,9 +1,6 @@
 import type { JsonRpcProvider } from "@polkadot-api/json-rpc-provider"
-import type {
-  Client,
-  AddChainOptions,
-} from "@substrate/light-client-experimental/smoldot"
-import { make as makeJSONRpcProvider } from "@substrate/light-client-experimental/json-rpc-provider"
+import type { Client, AddChainOptions } from "../smoldot"
+import { make as makeJSONRpcProvider } from "./json-rpc-provider"
 import { Effect } from "effect"
 
 type SmoldotProviderOptions =

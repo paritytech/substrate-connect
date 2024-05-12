@@ -18,13 +18,13 @@
     "./known-chain-specs/ksmcc3": "./dist/known-chain-specs/ksmcc3.mjs",
     "./known-chain-specs/westend2": "./dist/known-chain-specs/westend2.mjs",
     "./known-chain-specs/rococo_v2_2": "./dist/known-chain-specs/rococo_v2_2.mjs",
-    "./smoldot": "./dist/smoldot/smoldot.mjs"
+    "./smoldot": "./dist/smoldot/index.mjs"
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc --noEmit && tsup-node src/background/background-helper.ts src/content-script/content-script-helper.ts src/extension-page/extension-page-helper.ts src/web-page/web-page-helper.ts src/known-chain-specs/index.ts src/known-chain-specs/polkadot.ts src/known-chain-specs/ksmcc3.ts src/known-chain-specs/westend2.ts src/known-chain-specs/rococo_v2_2.ts src/utils/index.ts src/smoldot/smoldot.ts --clean --sourcemap --platform neutral --target=es2020 --format esm --dts",
+    "build": "tsc --noEmit && tsup-node src/background/background-helper.ts src/content-script/content-script-helper.ts src/extension-page/extension-page-helper.ts src/web-page/web-page-helper.ts src/known-chain-specs/index.ts src/known-chain-specs/polkadot.ts src/known-chain-specs/ksmcc3.ts src/known-chain-specs/westend2.ts src/known-chain-specs/rococo_v2_2.ts src/utils/index.ts src/smoldot/index.ts --clean --sourcemap --platform neutral --target=es2020 --format esm --dts",
     "dev": "pnpm build --watch",
     "lint": "prettier --check README.md \"src/**/*.{js,jsx,ts,tsx,json,md}\""
   },
@@ -37,7 +37,8 @@
     "@types/chrome": "^0.0.266"
   },
   "peerDependencies": {
-    "smoldot": "2.x"
+    "smoldot": "2.x",
+    "effect": "^3.1"
   },
   "dependencies": {
     "@polkadot-api/json-rpc-provider": "0.0.1",
@@ -46,8 +47,6 @@
     "@polkadot-api/substrate-client": "0.0.1",
     "@substrate/connect-extension-protocol": "workspace:^",
     "@substrate/connect-known-chains": "workspace:^",
-    "@substrate/light-client-experimental": "workspace:^",
-    "effect": "^3.1.2",
     "rxjs": "^7.8.1"
   }
 }

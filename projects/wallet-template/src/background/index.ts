@@ -1,5 +1,5 @@
-import { start } from "smoldot"
 import { register } from "@substrate/light-client-extension-helpers/background"
+import { start } from "@substrate/light-client-extension-helpers/smoldot"
 import { createBackgroundRpc } from "./createBackgroundRpc"
 import * as storage from "./storage"
 import type { Account } from "./types"
