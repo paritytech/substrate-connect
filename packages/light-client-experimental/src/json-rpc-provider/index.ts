@@ -1,4 +1,4 @@
-import * as smoldot from "../smoldot"
+import type * as smoldot from "../smoldot"
 
 import type {
   JsonRpcConnection,
@@ -7,14 +7,12 @@ import type {
 import { getSyncProvider } from "@polkadot-api/json-rpc-provider-proxy"
 import {
   Cause,
-  Context,
   Effect,
   Exit,
   Fiber,
   pipe as $,
   Runtime,
   Schedule,
-  Scope,
   SynchronizedRef,
   Queue,
   Stream,
@@ -22,62 +20,45 @@ import {
   PubSub,
 } from "effect"
 
-export class SmoldotClient extends Context.Tag("SmoldotClient")<
-  SmoldotClient,
-  SynchronizedRef.SynchronizedRef<smoldot.Client>
->() {}
+export type Client = Pick<smoldot.Client, "addChain">
+export type AddChainOptions = smoldot.AddChainOptions
 
 export const make = (
-  options: smoldot.AddChainOptions,
-): Effect.Effect<
-  JsonRpcProvider,
-  | smoldot.AddChainError
-  | smoldot.AlreadyDestroyedError
-  | smoldot.CrashError
-  | Cause.UnknownException,
-  SmoldotClient | Scope.Scope
-> => {
+  client: Client,
+  options: AddChainOptions,
+): Effect.Effect<JsonRpcProvider, Cause.UnknownException, never> => {
   return Effect.gen(function* () {
-    const runtime = yield* Effect.runtime<never>()
-    const runCallback = Runtime.runCallback(runtime)
-    const runPromise = Runtime.runPromise(runtime)
-
     const readySignal = yield* Queue.sliding<void>(1)
-    const messageQueue = yield* PubSub.unbounded<string>()
+    const messagePubSub = yield* PubSub.unbounded<string>()
     const errorPubSub = yield* PubSub.sliding<void>(1)
 
-    //#region Validate Add Chain Options
-    const validateScope = yield* Scope.make()
-    const chainRef: SynchronizedRef.SynchronizedRef<smoldot.Chain> = yield* $(
-      SmoldotClient,
-      Effect.andThen(SynchronizedRef.get),
-      Effect.andThen((client) =>
-        client.addChain(options).pipe(Scope.extend(validateScope)),
-      ),
-      Effect.andThen(SynchronizedRef.make),
-    )
-    //#endregion
+    const addChain = Effect.tryPromise(() => client.addChain(options))
+
+    const chainRef = yield* $(addChain, Effect.andThen(SynchronizedRef.make))
 
     //#region JSON RPC Daemon
     const daemon = yield* Effect.gen(function* () {
       yield* Effect.addFinalizer(() => Queue.takeAll(readySignal))
       yield* Effect.addFinalizer(() => PubSub.publish(errorPubSub, undefined))
 
-      const smoldotClient = yield* $(
-        SmoldotClient,
-        Effect.andThen(SynchronizedRef.get),
+      const chain = yield* SynchronizedRef.updateAndGetEffect(
+        chainRef,
+        (oldChain) =>
+          addChain.pipe(
+            Effect.tap(() =>
+              $(
+                Effect.try(() => oldChain.remove()),
+                Effect.catchAll(() => Effect.void),
+              ),
+            ),
+          ),
       )
-
-      const chain = yield* SynchronizedRef.updateAndGetEffect(chainRef, () =>
-        smoldotClient.addChain(options),
-      )
-      yield* Scope.close(validateScope, Exit.void)
 
       // wait until the message queue is flushed
       yield* $(
         Effect.void,
         Effect.repeat({
-          until: () => Queue.isEmpty(messageQueue),
+          until: () => Queue.isEmpty(messagePubSub),
           schedule: Schedule.forever,
         }),
       )
@@ -85,24 +66,13 @@ export const make = (
       yield* Queue.offer(readySignal, undefined)
 
       yield* $(
-        chain.nextJsonRpcResponse,
+        Effect.tryPromise(() => chain.nextJsonRpcResponse()),
         Effect.tap((message) =>
           $(
-            Queue.offer(messageQueue, message),
+            Queue.offer(messagePubSub, message),
             Effect.tap(() => Effect.logDebug(message)),
           ),
         ),
-        Effect.tapErrorTag("AlreadyDestroyedError", () => Effect.void),
-        Effect.tapErrorTag("JsonRpcDisabledError", () =>
-          $(
-            Effect.logWarning("JSON RPC disabled."),
-            Effect.andThen(Effect.interrupt),
-          ),
-        ),
-        Effect.tapErrorTag("CrashError", () =>
-          Effect.logWarning("Smoldot has crashed."),
-        ),
-        Effect.tapErrorTag("UnknownException", (e) => Effect.logError(e)),
         Effect.forever,
       )
     }).pipe(
@@ -114,13 +84,16 @@ export const make = (
         ),
       ),
       Effect.onExit(() => Effect.log("Daemon has stopped.")),
-      Effect.scoped,
-      Effect.forkScoped,
+      Effect.forkDaemon,
       Effect.interruptible,
     )
     //#endregion
 
     //#region JSON RPC Provider
+    const runtime = yield* Effect.runtime<never>()
+    const runCallback = Runtime.runCallback(runtime)
+    const runPromise = Runtime.runPromise(runtime)
+
     const provider: JsonRpcProvider = yield* Effect.sync(() =>
       getSyncProvider(async () => {
         await runPromise(
@@ -138,7 +111,7 @@ export const make = (
           runCallback(
             Effect.gen(function* () {
               const errorSubscription = yield* PubSub.subscribe(errorPubSub)
-              const messageStream = yield* PubSub.subscribe(messageQueue)
+              const messageStream = yield* PubSub.subscribe(messagePubSub)
 
               yield* $(
                 Stream.fromQueue(messageStream),
@@ -147,12 +120,6 @@ export const make = (
                     $(
                       Effect.try(() => onMessage(message)),
                       Effect.catchAll(() => Effect.void),
-                      Effect.catchAllDefect((err) =>
-                        $(
-                          Effect.logError(err),
-                          Effect.withLogSpan("onMessage"),
-                        ),
-                      ),
                     ),
                   ),
                 ),

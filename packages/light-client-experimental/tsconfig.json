@@ -8,6 +8,8 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "noUncheckedIndexedAccess": false
+    "noUncheckedIndexedAccess": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
   }
 }

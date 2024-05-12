@@ -53,6 +53,7 @@
     "@react-rxjs/utils": "^0.9.7",
     "@substrate/connect-extension-protocol": "workspace:*",
     "@substrate/light-client-extension-helpers": "workspace:^",
+    "@substrate/light-client-experimental": "workspace:^",
     "react": "^18.3.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",

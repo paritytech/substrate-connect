@@ -14,7 +14,7 @@
 //     plugins: [pluginNodeResolve(), pluginEsbuild()],
 //   }
 
-import { start } from "smoldot"
+import { start } from "@substrate/light-client-experimental/smoldot"
 
 const clientReferencesMaxLogLevel = 3
 

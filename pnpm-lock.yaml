@@ -82,7 +82,7 @@ importers:
         version: 2.0.6
       '@polkadot-api/client':
         specifier: ^0.1.0
-        version: 0.1.0(@substrate/connect@packages+connect)(rxjs@7.8.1)(smoldot@2.0.25)
+        version: 0.1.0(@substrate/connect@packages+connect)(rxjs@7.8.1)(smoldot@2.0.22)
       '@polkadot-api/metadata-builders':
         specifier: 0.0.1
         version: 0.0.1
@@ -217,6 +217,9 @@ importers:
       '@polkadot-api/substrate-client':
         specifier: 0.0.1
         version: 0.0.1
+      '@substrate/light-client-experimental':
+        specifier: workspace:*
+        version: link:../../packages/light-client-experimental
       '@substrate/light-client-extension-helpers':
         specifier: workspace:*
         version: link:../../packages/light-client-extension-helpers
@@ -284,34 +287,32 @@ importers:
         version: 8.57.0
 
   packages/light-client-experimental:
-    devDependencies:
-      '@effect/experimental':
-        specifier: ^0.15.18
-        version: 0.15.18(@effect/platform-node@0.48.4)(@effect/platform@0.52.3)(@effect/schema@0.66.14)(effect@3.1.2)(ws@8.17.0)
-      '@effect/platform-node':
-        specifier: ^0.48.4
-        version: 0.48.4(@effect/platform@0.52.3)(effect@3.1.2)
+    dependencies:
       '@polkadot-api/json-rpc-provider':
         specifier: ^0.0.1
         version: 0.0.1
       '@polkadot-api/json-rpc-provider-proxy':
         specifier: ^0.1.0
         version: 0.1.0
+      effect:
+        specifier: ^3.1
+        version: 3.1.2
+      smoldot:
+        specifier: 2.x
+        version: 2.0.22
+    devDependencies:
+      '@effect/platform-node':
+        specifier: ^0.48.4
+        version: 0.48.4(@effect/platform@0.52.3)(effect@3.1.2)
       '@polkadot-api/substrate-client':
         specifier: ^0.1.0
         version: 0.1.1
       '@substrate/connect-known-chains':
         specifier: workspace:^
         version: link:../connect-known-chains
-      effect:
-        specifier: ^3.1.2
-        version: 3.1.2
       effect-log:
         specifier: ^0.31.1
         version: 0.31.1(effect@3.1.2)
-      smoldot:
-        specifier: 2.0.25
-        version: 2.0.25
 
   packages/light-client-extension-helpers:
     dependencies:
@@ -333,6 +334,12 @@ importers:
       '@substrate/connect-known-chains':
         specifier: workspace:^
         version: link:../connect-known-chains
+      '@substrate/light-client-experimental':
+        specifier: workspace:^
+        version: link:../light-client-experimental
+      effect:
+        specifier: ^3.1.2
+        version: 3.1.2
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
@@ -470,6 +477,9 @@ importers:
       '@substrate/connect-extension-protocol':
         specifier: workspace:*
         version: link:../../packages/connect-extension-protocol
+      '@substrate/light-client-experimental':
+        specifier: workspace:^
+        version: link:../../packages/light-client-experimental
       '@substrate/light-client-extension-helpers':
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers
@@ -2218,34 +2228,6 @@ packages:
       - supports-color
     dev: true
 
-  /@effect/experimental@0.15.18(@effect/platform-node@0.48.4)(@effect/platform@0.52.3)(@effect/schema@0.66.14)(effect@3.1.2)(ws@8.17.0):
-    resolution: {integrity: sha512-ELLsIkwgYt9X1ozA6IwAMxqa8qLsj3XL/LmgXsn/moCPBhI4p7TwCE9x9MUi8+0k/75k/tkjPix8mtYBmbkGsQ==}
-    peerDependencies:
-      '@effect/platform': ^0.52.3
-      '@effect/platform-node': ^0.48.4
-      '@effect/schema': ^0.66.14
-      effect: ^3.1.2
-      ioredis: ^5
-      lmdb: ^3
-      ws: ^8
-    peerDependenciesMeta:
-      '@effect/platform-node':
-        optional: true
-      ioredis:
-        optional: true
-      lmdb:
-        optional: true
-      ws:
-        optional: true
-    dependencies:
-      '@effect/platform': 0.52.3(@effect/schema@0.66.14)(effect@3.1.2)(ws@8.17.0)
-      '@effect/platform-node': 0.48.4(@effect/platform@0.52.3)(effect@3.1.2)
-      '@effect/schema': 0.66.14(effect@3.1.2)(fast-check@3.18.0)
-      effect: 3.1.2
-      msgpackr: 1.10.1
-      ws: 8.17.0
-    dev: true
-
   /@effect/platform-node-shared@0.4.18(@effect/platform@0.52.3)(effect@3.1.2):
     resolution: {integrity: sha512-CIuzRRoCMcHqfg0v24ai9MD0lPf2Y0wB+rsHyUCRhK7LtF5w4QuwUc9c1yUo1qPzfElPOFFxBVOB5vEwLih8tw==}
     peerDependencies:
@@ -3021,54 +3003,6 @@ packages:
     resolution: {integrity: sha512-DoHTZ/TjtNfUu9eiqJd+x3IcCQrhS+yOYU436TKUnlE36jZwNbK535D1CmTsSYdi/UcdCWNm5KRQZ9g1tlZCPw==}
     dev: true
 
-  /@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.2:
-    resolution: {integrity: sha512-9bfjwDxIDWmmOKusUcqdS4Rw+SETlp9Dy39Xui9BEGEk19dDwH0jhipwFzEff/pFg95NKymc6TOTbRKcWeRqyQ==}
-    cpu: [arm64]
-    os: [darwin]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /@msgpackr-extract/msgpackr-extract-darwin-x64@3.0.2:
-    resolution: {integrity: sha512-lwriRAHm1Yg4iDf23Oxm9n/t5Zpw1lVnxYU3HnJPTi2lJRkKTrps1KVgvL6m7WvmhYVt/FIsssWay+k45QHeuw==}
-    cpu: [x64]
-    os: [darwin]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /@msgpackr-extract/msgpackr-extract-linux-arm64@3.0.2:
-    resolution: {integrity: sha512-FU20Bo66/f7He9Fp9sP2zaJ1Q8L9uLPZQDub/WlUip78JlPeMbVL8546HbZfcW9LNciEXc8d+tThSJjSC+tmsg==}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /@msgpackr-extract/msgpackr-extract-linux-arm@3.0.2:
-    resolution: {integrity: sha512-MOI9Dlfrpi2Cuc7i5dXdxPbFIgbDBGgKR5F2yWEa6FVEtSWncfVNKW5AKjImAQ6CZlBK9tympdsZJ2xThBiWWA==}
-    cpu: [arm]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /@msgpackr-extract/msgpackr-extract-linux-x64@3.0.2:
-    resolution: {integrity: sha512-gsWNDCklNy7Ajk0vBBf9jEx04RUxuDQfBse918Ww+Qb9HCPoGzS+XJTLe96iN3BVK7grnLiYghP/M4L8VsaHeA==}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /@msgpackr-extract/msgpackr-extract-win32-x64@3.0.2:
-    resolution: {integrity: sha512-O+6Gs8UeDbyFpbSh2CPEz/UOrrdWPTBYNblZK5CxxLisYt4kGX3Sc+czffFonyjiGSq3jWLwJS/CCJc7tBr4sQ==}
-    cpu: [x64]
-    os: [win32]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1:
     resolution: {integrity: sha512-54/JRvkLIzzDWshCWfuhadfrfZVPiElY8Fcgmg1HroEly/EDSszzhBAsarCux+D/kOslTRquNzuyGSmUSTTHGg==}
     dependencies:
@@ -3331,7 +3265,7 @@ packages:
     dev: false
     optional: true
 
-  /@polkadot-api/client@0.1.0(@substrate/connect@packages+connect)(rxjs@7.8.1)(smoldot@2.0.25):
+  /@polkadot-api/client@0.1.0(@substrate/connect@packages+connect)(rxjs@7.8.1)(smoldot@2.0.22):
     resolution: {integrity: sha512-01LfWzTE0BGA//rkDXvNC+CVy1hly2dyuHhVBJQ4a2FlR22BtjeOhAVfd5UBpkzKTP/bqzYGmjEl5vf4S+MFnQ==}
     hasBin: true
     peerDependencies:
@@ -3346,7 +3280,7 @@ packages:
       '@polkadot-api/polkadot-signer': 0.0.1
       '@polkadot-api/sc-provider': 0.0.1(@substrate/connect@packages+connect)
       '@polkadot-api/signer': 0.0.1
-      '@polkadot-api/sm-provider': 0.0.1(smoldot@2.0.25)
+      '@polkadot-api/sm-provider': 0.0.1(smoldot@2.0.22)
       '@polkadot-api/substrate-bindings': 0.0.1
       '@polkadot-api/substrate-client': 0.0.1
       '@polkadot-api/utils': 0.0.1
@@ -3383,10 +3317,11 @@ packages:
 
   /@polkadot-api/json-rpc-provider-proxy@0.1.0:
     resolution: {integrity: sha512-8GSFE5+EF73MCuLQm8tjrbCqlgclcHBSRaswvXziJ0ZW7iw3UEMsKkkKvELayWyBuOPa2T5i1nj6gFOeIsqvrg==}
-    dev: true
+    dev: false
 
   /@polkadot-api/json-rpc-provider@0.0.1:
     resolution: {integrity: sha512-/SMC/l7foRjpykLTUTacIH05H3mr9ip8b5xxfwXlVezXrNVLp3Cv0GX6uItkKd+ZjzVPf3PFrDF2B2/HLSNESA==}
+    dev: false
 
   /@polkadot-api/json-rpc-provider@0.0.1-492c132563ea6b40ae1fc5470dec4cd18768d182.1.0:
     resolution: {integrity: sha512-EaUS9Fc3wsiUr6ZS43PQqaRScW7kM6DYbuM/ou0aYjm8N9MBqgDbGm2oL6RE1vAVmOfEuHcXZuZkhzWtyvQUtA==}
@@ -3488,14 +3423,14 @@ packages:
       '@polkadot-api/utils': 0.0.1
     dev: false
 
-  /@polkadot-api/sm-provider@0.0.1(smoldot@2.0.25):
+  /@polkadot-api/sm-provider@0.0.1(smoldot@2.0.22):
     resolution: {integrity: sha512-ujT8YbFAbskoKtCfn5uBRIVG020BD+mCvyW/EwN5FhFm0U2KMIyglsuZkEEanZjC1u/JCt1Ido0py1ze2Yzkww==}
     peerDependencies:
       smoldot: '>=2'
     dependencies:
       '@polkadot-api/json-rpc-provider': 0.0.1
       '@polkadot-api/json-rpc-provider-proxy': 0.0.1
-      smoldot: 2.0.25
+      smoldot: 2.0.22
     dev: false
 
   /@polkadot-api/substrate-bindings@0.0.1:
@@ -6890,7 +6825,6 @@ packages:
 
   /effect@3.1.2:
     resolution: {integrity: sha512-XakSWck6w6ROqKyEys0tKE9K6Gx2p8W/09u2ZTEZZrneO5Z3QEdPhXzWTyC73kD5zUvfJinZLVIas8I1xoHaTg==}
-    dev: true
 
   /ejs@3.1.10:
     resolution: {integrity: sha512-UeJmFfOrAQS8OJWPZ4qtgHyWExa088/MtK5UEyoJGFH67cDEXkZSviOiKRCZ4Xij0zxI3JECgYs3oKx+AizQBA==}
@@ -9746,28 +9680,6 @@ packages:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
     dev: true
 
-  /msgpackr-extract@3.0.2:
-    resolution: {integrity: sha512-SdzXp4kD/Qf8agZ9+iTu6eql0m3kWm1A2y1hkpTeVNENutaB0BwHlSvAIaMxwntmRUAUjon2V4L8Z/njd0Ct8A==}
-    hasBin: true
-    requiresBuild: true
-    dependencies:
-      node-gyp-build-optional-packages: 5.0.7
-    optionalDependencies:
-      '@msgpackr-extract/msgpackr-extract-darwin-arm64': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-darwin-x64': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-linux-arm': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-linux-arm64': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-linux-x64': 3.0.2
-      '@msgpackr-extract/msgpackr-extract-win32-x64': 3.0.2
-    dev: true
-    optional: true
-
-  /msgpackr@1.10.1:
-    resolution: {integrity: sha512-r5VRLv9qouXuLiIBrLpl2d5ZvPt8svdQTl5/vMvE4nzDMyEX4sgW5yWhuBBj5UmgwOTWj8CIdSXn5sAfsHAWIQ==}
-    optionalDependencies:
-      msgpackr-extract: 3.0.2
-    dev: true
-
   /multimatch@6.0.0:
     resolution: {integrity: sha512-I7tSVxHGPlmPN/enE3mS1aOSo6bWBfls+3HmuEeCUBCE7gWnm3cBXCBkpurzFjVRwC6Kld8lLaZ1Iv5vOcjvcQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -9891,13 +9803,6 @@ packages:
     resolution: {integrity: sha512-dPEtOeMvF9VMcYV/1Wb8CPoVAXtp6MKMlcbAt4ddqmGqUJ6fQZFXkNZNkNlfevtNkGtaSoXf/vNNNSvgrdXwtA==}
     engines: {node: '>= 6.13.0'}
     dev: true
-
-  /node-gyp-build-optional-packages@5.0.7:
-    resolution: {integrity: sha512-YlCCc6Wffkx0kHkmam79GKvDQ6x+QZkMjFGrIMxgFNILFvGSbCp2fCBC55pGTT9gVaz8Na5CLmxt/urtzRv36w==}
-    hasBin: true
-    requiresBuild: true
-    dev: true
-    optional: true
 
   /node-html-parser@5.4.2:
     resolution: {integrity: sha512-RaBPP3+51hPne/OolXxcz89iYvQvKOydaqoePpOgXcrOKZhjVIzmpKZz+Hd/RBO2/zN2q6CNJhQzucVz+u3Jyw==}
@@ -11473,14 +11378,6 @@ packages:
       - bufferutil
       - utf-8-validate
     dev: false
-
-  /smoldot@2.0.25:
-    resolution: {integrity: sha512-48fUFXWUQUTlf5dXIPhA4XCznBXqKwl6ir8wEWG9HUOd/U591VqcFgUJOs2lUQxTG53pY05PHez0CEk4aLpwAw==}
-    dependencies:
-      ws: 8.17.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
 
   /sonic-boom@3.8.1:
     resolution: {integrity: sha512-y4Z8LCDBuum+PBP3lSV7RHrXscqksve/bi0as7mhwVnBW+/wUqKT/2Kb7um8yqcFy0duYbbPxzt89Zy2nOCaxg==}

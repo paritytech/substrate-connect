@@ -20,10 +20,7 @@ import {
 } from "@substrate/connect-known-chains"
 import { PrettyLogger } from "effect-log"
 import * as Smoldot from "@substrate/light-client-experimental/smoldot"
-import {
-  make as makeJsonRpcProvider,
-  SmoldotClient,
-} from "@substrate/light-client-experimental/json-rpc-provider"
+import { make as makeJsonRpcProvider } from "@substrate/light-client-experimental/json-rpc-provider"
 import { createClient as createSubstrateClient } from "@polkadot-api/substrate-client"
 import { JsonRpcProvider } from "@polkadot-api/json-rpc-provider"
 
@@ -35,9 +32,7 @@ const logger = PrettyLogger.layer({
 })
 
 const main = Effect.gen(function* (_) {
-  const smoldotRef = yield* SynchronizedRef.make(
-    yield* Smoldot.start({ maxLogLevel: 4 }),
-  )
+  const smoldot = yield* Effect.sync(() => Smoldot.start({ maxLogLevel: 3 }))
 
   const createClient = (provider: JsonRpcProvider) =>
     Effect.acquireRelease(
@@ -51,12 +46,23 @@ const main = Effect.gen(function* (_) {
 
   const fiber = yield* Effect.gen(function* (_) {
     const polkadotClient = yield* $(
-      makeJsonRpcProvider({ chainSpec: polkadot }),
+      makeJsonRpcProvider(smoldot, { chainSpec: polkadot }),
       Effect.andThen(createClient),
       Effect.withLogSpan("polkadot"),
       Effect.withSpan("polkadot"),
     )
 
+    const polkadotAssetHubClient = yield* $(
+      makeJsonRpcProvider(smoldot, {
+        chainSpec: polkadot_asset_hub,
+        potentialRelayChains: [{ chainSpec: polkadot }],
+      }),
+      Effect.andThen(createClient),
+      Effect.withLogSpan("polkadot-asset-hub"),
+      Effect.withSpan("polkadot-asset-hub"),
+    )
+
+    /* 
     const westendClient = yield* $(
       makeJsonRpcProvider({ chainSpec: westend2 }),
       Effect.andThen(createClient),
@@ -89,20 +95,16 @@ const main = Effect.gen(function* (_) {
       Effect.andThen(createClient),
       Effect.withLogSpan("kusama-asset-hub"),
       Effect.withSpan("kusama-asset-hub"),
-    )
+    ) */
 
     yield* Effect.void.pipe(Effect.forever)
-  }).pipe(
-    Effect.tapError(Effect.logError),
-    Effect.fork,
-    Effect.provideService(SmoldotClient, smoldotRef),
-  )
+  }).pipe(Effect.tapError(Effect.logError), Effect.fork)
 
   yield* Effect.sleep(Duration.seconds(5))
-  yield* SynchronizedRef.updateEffect(
-    smoldotRef,
-    (oldSmoldot) => oldSmoldot.restart,
-  ).pipe(Effect.repeat(Schedule.exponential(Duration.seconds(15))))
+  yield* $(
+    Effect.tryPromise(() => smoldot.restart()),
+    Effect.repeat(Schedule.spaced(Duration.seconds(15))),
+  )
 
   yield* Effect.void.pipe(Effect.forever)
 }).pipe(
