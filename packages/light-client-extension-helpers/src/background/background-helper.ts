@@ -23,8 +23,8 @@ import { ALARM, PORT, isSubstrateConnectToExtensionMessage } from "@/shared"
 import { isRpcMessage, type RpcMessage } from "@/utils"
 import * as storage from "@/storage"
 import { createBackgroundRpc } from "./createBackgroundRpc"
-import { Client, Chain, AddChainOptions, AddChainError } from "../smoldot"
-import { Console, Effect, Schedule } from "effect"
+import { Client, Chain, AddChainOptions } from "../smoldot"
+import { supervise } from "../smoldot/tasks"
 
 export type * from "./types"
 
@@ -41,34 +41,7 @@ export const register = ({
   if (isRegistered) throw new Error("helper already registered")
   isRegistered = true
 
-  // YOLO
-  Effect.tryPromise(() =>
-    smoldotClient
-      .addChain({ chainSpec: "" })
-      .then(() => {})
-      .catch((err) => {
-        if (err instanceof AddChainError) {
-          return
-        }
-
-        throw err
-      }),
-  ).pipe(
-    Effect.tapError(Console.error),
-    Effect.repeat({
-      schedule: Schedule.spaced("1 second").pipe(
-        Schedule.jitteredWith({ min: 0.8, max: 1.5 }),
-      ),
-    }),
-    Effect.tapError(() => Effect.tryPromise(() => smoldotClient.restart())),
-    Effect.retry({
-      schedule: Schedule.spaced("1 second").pipe(
-        Schedule.jitteredWith({ min: 0.8, max: 1.5 }),
-      ),
-    }),
-    Effect.forkDaemon,
-    Effect.runPromise,
-  )
+  supervise(smoldotClient)
 
   const wellKnownChainSpecsPromise: Promise<Record<string, string>> =
     getWellKnownChainSpecs().then(async (chainSpecs) =>

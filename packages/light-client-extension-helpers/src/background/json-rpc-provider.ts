@@ -8,7 +8,6 @@ import { getSyncProvider } from "@polkadot-api/json-rpc-provider-proxy"
 import {
   Cause,
   Effect,
-  Exit,
   Fiber,
   pipe as $,
   Runtime,
@@ -28,15 +27,19 @@ export const make = (
   options: AddChainOptions,
 ): Effect.Effect<JsonRpcProvider, Cause.UnknownException, never> => {
   return Effect.gen(function* () {
+    const runtime = yield* Effect.runtime<never>()
+    const runCallback = Runtime.runCallback(runtime)
+    const runPromise = Runtime.runPromise(runtime)
+
     const readySignal = yield* Queue.sliding<void>(1)
     const messagePubSub = yield* PubSub.unbounded<string>()
     const errorPubSub = yield* PubSub.sliding<void>(1)
 
-    const addChain = Effect.tryPromise(() => client.addChain(options))
+    const chainRef = yield* $(
+      Effect.tryPromise(() => client.addChain(options)),
+      Effect.andThen(SynchronizedRef.make),
+    )
 
-    const chainRef = yield* $(addChain, Effect.andThen(SynchronizedRef.make))
-
-    //#region JSON RPC Daemon
     const daemon = yield* Effect.gen(function* () {
       yield* Effect.addFinalizer(() => Queue.takeAll(readySignal))
       yield* Effect.addFinalizer(() => PubSub.publish(errorPubSub, undefined))
@@ -44,7 +47,8 @@ export const make = (
       const chain = yield* SynchronizedRef.updateAndGetEffect(
         chainRef,
         (oldChain) =>
-          addChain.pipe(
+          $(
+            Effect.tryPromise(() => client.addChain(options)),
             Effect.tap(() =>
               $(
                 Effect.try(() => oldChain.remove()),
@@ -52,15 +56,6 @@ export const make = (
               ),
             ),
           ),
-      )
-
-      // wait until the message queue is flushed
-      yield* $(
-        Effect.void,
-        Effect.repeat({
-          until: () => Queue.isEmpty(messagePubSub),
-          schedule: Schedule.forever,
-        }),
       )
 
       yield* Queue.offer(readySignal, undefined)
@@ -83,37 +78,25 @@ export const make = (
           Schedule.jitteredWith({ min: 0.8, max: 1.5 }),
         ),
       ),
-      Effect.onExit(() => Effect.log("Daemon has stopped.")),
       Effect.forkDaemon,
       Effect.interruptible,
     )
-    //#endregion
-
-    //#region JSON RPC Provider
-    const runtime = yield* Effect.runtime<never>()
-    const runCallback = Runtime.runCallback(runtime)
-    const runPromise = Runtime.runPromise(runtime)
 
     const provider: JsonRpcProvider = yield* Effect.sync(() =>
       getSyncProvider(async () => {
-        await runPromise(
-          $(
-            Queue.take(readySignal),
-            Effect.tap(() => Effect.log("JSON RPC provider initialized.")),
-          ),
+        await $(
+          Queue.take(readySignal),
+          Effect.tap(() => Effect.log("JSON RPC provider initialized.")),
+          runPromise,
         )
 
         return (onMessage, onError) => {
-          const onExit = <A, E>(exit: Exit.Exit<A, E>) => {
-            return Exit.isFailure(exit) && onError()
-          }
-
           runCallback(
             Effect.gen(function* () {
-              const errorSubscription = yield* PubSub.subscribe(errorPubSub)
+              const errorStream = yield* PubSub.subscribe(errorPubSub)
               const messageStream = yield* PubSub.subscribe(messagePubSub)
 
-              yield* $(
+              const propagateMessages = $(
                 Stream.fromQueue(messageStream),
                 Stream.run(
                   Sink.forEach((message) =>
@@ -123,27 +106,34 @@ export const make = (
                     ),
                   ),
                 ),
+              )
+
+              yield* $(
+                propagateMessages,
                 Effect.repeat({
-                  while: () => Queue.isEmpty(errorSubscription),
+                  while: () => Queue.isEmpty(errorStream),
                   schedule: Schedule.forever,
                 }),
               )
             }).pipe(Effect.scoped, Effect.forkDaemon),
-            { onExit },
           )
 
           runCallback(
             Effect.gen(function* () {
-              const errorSubscription = yield* PubSub.subscribe(errorPubSub)
-
-              yield* Queue.take(errorSubscription)
-
-              yield* $(
+              const waitForFirstError = $(
+                PubSub.subscribe(errorPubSub),
+                Effect.andThen((errorMessages) => Queue.take(errorMessages)),
+              )
+              const notifySubscribers = $(
                 Effect.try(() => onError()),
                 Effect.catchAll(() => Effect.void),
               )
+
+              yield* $(
+                waitForFirstError,
+                Effect.andThen(() => notifySubscribers),
+              )
             }).pipe(Effect.scoped, Effect.forkDaemon),
-            { onExit },
           )
 
           const send: JsonRpcConnection["send"] = (message) => {
@@ -153,9 +143,6 @@ export const make = (
                 Effect.andThen((chain) => chain.sendJsonRpc(message)),
                 Effect.tap(() => Effect.logDebug(message)),
               ),
-              {
-                onExit,
-              },
             )
           }
 
@@ -165,7 +152,6 @@ export const make = (
                 Fiber.interrupt(daemon),
                 Effect.tap(() => Effect.log("JSON RPC provider disconnected.")),
               ),
-              { onExit },
             )
           }
 
@@ -176,7 +162,6 @@ export const make = (
         }
       }),
     )
-    //#endregion
 
     return provider
   }).pipe(Effect.withLogSpan("json-rpc-provider"))
