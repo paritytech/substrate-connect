@@ -82,7 +82,7 @@ importers:
         version: 2.0.6
       '@polkadot-api/client':
         specifier: ^0.1.0
-        version: 0.1.0(@substrate/connect@packages+connect)(rxjs@7.8.1)(smoldot@2.0.25)
+        version: 0.1.0(@substrate/connect@packages+connect)(rxjs@7.8.1)(smoldot@2.0.26)
       '@polkadot-api/metadata-builders':
         specifier: 0.0.1
         version: 0.0.1
@@ -221,8 +221,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/light-client-extension-helpers
       smoldot:
-        specifier: 2.0.25
-        version: 2.0.25
+        specifier: 2.0.26
+        version: 2.0.26
     devDependencies:
       '@playwright/test':
         specifier: ^1.43.1
@@ -252,8 +252,8 @@ importers:
         specifier: workspace:^
         version: link:../light-client-extension-helpers
       smoldot:
-        specifier: 2.0.25
-        version: 2.0.25
+        specifier: 2.0.26
+        version: 2.0.26
     devDependencies:
       '@polkadot-api/json-rpc-provider-proxy':
         specifier: 0.0.1
@@ -456,8 +456,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.0.25
-        version: 2.0.25
+        specifier: 2.0.26
+        version: 2.0.26
     devDependencies:
       '@playwright/test':
         specifier: ^1.43.1
@@ -580,8 +580,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.0.25
-        version: 2.0.25
+        specifier: 2.0.26
+        version: 2.0.26
       swr:
         specifier: ^2.2.5
         version: 2.2.5(react@18.3.1)
@@ -3026,7 +3026,7 @@ packages:
     dev: false
     optional: true
 
-  /@polkadot-api/client@0.1.0(@substrate/connect@packages+connect)(rxjs@7.8.1)(smoldot@2.0.25):
+  /@polkadot-api/client@0.1.0(@substrate/connect@packages+connect)(rxjs@7.8.1)(smoldot@2.0.26):
     resolution: {integrity: sha512-01LfWzTE0BGA//rkDXvNC+CVy1hly2dyuHhVBJQ4a2FlR22BtjeOhAVfd5UBpkzKTP/bqzYGmjEl5vf4S+MFnQ==}
     hasBin: true
     peerDependencies:
@@ -3041,7 +3041,7 @@ packages:
       '@polkadot-api/polkadot-signer': 0.0.1
       '@polkadot-api/sc-provider': 0.0.1(@substrate/connect@packages+connect)
       '@polkadot-api/signer': 0.0.1
-      '@polkadot-api/sm-provider': 0.0.1(smoldot@2.0.25)
+      '@polkadot-api/sm-provider': 0.0.1(smoldot@2.0.26)
       '@polkadot-api/substrate-bindings': 0.0.1
       '@polkadot-api/substrate-client': 0.0.1
       '@polkadot-api/utils': 0.0.1
@@ -3180,14 +3180,14 @@ packages:
       '@polkadot-api/utils': 0.0.1
     dev: false
 
-  /@polkadot-api/sm-provider@0.0.1(smoldot@2.0.25):
+  /@polkadot-api/sm-provider@0.0.1(smoldot@2.0.26):
     resolution: {integrity: sha512-ujT8YbFAbskoKtCfn5uBRIVG020BD+mCvyW/EwN5FhFm0U2KMIyglsuZkEEanZjC1u/JCt1Ido0py1ze2Yzkww==}
     peerDependencies:
       smoldot: '>=2'
     dependencies:
       '@polkadot-api/json-rpc-provider': 0.0.1
       '@polkadot-api/json-rpc-provider-proxy': 0.0.1
-      smoldot: 2.0.25
+      smoldot: 2.0.26
     dev: false
 
   /@polkadot-api/substrate-bindings@0.0.1:
@@ -11186,8 +11186,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /smoldot@2.0.25:
-    resolution: {integrity: sha512-48fUFXWUQUTlf5dXIPhA4XCznBXqKwl6ir8wEWG9HUOd/U591VqcFgUJOs2lUQxTG53pY05PHez0CEk4aLpwAw==}
+  /smoldot@2.0.26:
+    resolution: {integrity: sha512-F+qYmH4z2s2FK+CxGj8moYcd1ekSIKH8ywkdqlOz88Dat35iB1DIYL11aILN46YSGMzQW/lbJNS307zBSDN5Ig==}
     dependencies:
       ws: 8.16.0
     transitivePeerDependencies:
