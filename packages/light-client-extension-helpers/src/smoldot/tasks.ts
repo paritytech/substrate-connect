@@ -1,5 +1,5 @@
 import { Client, AddChainError } from "."
-import { Effect, Fiber, Runtime, Schedule, pipe as $ } from "effect"
+import { Effect, Fiber, Runtime, Schedule } from "effect"
 
 export const DEFAULT_SUPERVISE_REPEAT_SCHEDULE = Schedule.spaced("1 second")
 export const DEFAULT_SUPERVISE_RETRY_SCHEDULE = Schedule.spaced("1 second")
