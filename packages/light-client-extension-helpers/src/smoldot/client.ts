@@ -1,6 +1,22 @@
 import * as smoldot from "smoldot"
 import { AddChainOptions, Client, ClientOptions } from "./types"
 
+/**
+ * Wraps a smoldot client to add restart functionality.
+ *
+ * The key difference from the standard smoldot client is how relay chains are
+ * specified. Instead of using `Chain` objects for `potentialRelayChains`,
+ * we use `AddChainOptions`. This is necessary because the `Chain` objects
+ * become invalid after a restart and can't be used in a replay `addChain` call.
+ *
+ * With `AddChainOptions`, we can easily re-add a parachain after a restart by
+ * reusing the same options for each relay chain. Before adding the parachain,
+ * we add the relay chains using their `AddChainOptions` and then remove them
+ * after the parachain is created.
+ *
+ * This ensures the parachain can always be added successfully, as its relay
+ * chain is always added first.
+ */
 export const start = (options?: ClientOptions): Client => {
   let client = smoldot.start(options)
   let terminated = false
