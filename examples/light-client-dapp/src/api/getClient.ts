@@ -1,4 +1,4 @@
-import { createClient as createClient_ } from "@polkadot-api/client"
+import { createClient as createClient_ } from "polkadot-api"
 import { UnstableWallet } from "@substrate/unstable-wallet-provider"
 
 export const getClient = (
