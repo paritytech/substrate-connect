@@ -12,6 +12,7 @@ import {
   ImportAccounts,
   AccountDetails,
   AddChainByUser,
+  CryptoWalletWelcome,
 } from "./WalletPopup/pages"
 import { ProtectedRoute } from "./WalletPopup/components"
 import { KeyringProvider, useKeyring } from "./WalletPopup/hooks"
@@ -41,6 +42,7 @@ export const WalletPopup = () => (
         </Route>
         <Route path="/accounts/options" element={<Options />} />
         <Route path="/welcome" element={<Welcome />} />
+        <Route path="/welcome2" element={<CryptoWalletWelcome />} />
         <Route path="/unlock-keyring" element={<UnlockKeyring />} />
       </Routes>
     </KeyringProvider>
