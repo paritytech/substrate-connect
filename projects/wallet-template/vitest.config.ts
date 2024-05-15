@@ -7,6 +7,6 @@ export default defineConfig({
     noExternal: ["@webext-core/storage"],
   },
   test: {
-    exclude: ["tests"],
+    exclude: ["tests", "node_modules"],
   },
 })
