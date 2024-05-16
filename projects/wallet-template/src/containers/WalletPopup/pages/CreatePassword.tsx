@@ -77,7 +77,7 @@ export const CreatePassword = () => {
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Card className="flex flex-col flex-grow w-full max-w-md min-h-full rounded-none lg:rounded">
-            <CardHeader className="flex-grow text-center">
+            <CardHeader className="text-center">
               <CardTitle className="mt-6 text-2xl font-extrabold">
                 Create Password<span className="text-primary">_</span>
                 <br />
@@ -88,7 +88,7 @@ export const CreatePassword = () => {
                 letters, numbers, and special characters.
               </CardDescription>
             </CardHeader>
-            <CardContent className="flex-grow">
+            <CardContent className="content-center flex-grow">
               <FormField
                 control={control}
                 name="password"
