@@ -8,7 +8,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.5
+      - uses: actions/checkout@v4.1.6
       - uses: ./.github/actions/turbo-build
       - name: Fetch gh-pages
         run: |
