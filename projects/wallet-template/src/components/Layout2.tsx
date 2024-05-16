@@ -20,7 +20,7 @@ export const Layout2: React.FC<Props> = ({ children }) => {
         "font-sans",
       )}
     >
-      <div className={cn("flex", "min-h-[600px]", "lg:px-8 lg:py-12")}>
+      <div className={cn("bg-background", "flex", "min-h-[600px]")}>
         {children}
       </div>
     </main>

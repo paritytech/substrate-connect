@@ -20,9 +20,8 @@ export const Welcome = () => {
     <Layout2>
       <Card className="flex-grow w-full max-w-md min-h-full rounded-none lg:rounded">
         <CardHeader className="text-center">
-          <div className="relative text-6xl font-bold text-teal-400">_</div>
           <CardTitle className="mt-6 text-2xl font-extrabold">
-            substrate
+            substrate<span className="text-primary">_</span>
             <br />
             <span className="text-5xl text-primary">Connect</span>
           </CardTitle>
