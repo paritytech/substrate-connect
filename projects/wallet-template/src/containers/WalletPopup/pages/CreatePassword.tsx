@@ -77,10 +77,10 @@ export const CreatePassword = () => {
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Card className="flex flex-col flex-grow w-full max-w-md min-h-full rounded-none lg:rounded">
-            <CardHeader className="flex-grow text-center">
-              <div className="relative text-6xl font-bold text-teal-400">_</div>
+            <CardHeader className="text-center">
               <CardTitle className="mt-6 text-2xl font-extrabold">
-                Create Password
+                Create Password<span className="text-primary">_</span>
+                <br />
               </CardTitle>
               <CardDescription className="mt-2 text-sm">
                 We recommend creating a strong password that is at least 6
@@ -88,7 +88,7 @@ export const CreatePassword = () => {
                 letters, numbers, and special characters.
               </CardDescription>
             </CardHeader>
-            <CardContent className="flex-grow">
+            <CardContent className="content-center flex-grow">
               <FormField
                 control={control}
                 name="password"

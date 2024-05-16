@@ -18,13 +18,16 @@ export const Welcome = () => {
 
   return (
     <Layout2>
-      <Card className="flex-grow w-full max-w-md min-h-full rounded-none lg:rounded">
+      <Card className="flex flex-col flex-grow w-full max-w-md min-h-full rounded-none lg:rounded">
         <CardHeader className="text-center">
-          <div className="relative text-6xl font-bold text-teal-400">_</div>
-          <CardTitle className="mt-6 text-2xl font-extrabold">
-            substrate
+          <CardTitle className="mt-6 text-2xl leading-4">
+            <span className="pl-4 font-semibold">
+              substrate<span className="text-primary">_</span>
+            </span>
             <br />
-            <span className="text-5xl text-primary">Connect</span>
+            <span className="text-5xl font-extrabold text-primary">
+              Connect
+            </span>
           </CardTitle>
           <CardDescription className="mt-2">
             The easiest way to connect to Polkadot, Kusama, and Substrate-based
@@ -32,7 +35,7 @@ export const Welcome = () => {
           </CardDescription>
         </CardHeader>
         {/* TODO: Replace the filler text below with something real */}
-        <CardContent>
+        <CardContent className="content-center flex-grow">
           <ul className="space-y-4">
             <li className="flex items-start">
               <Lock className="w-6 h-6 text-primary" aria-hidden="true" />
@@ -57,7 +60,7 @@ export const Welcome = () => {
             </li>
           </ul>
         </CardContent>
-        <CardFooter className="flex flex-col space-y-4">
+        <CardFooter className="flex flex-col flex-grow space-y-4">
           <Button
             className={cn(
               "w-full py-3",
