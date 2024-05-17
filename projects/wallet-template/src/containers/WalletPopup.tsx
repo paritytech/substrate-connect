@@ -40,7 +40,7 @@ export const WalletPopup = () => (
           />
           <Route path="/add-chain-by-user" element={<AddChainByUser />} />
         </Route>
-        <Route path="/accounts/options" element={<Options />} />
+        <Route path="/options" element={<Options />} />
         <Route path="/welcome" element={<Welcome />} />
         <Route path="/create-password" element={<CreatePassword />} />
         <Route path="/unlock-keyring" element={<UnlockKeyring />} />
