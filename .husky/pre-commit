@@ -1,1 +1,1 @@
-pnpm lint-staged
+corepack pnpm lint-staged
