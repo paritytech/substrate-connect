@@ -15,12 +15,20 @@ export const Layout2: React.FC<Props> = ({ children }) => {
     <main
       className={cn(
         "flex items-center justify-center",
-        "min-w-[400px] min-h-screen",
+        "min-h-screen",
         "bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600",
         "font-sans",
       )}
     >
-      <div className={cn("bg-background", "flex", "min-h-[600px]")}>
+      <div
+        className={cn(
+          "bg-background",
+          "w-[400px] h-[600px]",
+          "flex flex-col",
+          "shadow-sm",
+          "rounded-none lg:rounded",
+        )}
+      >
         {children}
       </div>
     </main>
