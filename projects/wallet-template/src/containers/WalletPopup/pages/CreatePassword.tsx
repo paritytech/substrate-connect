@@ -75,8 +75,8 @@ export const CreatePassword = () => {
     <Layout2>
       {isSubmitSuccessful && <Navigate to="/accounts" replace={true} />}
       <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Card className="flex flex-col flex-grow w-full max-w-md min-h-full rounded-none lg:rounded">
+        <form className="relative grow" onSubmit={handleSubmit(onSubmit)}>
+          <Card className="absolute flex flex-col flex-grow w-full max-w-md min-h-full shadow-none">
             <CardHeader className="text-center">
               <CardTitle className="mt-6 text-2xl font-extrabold">
                 Create Password<span className="text-primary">_</span>

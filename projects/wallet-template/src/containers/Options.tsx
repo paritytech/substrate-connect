@@ -91,10 +91,10 @@ export const Options: FunctionComponent = () => {
   return (
     <>
       <BraveModal show={showModal} isOptions={true} />
-      <div className="w-60 h-full shadow-md bg-white absolute">
-        <div className="pt-4 pb-2 px-6">
+      <div className="absolute h-full bg-white shadow-md w-60">
+        <div className="px-6 pt-4 pb-2">
           <div className="flex items-center">
-            <div className="grow ml-3">
+            <div className="ml-3 grow">
               <div className="flex items-baseline">
                 <Logo textSize="base" />
               </div>
@@ -133,9 +133,9 @@ export const Options: FunctionComponent = () => {
             </Link>
           </li>
         </ul>
-        <div className="text-center bottom-0 absolute w-full">
+        <div className="absolute bottom-0 w-full text-center">
           <hr className="m-0" />
-          <div className="block float-left py-4 px-2 cursor-pointer">
+          <div className="block float-left px-2 py-4 cursor-pointer">
             <a
               rel="noreferrer"
               target="_blank"
