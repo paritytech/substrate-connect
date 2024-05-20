@@ -47,8 +47,8 @@
     "web-ext": "^7.11.0"
   },
   "dependencies": {
-    "@polkadot-api/observable-client": "0.1.1",
-    "@polkadot-api/substrate-client": "0.0.1",
+    "@polkadot-api/observable-client": "^0.3.0",
+    "@polkadot-api/substrate-client": "^0.1.2",
     "@react-rxjs/core": "^0.10.7",
     "@react-rxjs/utils": "^0.9.7",
     "@substrate/connect-extension-protocol": "workspace:*",

@@ -259,7 +259,6 @@ export const createBackgroundRpc = (
         toHex(ss58Decode(payload.address)[0]),
       )
       return toHex(
-        // @ts-expect-error scheme type is incompatible with type
         multiSignatureEncoder({
           type: scheme,
           value: keypair.sign(signaturePayload),

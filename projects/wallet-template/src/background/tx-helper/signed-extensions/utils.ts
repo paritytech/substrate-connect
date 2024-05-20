@@ -4,6 +4,7 @@ import {
   Storage,
   Twox64Concat,
   u32,
+  V14,
 } from "@polkadot-api/substrate-bindings"
 import { getDynamicBuilder, getLookupFn } from "@polkadot-api/metadata-builders"
 import { fromHex } from "@polkadot-api/utils"
@@ -21,7 +22,7 @@ export const genesisHashFromCtx = (ctx: ChainExtensionCtx) =>
     .storage$(ctx.at, "value", () => genesisHashStorageKey, null)
     .pipe(map((result) => fromHex(result!)))
 
-export const systemVersionProp$ = (propName: string, metadata: V15) => {
+export const systemVersionProp$ = (propName: string, metadata: V15 | V14) => {
   const lookupFn = getLookupFn(metadata.lookup)
   const dynamicBuilder = getDynamicBuilder(metadata)
 

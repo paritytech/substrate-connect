@@ -181,7 +181,7 @@ export const Accounts = () => {
               </Link>
             </IconButton>
             <IconButton>
-              <Link to="/accounts/options" target="_blank">
+              <Link to="/options" target="_blank">
                 <Settings />
               </Link>
             </IconButton>

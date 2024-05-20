@@ -1,10 +1,3 @@
-@font-face {
-  font-family: "Web3-Regular";
-  src:
-    url("./fonts/Web3-Regular.woff") format("woff"),
-    url("./fonts/Web3-Regular.woff2") format("woff2");
-}
-
 .networkicon_container {
   display: flex;
   align-items: center;
@@ -21,7 +14,6 @@
 }
 
 .icon {
-  font-family: "Web3-Regular";
   @apply text-center;
 }
 
