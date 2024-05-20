@@ -1,7 +1,6 @@
 import type { JsonRpcProvider } from "@polkadot-api/json-rpc-provider"
 import type { Client, AddChainOptions } from "../smoldot"
-import { make as makeJSONRpcProvider } from "./json-rpc-provider"
-import { Effect } from "effect"
+import { make as makeJsonRpcProvider } from "./json-rpc-provider"
 
 type SmoldotProviderOptions =
   | { smoldotClient: Client; addChainOptions: AddChainOptions }
@@ -17,7 +16,7 @@ export const smoldotProvider = async ({
   smoldotClient,
   ...options
 }: SmoldotProviderOptions): Promise<JsonRpcProvider> => {
-  const provider = await makeJSONRpcProvider(
+  const provider = await makeJsonRpcProvider(
     smoldotClient,
     "addChainOptions" in options
       ? options.addChainOptions
@@ -35,7 +34,7 @@ export const smoldotProvider = async ({
             : [],
           databaseContent: options.databaseContent,
         },
-  ).pipe(Effect.runPromise)
+  )
 
   return provider
 }
