@@ -23,7 +23,7 @@ export type SuperviseOptions = {
  * @param options.retrySchedule - The frequency at which to attempt restarting
  * the client if needed. Defaults to {@link DEFAULT_SUPERVISE_RETRY_SCHEDULE}.
  */
-export const supervise = async (
+export const supervise = (
   client: Client,
   { repeatSchedule, retrySchedule }: SuperviseOptions = {
     repeatSchedule: DEFAULT_SUPERVISE_REPEAT_SCHEDULE,
@@ -65,4 +65,4 @@ export const supervise = async (
     return {
       stop,
     }
-  }).pipe(Effect.runPromise)
+  }).pipe(Effect.runSync)
