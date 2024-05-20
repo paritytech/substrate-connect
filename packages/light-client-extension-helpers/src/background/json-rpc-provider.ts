@@ -32,6 +32,10 @@ const validateAddChainOptions = async (
  * @param options - The options for adding a chain.
  */
 export const make = async (client: Client, options: AddChainOptions) => {
+  // The chain that is added in this function is removed only to be added
+  // again when the provider is created. This doesn't matter from a performance
+  // perspective, and is done to keep things simple rather than keep a separate
+  // variable to track whether it is the first time the chain is being added.
   await validateAddChainOptions(client, options)
 
   const provider = getSyncProvider(async () => {
