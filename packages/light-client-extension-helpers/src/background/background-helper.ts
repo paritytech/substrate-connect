@@ -23,8 +23,7 @@ import { ALARM, PORT, isSubstrateConnectToExtensionMessage } from "@/shared"
 import { isRpcMessage, type RpcMessage } from "@/utils"
 import * as storage from "@/storage"
 import { createBackgroundRpc } from "./createBackgroundRpc"
-import { Client, Chain, AddChainOptions } from "../smoldot"
-import { supervise } from "../smoldot/tasks"
+import { Client, Chain, AddChainOptions, supervise } from "../smoldot"
 
 export type * from "./types"
 
