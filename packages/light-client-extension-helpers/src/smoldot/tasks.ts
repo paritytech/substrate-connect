@@ -36,6 +36,10 @@ export const supervise = (
   const retryScheduleMs =
     options.retryScheduleMs ?? DEFAULT_SUPERVISE_RETRY_SCHEDULE
 
+  if (options?.abortSignal?.aborted) {
+    return
+  }
+
   let stopped = false
 
   async function checkIfSmoldotIsHealthy(): Promise<void> {
