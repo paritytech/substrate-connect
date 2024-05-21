@@ -1,13 +1,14 @@
-import { Client, AddChainError } from "."
-import { Effect, Fiber, Runtime, Schedule } from "effect"
-
-export const DEFAULT_SUPERVISE_REPEAT_SCHEDULE = Schedule.spaced("1 second")
-export const DEFAULT_SUPERVISE_RETRY_SCHEDULE = Schedule.spaced("1 second")
+import { Client, AddChainError } from "./types"
 
 export type SuperviseOptions = {
-  repeatSchedule: Schedule.Schedule<number>
-  retrySchedule: Schedule.Schedule<number>
+  repeatScheduleMs?: number
+  retryScheduleMs?: number
+  abortSignal?: AbortSignal
+  onError?: (error: Error) => void
 }
+
+export const DEFAULT_SUPERVISE_REPEAT_SCHEDULE = 1000
+export const DEFAULT_SUPERVISE_RETRY_SCHEDULE = 1000
 
 /**
  * Supervises a smoldot client by periodically invoking `addChain` with an
@@ -22,47 +23,57 @@ export type SuperviseOptions = {
  * Defaults to {@link DEFAULT_SUPERVISE_REPEAT_SCHEDULE}.
  * @param options.retrySchedule - The frequency at which to attempt restarting
  * the client if needed. Defaults to {@link DEFAULT_SUPERVISE_RETRY_SCHEDULE}.
+ * @param options.abortSignal - An `AbortSignal` that can be used to
+ * stop the supervision.
+ * @param options.onError - error handler for whenever smoldot crashes
  */
 export const supervise = (
   client: Client,
-  { repeatSchedule, retrySchedule }: SuperviseOptions = {
-    repeatSchedule: DEFAULT_SUPERVISE_REPEAT_SCHEDULE,
-    retrySchedule: DEFAULT_SUPERVISE_RETRY_SCHEDULE,
-  },
-) =>
-  Effect.gen(function* () {
-    const runtime = yield* Effect.runtime<never>()
-    const runPromise = Runtime.runPromise(runtime)
+  options: SuperviseOptions = {},
+): void => {
+  const repeatScheduleMs =
+    options.repeatScheduleMs ?? DEFAULT_SUPERVISE_REPEAT_SCHEDULE
+  const retryScheduleMs =
+    options.retryScheduleMs ?? DEFAULT_SUPERVISE_RETRY_SCHEDULE
 
-    const daemon = yield* Effect.tryPromise(() =>
-      client
-        .addChain({ chainSpec: "" })
-        .then(() => {})
-        .catch((err) => {
-          if (err instanceof AddChainError) {
-            return
-          }
+  let stopped = false
 
-          throw err
-        }),
-    ).pipe(
-      Effect.repeat({
-        schedule: repeatSchedule,
-      }),
-      Effect.tapError(() => Effect.tryPromise(() => client.restart())),
-      Effect.tapError(Effect.logError),
-      Effect.retry({
-        schedule: retrySchedule,
-      }),
-      Effect.forkDaemon,
-    )
+  async function checkIfSmoldotIsHealthy(): Promise<void> {
+    return client
+      .addChain({ chainSpec: "" })
+      .then(() => void 0)
+      .catch((err) => {
+        if (err instanceof AddChainError) {
+          return
+        }
+        throw err
+      })
+  }
 
-    const stop = () =>
-      Fiber.interrupt(daemon)
-        .pipe(Effect.andThen(() => Effect.void))
-        .pipe(runPromise)
-
-    return {
-      stop,
+  ;(async () => {
+    while (!stopped) {
+      try {
+        await checkIfSmoldotIsHealthy()
+        await sleep(repeatScheduleMs)
+      } catch (err) {
+        try {
+          options.onError?.(err as Error)
+          await client.restart()
+          await sleep(retryScheduleMs)
+        } catch {}
+      }
     }
-  }).pipe(Effect.runSync)
+  })()
+
+  if (options.abortSignal) {
+    options.abortSignal.addEventListener("abort", () => {
+      stopped = true
+    })
+  }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}

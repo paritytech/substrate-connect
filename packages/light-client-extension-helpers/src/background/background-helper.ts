@@ -41,7 +41,7 @@ export const register = ({
   if (isRegistered) throw new Error("helper already registered")
   isRegistered = true
 
-  supervise(smoldotClient)
+  supervise(smoldotClient, { onError: console.error })
 
   const wellKnownChainSpecsPromise: Promise<Record<string, string>> =
     getWellKnownChainSpecs().then(async (chainSpecs) =>

@@ -37,8 +37,7 @@
     "@types/chrome": "^0.0.266"
   },
   "peerDependencies": {
-    "smoldot": "2.x",
-    "effect": "^3.1"
+    "smoldot": "2.x"
   },
   "dependencies": {
     "@polkadot-api/observable-client": "^0.3.0",
