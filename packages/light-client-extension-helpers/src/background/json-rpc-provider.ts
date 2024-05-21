@@ -19,7 +19,7 @@ const validateAddChainOptions = async (
   const chain = await client.addChain(options)
   try {
     chain.remove()
-  } catch (_) {}
+  } catch {}
 }
 
 /**
@@ -48,11 +48,11 @@ export const make = async (client: Client, options: AddChainOptions) => {
           try {
             const message = await chain.nextJsonRpcResponse()
             onMessage(message)
-          } catch (_) {
+          } catch {
             connected = false
             try {
               onError()
-            } catch (_) {}
+            } catch {}
             break
           }
         }
@@ -61,14 +61,14 @@ export const make = async (client: Client, options: AddChainOptions) => {
       const send: JsonRpcConnection["send"] = (message) => {
         try {
           chain.sendJsonRpc(message)
-        } catch (_) {}
+        } catch {}
       }
 
       const disconnect: JsonRpcConnection["disconnect"] = () => {
         connected = false
         try {
           chain.remove()
-        } catch (_) {}
+        } catch {}
       }
 
       return {
