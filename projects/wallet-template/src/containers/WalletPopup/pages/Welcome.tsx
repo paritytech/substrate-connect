@@ -18,7 +18,7 @@ export const Welcome = () => {
 
   return (
     <Layout2>
-      <Card className="flex flex-col flex-grow w-full max-w-md min-h-full rounded-none lg:rounded">
+      <Card className="flex flex-col flex-grow w-full max-w-md min-h-full shadow-none">
         <CardHeader className="text-center">
           <CardTitle className="mt-6 text-2xl leading-4">
             <span className="pl-4 font-semibold">
