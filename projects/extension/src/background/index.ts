@@ -1,6 +1,6 @@
-import { start } from "smoldot"
 import { register } from "@substrate/light-client-extension-helpers/background"
 import { startHeartbeat } from "./heartbeat"
+import { start } from "@substrate/light-client-extension-helpers/smoldot"
 
 register({
   smoldotClient: start({ maxLogLevel: 4 }),
