@@ -1,101 +1,89 @@
-import { Navigate } from "react-router-dom"
-import { useForm, SubmitHandler } from "react-hook-form"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card"
+import { Lock, Link, ShieldCheck } from "lucide-react"
 
-import { rpc } from "../api"
-import { useKeyring } from "../hooks"
-import { Layout } from "../../../components/Layout"
-
-type FormFields = {
-  password: string
-  passwordConfirm: string
-}
+import { cn } from "@/lib/utils"
+import { Layout2 } from "@/components/Layout2"
+import { useNavigate } from "react-router-dom"
 
 export const Welcome = () => {
-  const { refresh } = useKeyring()
-  const {
-    register,
-    handleSubmit,
-    setError,
-    reset,
-    formState: { isSubmitting, errors, isSubmitSuccessful },
-    watch,
-  } = useForm<FormFields>()
-  const onSubmit: SubmitHandler<FormFields> = async ({ password }) => {
-    await rpc.client.createPassword(password)
-    await refresh()
-    reset()
-  }
+  const navigate = useNavigate()
+
   return (
-    <Layout>
-      {isSubmitSuccessful && <Navigate to="/accounts" replace={true} />}
-      <div className="my-4">
-        <h1 className="text-3xl font-bold text-center">Welcome</h1>
-      </div>
-      <div className="mt-12 mb-4">
-        <h1 className="text-xl font-bold text-center">Create password</h1>
-      </div>
-      <form
-        onSubmit={(e) =>
-          handleSubmit(onSubmit)(e).catch((e) =>
-            setError("root", {
-              message: e.message ?? "Error creating password",
-            }),
-          )
-        }
-      >
-        <div className="my-4">
-          <input
-            type="password"
-            placeholder="Enter password"
-            className="w-full p-3 text-lg border rounded"
-            disabled={isSubmitting}
-            autoFocus
-            {...register("password", {
-              required: "You must specify a password",
-              minLength: {
-                value: 6,
-                message: "Password must have at least 6 characters",
-              },
-            })}
-          />
-          {errors.password && (
-            <div className="text-red-500">{errors.password.message}</div>
-          )}
-        </div>
-        <div className="my-4">
-          <input
-            type="password"
-            placeholder="Confirm password"
-            className="w-full p-3 text-lg border rounded"
-            disabled={isSubmitting}
-            {...register("passwordConfirm", {
-              required: "You must confirm the password",
-              validate: (value) =>
-                value === watch("password") || "The passwords do not match",
-            })}
-          />
-          {errors.passwordConfirm && (
-            <div className="text-red-500">{errors.passwordConfirm.message}</div>
-          )}
-        </div>
-        <div className="my-4">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full p-3 text-lg rounded border border-[#24cc85] text-[#24cc85] hover:text-white hover:bg-[#24cc85]"
-          >
-            {isSubmitting ? "Creating password..." : "Create password"}
-          </button>
-          <div className="mt-2 text-red-500">
-            {errors.root && (
-              <div className="text-red-500">{errors.root.message}</div>
+    <Layout2>
+      <Card className="flex flex-col flex-grow w-full max-w-md min-h-full shadow-none">
+        <CardHeader className="text-center">
+          <CardTitle className="mt-6 text-2xl leading-4">
+            <span className="pl-4 font-semibold">
+              substrate<span className="text-primary">_</span>
+            </span>
+            <br />
+            <span className="text-5xl font-extrabold text-primary">
+              Connect
+            </span>
+          </CardTitle>
+          <CardDescription className="mt-2">
+            The easiest way to connect to Polkadot, Kusama, and Substrate-based
+            chains with a light client
+          </CardDescription>
+        </CardHeader>
+        {/* TODO: Replace the filler text below with something real */}
+        <CardContent className="content-center flex-grow">
+          <ul className="space-y-4">
+            <li className="flex items-start">
+              <Lock className="w-6 h-6 text-primary" aria-hidden="true" />
+              <p className="ml-3 text-base">
+                Private keys are encrypted and never leave your device
+              </p>
+            </li>
+            <li className="flex items-start">
+              <ShieldCheck
+                className="w-6 h-6 text-primary"
+                aria-hidden="true"
+              />
+              <p className="ml-3 text-base">
+                Protect your wallet with secure seed phrase backup
+              </p>
+            </li>
+            <li className="flex items-start">
+              <Link className="w-6 h-6 text-primary" aria-hidden="true" />
+              <p className="ml-3 text-base">
+                Easily connect to decentralized apps and exchanges
+              </p>
+            </li>
+          </ul>
+        </CardContent>
+        <CardFooter className="flex flex-col flex-grow space-y-4">
+          <Button
+            className={cn(
+              "w-full py-3",
+              "text-lg text-background",
+              "bg-emerald-600 hover:bg-emerald-700",
             )}
-          </div>
-        </div>
-        {isSubmitSuccessful && (
-          <div className="my-4">Password created successfully</div>
-        )}
-      </form>
-    </Layout>
+            onClick={() => navigate("/create-password")}
+          >
+            Create a New Wallet
+          </Button>
+          <Button
+            // this button is just for show.
+            disabled={true}
+            className={cn(
+              "w-full py-3",
+              "text-lg text-emerald-700",
+              "bg-emerald-100 hover:bg-emerald-200",
+            )}
+          >
+            Import Existing Wallet
+          </Button>
+        </CardFooter>
+      </Card>
+    </Layout2>
   )
 }

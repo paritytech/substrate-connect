@@ -5,7 +5,6 @@ import {
 } from "@polkadot-api/substrate-client"
 import { getObservableClient } from "@polkadot-api/observable-client"
 import { getSyncProvider } from "@polkadot-api/json-rpc-provider-proxy"
-import type { AddChainOptions, Chain, Client } from "smoldot"
 import {
   Observable,
   firstValueFrom,
@@ -24,6 +23,7 @@ import { ALARM, PORT, isSubstrateConnectToExtensionMessage } from "@/shared"
 import { isRpcMessage, type RpcMessage } from "@/utils"
 import * as storage from "@/storage"
 import { createBackgroundRpc } from "./createBackgroundRpc"
+import { Client, Chain, AddChainOptions, supervise } from "../smoldot"
 
 export type * from "./types"
 
@@ -39,6 +39,8 @@ export const register = ({
 }: RegisterOptions) => {
   if (isRegistered) throw new Error("helper already registered")
   isRegistered = true
+
+  supervise(smoldotClient, { onError: console.error })
 
   const wellKnownChainSpecsPromise: Promise<Record<string, string>> =
     getWellKnownChainSpecs().then(async (chainSpecs) =>
@@ -375,7 +377,7 @@ export const register = ({
                   disableJsonRpc: false,
                   potentialRelayChains: chain.relayChainGenesisHash
                     ? [
-                        await smoldotClient.addChain({
+                        {
                           chainSpec:
                             chains[chain.relayChainGenesisHash].chainSpec,
                           disableJsonRpc: true,
@@ -383,7 +385,7 @@ export const register = ({
                             type: "databaseContent",
                             genesisHash: chain.relayChainGenesisHash,
                           }),
-                        }),
+                        },
                       ]
                     : [],
                   databaseContent: await storage.get({
@@ -399,7 +401,7 @@ export const register = ({
                   disableJsonRpc: false,
                   potentialRelayChains: chains[relayChainGenesisHashOrChainId]
                     ? [
-                        await smoldotClient.addChain({
+                        {
                           chainSpec:
                             chains[relayChainGenesisHashOrChainId].chainSpec,
                           disableJsonRpc: true,
@@ -407,11 +409,14 @@ export const register = ({
                             type: "databaseContent",
                             genesisHash: relayChainGenesisHashOrChainId,
                           }),
-                        }),
+                        },
                       ]
                     : msg.potentialRelayChainIds
                         .filter((chainId) => activeChains[tabId][chainId])
-                        .map((chainId) => activeChains[tabId][chainId].chain),
+                        .map((chainId) => ({
+                          chainSpec: activeChains[tabId][chainId].chainSpec,
+                          disableJsonRpc: true,
+                        })),
                 }
               }
 
