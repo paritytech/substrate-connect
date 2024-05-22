@@ -1,12 +1,6 @@
 import type { UnstableWalletProviderDiscovery } from "@substrate/unstable-wallet-provider"
-import { delay } from "@std/async"
 
-export type GetProvidersOptions = {
-  waitTimeMs?: number
-  signal?: AbortSignal
-}
-
-export const getProviders = async (options: GetProvidersOptions = {}) => {
+export const getProviders = (): UnstableWalletProviderDiscovery.Detail[] => {
   const providers: UnstableWalletProviderDiscovery.Detail[] = []
 
   window.dispatchEvent(
@@ -21,8 +15,6 @@ export const getProviders = async (options: GetProvidersOptions = {}) => {
       },
     ),
   )
-
-  await delay(options.waitTimeMs ?? 1000, { signal: options.signal })
 
   return providers.slice()
 }
