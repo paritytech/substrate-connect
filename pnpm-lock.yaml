@@ -98,6 +98,9 @@ importers:
       '@polkadot-labs/hdkd-helpers':
         specifier: ^0.0.6
         version: 0.0.6
+      '@std/async':
+        specifier: npm:@jsr/std__async@^0.224.1
+        version: /@jsr/std__async@0.224.1
       '@substrate/connect-known-chains':
         specifier: workspace:^
         version: link:../../packages/connect-known-chains
@@ -282,6 +285,8 @@ importers:
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
+
+  packages/discovery: {}
 
   packages/light-client-extension-helpers:
     dependencies:
@@ -2900,6 +2905,22 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
+
+  /@jsr/std__assert@0.225.3:
+    resolution: {integrity: sha512-dIwj+iS+lxGqN7TQC6AD+tIDKK9DWkoURAtEaYDvuwj8gPwM/RvwwNScrFsH4XH3vJUE0vU8AAi8oWtFEOWdiA==, tarball: https://npm.jsr.io/~/11/@jsr/std__assert/0.225.3.tgz}
+    dependencies:
+      '@jsr/std__internal': 1.0.0
+    dev: false
+
+  /@jsr/std__async@0.224.1:
+    resolution: {integrity: sha512-rxI2fOCV+VTfgfdnhwhbH4+/z0x6feqPHB4ml7s4smqHcXYyB+vwycv/MENXiHZfL69BU+V53PUYHLZh1xXdRw==, tarball: https://npm.jsr.io/~/11/@jsr/std__async/0.224.1.tgz}
+    dependencies:
+      '@jsr/std__assert': 0.225.3
+    dev: false
+
+  /@jsr/std__internal@1.0.0:
+    resolution: {integrity: sha512-6kp0FsXcHW4QvGYpOPAtglYSh/813OYKBP7RlH8VCaMyKwnWcRvcH+fhVc92RQ1a39Gh2XDwD6WGRYaFXZJxGw==, tarball: https://npm.jsr.io/~/11/@jsr/std__internal/1.0.0.tgz}
+    dev: false
 
   /@material-ui/core@4.12.4(@types/react@18.3.2)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-tr7xekNlM9LjA6pagJmL8QCgZXaubWUwkJnoYcMKd4gw/t4XiyvnTkjdGrUVicyB2BsdaAv1tvow45bPM4sSwQ==}

@@ -33,7 +33,7 @@ export const UnstableProviderProvider = ({
   children: ReactNode
   defaultChainId: string
 }) => {
-  const { data: providerDetails } = useSWR("getProviders", getProviders)
+  const { data: providerDetails } = useSWR("getProviders", () => getProviders())
   const [providerDetail, setProviderDetail] =
     useState<UnstableWalletProviderDiscovery.Detail>()
   const { data: provider } = useSWR(
