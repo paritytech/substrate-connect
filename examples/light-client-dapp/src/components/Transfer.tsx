@@ -27,7 +27,7 @@ export const Transfer = () => {
   const handleOnSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault()
-      if (!account || !provider) {
+      if (!account || !provider || !provider.chains || !provider.extrinsics) {
         return
       }
 
@@ -37,19 +37,19 @@ export const Transfer = () => {
 
       try {
         const callData = await transferAllowDeathCallData(
-          provider,
+          provider.chains,
           chainId,
           destination,
           amount,
         )
         const tx = await createTransaction(
-          provider,
+          provider.extrinsics,
           chainId,
           account.address,
           callData,
         )
         const { txEvent } = await lastValueFrom(
-          submitTransaction$(provider, chainId, tx).pipe(
+          submitTransaction$(provider.chains, chainId, tx).pipe(
             tap(({ txEvent }) => {
               setTransactionStatus(txEvent.type)
             }),

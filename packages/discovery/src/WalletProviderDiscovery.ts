@@ -1,13 +1,33 @@
-import { V1WalletProvider, UnstableWalletProvider } from "./WalletProvider"
+import {
+  UnstableAccountsAPI,
+  UnstableChainsAPI,
+  UnstableExtrinsicsAPI,
+  V1AccountsAPI,
+  V1ChainsAPI,
+} from "./WalletProviderAPI"
+import { RequireAtLeastOne } from "type-fest"
 
-export type WalletProviderVariantRecord = {
-  UnstableWalletProvider?: Promise<UnstableWalletProvider>
-  V1WalletProvider?: Promise<V1WalletProvider>
-}
+export type WalletProvider = RequireAtLeastOne<{
+  chains?: RequireAtLeastOne<{
+    v1?: V1ChainsAPI
+    unstable?: UnstableChainsAPI
+  }>
+  accounts?: RequireAtLeastOne<{
+    v1?: V1AccountsAPI
+    unstable?: UnstableAccountsAPI
+  }>
+  extrinsics?: RequireAtLeastOne<{
+    unstable?: UnstableExtrinsicsAPI
+  }>
+}>
+
+export type ChainsProvider = NonNullable<WalletProvider["chains"]>
+export type AccountsProvider = NonNullable<WalletProvider["accounts"]>
+export type ExtrinsicsProvider = NonNullable<WalletProvider["extrinsics"]>
 
 export type ProviderDetail = {
   info: ProviderInfo
-  variants: WalletProviderVariantRecord
+  provider: Promise<WalletProvider>
 }
 
 export type OnProvider = {
@@ -21,7 +41,7 @@ export type ProviderInfo = {
   rdns: string
 }
 
-export const discoverProviders = (): ProviderDetail[] => {
+export const getProviders = (): ProviderDetail[] => {
   const providers: ProviderDetail[] = []
 
   window.dispatchEvent(

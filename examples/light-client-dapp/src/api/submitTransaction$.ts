@@ -1,12 +1,13 @@
+import * as SubstrateDiscovery from "@substrate/discovery"
+
 import { map } from "rxjs"
-import * as substrateDiscovery from "@substrate/discovery"
 import { getClient } from "./getClient"
 
 export const submitTransaction$ = (
-  provider: substrateDiscovery.WalletProvider,
+  api: NonNullable<SubstrateDiscovery.ChainsProvider["v1"]>,
   chainId: string,
   tx: string,
 ) =>
-  getClient(provider, chainId)
+  getClient(api, chainId)
     .submitAndWatch(tx)
     .pipe(map((txEvent) => ({ tx, txEvent })))

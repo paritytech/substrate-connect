@@ -78,7 +78,7 @@ const chainData = [
 
 export const ChainSelect = () => {
   const { chainId, setChainId, provider } = useUnstableProvider()
-  const { chains: connectedChains } = useChains(provider)
+  const { chains: connectedChains } = useChains(provider?.chains)
   const toast = useToast()
 
   const isConnected = !!Object.keys(connectedChains).find(
@@ -88,7 +88,10 @@ export const ChainSelect = () => {
   const onAddChainSpec = async () => {
     const chain = chainData.find((chain) => chain.value === chainId)!
     try {
-      await provider?.getChain(chain.chainSpec, chain.relayChainGenesisHash)
+      await provider?.chains?.addChain(
+        chain.chainSpec,
+        chain.relayChainGenesisHash,
+      )
       toast.success({
         title: "Chain Specification added successfully",
         placement: "bottom-end",

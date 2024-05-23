@@ -18,18 +18,16 @@ export type SystemAccountStorage = {
 export const useSystemAccount = () => {
   const { provider, chainId, account } = useUnstableProvider()
   const { data: systemAccount } = useSWRSubscription(
-    provider && account
-      ? ["systemAccount", provider, chainId, account.address]
+    provider?.chains && account
+      ? ["systemAccount", provider.chains, chainId, account.address]
       : null,
-    ([_, provider, chainId, address], { next }) => {
-      const subscription = systemAccount$(provider, chainId, address).subscribe(
-        {
-          next(systemAccount) {
-            next(null, systemAccount)
-          },
-          error: next,
+    ([_, api, chainId, address], { next }) => {
+      const subscription = systemAccount$(api, chainId, address).subscribe({
+        next(systemAccount) {
+          next(null, systemAccount)
         },
-      )
+        error: next,
+      })
       return () => subscription.unsubscribe()
     },
   )

@@ -1,6 +1,6 @@
-import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
+import * as SubstrateDiscovery from "@substrate/discovery"
 
-import { UnstableWallet } from "@substrate/unstable-wallet-provider"
+import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
 import { combineLatest, distinct, filter, finalize, map, mergeMap } from "rxjs"
 import { getObservableClient } from "./getObservableClient"
 
@@ -18,11 +18,11 @@ export type SystemAccount = {
 }
 
 export const systemAccount$ = (
-  provider: UnstableWallet.Provider,
+  api: NonNullable<SubstrateDiscovery.ChainsProvider["v1"]>,
   chainId: string,
   address: string,
 ) => {
-  const client = getObservableClient(provider, chainId)
+  const client = getObservableClient(api, chainId)
   const { metadata$, finalized$, unfollow, storage$ } = client.chainHead$()
   return combineLatest([
     metadata$.pipe(filter(Boolean)),

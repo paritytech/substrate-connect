@@ -1,2 +1,2 @@
-export * from "./WalletProvider"
+export * from "./WalletProviderAPI"
 export * from "./WalletProviderDiscovery"

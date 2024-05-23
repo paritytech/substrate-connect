@@ -2,10 +2,10 @@ import { createClient as createClient_ } from "polkadot-api"
 import * as SubstrateDiscovery from "@substrate/discovery"
 
 export const getClient = (
-  provider: SubstrateDiscovery.WalletProvider,
+  api: NonNullable<SubstrateDiscovery.ChainsProvider["v1"]>,
   chainId: string,
 ) => {
-  const chain = provider.chains?.getChains()[chainId]
+  const chain = api.getChains()[chainId]
   if (!chain) throw new Error("unknown chain")
   return createClient_(chain.connect)
 }

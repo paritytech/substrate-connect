@@ -1,23 +1,25 @@
 import { useEffect, useState } from "react"
 import { useIsMounted } from "./useIsMounted"
-import { UnstableWallet } from "@substrate/unstable-wallet-provider"
+import * as SubstrateDiscovery from "@substrate/discovery"
 
-export const useChains = (provider?: UnstableWallet.Provider) => {
-  const [chains, setChains] = useState<UnstableWallet.RawChains>({})
+export const useChains = (
+  api?: NonNullable<SubstrateDiscovery.ChainsProvider["v1"]>,
+) => {
+  const [chains, setChains] = useState<SubstrateDiscovery.Chains>({})
   const isMounted = useIsMounted()
 
   useEffect(() => {
-    const chains = provider?.getChains()
+    const chains = api?.getChains()
     if (!isMounted()) return
     setChains(chains ?? {})
-  }, [provider, isMounted])
+  }, [api, isMounted])
 
   useEffect(
     () =>
-      provider?.addChainsChangeListener((chains) => {
+      api?.addChainsChangeListener((chains) => {
         setChains(chains)
       }),
-    [provider],
+    [api],
   )
 
   return { chains }

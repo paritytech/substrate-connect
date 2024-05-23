@@ -43,19 +43,19 @@ window.addEventListener("message", ({ data }) => {
 const provider = getLightClientProvider(CHANNEL_ID).then(
   (lightClientProvider) => ({
     chains: {
-      async addChain(chainSpec: string, relayChainGenesisHash?: string) {
+      addChain: async (chainSpec: string, relayChainGenesisHash?: string) => {
         return lightClientProvider.getChain(chainSpec, relayChainGenesisHash)
       },
       getChains: lightClientProvider.getChains,
       addChainsChangeListener: lightClientProvider.addChainsChangeListener,
     },
     accounts: {
-      async getAccounts(chainId: string) {
+      getAccounts: async (chainId: string) => {
         return rpc.client.getAccounts(chainId)
       },
     },
     extrinsics: {
-      async createTx(chainId: string, from: string, callData: string) {
+      createTx: async (chainId: string, from: string, callData: string) => {
         return rpc.client.createTx(chainId, from, callData)
       },
     },
@@ -64,10 +64,19 @@ const provider = getLightClientProvider(CHANNEL_ID).then(
 
 const detail: SubstrateDiscovery.ProviderDetail = {
   info: PROVIDER_INFO,
-  variants: {
-    UnstableWalletProvider: provider,
-    V1WalletProvider: provider,
-  },
+  provider: provider.then((p) => ({
+    chains: {
+      v1: p.chains,
+      unstable: p.chains,
+    },
+    accounts: {
+      v1: p.accounts,
+      unstable: p.accounts,
+    },
+    extrinsics: {
+      unstable: p.extrinsics,
+    },
+  })),
 }
 
 window.addEventListener(
@@ -76,7 +85,7 @@ window.addEventListener(
 )
 
 window.dispatchEvent(
-  new CustomEvent("unstableWallet:announceProvider", {
+  new CustomEvent("substrateDiscovery:announceProvider", {
     detail,
   }),
 )
