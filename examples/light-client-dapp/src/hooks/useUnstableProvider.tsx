@@ -1,22 +1,18 @@
 import { type ReactNode, createContext, useContext, useState } from "react"
-import type {
-  UnstableWallet,
-  WalletProviderDiscovery,
-} from "@substrate/unstable-wallet-provider"
 import useSWR from "swr"
-import { getProviders } from "../api"
+import * as SubstrateDiscovery from "@substrate/discovery"
 
 type Context = {
-  providerDetails?: WalletProviderDiscovery.Detail[]
-  providerDetail?: WalletProviderDiscovery.Detail
-  connectProviderDetail(detail: WalletProviderDiscovery.Detail): void
+  providerDetails?: SubstrateDiscovery.ProviderDetail[]
+  providerDetail?: SubstrateDiscovery.ProviderDetail
+  connectProviderDetail(detail: SubstrateDiscovery.ProviderDetail): void
   disconnectProviderDetail(): void
   // FIXME: accounts is chain specific
-  accounts?: UnstableWallet.Account[]
-  account?: UnstableWallet.Account
-  connectAccount(account: UnstableWallet.Account): void
+  accounts?: SubstrateDiscovery.Account[]
+  account?: SubstrateDiscovery.Account
+  connectAccount(account: SubstrateDiscovery.Account): void
   disconnectAccount(): void
-  provider?: UnstableWallet.Provider
+  provider?: SubstrateDiscovery.Provider
   chainId: string
   setChainId: (chainId: string) => void
 }
@@ -33,9 +29,11 @@ export const UnstableProviderProvider = ({
   children: ReactNode
   defaultChainId: string
 }) => {
-  const { data: providerDetails } = useSWR("getProviders", () => getProviders())
+  const { data: providerDetails } = useSWR("getProviders", () =>
+    SubstrateDiscovery.discoverProviders(),
+  )
   const [providerDetail, setProviderDetail] =
-    useState<WalletProviderDiscovery.Detail>()
+    useState<SubstrateDiscovery.ProviderDetail>()
   const { data: provider } = useSWR(
     () => `providerDetail.${providerDetail!.info.uuid}.provider`,
     () => providerDetail!.provider,
@@ -45,9 +43,10 @@ export const UnstableProviderProvider = ({
   const { data: accounts } = useSWR(
     () =>
       `providerDetail.${providerDetail!.info.uuid}.provider.getAccounts(${chainId})`,
-    async () => (await providerDetail!.provider).getAccounts(chainId),
+    async () =>
+      (await providerDetail!.provider)?.accounts?.getAccounts(chainId),
   )
-  const [account, setAccount] = useState<UnstableWallet.Account>()
+  const [account, setAccount] = useState<SubstrateDiscovery.Account>()
   const disconnectAccount = () => setAccount(undefined)
   const disconnectProviderDetail = () => {
     disconnectAccount()

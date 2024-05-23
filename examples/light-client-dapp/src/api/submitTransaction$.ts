@@ -1,9 +1,9 @@
 import { map } from "rxjs"
-import type { UnstableWallet } from "@substrate/unstable-wallet-provider"
+import * as substrateDiscovery from "@substrate/discovery"
 import { getClient } from "./getClient"
 
 export const submitTransaction$ = (
-  provider: UnstableWallet.Provider,
+  provider: substrateDiscovery.WalletProvider,
   chainId: string,
   tx: string,
 ) =>
