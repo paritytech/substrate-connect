@@ -1,15 +1,15 @@
 import { type ReactNode, createContext, useContext, useState } from "react"
 import type {
   UnstableWallet,
-  UnstableWalletProviderDiscovery,
+  WalletProviderDiscovery,
 } from "@substrate/unstable-wallet-provider"
 import useSWR from "swr"
 import { getProviders } from "../api"
 
 type Context = {
-  providerDetails?: UnstableWalletProviderDiscovery.Detail[]
-  providerDetail?: UnstableWalletProviderDiscovery.Detail
-  connectProviderDetail(detail: UnstableWalletProviderDiscovery.Detail): void
+  providerDetails?: WalletProviderDiscovery.Detail[]
+  providerDetail?: WalletProviderDiscovery.Detail
+  connectProviderDetail(detail: WalletProviderDiscovery.Detail): void
   disconnectProviderDetail(): void
   // FIXME: accounts is chain specific
   accounts?: UnstableWallet.Account[]
@@ -35,7 +35,7 @@ export const UnstableProviderProvider = ({
 }) => {
   const { data: providerDetails } = useSWR("getProviders", () => getProviders())
   const [providerDetail, setProviderDetail] =
-    useState<UnstableWalletProviderDiscovery.Detail>()
+    useState<WalletProviderDiscovery.Detail>()
   const { data: provider } = useSWR(
     () => `providerDetail.${providerDetail!.info.uuid}.provider`,
     () => providerDetail!.provider,

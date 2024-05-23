@@ -1,10 +1,10 @@
-import type { UnstableWalletProviderDiscovery } from "@substrate/unstable-wallet-provider"
+import type { WalletProviderDiscovery } from "@substrate/unstable-wallet-provider"
 
-export const getProviders = (): UnstableWalletProviderDiscovery.Detail[] => {
-  const providers: UnstableWalletProviderDiscovery.Detail[] = []
+export const getProviders = (): WalletProviderDiscovery.Detail[] => {
+  const providers: WalletProviderDiscovery.Detail[] = []
 
   window.dispatchEvent(
-    new CustomEvent<UnstableWalletProviderDiscovery.OnProvider>(
+    new CustomEvent<WalletProviderDiscovery.OnProvider>(
       "unstableWallet:requestProvider",
       {
         detail: {
