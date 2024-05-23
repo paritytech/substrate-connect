@@ -17,7 +17,6 @@
     "@polkadot-api/substrate-client": "^0.1.2",
     "@polkadot-api/utils": "^0.1.0",
     "@polkadot-labs/hdkd-helpers": "^0.0.6",
-    "@std/async": "npm:@jsr/std__async@^0.224.1",
     "@substrate/connect-known-chains": "workspace:^",
     "@zag-js/react": "^0.48.0",
     "@zag-js/select": "^0.48.0",
