@@ -7,7 +7,9 @@ export type Account = {
   readonly address: string
 }
 
-// The key is the genesis hash
+/**
+ * Mapping of Genesis Hash to Chain
+ */
 export type Chains = Record<string, Chain>
 
 export type Chain = {

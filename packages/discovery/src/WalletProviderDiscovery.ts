@@ -44,6 +44,9 @@ export type ProviderInfo = {
 export const getProviders = (): ProviderDetail[] => {
   const providers: ProviderDetail[] = []
 
+  // When this event is dispatched, event listeners are expected to
+  // respond immediately with a provider. This means the `providers`
+  // array will be populated synchronously.
   window.dispatchEvent(
     new CustomEvent<OnProvider>("substrateDiscovery:requestProvider", {
       detail: {
@@ -54,7 +57,11 @@ export const getProviders = (): ProviderDetail[] => {
     }),
   )
 
-  return providers.slice()
+  // slice the array to prevent further "asynchronous" updates. Providers
+  // that did not respond synchronously will be dropped.
+  const providersSliced = providers.slice()
+
+  return providersSliced
 }
 
 // #region Events
