@@ -1,24 +1,25 @@
-import { WalletProvider } from "./WalletProvider"
+import { V1WalletProvider, UnstableWalletProvider } from "./WalletProvider"
 
-type WalletProviderVariantRecord = Readonly<{
-  [k in WalletProvider["_tag"]]?: WalletProvider & { _tag: k }
-}>
+export type WalletProviderVariantRecord = {
+  UnstableWalletProvider?: Promise<UnstableWalletProvider>
+  V1WalletProvider?: Promise<V1WalletProvider>
+}
 
-export type ProviderDetail = Readonly<{
+export type ProviderDetail = {
   info: ProviderInfo
-  provider: Promise<WalletProviderVariantRecord>
-}>
+  variants: WalletProviderVariantRecord
+}
 
-export type OnProvider = Readonly<{
+export type OnProvider = {
   onProvider(detail: ProviderDetail): void
-}>
+}
 
-export type ProviderInfo = Readonly<{
+export type ProviderInfo = {
   uuid: string
   name: string
   icon: string
   rdns: string
-}>
+}
 
 export const discoverProviders = (): ProviderDetail[] => {
   const providers: ProviderDetail[] = []

@@ -1,5 +1,4 @@
 import { JsonRpcProvider } from "@polkadot-api/json-rpc-provider"
-import { ReadonlyDeep } from "type-fest"
 
 type Callback<T> = (value: T) => void
 type UnsubscribeFn = () => void
@@ -9,16 +8,15 @@ export type Account = {
 }
 
 // The key is the genesis hash
-export type Chains = Readonly<Record<string, Chain>>
+export type Chains = Record<string, Chain>
 
-export type Chain = Readonly<{
+export type Chain = {
   genesisHash: string
   name: string
   connect: JsonRpcProvider
-}>
+}
 
-export type V1WalletProvider = ReadonlyDeep<{
-  _tag: "V1WalletProvider"
+export type V1WalletProvider = {
   chains?: {
     addChain: (
       chainSpec: string,
@@ -30,10 +28,9 @@ export type V1WalletProvider = ReadonlyDeep<{
   accounts?: {
     getAccounts: (chainId: string) => Promise<Account[]>
   }
-}>
+}
 
-export type UnstableWalletProvider = ReadonlyDeep<{
-  _tag: "UnstableWalletProvider"
+export type UnstableWalletProvider = {
   chains?: {
     addChain: (
       chainSpec: string,
@@ -54,6 +51,4 @@ export type UnstableWalletProvider = ReadonlyDeep<{
       callData: string,
     ) => Promise<string>
   }
-}>
-
-export type WalletProvider = V1WalletProvider | UnstableWalletProvider
+}

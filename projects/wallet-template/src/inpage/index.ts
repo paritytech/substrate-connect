@@ -3,7 +3,7 @@ import {
   createRpc,
 } from "@substrate/light-client-extension-helpers/utils"
 import { getLightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
-import type { UnstableWalletProviderDiscovery } from "@substrate/unstable-wallet-provider"
+import * as SubstrateDiscovery from "@substrate/discovery"
 
 import type { Account, BackgroundRpcSpec } from "../background/types"
 import { CHANNEL_ID } from "../constants"
@@ -42,24 +42,37 @@ window.addEventListener("message", ({ data }) => {
 
 const provider = getLightClientProvider(CHANNEL_ID).then(
   (lightClientProvider) => ({
-    ...lightClientProvider,
-    async getAccounts(chainId: string) {
-      return rpc.client.getAccounts(chainId)
+    chains: {
+      async addChain(chainSpec: string, relayChainGenesisHash?: string) {
+        return lightClientProvider.getChain(chainSpec, relayChainGenesisHash)
+      },
+      getChains: lightClientProvider.getChains,
+      addChainsChangeListener: lightClientProvider.addChainsChangeListener,
     },
-    async createTx(chainId: string, from: string, callData: string) {
-      return rpc.client.createTx(chainId, from, callData)
+    accounts: {
+      async getAccounts(chainId: string) {
+        return rpc.client.getAccounts(chainId)
+      },
+    },
+    extrinsics: {
+      async createTx(chainId: string, from: string, callData: string) {
+        return rpc.client.createTx(chainId, from, callData)
+      },
     },
   }),
 )
 
-const detail: UnstableWalletProviderDiscovery.Detail = Object.freeze({
+const detail: SubstrateDiscovery.ProviderDetail = {
   info: PROVIDER_INFO,
-  provider,
-})
+  variants: {
+    UnstableWalletProvider: provider,
+    V1WalletProvider: provider,
+  },
+}
 
 window.addEventListener(
-  "unstableWallet:requestProvider",
-  ({ detail: { onProvider } }) => onProvider(detail),
+  "substrateDiscovery:requestProvider",
+  ({ detail: { onProvider } }) => onProvider(Object.freeze(detail)),
 )
 
 window.dispatchEvent(

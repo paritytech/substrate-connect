@@ -39,7 +39,6 @@
     "trailingComma": "all"
   },
   "devDependencies": {
-    "@polkadot-api/json-rpc-provider": "0.0.1",
-    "type-fest": "^4.18.2"
+    "@polkadot-api/json-rpc-provider": "0.0.1"
   }
 }
