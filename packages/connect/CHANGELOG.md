@@ -4,6 +4,13 @@
 
 ### Changed
 
+## 0.8.11 - 2024-05-24
+
+- Update `@substrate/light-client-extension-helpers` to v0.1.0
+- Update `@substrate/connect-known-chains` to v1.1.5
+
+### Changed
+
 ## 0.8.10 - 2024-04-12
 
 - Update `@substrate/light-client-extension-helpers` to v0.0.5

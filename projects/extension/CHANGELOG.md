@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## 0.4.5 - 2024-05-24
+
+### Changed
+
+- Update chainspecs
+- Force smoldot to restart whenever it crashes [#2191](https://github.com/paritytech/substrate-connect/pull/2162)
+
 ### Changed
 
 ## 0.4.4 - 2024-04-24
