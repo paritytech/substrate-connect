@@ -65,5 +65,10 @@
     "typedoc": "^0.25.13",
     "typescript": "^5.4.5"
   },
-  "packageManager": "pnpm@8.14.0"
+  "packageManager": "pnpm@8.14.0",
+  "pnpm": {
+    "override": {
+      "smoldot": "2.0.26"
+    }
+  }
 }
