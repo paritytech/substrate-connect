@@ -4,14 +4,8 @@ import { Layout2 } from "@/components/Layout2"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  EyeIcon,
-  EyeOffIcon,
-  AlertTriangleIcon,
-  LayersIcon,
-} from "lucide-react"
+import { EyeIcon, EyeOffIcon, LayersIcon } from "lucide-react"
 import { useState } from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { cn } from "@/lib/utils"
