@@ -41,18 +41,20 @@ export const UnlockKeyring = () => {
           "bg-foreground text-primary-foreground",
         )}
       >
-        <CardHeader className="text-center">
-          <CardTitle className="mt-6 text-2xl leading-4">
-            <span className="pl-4 font-semibold">
-              substrate
-              <span className="text-primary">_</span>
-            </span>
-            <br />
-            <span className="text-5xl font-extrabold text-primary">
-              Connect
-            </span>
-          </CardTitle>
-        </CardHeader>
+        <div className="flex-none">
+          <CardHeader className="text-center">
+            <CardTitle className="mt-6 text-2xl leading-4">
+              <span className="pl-4 font-semibold">
+                substrate
+                <span className="text-primary">_</span>
+              </span>
+              <br />
+              <span className="text-5xl font-extrabold text-primary">
+                Connect
+              </span>
+            </CardTitle>
+          </CardHeader>
+        </div>
 
         <main className="w-full max-w-sm p-8 mx-auto border rounded-lg shadow-md border-opacity-20">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
