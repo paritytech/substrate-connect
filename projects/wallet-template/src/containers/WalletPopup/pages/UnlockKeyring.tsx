@@ -6,7 +6,12 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CardHeader, CardTitle } from "@/components/ui/card"
-import { EyeIcon, EyeOffIcon, AlertTriangleIcon } from "lucide-react"
+import {
+  EyeIcon,
+  EyeOffIcon,
+  AlertTriangleIcon,
+  LayersIcon,
+} from "lucide-react"
 import { useState } from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { cn } from "@/lib/utils"
@@ -41,20 +46,18 @@ export const UnlockKeyring = () => {
           "bg-foreground text-primary-foreground",
         )}
       >
-        <div className="flex-none">
-          <CardHeader className="text-center">
-            <CardTitle className="mt-6 text-2xl leading-4">
-              <span className="pl-4 font-semibold">
-                substrate
-                <span className="text-primary">_</span>
-              </span>
-              <br />
-              <span className="text-5xl font-extrabold text-primary">
-                Connect
-              </span>
-            </CardTitle>
-          </CardHeader>
-        </div>
+        <CardHeader className="text-center">
+          <CardTitle className="mt-6 text-2xl leading-4">
+            <span className="pl-4 font-semibold">
+              substrate
+              <span className="text-primary">_</span>
+            </span>
+            <br />
+            <span className="text-5xl font-extrabold text-primary">
+              Connect
+            </span>
+          </CardTitle>
+        </CardHeader>
 
         <main className="w-full max-w-sm p-8 mx-auto border rounded-lg shadow-md border-opacity-20">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -88,22 +91,23 @@ export const UnlockKeyring = () => {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-destructive-foreground">Invalid Password</p>
+              )}
             </div>
-            {errors.password && (
-              <Alert
-                variant="destructive"
-                className="text-destructive-foreground border-destructive-foreground"
-              >
-                <AlertTriangleIcon className="w-5 h-5 mr-2 [&>path]:!text-destructive-foreground" />
-                <AlertDescription className="text-center">
-                  Incorrect password. Please try again.
-                </AlertDescription>
-              </Alert>
-            )}
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               Unlock Wallet
             </Button>
           </form>
+          <div className="mt-4 text-center">
+            <Button
+              variant="link"
+              className="text-muted/80 hover:text-muted/60"
+            >
+              <LayersIcon className="w-5 h-5 mr-2" />
+              Access Networks
+            </Button>
+          </div>
         </main>
 
         <footer className="text-xs text-center text-muted/90">
