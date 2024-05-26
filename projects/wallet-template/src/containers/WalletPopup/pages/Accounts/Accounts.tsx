@@ -11,23 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  Home,
-  Plus,
-  Settings,
-  Download,
-  Code,
-  ArrowRight,
-  Globe,
-} from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Layout2 } from "@/components/Layout2"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import useSWR from "swr"
 import { rpc } from "@/containers/WalletPopup/api"
 import { ss58Address } from "@polkadot-labs/hdkd-helpers"
 import React from "react"
-import { cn } from "@/lib/utils"
+import { Header, BottomNavBar } from "../../components"
 
 type AccountCardProps = React.ComponentProps<typeof Card> & {
   name: string
@@ -76,7 +68,6 @@ const AccountsSkeleton: React.FC = () => {
 }
 
 export const Accounts = () => {
-  const navigate = useNavigate()
   const { data: cryptoKeys, isLoading: isFetchingCryptoKeys } = useSWR(
     "rpc.getCryptoKeys",
     () => rpc.client.getCryptoKeys(),
@@ -112,50 +103,9 @@ export const Accounts = () => {
     .filter((account) => account.type === "Keypair")
     .map(({ publicKey }) => ss58Address(publicKey))
 
-  const [selectedNavItem, setSelectedNavItem] = useState("home")
-
-  const navItems = [
-    { name: "home", icon: Home, onClick: () => navigate("/accounts") },
-    {
-      name: "networks",
-      icon: Globe,
-      onClick: () => setSelectedNavItem("networks"),
-    },
-    { name: "add", icon: Plus, onClick: () => navigate("/accounts/add") },
-    {
-      name: "import",
-      icon: Download,
-      onClick: () => navigate("/accounts/import"),
-    },
-    {
-      name: "debug",
-      icon: Code,
-      onClick: () => navigate("/debug"),
-    },
-  ]
-
   return (
     <Layout2>
-      <header
-        className={cn(
-          "flex items-center justify-between pt-6 pb-4 bg-foreground",
-          "px-6 sm:px-8",
-          "text-primary-foreground",
-        )}
-      >
-        <div className="text-2xl font-semibold leading-4">
-          substrate
-          <span className="text-primary">_</span>
-          <br />
-          <span className="text-4xl text-primary">connect</span>
-        </div>
-        <Link to="/options" target="_blank" rel="noopener noreferrer">
-          <Button type="button" variant="ghost">
-            <Settings className="w-6 h-6" />
-          </Button>
-        </Link>
-      </header>
-
+      <Header />
       <div className="flex items-center justify-between px-6 mt-4 mb-4 sm:px-8">
         <h2 className="text-xl font-semibold">Your Accounts</h2>
         <Select
@@ -195,27 +145,7 @@ export const Accounts = () => {
         </section>
       </ScrollArea>
 
-      <nav className="p-4 bg-foreground">
-        <div className="flex justify-around">
-          {navItems.map((item) => (
-            <Button
-              key={item.name}
-              variant="ghost"
-              onClick={item.onClick}
-              className={`flex flex-col items-center space-y-1 hover:bg-muted-foreground ${
-                selectedNavItem === item.name
-                  ? "text-primary"
-                  : "text-secondary hover:text-accent"
-              }`}
-            >
-              <item.icon className="w-6 h-6 min-h-6" />
-              <span className="text-xs font-medium capitalize">
-                {item.name}
-              </span>
-            </Button>
-          ))}
-        </div>
-      </nav>
+      <BottomNavBar currentItem="home" />
     </Layout2>
   )
 }
