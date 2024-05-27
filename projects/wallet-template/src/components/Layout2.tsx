@@ -3,6 +3,7 @@ import React from "react"
 import { cn } from "@/lib/utils"
 
 export type Props = {
+  className?: string
   children?: React.ReactNode
 }
 
@@ -10,7 +11,7 @@ export type Props = {
  * This Layout is the new layout but is called Layout2 until all pages
  * are migrated to the new layout.
  */
-export const Layout2: React.FC<Props> = ({ children }) => {
+export const Layout2: React.FC<Props> = ({ children, className }) => {
   return (
     <main
       className={cn(
@@ -18,6 +19,7 @@ export const Layout2: React.FC<Props> = ({ children }) => {
         "min-h-screen",
         "bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600",
         "font-sans",
+        className,
       )}
     >
       <div

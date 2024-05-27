@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle, Copy } from "lucide-react"
+import { ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon } from "lucide-react"
 import { useState } from "react"
 import {
   entropyToMiniSecret,
@@ -10,46 +10,78 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import { toHex } from "@polkadot-api/utils"
 import { useNavigate } from "react-router-dom"
 import { rpc } from "../../api"
-import { StepIndicator } from "../../components"
 import { sr25519CreateDerive } from "@polkadot-labs/hdkd"
-import useSWR from "swr"
 import { bytesToHex } from "@noble/ciphers/utils"
-import { Layout } from "../../../../components/Layout"
+import { z } from "zod"
+import { Layout2 } from "@/components/Layout2"
+import {
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Separator } from "@/components/ui/separator"
+import { Input } from "@/components/ui/input"
+import { Header, BottomNavBar } from "../../components"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
-type FormFields = {
-  keysetName: string
-  networks: string[]
-}
+const schema = z.object({
+  cryptoKeyName: z
+    .string({ required_error: "This field is required." })
+    .min(1, "This field cannot be empty.")
+    .refine(
+      async (name) => {
+        const existingKeys = (await rpc.client.getCryptoKeys()).map(
+          (key) => key.name,
+        )
+        return !existingKeys.includes(name)
+      },
+      {
+        message: "Name already exists",
+      },
+    ),
+  networks: z.array(z.string()).refine((value) => value.some((item) => item), {
+    message: "You must to select at least one network.",
+  }),
+  seedPhraseConfirmed: z.boolean().refine((value) => value, {
+    message: "You must confirm the seed phrase.",
+  }),
+})
 
 export const AddAccount = () => {
   const navigate = useNavigate()
   const [mnemonic, _] = useState(generateMnemonic(256).split(" "))
-  const {
-    data: cryptoKeys,
-    isLoading: areCryptoKeysLoading,
-    mutate,
-  } = useSWR("rpc.getCryptoKeys", () => rpc.client.getCryptoKeys(), {
-    revalidateOnFocus: true,
+
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      cryptoKeyName: "",
+      networks: [],
+      seedPhraseConfirmed: false,
+    },
   })
-
-  // HACK: work around for double submit
-  const [isSubmitted, setIsSubmitted] = useState(false)
-
   const {
     handleSubmit,
+    control,
     trigger,
-    formState: { isSubmitting, errors },
-    getValues,
-    setValue,
-    register,
-    watch,
-  } = useForm<FormFields>()
+    formState: { isSubmitting },
+  } = form
 
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    if (!isSubmitted) {
-      return
-    }
-
+  const onSubmit: SubmitHandler<z.infer<typeof schema>> = async (data) => {
     try {
       const entropy = mnemonicToEntropy(mnemonic.join(" "))
       const miniSecret = entropyToMiniSecret(entropy)
@@ -68,29 +100,23 @@ export const AddAccount = () => {
 
       await rpc.client.insertCryptoKey({
         type: "Keyset",
-        name: data.keysetName,
+        name: data.cryptoKeyName,
         scheme: "Sr25519",
         createdAt: Date.now(),
         miniSecret: bytesToHex(miniSecret),
         derivationPaths,
       })
-      await mutate()
-      window.localStorage.setItem("selectedCryptoKeyName", data.keysetName)
+      window.localStorage.setItem("selectedCryptoKeyName", data.cryptoKeyName)
     } finally {
       navigate("/accounts")
     }
   }
 
-  register("networks", {
-    required: "You must select at least one network",
-    validate: (v) => v.length > 0,
-  })
-
-  const [currentStep, setCurrentStep] = useState(1)
-  const nextStep = async () => {
-    switch (currentStep) {
+  const [step, setStep] = useState(1)
+  const handleNext = async () => {
+    switch (step) {
       case 1:
-        if (!(await trigger("keysetName"))) return
+        if (!(await trigger("cryptoKeyName"))) return
         break
       case 2:
         if (!(await trigger("networks"))) return
@@ -98,168 +124,205 @@ export const AddAccount = () => {
       default:
         break
     }
-    setCurrentStep((prevStep) => Math.min(prevStep + 1, 3))
+    setStep((prevStep) => Math.min(prevStep + 1, 3))
   }
 
-  const prevStep = () => {
-    setIsSubmitted(false)
-    setCurrentStep((prevStep) => Math.max(prevStep - 1, 1))
-  }
-
-  const toggleNetwork = (network: string) => {
-    const prev = getValues("networks") ?? []
-    setValue(
-      "networks",
-      prev.includes(network)
-        ? prev.filter((n) => n !== network)
-        : [...prev, network],
-    )
-  }
-
-  const selectedNetworks = watch("networks", [])
-
-  const StepContent = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <div>
-            <h2 className="mb-2 text-lg font-semibold">Set Keyset Name</h2>
-            <div className="space-y-4">
-              <input
-                type="text"
-                placeholder="Enter keyset name"
-                className="block w-full px-4 py-2 mt-1 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                {...register("keysetName", {
-                  required: "You must specify a keyset name",
-                  validate: (v) =>
-                    cryptoKeys?.find((keyset) => keyset.name === v) ===
-                      undefined || "Keyset already exists",
-                  minLength: {
-                    value: 1,
-                    message: "Keyset must have at least 1 character",
-                  },
-                })}
-              />
-              {errors.keysetName && (
-                <div className="text-red-500">{errors.keysetName.message}</div>
-              )}
-            </div>
-          </div>
-        )
-      case 2:
-        return (
-          <div>
-            <section aria-label="Network selection" className="mb-6">
-              <h2 className="mb-4 text-lg font-semibold">Select Network</h2>
-              <div className="flex flex-col gap-4">
-                {networks.map((network) => (
-                  <label
-                    key={network.label}
-                    className="flex items-center justify-start p-4 transition-colors bg-gray-200 rounded-lg cursor-pointer hover:bg-gray-300"
-                  >
-                    <div className="relative mr-4">
-                      <input
-                        type="checkbox"
-                        className="hidden"
-                        checked={selectedNetworks.includes(network.value)}
-                        onChange={() => toggleNetwork(network.value)}
-                      />
-                      {selectedNetworks.includes(network.value) ? (
-                        <CheckCircle size="20" />
-                      ) : (
-                        <div className="w-6 h-6 border-2 border-gray-300 rounded-full" />
-                      )}
-                    </div>
-                    <span className="flex items-center gap-2 font-medium text-gray-700">
-                      <img
-                        src={network.logo}
-                        alt={`${network.label} Logo`}
-                        className="w-5 h-5 mr-2"
-                      />
-                      {network.label}
-                    </span>
-                  </label>
-                ))}
-              </div>
-              {errors.networks && (
-                <div className="text-red-500">{errors.networks.message}</div>
-              )}
-            </section>
-          </div>
-        )
-      case 3:
-        return (
-          <div>
-            <h1 className="mb-4 text-2xl text-white">Your Seed Phrase</h1>
-            <p className="mb-6 text-lg">
-              Make sure you save these words in the correct order and keep them
-              somewhere safe.
-            </p>
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              {mnemonic.map((word, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-3 bg-gray-700 rounded"
-                >
-                  <span className="text-gray-300">
-                    {index + 1}. {word}
-                  </span>
-                  <button
-                    type="button"
-                    aria-label={`Copy word ${index + 1}`}
-                    className="text-white"
-                  >
-                    <Copy className="w-5 h-5" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )
-      default:
-        return null
-    }
+  const handleBack = () => {
+    setStep((prevStep) => Math.max(prevStep - 1, 1))
   }
 
   return (
-    <Layout>
-      <div className="max-w-xl p-6 mx-auto">
-        <h1 className="mb-4 text-2xl font-bold">Create A New Keyset</h1>
-        <StepIndicator currentStep={currentStep} steps={3} />
-        <form className="mt-4" onSubmit={handleSubmit(onSubmit)}>
-          <StepContent />
-          <div className="flex justify-between mt-6">
-            {currentStep > 1 && (
-              <button
-                type="button"
-                onClick={prevStep}
-                className="px-4 py-2 text-gray-800 bg-gray-200 rounded hover:bg-gray-300"
-              >
-                Back
-              </button>
-            )}
-            {currentStep < 3 ? (
-              <button
-                type="button"
-                onClick={nextStep}
-                className="flex items-center px-4 py-2 text-white bg-teal-500 rounded hover:bg-teal-600"
-                disabled={areCryptoKeysLoading || isSubmitting}
-              >
-                Next <ArrowRight size="16" className="ml-2" />
-              </button>
-            ) : (
-              <button
-                type="submit"
-                className="flex items-center px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
-                disabled={isSubmitting}
-                onClick={() => setIsSubmitted(true)}
-              >
-                Submit <CheckCircle size="16" className="ml-2" />
-              </button>
-            )}
-          </div>
-        </form>
+    <Layout2>
+      <div className="flex flex-col justify-between h-full">
+        <Header />
+        <ScrollArea className="grow">
+          <Form {...form}>
+            <form
+              className="relative h-full grow"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <div className="h-full max-w-lg mx-auto bg-card text-card-foreground">
+                <CardHeader className="mb-4">
+                  <CardTitle className="text-center">
+                    {step === 1
+                      ? "Choose Name"
+                      : step === 2
+                        ? "Choose Networks"
+                        : "Review Seed Phrase"}
+                  </CardTitle>
+                  <CardDescription className="text-center text-muted-foreground">
+                    Step {step} of 3
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {step === 1 && (
+                    <div className="step-1">
+                      <FormField
+                        name="cryptoKeyName"
+                        control={control}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormDescription className="mb-4 text-xs">
+                              Set a name for your crypto key. This name will be
+                              used to identify your crypto key within the
+                              extension.
+                            </FormDescription>
+                            <Separator className="mb-4" />
+                            <FormLabel
+                              htmlFor="cryptoKeyName"
+                              className="block mb-2 text-muted-foreground"
+                            >
+                              Crypto Key Name
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                id="cryptoKeyName"
+                                type="text"
+                                className="w-full bg-input text-card-foreground"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+                  {step === 2 && (
+                    <div className="step-2">
+                      <FormField
+                        name="networks"
+                        control={control}
+                        render={() => (
+                          <FormItem>
+                            <FormDescription className="mb-4 text-xs">
+                              Select the blockchain networks you want your
+                              wallet to support
+                            </FormDescription>
+                            <Separator className="mb-4" />
+                            {networks.map((network) => (
+                              <FormField
+                                key={network.chainId}
+                                control={control}
+                                name="networks"
+                                render={({ field }) => (
+                                  <FormItem
+                                    key={network.chainId}
+                                    className="flex flex-row items-start space-x-3 space-y-0"
+                                  >
+                                    <FormControl>
+                                      <>
+                                        <img
+                                          src={network.logo}
+                                          alt={`${network.label} Logo`}
+                                          className="w-5 h-5"
+                                        />
+                                        <Checkbox
+                                          checked={field.value?.includes(
+                                            network.value,
+                                          )}
+                                          onCheckedChange={(checked) => {
+                                            return checked
+                                              ? field.onChange([
+                                                  ...field.value,
+                                                  network.value,
+                                                ])
+                                              : field.onChange(
+                                                  field.value?.filter(
+                                                    (value) =>
+                                                      value !== network.value,
+                                                  ),
+                                                )
+                                          }}
+                                        />
+                                      </>
+                                    </FormControl>
+                                    <FormLabel className="font-normal">
+                                      {network.label}
+                                    </FormLabel>
+                                  </FormItem>
+                                )}
+                              />
+                            ))}
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+                  {step === 3 && (
+                    <div className="step-3">
+                      <FormField
+                        name="seedPhraseConfirmed"
+                        control={control}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormDescription className="mb-4 text-xs">
+                              Your seed phrase is a unique set of words that you
+                              need to back up and recover your wallet. Do not
+                              share this with anyone.
+                            </FormDescription>
+                            <Separator className="mb-4" />
+                            <div className="p-4 mb-4 border rounded-md border-border bg-muted">
+                              {mnemonic.join(" ")}
+                            </div>
+                            <div className="flex">
+                              <FormControl className="mr-2">
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                              <Label className="block text-muted-foreground">
+                                I have written down my seed phrase.
+                              </Label>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+                </CardContent>
+                <CardFooter className="flex justify-between mt-6">
+                  {step > 1 && (
+                    <Button
+                      type="button"
+                      onClick={handleBack}
+                      className="flex items-center space-x-2 border-border text-card-foreground"
+                      variant="outline"
+                    >
+                      <ArrowLeftIcon className="w-4 h-4" />
+                      <span>Back</span>
+                    </Button>
+                  )}
+                  {step < 3 ? (
+                    <Button
+                      type="button"
+                      onClick={handleNext}
+                      className="flex items-center ml-auto space-x-2 bg-primary text-primary-foreground hover:bg-primary-dark"
+                    >
+                      <span>Next</span>
+                      <ArrowRightIcon className="w-4 h-4" />
+                    </Button>
+                  ) : (
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="flex items-center ml-auto space-x-2 bg-primary text-primary-foreground hover:bg-primary-dark"
+                      variant="default"
+                    >
+                      <CheckCircleIcon className="w-4 h-4" />
+                      <span>Finish</span>
+                    </Button>
+                  )}
+                </CardFooter>
+              </div>
+            </form>
+          </Form>
+        </ScrollArea>
+        <BottomNavBar currentItem="add" />
       </div>
-    </Layout>
+    </Layout2>
   )
 }
