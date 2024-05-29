@@ -1,0 +1,30 @@
+{
+  "name": "@substrate/smoldot-discovery",
+  "version": "0.0.6",
+  "author": "Parity Technologies (https://github.com/paritytech)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paritytech/substrate-connect.git"
+  },
+  "license": "MIT",
+  "exports": {
+    "./api": "./dist/api/index.mjs",
+    "./smoldot": "./dist/smoldot/index.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --noEmit && tsup-node src/api/index.ts src/smoldot/index.ts --clean --sourcemap --platform neutral --target=es2020 --format esm --dts",
+    "dev": "pnpm build --watch",
+    "lint": "prettier --check README.md \"src/**/*.{js,jsx,ts,tsx,json,md}\""
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": false,
+    "trailingComma": "all"
+  },
+  "devDependencies": {
+    "@substrate/discovery": "workspace:^"
+  }
+}

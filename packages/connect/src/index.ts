@@ -97,3 +97,9 @@
 
 export { WellKnownChain } from "./WellKnownChain.js"
 export * from "./connector/index.js"
+export type {
+  JsonRpcCallback,
+  Chain,
+  AddChain,
+  AddWellKnownChain,
+} from "./connector/index.js"
