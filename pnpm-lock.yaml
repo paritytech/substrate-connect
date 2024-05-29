@@ -470,8 +470,8 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
       react-icons:
-        specifier: ^4.11.0
-        version: 4.12.0(react@18.3.1)
+        specifier: ^5.2.1
+        version: 5.2.1(react@18.3.1)
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
@@ -555,8 +555,8 @@ importers:
         specifier: ^0.0.6
         version: 0.0.6
       '@polkadot/extension-inject':
-        specifier: ^0.46.9
-        version: 0.46.9(@polkadot/api@10.13.1)(@polkadot/util@12.6.2)
+        specifier: ^0.47.5
+        version: 0.47.5(@polkadot/api@10.13.1)(@polkadot/util@12.6.2)
       '@radix-ui/react-accordion':
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@18.3.0)(@types/react@18.3.2)(react-dom@18.3.1)(react@18.3.1)
@@ -696,8 +696,8 @@ importers:
         specifier: ^7.51.4
         version: 7.51.5(react@18.3.1)
       react-icons:
-        specifier: ^4.11.0
-        version: 4.12.0(react@18.3.1)
+        specifier: ^5.2.1
+        version: 5.2.1(react@18.3.1)
       react-json-view:
         specifier: ^1.21.3
         version: 1.21.3(@types/react@18.3.2)(react-dom@18.3.1)(react@18.3.1)
@@ -3478,16 +3478,16 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@polkadot/extension-inject@0.46.9(@polkadot/api@10.13.1)(@polkadot/util@12.6.2):
-    resolution: {integrity: sha512-m0jnrs9+jEOpMH6OUNl7nHpz9SFFWK9LzuqB8T3htEE3RUYPL//SLCPyEKxAAgHu7F8dgkUHssAWQfANofALCQ==}
+  /@polkadot/extension-inject@0.47.5(@polkadot/api@10.13.1)(@polkadot/util@12.6.2):
+    resolution: {integrity: sha512-k3sSV1FUerhtbEJnKSofKofP5VSenKV9mlzG102dDmLv6kFfr6ZP7HmReeKfRi8pRXd9jrI6oUNtq86APUeF9Q==}
     engines: {node: '>=18'}
     peerDependencies:
       '@polkadot/api': '*'
       '@polkadot/util': '*'
     dependencies:
       '@polkadot/api': 10.13.1
-      '@polkadot/rpc-provider': 10.13.1
-      '@polkadot/types': 10.13.1
+      '@polkadot/rpc-provider': 11.1.1
+      '@polkadot/types': 11.1.1
       '@polkadot/util': 12.6.2
       '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
       '@polkadot/x-global': 12.6.2
@@ -3626,12 +3626,46 @@ packages:
       - utf-8-validate
     dev: false
 
+  /@polkadot/rpc-provider@11.1.1:
+    resolution: {integrity: sha512-m4v964Cs7dM9cLiMD5XVLPvKAT1yOcvTX618875pLe5LU67b7MLUT2xxCchXf61jvM6b3NKNKulKSMmlQJkYtw==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/keyring': 12.6.2(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)
+      '@polkadot/types': 11.1.1
+      '@polkadot/types-support': 11.1.1
+      '@polkadot/util': 12.6.2
+      '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
+      '@polkadot/x-fetch': 12.6.2
+      '@polkadot/x-global': 12.6.2
+      '@polkadot/x-ws': 12.6.2
+      eventemitter3: 5.0.1
+      mock-socket: 9.3.1
+      nock: 13.5.4
+      tslib: 2.6.2
+    optionalDependencies:
+      '@substrate/connect': link:packages/connect
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+    dev: false
+
   /@polkadot/types-augment@10.13.1:
     resolution: {integrity: sha512-TcrLhf95FNFin61qmVgOgayzQB/RqVsSg9thAso1Fh6pX4HSbvI35aGPBAn3SkA6R+9/TmtECirpSNLtIGFn0g==}
     engines: {node: '>=18'}
     dependencies:
       '@polkadot/types': 10.13.1
       '@polkadot/types-codec': 10.13.1
+      '@polkadot/util': 12.6.2
+      tslib: 2.6.2
+    dev: false
+
+  /@polkadot/types-augment@11.1.1:
+    resolution: {integrity: sha512-aBfM+vu76YIym8Dvy00FJZRVz9cHqeghlTj3Lj1WjolVc+GuFxAWDx87p778Sb9d+iebA3pVY0wXNF+ZlRNDtg==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/types': 11.1.1
+      '@polkadot/types-codec': 11.1.1
       '@polkadot/util': 12.6.2
       tslib: 2.6.2
     dev: false
@@ -3664,11 +3698,29 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /@polkadot/types-codec@11.1.1:
+    resolution: {integrity: sha512-YMLEwerOO17M++EUAnh0SQWcDQNZ/l2nGmbSSvLEUBZdjXdtfLQ8NFVZakH5ehNHD+X3t0NLOQJg0hOBlVIj4A==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/util': 12.6.2
+      '@polkadot/x-bigint': 12.6.2
+      tslib: 2.6.2
+    dev: false
+
   /@polkadot/types-create@10.13.1:
     resolution: {integrity: sha512-Usn1jqrz35SXgCDAqSXy7mnD6j4RvB4wyzTAZipFA6DGmhwyxxIgOzlWQWDb+1PtPKo9vtMzen5IJ+7w5chIeA==}
     engines: {node: '>=18'}
     dependencies:
       '@polkadot/types-codec': 10.13.1
+      '@polkadot/util': 12.6.2
+      tslib: 2.6.2
+    dev: false
+
+  /@polkadot/types-create@11.1.1:
+    resolution: {integrity: sha512-Ro/9lYyEhGYTFoIvFUvAzdJ+0Of/tVnqewtwV35iXX9C86GazE8URJPrHFh4J/GBLQY0/JiT++PwxwFNH/kJsw==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/types-codec': 11.1.1
       '@polkadot/util': 12.6.2
       tslib: 2.6.2
     dev: false
@@ -3710,6 +3762,14 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /@polkadot/types-support@11.1.1:
+    resolution: {integrity: sha512-Wf1aYs5lEtwksFH8EBNZMxBJlcRFx/sewErzpwGJJFT8BGcrQpc6HlNjVXJpTdXj+0VzUBHE9B8eAWfWQl8YIA==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/util': 12.6.2
+      tslib: 2.6.2
+    dev: false
+
   /@polkadot/types@10.13.1:
     resolution: {integrity: sha512-Hfvg1ZgJlYyzGSAVrDIpp3vullgxrjOlh/CSThd/PI4TTN1qHoPSFm2hs77k3mKkOzg+LrWsLE0P/LP2XddYcw==}
     engines: {node: '>=18'}
@@ -3718,6 +3778,20 @@ packages:
       '@polkadot/types-augment': 10.13.1
       '@polkadot/types-codec': 10.13.1
       '@polkadot/types-create': 10.13.1
+      '@polkadot/util': 12.6.2
+      '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
+      rxjs: 7.8.1
+      tslib: 2.6.2
+    dev: false
+
+  /@polkadot/types@11.1.1:
+    resolution: {integrity: sha512-v4cbkRXYGcgtESg5oF/fVFNSrkmxw+rFxWslOWVB0mDJ74ooPDyasBR0FjxrPdoMlbxtrBbs+TixFEKng63chA==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/keyring': 12.6.2(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)
+      '@polkadot/types-augment': 11.1.1
+      '@polkadot/types-codec': 11.1.1
+      '@polkadot/types-create': 11.1.1
       '@polkadot/util': 12.6.2
       '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
       rxjs: 7.8.1
@@ -11827,8 +11901,8 @@ packages:
       react: 18.3.1
     dev: false
 
-  /react-icons@4.12.0(react@18.3.1):
-    resolution: {integrity: sha512-IBaDuHiShdZqmfc/TwHu6+d6k2ltNCf3AszxNmjJc1KUfXdEeRJOKyNvLmAHaarhzGmTSVygNdyu8/opXv2gaw==}
+  /react-icons@5.2.1(react@18.3.1):
+    resolution: {integrity: sha512-zdbW5GstTzXaVKvGSyTaBalt7HSfuK5ovrzlpyiWHAFXndXTdd/1hdDHI4xBM1Mn7YriT6aqESucFl9kEXzrdw==}
     peerDependencies:
       react: '*'
     dependencies:
