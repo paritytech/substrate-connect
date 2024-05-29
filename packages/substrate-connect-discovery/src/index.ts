@@ -1,7 +1,7 @@
 import type { ProviderDetail, ProviderInfo } from "@substrate/discovery"
 
 export namespace Unstable {
-  export const TAG = "substrate-connect-unstable"
+  export const Kind = "substrate-connect-unstable"
 
   type Callback<T> = (value: T) => void
   type UnsubscribeFn = () => void
@@ -59,15 +59,15 @@ export namespace Unstable {
   }
 
   export type SubstrateConnectProviderDetail = {
-    _tag: typeof TAG
+    kind: typeof Kind
     info: ProviderInfo
-    provider: Promise<Provider>
+    provider: Provider
   }
 
   export const isSubstrateConnectExtension = (
     provider: ProviderDetail,
   ): provider is SubstrateConnectProviderDetail => {
-    if (provider._tag !== TAG) return false
+    if (provider.kind !== Kind) return false
 
     return true
   }

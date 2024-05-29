@@ -2,7 +2,7 @@ import type { ProviderDetail, ProviderInfo } from "@substrate/discovery"
 import { AddChain, AddWellKnownChain } from "../smoldot"
 
 export namespace V1 {
-  export const TAG = "smoldot-v1"
+  export const Kind = "smoldot-v1"
 
   export type SmoldotExtensionAPI = {
     addChain: AddChain
@@ -10,15 +10,15 @@ export namespace V1 {
   }
 
   export type SmoldotExtensionProviderDetail = {
-    _tag: typeof TAG
+    kind: typeof Kind
     info: ProviderInfo
-    provider: Promise<SmoldotExtensionAPI>
+    provider: SmoldotExtensionAPI
   }
 
   export const isSmoldotExtension = (
     provider: ProviderDetail,
   ): provider is SmoldotExtensionProviderDetail => {
-    if (provider._tag !== TAG) return false
+    if (provider.kind !== Kind) return false
 
     return true
   }
