@@ -1,4 +1,4 @@
-import { ArrowLeft, Key, NotepadText, ChevronDown, Check } from "lucide-react"
+import { Key, NotepadText, ChevronDown } from "lucide-react"
 import { rpc } from "../../api"
 import { SubmitHandler, useForm, Controller } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
@@ -18,7 +18,14 @@ import {
   sr25519CreateDerive,
 } from "@polkadot-labs/hdkd"
 import { networks } from "./networks"
-import { Layout } from "../../../../components/Layout"
+import { Layout2 } from "@/components/Layout2"
+import { BottomNavBar, Header } from "../../components"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Checkbox } from "@/components/ui/checkbox"
 
 const createDeriveFnMap: Record<Scheme, CreateDeriveFn> = {
   Sr25519: sr25519CreateDerive,
@@ -92,7 +99,7 @@ export function ImportAccounts() {
     clearErrors,
     getValues,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormFields>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
@@ -171,42 +178,36 @@ export function ImportAccounts() {
   }
 
   return (
-    <Layout>
-      <div className="flex flex-col items-center justify-center p-4">
-        <section className="text-center w-full max-w-lg">
-          <button
-            className="flex items-center font-semibold"
-            onClick={() => navigate(-1)}
-          >
-            <ArrowLeft className="mr-2" /> Go Back
-          </button>
-          <h1 className="text-xl font-bold mt-4">Import Wallet</h1>
-          <p className="text-gray-600 mt-2">
-            Enter your private key or mnemonic to access your wallet
-          </p>
-        </section>
+    <Layout2>
+      <Header />
+      <section className="w-full max-w-lg text-center">
+        <h1 className="mt-4 text-xl font-bold">Import Crypto Key</h1>
+      </section>
 
+      <ScrollArea className="grow">
         <form
-          className="mt-8 w-full max-w-lg"
+          className="w-full max-w-lg px-6 mt-8 mb-4 sm:px-8"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="flex justify-center gap-4 mb-4">
-            <button
+            <Button
               type="button"
+              variant="ghost"
               onClick={() => onActiveTabChanged("privateKey")}
               className={`p-2 ${activeTab === "privateKey" ? "font-semibold" : ""}`}
             >
               <Key className="inline-block mr-2" />
               Expanded Private Key
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="ghost"
               onClick={() => onActiveTabChanged("mnemonic")}
               className={`p-2 ${activeTab === "mnemonic" ? "font-semibold" : ""}`}
             >
               <NotepadText className="inline-block mr-2" />
               Mnemonic
-            </button>
+            </Button>
           </div>
 
           <div className="mb-4">
@@ -221,13 +222,8 @@ export function ImportAccounts() {
                 }}
                 render={({ field, fieldState: { error } }) => (
                   <>
-                    <label
-                      htmlFor="privateKeyInput"
-                      className="block text-sm font-medium"
-                    >
-                      Private Key
-                    </label>
-                    <input
+                    <Label htmlFor="privateKeyInput">Private Key</Label>
+                    <Input
                       {...field}
                       id="privateKeyInput"
                       placeholder="Enter your expanded private key"
@@ -236,12 +232,12 @@ export function ImportAccounts() {
                         validate: (value) =>
                           validatePrivateKey(value, getValues("scheme")),
                       })}
-                      className={`mt-1 p-2 w-full border ${
-                        error?.message ? "border-red-500" : "border-gray-300"
-                      }`}
+                      className={`mt-1 ${error?.message ? "border-destructive" : "border-input"}`}
                     />
                     {error?.message && (
-                      <p className="text-red-500 text-xs">{error.message}</p>
+                      <p className="text-xs text-destructive">
+                        {error.message}
+                      </p>
                     )}
                   </>
                 )}
@@ -258,13 +254,8 @@ export function ImportAccounts() {
                 }}
                 render={({ field, fieldState: { error } }) => (
                   <>
-                    <label
-                      htmlFor="mnemonicInput"
-                      className="block text-sm font-medium"
-                    >
-                      Mnemonic
-                    </label>
-                    <textarea
+                    <Label htmlFor="mnemonicInput">Mnemonic</Label>
+                    <Textarea
                       {...field}
                       id="mnemonicInput"
                       rows={4}
@@ -273,12 +264,12 @@ export function ImportAccounts() {
                         required: "Mnemonic is required.",
                         validate: validateMnemonic,
                       })}
-                      className={`mt-1 p-2 w-full border ${
-                        error?.message ? "border-red-500" : "border-gray-300"
-                      }`}
+                      className={`mt-1 ${error?.message ? "border-destructive" : "border-input"}`}
                     />
                     {error?.message && (
-                      <p className="text-red-500 text-xs">{error.message}</p>
+                      <p className="text-xs text-destructive">
+                        {error.message}
+                      </p>
                     )}
                   </>
                 )}
@@ -287,36 +278,24 @@ export function ImportAccounts() {
           </div>
 
           <div className="mb-4">
-            <label
-              htmlFor="cryptoKeyInput"
-              className="block text-sm font-medium"
-            >
-              Crypto Key Name
-            </label>
-            <input
+            <Label htmlFor="cryptoKeyInput">Crypto Key Name</Label>
+            <Input
               id="cryptoKeyInput"
               placeholder={`Enter a crypto key name`}
               {...register("cryptoKeyName", {
-                required: "crypto key Name is required.",
+                required: "Crypto Key Name is required.",
               })}
-              className={`mt-1 p-2 w-full border ${
-                errors.cryptoKeyName ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`mt-1 ${errors.cryptoKeyName ? "border-destructive" : "border-input"}`}
             />
             {errors?.cryptoKeyName?.message && (
-              <p className="text-red-500 text-xs">
+              <p className="text-xs text-destructive">
                 {errors?.cryptoKeyName.message}
               </p>
             )}
           </div>
 
           <div className="mb-4">
-            <label
-              htmlFor="scheme"
-              className="block mb-2 text-sm font-medium text-gray-900"
-            >
-              Scheme
-            </label>
+            <Label htmlFor="scheme">Scheme</Label>
             <Controller
               name="scheme"
               control={control}
@@ -325,7 +304,7 @@ export function ImportAccounts() {
                   <select
                     {...field}
                     id="scheme"
-                    className="block w-full appearance-none bg-white border border-gray-300 text-base rounded-md py-2 pl-3 pr-10 hover:border-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="block w-full py-2 pl-3 pr-10 text-base bg-white border border-gray-300 rounded-md appearance-none hover:border-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     aria-label="Select cryptography"
                     aria-expanded="true"
                   >
@@ -333,7 +312,7 @@ export function ImportAccounts() {
                     <option value="Ed25519">Ed25519</option>
                     <option value="Ecdsa">Ecdsa</option>
                   </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
                     <ChevronDown />
                   </div>
                 </div>
@@ -343,7 +322,7 @@ export function ImportAccounts() {
 
           {activeTab === "mnemonic" && (
             <div className="mb-4">
-              <fieldset className="p-4 border-2 border-gray-200 rounded-lg">
+              <fieldset className="p-4 border-2 border-border rounded-radius">
                 <legend className="font-semibold">Networks</legend>
                 <Controller
                   name="networks"
@@ -357,31 +336,30 @@ export function ImportAccounts() {
                     <div className="flex flex-col gap-4">
                       {(["polkadot", "westend", "kusama"] as const).map(
                         (chain, idx) => (
-                          <label
-                            htmlFor={chain}
-                            key={idx}
-                            className="flex items-center gap-2 cursor-pointer"
-                          >
-                            <input
-                              id={chain}
-                              type="checkbox"
-                              checked={field.value[chain]}
-                              onChange={() =>
-                                field.onChange(onNetworkChanged(chain))
-                              }
-                              className="appearance-none h-6 w-6 border-2 border-gray-300 rounded-sm checked:border-blue-500 focus:outline-none cursor-pointer"
-                              aria-checked={field.value[chain]}
-                            />
-                            {field.value[chain] && (
-                              <Check
-                                className="absolute text-blue-500"
-                                size={24}
+                          <>
+                            <div
+                              className="flex items-center space-x-2"
+                              key={idx}
+                            >
+                              <Checkbox
+                                id={chain}
+                                checked={field.value[chain]}
+                                onCheckedChange={() =>
+                                  field.onChange(onNetworkChanged(chain))
+                                }
+                                aria-checked={field.value[chain]}
                               />
-                            )}
-                            <span className="text-sm">
-                              {chain.charAt(0).toUpperCase() + chain.slice(1)}
-                            </span>
-                          </label>
+                              <label
+                                htmlFor={chain}
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                              >
+                                <span className="text-sm">
+                                  {chain.charAt(0).toUpperCase() +
+                                    chain.slice(1)}
+                                </span>
+                              </label>
+                            </div>
+                          </>
                         ),
                       )}
                     </div>
@@ -389,19 +367,23 @@ export function ImportAccounts() {
                 />
               </fieldset>
               {errors.networks && (
-                <p className="text-red-500 mt-2">{errors.networks.message}</p>
+                <p className="mt-2 text-destructive">
+                  {errors.networks.message}
+                </p>
               )}
             </div>
           )}
 
-          <button
+          <Button
             type="submit"
-            className="w-full p-3 bg-blue-500 text-white disabled:opacity-50"
+            className="w-full disabled:opacity-50"
+            disabled={isSubmitting}
           >
             Import Wallet
-          </button>
+          </Button>
         </form>
-      </div>
-    </Layout>
+      </ScrollArea>
+      <BottomNavBar currentItem="import" />
+    </Layout2>
   )
 }
