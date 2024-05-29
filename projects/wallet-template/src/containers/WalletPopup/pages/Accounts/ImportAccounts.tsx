@@ -121,7 +121,6 @@ export function ImportAccounts() {
 
   const onNetworkChanged = (chain: "kusama" | "polkadot" | "westend") => {
     const newValue = !getValues(`networks.${chain}`)
-    console.log("?????")
     return {
       ...getValues("networks"),
       [chain]: newValue,
