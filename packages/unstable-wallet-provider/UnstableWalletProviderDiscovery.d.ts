@@ -4,7 +4,7 @@ export namespace UnstableWalletProviderDiscovery {
   export type Detail = {
     info: ProviderInfo
     // FIXME: update to PolkadotProvider from https://github.com/paritytech/polkadot-provider
-    provider: Promise<UnstableWallet.Provider>
+    provider: UnstableWallet.Provider
   }
 
   export type OnProvider = {
