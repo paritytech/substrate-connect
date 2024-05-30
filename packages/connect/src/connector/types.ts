@@ -66,4 +66,15 @@ export interface ScClient {
   addWellKnownChain: AddWellKnownChain
 }
 
-export * from "@substrate/smoldot-discovery/types"
+export {
+  WellKnownChain,
+  AlreadyDestroyedError,
+  CrashError,
+  JsonRpcDisabledError,
+} from "@substrate/smoldot-discovery/types"
+export type {
+  Chain,
+  JsonRpcCallback,
+  AddChain,
+  AddWellKnownChain,
+} from "@substrate/smoldot-discovery/types"

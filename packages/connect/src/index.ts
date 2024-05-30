@@ -95,7 +95,7 @@
  * @packageDocumentation
  */
 
-export { WellKnownChain } from "./WellKnownChain.js"
+export { WellKnownChain } from "@substrate/smoldot-discovery/types"
 export * from "./connector/index.js"
 export type {
   JsonRpcCallback,

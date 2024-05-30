@@ -1,3 +1,16 @@
+import { type ProviderInfo } from "@substrate/discovery"
+
+export type SmoldotExtensionAPI = {
+  addChain: AddChain
+  addWellKnownChain: AddWellKnownChain
+}
+
+export type SmoldotExtensionProviderDetail = {
+  kind: "smoldot-v1"
+  info: ProviderInfo
+  provider: SmoldotExtensionAPI
+}
+
 /**
  * List of popular chains that are likely to be connected to.
  *
