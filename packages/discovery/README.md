@@ -11,7 +11,7 @@ getProviders.
 
 ```ts
 import useSWR from "swr"
-import { getProviders, ProviderDetail } from '@substrate/discovery'
+import { getProviders, ProviderDetail } from "@substrate/discovery"
 
 const { data: providerDetails } = useSWR("getProviders", getProviders)
 const [providerDetail, setProviderDetail] = useState<ProviderDetail>()
@@ -58,5 +58,4 @@ window.dispatchEvent(
     detail,
   }),
 )
-
 ```
