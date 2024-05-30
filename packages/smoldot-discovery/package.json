@@ -8,14 +8,30 @@
   },
   "license": "MIT",
   "exports": {
-    ".": "./dist/index.mjs",
-    "./types": "./dist/types/index.mjs"
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./types": {
+      "import": {
+        "types": "./dist/types/index.d.mts",
+        "default": "./dist/types/index.mjs"
+      },
+      "require": "./dist/types/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "dist"
   ],
+  "module": "./dist/index.mjs",
   "scripts": {
-    "build": "tsc --noEmit && tsup-node src/index.ts src/types/index.ts --clean --sourcemap --platform neutral --target=es2020 --format esm --dts",
+    "build": "tsc --noEmit && tsup-node src/index.ts src/types/index.ts --clean --sourcemap --platform neutral --target=es2020 --format esm,cjs --dts",
     "dev": "pnpm build --watch",
     "lint": "prettier --check README.md \"src/**/*.{js,jsx,ts,tsx,json,md}\""
   },

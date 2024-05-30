@@ -8,13 +8,22 @@
   },
   "license": "MIT",
   "exports": {
-    ".": "./dist/index.mjs"
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./package.json": "./package.json"
   },
+  "module": "./dist/index.mjs",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc --noEmit && tsup-node src/index.ts --clean --sourcemap --platform neutral --target=es2020 --format esm --dts",
+    "build": "tsc --noEmit && tsup-node src/index.ts --clean --sourcemap --platform neutral --target=es2020 --format esm,cjs --dts",
     "dev": "pnpm build --watch",
     "lint": "prettier --check README.md \"src/**/*.{js,jsx,ts,tsx,json,md}\""
   },
