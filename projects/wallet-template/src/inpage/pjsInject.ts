@@ -9,20 +9,19 @@ type PjsInjectOpts = {
   name: string
   version: string
   rpc: BackgroundRpcSpec
-  providerPromise: Promise<UnstableWallet.Provider>
+  provider: UnstableWallet.Provider
   subscribeOnAccountsChanged: (cb: (accounts: Account[]) => void) => () => void
 }
 export const pjsInject = ({
   name,
   version,
   rpc,
-  providerPromise,
+  provider,
   subscribeOnAccountsChanged,
 }: PjsInjectOpts) =>
   injectExtension(
     async (_origin) => {
       // TODO: validate allowed origin
-      const provider = await providerPromise
       let requestId = 0
       return {
         accounts: {
