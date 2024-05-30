@@ -1,4 +1,8 @@
-import type { ProviderDetail, ProviderInfo } from "@substrate/discovery"
+import {
+  getProviders,
+  type ProviderDetail,
+  type ProviderInfo,
+} from "@substrate/discovery"
 
 export namespace Unstable {
   export const Kind = "substrate-connect-unstable"
@@ -70,5 +74,9 @@ export namespace Unstable {
     if (provider.kind !== Kind) return false
 
     return true
+  }
+
+  export const getSubstrateConnectExtensionProviders = () => {
+    return getProviders().filter(isSubstrateConnectExtension)
   }
 }

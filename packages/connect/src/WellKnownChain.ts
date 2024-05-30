@@ -1,1 +1,1 @@
-export { WellKnownChain } from "@substrate/smoldot-discovery/smoldot"
+export { WellKnownChain } from "@substrate/smoldot-discovery/types"

@@ -23,7 +23,7 @@
     "semi": false,
     "trailingComma": "all"
   },
-  "devDependencies": {
+  "dependencies": {
     "@substrate/discovery": "workspace:^"
   }
 }

@@ -1,5 +1,9 @@
-import type { ProviderDetail, ProviderInfo } from "@substrate/discovery"
-import { AddChain, AddWellKnownChain } from "../smoldot"
+import {
+  getProviders,
+  type ProviderDetail,
+  type ProviderInfo,
+} from "@substrate/discovery"
+import { AddChain, AddWellKnownChain } from "./types"
 
 export namespace V1 {
   export const Kind = "smoldot-v1"
@@ -21,5 +25,9 @@ export namespace V1 {
     if (provider.kind !== Kind) return false
 
     return true
+  }
+
+  export const getSmoldotExtensionProviders = () => {
+    return getProviders().filter(isSmoldotExtension)
   }
 }

@@ -8,14 +8,14 @@
   },
   "license": "MIT",
   "exports": {
-    "./api": "./dist/api/index.mjs",
-    "./smoldot": "./dist/smoldot/index.mjs"
+    ".": "./dist/index.mjs",
+    "./types": "./dist/types/index.mjs"
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc --noEmit && tsup-node src/api/index.ts src/smoldot/index.ts --clean --sourcemap --platform neutral --target=es2020 --format esm --dts",
+    "build": "tsc --noEmit && tsup-node src/index.ts src/types/index.ts --clean --sourcemap --platform neutral --target=es2020 --format esm --dts",
     "dev": "pnpm build --watch",
     "lint": "prettier --check README.md \"src/**/*.{js,jsx,ts,tsx,json,md}\""
   },
@@ -24,7 +24,7 @@
     "semi": false,
     "trailingComma": "all"
   },
-  "devDependencies": {
+  "dependencies": {
     "@substrate/discovery": "workspace:^"
   }
 }

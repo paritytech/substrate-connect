@@ -1,7 +1,4 @@
-import {
-  AddChain,
-  AddWellKnownChain,
-} from "@substrate/smoldot-discovery/smoldot"
+import { AddChain, AddWellKnownChain } from "@substrate/smoldot-discovery/types"
 
 /**
  * Client that allows connecting to chains.
@@ -69,4 +66,4 @@ export interface ScClient {
   addWellKnownChain: AddWellKnownChain
 }
 
-export * from "@substrate/smoldot-discovery/smoldot"
+export * from "@substrate/smoldot-discovery/types"
