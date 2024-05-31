@@ -165,7 +165,7 @@ export const ChangePassword = () => {
                         <Button
                           type="button"
                           onClick={() =>
-                            setShowConfirmNewPassword(!showNewPassword)
+                            setShowConfirmNewPassword(!showConfirmNewPassword)
                           }
                           className="absolute inset-y-0 right-0 flex items-center pr-3"
                           variant="ghost"
