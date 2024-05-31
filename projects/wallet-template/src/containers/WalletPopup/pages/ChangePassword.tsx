@@ -57,15 +57,23 @@ export const ChangePassword = () => {
     reset,
     formState: { isSubmitting },
     control,
+    setError,
   } = form
 
   const onSubmit: SubmitHandler<FormFields> = async ({
     currentPassword,
     newPassword,
   }) => {
-    await rpc.client.changePassword(currentPassword, newPassword)
-    reset()
-    navigate("/debug")
+    try {
+      await rpc.client.changePassword(currentPassword, newPassword)
+      reset()
+      navigate("/debug")
+    } catch {
+      setError("currentPassword", {
+        type: "server",
+        message: "Current password is incorrect",
+      })
+    }
   }
 
   return (
