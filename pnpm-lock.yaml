@@ -12,8 +12,8 @@ importers:
   .:
     devDependencies:
       '@types/chrome':
-        specifier: ^0.0.266
-        version: 0.0.266
+        specifier: ^0.0.268
+        version: 0.0.268
       '@types/node':
         specifier: ^20.12.7
         version: 20.12.11
@@ -231,8 +231,8 @@ importers:
         specifier: ^1.43.1
         version: 1.44.0
       '@types/chrome':
-        specifier: ^0.0.266
-        version: 0.0.266
+        specifier: ^0.0.268
+        version: 0.0.268
       '@types/node':
         specifier: ^20.12.7
         version: 20.12.11
@@ -319,8 +319,8 @@ importers:
         version: 2.0.26
     devDependencies:
       '@types/chrome':
-        specifier: ^0.0.266
-        version: 0.0.266
+        specifier: ^0.0.268
+        version: 0.0.268
 
   packages/smoldot-discovery:
     dependencies:
@@ -678,8 +678,8 @@ importers:
         specifier: ^1.2.4
         version: 1.2.4(react-dom@18.3.1)(react@18.3.1)
       lucide-react:
-        specifier: ^0.365.0
-        version: 0.365.0(react@18.3.1)
+        specifier: ^0.379.0
+        version: 0.379.0(react@18.3.1)
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.3.1)(react@18.3.1)
@@ -5595,8 +5595,8 @@ packages:
       '@types/node': 20.12.11
     dev: false
 
-  /@types/chrome@0.0.266:
-    resolution: {integrity: sha512-QSQWJTL7NjZElvq/6/E5C1+pHgEP8UAJzwoz7M4vSJ7AECt6NNehJ+tU6snnvuTqZOBjFCivvitYo5+8tNPmhg==}
+  /@types/chrome@0.0.268:
+    resolution: {integrity: sha512-7N1QH9buudSJ7sI8Pe4mBHJr5oZ48s0hcanI9w3wgijAlv1OZNUZve9JR4x42dn5lJ5Sm87V1JNfnoh10EnQlA==}
     dependencies:
       '@types/filesystem': 0.0.36
       '@types/har-format': 1.2.15
@@ -10632,8 +10632,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /lucide-react@0.365.0(react@18.3.1):
-    resolution: {integrity: sha512-sJYpPyyzGHI4B3pys+XSFnE4qtSWc68rFnDLxbNNKjkLST5XSx9DNn5+1Z3eFgFiw39PphNRiVBSVb+AL3oKwA==}
+  /lucide-react@0.379.0(react@18.3.1):
+    resolution: {integrity: sha512-KcdeVPqmhRldldAAgptb8FjIunM2x2Zy26ZBh1RsEUcdLIvsEmbcw7KpzFYUy5BbpGeWhPu9Z9J5YXfStiXwhg==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
