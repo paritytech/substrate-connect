@@ -49,12 +49,12 @@ const provider = await getLightClientProvider(CHANNEL_ID).then(
 )
 
 window.addEventListener(
-  "unstableWallet:requestProvider",
+  "substrateDiscovery:requestProvider",
   ({ detail: { onProvider } }) => onProvider(detail),
 )
 
 window.dispatchEvent(
-  new CustomEvent("unstableWallet:announceProvider", {
+  new CustomEvent("substrateDiscovery:announceProvider", {
     detail,
   }),
 )
