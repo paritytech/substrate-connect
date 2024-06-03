@@ -1,0 +1,35 @@
+{
+  "name": "@substrate/discovery",
+  "version": "0.0.1",
+  "author": "Parity Technologies (https://github.com/paritytech)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paritytech/substrate-connect.git"
+  },
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "module": "./dist/index.mjs",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --noEmit && tsup-node src/index.ts --clean --sourcemap --platform neutral --target=es2020 --format esm,cjs --dts",
+    "dev": "pnpm build --watch",
+    "lint": "prettier --check README.md \"src/**/*.{js,jsx,ts,tsx,json,md}\""
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": false,
+    "trailingComma": "all"
+  }
+}

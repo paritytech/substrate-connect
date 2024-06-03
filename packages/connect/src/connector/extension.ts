@@ -3,7 +3,7 @@ import type {
   RawChain,
   LightClientProvider,
 } from "@substrate/light-client-extension-helpers/web-page"
-import { WellKnownChain } from "../WellKnownChain.js"
+import { WellKnownChain } from "./types.js"
 
 const wellKnownChainGenesisHashes: Record<string, string> = {
   polkadot:

@@ -14,8 +14,8 @@ import {
   JsonRpcDisabledError,
   JsonRpcCallback,
   AddChain,
+  WellKnownChain,
 } from "./types.js"
-import { WellKnownChain } from "../WellKnownChain.js"
 
 const isBrowser = ![typeof window, typeof document].includes("undefined")
 

@@ -254,6 +254,9 @@ importers:
       '@substrate/light-client-extension-helpers':
         specifier: workspace:^
         version: link:../light-client-extension-helpers
+      '@substrate/smoldot-discovery':
+        specifier: workspace:^
+        version: link:../smoldot-discovery
       smoldot:
         specifier: 2.0.26
         version: 2.0.26
@@ -286,6 +289,8 @@ importers:
         specifier: ^8.57.0
         version: 8.57.0
 
+  packages/discovery: {}
+
   packages/light-client-extension-helpers:
     dependencies:
       '@polkadot-api/json-rpc-provider':
@@ -316,6 +321,18 @@ importers:
       '@types/chrome':
         specifier: ^0.0.268
         version: 0.0.268
+
+  packages/smoldot-discovery:
+    dependencies:
+      '@substrate/discovery':
+        specifier: workspace:^
+        version: link:../discovery
+
+  packages/substrate-connect-discovery:
+    dependencies:
+      '@substrate/discovery':
+        specifier: workspace:^
+        version: link:../discovery
 
   packages/unstable-wallet-provider: {}
 
