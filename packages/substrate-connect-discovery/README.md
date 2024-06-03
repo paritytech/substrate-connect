@@ -1,1 +1,0 @@
-# @substrate/substrate-connect-discovery

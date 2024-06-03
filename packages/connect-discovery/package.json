@@ -1,5 +1,5 @@
 {
-  "name": "@substrate/substrate-connect-discovery",
+  "name": "@substrate/connect-discovery",
   "version": "0.0.6",
   "author": "Parity Technologies (https://github.com/paritytech)",
   "repository": {
