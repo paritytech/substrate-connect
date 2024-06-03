@@ -1,9 +1,19 @@
-import { ArrowLeft, ClipboardCheck, ClipboardCopyIcon } from "lucide-react"
+import { ArrowLeft, CheckIcon, ClipboardIcon } from "lucide-react"
 import * as clipboard from "@zag-js/clipboard"
 import { useMachine, normalizeProps } from "@zag-js/react"
 import React, { useId } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { Layout } from "../../../../components/Layout"
+import { Layout2 } from "@/components/Layout2"
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { BottomNavBar, Header } from "../../components"
 
 export const AccountDetails: React.FC = () => {
   const navigate = useNavigate()
@@ -22,42 +32,50 @@ export const AccountDetails: React.FC = () => {
   }
 
   return (
-    <Layout>
-      <section
-        aria-label="Account Details"
-        className="mx-auto p-4"
-        {...api.rootProps}
-      >
-        <section className="text-center w-full max-w-lg">
-          <button
-            className="flex items-center font-semibold"
-            onClick={() => navigate(-1)}
-          >
-            <ArrowLeft className="mr-2" /> Go Back
-          </button>
-          <h1 className="text-3xl font-semibold text-center p-4 border-b">
-            Account Details
-          </h1>
-        </section>
-
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">Wallet Address</h2>
-            <button
-              className={`p-2 rounded flex items-center justify-center space-x-2 ${api.isCopied ? "bg-green-200" : ""}`}
-              aria-label="Copy to clipboard"
-              {...api.triggerProps}
+    <Layout2>
+      <Header />
+      <Card className="bg-card text-card-foreground border-border grow">
+        <CardHeader>
+          <CardTitle>Account Details</CardTitle>
+          <CardDescription className="text-muted-foreground">
+            Click the button to copy the address
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <div className="p-4 space-y-1 rounded-lg bg-muted text-muted-foreground">
+            <p
+              className="font-mono text-sm break-all"
+              aria-label="Account Address"
             >
-              <div className="flex items-center space-x-2">
-                {api.isCopied ? <ClipboardCheck /> : <ClipboardCopyIcon />}
-              </div>
-            </button>
+              {accountId}
+            </p>
           </div>
-          <p className="text-xs mb-4 bg-gray-200 p-3 rounded text-center">
-            {accountId}
-          </p>
-        </div>
-      </section>
-    </Layout>
+        </CardContent>
+        <CardFooter className="flex justify-center space-x-4">
+          <Button
+            onClick={() => navigate(-1)}
+            variant="ghost"
+            className="flex items-center mt-2"
+          >
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Go Back
+          </Button>
+          <Button
+            className={`mt-2 flex items-center`}
+            aria-label="Copy to clipboard"
+            {...api.triggerProps}
+          >
+            {api.isCopied ? (
+              <CheckIcon className="w-5 h-5 mr-2" />
+            ) : (
+              <ClipboardIcon className="w-5 h-5 mr-2" />
+            )}
+            {api.isCopied ? "Copied" : "Copy"}
+          </Button>
+        </CardFooter>
+      </Card>
+
+      <BottomNavBar currentItem="home" />
+    </Layout2>
   )
 }
