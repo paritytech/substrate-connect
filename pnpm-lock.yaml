@@ -277,6 +277,12 @@ importers:
         specifier: ^1.5.0
         version: 1.6.0(@types/node@20.13.0)(jsdom@24.0.0)
 
+  packages/connect-discovery:
+    dependencies:
+      '@substrate/discovery':
+        specifier: workspace:^
+        version: link:../discovery
+
   packages/connect-extension-protocol:
     devDependencies:
       eslint:
@@ -323,12 +329,6 @@ importers:
         version: 0.0.268
 
   packages/smoldot-discovery:
-    dependencies:
-      '@substrate/discovery':
-        specifier: workspace:^
-        version: link:../discovery
-
-  packages/substrate-connect-discovery:
     dependencies:
       '@substrate/discovery':
         specifier: workspace:^
