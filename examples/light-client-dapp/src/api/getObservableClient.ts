@@ -1,9 +1,9 @@
 import { createClient } from "@polkadot-api/substrate-client"
 import { getObservableClient as getObservableClient_ } from "@polkadot-api/observable-client"
-import { UnstableWallet } from "@substrate/unstable-wallet-provider"
+import { Unstable } from "@substrate/connect-discovery"
 
 export const getObservableClient = (
-  provider: UnstableWallet.Provider,
+  provider: Unstable.Provider,
   chainId: string,
 ) => {
   const chain = provider.getChains()[chainId]

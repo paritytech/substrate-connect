@@ -37,7 +37,7 @@
   "keywords": [],
   "devDependencies": {
     "@playwright/test": "^1.43.1",
-    "@substrate/unstable-wallet-provider": "workspace:^",
+    "@substrate/connect-discovery": "workspace:^",
     "@types/node": "^20.13.0",
     "@vitejs/plugin-react-swc": "^3.6.0",
     "@webext-core/storage": "^1.2.0",

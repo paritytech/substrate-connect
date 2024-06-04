@@ -129,9 +129,9 @@ importers:
         specifier: ^2.2.5
         version: 2.2.5(react@18.3.1)
     devDependencies:
-      '@substrate/unstable-wallet-provider':
+      '@substrate/connect-discovery':
         specifier: workspace:^
-        version: link:../../packages/unstable-wallet-provider
+        version: link:../../packages/connect-discovery
       '@types/react':
         specifier: ^18.3.1
         version: 18.3.2
@@ -333,8 +333,6 @@ importers:
       '@substrate/discovery':
         specifier: workspace:^
         version: link:../discovery
-
-  packages/unstable-wallet-provider: {}
 
   projects/burnr:
     dependencies:
@@ -735,9 +733,9 @@ importers:
       '@playwright/test':
         specifier: ^1.43.1
         version: 1.44.0
-      '@substrate/unstable-wallet-provider':
+      '@substrate/connect-discovery':
         specifier: workspace:^
-        version: link:../../packages/unstable-wallet-provider
+        version: link:../../packages/connect-discovery
       '@types/node':
         specifier: ^20.13.0
         version: 20.13.0

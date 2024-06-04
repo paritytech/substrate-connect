@@ -2,7 +2,7 @@ import { type SS58String, Enum } from "@polkadot-api/substrate-bindings"
 import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
 import { filter, map, firstValueFrom } from "rxjs"
 import { mergeUint8, toHex } from "@polkadot-api/utils"
-import type { UnstableWallet } from "@substrate/unstable-wallet-provider"
+import type { Unstable } from "@substrate/connect-discovery"
 import { getObservableClient } from "./getObservableClient"
 
 const AccountId = (value: SS58String) =>
@@ -15,7 +15,7 @@ const AccountId = (value: SS58String) =>
   >("Id", value)
 
 export const transferAllowDeathCallData = (
-  provider: UnstableWallet.Provider,
+  provider: Unstable.Provider,
   chainId: string,
   destination: SS58String,
   amount: bigint,
