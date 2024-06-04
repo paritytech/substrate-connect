@@ -3,7 +3,7 @@ import {
   createRpc,
 } from "@substrate/light-client-extension-helpers/utils"
 import { getLightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
-import type { UnstableWalletProviderDiscovery } from "@substrate/unstable-wallet-provider"
+import type { Unstable } from "@substrate/connect-discovery"
 
 import type { Account, BackgroundRpcSpec } from "../background/types"
 import { CHANNEL_ID } from "../constants"
@@ -55,18 +55,19 @@ import type { InPageRpcSpec } from "./types"
     }),
   )
 
-  const detail: UnstableWalletProviderDiscovery.Detail = Object.freeze({
+  const detail: Unstable.SubstrateConnectProviderDetail = Object.freeze({
+    kind: "substrate-connect-unstable",
     info: PROVIDER_INFO,
     provider,
   })
 
   window.addEventListener(
-    "unstableWallet:requestProvider",
+    "substrateDiscovery:requestProvider",
     ({ detail: { onProvider } }) => onProvider(detail),
   )
 
   window.dispatchEvent(
-    new CustomEvent("unstableWallet:announceProvider", {
+    new CustomEvent("substrateDiscovery:announceProvider", {
       detail,
     }),
   )

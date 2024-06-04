@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import { useIsMounted } from "./useIsMounted"
-import { UnstableWallet } from "@substrate/unstable-wallet-provider"
+import { Unstable } from "@substrate/connect-discovery"
 
-export const useChains = (provider?: UnstableWallet.Provider) => {
-  const [chains, setChains] = useState<UnstableWallet.RawChains>({})
+export const useChains = (provider?: Unstable.Provider) => {
+  const [chains, setChains] = useState<Unstable.RawChains>({})
   const isMounted = useIsMounted()
 
   useEffect(() => {

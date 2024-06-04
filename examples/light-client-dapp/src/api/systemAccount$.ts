@@ -1,6 +1,6 @@
 import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
 
-import { UnstableWallet } from "@substrate/unstable-wallet-provider"
+import { Unstable } from "@substrate/connect-discovery"
 import { combineLatest, distinct, filter, finalize, map, mergeMap } from "rxjs"
 import { getObservableClient } from "./getObservableClient"
 
@@ -18,7 +18,7 @@ export type SystemAccount = {
 }
 
 export const systemAccount$ = (
-  provider: UnstableWallet.Provider,
+  provider: Unstable.Provider,
   chainId: string,
   address: string,
 ) => {

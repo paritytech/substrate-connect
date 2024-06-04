@@ -35,12 +35,12 @@ export namespace Unstable {
     ) => Promise<string>
   }
 
-  type Account = {
+  export type Account = {
     address: string
   }
 
   // The key is the genesis hash
-  type RawChains = Record<string, RawChain>
+  export type RawChains = Record<string, RawChain>
 
   export interface RawChain {
     genesisHash: string

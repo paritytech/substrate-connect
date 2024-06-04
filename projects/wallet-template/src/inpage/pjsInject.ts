@@ -3,13 +3,13 @@ import type {
   InjectedAccount,
 } from "@polkadot/extension-inject/types"
 import type { Account, BackgroundRpcSpec } from "../background/types"
-import type { UnstableWallet } from "@substrate/unstable-wallet-provider"
+import type { Unstable } from "@substrate/connect-discovery"
 
 type PjsInjectOpts = {
   name: string
   version: string
   rpc: BackgroundRpcSpec
-  provider: UnstableWallet.Provider
+  provider: Unstable.Provider
   subscribeOnAccountsChanged: (cb: (accounts: Account[]) => void) => () => void
 }
 export const pjsInject = ({
