@@ -103,7 +103,7 @@
     "@substrate/light-client-extension-helpers": "workspace:^",
     "@zag-js/clipboard": "^0.47.0",
     "@zag-js/react": "^0.47.0",
-    "@zag-js/tabs": "^0.47.0",
+    "@zag-js/tabs": "^0.53.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
