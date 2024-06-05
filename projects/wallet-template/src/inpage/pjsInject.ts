@@ -9,14 +9,14 @@ type PjsInjectOpts = {
   name: string
   version: string
   rpc: BackgroundRpcSpec
-  provider: Unstable.Provider
+  providerPromise: Promise<Unstable.Provider>
   subscribeOnAccountsChanged: (cb: (accounts: Account[]) => void) => () => void
 }
 export const pjsInject = ({
   name,
   version,
   rpc,
-  provider,
+  providerPromise,
   subscribeOnAccountsChanged,
 }: PjsInjectOpts) =>
   injectExtension(
@@ -27,6 +27,7 @@ export const pjsInject = ({
         accounts: {
           // TODO: use anyType
           async get(_anyType) {
+            const provider = await providerPromise
             return (
               await Promise.all(
                 Object.values(provider.getChains()).map(

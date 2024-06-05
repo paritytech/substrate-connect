@@ -22,7 +22,7 @@ const wellKnownChainGenesisHashes: Record<string, string> = {
  * `Promise`s will never resolve.
  */
 export const createScClient = (
-  lightClientProvider: Unstable.Provider,
+  lightClientProviderPromise: Promise<Unstable.Provider>,
 ): ScClient => {
   const internalAddChain = async (
     isWellKnown: boolean,
@@ -30,6 +30,8 @@ export const createScClient = (
     jsonRpcCallback: JsonRpcCallback = () => {},
     relayChainGenesisHash?: string,
   ): Promise<Chain> => {
+    const lightClientProvider = await lightClientProviderPromise
+
     let chain: Unstable.RawChain
     if (isWellKnown) {
       const foundChain = Object.values(lightClientProvider.getChains()).find(

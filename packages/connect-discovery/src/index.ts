@@ -65,7 +65,7 @@ export namespace Unstable {
   export type SubstrateConnectProviderDetail = {
     kind: typeof Kind
     info: ProviderInfo
-    provider: Provider
+    provider: Promise<Provider>
   }
 
   export const isSubstrateConnectExtension = (

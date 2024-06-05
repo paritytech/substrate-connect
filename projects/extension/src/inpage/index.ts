@@ -13,7 +13,17 @@ const PROVIDER_INFO = {
   rdns: "io.github.paritytech.SubstrateConnectLightClient",
 }
 
-const providerPromise = getLightClientProvider(DOM_ELEMENT_ID)
+const provider = getLightClientProvider(DOM_ELEMENT_ID).then(
+  (lightClientProvider) => ({
+    ...lightClientProvider,
+    async getAccounts() {
+      throw new Error("unsupported method: getAccounts")
+    },
+    async createTx() {
+      throw new Error("unsupported method: createTx")
+    },
+  }),
+)
 
 registerSubstrateConnect()
 registerSubstrateConnectOld()
@@ -22,17 +32,7 @@ registerSubstrateConnectOld()
  * Support the latest version Substrate Connect where the @substrate/discovery
  * protocol is being used.
  */
-async function registerSubstrateConnect() {
-  const provider = await providerPromise.then((lightClientProvider) => ({
-    ...lightClientProvider,
-    async getAccounts() {
-      throw new Error("unsupported method: getAccounts")
-    },
-    async createTx() {
-      throw new Error("unsupported method: createTx")
-    },
-  }))
-
+function registerSubstrateConnect() {
   const detail: Unstable.SubstrateConnectProviderDetail = Object.freeze({
     kind: "substrate-connect-unstable",
     info: PROVIDER_INFO,
@@ -58,7 +58,7 @@ async function registerSubstrateConnect() {
 function registerSubstrateConnectOld() {
   const detail: LightClientProviderDetail = Object.freeze({
     info: PROVIDER_INFO,
-    provider: providerPromise,
+    provider,
   })
   window.addEventListener(
     "lightClient:requestProvider",
