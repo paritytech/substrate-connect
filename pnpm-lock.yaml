@@ -461,6 +461,9 @@ importers:
       '@substrate/connect-extension-protocol':
         specifier: workspace:*
         version: link:../../packages/connect-extension-protocol
+      '@substrate/discovery':
+        specifier: workspace:^
+        version: link:../../packages/discovery
       '@substrate/light-client-extension-helpers':
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers
@@ -483,9 +486,6 @@ importers:
       '@playwright/test':
         specifier: ^1.43.1
         version: 1.44.0
-      '@substrate/discovery':
-        specifier: workspace:^
-        version: link:../../packages/discovery
       '@vitejs/plugin-react-swc':
         specifier: ^3.6.0
         version: 3.6.0(vite@5.2.11)
