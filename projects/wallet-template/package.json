@@ -37,8 +37,6 @@
   "keywords": [],
   "devDependencies": {
     "@playwright/test": "^1.43.1",
-    "@substrate/connect-discovery": "workspace:^",
-    "@substrate/discovery": "workspace:^",
     "@types/node": "^20.13.0",
     "@vitejs/plugin-react-swc": "^3.6.0",
     "@webext-core/storage": "^1.2.0",
@@ -55,6 +53,8 @@
     "wxt": "^0.17.12"
   },
   "dependencies": {
+    "@substrate/connect-discovery": "workspace:^",
+    "@substrate/discovery": "workspace:^",
     "@headlessui/react": "^1.7.19",
     "@hookform/resolvers": "^3.4.0",
     "@noble/ciphers": "^0.5.2",
