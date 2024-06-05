@@ -4,6 +4,7 @@ import {
 } from "@substrate/light-client-extension-helpers/utils"
 import { getLightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
 import type { Unstable } from "@substrate/connect-discovery"
+import "@substrate/discovery"
 
 import type { Account, BackgroundRpcSpec } from "../background/types"
 import { CHANNEL_ID } from "../constants"

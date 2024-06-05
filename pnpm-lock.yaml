@@ -245,15 +245,15 @@ importers:
 
   packages/connect:
     dependencies:
+      '@substrate/connect-discovery':
+        specifier: workspace:^
+        version: link:../connect-discovery
       '@substrate/connect-extension-protocol':
         specifier: workspace:^
         version: link:../connect-extension-protocol
       '@substrate/connect-known-chains':
         specifier: workspace:^
         version: link:../connect-known-chains
-      '@substrate/light-client-extension-helpers':
-        specifier: workspace:^
-        version: link:../light-client-extension-helpers
       '@substrate/smoldot-discovery':
         specifier: workspace:^
         version: link:../smoldot-discovery
@@ -455,6 +455,9 @@ importers:
       '@react-rxjs/utils':
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.7)(react@18.3.1)(rxjs@7.8.1)
+      '@substrate/connect-discovery':
+        specifier: workspace:^
+        version: link:../../packages/connect-discovery
       '@substrate/connect-extension-protocol':
         specifier: workspace:*
         version: link:../../packages/connect-extension-protocol
@@ -480,6 +483,9 @@ importers:
       '@playwright/test':
         specifier: ^1.43.1
         version: 1.44.0
+      '@substrate/discovery':
+        specifier: workspace:^
+        version: link:../../packages/discovery
       '@vitejs/plugin-react-swc':
         specifier: ^3.6.0
         version: 3.6.0(vite@5.2.11)
@@ -736,6 +742,9 @@ importers:
       '@substrate/connect-discovery':
         specifier: workspace:^
         version: link:../../packages/connect-discovery
+      '@substrate/discovery':
+        specifier: workspace:^
+        version: link:../../packages/discovery
       '@types/node':
         specifier: ^20.13.0
         version: 20.13.0

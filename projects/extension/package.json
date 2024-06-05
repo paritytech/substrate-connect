@@ -36,6 +36,7 @@
   },
   "keywords": [],
   "devDependencies": {
+    "@substrate/discovery": "workspace:^",
     "@playwright/test": "^1.43.1",
     "@vitejs/plugin-react-swc": "^3.6.0",
     "autoprefixer": "^10.4.19",
@@ -47,6 +48,7 @@
     "web-ext": "^7.11.0"
   },
   "dependencies": {
+    "@substrate/connect-discovery": "workspace:^",
     "@polkadot-api/observable-client": "^0.3.0",
     "@polkadot-api/substrate-client": "^0.1.2",
     "@react-rxjs/core": "^0.10.7",
