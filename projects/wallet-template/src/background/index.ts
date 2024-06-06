@@ -68,14 +68,14 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
 addOnAddChainByUserListener(async (inputChain) => {
   const window = await chrome.windows.create({
     focused: true,
-    height: 700,
+    width: 400,
+    height: 600,
     left: 150,
     top: 150,
     type: "popup",
     url: chrome.runtime.getURL(
       `ui/assets/wallet-popup.html#/add-chain-by-user?params=${encodeURIComponent(JSON.stringify(inputChain))}`,
     ),
-    width: 560,
   })
   const onWindowsRemoved = (windowId: number) => {
     if (windowId !== window.id) return
