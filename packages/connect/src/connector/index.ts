@@ -39,14 +39,9 @@ export const createScClient = (config?: Config): ScClient => {
   if (config?.forceEmbeddedNode)
     return smoldotScClient(config?.embeddedNodeConfig)
 
-  const lightClientProvider = Unstable.getSubstrateConnectExtensionProviders()
-    .filter((detail) =>
-      detail.info.rdns.startsWith("io.github.paritytech.SubstrateConnect"),
-    )
-    .map((detail) => detail.provider)[0]
-
-  const client = lightClientProvider
-    ? extensionScClient(lightClientProvider)
+  const lightClientProviderPromise = getExtensionLightClientProviderPromise()
+  const client = lightClientProviderPromise
+    ? extensionScClient(lightClientProviderPromise)
     : smoldotScClient(config?.embeddedNodeConfig)
 
   return {
@@ -65,4 +60,17 @@ export const createScClient = (config?: Config): ScClient => {
       )
     },
   }
+}
+
+function getExtensionLightClientProviderPromise():
+  | Promise<Unstable.Provider>
+  | undefined {
+  if (typeof document !== "object" || typeof CustomEvent !== "function") return
+  const lightClientProvider = Unstable.getSubstrateConnectExtensionProviders()
+    .filter((detail) =>
+      detail.info.rdns.startsWith("io.github.paritytech.SubstrateConnect"),
+    )
+    .map((detail) => detail.provider)[0]
+
+  return lightClientProvider
 }
