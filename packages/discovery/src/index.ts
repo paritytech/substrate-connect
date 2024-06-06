@@ -1,7 +1,7 @@
 export type ProviderDetail = {
   kind: string
   info: ProviderInfo
-  provider: Promise<unknown>
+  provider: unknown
 }
 
 export type OnProvider = {
