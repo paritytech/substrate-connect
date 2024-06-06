@@ -37,7 +37,7 @@
   "keywords": [],
   "devDependencies": {
     "@playwright/test": "^1.43.1",
-    "@types/node": "^20.13.0",
+    "@types/node": "^20.14.2",
     "@vitejs/plugin-react-swc": "^3.6.0",
     "@webext-core/storage": "^1.2.0",
     "autoprefixer": "^10.4.19",
