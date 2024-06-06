@@ -1,10 +1,13 @@
-import { Clipboard, ArrowRightCircle } from "lucide-react"
+import { Clipboard, Check, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import ReactJson from "react-json-view"
 import { z } from "zod"
 import { rpc } from "../api"
-import { Layout } from "../../../components/Layout"
+import { Layout2 } from "@/components/Layout2"
+import { Header } from "../components"
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface InputChain {
   genesisHash: string
@@ -19,12 +22,6 @@ const schema = z.object({
   chainSpec: z.string(),
   relayChainGenesisHash: z.string().optional(),
 })
-
-const maxLength = 32
-const ellipsisText = (text: string) =>
-  text.length > maxLength
-    ? `${text.substring(0, maxLength / 2)}...${text.substring(text.length - maxLength / 2, text.length)}`
-    : text
 
 export const AddChainByUser: React.FC = () => {
   const [searchParams, _] = useSearchParams()
@@ -43,6 +40,16 @@ export const AddChainByUser: React.FC = () => {
     }
   }, [params])
 
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text
+    const half = Math.floor((maxLength - 3) / 2)
+    return `${text.slice(0, half)}...${text.slice(-half)}`
+  }
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+  }
+
   const onAllowlistChainSpec = async () => {
     if (!inputChain) {
       return
@@ -53,96 +60,112 @@ export const AddChainByUser: React.FC = () => {
   }
 
   return (
-    <Layout>
-      <div className="p-4 bg-gray-100 bg-gradient-to-r from-blue-500 to-purple-600">
-        <h1 className="text-xl font-bold text-white">
-          Review Chain Specification
-        </h1>
-        {inputChain && (
-          <>
-            <section aria-labelledby="chain-spec-name-heading" className="mt-4">
-              <h2
-                id="chain-spec-name-heading"
-                className="text-lg font-semibold text-yellow-300"
-              >
-                {inputChain.name}
-              </h2>
-              <div className="flex justify-between items-center mt-2">
-                <div>
-                  <label className="block font-medium text-white">
-                    Genesis Hash:
-                  </label>
-                  <p className="text-sm text-gray-300">
-                    {ellipsisText(inputChain.genesisHash)}
-                  </p>
-                </div>
-                <button className="p-2">
-                  {/* TODO: Implement Copy */}
-                  <Clipboard className="text-white" size={16} />
-                </button>
-              </div>
-              {inputChain.relayChainGenesisHash && (
-                <div className="flex justify-between items-center mt-2">
-                  <div>
-                    <label className="block font-medium text-white">
-                      Relay Chain Genesis Hash:
-                    </label>
-                    <p className="text-sm text-gray-300">
-                      {ellipsisText(inputChain.relayChainGenesisHash)}
-                    </p>
-                  </div>
-                  <button className="p-2">
-                    {/* TODO: Implement Copy */}
-                    <Clipboard className="text-white" size={16} />
-                  </button>
-                </div>
-              )}
-            </section>
+    <Layout2>
+      <Header />
 
-            <section className="mt-4">
-              <h2
-                id="chain-spec-name-heading"
-                className="text-lg font-semibold text-yellow-300"
-              >
-                Raw Chain Spec
-              </h2>
-              <div className="mt-2">
-                <ReactJson
-                  src={JSON.parse(inputChain.chainSpec)}
-                  theme="solarized"
-                  displayDataTypes={false}
-                  collapsed={1}
-                  collapseStringsAfterLength={15}
-                />
-              </div>
-            </section>
-
-            <section
-              aria-labelledby="confirmation-action-heading"
-              className="mt-6"
-            >
-              <h2
-                id="confirmation-action-heading"
-                className="text-lg font-semibold text-white"
-              >
-                Action
-              </h2>
-              <div className="flex space-x-4 mt-2">
-                <button
-                  className="flex items-center space-x-2 bg-blue-200 p-2 rounded hover:bg-blue-300"
-                  onClick={onAllowlistChainSpec}
-                >
-                  <ArrowRightCircle
-                    className="text-blue-700"
-                    aria-hidden="true"
-                  />
-                  <span>Allowlist ChainSpec</span>
-                </button>
-              </div>
-            </section>
-          </>
-        )}
+      <div className="flex items-center justify-between px-6 mt-4 mb-4 sm:px-8">
+        <h2 className="text-xl font-semibold">Review Chain Specification</h2>
       </div>
-    </Layout>
+
+      <ScrollArea className="px-6 mb-4 grow sm:px-8">
+        <main className="space-y-4">
+          {inputChain && (
+            <>
+              <section aria-labelledby="chain-name">
+                <h2
+                  id="chain-name"
+                  className="text-xl font-semibold text-foreground"
+                >
+                  Chain Name
+                </h2>
+                <p className="mt-1 text-lg text-muted-foreground">
+                  {inputChain.name}
+                </p>
+              </section>
+
+              <section aria-labelledby="genesis-hash">
+                <h2
+                  id="genesis-hash"
+                  className="text-xl font-semibold text-foreground"
+                >
+                  Genesis Hash
+                </h2>
+                <div className="flex items-center mt-1 space-x-2">
+                  <p className="p-2 font-mono text-xs break-all rounded grow bg-muted text-muted-foreground">
+                    {truncateText(inputChain.genesisHash, 40)}
+                  </p>
+                  <Button
+                    variant="secondary"
+                    className="flex items-center transition-transform duration-300 hover:scale-105"
+                    onClick={() => copyToClipboard(inputChain.genesisHash)}
+                  >
+                    <Clipboard className="w-4 h-4" />
+                  </Button>
+                </div>
+              </section>
+
+              {inputChain.relayChainGenesisHash && (
+                <section aria-labelledby="relay-chain-genesis-hash">
+                  <h2
+                    id="relay-chain-genesis-hash"
+                    className="text-xl font-semibold text-foreground"
+                  >
+                    Relay Chain Genesis Hash
+                  </h2>
+                  <div className="flex items-center mt-1 space-x-2">
+                    <p className="p-2 font-mono text-xs break-all rounded grow bg-muted text-muted-foreground">
+                      {truncateText(inputChain.relayChainGenesisHash, 40)}
+                    </p>
+                    <Button
+                      variant="secondary"
+                      className="flex items-center transition-transform duration-300 hover:scale-105"
+                      onClick={() =>
+                        copyToClipboard(inputChain.relayChainGenesisHash!)
+                      }
+                    >
+                      <Clipboard className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </section>
+              )}
+
+              <section aria-labelledby="chainspec-json">
+                <h2
+                  id="chainspec-json"
+                  className="text-xl font-semibold text-foreground"
+                >
+                  Chain Specification JSON
+                </h2>
+                <div className="mt-1 overflow-auto rounded bg-muted">
+                  <ReactJson
+                    src={JSON.parse(inputChain.chainSpec)}
+                    displayDataTypes={false}
+                    collapsed={1}
+                    collapseStringsAfterLength={32}
+                  />
+                </div>
+              </section>
+            </>
+          )}
+        </main>
+      </ScrollArea>
+
+      <footer className="flex justify-center p-4 space-x-4">
+        <Button
+          className="flex items-center space-x-2 font-semibold transition-transform duration-300 rounded bg-emerald-600 text-background hover:bg-emerald-700 hover:scale-105"
+          onClick={onAllowlistChainSpec}
+        >
+          <Check className="w-4 h-4" />
+          <span>Allowlist ChainSpec</span>
+        </Button>
+        <Button
+          className="flex items-center space-x-2 font-semibold transition-transform duration-300 rounded bg-emerald-100 text-emerald-700 hover:bg-emerald-200 hover:scale-105"
+          onClick={() => window.close()}
+        >
+          <X className="w-4 h-4" />
+          <span>Cancel</span>
+        </Button>
+      </footer>
+    </Layout2>
   )
 }
