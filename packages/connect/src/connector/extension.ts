@@ -1,8 +1,5 @@
 import type { Chain, JsonRpcCallback, ScClient } from "./types.js"
-import type {
-  RawChain,
-  LightClientProvider,
-} from "@substrate/light-client-extension-helpers/web-page"
+import type { Unstable } from "@substrate/connect-discovery"
 import { WellKnownChain } from "./types.js"
 
 const wellKnownChainGenesisHashes: Record<string, string> = {
@@ -25,7 +22,7 @@ const wellKnownChainGenesisHashes: Record<string, string> = {
  * `Promise`s will never resolve.
  */
 export const createScClient = (
-  lightClientProviderPromise: Promise<LightClientProvider>,
+  lightClientProviderPromise: Promise<Unstable.Provider>,
 ): ScClient => {
   const internalAddChain = async (
     isWellKnown: boolean,
@@ -35,7 +32,7 @@ export const createScClient = (
   ): Promise<Chain> => {
     const lightClientProvider = await lightClientProviderPromise
 
-    let chain: RawChain
+    let chain: Unstable.RawChain
     if (isWellKnown) {
       const foundChain = Object.values(lightClientProvider.getChains()).find(
         ({ genesisHash }) =>

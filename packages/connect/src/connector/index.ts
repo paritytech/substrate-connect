@@ -4,10 +4,7 @@ import {
 } from "./smoldot-light.js"
 import { createScClient as extensionScClient } from "./extension.js"
 import type { ScClient } from "./types.js"
-import type {
-  LightClientProvider,
-  LightClientOnProvider,
-} from "@substrate/light-client-extension-helpers/web-page"
+import { Unstable } from "@substrate/connect-discovery"
 
 export * from "./types.js"
 export type { EmbeddedNodeConfig }
@@ -66,23 +63,14 @@ export const createScClient = (config?: Config): ScClient => {
 }
 
 function getExtensionLightClientProviderPromise():
-  | Promise<LightClientProvider>
+  | Promise<Unstable.Provider>
   | undefined {
   if (typeof document !== "object" || typeof CustomEvent !== "function") return
-  let lightClientProviderPromise: Promise<LightClientProvider> | undefined
-  window.dispatchEvent(
-    new CustomEvent<LightClientOnProvider>("lightClient:requestProvider", {
-      detail: {
-        onProvider(detail) {
-          if (
-            detail.info.rdns ===
-            "io.github.paritytech.SubstrateConnectLightClient"
-          ) {
-            lightClientProviderPromise = detail.provider
-          }
-        },
-      },
-    }),
-  )
-  return lightClientProviderPromise
+  const lightClientProvider = Unstable.getSubstrateConnectExtensionProviders()
+    .filter((detail) =>
+      detail.info.rdns.startsWith("io.github.paritytech.SubstrateConnect"),
+    )
+    .map((detail) => detail.provider)[0]
+
+  return lightClientProvider
 }

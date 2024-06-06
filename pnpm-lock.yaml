@@ -245,15 +245,15 @@ importers:
 
   packages/connect:
     dependencies:
+      '@substrate/connect-discovery':
+        specifier: workspace:^
+        version: link:../connect-discovery
       '@substrate/connect-extension-protocol':
         specifier: workspace:^
         version: link:../connect-extension-protocol
       '@substrate/connect-known-chains':
         specifier: workspace:^
         version: link:../connect-known-chains
-      '@substrate/light-client-extension-helpers':
-        specifier: workspace:^
-        version: link:../light-client-extension-helpers
       '@substrate/smoldot-discovery':
         specifier: workspace:^
         version: link:../smoldot-discovery
@@ -455,9 +455,15 @@ importers:
       '@react-rxjs/utils':
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.7)(react@18.3.1)(rxjs@7.8.1)
+      '@substrate/connect-discovery':
+        specifier: workspace:^
+        version: link:../../packages/connect-discovery
       '@substrate/connect-extension-protocol':
         specifier: workspace:*
         version: link:../../packages/connect-extension-protocol
+      '@substrate/discovery':
+        specifier: workspace:^
+        version: link:../../packages/discovery
       '@substrate/light-client-extension-helpers':
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers
