@@ -8,7 +8,7 @@ export type SmoldotExtensionAPI = {
 export type SmoldotExtensionProviderDetail = {
   kind: "smoldot-v1"
   info: ProviderInfo
-  provider: SmoldotExtensionAPI
+  provider: Promise<SmoldotExtensionAPI>
 }
 
 /**
