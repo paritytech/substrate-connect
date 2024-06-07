@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "Web3-Regular";
+  src:
+    url("./fonts/Web3-Regular.woff") format("woff"),
+    url("./fonts/Web3-Regular.woff2") format("woff2");
+}
+
 .networkicon_container {
   display: flex;
   align-items: center;
@@ -14,6 +21,7 @@
 }
 
 .icon {
+  font-family: "Web3-Regular";
   @apply text-center;
 }
 
@@ -59,11 +67,11 @@
 }
 
 .accordion {
-  @apply items-center font-normal justify-between text-left;
+  @apply items-center justify-between font-normal text-left;
 }
 
 .item_title {
-  @apply items-center w-full flex text-sm justify-between p-3 text-left border border-neutral-200 cursor-pointer;
+  @apply flex items-center justify-between w-full p-3 text-sm text-left border cursor-pointer border-neutral-200;
 }
 
 .item_content {
@@ -77,15 +85,15 @@
 }
 
 ._mi__single button {
-  @apply rounded w-full;
+  @apply w-full rounded;
 }
 
 ._mi__first button {
-  @apply rounded-t-md w-full;
+  @apply w-full rounded-t-md;
 }
 
 ._mi__last button {
-  @apply rounded-b-md w-full;
+  @apply w-full rounded-b-md;
 }
 
 .content_expanded {
@@ -105,7 +113,7 @@
 }
 
 .tooltip .tooltiptext {
-  @apply invisible text-black bg-stone-200 border border-neutral-200 text-left p-2 right-5 absolute z-50 w-max leading-6;
+  @apply absolute z-50 invisible p-2 leading-6 text-left text-black border bg-stone-200 border-neutral-200 right-5 w-max;
   top: -60%;
 }
 
@@ -118,7 +126,7 @@
 }
 
 .tooltip .tooltipDark {
-  @apply invisible text-white bg-black rounded-lg border border-neutral-200 text-left py-1 px-2 right-5 absolute z-50 w-max leading-6;
+  @apply absolute z-50 invisible px-2 py-1 leading-6 text-left text-white bg-black border rounded-lg border-neutral-200 right-5 w-max;
   top: -60%;
 }
 
