@@ -1,17 +1,15 @@
-import { FunctionComponent, useEffect, useState } from "react"
+import { FunctionComponent, useEffect, useMemo, useState } from "react"
 import { MdOutlineNetworkCell, MdOutlineOnlinePrediction } from "react-icons/md"
 import pckg from "../../package.json"
 import { FaGithub } from "react-icons/fa"
 import * as environment from "../environment"
-import {
-  BraveModal,
-  Logo,
-  MenuContent,
-  Networks,
-  Bootnodes,
-} from "../components"
+import { BraveModal, Logo, MenuContent, Bootnodes } from "../components"
 import { ChainSpecs } from "./WalletPopup/pages/Options/Chainspecs"
 import { Link } from "react-router-dom"
+import { useActiveChains } from "@/hooks/useActiveChains"
+import { NetworkTabProps } from "@/types"
+import { NetworkTab } from "./WalletPopup/components"
+import { Accordion } from "@/components/ui/accordion"
 
 type MenuItemTypes = "item" | "title" | "icon"
 
@@ -67,6 +65,54 @@ const cName = (type: MenuItemTypes, menu = 0, reqMenu: number) => {
       break
   }
   return classes.join(" ")
+}
+
+const Networks: React.FC = () => {
+  const chains = useActiveChains()
+
+  const networks: NetworkTabProps[] = useMemo(
+    () =>
+      chains.map(({ chainName, isWellKnown, details }) => {
+        return {
+          isWellKnown,
+          name: chainName,
+          health: {
+            isSyncing: details[0].isSyncing,
+            peers: details[0].peers,
+            status: "connected",
+            bestBlockHeight: details[0].bestBlockHeight,
+          },
+          apps: details.map(({ url }) => ({
+            name: url ?? "",
+            url: url,
+          })),
+        }
+      }),
+    [chains],
+  )
+
+  return (
+    <section className="container">
+      <h2 className="pb-2 space-y-2 text-3xl font-semibold md:pb-4">
+        Networks
+      </h2>
+      {networks.length ? (
+        <Accordion type="multiple" className="w-full">
+          {networks.map(({ name, health, apps, isWellKnown }, i) => (
+            <NetworkTab
+              key={i}
+              name={name}
+              health={health}
+              isWellKnown={isWellKnown}
+              apps={apps}
+            />
+          ))}
+        </Accordion>
+      ) : (
+        <div>The extension isn't connected to any network.</div>
+      )}
+    </section>
+  )
 }
 
 export const Options: FunctionComponent = () => {

@@ -9,6 +9,7 @@ import { EyeIcon, EyeOffIcon, LayersIcon } from "lucide-react"
 import { useState } from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { cn } from "@/lib/utils"
+import { Link } from "react-router-dom"
 
 type FormInputs = {
   password: string
@@ -97,9 +98,14 @@ export const UnlockKeyring = () => {
             <Button
               variant="link"
               className="text-muted/80 hover:text-muted/60"
+              asChild
             >
-              <LayersIcon className="w-5 h-5 mr-2" />
-              Access Networks
+              <Link to="/networks">
+                <>
+                  <LayersIcon className="w-5 h-5 mr-2" />
+                  Access Networks
+                </>
+              </Link>
             </Button>
           </div>
         </main>

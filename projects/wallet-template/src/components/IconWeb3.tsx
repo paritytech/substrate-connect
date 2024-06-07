@@ -19,9 +19,9 @@ export const IconWeb3: FunctionComponent<Props> = ({
   return (
     <>
       {isWellKnown && children && hasGlyph(children) ? (
-        <span className="icon text-xl w-10">{children}</span>
+        <span className="flex items-center text-xl icon">{children}</span>
       ) : (
-        <MdOutlineGridView className="ml-2.5 mt-1.5 mr-1.5" />
+        <MdOutlineGridView />
       )}
     </>
   )
