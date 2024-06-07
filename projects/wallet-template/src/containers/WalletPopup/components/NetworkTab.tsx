@@ -26,7 +26,7 @@ const NetworkContent: React.FC<NetworkContentProps> = ({
         <>
           <div className="col-span-1 font-bold">Latest block</div>
           <div
-            className="col-span-1 text-emerald-700"
+            className="col-span-1 text-[#24CC85]"
             data-testid="blockheight"
             data-blockheight={health?.bestBlockHeight}
           >

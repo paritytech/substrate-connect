@@ -66,7 +66,7 @@ export const Networks = () => {
                       <div className="flex pt-2 text-sm">
                         <span>Latest block</span>
                         <span
-                          className="pl-2 text-[#38A276]"
+                          className="pl-2 text-[#24CC85]"
                           data-testid="blockheight"
                           data-blockheight={health?.bestBlockHeight}
                         >
