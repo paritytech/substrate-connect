@@ -17,6 +17,7 @@ import { ProtectedRoute } from "./WalletPopup/components"
 import { KeyringProvider } from "./WalletPopup/hooks"
 import { Options } from "./Options"
 import { CreatePassword } from "./WalletPopup/pages/CreatePassword"
+import { Networks } from "./WalletPopup/pages/Networks"
 
 export const WalletPopup = () => (
   <HashRouter>
@@ -41,6 +42,7 @@ export const WalletPopup = () => (
         </Route>
         <Route path="/options" element={<Options />} />
         <Route path="/welcome" element={<Welcome />} />
+        <Route path="/networks" element={<Networks />} />
         <Route path="/create-password" element={<CreatePassword />} />
         <Route path="/unlock-keyring" element={<UnlockKeyring />} />
       </Routes>

@@ -141,7 +141,7 @@ export const CreatePassword = () => {
                 autoFocus
                 className={cn(
                   "w-full py-3",
-                  "text-lg text-emerald-700",
+                  "text-lg text-[#38A276]",
                   "bg-emerald-100 hover:bg-emerald-200",
                 )}
                 onClick={() => navigate("/welcome")}
