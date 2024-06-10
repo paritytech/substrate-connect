@@ -10,6 +10,7 @@ import { useActiveChains } from "@/hooks/useActiveChains"
 import { NetworkTabProps } from "@/types"
 import { NetworkTab } from "./WalletPopup/components"
 import { Accordion } from "@/components/ui/accordion"
+import ChainSpecs2 from "./WalletPopup/pages/Options/ChainSpecs2"
 
 type MenuItemTypes = "item" | "title" | "icon"
 
@@ -205,7 +206,7 @@ export const Options: FunctionComponent = () => {
           ) : menu === 1 ? (
             <Bootnodes />
           ) : menu === 2 ? (
-            <ChainSpecs />
+            <ChainSpecs2 />
           ) : null}
         </MenuContent>
       </div>
