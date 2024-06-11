@@ -4,13 +4,12 @@ import pckg from "../../package.json"
 import { FaGithub } from "react-icons/fa"
 import * as environment from "../environment"
 import { BraveModal, Logo, MenuContent, Bootnodes } from "../components"
-import { ChainSpecs } from "./WalletPopup/pages/Options/Chainspecs"
 import { Link } from "react-router-dom"
 import { useActiveChains } from "@/hooks/useActiveChains"
 import { NetworkTabProps } from "@/types"
 import { NetworkTab } from "./WalletPopup/components"
 import { Accordion } from "@/components/ui/accordion"
-import ChainSpecs2 from "./WalletPopup/pages/Options/ChainSpecs2"
+import { ChainSpecs } from "./WalletPopup/pages/Options/ChainSpecs"
 
 type MenuItemTypes = "item" | "title" | "icon"
 
@@ -206,7 +205,7 @@ export const Options: FunctionComponent = () => {
           ) : menu === 1 ? (
             <Bootnodes />
           ) : menu === 2 ? (
-            <ChainSpecs2 />
+            <ChainSpecs />
           ) : null}
         </MenuContent>
       </div>

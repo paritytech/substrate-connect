@@ -1,108 +1,145 @@
-import { ClipboardCheck, ClipboardCopyIcon, Trash } from "lucide-react"
-import * as clipboard from "@zag-js/clipboard"
-import { useMachine, normalizeProps } from "@zag-js/react"
-import useSWR from "swr"
+import { Trash2Icon } from "lucide-react"
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
 
-import { rpc } from "../../api"
-import { ChainSpec } from "../../../../background/types"
+import { useState } from "react"
+import type { ChainSpec } from "@/background/types"
+import ReactJson from "react-json-view"
+import { useDebounceCallback } from "usehooks-ts"
+import { CopyButton } from "../../components"
 
-type ChainSpecListItemProps = {
-  chainSpec: ChainSpec
-  onDeleteChainSpec: (chainSpec: ChainSpec) => unknown
-}
-
-const ChainSpecListItem = ({
-  chainSpec,
-  onDeleteChainSpec,
-}: ChainSpecListItemProps) => {
-  const [state, send] = useMachine(
-    clipboard.machine({
-      id: chainSpec.id,
-      value: chainSpec.raw,
-    }),
-  )
-
-  const api = clipboard.connect(state, send, normalizeProps)
-
-  return (
-    <section {...api.rootProps} className="flex items-start justify-between">
-      <h3 className="font-semibold text-lg">{chainSpec.name}</h3>
-      <div className="flex items-center">
-        <button
-          {...api.triggerProps}
-          type="button"
-          className={`${api.isCopied ? "bg-green-200" : ""}`}
-        >
-          {api.isCopied ? (
-            <ClipboardCheck className="stroke-current" />
-          ) : (
-            <ClipboardCopyIcon className="stroke-current" />
-          )}
-        </button>
-        {!chainSpec.isWellKnown && (
-          <button onClick={() => onDeleteChainSpec(chainSpec)}>
-            <Trash className="stroke-current text-red-600" />
-          </button>
-        )}
-      </div>
-    </section>
-  )
-}
-
-export const ListChainSpecs = () => {
-  const { data: chainSpecs, mutate } = useSWR(
-    "rpc.getChainSpecs",
-    () => rpc.client.getChainSpecs(),
-    { revalidateOnFocus: true },
-  )
-
-  const onDeleteChainSpec = async (chainSpec: ChainSpec) => {
-    // TODO: error handling
-    await rpc.client.removeChainSpec(chainSpec.genesisHash)
-    await mutate()
-    console.log(`chain spec ${chainSpec.id} removed`)
+const immutableChains = ["Polkadot", "Kusama", "Westend"]
+namespace ChainsAccordion {
+  export type Props = {
+    chainSpecs: ChainSpec[]
+    deleteChainSpec: (chainSpec: ChainSpec) => Promise<void>
   }
+}
 
-  const relayChains = chainSpecs?.filter((chainSpec) => !chainSpec.relay_chain)
-  const parachains = chainSpecs?.filter((chainSpec) => !!chainSpec.relay_chain)
+const ChainsAccordion: React.FC<ChainsAccordion.Props> = ({
+  chainSpecs,
+  deleteChainSpec,
+}) => {
+  const [error, setError] = useState<Error | null>(null)
+  const setErrorDebounced = useDebounceCallback(setError, 5000)
 
   return (
-    <section className="py-8">
-      <div className="max-w-7xl mx-auto px-4">
-        <section aria-labelledby="relaychains-heading">
-          <h2 id="relaychains-heading" className="text-xl font-semibold mb-4">
-            Relay Chains
-          </h2>
-          <ul className="space-y-4">
-            {relayChains?.map((chainSpec) => (
-              <li className="bg-white p-4 shadow rounded-lg">
-                <ChainSpecListItem
-                  chainSpec={chainSpec}
-                  onDeleteChainSpec={onDeleteChainSpec}
+    <Accordion type="single" collapsible>
+      {chainSpecs.map((chainSpec, index) => (
+        <AccordionItem key={index} value={chainSpec.name}>
+          <AccordionTrigger>
+            <div className="flex items-center justify-between text-lg text-foreground">
+              {chainSpec.name}
+            </div>
+          </AccordionTrigger>
+          <AccordionContent>
+            <ReactJson
+              src={JSON.parse(chainSpec.raw)}
+              displayDataTypes={false}
+              collapsed={1}
+            />
+            {chainSpec.relay_chain && (
+              <div className="mb-2 text-sm">
+                <span className="font-bold">Relay Chain: </span>
+                {chainSpec.relay_chain}
+              </div>
+            )}
+            <div className="flex items-center space-x-4">
+              <CopyButton text={chainSpec.raw} />
+              {!immutableChains.includes(chainSpec.name) && (
+                <Trash2Icon
+                  onClick={() =>
+                    deleteChainSpec(chainSpec).catch((err: Error) => {
+                      setError(err)
+                      setErrorDebounced(null)
+                    })
+                  }
+                  className="w-4 h-4 cursor-pointer hover:text-destructive"
                 />
-              </li>
-            ))}
-          </ul>
-        </section>
+              )}
+            </div>
+            {error && (
+              <p className="mt-2 text-center text-destructive">
+                {error.message}
+              </p>
+            )}
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
+  )
+}
 
-        <section aria-labelledby="parachains-heading" className="mt-10">
-          <h2 id="parachains-heading" className="text-xl font-semibold mb-4">
+namespace ListChainSpecs {
+  export interface Props {
+    chainSpecs: ReadonlyArray<ChainSpec>
+    removeChainSpec: (chainSpec: ChainSpec) => Promise<void>
+  }
+}
+
+export const ListChainSpecs: React.FC<ListChainSpecs.Props> = ({
+  chainSpecs,
+  removeChainSpec,
+}) => {
+  const relayChains =
+    chainSpecs?.filter((chainSpec) => !chainSpec.relay_chain) ?? []
+  const parachains =
+    chainSpecs?.filter((chainSpec) => !!chainSpec.relay_chain) ?? []
+
+  return (
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            Relaychains
+            <Badge className="ml-2">{relayChains.length}</Badge>
+          </CardTitle>
+          <CardDescription className="text-foreground/70">
+            List of all relaychains
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Separator className="mb-4" />
+          <ChainsAccordion
+            chainSpecs={relayChains}
+            deleteChainSpec={removeChainSpec}
+          />
+        </CardContent>
+      </Card>
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>
             Parachains
-          </h2>
-          <div className="ax-h-72 overflow-auto">
-            <ul className="space-y-4">
-              {parachains?.map((chainSpec) => (
-                <li className="bg-white p-4 shadow rounded-lg">
-                  <ChainSpecListItem
-                    chainSpec={chainSpec}
-                    onDeleteChainSpec={onDeleteChainSpec}
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      </div>
-    </section>
+            <Badge className="ml-2">{parachains.length}</Badge>
+          </CardTitle>
+          <CardDescription className="text-foreground/70">
+            List of all parachains
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Separator className="mb-4" />
+          <Accordion type="single" collapsible>
+            <ChainsAccordion
+              chainSpecs={parachains}
+              deleteChainSpec={removeChainSpec}
+            />
+          </Accordion>
+        </CardContent>
+      </Card>
+    </>
   )
 }
