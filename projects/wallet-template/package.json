@@ -53,8 +53,6 @@
     "wxt": "^0.17.12"
   },
   "dependencies": {
-    "@substrate/connect-discovery": "workspace:^",
-    "@substrate/discovery": "workspace:^",
     "@headlessui/react": "^1.7.19",
     "@hookform/resolvers": "^3.4.0",
     "@noble/ciphers": "^0.5.2",
@@ -100,7 +98,9 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@react-rxjs/core": "^0.10.7",
     "@react-rxjs/utils": "^0.9.7",
+    "@substrate/connect-discovery": "workspace:^",
     "@substrate/connect-extension-protocol": "workspace:*",
+    "@substrate/discovery": "workspace:^",
     "@substrate/light-client-extension-helpers": "workspace:^",
     "@zag-js/clipboard": "^0.47.0",
     "@zag-js/react": "^0.47.0",
@@ -122,11 +122,12 @@
     "react-resizable-panels": "^2.0.19",
     "react-router-dom": "^6.22.3",
     "rxjs": "^7.8.1",
-    "sonner": "^1.4.41",
     "smoldot": "2.0.26",
+    "sonner": "^1.4.41",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "usehooks-ts": "^3.1.0",
     "vaul": "^0.9.1",
     "zod": "^3.23.8"
   }
