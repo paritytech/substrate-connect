@@ -4,6 +4,16 @@
 
 ### Changed
 
+## 1.0.0 - 2024-07-26
+
+### Breaking
+
+- Drop support for `lightClient:requestProvider` events [#2221](https://github.com/paritytech/substrate-connect/pull/2221)
+
+### Changed
+
+- Add support for @substrate/discovery protocol [#2221](https://github.com/paritytech/substrate-connect/pull/2221)
+
 ## 0.8.11 - 2024-05-24
 
 - Update `@substrate/light-client-extension-helpers` to v0.1.0
