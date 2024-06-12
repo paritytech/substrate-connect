@@ -1,4 +1,4 @@
-import { IsCompatible, Runtime } from "@/runtime"
+import { IsCompatible, Runtime } from "./runtime"
 import { SystemEvent } from "@polkadot-api/observable-client"
 import { PolkadotSigner } from "@polkadot-api/polkadot-signer"
 import {
