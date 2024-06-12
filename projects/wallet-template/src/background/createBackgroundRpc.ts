@@ -15,7 +15,7 @@ import { UserSignedExtensionName } from "../types/UserSignedExtension"
 import { createClient } from "@polkadot-api/substrate-client"
 import { getObservableClient } from "@polkadot-api/observable-client"
 import { filter, firstValueFrom, map, mergeMap, take } from "rxjs"
-import { getCreateTx } from "./tx-helper"
+import { createTx } from "./tx/create-tx"
 import * as pjs from "./pjs"
 import { Bytes, Variant } from "@polkadot-api/substrate-bindings"
 import { InPageRpcSpec } from "../inpage/types"
@@ -156,7 +156,6 @@ export const createBackgroundRpc = (
             scheme,
             keypair.sign,
           )
-          const createTx = getCreateTx(chainHead$)
 
           const mortality = userSignedExtensions.CheckMortality ?? {
             mortal: true,
@@ -169,7 +168,7 @@ export const createBackgroundRpc = (
               : userSignedExtensions.ChargeTransactionPayment) ?? 0n
 
           const tx = await firstValueFrom(
-            createTx(signer, fromHex(callData), atBlock, {
+            createTx(chainHead$, signer, fromHex(callData), atBlock, {
               mortality,
               asset,
               tip,
