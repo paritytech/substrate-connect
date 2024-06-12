@@ -1,4 +1,7 @@
-import { register } from "@substrate/light-client-extension-helpers/background"
+import {
+  InputChain,
+  register,
+} from "@substrate/light-client-extension-helpers/background"
 import { start } from "@substrate/light-client-extension-helpers/smoldot"
 import { createBackgroundRpc } from "./createBackgroundRpc"
 import * as storage from "./storage"
@@ -65,7 +68,41 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   }
 })
 
+type Relaychain = Omit<InputChain, "relayChainGenesisHash"> & {
+  relayChainGenesisHash?: never
+}
+
+const getChain = async (genesisHash: string) =>
+  lightClientPageHelper
+    .getChains()
+    .then((chains) =>
+      chains.filter((chain) => chain.genesisHash === genesisHash),
+    )
+
+const isRelayChain = (inputChain: InputChain): inputChain is Relaychain =>
+  !inputChain.relayChainGenesisHash
+
 addOnAddChainByUserListener(async (inputChain) => {
+  if (isRelayChain(inputChain) && !(await getChain(inputChain.genesisHash))) {
+    console.log(inputChain)
+    await waitForAddChainApproval(inputChain)
+
+    const persistedChain = (await lightClientPageHelper.getChains()).find(
+      (chain) => chain.genesisHash === inputChain.genesisHash,
+    )
+
+    if (!persistedChain) {
+      throw new Error("User rejected")
+    }
+  } else {
+    await lightClientPageHelper.persistChain(
+      inputChain.chainSpec,
+      inputChain.relayChainGenesisHash,
+    )
+  }
+})
+
+const waitForAddChainApproval = async (inputChain: InputChain) => {
   const window = await chrome.windows.create({
     focused: true,
     width: 400,
@@ -87,14 +124,6 @@ addOnAddChainByUserListener(async (inputChain) => {
     Promise.withResolvers<void>()
 
   await windowClosedPromise
-
-  const persistedChain = (await lightClientPageHelper.getChains()).find(
-    (chain) => chain.genesisHash === inputChain.genesisHash,
-  )
-
-  if (!persistedChain) {
-    throw new Error("User rejected")
-  }
-})
+}
 
 startHeartbeat()

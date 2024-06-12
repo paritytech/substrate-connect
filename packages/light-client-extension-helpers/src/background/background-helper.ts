@@ -191,20 +191,22 @@ export const register = ({
 
       minimalChainSpec = JSON.stringify(chainSpecJson)
 
-      await Promise.all([
-        storage.set(
-          { type: "chain", genesisHash: chainData.genesisHash },
-          {
-            ...chainData,
-            chainSpec: minimalChainSpec,
-            relayChainGenesisHash,
-          },
-        ),
-        storage.set(
-          { type: "bootNodes", genesisHash: chainData.genesisHash },
-          bootNodes,
-        ),
-      ])
+      if (!relayChainGenesisHash) {
+        await Promise.all([
+          storage.set(
+            { type: "chain", genesisHash: chainData.genesisHash },
+            {
+              ...chainData,
+              chainSpec: minimalChainSpec,
+              relayChainGenesisHash,
+            },
+          ),
+          storage.set(
+            { type: "bootNodes", genesisHash: chainData.genesisHash },
+            bootNodes,
+          ),
+        ])
+      }
     },
     async getChains() {
       const chains = await storage.getChains()
