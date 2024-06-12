@@ -18,7 +18,7 @@ import {
 } from "@polkadot-api/observable-client"
 import { AnalyzedBlock } from "@polkadot-api/observable-client"
 import { TxEvent, TxEventsPayload, TxFinalizedPayload } from "./types"
-import { continueWith } from "@/utils"
+import { continueWith } from "./utils"
 import { fromHex, toHex } from "@polkadot-api/utils"
 
 // TODO: make it dynamic based on the tx-function of the client
