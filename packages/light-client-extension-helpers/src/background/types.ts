@@ -37,6 +37,7 @@ export interface PageChain {
   bootNodes: Array<string>
   provider: JsonRpcProvider
 }
+
 export type BackgroundRpcSpec = {
   keepAlive(): void
   getChain(
