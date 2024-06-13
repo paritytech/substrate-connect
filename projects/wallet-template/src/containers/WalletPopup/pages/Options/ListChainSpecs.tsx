@@ -96,8 +96,6 @@ export const ListChainSpecs: React.FC<ListChainSpecs.Props> = ({
 }) => {
   const relayChains =
     chainSpecs?.filter((chainSpec) => !chainSpec.relay_chain) ?? []
-  const parachains =
-    chainSpecs?.filter((chainSpec) => !!chainSpec.relay_chain) ?? []
 
   return (
     <>
@@ -117,27 +115,6 @@ export const ListChainSpecs: React.FC<ListChainSpecs.Props> = ({
             chainSpecs={relayChains}
             deleteChainSpec={removeChainSpec}
           />
-        </CardContent>
-      </Card>
-
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>
-            Parachains
-            <Badge className="ml-2">{parachains.length}</Badge>
-          </CardTitle>
-          <CardDescription className="text-foreground/70">
-            List of all parachains
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Separator className="mb-4" />
-          <Accordion type="single" collapsible>
-            <ChainsAccordion
-              chainSpecs={parachains}
-              deleteChainSpec={removeChainSpec}
-            />
-          </Accordion>
         </CardContent>
       </Card>
     </>

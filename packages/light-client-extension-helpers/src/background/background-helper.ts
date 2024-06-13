@@ -208,6 +208,13 @@ export const register = ({
         ])
       }
     },
+    async getChain(genesisHash) {
+      return this.getChains()
+        .then((chains) =>
+          chains.find((chain) => chain.genesisHash === genesisHash),
+        )
+        .then((chain) => chain ?? null)
+    },
     async getChains() {
       const chains = await storage.getChains()
       return Promise.all(

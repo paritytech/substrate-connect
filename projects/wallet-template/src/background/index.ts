@@ -68,27 +68,16 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   }
 })
 
-type Relaychain = Omit<InputChain, "relayChainGenesisHash"> & {
-  relayChainGenesisHash?: never
-}
-
-const getChain = async (genesisHash: string) =>
-  lightClientPageHelper
-    .getChains()
-    .then((chains) =>
-      chains.filter((chain) => chain.genesisHash === genesisHash),
-    )
-
-const isRelayChain = (inputChain: InputChain): inputChain is Relaychain =>
-  !inputChain.relayChainGenesisHash
-
 addOnAddChainByUserListener(async (inputChain) => {
-  if (isRelayChain(inputChain) && !(await getChain(inputChain.genesisHash))) {
-    console.log(inputChain)
+  const isParachain = !!inputChain.relayChainGenesisHash
+  const existingChain = await lightClientPageHelper.getChain(
+    inputChain.genesisHash,
+  )
+  if (isParachain && !existingChain) {
     await waitForAddChainApproval(inputChain)
 
-    const persistedChain = (await lightClientPageHelper.getChains()).find(
-      (chain) => chain.genesisHash === inputChain.genesisHash,
+    const persistedChain = await lightClientPageHelper.getChain(
+      inputChain.genesisHash,
     )
 
     if (!persistedChain) {

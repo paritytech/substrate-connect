@@ -20,6 +20,13 @@ export const helper: LightClientPageHelper = {
   async persistChain(chainSpec, relayChainGenesisHash) {
     await rpc.client.persistChain(chainSpec, relayChainGenesisHash)
   },
+  async getChain(genesisHash) {
+    return this.getChains()
+      .then((chains) =>
+        chains.find((chain) => chain.genesisHash === genesisHash),
+      )
+      .then((chain) => chain ?? null)
+  },
   async getChains() {
     return Promise.all(
       Object.entries(await storage.getChains()).map(
