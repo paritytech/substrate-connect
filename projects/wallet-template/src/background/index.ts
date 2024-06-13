@@ -69,11 +69,11 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
 })
 
 addOnAddChainByUserListener(async (inputChain) => {
-  const isParachain = !!inputChain.relayChainGenesisHash
+  const isRelayChain = !inputChain.relayChainGenesisHash
   const existingChain = await lightClientPageHelper.getChain(
     inputChain.genesisHash,
   )
-  if (isParachain && !existingChain) {
+  if (isRelayChain && !existingChain) {
     await waitForAddChainApproval(inputChain)
 
     const persistedChain = await lightClientPageHelper.getChain(
@@ -83,11 +83,6 @@ addOnAddChainByUserListener(async (inputChain) => {
     if (!persistedChain) {
       throw new Error("User rejected")
     }
-  } else {
-    await lightClientPageHelper.persistChain(
-      inputChain.chainSpec,
-      inputChain.relayChainGenesisHash,
-    )
   }
 })
 
