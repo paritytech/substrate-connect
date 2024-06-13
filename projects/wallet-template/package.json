@@ -57,6 +57,7 @@
     "@hookform/resolvers": "^3.4.0",
     "@noble/ciphers": "^0.5.2",
     "@noble/hashes": "^1.4.0",
+    "@polkadot-api/codegen": "^0.6.0",
     "@polkadot-api/json-rpc-provider": "^0.0.1",
     "@polkadot-api/metadata-builders": "^0.3.0",
     "@polkadot-api/observable-client": "^0.3.0",

@@ -28,14 +28,13 @@ export const CheckMortality = (
   input: { period: number; blockNumber: number } | undefined,
   ctx: ChainExtensionCtx,
 ): SignedExtension => {
-  if (!input) {
+  if (!input)
     return genesisHashFromCtx(ctx).pipe(
       map((additionalSigned) => ({
         additionalSigned,
         value: zero,
       })),
     )
-  }
 
   const { period, blockNumber } = input
   return of({
