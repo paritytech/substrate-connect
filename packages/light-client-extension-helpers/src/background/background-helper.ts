@@ -710,9 +710,8 @@ const followChain = ({
   genesisHash: string
   relayChainGenesisHash?: string
 }) => {
-  const subscription = new Observable<boolean>((observer) => {
-    observer.next(false)
-    const client = getObservableClient(
+  const makeClient = () =>
+    getObservableClient(
       createClient(
         createSmoldotSyncProvider({
           smoldotClient,
@@ -722,6 +721,10 @@ const followChain = ({
         }),
       ),
     )
+
+  const subscription = new Observable<boolean>((observer) => {
+    observer.next(false)
+    let client = makeClient()
     let unfollow: ReturnType<(typeof client)["chainHead$"]>["unfollow"]
     const finalizedSubscription = defer(() => {
       const chainHead = client.chainHead$()
@@ -730,7 +733,12 @@ const followChain = ({
     })
       .pipe(
         catchError(() => {
-          observer.next(false)
+          // restart the entire client to ensure no blocks ever get stuck
+          const oldClient = client
+          client = makeClient()
+          try {
+            oldClient.destroy()
+          } catch {}
           return EMPTY
         }),
         repeat({ delay: 1 }),
