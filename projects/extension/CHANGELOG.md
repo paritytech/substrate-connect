@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## 0.5.0 - 2024-06-17
+
+### Changed
+
+- Update chainspecs
+- Use the new Substrate Discovery Protocol
+- Fix Chains Getting Stuck
+
 ## 0.4.5 - 2024-05-24
 
 ### Changed
