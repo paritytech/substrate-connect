@@ -70,5 +70,8 @@
     "overrides": {
       "@substrate/connect": "workspace:^"
     }
+  },
+  "dependencies": {
+    "@changesets/cli": "^2.27.5"
   }
 }
