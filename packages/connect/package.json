@@ -47,7 +47,7 @@
     "@substrate/connect-known-chains": "workspace:^",
     "@substrate/smoldot-discovery": "workspace:^",
     "@substrate/connect-discovery": "workspace:^",
-    "smoldot": "2.0.26"
+    "smoldot": "2.0.29"
   },
   "devDependencies": {
     "@polkadot-api/json-rpc-provider-proxy": "^0.1.0",

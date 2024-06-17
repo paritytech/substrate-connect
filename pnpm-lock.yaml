@@ -115,7 +115,7 @@ importers:
         version: 0.48.0
       polkadot-api:
         specifier: ^0.8.0
-        version: 0.8.0(rxjs@7.8.1)(smoldot@2.0.26)
+        version: 0.8.0(rxjs@7.8.1)(smoldot@2.0.29)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -224,8 +224,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/light-client-extension-helpers
       smoldot:
-        specifier: 2.0.26
-        version: 2.0.26
+        specifier: 2.0.29
+        version: 2.0.29
     devDependencies:
       '@playwright/test':
         specifier: ^1.43.1
@@ -258,8 +258,8 @@ importers:
         specifier: workspace:^
         version: link:../smoldot-discovery
       smoldot:
-        specifier: 2.0.26
-        version: 2.0.26
+        specifier: 2.0.29
+        version: 2.0.29
     devDependencies:
       '@polkadot-api/json-rpc-provider-proxy':
         specifier: ^0.1.0
@@ -480,8 +480,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.0.26
-        version: 2.0.26
+        specifier: 2.0.29
+        version: 2.0.29
     devDependencies:
       '@playwright/test':
         specifier: ^1.43.1
@@ -724,8 +724,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.0.26
-        version: 2.0.26
+        specifier: 2.0.29
+        version: 2.0.29
       sonner:
         specifier: ^1.4.41
         version: 1.5.0(react-dom@18.3.1)(react@18.3.1)
@@ -3447,7 +3447,7 @@ packages:
       config-chain: 1.1.13
     dev: true
 
-  /@polkadot-api/cli@0.5.0(smoldot@2.0.26):
+  /@polkadot-api/cli@0.5.0(smoldot@2.0.29):
     resolution: {integrity: sha512-FTph/LJ8HJWnW1sMcSd71eMiQZpn9peREaQ5ilBawUIzouvU8L7VRRYcqwxHrNegc1ROIEgdku9n00eNu4VUdw==}
     hasBin: true
     dependencies:
@@ -3458,7 +3458,7 @@ packages:
       '@polkadot-api/known-chains': 0.1.5
       '@polkadot-api/metadata-builders': 0.3.0
       '@polkadot-api/observable-client': 0.3.0(rxjs@7.8.1)
-      '@polkadot-api/sm-provider': 0.1.0(smoldot@2.0.26)
+      '@polkadot-api/sm-provider': 0.1.0(smoldot@2.0.29)
       '@polkadot-api/smoldot': 0.2.4
       '@polkadot-api/substrate-bindings': 0.5.0
       '@polkadot-api/substrate-client': 0.1.2
@@ -3576,14 +3576,14 @@ packages:
       '@polkadot-api/utils': 0.0.1
     dev: false
 
-  /@polkadot-api/sm-provider@0.1.0(smoldot@2.0.26):
+  /@polkadot-api/sm-provider@0.1.0(smoldot@2.0.29):
     resolution: {integrity: sha512-BaYKouvvTq8xkKAuYLtBgUJ2Icg1qXC8VG9aAoC5YOiBts8yxcTcYljx8jj6D+m7eHWs8AwSPQDLRUL2JyshWw==}
     peerDependencies:
       smoldot: '>=2'
     dependencies:
       '@polkadot-api/json-rpc-provider': 0.0.1
       '@polkadot-api/json-rpc-provider-proxy': 0.1.0
-      smoldot: 2.0.26
+      smoldot: 2.0.29
     dev: false
 
   /@polkadot-api/smoldot@0.2.4:
@@ -11712,13 +11712,13 @@ packages:
     resolution: {integrity: sha512-95ChzOoYLOPIyVmL+Y6X+abKGXUJlvOVLkB1QQkyXl7Uczc6FElUy/x01NS7r2GX6GRezloO/ecCX9h4U9KadA==}
     dev: false
 
-  /polkadot-api@0.8.0(rxjs@7.8.1)(smoldot@2.0.26):
+  /polkadot-api@0.8.0(rxjs@7.8.1)(smoldot@2.0.29):
     resolution: {integrity: sha512-lALqJlCblRlPUt0flBW07sVLU24fEu0BJC4+GuSe1qY9Y9z8vTCTWM1uOByMG6HgZy5UyjK5j0pe/C9Z7pJn5A==}
     hasBin: true
     peerDependencies:
       rxjs: '>=7.8.0'
     dependencies:
-      '@polkadot-api/cli': 0.5.0(smoldot@2.0.26)
+      '@polkadot-api/cli': 0.5.0(smoldot@2.0.29)
       '@polkadot-api/json-rpc-provider': 0.0.1
       '@polkadot-api/known-chains': 0.1.5
       '@polkadot-api/logs-provider': 0.0.2
@@ -11727,7 +11727,7 @@ packages:
       '@polkadot-api/pjs-signer': 0.2.0
       '@polkadot-api/polkadot-signer': 0.0.1
       '@polkadot-api/signer': 0.0.1
-      '@polkadot-api/sm-provider': 0.1.0(smoldot@2.0.26)
+      '@polkadot-api/sm-provider': 0.1.0(smoldot@2.0.29)
       '@polkadot-api/smoldot': 0.2.4
       '@polkadot-api/substrate-bindings': 0.5.0
       '@polkadot-api/substrate-client': 0.1.2
@@ -12789,6 +12789,15 @@ packages:
 
   /smoldot@2.0.28:
     resolution: {integrity: sha512-hxbhklu/eRvxo4waq5ryIy4NPjDkBvuTYe35uqnD8ZZW5+O2dvW6H1KeSnn1dennmJC7fkvCRU9VujBGyfwFDQ==}
+    dependencies:
+      ws: 8.17.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
+  /smoldot@2.0.29:
+    resolution: {integrity: sha512-CKpRpFTcgP/9WL53X1iDSNq4/xjYd47XhYwZBhb92sAsCN8GNFeEnCdw568mvAt08wQt8UIMXXWo3hO/esDexg==}
     dependencies:
       ws: 8.17.0
     transitivePeerDependencies:
