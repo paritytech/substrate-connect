@@ -123,7 +123,7 @@
     "react-resizable-panels": "^2.0.19",
     "react-router-dom": "^6.22.3",
     "rxjs": "^7.8.1",
-    "smoldot": "2.0.26",
+    "smoldot": "2.0.29",
     "sonner": "^1.4.41",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.3.0",
