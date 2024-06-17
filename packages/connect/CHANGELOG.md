@@ -4,6 +4,10 @@
 
 ### Changed
 
+## 1.0.2 - 2024-06-17
+
+- Bump light client extension helpers
+
 ## 1.0.1 - 2024-06-17
 
 - Version bump
