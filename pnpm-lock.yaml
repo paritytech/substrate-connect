@@ -6,6 +6,7 @@ settings:
 
 overrides:
   '@substrate/connect': workspace:^
+  smoldot: 2.0.29
 
 importers:
 
@@ -321,8 +322,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.x
-        version: 2.0.26
+        specifier: 2.0.29
+        version: 2.0.29
     devDependencies:
       '@types/chrome':
         specifier: ^0.0.268
@@ -3579,7 +3580,7 @@ packages:
   /@polkadot-api/sm-provider@0.1.0(smoldot@2.0.29):
     resolution: {integrity: sha512-BaYKouvvTq8xkKAuYLtBgUJ2Icg1qXC8VG9aAoC5YOiBts8yxcTcYljx8jj6D+m7eHWs8AwSPQDLRUL2JyshWw==}
     peerDependencies:
-      smoldot: '>=2'
+      smoldot: 2.0.29
     dependencies:
       '@polkadot-api/json-rpc-provider': 0.0.1
       '@polkadot-api/json-rpc-provider-proxy': 0.1.0
@@ -3589,7 +3590,7 @@ packages:
   /@polkadot-api/smoldot@0.2.4:
     resolution: {integrity: sha512-BSWK9vzXq2fkLBHn8f/RnSk8hU92/tbva3astQInoyX6sMqUm5a0C3/URR87lchq/Ljohb/RF8izeTgzy6QMzA==}
     dependencies:
-      smoldot: 2.0.28
+      smoldot: 2.0.29
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -12777,24 +12778,6 @@ packages:
       ansi-styles: 6.2.1
       is-fullwidth-code-point: 5.0.0
     dev: true
-
-  /smoldot@2.0.26:
-    resolution: {integrity: sha512-F+qYmH4z2s2FK+CxGj8moYcd1ekSIKH8ywkdqlOz88Dat35iB1DIYL11aILN46YSGMzQW/lbJNS307zBSDN5Ig==}
-    dependencies:
-      ws: 8.17.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
-  /smoldot@2.0.28:
-    resolution: {integrity: sha512-hxbhklu/eRvxo4waq5ryIy4NPjDkBvuTYe35uqnD8ZZW5+O2dvW6H1KeSnn1dennmJC7fkvCRU9VujBGyfwFDQ==}
-    dependencies:
-      ws: 8.17.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
 
   /smoldot@2.0.29:
     resolution: {integrity: sha512-CKpRpFTcgP/9WL53X1iDSNq4/xjYd47XhYwZBhb92sAsCN8GNFeEnCdw568mvAt08wQt8UIMXXWo3hO/esDexg==}

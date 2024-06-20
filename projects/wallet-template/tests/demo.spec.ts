@@ -68,7 +68,7 @@ test("sanity", async ({ page: dappPage, extensionId, context }) => {
   for (const chainName of extensionPageChainNames) {
     const chain = popupPage.getByTestId(`chain${chainName}`)
     await expect(chain).toBeVisible()
-    const blockHeight = chain.getByTestId("blockheight")
+    const blockHeight = popupPage.getByTestId(`${chainName}-blockheight`)
     await expect(blockHeight).not.toContainText("Syncing")
     expect(
       +(await blockHeight.getAttribute("data-blockheight"))!,
@@ -84,7 +84,7 @@ test("sanity", async ({ page: dappPage, extensionId, context }) => {
     const chain = optionsPage!.getByTestId(`chain${chainName}`)
     await expect(chain).toBeVisible()
     await chain.click()
-    const blockHeight = chain.getByTestId("blockheight")
+    const blockHeight = popupPage.getByTestId(`${chainName}-blockheight`)
     await expect(blockHeight).not.toBeEmpty()
     expect(
       +(await blockHeight.getAttribute("data-blockheight"))!,

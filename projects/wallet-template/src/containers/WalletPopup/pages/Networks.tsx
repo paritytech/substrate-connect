@@ -57,7 +57,7 @@ export const Networks = () => {
                           {name.toLowerCase()}
                         </IconWeb3>
                         <div className="text-lg capitalize md:text-xl">
-                          {name}
+                          <span data-testid={`chain${name}`}>{name}</span>
                           <span className="pl-2 text-muted-foreground">
                             {apps.length ? "(" + apps.length + ")" : ""}
                           </span>
@@ -65,15 +65,17 @@ export const Networks = () => {
                       </div>
                       <div className="flex pt-2 text-sm">
                         <span>Latest block</span>
-                        <span
-                          className="pl-2 text-[#24CC85]"
-                          data-testid="blockheight"
-                          data-blockheight={health?.bestBlockHeight}
-                        >
-                          {health?.bestBlockHeight?.toLocaleString("en-US") || (
-                            <Skeleton className="w-16 h-full" />
-                          )}
-                        </span>
+                        {health?.bestBlockHeight?.toLocaleString("en-US") ? (
+                          <span
+                            className="pl-2 text-[#24CC85]"
+                            data-testid={`${name}-blockheight`}
+                            data-blockheight={health?.bestBlockHeight}
+                          >
+                            {health?.bestBlockHeight?.toLocaleString("en-US")}
+                          </span>
+                        ) : (
+                          <Skeleton className="w-16 h-full" />
+                        )}
                       </div>
                     </div>
                   </AccordionTrigger>
