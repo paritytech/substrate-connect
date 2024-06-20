@@ -81,9 +81,9 @@ jobs:
       working-directory: ./projects/wallet-template
     - run: pnpm playwright:install
       working-directory: ./projects/wallet-template
-    # - name: Test projects/wallet-template
-    #   run: pnpm playwright:chromium --trace on
-    #   working-directory: ./projects/wallet-template
+    - name: Test projects/wallet-template
+      run: pnpm playwright:chromium --trace on
+      working-directory: ./projects/wallet-template
     - uses: actions/upload-artifact@v4
       if: failure()
       with:
