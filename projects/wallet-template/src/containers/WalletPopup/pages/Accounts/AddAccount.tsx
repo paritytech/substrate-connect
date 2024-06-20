@@ -218,6 +218,7 @@ export const AddAccount = () => {
                                           className="w-5 h-5"
                                         />
                                         <Checkbox
+                                          aria-label={network.label}
                                           checked={field.value?.includes(
                                             network.value,
                                           )}
@@ -269,6 +270,7 @@ export const AddAccount = () => {
                             <div className="flex">
                               <FormControl className="mr-2">
                                 <Checkbox
+                                  aria-label="I have written down my seed phrase."
                                   checked={field.value}
                                   onCheckedChange={field.onChange}
                                 />

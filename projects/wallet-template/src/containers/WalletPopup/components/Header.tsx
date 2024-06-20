@@ -25,7 +25,12 @@ export const Header: React.FC<HeaderProps> = ({ className }) => {
         <br />
         <span className="text-4xl text-primary">connect</span>
       </div>
-      <Link to="/options" target="_blank" rel="noopener noreferrer">
+      <Link
+        data-testid="btnGoToOptions"
+        to="/options"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <Button type="button" variant="ghost">
           <Settings className="w-6 h-6" />
         </Button>
