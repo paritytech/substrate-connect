@@ -56,6 +56,7 @@ export const AccountDetails: React.FC = () => {
             onClick={() => navigate(-1)}
             variant="ghost"
             className="flex items-center mt-2"
+            aria-label="Go Back"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
             Go Back

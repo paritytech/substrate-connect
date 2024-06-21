@@ -562,6 +562,9 @@ importers:
       '@polkadot-labs/hdkd-helpers':
         specifier: ^0.0.6
         version: 0.0.6
+      '@polkadot-labs/schnorrkel-wasm':
+        specifier: ^0.0.5
+        version: 0.0.5
       '@polkadot/extension-inject':
         specifier: ^0.47.5
         version: 0.47.5(@polkadot/api@10.13.1)(@polkadot/util@12.6.2)
