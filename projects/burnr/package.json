@@ -26,7 +26,7 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.61",
     "@polkadot/api": "^10.12.6",
-    "@polkadot/api-augment": "^10.13.1",
+    "@polkadot/api-augment": "^11.3.1",
     "@polkadot/keyring": "^12.5.1",
     "@polkadot/react-identicon": "^3.6.6",
     "@polkadot/rpc-provider": "^11.0.2",
