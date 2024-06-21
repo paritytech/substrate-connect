@@ -225,6 +225,7 @@ export function ImportAccounts() {
                     <Label htmlFor="privateKeyInput">Private Key</Label>
                     <Input
                       {...field}
+                      aria-label="Expanded Private Key"
                       id="privateKeyInput"
                       placeholder="Enter your expanded private key"
                       {...register("tab.privateKey", {

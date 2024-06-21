@@ -99,6 +99,7 @@ export const ChangePassword = () => {
                       <div className="relative">
                         <Input
                           {...field}
+                          aria-label="Current Password"
                           type={showCurrentPassword ? "text" : "password"}
                           className="pr-10"
                         />
@@ -134,6 +135,7 @@ export const ChangePassword = () => {
                       <div className="relative">
                         <Input
                           {...field}
+                          aria-label="New Password"
                           type={showNewPassword ? "text" : "password"}
                           className="pr-10"
                         />
@@ -167,6 +169,7 @@ export const ChangePassword = () => {
                       <div className="relative">
                         <Input
                           {...field}
+                          aria-label="Confirm New Password"
                           type={showConfirmNewPassword ? "text" : "password"}
                           className="pr-10"
                         />

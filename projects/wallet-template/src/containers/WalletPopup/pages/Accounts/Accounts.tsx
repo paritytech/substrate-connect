@@ -28,7 +28,7 @@ type AccountCardProps = React.ComponentProps<typeof Card> & {
 
 const AccountCard: React.FC<AccountCardProps> = (props) => {
   return (
-    <Card key={props.name} className="p-2">
+    <Card data-testId={props.name} key={props.name} className="p-2">
       <div className="flex items-center justify-between">
         <div>
           <CardTitle className="font-semibold text-base mb-0.5">
@@ -39,7 +39,10 @@ const AccountCard: React.FC<AccountCardProps> = (props) => {
           </CardDescription>
         </div>
         <Button variant="ghost" asChild>
-          <Link to={`/accounts/${props.ss58Address}`}>
+          <Link
+            data-testid={`${props.name}-expand`}
+            to={`/accounts/${props.ss58Address}`}
+          >
             <ArrowRight className="w-4 h-4" />
           </Link>
         </Button>
@@ -113,14 +116,18 @@ export const Accounts = () => {
           value={selectedCryptoKeyName}
           onValueChange={(v) => setSelectedCryptoKeyName(v)}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px]" data-testid="accounts-select">
             <SelectValue placeholder="Select Crypto Key" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Crypto Keys</SelectLabel>
               {(cryptoKeys ?? []).map((key) => (
-                <SelectItem key={key.name} value={key.name}>
+                <SelectItem
+                  data-testid={`accounts-select-${key.name}`}
+                  key={key.name}
+                  value={key.name}
+                >
                   {key.name}
                 </SelectItem>
               ))}
