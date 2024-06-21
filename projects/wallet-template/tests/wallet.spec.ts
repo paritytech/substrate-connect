@@ -3,6 +3,7 @@ import { DEV_PHRASE, sr25519, ss58Address } from "@polkadot-labs/hdkd-helpers"
 import { toHex } from "@polkadot-api/utils"
 import { sr25519_secret_from_seed } from "@polkadot-labs/schnorrkel-wasm"
 import { setupWallet } from "./utils"
+import crypto from "crypto"
 
 test("add account", async ({ extensionId, context }) => {
   test.setTimeout(5 * 60 * 1000)
@@ -41,7 +42,6 @@ test("import expanded private key", async ({ extensionId, context }) => {
   await popupPage.getByText("Import").click()
 
   const seed = new Uint8Array(32)
-  crypto.getRandomValues(seed)
   const expandedPrivateKeyBytes = sr25519_secret_from_seed(seed)
 
   const address = ss58Address(sr25519.getPublicKey(expandedPrivateKeyBytes))
