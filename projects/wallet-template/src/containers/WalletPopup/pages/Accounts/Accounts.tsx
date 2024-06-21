@@ -28,7 +28,7 @@ type AccountCardProps = React.ComponentProps<typeof Card> & {
 
 const AccountCard: React.FC<AccountCardProps> = (props) => {
   return (
-    <Card data-testId={props.name} key={props.name} className="p-2">
+    <Card data-testid={props.name} key={props.name} className="p-2">
       <div className="flex items-center justify-between">
         <div>
           <CardTitle className="font-semibold text-base mb-0.5">
