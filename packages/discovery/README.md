@@ -1,11 +1,17 @@
 # @substrate/discovery
 
-This package implements the discovery protocol that browsers use to find compliant browser extensions.
+This package implements the discovery protocol that browsers use to find compliant browser extensions. It introduces a set of window `CustomEvent`s to provide a two-way communication protocol between Polkadot Wallet Provider libraries and injected scripts provided by browser extensions.
 
-The main export is a function called `getProviders`. This function dispatches an event on the window object
-that compliant browser extensions (or similar) may respond to by providing back an interface of the
-correct shape. An array of all such interfaces that we get back will be given back to the caller of
-getProviders.
+## Main Export
+
+The main export is a function called `getProviders`. This function dispatches an event on the window object that compliant browser extensions (or similar) may respond to by providing back an interface of the correct shape. An array of all such interfaces that we get back will be given back to the caller of `getProviders`.
+
+## How It Works
+
+The extension injects an inpage script that:
+
+- Registers a listener for the `substrateDiscovery:requestProvider` event and announces the provider by invoking synchronously the `onProvider` callback from the event payload.
+- Optionally, dispatches the `substrateDiscovery:announceProvider` event with the provider details when the script is loaded.
 
 ## React Example
 
@@ -59,3 +65,8 @@ window.dispatchEvent(
   }),
 )
 ```
+
+## Notes
+
+- The `detail.provider` can be a promise, depending on the library implementation which allows announcing provider details while the provider is being initialized.
+- The `substrateDiscovery:requestProvider` event payload uses an `onProvider` callback to respond with the provider details synchronously to the DApp, allowing to get all the providers without needing to wait for any macrotasks (e.g., `setTimeout`), microtasks, or any arbitrary time to listen to an event (e.g., `substrateDiscovery:announceProvider`).
