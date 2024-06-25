@@ -41,7 +41,7 @@ const { lightClientPageHelper, addOnAddChainByUserListener } = register({
 
 2. Setup your background RPC client using the `substrate/light-client-extension-helpers/utils package.
 
-Use the [createBackgroundRpc](projects/wallet-template/src/background/createBackgroundRpc.ts) file as a reference implementation.
+Use the [createBackgroundRpc](./background/createBackgroundRpc.ts) file as a reference implementation.
 
 ```ts
 chrome.runtime.onConnect.addListener((port) => {
@@ -60,8 +60,8 @@ chrome.runtime.onConnect.addListener((port) => {
 })
 ```
 
-3. In your content script, invoke the register function. and append your image.
-   See the [content script](projects/wallet-template/src/content/index.ts) for exact
+1. In your content script, invoke the register function. and append your image.
+   See the [content script](./content/index.ts) for exact
    implementation details.
 
 ```ts
@@ -90,7 +90,7 @@ window.addEventListener("message", ({ data }) => {
 })
 ```
 
-4. In the inpage you injected with the content script, expose your provider
+1. In the inpage you injected with the content script, expose your provider
    with the `@substrate/discovery` protocol. See the [inpage script](./src/inpage/index.ts) for full implementation details.
 
 ```ts
