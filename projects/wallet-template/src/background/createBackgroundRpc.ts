@@ -81,7 +81,6 @@ export const createBackgroundRpc = (
       const chains = await lightClientPageHelper.getChains()
       const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
       if (!chain) throw new Error("unknown chain")
-      const [keypair, scheme] = await keyring.getKeypair(chainId, from)
 
       const id = nextSignRequestId++
       const client = getObservableClient(createClient(chain.provider))
@@ -150,7 +149,7 @@ export const createBackgroundRpc = (
 
         try {
           const { userSignedExtensions } = await signRequest
-
+          const [keypair, scheme] = await keyring.getKeypair(chainId, from)
           const signer = getPolkadotSigner(
             keypair.publicKey,
             scheme,
