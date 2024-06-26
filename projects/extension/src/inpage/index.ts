@@ -4,7 +4,8 @@ import {
   getLightClientProvider,
 } from "@substrate/light-client-extension-helpers/web-page"
 import "@substrate/discovery"
-import type { Unstable } from "@substrate/connect-discovery"
+import type { SmoldotExtensionProviderDetail } from "@substrate/smoldot-discovery/types"
+import { createScClient } from "./connector"
 
 const PROVIDER_INFO = {
   uuid: crypto.randomUUID(),
@@ -13,17 +14,8 @@ const PROVIDER_INFO = {
   rdns: "io.github.paritytech.SubstrateConnectLightClient",
 }
 
-const provider = getLightClientProvider(DOM_ELEMENT_ID).then(
-  (lightClientProvider) => ({
-    ...lightClientProvider,
-    async getAccounts() {
-      throw new Error("unsupported method: getAccounts")
-    },
-    async createTx() {
-      throw new Error("unsupported method: createTx")
-    },
-  }),
-)
+const lightClientProvider = getLightClientProvider(DOM_ELEMENT_ID)
+const smoldotV1Provider = lightClientProvider.then(createScClient)
 
 registerSubstrateConnect()
 registerSubstrateConnectOld()
@@ -33,10 +25,10 @@ registerSubstrateConnectOld()
  * protocol is being used.
  */
 function registerSubstrateConnect() {
-  const detail: Unstable.SubstrateConnectProviderDetail = Object.freeze({
-    kind: "substrate-connect-unstable",
+  const detail: SmoldotExtensionProviderDetail = Object.freeze({
+    kind: "smoldot-v1",
     info: PROVIDER_INFO,
-    provider,
+    provider: smoldotV1Provider,
   })
 
   window.addEventListener(
@@ -58,7 +50,7 @@ function registerSubstrateConnect() {
 function registerSubstrateConnectOld() {
   const detail: LightClientProviderDetail = Object.freeze({
     info: PROVIDER_INFO,
-    provider,
+    provider: lightClientProvider,
   })
   window.addEventListener(
     "lightClient:requestProvider",

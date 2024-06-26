@@ -246,9 +246,6 @@ importers:
 
   packages/connect:
     dependencies:
-      '@substrate/connect-discovery':
-        specifier: workspace:^
-        version: link:../connect-discovery
       '@substrate/connect-extension-protocol':
         specifier: workspace:^
         version: link:../connect-extension-protocol
@@ -456,9 +453,6 @@ importers:
       '@react-rxjs/utils':
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.7)(react@18.3.1)(rxjs@7.8.1)
-      '@substrate/connect-discovery':
-        specifier: workspace:^
-        version: link:../../packages/connect-discovery
       '@substrate/connect-extension-protocol':
         specifier: workspace:*
         version: link:../../packages/connect-extension-protocol
@@ -468,6 +462,9 @@ importers:
       '@substrate/light-client-extension-helpers':
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers
+      '@substrate/smoldot-discovery':
+        specifier: workspace:^
+        version: link:../../packages/smoldot-discovery
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -667,6 +664,9 @@ importers:
       '@substrate/light-client-extension-helpers':
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers
+      '@substrate/smoldot-discovery':
+        specifier: workspace:^
+        version: link:../../packages/smoldot-discovery
       '@zag-js/clipboard':
         specifier: ^0.47.0
         version: 0.47.0

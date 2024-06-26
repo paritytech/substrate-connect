@@ -1,6 +1,13 @@
-import type { Chain, JsonRpcCallback, ScClient } from "./types.js"
-import type { Unstable } from "@substrate/connect-discovery"
-import { WellKnownChain } from "./types.js"
+import type {
+  LightClientProvider,
+  RawChain,
+} from "@substrate/light-client-extension-helpers/web-page"
+import {
+  Chain,
+  JsonRpcCallback,
+  SmoldotExtensionAPI,
+  WellKnownChain,
+} from "@substrate/smoldot-discovery/types"
 
 const wellKnownChainGenesisHashes: Record<string, string> = {
   polkadot:
@@ -12,27 +19,16 @@ const wellKnownChainGenesisHashes: Record<string, string> = {
     "0x6408de7737c59c238890533af25896a2c20608d8b380bb01029acb392781063e",
 }
 
-/**
- * Returns a {@link ScClient} that connects to chains by asking the substrate-connect extension
- * to do so.
- *
- * This function assumes that the extension is installed and available. It is out of scope of this
- * function to detect whether this is the case.
- * If you try to add a chain without the extension installed, nothing will happen and the
- * `Promise`s will never resolve.
- */
 export const createScClient = (
-  lightClientProviderPromise: Promise<Unstable.Provider>,
-): ScClient => {
+  lightClientProvider: LightClientProvider,
+): SmoldotExtensionAPI => {
   const internalAddChain = async (
     isWellKnown: boolean,
     chainSpecOrWellKnownName: string,
     jsonRpcCallback: JsonRpcCallback = () => {},
     relayChainGenesisHash?: string,
   ): Promise<Chain> => {
-    const lightClientProvider = await lightClientProviderPromise
-
-    let chain: Unstable.RawChain
+    let chain: RawChain
     if (isWellKnown) {
       const foundChain = Object.values(lightClientProvider.getChains()).find(
         ({ genesisHash }) =>
