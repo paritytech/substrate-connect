@@ -39,9 +39,9 @@ export const createScClient = (config?: Config): ScClient => {
   if (config?.forceEmbeddedNode)
     return smoldotScClient(config?.embeddedNodeConfig)
 
-  const provider = getProvider()
-  const client = provider
-    ? provider
+  const smoldotProviderPromise = getSmoldotProviderPromise()
+  const client = smoldotProviderPromise
+    ? smoldotProviderPromise
     : smoldotScClient(config?.embeddedNodeConfig)
 
   return {
@@ -62,7 +62,7 @@ export const createScClient = (config?: Config): ScClient => {
   }
 }
 
-function getProvider(): Promise<SmoldotExtensionAPI> | undefined {
+function getSmoldotProviderPromise(): Promise<SmoldotExtensionAPI> | undefined {
   if (typeof document !== "object" || typeof CustomEvent !== "function") return
   const lightClientProvider = getSmoldotExtensionProviders()
     .filter((detail) =>
