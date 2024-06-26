@@ -38,11 +38,14 @@ export const createScClient = (config?: Config): ScClient => {
   if (config?.forceEmbeddedNode)
     return smoldotScClient(config?.embeddedNodeConfig)
 
-  const providerDetails = getSmoldotExtensionProviders()
-  const client =
-    providerDetails.length > 0
-      ? providerDetails[0]!.provider
-      : smoldotScClient(config?.embeddedNodeConfig)
+  const provider = getSmoldotExtensionProviders()
+    .filter((detail) =>
+      detail.info.rdns.startsWith("io.github.paritytech.SubstrateConnect"),
+    )
+    .map((detail) => detail.provider)[0]
+  const client = provider
+    ? provider
+    : smoldotScClient(config?.embeddedNodeConfig)
 
   return {
     async addChain(chainSpec, jsonRpcCallback, databaseContent) {
