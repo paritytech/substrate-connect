@@ -46,7 +46,6 @@
     "@substrate/connect-extension-protocol": "workspace:^",
     "@substrate/connect-known-chains": "workspace:^",
     "@substrate/smoldot-discovery": "workspace:^",
-    "@substrate/connect-discovery": "workspace:^",
     "smoldot": "2.0.29"
   },
   "devDependencies": {

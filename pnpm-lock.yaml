@@ -246,9 +246,6 @@ importers:
 
   packages/connect:
     dependencies:
-      '@substrate/connect-discovery':
-        specifier: workspace:^
-        version: link:../connect-discovery
       '@substrate/connect-extension-protocol':
         specifier: workspace:^
         version: link:../connect-extension-protocol
