@@ -1,3 +1,4 @@
+import { SmoldotExtensionAPI } from "@substrate/smoldot-discovery/types"
 import {
   createScClient as smoldotScClient,
   type Config as EmbeddedNodeConfig,
@@ -38,11 +39,7 @@ export const createScClient = (config?: Config): ScClient => {
   if (config?.forceEmbeddedNode)
     return smoldotScClient(config?.embeddedNodeConfig)
 
-  const provider = getSmoldotExtensionProviders()
-    .filter((detail) =>
-      detail.info.rdns.startsWith("io.github.paritytech.SubstrateConnect"),
-    )
-    .map((detail) => detail.provider)[0]
+  const provider = getProvider()
   const client = provider
     ? provider
     : smoldotScClient(config?.embeddedNodeConfig)
@@ -63,4 +60,15 @@ export const createScClient = (config?: Config): ScClient => {
       )
     },
   }
+}
+
+function getProvider(): Promise<SmoldotExtensionAPI> | undefined {
+  if (typeof document !== "object" || typeof CustomEvent !== "function") return
+  const lightClientProvider = getSmoldotExtensionProviders()
+    .filter((detail) =>
+      detail.info.rdns.startsWith("io.github.paritytech.SubstrateConnect"),
+    )
+    .map((detail) => detail.provider)[0]
+
+  return lightClientProvider
 }
