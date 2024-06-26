@@ -13,19 +13,58 @@ The extension injects an inpage script that:
 - Registers a listener for the `substrateDiscovery:requestProvider` event and announces the provider by invoking synchronously the `onProvider` callback from the event payload.
 - Optionally, dispatches the `substrateDiscovery:announceProvider` event with the provider details when the script is loaded.
 
-## React Example
+## Basic Example
 
 ```ts
-import useSWR from "swr"
-import { getProviders, ProviderDetail } from "@substrate/discovery"
+import { getProviders } from "@substrate/discovery"
 
-const { data: providerDetails } = useSWR("getProviders", getProviders)
-const [providerDetail, setProviderDetail] = useState<ProviderDetail>()
-const { data: provider } = useSWR(
-  () => `providerDetail.${providerDetail!.info.uuid}.provider`,
-  () => providerDetail!.provider,
-)
+const providers = getProviders()
+const firstProvider = providers.length > 0 ? providers[0].provider : null
+
+console.log(firstProvider)
 ```
+
+## Example with rDNS Filter
+
+```ts
+import { getProviders } from "@substrate/discovery"
+
+const provider = getProviders()
+  .filter((detail) =>
+    detail.info.rdns.startsWith("io.github.paritytech.SubstrateConnect"),
+  )
+  .map((detail) => detail.provider)[0]
+
+console.log(provider)
+```
+
+## React Example
+
+```tsx
+import React, { useEffect, useState } from "react"
+import { getProviders } from "@substrate/discovery"
+
+const SmoldotProviderComponent = () => {
+  const [provider, setProvider] = useState(null)
+
+  useEffect(() => {
+    const providers = getProviders()
+    if (providers.length > 0) {
+      setProvider(providers[0].provider)
+    }
+  }, [])
+
+  return (
+    <div>
+      {provider ? <p>Provider: {provider}</p> : <p>Loading provider...</p>}
+    </div>
+  )
+}
+
+export default SmoldotProviderComponent
+```
+
+````
 
 ## Extension Example
 
@@ -64,7 +103,7 @@ window.dispatchEvent(
     detail,
   }),
 )
-```
+````
 
 ## Notes
 
