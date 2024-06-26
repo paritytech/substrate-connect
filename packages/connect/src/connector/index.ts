@@ -1,10 +1,10 @@
+import { SmoldotExtensionAPI } from "@substrate/smoldot-discovery/types"
 import {
   createScClient as smoldotScClient,
   type Config as EmbeddedNodeConfig,
 } from "./smoldot-light.js"
-import { createScClient as extensionScClient } from "./extension.js"
 import type { ScClient } from "./types.js"
-import { Unstable } from "@substrate/connect-discovery"
+import { getSmoldotExtensionProviders } from "@substrate/smoldot-discovery"
 
 export * from "./types.js"
 export type { EmbeddedNodeConfig }
@@ -39,9 +39,9 @@ export const createScClient = (config?: Config): ScClient => {
   if (config?.forceEmbeddedNode)
     return smoldotScClient(config?.embeddedNodeConfig)
 
-  const lightClientProviderPromise = getExtensionLightClientProviderPromise()
-  const client = lightClientProviderPromise
-    ? extensionScClient(lightClientProviderPromise)
+  const smoldotProviderPromise = getSmoldotProviderPromise()
+  const client = smoldotProviderPromise
+    ? smoldotProviderPromise
     : smoldotScClient(config?.embeddedNodeConfig)
 
   return {
@@ -62,11 +62,9 @@ export const createScClient = (config?: Config): ScClient => {
   }
 }
 
-function getExtensionLightClientProviderPromise():
-  | Promise<Unstable.Provider>
-  | undefined {
+function getSmoldotProviderPromise(): Promise<SmoldotExtensionAPI> | undefined {
   if (typeof document !== "object" || typeof CustomEvent !== "function") return
-  const lightClientProvider = Unstable.getSubstrateConnectExtensionProviders()
+  const lightClientProvider = getSmoldotExtensionProviders()
     .filter((detail) =>
       detail.info.rdns.startsWith("io.github.paritytech.SubstrateConnect"),
     )

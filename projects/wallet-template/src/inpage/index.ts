@@ -4,12 +4,14 @@ import {
 } from "@substrate/light-client-extension-helpers/utils"
 import { getLightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
 import type { Unstable } from "@substrate/connect-discovery"
+import type { SmoldotExtensionProviderDetail } from "@substrate/smoldot-discovery/types"
 import "@substrate/discovery"
 
 import type { Account, BackgroundRpcSpec } from "../background/types"
 import { CHANNEL_ID } from "../constants"
 import { pjsInject } from "./pjsInject"
 import type { InPageRpcSpec } from "./types"
+import { createScClient } from "./connector"
 
 const PROVIDER_INFO = {
   uuid: crypto.randomUUID(),
@@ -41,8 +43,34 @@ window.addEventListener("message", ({ data }) => {
   rpc.handle(data.msg, undefined)
 })
 
-const provider = getLightClientProvider(CHANNEL_ID).then(
-  (lightClientProvider) => ({
+const lightClientProvider = getLightClientProvider(CHANNEL_ID)
+
+// #region Smoldot Discovery Provider
+{
+  const provider = lightClientProvider.then(createScClient)
+
+  const detail: SmoldotExtensionProviderDetail = Object.freeze({
+    kind: "smoldot-v1",
+    info: PROVIDER_INFO,
+    provider,
+  })
+
+  window.addEventListener(
+    "substrateDiscovery:requestProvider",
+    ({ detail: { onProvider } }) => onProvider(detail),
+  )
+
+  window.dispatchEvent(
+    new CustomEvent("substrateDiscovery:announceProvider", {
+      detail,
+    }),
+  )
+}
+// #endregion
+
+// #region Connect Discovery Provider
+{
+  const provider = lightClientProvider.then((lightClientProvider) => ({
     ...lightClientProvider,
     async getAccounts(chainId: string) {
       return rpc.client.getAccounts(chainId)
@@ -50,30 +78,31 @@ const provider = getLightClientProvider(CHANNEL_ID).then(
     async createTx(chainId: string, from: string, callData: string) {
       return rpc.client.createTx(chainId, from, callData)
     },
-  }),
-)
+  }))
 
-const detail: Unstable.SubstrateConnectProviderDetail = Object.freeze({
-  kind: "substrate-connect-unstable",
-  info: PROVIDER_INFO,
-  provider,
-})
+  const detail: Unstable.SubstrateConnectProviderDetail = Object.freeze({
+    kind: "substrate-connect-unstable",
+    info: PROVIDER_INFO,
+    provider,
+  })
 
-window.addEventListener(
-  "substrateDiscovery:requestProvider",
-  ({ detail: { onProvider } }) => onProvider(detail),
-)
+  window.addEventListener(
+    "substrateDiscovery:requestProvider",
+    ({ detail: { onProvider } }) => onProvider(detail),
+  )
 
-window.dispatchEvent(
-  new CustomEvent("substrateDiscovery:announceProvider", {
-    detail,
-  }),
-)
+  window.dispatchEvent(
+    new CustomEvent("substrateDiscovery:announceProvider", {
+      detail,
+    }),
+  )
 
-pjsInject({
-  name: PROVIDER_INFO.name,
-  version: "0.0.1",
-  rpc: rpc.client,
-  providerPromise: provider,
-  subscribeOnAccountsChanged,
-})
+  pjsInject({
+    name: PROVIDER_INFO.name,
+    version: "0.0.1",
+    rpc: rpc.client,
+    providerPromise: provider,
+    subscribeOnAccountsChanged,
+  })
+}
+//#endregion
