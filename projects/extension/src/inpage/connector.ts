@@ -1,10 +1,3 @@
-// Copy of substrate connect client to implement smoldot API.
-//
-// We copy it because
-// 1. we don't want to declare it as a dependency
-// 2. the @substrate/connect package will be deprecated soon in favor of the
-//    discovery protocol.
-
 import type {
   LightClientProvider,
   RawChain,

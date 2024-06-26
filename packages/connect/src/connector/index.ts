@@ -39,7 +39,6 @@ export const createScClient = (config?: Config): ScClient => {
     return smoldotScClient(config?.embeddedNodeConfig)
 
   const providerDetails = getSmoldotExtensionProviders()
-
   const client =
     providerDetails.length > 0
       ? providerDetails[0]!.provider
