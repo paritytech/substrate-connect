@@ -667,6 +667,9 @@ importers:
       '@substrate/light-client-extension-helpers':
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers
+      '@substrate/smoldot-discovery':
+        specifier: workspace:^
+        version: link:../../packages/smoldot-discovery
       '@zag-js/clipboard':
         specifier: ^0.47.0
         version: 0.47.0

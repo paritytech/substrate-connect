@@ -101,6 +101,7 @@
     "@react-rxjs/core": "^0.10.7",
     "@react-rxjs/utils": "^0.9.7",
     "@substrate/connect-discovery": "workspace:^",
+    "@substrate/smoldot-discovery": "workspace:^",
     "@substrate/connect-extension-protocol": "workspace:*",
     "@substrate/discovery": "workspace:^",
     "@substrate/light-client-extension-helpers": "workspace:^",

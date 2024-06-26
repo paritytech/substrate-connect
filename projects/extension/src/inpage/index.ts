@@ -5,7 +5,7 @@ import {
 } from "@substrate/light-client-extension-helpers/web-page"
 import "@substrate/discovery"
 import type { SmoldotExtensionProviderDetail } from "@substrate/smoldot-discovery/types"
-import { createScClient } from "./sc-client"
+import { createScClient } from "./connector"
 
 const PROVIDER_INFO = {
   uuid: crypto.randomUUID(),
