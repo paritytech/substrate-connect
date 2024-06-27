@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## 0.5.1 - 2024-06-27
+
+### Changed
+
+- Update chainspecs
+- Implement @substrate/smoldot-discovery instead of @substrate/connect-discovery
+
 ## 0.5.0 - 2024-06-17
 
 ### Changed
