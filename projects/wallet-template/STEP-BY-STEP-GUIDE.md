@@ -16,7 +16,7 @@ pnpm i @substrate/light-client-extension-helpers @substrate/connect-known-chains
 ## Steps
 
 1. Add the light client background extension helper to your background script.
-   The must be a service worker script using manifest v3.
+   There must be a service worker script using manifest v3.
 
    When your extension launches, it will immediately be connected to smoldot.
 
