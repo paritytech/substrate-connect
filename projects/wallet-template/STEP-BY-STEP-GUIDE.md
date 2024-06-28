@@ -146,12 +146,25 @@ window.dispatchEvent(
 
 ## Conclusion
 
-After correctly setting up your extension, you can test it against the [light client dapp example](../../examples/light-client-dapp).
+Once your extension is properly set up, you can test it using the [light client dapp example](../../examples/light-client-dapp).
 
-1. Click on "connect wallet" in the dapp.
+1. **Connect Account**:
 
-   ![lc dapp step 1](./assets/img/lc-dapp-step-1.png)
+   - Click on "Connect Account" in the dapp.
+   - ![lc dapp step 1](./assets/img/lc-dapp-step-1.png)
 
-2. Confirm your extension appears in the list of providers.
+2. **Verify Extension in Providers List**:
 
-   ![lc dapp step 2](./assets/img/lc-dapp-step-2.png)
+   - Ensure your extension is listed among the available providers.
+   - ![lc dapp step 2](./assets/img/lc-dapp-step-2.png)
+
+3. **Access Extension Options**:
+
+   - Open the options page within your extension.
+   - ![lc dapp step 3](./assets/img/lc-dapp-step-3.png)
+
+4. **Check Smoldot Logs**:
+   - In your extension console (not the webpage console), verify that smoldot logs are being printed.
+   - ![lc dapp step 4](./assets/img/lc-dapp-step-4.png)
+
+If you successfully complete these steps, your extension setup is finalized.
