@@ -97,8 +97,10 @@ Connect.
 
 ## Step by Step Guide
 
-Follow the [Step by Step Guide](./STEP-BY-STEP-GUIDE.md) for details on how to 
-add light client support to your extension.
+Follow the [Step by Step Guide](./STEP-BY-STEP-GUIDE.md)for details on how to 
+add light client support to your extension. This guide explains how to 
+integrate smoldot and the light client extension helpers into your browser 
+extension
 
 ### Giving Feedback
 

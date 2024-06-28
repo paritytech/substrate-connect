@@ -1,6 +1,8 @@
 # Step by Step Guide
 
-To add light client functionality to your dapp, follow this step by step guide.
+To add light client functionality to your extension, follow this step-by-step
+guide. This guide explains how to integrate smoldot and the light client
+extension helpers into your browser extension.
 
 ## Requirements
 
