@@ -4,8 +4,8 @@ To add light client functionality to your dapp, follow this step by step guide.
 
 ## Requirements
 
-- Manifest V3
-- `["notifications", "storage", "tabs", "alarms"]` enabled in your manifest
+- Manifest V3: This is required in both Chrome and Firefox because we need to use service workers to run [smoldot](https://github.com/smol-dot/smoldot). For more details, you can refer to the [Chrome Manifest V3 documentation](https://developer.chrome.com/docs/extensions/mv3/intro/) and the [Firefox Manifest V3 documentation](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/background).
+- Ensure the following permissions are enabled in your manifest: `["notifications", "storage", "tabs", "alarms"]`.
 
 ## Setup
 
