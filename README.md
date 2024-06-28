@@ -1,74 +1,96 @@
 # Substrate Connect
 
-Substrate connect provides a way to interact with [substrate](https://substrate.dev/)
-based blockchains in the browser without using an RPC server. Substrate connect
-uses a [smoldot](https://github.com/smol-dot/smoldot) WASM light client to
-securely connect to the blockchain network without relying on specific 3rd parties.
+Substrate Connect offers an innovative way to interact with 
+[Substrate](https://substrate.dev/)-based blockchains directly in your browser, 
+eliminating the need for an RPC server. By leveraging the 
+[smoldot](https://github.com/smol-dot/smoldot) WASM light client, it ensures a 
+secure and efficient connection to the blockchain network without dependency 
+on specific third parties.
 
-Due to browser limitations on websockets from https pages, establishing a good
-number of peers is difficult as many nodes need to be available with TLS.  Substrate
-connect provides a browser extension to overcome this limitation and to keep
-the chains synced in the background, which makes your apps faster.
+### Overcoming Browser Limitations
 
-When building an app with substrate connect, it will detect whether the user has
-the extension and use it, or create the WASM light client in-page for them.
+Browser limitations on websockets from HTTPS pages make establishing a robust 
+number of peers challenging, as many nodes must be available with TLS. 
+Substrate Connect addresses this issue through a powerful browser extension, 
+allowing chains to stay synced in the background, thereby significantly 
+enhancing the performance of your applications.
 
-Substrate connect builds on [Polkadot JS](https://polkadot.js.org/docs/api) so
-building an app is the same experience as with using a traditional RPC server
-node.
+### Seamless Integration
 
-The substrate connect [API documentation is published here](https://paritytech.github.io/substrate-connect/api/).
+When building an application with Substrate Connect, it automatically detects 
+whether the user has the extension installed and utilizes it. If not, it 
+seamlessly creates the WASM light client in-page for them. Built on 
+[Polkadot JS](https://polkadot.js.org/docs/api), Substrate Connect ensures 
+that your development experience is as smooth as using a traditional RPC 
+server node.
+
+### Comprehensive API Documentation
+
+For detailed API usage, refer to the [Substrate Connect API 
+documentation](https://paritytech.github.io/substrate-connect/api/).
 
 ## Development
 
-This repository is using [pnpm workspaces](https://pnpm.io/workspaces).
-
-We also use `corepack`, which ensures that the correct version of `pnpm` is used.
-
-Please see our [contributing guidelines](./CONTRIBUTING.md) for details on how
-we like to work and how to smoothly contribute to the project.
+This repository utilizes [pnpm workspaces](https://pnpm.io/workspaces) and 
+`corepack`, ensuring the correct version of `pnpm` is used. For contributions, 
+please review our [contributing guidelines](./CONTRIBUTING.md) to understand 
+our workflow and how to smoothly integrate your contributions to the project.
 
 ### Getting Started
 
-If you're hacking on this repository, here's how to install everything and spin up a demo:
+Follow these steps to install everything and launch a demo if you're hacking 
+on this repository:
 
-1. Install any prerequisites. These steps were tested with:
-   - Node.js (node) v20.9.0.
-   - pnpm 9.0.6 (`npm install -g pnpm`).
-   - corepack 0.20.0 (This should be bundled with recent Node.js versions).
-2. Clone the repository.
+1. **Install Prerequisites** (tested with the following versions):
+   - Node.js (node) v20.9.0
+   - pnpm 9.0.6 (`npm install -g pnpm`)
+   - corepack 0.20.0 (bundled with recent Node.js versions)
+   
+2. **Clone the Repository**:
    - `git clone https://github.com/paritytech/substrate-connect.git`
-   - `cd substrate-connect` to navigate to the repository root.
-3. Install the dependencies.
+   - Navigate to the repository root: `cd substrate-connect`
+   
+3. **Install Dependencies**:
    - `corepack pnpm install`
-4. In terminal A, run `cd projects/extension && corepack pnpm dev`.
-5. In terminal B, run `cd projects/extension && corepack pnpm start`.
-   - This will open a Chrome browser window with the extension pre-loaded.
-   - Make sure that the extension is running.
-6. In terminal C, run `cd projects/demo && corepack pnpm dev`.
-   - Navigate to the URL that this logs in the Chrome browser that opened in 5.
-   - You should see the extension come to life and the demo app log latest blocks.
+   
+4. **Run the Extension in Development Mode**:
+   - In terminal A: `cd projects/extension && corepack pnpm dev`
+   
+5. **Launch the Extension**:
+   - In terminal B: `cd projects/extension && corepack pnpm start`
+   - This opens a Chrome browser window with the extension pre-loaded. Ensure 
+   the extension is running.
+   
+6. **Run the Demo Application**:
+   - In terminal C: `cd projects/demo && corepack pnpm dev`
+   - Navigate to the URL logged in the Chrome browser opened in step 5. You 
+   should see the extension activate and the demo app log the latest blocks.
 
-To clean up all build artefacts in workspaces in the repository, run:
+### Cleanup Commands
 
+To clean up all build artifacts in workspaces in the repository:
 ```bash
 corepack pnpm clean
 ```
 
-To clean up all build artefacts and dependencies in workspaces in the repository, run:
-
+To clean up all build artifacts and dependencies in workspaces in the repository:
 ```bash
 corepack pnpm deep-clean
 ```
 
+## Wallet Template
+
+To understand how to use Substrate Connect as a fully functional light client 
+wallet, visit the [wallet template directory](./projects/wallet-template/).
+
 ## Releasing
 
-Visit [the release doc](./DEPLOY-RELEASE.md) and follow the steps there to release a new version of the extension.
+For releasing a new version of the extension, follow the steps outlined in 
+[the release doc](./DEPLOY-RELEASE.md).
 
 ## Useful Links
 
-[Substrate Connect Documentation Page](https://substrate.io/developers/substrate-connect/)
-
-Download at:
-- [Chrome Store](https://chrome.google.com/webstore/detail/substrate-connect-extensi/khccbhhbocaaklceanjginbdheafklai)
-- [Mozilla Addons](https://addons.mozilla.org/en-US/firefox/addon/substrate-connect/)
+- [Substrate Connect Documentation Page](https://substrate.io/developers/substrate-connect/)
+- Download from:
+  - [Chrome Store](https://chrome.google.com/webstore/detail/substrate-connect-extensi/khccbhhbocaaklceanjginbdheafklai)
+  - [Mozilla Addons](https://addons.mozilla.org/en-US/firefox/addon/substrate-connect/)
