@@ -11,6 +11,8 @@ extension helpers into your browser extension.
 
 ## Setup
 
+Install `@substrate/light-client-extension-helpers` and `@substrate/connect-known-chains`. The `@substrate/light-client-extension-helpers` package. provides methods that instantly equip your extension with light client capabilities, while the `@substrate/connect-known-chains` package contains all the well know chains that you need to provide in the background script `register` method.
+
 ```sh
 pnpm i @substrate/light-client-extension-helpers @substrate/connect-known-chains
 ```
@@ -92,7 +94,7 @@ window.addEventListener("message", ({ data }) => {
 })
 ```
 
-1. In the inpage you injected with the content script, expose your provider
+2. In the inpage you injected with the content script, expose your provider
    with the `@substrate/discovery` protocol. See the [inpage script](./src/inpage/index.ts) for full implementation details.
 
 ```ts
@@ -134,3 +136,16 @@ window.dispatchEvent(
   }),
 )
 ```
+
+## Conclusion
+
+If you set up your extension correctly, then you can test it against the
+[light client dapp example](../../examples/light-client-dapp).
+
+1. Click on connect wallet in the dapp.
+
+![lc dapp step 1](./assets/img/lc-dapp-step-1.png)
+
+2. Confirm your extension shows up in the list of providers.
+
+![lc dapp step 2](./assets/img/lc-dapp-step-2.png)
