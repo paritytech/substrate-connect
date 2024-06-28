@@ -2,20 +2,20 @@
 
 ## Overview
 
-Welcome to Substrate Connect - the ultimate light client wallet template! Substrate
-Connect leverages the power of the smoldot,
-a light client that implements the JSON RPC Spec to provide a highly resilient, 
-efficient, and user-friendly wallet experience. This template is designed to help 
-developers quickly build and deploy a decentralized wallet that interacts with 
-any blockchain in the Substrate ecosystem using a light client.
+Welcome to Substrate Connect - the ultimate light client wallet template! 
+Substrate Connect leverages the power of [smoldot](https://github.com/smol-dot/smoldot), a light client that 
+implements the JSON RPC Spec to provide a highly resilient, efficient, and 
+user-friendly wallet experience. This template is designed to help developers 
+quickly build and deploy a decentralized wallet that interacts with any 
+blockchain in the Substrate ecosystem using a light client.
 
 What's more, when you use Substrate Connect as a browser extension, your dapps 
 can instantly connect to popular Substrate-based chains without the hassle of 
 waiting for synchronization. This is possible because Substrate Connect keeps 
 track of the chains in the background, even when the user isn't actively 
-connected to any dapps. At the same time, the dApp will show up as "connected" 
-within the extension, indicating that it is leveraging the extension's bootnodes 
-and specifications.
+connected to any dapps. At the same time, the dapp will show up as "connected" 
+within the extension, indicating that it is leveraging the extension's 
+bootnodes and specifications.
 
 ## Getting Started
 
@@ -60,46 +60,56 @@ This will open the extension in a browser window.
 
 ![step 2](./assets/img/step2.png)
 
-3. You now have access to your accounts. Each account is linked to a specific
-derivation path for each consensus system.
+3. You now have access to your accounts. Each account is linked to a specific 
+   derivation path for each consensus system.
 
-![step3](./assets/img/step3.png)
+![step 3](./assets/img/step3.png)
 
 ### As a Dapp
 
-As a dapp, you will want to use the [@substrate/discovery](../../packages/discovery/README.md)
-protocol to discover the extension. An example implementation can be found in the
+As a dapp, you will want to use the 
+[@substrate/discovery](../../packages/discovery/README.md) protocol to discover 
+the extension. An example implementation can be found in the 
 [light client dapp](../../examples/light-client-dapp/) folder.
 
-### As an extension
+### As an Extension
 
-You will want to utilize the [@substrate/light-client-extension-helpers](../../packages/light-client-extension-helpers/README.md) 
-package to very easily add light client functionality to your extension. See the
-documentation there for more details.
+You will want to utilize the 
+[@substrate/light-client-extension-helpers](../../packages/light-client-extension-helpers/README.md) 
+package to easily add light client functionality to your extension. See 
+the documentation there for more details.
 
 ## How it Works
 
 ![Substrate Connect Logo](./assets/img/how-it-works.png)
 
-Substrate Connect runs a single smoldot instance inside of the user's browser. When
-a dapp connects to Substrate Connect, its connection to the blockchain is forwarded
-to that smoldot instance. Inside the extension we use low level [polkadot-api](https://github.com/polkadot-api/polkadot-api) libraries such as the `observable-client`, `substrate-client`, and `json-rpc-provider` to maintain a connection to smoldot.
+Substrate Connect runs a single smoldot instance inside of the user's browser. 
+When a dapp connects to Substrate Connect, its connection to the blockchain is 
+forwarded to that smoldot instance. Inside the extension, we use low level 
+[polkadot-api](https://github.com/polkadot-api/polkadot-api) libraries such as 
+the `observable-client`, `substrate-client`, and `json-rpc-provider` to 
+maintain a connection to smoldot.
 
-If smoldot were to crash, Substrate Connect will automatically re-connect with a new
-`addChain` call. However from the dapp perspective, you will be disconnected and it will
-be your responsibility to re-connect back to Substrate Connect.
+If smoldot were to crash, Substrate Connect will automatically re-connect with 
+a new `addChain` call. However, from the dapp perspective, you will be 
+disconnected and it will be your responsibility to re-connect back to Substrate 
+Connect.
 
 ## Step by Step Guide
 
-Follow the [Step by Step Guide](./STEP-BY-STEP-GUIDE.md) for details on how to add light client support to your extension.
+Follow the [Step by Step Guide](./STEP-BY-STEP-GUIDE.md) for details on how to 
+add light client support to your extension.
 
 ### Giving Feedback
 
-If you have trouble integrating this wallet template or you have questions, please
-open an issue.
+If you have trouble integrating this wallet template or you have questions, 
+please open an issue.
 
 ## Acknowledgments
 
-- [Substrate](https://docs.substrate.io/) - The blockchain framework that powers this template.
-- [Smoldot](https://github.com/smol-dot/smoldot) - The light client used for connecting to blockchains.
-- [Polkadot Provider API](https://forum.polkadot.network/t/polkadot-provider-api-a-common-interface-for-building-decentralized-applications/4128) - For providing a common interface for building decentralized applications.
+- [Substrate](https://docs.substrate.io/) - The blockchain framework that 
+  powers this template.
+- [Smoldot](https://github.com/smol-dot/smoldot) - The light client used for 
+  connecting to blockchains.
+- [Polkadot Provider API Forum Post](https://forum.polkadot.network/t/polkadot-provider-api-a-common-interface-for-building-decentralized-applications/4128) 
+  - For providing a common interface for building decentralized applications.
