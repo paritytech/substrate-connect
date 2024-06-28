@@ -95,7 +95,7 @@ Follow the [Step by Step Guide](./STEP-BY-STEP-GUIDE.md) for details on how to a
 
 ### Giving Feedback
 
-if you have trouble integrating this wallet template or you have questions, please
+If you have trouble integrating this wallet template or you have questions, please
 open an issue.
 
 ## Acknowledgments
