@@ -1,7 +1,5 @@
 # @substrate/light-client-extension-helpers
 
-The `@polkadot-api/light-client-extension-helpers` library is designed to encapsulate complex problems solved over years of development, making it easier to build robust browser extensions. The library exposes four primary components:
-
 ## Components
 
 - **backgroundHelper**: Manages the core logic running in the background, including Smoldot instance registration, chain synchronization, active connections, and communication with the content script.
