@@ -68,7 +68,7 @@ derivation path for each consensus system.
 ### As a Dapp
 
 As a dapp, you will want to use the [@substrate/discovery](../../packages/discovery/README.md)
-protocol to discovery the extension. An example implementation can be found in the
+protocol to discover the extension. An example implementation can be found in the
 [light client dapp](../../examples/light-client-dapp/) folder.
 
 ### As an extension
