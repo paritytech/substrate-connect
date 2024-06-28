@@ -39,7 +39,7 @@ const { lightClientPageHelper, addOnAddChainByUserListener } = register({
 })
 ```
 
-2. Setup your background RPC client using the `substrate/light-client-extension-helpers/utils package.
+2. Setup your background RPC client using the `substrate/light-client-extension-helpers/utils` package.
 
 Use the [createBackgroundRpc](./background/createBackgroundRpc.ts) file as a reference implementation.
 
