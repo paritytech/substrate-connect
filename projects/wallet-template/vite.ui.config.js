@@ -17,7 +17,6 @@ export default defineConfig(({ mode }) => ({
     outDir: `dist/ui`,
     rollupOptions: {
       input: {
-        popup: "assets/popup.html",
         options: "assets/options.html",
         walletPopup: "assets/wallet-popup.html",
       },
