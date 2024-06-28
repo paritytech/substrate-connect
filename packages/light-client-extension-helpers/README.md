@@ -110,7 +110,7 @@ export const useLightClientProvider = (channelId: string) => {
 
 The extension page helper is conceptually the same as the web page helper,
 except it is used in the user interface of your extension. By importing `helper`,
-you can access light client functionality
+you can access light client functionality.
 
 #### How You Can Use It
 
