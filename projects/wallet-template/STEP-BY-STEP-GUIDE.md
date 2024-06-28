@@ -11,7 +11,7 @@ extension helpers into your browser extension.
 
 ## Setup
 
-Install `@substrate/light-client-extension-helpers` and `@substrate/connect-known-chains`. The `@substrate/light-client-extension-helpers` package. provides methods that instantly equip your extension with light client capabilities, while the `@substrate/connect-known-chains` package contains all the well know chains that you need to provide in the background script `register` method.
+Install these two packages: `@substrate/light-client-extension-helpers` and `@substrate/connect-known-chains`. The former provides methods that instantly equip your extension with light client capabilities, while the latter contains all the well know chains that you need to provide in the background script `register` method.
 
 ```sh
 pnpm i @substrate/light-client-extension-helpers @substrate/connect-known-chains
@@ -19,10 +19,11 @@ pnpm i @substrate/light-client-extension-helpers @substrate/connect-known-chains
 
 ## Steps
 
-1. Add the light client background extension helper to your background script.
-   There must be a service worker script using manifest v3.
+### 1. Add Light Client Background Extension Helper
 
-   When your extension launches, it will immediately be connected to smoldot.
+Add the light client background extension helper to your background script. This must be a service worker script using Manifest V3. When your extension launches, it will immediately connect to `smoldot`.
+
+**Manifest V3 Configuration:**
 
 ```json
 // manifest-v3-chrome.json
@@ -32,8 +33,9 @@ pnpm i @substrate/light-client-extension-helpers @substrate/connect-known-chains
 },
 ```
 
+**Background Script:**
+
 ```ts
-// background-script.ts
 import { polkadot, ksmcc3, westend2 } from "@substrate/connect-known-chains"
 import { start } from "@substrate/light-client-extension-helpers/smoldot"
 
@@ -43,9 +45,11 @@ const { lightClientPageHelper, addOnAddChainByUserListener } = register({
 })
 ```
 
-2. Setup your background RPC client using the `substrate/light-client-extension-helpers/utils` package.
+### 2. Setup Background RPC Client
 
-Use the [createBackgroundRpc](./background/createBackgroundRpc.ts) file as a reference implementation.
+Use the `substrate/light-client-extension-helpers/utils` package to set up your background RPC client. Refer to the [createBackgroundRpc.ts](./background/createBackgroundRpc.ts) file for implementation details.
+
+**Background RPC Client:**
 
 ```ts
 chrome.runtime.onConnect.addListener((port) => {
@@ -59,14 +63,15 @@ chrome.runtime.onConnect.addListener((port) => {
       notifyOnAccountsChanged,
     }),
   )
-
   port.onDisconnect.addListener(subscribeOnAccountsChanged(rpc))
 })
 ```
 
-1. In your content script, invoke the register function. and append your image.
-   See the [content script](./content/index.ts) for exact
-   implementation details.
+### 3. Register Content Script
+
+Invoke the register function in your content script and append your image. See the [content script](./content/index.ts) for detailed implementation.
+
+**Content Script:**
 
 ```ts
 import { register } from "@substrate/light-client-extension-helpers/content-script"
@@ -85,7 +90,6 @@ register(CHANNEL_ID)
 
 const port = chrome.runtime.connect({ name: "substrate-wallet-template" })
 port.onMessage.addListener((msg) =>
-  // origin is needed to filter from other postMessages
   window.postMessage({ origin: "substrate-wallet-template/extension", msg }),
 )
 window.addEventListener("message", ({ data }) => {
@@ -94,8 +98,11 @@ window.addEventListener("message", ({ data }) => {
 })
 ```
 
-2. In the inpage you injected with the content script, expose your provider
-   with the `@substrate/discovery` protocol. See the [inpage script](./src/inpage/index.ts) for full implementation details.
+### 4. Inject In-Page Script
+
+In the in-page script injected by the content script, expose your provider using the `@substrate/discovery` protocol. Refer to the [in-page script](./src/inpage/index.ts) for full implementation details.
+
+**In-Page Script:**
 
 ```ts
 const CHANNEL_ID = "substrate-wallet-template"
@@ -139,13 +146,12 @@ window.dispatchEvent(
 
 ## Conclusion
 
-If you set up your extension correctly, then you can test it against the
-[light client dapp example](../../examples/light-client-dapp).
+After correctly setting up your extension, you can test it against the [light client dapp example](../../examples/light-client-dapp).
 
-1. Click on connect wallet in the dapp.
+1. Click on "connect wallet" in the dapp.
 
-![lc dapp step 1](./assets/img/lc-dapp-step-1.png)
+   ![lc dapp step 1](./assets/img/lc-dapp-step-1.png)
 
-2. Confirm your extension shows up in the list of providers.
+2. Confirm your extension appears in the list of providers.
 
-![lc dapp step 2](./assets/img/lc-dapp-step-2.png)
+   ![lc dapp step 2](./assets/img/lc-dapp-step-2.png)
