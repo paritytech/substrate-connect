@@ -246,9 +246,6 @@ importers:
 
   packages/connect:
     dependencies:
-      '@substrate/connect-discovery':
-        specifier: workspace:^
-        version: link:../connect-discovery
       '@substrate/connect-extension-protocol':
         specifier: workspace:^
         version: link:../connect-extension-protocol
@@ -456,9 +453,6 @@ importers:
       '@react-rxjs/utils':
         specifier: ^0.9.7
         version: 0.9.7(@react-rxjs/core@0.10.7)(react@18.3.1)(rxjs@7.8.1)
-      '@substrate/connect-discovery':
-        specifier: workspace:^
-        version: link:../../packages/connect-discovery
       '@substrate/connect-extension-protocol':
         specifier: workspace:*
         version: link:../../packages/connect-extension-protocol
@@ -468,6 +462,9 @@ importers:
       '@substrate/light-client-extension-helpers':
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers
+      '@substrate/smoldot-discovery':
+        specifier: workspace:^
+        version: link:../../packages/smoldot-discovery
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -629,8 +626,8 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
       '@radix-ui/react-slot':
-        specifier: ^1.0.2
-        version: 1.0.2(@types/react@18.3.3)(react@18.3.1)
+        specifier: ^1.1.0
+        version: 1.1.0(@types/react@18.3.3)(react@18.3.1)
       '@radix-ui/react-switch':
         specifier: ^1.0.3
         version: 1.0.3(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
@@ -667,6 +664,9 @@ importers:
       '@substrate/light-client-extension-helpers':
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers
+      '@substrate/smoldot-discovery':
+        specifier: workspace:^
+        version: link:../../packages/smoldot-discovery
       '@zag-js/clipboard':
         specifier: ^0.47.0
         version: 0.47.0
@@ -695,8 +695,8 @@ importers:
         specifier: ^1.2.4
         version: 1.2.4(react-dom@18.3.1)(react@18.3.1)
       lucide-react:
-        specifier: ^0.379.0
-        version: 0.379.0(react@18.3.1)
+        specifier: ^0.396.0
+        version: 0.396.0(react@18.3.1)
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.3.1)(react@18.3.1)
@@ -797,18 +797,6 @@ importers:
       wxt:
         specifier: ^0.17.12
         version: 0.17.12(@types/node@20.14.2)
-
-  zombienet-tests:
-    dependencies:
-      '@polkadot-api/json-rpc-provider-proxy':
-        specifier: ^0.1.0
-        version: 0.1.0
-      '@polkadot-api/substrate-client':
-        specifier: ^0.1.2
-        version: 0.1.2
-      '@substrate/connect':
-        specifier: workspace:^
-        version: link:../packages/connect
 
 packages:
 
@@ -4456,6 +4444,19 @@ packages:
       react: 18.3.1
     dev: false
 
+  /@radix-ui/react-compose-refs@1.1.0(@types/react@18.3.3)(react@18.3.1):
+    resolution: {integrity: sha512-b4inOtiaOnYf9KWyO3jAeeCG6FeyfY6ldiEPanbUjWd+xIk5wZeHa8yVwmrJ2vderhu/BQvzCrJI0lHd+wIiqw==}
+    peerDependencies:
+      '@types/react': '*'
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@types/react': 18.3.3
+      react: 18.3.1
+    dev: false
+
   /@radix-ui/react-context-menu@2.1.5(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-R5XaDj06Xul1KGb+WP8qiOh7tKJNz2durpLBXAGZjSVtctcRFCuEvy2gtMwRJGePwQQE5nV77gs4FwRi8T+r2g==}
     peerDependencies:
@@ -5143,6 +5144,20 @@ packages:
     dependencies:
       '@babel/runtime': 7.24.7
       '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.3.3)(react@18.3.1)
+      '@types/react': 18.3.3
+      react: 18.3.1
+    dev: false
+
+  /@radix-ui/react-slot@1.1.0(@types/react@18.3.3)(react@18.3.1):
+    resolution: {integrity: sha512-FUCf5XMfmW4dtYl69pdS4DbxKy8nj4M7SafBgPllysxmdachynNflAdp/gCsnYWNDnge6tI9onzMp5ARYc1KNw==}
+    peerDependencies:
+      '@types/react': '*'
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@radix-ui/react-compose-refs': 1.1.0(@types/react@18.3.3)(react@18.3.1)
       '@types/react': 18.3.3
       react: 18.3.1
     dev: false
@@ -10805,8 +10820,8 @@ packages:
       yallist: 3.1.1
     dev: true
 
-  /lucide-react@0.379.0(react@18.3.1):
-    resolution: {integrity: sha512-KcdeVPqmhRldldAAgptb8FjIunM2x2Zy26ZBh1RsEUcdLIvsEmbcw7KpzFYUy5BbpGeWhPu9Z9J5YXfStiXwhg==}
+  /lucide-react@0.396.0(react@18.3.1):
+    resolution: {integrity: sha512-N/zP+9vEfEYHiMWMpjwH/M5diaV0e4UFe07BpgdzaRYce5QvXi87hixf7F0Xqdr3zuX/9u7H/2D4MVXIK22O0A==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
