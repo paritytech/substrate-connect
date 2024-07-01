@@ -71,5 +71,8 @@
       "@substrate/connect": "workspace:^",
       "smoldot": "2.0.29"
     }
+  },
+  "dependencies": {
+    "@changesets/cli": "^2.27.5"
   }
 }
