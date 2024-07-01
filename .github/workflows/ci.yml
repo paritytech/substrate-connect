@@ -80,7 +80,7 @@ jobs:
         name: playwright-report-substrate-connect-wallet-template-mv3-chrome
         path: ./projects/wallet-template/playwright-report
 
-  npm-publish:
+  changesets:
     if: github.ref == 'refs/heads/main'
     needs: [build]
     runs-on: ubuntu-latest
@@ -91,6 +91,14 @@ jobs:
         uses: changesets/action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  npm-publish:
+    if: github.ref == 'refs/heads/main'
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.7
+      - uses: ./.github/actions/turbo-build
       - name: "@substrate/connect Publish"
         id: publish_connect
         uses: ./.github/actions/publish-package 
