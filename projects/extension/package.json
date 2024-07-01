@@ -50,7 +50,7 @@
     "@substrate/discovery": "workspace:^",
     "@substrate/smoldot-discovery": "workspace:^",
     "@polkadot-api/observable-client": "^0.3.0",
-    "@polkadot-api/substrate-client": "^0.1.2",
+    "@polkadot-api/substrate-client": "^0.1.3",
     "@react-rxjs/core": "^0.10.7",
     "@react-rxjs/utils": "^0.9.7",
     "@substrate/connect-extension-protocol": "workspace:*",
