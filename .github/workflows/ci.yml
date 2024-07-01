@@ -87,6 +87,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4.1.7
       - uses: ./.github/actions/turbo-build
+      - name: Create Release Pull Request
+        uses: changesets/action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "@substrate/connect Publish"
         id: publish_connect
         uses: ./.github/actions/publish-package 
