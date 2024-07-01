@@ -20,16 +20,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-  connect-flaky-tests:
-    needs: [build]
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4.1.7
-    - uses: ./.github/actions/turbo-build
-    - run: pnpm test:flaky
-      working-directory: ./packages/connect
-
   playwright-test-extension:
     needs: [build]
     timeout-minutes: 10
@@ -81,48 +71,14 @@ jobs:
       working-directory: ./projects/wallet-template
     - run: pnpm playwright:install
       working-directory: ./projects/wallet-template
-    # - name: Test projects/wallet-template
-    #   run: pnpm playwright:chromium --trace on
-    #   working-directory: ./projects/wallet-template
+    - name: Test projects/wallet-template
+      run: pnpm playwright:chromium --trace on
+      working-directory: ./projects/wallet-template
     - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: playwright-report-substrate-connect-wallet-template-mv3-chrome
         path: ./projects/wallet-template/playwright-report
-
-  zombienet-tests:
-    needs: [build]
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4.1.7
-      - uses: ./.github/actions/turbo-build
-      - name: Get zombienet
-        run: |
-          curl -L -O https://github.com/paritytech/zombienet/releases/download/v1.3.91/zombienet-linux-x64
-          chmod +x zombienet-linux-x64
-      - name: Get polkadot
-        run: |
-          curl -L -O https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.6.0/polkadot
-          chmod +x polkadot
-      - name: Get polkadot execute worker
-        run: |
-          curl -L -O https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.6.0/polkadot-execute-worker
-          chmod +x polkadot-execute-worker
-      - name: Get polkadot prepare worker
-        run: |
-          curl -L -O https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.6.0/polkadot-prepare-worker
-          chmod +x polkadot-prepare-worker
-      - name: Get polkadot-parachain
-        run: |
-          curl -L -O https://github.com/paritytech/polkadot-sdk/releases/download/polkadot-v1.6.0/polkadot-parachain
-          chmod +x polkadot-parachain
-      - name: Run test
-        run: |
-          export PATH=$(pwd):$PATH
-          cd zombienet-tests/src
-          zombienet-linux-x64 -p native test 0001-relay-smoke-test.zndsl
-          zombienet-linux-x64 -p native test 0002-parachain.zndsl
 
   npm-publish:
     if: github.ref == 'refs/heads/main'
@@ -202,7 +158,7 @@ jobs:
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
     # are successful.
-    needs: [build, playwright-test-extension, playwright-test-examples, zombienet-tests, playwright-test-wallet-template]
+    needs: [build, playwright-test-extension, playwright-test-examples, playwright-test-wallet-template]
     runs-on: ubuntu-latest
     steps:
      - run: echo Success

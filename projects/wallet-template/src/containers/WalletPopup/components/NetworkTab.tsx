@@ -25,15 +25,17 @@ const NetworkContent: React.FC<NetworkContentProps> = ({
       <div className="grid grid-cols-2 gap-y-2">
         <>
           <div className="col-span-1 font-bold">Latest block</div>
-          <div
-            className="col-span-1 text-[#24CC85]"
-            data-testid="blockheight"
-            data-blockheight={health?.bestBlockHeight}
-          >
-            {health?.bestBlockHeight?.toLocaleString("en-US") ?? (
-              <Skeleton className="w-16 h-full" />
-            )}
-          </div>
+          {health?.bestBlockHeight?.toLocaleString("en-US") ? (
+            <div
+              className="col-span-1 text-[#24CC85]"
+              data-testid={`${network}-blockheight`}
+              data-blockheight={health?.bestBlockHeight}
+            >
+              {health?.bestBlockHeight?.toLocaleString("en-US")}
+            </div>
+          ) : (
+            <Skeleton className="w-16 h-full" />
+          )}
         </>
         <>
           <div className="col-span-1 font-bold">Light Client</div>
@@ -90,7 +92,7 @@ const NetworkTab: React.FC<NetworkTabProps> = ({
         <div className="flex items-center space-x-2">
           <IconWeb3 isWellKnown={isWellKnown}>{name.toLowerCase()}</IconWeb3>
           <div className="text-lg capitalize md:text-xl">
-            {name}
+            <span data-testid={`chain${name}`}>{name}</span>
             <span className="pl-2 text-muted-foreground">
               {apps.length ? "(" + apps.length + ")" : ""}
             </span>

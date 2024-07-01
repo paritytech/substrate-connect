@@ -4,6 +4,11 @@
 
 ### Changed
 
+## 1.0.3 - 2024-06-27
+
+- Update internal usage of discovery protocol to use @substrate/smoldot-discovery instead of @substrate/connect-discovery
+- Bump light client extension helpers
+
 ## 1.0.2 - 2024-06-17
 
 - Bump light client extension helpers

@@ -1,25 +1,70 @@
 # @substrate/discovery
 
-This package implements the discovery protocol that browsers use to find compliant browser extensions.
+This package implements the discovery protocol that browsers use to find compliant browser extensions. It introduces a set of window `CustomEvent`s to provide a two-way communication protocol between Polkadot Wallet Provider libraries and injected scripts provided by browser extensions.
 
-The main export is a function called `getProviders`. This function dispatches an event on the window object
-that compliant browser extensions (or similar) may respond to by providing back an interface of the
-correct shape. An array of all such interfaces that we get back will be given back to the caller of
-getProviders.
+## Main Export
+
+The main export is a function called `getProviders`. This function dispatches an event on the window object that compliant browser extensions (or similar) may respond to by providing back an interface of the correct shape. An array of all such interfaces that we get back will be given back to the caller of `getProviders`.
+
+## How It Works
+
+The extension injects an inpage script that:
+
+- Registers a listener for the `substrateDiscovery:requestProvider` event and announces the provider by invoking synchronously the `onProvider` callback from the event payload.
+- Optionally, dispatches the `substrateDiscovery:announceProvider` event with the provider details when the script is loaded.
+
+## Basic Example
+
+```ts
+import { getProviders } from "@substrate/discovery"
+
+const providers = getProviders()
+const firstProvider = providers.length > 0 ? providers[0].provider : null
+
+console.log(firstProvider)
+```
+
+## Example with rDNS Filter
+
+```ts
+import { getProviders } from "@substrate/discovery"
+
+const provider = getProviders()
+  .filter((detail) =>
+    detail.info.rdns.startsWith("io.github.paritytech.SubstrateConnect"),
+  )
+  .map((detail) => detail.provider)[0]
+
+console.log(provider)
+```
 
 ## React Example
 
-```ts
-import useSWR from "swr"
-import { getProviders, ProviderDetail } from "@substrate/discovery"
+```tsx
+import React, { useEffect, useState } from "react"
+import { getProviders } from "@substrate/discovery"
 
-const { data: providerDetails } = useSWR("getProviders", getProviders)
-const [providerDetail, setProviderDetail] = useState<ProviderDetail>()
-const { data: provider } = useSWR(
-  () => `providerDetail.${providerDetail!.info.uuid}.provider`,
-  () => providerDetail!.provider,
-)
+const SmoldotProviderComponent = () => {
+  const [provider, setProvider] = useState(null)
+
+  useEffect(() => {
+    const providers = getProviders()
+    if (providers.length > 0) {
+      setProvider(providers[0].provider)
+    }
+  }, [])
+
+  return (
+    <div>
+      {provider ? <p>Provider: {provider}</p> : <p>Loading provider...</p>}
+    </div>
+  )
+}
+
+export default SmoldotProviderComponent
 ```
+
+````
 
 ## Extension Example
 
@@ -58,4 +103,9 @@ window.dispatchEvent(
     detail,
   }),
 )
-```
+````
+
+## Notes
+
+- The `detail.provider` can be a promise, depending on the library implementation which allows announcing provider details while the provider is being initialized.
+- The `substrateDiscovery:requestProvider` event payload uses an `onProvider` callback to respond with the provider details synchronously to the DApp, allowing to get all the providers without needing to wait for any macrotasks (e.g., `setTimeout`), microtasks, or any arbitrary time to listen to an event (e.g., `substrateDiscovery:announceProvider`).

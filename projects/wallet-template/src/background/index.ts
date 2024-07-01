@@ -59,9 +59,17 @@ chrome.runtime.onConnect.addListener((port) => {
 })
 
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
+  const self = await chrome.management.getSelf()
+
   if (reason === chrome.runtime.OnInstalledReason.INSTALL) {
     const keystore = await storage.get("keystore")
-    if (keystore) return
+    if (
+      keystore ||
+      // don't pop up a new tab in development so playwright can reliably
+      // run tests on the extension
+      self.installType === "development"
+    )
+      return
     chrome.tabs.create({
       url: chrome.runtime.getURL(`ui/assets/wallet-popup.html#/welcome`),
     })

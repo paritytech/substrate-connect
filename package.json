@@ -68,7 +68,8 @@
   "packageManager": "pnpm@8.14.0",
   "pnpm": {
     "overrides": {
-      "@substrate/connect": "workspace:^"
+      "@substrate/connect": "workspace:^",
+      "smoldot": "2.0.29"
     }
   },
   "dependencies": {
