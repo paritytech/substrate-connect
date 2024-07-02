@@ -1,0 +1,38 @@
+name: Dependabot Changeset
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  create-changeset:
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/turbo-build
+        with:
+          node-version: '20'
+      
+      - name: Create Changeset
+        run: |
+          pnpm dlx changeset add --empty
+          echo "# Dependabot update" >> .changeset/dependabot-update.md
+          echo "" >> .changeset/dependabot-update.md
+          echo "Updated dependencies:" >> .changeset/dependabot-update.md
+          echo "\`\`\`" >> .changeset/dependabot-update.md
+          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep package.json | xargs -I {} sh -c 'echo "- {}"' >> .changeset/dependabot-update.md
+          echo "\`\`\`" >> .changeset/dependabot-update.md
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .changeset
+          git commit -m "Add changeset for Dependabot update"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.head_ref }}
