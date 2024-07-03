@@ -6,9 +6,9 @@ on:
 
 jobs:
   renovate:
-    name: Update Renovate PR
+    name: Update Dependabot PR
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'dependencies')
+    if: ${{ github.actor == 'dependabot[bot]' }}
 
     steps:
       - name: Update PR
