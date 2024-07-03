@@ -7,5 +7,11 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": [
+    "@substrate/demo",
+    "@substrate/burnr",
+    "light-client-dapp",
+    "light-client-extension-helpers-dapp",
+    "light-client-extension-helpers-extension" 
+  ]
 }
