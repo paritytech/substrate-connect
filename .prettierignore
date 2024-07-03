@@ -81,3 +81,5 @@ packages/connect-known-chains/src/specs
 zombienet-tests/src/*.js
 examples/light-client-extension-helpers-extension/playwright-report
 projects/extension/playwright-report
+
+.changeset
