@@ -363,8 +363,8 @@ importers:
         specifier: ^11.0.2
         version: 11.2.1
       '@polkadot/types':
-        specifier: ^11.0.3
-        version: 11.2.1
+        specifier: ^12.1.1
+        version: 12.1.1
       '@polkadot/util':
         specifier: ^12.5.1
         version: 12.6.2
@@ -4255,6 +4255,16 @@ packages:
       tslib: 2.6.3
     dev: false
 
+  /@polkadot/types-augment@12.1.1:
+    resolution: {integrity: sha512-HdzjaXapcmNAdT6TWJOuv124PTKbAf5+5JldQ7oPZFaCEhaOTazZYiZ27nqLaj0l4rG7wWzFMiGqjbHwAvtmlg==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/types': 12.1.1
+      '@polkadot/types-codec': 12.1.1
+      '@polkadot/util': 12.6.2
+      tslib: 2.6.3
+    dev: false
+
   /@polkadot/types-codec@10.13.1:
     resolution: {integrity: sha512-AiQ2Vv2lbZVxEdRCN8XSERiWlOWa2cTDLnpAId78EnCtx4HLKYQSd+Jk9Y4BgO35R79mchK4iG+w6gZ+ukG2bg==}
     engines: {node: '>=18'}
@@ -4275,6 +4285,15 @@ packages:
 
   /@polkadot/types-codec@12.0.2:
     resolution: {integrity: sha512-W86PRqQf/8NW16+QszocizA1DbKwjMcbdecQJU57rbg340JuVMooDxaGuW6S2nRUFKwyVEmwVolDXUOYJcp8Vw==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/util': 12.6.2
+      '@polkadot/x-bigint': 12.6.2
+      tslib: 2.6.3
+    dev: false
+
+  /@polkadot/types-codec@12.1.1:
+    resolution: {integrity: sha512-Ob3nFptHT4dDvGc/3l4dBXmvsI3wDWS2oCOxACA+hYWufnlTIQ4M4sHI4kSBQvDoEmaFt8P2Be4SmtyT0VSd1w==}
     engines: {node: '>=18'}
     dependencies:
       '@polkadot/util': 12.6.2
@@ -4305,6 +4324,15 @@ packages:
     engines: {node: '>=18'}
     dependencies:
       '@polkadot/types-codec': 12.0.2
+      '@polkadot/util': 12.6.2
+      tslib: 2.6.3
+    dev: false
+
+  /@polkadot/types-create@12.1.1:
+    resolution: {integrity: sha512-K/I4vCnmI7IbtQeURiRMONDqesIVcZp16KEduBcbJm/RWDj0D3mr71066Yr8OhrhteLvULJpViy7EK4ynPvmSw==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/types-codec': 12.1.1
       '@polkadot/util': 12.6.2
       tslib: 2.6.3
     dev: false
@@ -4381,6 +4409,20 @@ packages:
       '@polkadot/types-augment': 12.0.2
       '@polkadot/types-codec': 12.0.2
       '@polkadot/types-create': 12.0.2
+      '@polkadot/util': 12.6.2
+      '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
+      rxjs: 7.8.1
+      tslib: 2.6.3
+    dev: false
+
+  /@polkadot/types@12.1.1:
+    resolution: {integrity: sha512-+b8v7ORjL20r6VvdWL/fPTHmDXtfAfqkQQxBB6exxOhqrnJfnhAYQjJomKcyj1VMTQiyyR9FBAc7vVvTEFX2ew==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/keyring': 12.6.2(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)
+      '@polkadot/types-augment': 12.1.1
+      '@polkadot/types-codec': 12.1.1
+      '@polkadot/types-create': 12.1.1
       '@polkadot/util': 12.6.2
       '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
       rxjs: 7.8.1
