@@ -1,6 +1,11 @@
 # Changelog
 
-## [Unreleased]
+## 0.5.2 - 2024-07-02
+
+### Patch Changes
+
+- 932dc47: chore: update chainspecs
+  - @substrate/light-client-extension-helpers@2.0.2
 
 ## 0.5.1 - 2024-06-27
 

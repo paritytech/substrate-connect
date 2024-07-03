@@ -1,6 +1,11 @@
 # Changelog
 
-## [Unreleased]
+## 1.0.4 - 2024-07-02
+
+### Patch Changes
+
+- Updated dependencies [932dc47]
+  - @substrate/connect-known-chains@1.1.8
 
 ### Changed
 
