@@ -5,15 +5,17 @@ on:
     types: [opened, synchronize, labeled]
 
 jobs:
-  changeset:
+  renovate:
+    name: Update Dependabot PR
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    if: ${{ github.actor == 'dependabot[bot]' }}
 
-      - name: Create/Update Changesets
-        uses: "the-guild-org/changesets-dependencies-action@v1.2.2"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4.1.7
+      - name: Update PR
+        uses: mscharley/dependency-changesets-action@v1.0.11
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          use-conventional-commits: false
+          author-name: GitHub Action
+          author-email: action@github.com
