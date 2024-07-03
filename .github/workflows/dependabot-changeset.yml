@@ -16,7 +16,7 @@ jobs:
       
       - name: Create Changeset
         run: |
-          pnpm dlx changeset add --empty
+          pnpx @changesets/cl add --empty
           echo "# Dependabot update" >> .changeset/dependabot-update.md
           echo "" >> .changeset/dependabot-update.md
           echo "Updated dependencies:" >> .changeset/dependabot-update.md
