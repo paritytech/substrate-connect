@@ -567,8 +567,8 @@ importers:
         specifier: ^0.0.5
         version: 0.0.5
       '@polkadot/extension-inject':
-        specifier: ^0.47.5
-        version: 0.47.5(@polkadot/api@10.13.1)(@polkadot/util@12.6.2)
+        specifier: ^0.48.1
+        version: 0.48.1(@polkadot/api@10.13.1)(@polkadot/util@12.6.2)
       '@radix-ui/react-accordion':
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
@@ -4022,16 +4022,16 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@polkadot/extension-inject@0.47.5(@polkadot/api@10.13.1)(@polkadot/util@12.6.2):
-    resolution: {integrity: sha512-k3sSV1FUerhtbEJnKSofKofP5VSenKV9mlzG102dDmLv6kFfr6ZP7HmReeKfRi8pRXd9jrI6oUNtq86APUeF9Q==}
+  /@polkadot/extension-inject@0.48.1(@polkadot/api@10.13.1)(@polkadot/util@12.6.2):
+    resolution: {integrity: sha512-siv3YN/Cj6t01PFT5tfzB2p8UryhpV1cEWMViHxvoHL3Y9D6lCQDBTKkUSAUEG7dqczwHnizvdXBvF5HpZ42Ug==}
     engines: {node: '>=18'}
     peerDependencies:
       '@polkadot/api': '*'
       '@polkadot/util': '*'
     dependencies:
       '@polkadot/api': 10.13.1
-      '@polkadot/rpc-provider': 11.2.1
-      '@polkadot/types': 11.2.1
+      '@polkadot/rpc-provider': 12.0.2
+      '@polkadot/types': 12.0.2
       '@polkadot/util': 12.6.2
       '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
       '@polkadot/x-global': 12.6.2
