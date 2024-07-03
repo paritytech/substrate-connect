@@ -14,14 +14,6 @@
   ],
   "license": "GPL-3.0-only",
   "private": true,
-  "workspaces": [
-    "packages/connect-extension-protocol",
-    "packages/connect-known-chains",
-    "packages/connect",
-    "projects/extension",
-    "projects/burnr",
-    "projects/demo"
-  ],
   "scripts": {
     "downloadSpecs": "node bin/downloadSpecs.js",
     "api-docs": "typedoc",
