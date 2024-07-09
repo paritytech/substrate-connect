@@ -67,6 +67,8 @@ register(CHANNEL_ID)
 
 ```ts
 // inpage/index.ts
+import { getLightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
+
 const provider = getLightClientProvider(CHANNEL_ID)
 ```
 
