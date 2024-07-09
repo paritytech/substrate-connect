@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.3
+
+### Patch Changes
+
+- c69adf0: chore: update chainspecs
+- 796c168: chore: update polkadot-api packages
+- Updated dependencies [e3319c6]
+- Updated dependencies [796c168]
+  - @substrate/light-client-extension-helpers@2.0.3
+
 ## 0.5.2 - 2024-07-02
 
 ### Patch Changes

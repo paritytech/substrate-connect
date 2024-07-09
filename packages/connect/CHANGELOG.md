@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.5
+
+### Patch Changes
+
+- 796c168: chore: update polkadot-api packages
+- Updated dependencies [c69adf0]
+  - @substrate/connect-known-chains@1.1.9
+
 ## 1.0.4 - 2024-07-02
 
 ### Patch Changes
