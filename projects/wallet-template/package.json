@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.1.1",
-    "@hookform/resolvers": "^3.4.0",
+    "@hookform/resolvers": "^3.9.0",
     "@noble/ciphers": "^0.5.2",
     "@noble/hashes": "^1.4.0",
     "@polkadot-api/codegen": "^0.6.0",
