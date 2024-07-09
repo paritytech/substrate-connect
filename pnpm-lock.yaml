@@ -555,8 +555,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0
       '@polkadot-api/view-builder':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.2.1
+        version: 0.2.1
       '@polkadot-labs/hdkd':
         specifier: ^0.0.6
         version: 0.0.6
@@ -3757,13 +3757,6 @@ packages:
       '@polkadot-api/utils': 0.0.1
     dev: false
 
-  /@polkadot-api/metadata-builders@0.2.0:
-    resolution: {integrity: sha512-Nyu2oC6ZG3vThO0Y5/hVsE5m+1DCBirkMdi2Kg9QiSrZpWDAif4STkUZHNZ5KJcFBtfooBMh64t/hpaDwokvBg==}
-    dependencies:
-      '@polkadot-api/substrate-bindings': 0.2.0
-      '@polkadot-api/utils': 0.0.1
-    dev: false
-
   /@polkadot-api/metadata-builders@0.3.0:
     resolution: {integrity: sha512-WUxKGy2hzClESEcQWnnDp4IzlYiEXmYgSaa08zW1J3uX7rmLADDeKkfRH9TNRLAMEr9TaFt71W+OzHJtdwR6bw==}
     dependencies:
@@ -3860,15 +3853,6 @@ packages:
       scale-ts: 1.6.0
     dev: false
 
-  /@polkadot-api/substrate-bindings@0.2.0:
-    resolution: {integrity: sha512-lG47UIJwnesakR52IdymXmqdE/da29kvVFoGm2TenIPn9sVx5TqKQub2cXlkzzIt6xtlbvPm3Y4KI9vqMRpSjg==}
-    dependencies:
-      '@noble/hashes': 1.4.0
-      '@polkadot-api/utils': 0.0.1
-      '@scure/base': 1.1.6
-      scale-ts: 1.6.0
-    dev: false
-
   /@polkadot-api/substrate-bindings@0.4.0:
     resolution: {integrity: sha512-7eaZABXpUp22W5GcXr51pNL4v1d8Pw8w92DbKwWs+eOGzcoZG/btEyUhPWy2OI2k7Oak3wTkvGXLSze1KyrPgQ==}
     dependencies:
@@ -3909,12 +3893,12 @@ packages:
   /@polkadot-api/utils@0.1.0:
     resolution: {integrity: sha512-MXzWZeuGxKizPx2Xf/47wx9sr/uxKw39bVJUptTJdsaQn/TGq+z310mHzf1RCGvC1diHM8f593KrnDgc9oNbJA==}
 
-  /@polkadot-api/view-builder@0.2.0:
-    resolution: {integrity: sha512-dao/Ub4/et7ornvVlLSyA6FSY3B7Z/sS9YW6U36l9AbjPNghLQYEuNp6+LbVXPBkcQtJI2F1MqlJyu+XjvQdGw==}
+  /@polkadot-api/view-builder@0.2.1:
+    resolution: {integrity: sha512-oCLs7AYcqI9SYc3XcZ0aZHal0cNntDPkbpomrbphcMGCET+1qRMd13TZsP6eqFLTrRr/nTOt1rdo2o/M/QM4OA==}
     dependencies:
-      '@polkadot-api/metadata-builders': 0.2.0
-      '@polkadot-api/substrate-bindings': 0.2.0
-      '@polkadot-api/utils': 0.0.1
+      '@polkadot-api/metadata-builders': 0.3.1
+      '@polkadot-api/substrate-bindings': 0.6.0
+      '@polkadot-api/utils': 0.1.0
     dev: false
 
   /@polkadot-api/wasm-executor@0.1.0:
