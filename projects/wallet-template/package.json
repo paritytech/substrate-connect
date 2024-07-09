@@ -106,7 +106,7 @@
     "@substrate/discovery": "workspace:^",
     "@substrate/light-client-extension-helpers": "workspace:^",
     "@zag-js/clipboard": "^0.47.0",
-    "@zag-js/react": "^0.47.0",
+    "@zag-js/react": "^0.61.0",
     "@zag-js/tabs": "^0.58.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
