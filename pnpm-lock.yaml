@@ -95,8 +95,8 @@ importers:
         specifier: ^0.3.1
         version: 0.3.1(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
       '@polkadot-api/substrate-bindings':
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: ^0.6.0
+        version: 0.6.0
       '@polkadot-api/substrate-client':
         specifier: ^0.1.4
         version: 0.1.4
@@ -546,8 +546,8 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1
       '@polkadot-api/substrate-bindings':
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: ^0.6.0
+        version: 0.6.0
       '@polkadot-api/substrate-client':
         specifier: ^0.1.4
         version: 0.1.4
