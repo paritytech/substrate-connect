@@ -672,8 +672,8 @@ importers:
         specifier: workspace:^
         version: link:../../packages/smoldot-discovery
       '@zag-js/clipboard':
-        specifier: ^0.47.0
-        version: 0.47.0
+        specifier: ^0.61.0
+        version: 0.61.0
       '@zag-js/react':
         specifier: ^0.47.0
         version: 0.47.0(react-dom@18.3.1)(react@18.3.1)
@@ -7212,10 +7212,6 @@ packages:
       webextension-polyfill: 0.10.0
     dev: true
 
-  /@zag-js/anatomy@0.47.0:
-    resolution: {integrity: sha512-RzYUfjYeHI8fftH+iZXiFukdz9LWu1W4mewhn30yxTqhsUzn7NLUGbA/+e1zGe1yCOvv1aaRGgXCEn3dA53iCw==}
-    dev: false
-
   /@zag-js/anatomy@0.48.0:
     resolution: {integrity: sha512-8hXfzg7M3R11sSJOdYhNF/kWuee1hu40JfYGOrN2BQ7PZYDdO3SYFfWXn9pbETypzJSjd2k6U4tU9JhNYgn+xg==}
     dev: false
@@ -7224,14 +7220,18 @@ packages:
     resolution: {integrity: sha512-NIrR+S2ab+Ek486BLcbVaXnNmSAdOWWmWBBiK6VwID75pGXxRl+WVRCysjhlzCEIsxSOcKaP/A2SV82px29ZDQ==}
     dev: false
 
-  /@zag-js/clipboard@0.47.0:
-    resolution: {integrity: sha512-CeGkWjEyOeJZUOtq98CfnCNB8j4vewideZC2KJB/EIdJxITe1TALOnrLZyosmllNp1S8eIn21qPlMUklNxL/jg==}
+  /@zag-js/anatomy@0.61.0:
+    resolution: {integrity: sha512-BN2tJRs5APOF5uCFK1ubcutqGS51Ryti0KPv0hriMuz9uLk8sXv8DRppBb/yDasN/f8Lbfr03CVlOLMeos69Aw==}
+    dev: false
+
+  /@zag-js/clipboard@0.61.0:
+    resolution: {integrity: sha512-Eevwyh+CNUnvCRsZEChGUwruscpifLz8/d0NeYS3vgtc+n4C3FT3wuKUUbKGvJG2FNAydqNmo+t0VhgcmWz6Hg==}
     dependencies:
-      '@zag-js/anatomy': 0.47.0
-      '@zag-js/core': 0.47.0
-      '@zag-js/dom-query': 0.47.0
-      '@zag-js/types': 0.47.0
-      '@zag-js/utils': 0.47.0
+      '@zag-js/anatomy': 0.61.0
+      '@zag-js/core': 0.61.0
+      '@zag-js/dom-query': 0.61.0
+      '@zag-js/types': 0.61.0
+      '@zag-js/utils': 0.61.0
     dev: false
 
   /@zag-js/collection@0.48.0:
@@ -7256,6 +7256,13 @@ packages:
     resolution: {integrity: sha512-uxNemOb8eWo4dHHecw84wOl0OORhHngdeyOXIKh3ttBpO4steJ7ivlKtm83KBS3s6z2VBUml71lDB0zIRb/Jtw==}
     dependencies:
       '@zag-js/store': 0.58.3
+      klona: 2.0.6
+    dev: false
+
+  /@zag-js/core@0.61.0:
+    resolution: {integrity: sha512-ZG3IGqnWcelFeZjsZzMNBvdi9yeTMZDejPaeBcEsg5m4YE+vnkL6UGz6LMLwutzEstC2TCZfD8RTY06MnICiqg==}
+    dependencies:
+      '@zag-js/store': 0.61.0
       klona: 2.0.6
     dev: false
 
@@ -7284,16 +7291,16 @@ packages:
       '@zag-js/types': 0.58.3
     dev: false
 
-  /@zag-js/dom-query@0.47.0:
-    resolution: {integrity: sha512-B1wZ3o/8uHOn75BkfcT45zwc23hqZJ/gUF7Z6UrmxWFNpr6JKiDNvOW+QaAKzYNEpvz3NnUOB4tEY0IhDms7Sg==}
-    dev: false
-
   /@zag-js/dom-query@0.48.0:
     resolution: {integrity: sha512-pUM+BHOZIWPtHgqEqBXN+1YJzhYhn6F8er3Rfr27chlgE+76bLkT8k7FRnp2TQW30uur9TqM2RTdWlvpw7Wjrw==}
     dev: false
 
   /@zag-js/dom-query@0.58.3:
     resolution: {integrity: sha512-9IG6Obq3qqoYkv8Kzkb+mjprSygopO6nVF1qqcoXviDynZ76X5CXlOCRjrwsq2j/2gQPvm8mL51ft9BwElwInA==}
+    dev: false
+
+  /@zag-js/dom-query@0.61.0:
+    resolution: {integrity: sha512-+c1CRlFweQzXlbZKJB2v3taPygzhidJEoBj/zj2LB7bkL0qKmG8aZJn8DMpGSfPrmpK545lLc63SmBBeaRjkHw==}
     dev: false
 
   /@zag-js/element-rect@0.58.3:
@@ -7382,6 +7389,12 @@ packages:
       proxy-compare: 3.0.0
     dev: false
 
+  /@zag-js/store@0.61.0:
+    resolution: {integrity: sha512-A/Y4qBUbKekZqVflVmIEufuuZsn0SZI7VwVCpw08y045flYscfA1s4ds/p/FRV7YsbdJs/ud5yqzGKyb7ZgTLg==}
+    dependencies:
+      proxy-compare: 3.0.0
+    dev: false
+
   /@zag-js/tabbable@0.48.0:
     resolution: {integrity: sha512-3Dqx/ZT3psDsJd5g5RFfp1DNjsAdTsbW2C2JsTIQrc4/VzRf6YwwWVaeEIbUaHd849JtCykAwePg/gYgif7Hzg==}
     dependencies:
@@ -7442,8 +7455,10 @@ packages:
       csstype: 3.1.3
     dev: false
 
-  /@zag-js/utils@0.47.0:
-    resolution: {integrity: sha512-Pz8Mpi4G9DTgQKWYKzZkWBQ2C1j/OUGNso/s3VL78MGUGKQUa8rJDRCDBByJwlVt/YBiSe73NNyQkf3jujOL3g==}
+  /@zag-js/types@0.61.0:
+    resolution: {integrity: sha512-ouK0fgAOGmAH6UaW6C+zTtfpt2Rpzow8IZwyrt8wepGedeQ/MW6mJMYCKpk30nlhCBs2AZUqznrDdiaosTJRdA==}
+    dependencies:
+      csstype: 3.1.3
     dev: false
 
   /@zag-js/utils@0.48.0:
@@ -7452,6 +7467,10 @@ packages:
 
   /@zag-js/utils@0.58.3:
     resolution: {integrity: sha512-atTbAPZHA/RMQiOQ1IYyMUULM3Vl7Rwx2GqDuigxYEuBl24yjWLPXCDaDRDzxGfM2qs3DbdkGFm6cOPu75IeuA==}
+    dev: false
+
+  /@zag-js/utils@0.61.0:
+    resolution: {integrity: sha512-PqUUE8HGK8At5Ykc5osjDiAxWTlpxpYUyIG6JOzB5AkLY06GcKn5aYhT3sYJyUdULkBp188iISi2HUP9XVT3bA==}
     dev: false
 
   /abort-controller@3.0.0:
