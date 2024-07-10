@@ -335,6 +335,10 @@ importers:
       '@substrate/discovery':
         specifier: workspace:^
         version: link:../discovery
+    devDependencies:
+      '@substrate/light-client-extension-helpers':
+        specifier: workspace:^
+        version: link:../light-client-extension-helpers
 
   projects/burnr:
     dependencies:
