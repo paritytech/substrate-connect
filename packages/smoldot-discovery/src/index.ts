@@ -14,3 +14,5 @@ export const isSmoldotExtension = (
 export const getSmoldotExtensionProviders = () => {
   return getProviders().filter(isSmoldotExtension)
 }
+
+export * as connector from "./connector"
