@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.4
+
+### Patch Changes
+
+- 78ca884: chore: add smoldot discovery connector
+- Updated dependencies [78ca884]
+  - @substrate/smoldot-discovery@0.0.7
+
 ## 0.5.3
 
 ### Patch Changes
