@@ -5,13 +5,13 @@ import {
 import { getLightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
 import type { Unstable } from "@substrate/connect-discovery"
 import type { SmoldotExtensionProviderDetail } from "@substrate/smoldot-discovery/types"
+import { connector as smoldotDiscoveryConnector } from "@substrate/smoldot-discovery"
 import "@substrate/discovery"
 
 import type { Account, BackgroundRpcSpec } from "../background/types"
 import { CHANNEL_ID } from "../constants"
 import { pjsInject } from "./pjsInject"
 import type { InPageRpcSpec } from "./types"
-import { createScClient } from "./connector"
 
 const PROVIDER_INFO = {
   uuid: crypto.randomUUID(),
@@ -47,7 +47,9 @@ const lightClientProvider = getLightClientProvider(CHANNEL_ID)
 
 // #region Smoldot Discovery Provider
 {
-  const provider = lightClientProvider.then(createScClient)
+  const provider = lightClientProvider.then((provider) =>
+    smoldotDiscoveryConnector.make({ lightClientProvider: provider }),
+  )
 
   const detail: SmoldotExtensionProviderDetail = Object.freeze({
     kind: "smoldot-v1",
