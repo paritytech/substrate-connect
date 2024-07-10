@@ -42,5 +42,11 @@
   },
   "dependencies": {
     "@substrate/discovery": "workspace:^"
+  },
+  "devDependencies": {
+    "@substrate/light-client-extension-helpers": "workspace:^"
+  },
+  "peerDependencies": {
+    "@substrate/light-client-extension-helpers": "^2"
   }
 }
