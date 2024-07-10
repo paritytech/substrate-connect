@@ -64,8 +64,6 @@ const SmoldotProviderComponent = () => {
 export default SmoldotProviderComponent
 ```
 
-````
-
 ## Extension Example
 
 ```ts
@@ -103,7 +101,7 @@ window.dispatchEvent(
     detail,
   }),
 )
-````
+```
 
 ## Notes
 
