@@ -1,5 +1,4 @@
 ---
-"substrate-connect": patch
 "@substrate/wallet-template": patch
 ---
 

@@ -34,6 +34,7 @@
     "*.{js,jsx,ts,tsx,json,md}": "prettier --write"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.7",
     "@types/chrome": "^0.0.268",
     "@types/node": "^20.14.10",
     "@types/qrcode.react": "^1.0.5",
@@ -63,8 +64,5 @@
       "@substrate/connect": "workspace:^",
       "smoldot": "2.0.29"
     }
-  },
-  "dependencies": {
-    "@changesets/cli": "^2.27.5"
   }
 }
