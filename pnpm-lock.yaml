@@ -301,18 +301,30 @@ importers:
 
   packages/light-client-extension-helpers:
     dependencies:
-      '@polkadot-api/json-rpc-provider':
-        specifier: ^0.0.1
-        version: 0.0.1
+      '@polkadot-api/codegen':
+        specifier: ^0.6.0
+        version: 0.6.1
       '@polkadot-api/json-rpc-provider-proxy':
         specifier: ^0.1.0
         version: 0.1.0
+      '@polkadot-api/metadata-builders':
+        specifier: ^0.3.0
+        version: 0.3.1
       '@polkadot-api/observable-client':
         specifier: ^0.3.1
         version: 0.3.1(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
+      '@polkadot-api/signer':
+        specifier: ~0.0.2
+        version: 0.0.2
+      '@polkadot-api/substrate-bindings':
+        specifier: ^0.6.0
+        version: 0.6.0
       '@polkadot-api/substrate-client':
         specifier: ^0.1.4
         version: 0.1.4
+      '@polkadot-api/utils':
+        specifier: ^0.1.0
+        version: 0.1.0
       '@substrate/connect-extension-protocol':
         specifier: workspace:^
         version: link:../connect-extension-protocol
@@ -326,6 +338,12 @@ importers:
         specifier: 2.0.29
         version: 2.0.29
     devDependencies:
+      '@polkadot-api/json-rpc-provider':
+        specifier: ~0.0.1
+        version: 0.0.1
+      '@polkadot-api/polkadot-signer':
+        specifier: ~0.0.2
+        version: 0.0.2
       '@types/chrome':
         specifier: ^0.0.268
         version: 0.0.268
@@ -544,11 +562,11 @@ importers:
         specifier: ^0.3.1
         version: 0.3.1(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
       '@polkadot-api/polkadot-signer':
-        specifier: ^0.0.1
-        version: 0.0.1
+        specifier: ~0.0.2
+        version: 0.0.2
       '@polkadot-api/signer':
-        specifier: ^0.0.1
-        version: 0.0.1
+        specifier: ~0.0.2
+        version: 0.0.2
       '@polkadot-api/substrate-bindings':
         specifier: ^0.6.0
         version: 0.6.0
@@ -3616,7 +3634,6 @@ packages:
   /@noble/hashes@1.4.0:
     resolution: {integrity: sha512-V1JJ1WTRUqHHrOSh597hURcMqVKVGL/ea3kv0gSnEdsEZ0/+VyPghM1lMNGc00z7CIQorSvbKpuJkxvuHbvdbg==}
     engines: {node: '>= 16'}
-    dev: false
 
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -3754,13 +3771,6 @@ packages:
       '@polkadot-api/json-rpc-provider-proxy': 0.0.1
     dev: false
 
-  /@polkadot-api/metadata-builders@0.0.1:
-    resolution: {integrity: sha512-GCI78BHDzXAF/L2pZD6Aod/yl82adqQ7ftNmKg51ixRL02JpWUA+SpUKTJE5MY1p8kiJJIo09P2um24SiJHxNA==}
-    dependencies:
-      '@polkadot-api/substrate-bindings': 0.0.1
-      '@polkadot-api/utils': 0.0.1
-    dev: false
-
   /@polkadot-api/metadata-builders@0.3.0:
     resolution: {integrity: sha512-WUxKGy2hzClESEcQWnnDp4IzlYiEXmYgSaa08zW1J3uX7rmLADDeKkfRH9TNRLAMEr9TaFt71W+OzHJtdwR6bw==}
     dependencies:
@@ -3773,7 +3783,6 @@ packages:
     dependencies:
       '@polkadot-api/substrate-bindings': 0.6.0
       '@polkadot-api/utils': 0.1.0
-    dev: false
 
   /@polkadot-api/observable-client@0.3.1(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1):
     resolution: {integrity: sha512-ioun8PfDwmr2nRCIFPS3X7qMaJxeyotHT8vep0VNVYU13dUIBojaHQCpe9l4jN8MXoG63h1wAVT9dshGSiTDQw==}
@@ -3797,29 +3806,12 @@ packages:
       '@polkadot-api/utils': 0.1.0
     dev: false
 
-  /@polkadot-api/polkadot-signer@0.0.1:
-    resolution: {integrity: sha512-A1axSuurYG3FtM9xY6v/rM4VXoDnk8PqW+Q1+innUcR7kmAIMWZw21uUxF0Iwzu29hKHCHucSF9YJZ1yAP7JNw==}
-    dependencies:
-      '@polkadot-api/metadata-builders': 0.0.1
-      '@polkadot-api/substrate-bindings': 0.0.1
-      '@polkadot-api/utils': 0.0.1
-    dev: false
-
   /@polkadot-api/polkadot-signer@0.0.2:
     resolution: {integrity: sha512-CZzepV/Xtorsv9iFxQio5Hm8ETdX9chYPtrwscjSytqomAN5V1FsxaVrqBfRWqrf3JkfXKmLKBqTCp4oyrE0rQ==}
     dependencies:
       '@polkadot-api/metadata-builders': 0.3.1
       '@polkadot-api/substrate-bindings': 0.6.0
       '@polkadot-api/utils': 0.1.0
-    dev: false
-
-  /@polkadot-api/signer@0.0.1:
-    resolution: {integrity: sha512-TZHGlVKf1TR2IWcSDMPJBAl/Lsp0z5vGGQr4xSwIwVVvuJw60+d2EfpnUltCTSqE9hMRaoBLl6P+dQbxdkPg4Q==}
-    dependencies:
-      '@polkadot-api/polkadot-signer': 0.0.1
-      '@polkadot-api/substrate-bindings': 0.0.1
-      '@polkadot-api/utils': 0.0.1
-    dev: false
 
   /@polkadot-api/signer@0.0.2:
     resolution: {integrity: sha512-nWpzsU8KA27jrS1G6gV3yK4s9LxOsHbySFr3GpCQT0Iz61VHPQ9YLqnkR+J4I7myrHijiRchbMlN/iF08EbAQQ==}
@@ -3848,15 +3840,6 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@polkadot-api/substrate-bindings@0.0.1:
-    resolution: {integrity: sha512-bAe7a5bOPnuFVmpv7y4BBMRpNTnMmE0jtTqRUw/+D8ZlEHNVEJQGr4wu3QQCl7k1GnSV1wfv3mzIbYjErEBocg==}
-    dependencies:
-      '@noble/hashes': 1.4.0
-      '@polkadot-api/utils': 0.0.1
-      '@scure/base': 1.1.6
-      scale-ts: 1.6.0
-    dev: false
-
   /@polkadot-api/substrate-bindings@0.4.0:
     resolution: {integrity: sha512-7eaZABXpUp22W5GcXr51pNL4v1d8Pw8w92DbKwWs+eOGzcoZG/btEyUhPWy2OI2k7Oak3wTkvGXLSze1KyrPgQ==}
     dependencies:
@@ -3882,7 +3865,6 @@ packages:
       '@polkadot-api/utils': 0.1.0
       '@scure/base': 1.1.6
       scale-ts: 1.6.0
-    dev: false
 
   /@polkadot-api/substrate-client@0.1.4:
     resolution: {integrity: sha512-MljrPobN0ZWTpn++da9vOvt+Ex+NlqTlr/XT7zi9sqPtDJiQcYl+d29hFAgpaeTqbeQKZwz3WDE9xcEfLE8c5A==}
@@ -6486,7 +6468,6 @@ packages:
 
   /@scure/base@1.1.6:
     resolution: {integrity: sha512-ok9AWwhcgYuGG3Zfhyqg+zwl+Wn5uE+dwC0NV/2qQkx4dABbb/bx96vWu8NSj+BNjjSjno+JRYRjle1jV08k3g==}
-    dev: false
 
   /@sinclair/typebox@0.27.8:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
@@ -13884,7 +13865,6 @@ packages:
 
   /scale-ts@1.6.0:
     resolution: {integrity: sha512-Ja5VCjNZR8TGKhUumy9clVVxcDpM+YFjAnkMuwQy68Hixio3VRRvWdE3g8T/yC+HXA0ZDQl2TGyUmtmbcVl40Q==}
-    dev: false
 
   /scheduler@0.23.2:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}

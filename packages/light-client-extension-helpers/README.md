@@ -208,3 +208,7 @@ supervise(client, { onError: console.error })
 // Supervise the client
 client.supervise()
 ```
+
+### tx-helper
+
+TODO: write usage guide
