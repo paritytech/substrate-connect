@@ -5,6 +5,7 @@ import {
   createRpc,
   RpcError,
 } from "@substrate/light-client-extension-helpers/utils"
+import { createTx } from "@substrate/light-client-extension-helpers/tx-helper"
 import { ss58Address, ss58Decode } from "@polkadot-labs/hdkd-helpers"
 import { toHex, fromHex } from "@polkadot-api/utils"
 import { getPolkadotSigner } from "@polkadot-api/signer"
@@ -15,7 +16,6 @@ import { UserSignedExtensionName } from "../types/UserSignedExtension"
 import { createClient } from "@polkadot-api/substrate-client"
 import { getObservableClient } from "@polkadot-api/observable-client"
 import { filter, firstValueFrom, map, mergeMap, take } from "rxjs"
-import { createTx } from "./tx-helper/create-tx"
 import * as pjs from "./pjs"
 import { Bytes, Variant } from "@polkadot-api/substrate-bindings"
 import { InPageRpcSpec } from "../inpage/types"
@@ -86,7 +86,7 @@ export const createBackgroundRpc = (
       const client = getObservableClient(createClient(chain.provider))
       const chainHead$ = client.chainHead$()
 
-      const { best: atBlock, userSignedExtensionNames } = await firstValueFrom(
+      const userSignedExtensionNames = await firstValueFrom(
         chainHead$.best$.pipe(
           mergeMap((blockInfo) =>
             chainHead$.getRuntimeContext$(blockInfo.hash).pipe(
@@ -96,10 +96,6 @@ export const createBackgroundRpc = (
                   .map(({ identifier }) => identifier)
                   .filter(isUserSignedExtensionName),
               ),
-              map((userSignedExtensionNames) => ({
-                best: blockInfo,
-                userSignedExtensionNames,
-              })),
             ),
           ),
           filter(Boolean),
@@ -166,13 +162,15 @@ export const createBackgroundRpc = (
               ? userSignedExtensions.ChargeAssetTxPayment?.tip
               : userSignedExtensions.ChargeTransactionPayment) ?? 0n
 
-          const tx = await firstValueFrom(
-            createTx(chainHead$, signer, fromHex(callData), atBlock, {
+          const tx = await createTx(chain.provider)({
+            signer,
+            callData: fromHex(callData),
+            hinted: {
               mortality,
               asset,
               tip,
-            }).pipe(filter(Boolean)),
-          )
+            },
+          })
 
           return toHex(tx)
         } finally {
