@@ -1,6 +1,6 @@
 {
   "name": "@substrate/smoldot-discovery",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "Parity Technologies (https://github.com/paritytech)",
   "repository": {
     "type": "git",

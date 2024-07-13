@@ -1,5 +1,12 @@
 # @substrate/light-client-extension-helpers
 
+## 2.1.0
+
+### Minor Changes
+
+- 13847b7: - Add `tx-helper` package to light client extension helpers
+  - Replace usage of internal tx-helper with added package in wallet-template
+
 ## 2.0.3
 
 ### Patch Changes

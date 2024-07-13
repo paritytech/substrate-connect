@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.5
+
+### Patch Changes
+
+- Updated dependencies [c358405]
+- Updated dependencies [13847b7]
+- Updated dependencies [bdd728d]
+  - @substrate/smoldot-discovery@0.0.8
+  - @substrate/light-client-extension-helpers@2.1.0
+
 ## 0.5.4
 
 ### Patch Changes
