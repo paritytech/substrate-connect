@@ -1,4 +1,8 @@
 import { type ProviderInfo } from "@substrate/discovery"
+export type {
+  LightClientProvider,
+  RawChain,
+} from "@substrate/light-client-extension-helpers/web-page"
 
 export type SmoldotExtensionAPI = {
   addChain: AddChain

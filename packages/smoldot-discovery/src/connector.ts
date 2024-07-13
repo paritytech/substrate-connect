@@ -1,8 +1,6 @@
-import type {
+import {
   LightClientProvider,
   RawChain,
-} from "@substrate/light-client-extension-helpers/web-page"
-import {
   Chain,
   JsonRpcCallback,
   SmoldotExtensionAPI,
