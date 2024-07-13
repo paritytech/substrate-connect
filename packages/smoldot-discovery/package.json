@@ -47,6 +47,6 @@
     "@substrate/light-client-extension-helpers": "workspace:^"
   },
   "peerDependencies": {
-    "@substrate/light-client-extension-helpers": "^2"
+    "@substrate/light-client-extension-helpers": ">=2 && <3"
   }
 }
