@@ -1,5 +1,8 @@
 # @substrate/connect
 
+
+The main implementation of the light-client provider for a given substrate-based chain.
+
 ## Using `@substrate/connect` for library authors
 
 Provide a well-known chain name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_2'):

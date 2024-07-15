@@ -29,6 +29,20 @@ server node.
 For detailed API usage, refer to the [Substrate Connect API 
 documentation](https://paritytech.github.io/substrate-connect/api/).
 
+### Repository Structure
+
+- [Packages](./packages/README.md):
+
+The core implementations of `@subtrate/connect` and `@substrate/discovery`. 
+
+- [Examples](./examples/)
+
+dApp and Extensions example implementations of `@substrate/connect` and `@substrate/discovery`. 
+
+- [Projects](./projects/)
+
+Wallet, extension and demo implementations of `@substrate/connect` and `@substrate/discovery`, showcasing a full implementation of the packages in the respective environments.
+
 ## Development
 
 This repository utilizes [pnpm workspaces](https://pnpm.io/workspaces) and 
@@ -77,11 +91,6 @@ To clean up all build artifacts and dependencies in workspaces in the repository
 ```bash
 corepack pnpm deep-clean
 ```
-
-## Wallet Template
-
-To understand how to use Substrate Connect as a fully functional light client 
-wallet, visit the [wallet template directory](./projects/wallet-template/).
 
 ## Releasing
 

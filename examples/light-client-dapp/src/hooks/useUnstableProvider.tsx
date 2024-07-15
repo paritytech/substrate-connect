@@ -29,9 +29,10 @@ export const UnstableProviderProvider = ({
   children: ReactNode
   defaultChainId: string
 }) => {
-  const { data: providerDetails } = useSWR("getProviders", () =>
-    Unstable.getSubstrateConnectExtensionProviders(),
-  )
+  const { data: providerDetails } = useSWR("getProviders", () => {
+    console.log(Unstable.getSubstrateConnectExtensionProviders())
+    return Unstable.getSubstrateConnectExtensionProviders()
+  })
   const [providerDetail, setProviderDetail] =
     useState<Unstable.SubstrateConnectProviderDetail>()
   const { data: provider } = useSWR(

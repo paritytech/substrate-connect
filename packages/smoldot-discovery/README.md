@@ -1,6 +1,6 @@
 # @substrate/smoldot-discovery
 
-A TypeScript package to discover and filter Smoldot extension providers from a list of providers using the [@substrate/discovery protocol](../discovery).
+A TypeScript package extended from the [`@substrate/discovery`](../discovery/README.md) npm module, that allows to discover and filter Smoldot extension providers from a list of providers.
 
 ## Installation
 

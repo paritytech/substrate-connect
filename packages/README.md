@@ -8,10 +8,18 @@ A npm module that adds Substrate light-client functionality to any Javascript en
 
 It provides an interface that allows developers to run light nodes of different chains and to add runtimes and genesis configs of their own chain.
 
+When used in individual projects, the Substrate Connect node module will first check for the installed extension. If available, it will try to connect to the light client running inside the extension. Only if the extension is not installed it will start a light client in the browser tab.
+
 The `@substrate/connect` node module allows developers to include light client functionality into their application by using a predefined interface.
+
+The `@substrate/connect-known-chains` node module implements a list of well-known chain specifications and is updated daily.
+
+## `@substrate/discovery`
+
+The [`@substrate/discovery`](./discovery/README.md) node module allows developers to implement compliant extenstion discovery functionality into their application by using a predefined interface.
+
+[`@substrate/smoldot-discovery`](./smoldot-discovery/README.md) and [`@substrate/connect-discovery`](./connect-discovery/README.md) are an extension of [`@substrate/discovery`](./discovery/README.md) and allow to find and filter extension providers implementing smoldot and substrate-connect functionality respectively.
 
 ## Substrate Connect Extension
 
 A Browser Extension built upon the @substrate/light node module that is running the selected light clients inside the extension so that the end-user doesn't need to fire up a light node in every browser tab. This will also allow the light-node to keep syncing as long as the browser window stays open.
-
-When used in individual projects, the Substrate Connect node module will first check for the installed extension. If available, it will try to connect to the light client running inside the extension. Only if the extension is not installed it will start a light client in the browser tab.
