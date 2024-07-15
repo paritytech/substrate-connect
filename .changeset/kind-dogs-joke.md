@@ -1,6 +1,6 @@
 ---
-"@substrate/smoldot-discovery": major
-"@substrate/connect": major
+"@substrate/smoldot-discovery": patch
+"@substrate/connect": patch
 "@substrate/connect-discovery": patch
 ---
 
