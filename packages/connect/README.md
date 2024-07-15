@@ -1,5 +1,19 @@
-# @substrate/connect
+<br /><br />
 
+<div align="center">
+  <h1 align="center">@substrate/connect</h1>
+  <h4 align="center"> NPM package that offers an innovative way to interact with <a href="https://substrate.dev/">Substrate</a>-based blockchains directly in your browser.</h4>
+  <p align="center">
+    <a href="https://www.npmjs.com/package/@substrate/connect">
+      <img alt="npm" src="https://img.shields.io/npm/v/@substrate/connect" />
+    </a>
+    <a href="https://github.com/paritytech/substrate-connect/blob/master/LICENSE">
+      <img alt="GPL-3.0-or-later" src="https://img.shields.io/npm/l/@substrate/connect" />
+    </a>
+  </p>
+</div>
+
+<br /><br />
 
 The main implementation of the light-client provider for a given substrate-based chain.
 

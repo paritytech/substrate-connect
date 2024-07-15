@@ -1,4 +1,19 @@
-# @substrate/discovery
+<br /><br />
+
+<div align="center">
+  <h1 align="center">@substrate/discovery</h1>
+  <h4 align="center"> NPM package that implements the discovery protocol that browsers use to find compliant browser extensions.</h4>
+  <p align="center">
+    <a href="https://www.npmjs.com/package/@substrate/discovery">
+      <img alt="npm" src="https://img.shields.io/npm/v/@substrate/discovery" />
+    </a>
+    <a href="https://github.com/paritytech/substrate-connect/blob/master/LICENSE">
+      <img alt="GPL-3.0-or-later" src="https://img.shields.io/npm/l/@substrate/discovery" />
+    </a>
+  </p>
+</div>
+
+<br /><br />
 
 This package implements the discovery protocol that browsers use to find compliant browser extensions. It introduces a set of window `CustomEvent`s to provide a two-way communication protocol between Polkadot Wallet Provider libraries and injected scripts provided by browser extensions.
 

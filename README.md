@@ -2,8 +2,8 @@
 <br /><br />
 
 <div align="center">
-  <h1 align="center">@substrate/connect</h1>
-  <h4 align="center"> NPM package that offers an innovative way to interact with <a href="https://substrate.dev/">Substrate</a>-based blockchains directly in your browser.</h4>
+  <h1 align="center">Substrate Connect</h1>
+  <h4 align="center"> NPM packages that offers an innovative way to interact with <a href="https://substrate.dev/">Substrate</a>-based blockchains directly in your browser.</h4>
   <p align="center">
     <a href="https://www.npmjs.com/package/@substrate/connect">
       <img alt="npm" src="https://img.shields.io/npm/v/@substrate/connect" />
