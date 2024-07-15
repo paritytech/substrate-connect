@@ -13,6 +13,8 @@
 - [Introduction](#introduction)
 - [API Documentation](#comprehensive-api-documentation)
 - [Repository outline](#repository-structure)
+   - [Packages](#packages)
+   - [Usage Showcase](#showcase-projects)
 - [Installation](#development)
 - [Releasing](#releasing)
 - [Useful Links](#useful-links)
@@ -36,17 +38,22 @@ For detailed API usage, refer to the [Substrate Connect API documentation](https
 
 ## Repository Structure
 
-- [Packages](./packages/README.md):
+### [Packages](./packages/README.md)
+   The core implementations of `@subtrate/connect` and `@substrate/discovery`. 
+   - **[@substrate/discovery](./packages/discovery/)**
+   - **[@substrate/connect](./packages/connect/)**
 
-The core implementations of `@subtrate/connect` and `@substrate/discovery`. 
+### [Showcase Projects](./projects/)
 
-- [Examples](./examples/)
+   Showcase full implementations of `@substrate/connect` and `@substrate/discovery` for a Wallet, Extension or Generic usage.
 
-dApp and Extensions example implementations of `@substrate/connect` and `@substrate/discovery`. 
+   - **[Wallet implementation](./projects/wallet-template/)**
+   - **[Extension implementation](./projects/extension/)**
+   - **[Parachain Demo](./projects/demo)**
 
-- [Projects](./projects/)
 
-Wallet, extension and demo implementations of `@substrate/connect` and `@substrate/discovery`, showcasing a full implementation of the packages in the respective environments.
+### [Examples](./examples/)
+   dApp and Extensions example implementations of `@substrate/connect` and `@substrate/discovery`. 
 
 ## Development
 
