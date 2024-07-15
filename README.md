@@ -1,35 +1,48 @@
-# Substrate Connect
 
-Substrate Connect offers an innovative way to interact with 
-[Substrate](https://substrate.dev/)-based blockchains directly in your browser, 
-eliminating the need for an RPC server. By leveraging the 
-[smoldot](https://github.com/smol-dot/smoldot) WASM light client, it ensures a 
-secure and efficient connection to the blockchain network without dependency 
-on specific third parties.
+<br /><br />
+
+<div align="center">
+  <h1 align="center">@substrate/connect</h1>
+  <h4 align="center"> NPM package that offers an innovative way to interact with <a href="https://substrate.dev/">Substrate</a>-based blockchains directly in your browser.</h4>
+  <p align="center">
+    <a href="https://www.npmjs.com/package/@substrate/connect">
+      <img alt="npm" src="https://img.shields.io/npm/v/@substrate/connect" />
+    </a>
+    <a href="https://github.com/paritytech/substrate-connect/blob/master/LICENSE">
+      <img alt="GPL-3.0-or-later" src="https://img.shields.io/npm/l/@substrate/connect" />
+    </a>
+  </p>
+</div>
+
+<br /><br />
+
+## Table of contents
+
+- [Introduction](#introduction)
+- [API Documentation](#comprehensive-api-documentation)
+- [Repository outline](#repository-structure)
+- [Installation](#development)
+- [Releasing](#releasing)
+- [Useful Links](#useful-links)
+
+## Introduction
+
+Substrate Connect offers an innovative way to interact with [Substrate](https://substrate.dev/)-based blockchains directly in your browser, eliminating the need for an RPC server. By leveraging the [smoldot](https://github.com/smol-dot/smoldot) WASM light client, it ensures a secure and efficient connection to the blockchain network without dependency on specific third parties.
 
 ### Overcoming Browser Limitations
 
-Browser limitations on websockets from HTTPS pages make establishing a robust 
-number of peers challenging, as many nodes must be available with TLS. 
-Substrate Connect addresses this issue through a powerful browser extension, 
-allowing chains to stay synced in the background, thereby significantly 
-enhancing the performance of your applications.
+Browser limitations on websockets from HTTPS pages make establishing a robust number of peers challenging, as many nodes must be available with TLS. 
+Substrate Connect addresses this issue through a powerful browser extension, allowing chains to stay synced in the background, thereby significantly enhancing the performance of your applications.
 
 ### Seamless Integration
 
-When building an application with Substrate Connect, it automatically detects 
-whether the user has the extension installed and utilizes it. If not, it 
-seamlessly creates the WASM light client in-page for them. Built on 
-[Polkadot JS](https://polkadot.js.org/docs/api), Substrate Connect ensures 
-that your development experience is as smooth as using a traditional RPC 
-server node.
+When building an application with Substrate Connect, it automatically detects whether the user has the extension installed and utilizes it. If not, it seamlessly creates the WASM light client in-page for them. Built on [Polkadot JS](https://polkadot.js.org/docs/api), Substrate Connect ensures that your development experience is as smooth as using a traditional RPC server node.
 
-### Comprehensive API Documentation
+## Comprehensive API Documentation
 
-For detailed API usage, refer to the [Substrate Connect API 
-documentation](https://paritytech.github.io/substrate-connect/api/).
+For detailed API usage, refer to the [Substrate Connect API documentation](https://paritytech.github.io/substrate-connect/api/).
 
-### Repository Structure
+## Repository Structure
 
 - [Packages](./packages/README.md):
 
@@ -45,15 +58,11 @@ Wallet, extension and demo implementations of `@substrate/connect` and `@substra
 
 ## Development
 
-This repository utilizes [pnpm workspaces](https://pnpm.io/workspaces) and 
-`corepack`, ensuring the correct version of `pnpm` is used. For contributions, 
-please review our [contributing guidelines](./CONTRIBUTING.md) to understand 
-our workflow and how to smoothly integrate your contributions to the project.
+This repository utilizes [pnpm workspaces](https://pnpm.io/workspaces) and `corepack`, ensuring the correct version of `pnpm` is used. For contributions, please review our [contributing guidelines](./CONTRIBUTING.md) to understand our workflow and how to smoothly integrate your contributions to the project.
 
 ### Getting Started
 
-Follow these steps to install everything and launch a demo if you're hacking 
-on this repository:
+Follow these steps to install everything and launch a demo if you're hacking on this repository:
 
 1. **Install Prerequisites** (tested with the following versions):
    - Node.js (node) v20.9.0
@@ -77,8 +86,7 @@ on this repository:
    
 6. **Run the Demo Application**:
    - In terminal C: `cd projects/demo && corepack pnpm dev`
-   - Navigate to the URL logged in the Chrome browser opened in step 5. You 
-   should see the extension activate and the demo app log the latest blocks.
+   - Navigate to the URL logged in the Chrome browser opened in step 5. You should see the extension activate and the demo app log the latest blocks.
 
 ### Cleanup Commands
 
