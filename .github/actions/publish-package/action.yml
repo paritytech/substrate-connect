@@ -31,6 +31,6 @@ runs:
       with:
         route: POST /repos/paritytech/npm_publish_automation/actions/workflows/publish.yml/dispatches
         ref: main
-        inputs: '${{ format(''{{ "repo": "{0}", "run_id": "{1}", "ARTIFACT_NAME": "{2}" }}'', github.repository, github.run_id, ${{ inputs.package-name }}.tgz ) }}'
+        inputs: '${{ format(''{{ "repo": "{0}", "run_id": "{1}", "ARTIFACT_NAME": "{2}.tgz" }}'', github.repository, github.run_id, inputs.package-name) }}'
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
