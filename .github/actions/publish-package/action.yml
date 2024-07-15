@@ -2,7 +2,7 @@ name: Publish Package
 description: Publish Package to NPM
 inputs:
   token:
-    description: NPM Token
+    description: NPM PUBLISH AUTOMATION TOKEN
     required: true
   package-directory:
     description: Package directory
@@ -31,4 +31,4 @@ runs:
         ref: main
         inputs: '${{ format(''{{ "repo": "{0}", "run_id": "{1}" }}'', github.repository, github.run_id) }}'
       env:
-        GITHUB_TOKEN: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.token }}
