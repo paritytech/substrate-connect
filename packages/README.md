@@ -8,9 +8,7 @@ A npm module that adds Substrate light-client functionality to any Javascript en
 
 It provides an interface that allows developers to run light nodes of different chains and to add runtimes and genesis configs of their own chain.
 
-When used in individual projects, the Substrate Connect node module will first check for the installed extension. If available, it will try to connect to the light client running inside the extension. Only if the extension is not installed it will start a light client in the browser tab.
-
-The `@substrate/connect` node module allows developers to include light client functionality into their application by using a predefined interface.
+The `@substrate/connect` node module allows developers to include light client functionality into their application by using a predefined interface. When used in individual projects, the Substrate Connect node module will first check for the installed extension. If available, it will try to connect to the light client running inside the extension. Only if the extension is not installed it will start a light client in the browser tab.
 
 The `@substrate/connect-known-chains` node module implements a list of well-known chain specifications and is updated daily.
 
