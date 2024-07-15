@@ -4,6 +4,9 @@ inputs:
   token:
     description: NPM PUBLISH AUTOMATION TOKEN
     required: true
+  package-name:
+    description: Package name
+    required: true
   package-directory:
     description: Package directory
     required: true
@@ -15,20 +18,19 @@ runs:
   using: composite
   steps:
     - name: Pack
-      run: pnpm pack && mv *.tgz package.tgz
+      run: pnpm pack && mv *.tgz ${{ inputs.package-name }}.tgz
       shell: bash
       working-directory: ${{ inputs.package-directory }}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: package
-        working-directory: ${{ inputs.package-directory }}
-        path: "package.tgz"
+        path: ${{ inputs.package-directory }}/${{ inputs.package-name }}.tgz
     - name: Publish
       id: publish
       uses: octokit/request-action@v2.x
       with:
         route: POST /repos/paritytech/npm_publish_automation/actions/workflows/publish.yml/dispatches
         ref: main
-        inputs: '${{ format(''{{ "repo": "{0}", "run_id": "{1}" }}'', github.repository, github.run_id) }}'
+        inputs: '${{ format(''{{ "repo": "{0}", "run_id": "{1}", "ARTIFACT_NAME": "{2}" }}'', github.repository, github.run_id, ${{ inputs.package-name }}.tgz ) }}'
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
