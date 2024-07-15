@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.7
+
+### Patch Changes
+
+- Updated dependencies [c358405]
+- Updated dependencies [bdd728d]
+  - @substrate/smoldot-discovery@0.0.8
+
 ## 1.0.6
 
 ### Patch Changes

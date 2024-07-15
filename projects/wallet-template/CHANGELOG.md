@@ -1,5 +1,90 @@
 # Changelog
 
+## 0.0.5
+
+### Patch Changes
+
+- 8f1cac1: chore(deps): bump tailwind-merge from 2.3.0 to 2.4.0
+
+  Bumps [tailwind-merge](https://github.com/dcastil/tailwind-merge) from 2.3.0 to 2.4.0.
+
+  - [Release notes](https://github.com/dcastil/tailwind-merge/releases)
+  - [Commits](https://github.com/dcastil/tailwind-merge/compare/v2.3.0...v2.4.0)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: tailwind-merge
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- ce5ae05: chore(deps): bump react-hook-form from 7.51.5 to 7.52.1
+
+  Bumps [react-hook-form](https://github.com/react-hook-form/react-hook-form) from 7.51.5 to 7.52.1.
+
+  - [Release notes](https://github.com/react-hook-form/react-hook-form/releases)
+  - [Changelog](https://github.com/react-hook-form/react-hook-form/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/react-hook-form/react-hook-form/compare/v7.51.5...v7.52.1)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: react-hook-form
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 1737c0e: chore(deps-dev): bump @types/node from 20.14.2 to 20.14.10
+
+  Bumps [@types/node](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/HEAD/types/node) from 20.14.2 to 20.14.10.
+
+  - [Release notes](https://github.com/DefinitelyTyped/DefinitelyTyped/releases)
+  - [Commits](https://github.com/DefinitelyTyped/DefinitelyTyped/commits/HEAD/types/node)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@types/node"
+    dependency-type: direct:development
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- babf1ff: chore(deps): bump @radix-ui/react-radio-group from 1.1.3 to 1.2.0
+
+  Bumps [@radix-ui/react-radio-group](https://github.com/radix-ui/primitives) from 1.1.3 to 1.2.0.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-radio-group"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 13847b7: - Add `tx-helper` package to light client extension helpers
+  - Replace usage of internal tx-helper with added package in wallet-template
+- Updated dependencies [c358405]
+- Updated dependencies [13847b7]
+- Updated dependencies [bdd728d]
+  - @substrate/smoldot-discovery@0.0.8
+  - @substrate/light-client-extension-helpers@2.1.0
+
 ## 0.0.4
 
 ### Patch Changes
