@@ -29,7 +29,6 @@ window.onload = () => {
       [[assetHubWestend, WellKnownChain.westend2], "asset-hub-westend"],
     ] as [[spec: string, relaySpec?: string], elementId: string][]
   ).forEach(([specs, elementId]) => followChainBestBlocks(specs, elementId))
-  console.log()
   showAssetHubPolkadotChainDetails()
 }
 
