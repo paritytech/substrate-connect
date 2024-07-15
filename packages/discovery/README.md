@@ -2,7 +2,6 @@
 
 <div align="center">
   <h1 align="center">@substrate/discovery</h1>
-  <h4 align="center"> NPM package that implements the discovery protocol that browsers use to find compliant browser extensions.</h4>
   <p align="center">
     <a href="https://www.npmjs.com/package/@substrate/discovery">
       <img alt="npm" src="https://img.shields.io/npm/v/@substrate/discovery" />
