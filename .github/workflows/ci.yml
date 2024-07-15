@@ -106,38 +106,38 @@ jobs:
         id: publish_connect
         uses: ./.github/actions/publish-package 
         with:
-          token: ${{ secrets.NPM_TOKEN }}
+          token: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
           package-directory: ./packages/connect
       - name: "@substrate/connect-extension-protocol Publish"
         id: publish_connect_extension_protocol
         uses: ./.github/actions/publish-package 
         with:
-          token: ${{ secrets.NPM_TOKEN }}
+          token: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
           package-directory: ./packages/connect-extension-protocol
       - name: "@substrate/connect-known-chains Publish"
         uses: ./.github/actions/publish-package 
         with:
-          token: ${{ secrets.NPM_TOKEN }}
+          token: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
           package-directory: ./packages/connect-known-chains
       - name: "@substrate/light-client-extension-helpers Publish"
         uses: ./.github/actions/publish-package 
         with:
-          token: ${{ secrets.NPM_TOKEN }}
+          token: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
           package-directory: ./packages/light-client-extension-helpers
       - name: "@substrate/connect-discovery"
         uses: ./.github/actions/publish-package 
         with:
-          token: ${{ secrets.NPM_TOKEN }}
+          token: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
           package-directory: ./packages/connect-discovery
       - name: "@substrate/discovery"
         uses: ./.github/actions/publish-package 
         with:
-          token: ${{ secrets.NPM_TOKEN }}
+          token: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
           package-directory: ./packages/discovery
       - name: "@substrate/smoldot-discovery"
         uses: ./.github/actions/publish-package 
         with:
-          token: ${{ secrets.NPM_TOKEN }}
+          token: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
           package-directory: ./packages/smoldot-discovery
       - name: Fetch gh-pages
         if: steps.publish_connect.outputs.type || steps.publish_connect_extension_protocol.outputs.type
