@@ -2,7 +2,7 @@
 <br /><br />
 
 <div align="center">
-   <img width="100%" height="150" style="object-fit: contain" src="https://substrate.io/img/substrate_og.png" alt="substrate connect">
+   <img height="150" style="object-fit: contain" src="https://substrate.io/img/substrate_og.png" alt="substrate connect">
   <h4 align="center"> NPM packages that offers an innovative way to interact with <a href="https://substrate.dev/">Substrate</a>-based blockchains directly in your browser.</h4>
 </div>
 
