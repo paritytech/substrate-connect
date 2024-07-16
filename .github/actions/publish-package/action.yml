@@ -23,7 +23,7 @@ runs:
       working-directory: ${{ inputs.package-directory }}
     - uses: actions/upload-artifact@v4
       with:
-        name: package
+        name: ${{ inputs.tarball-name }}.tgz
         path: ${{ inputs.package-directory }}/${{ inputs.tarball-name }}.tgz
     - name: Publish
       id: publish
