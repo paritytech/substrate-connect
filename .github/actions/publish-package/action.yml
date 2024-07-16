@@ -21,7 +21,7 @@ runs:
       run: pnpm pack && mv *.tgz ${{ inputs.tarball-name }}.tgz
       shell: bash
       working-directory: ${{ inputs.package-directory }}
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v3
       with:
         name: ${{ inputs.tarball-name }}.tgz
         path: ${{ inputs.package-directory }}/${{ inputs.tarball-name }}.tgz
