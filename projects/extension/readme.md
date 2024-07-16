@@ -2,7 +2,7 @@
 
 A Browser extension that keeps the latest state of well known substrate-based chains' specs and bootnodes (Polkadot, Kusama, Rococo, Westend) synced across tabs - using Substrate Connect and Smoldot light client; 
 
-The Extension is using Substrate Connect and Smoldot light client node modules. This extension, upon browser initiation updates and synchronizes in the well known substrate chain specs (Polkadot, Kusama, Rococo, Westend), keeping them to the latest state inside the extension, for faster chain sync. When a dApp that supports Substrate Connect (e.g. polkadotJS apps) starts in a browser's tab, then it receives the latest specs from the Extension instead of wrap-syncing from the last imported inside the dApp; At the same time, the dApp will appear inside the Extension as "connected" - meaning that it is using the Extension's bootnodes and specs;
+The Extension is using Substrate Connect and Smoldot light client packages. This extension, upon browser initiation updates and synchronizes in the well known substrate chain specs (Polkadot, Kusama, Rococo, Westend), keeping them to the latest state inside the extension, for faster chain sync. When a dApp that supports Substrate Connect (e.g. polkadotJS apps) starts in a browser's tab, then it receives the latest specs from the Extension instead of wrap-syncing from the last imported inside the dApp; At the same time, the dApp will appear inside the Extension as "connected" - meaning that it is using the Extension's bootnodes and specs;
 
 ## Useful Links:
 [Substrate Connect Documentation Page](https://substrate.io/developers/substrate-connect/)
