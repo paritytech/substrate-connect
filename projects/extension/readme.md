@@ -22,6 +22,7 @@ $ pnpm install
 To build the extension, and rebuild it when the files are changed, run
 
 - Open a terminal and run
+
 ```
 $  pnpm dev
 ```
