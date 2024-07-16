@@ -211,4 +211,45 @@ client.supervise()
 
 ### tx-helper
 
-TODO: write usage guide
+The tx-helper package allows you to easily sign transactions. You just need to calldata and an implementation of the
+`@polkadot-api/signer` interface.
+
+#### PJS Example Implementation
+
+```ts
+import { getLightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
+import { connectInjectedExtension } from "@polkadot-api/pjs-signer"
+import { fromHex, toHex } from "@polkadot-api/utils"
+import { createTx } from "@substrate/light-client-extension-helpers/tx-helper" // 👈 create-tx import
+
+const CHANNEL_ID = "..."
+const lightClientProvider = await getLightClientProvider(CHANNEL_ID)
+
+const createTx = async (chainId: string, from: string, callData: string) => {
+  const chains = Object.values(lightClientProvider.getChains())
+  const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
+
+  if (!chain) {
+    throw new Error("unknown chain")
+  }
+
+  const injectedExt = await connectInjectedExtension("polkadot-js")
+
+  const account = injectedExt
+    .getAccounts()
+    .find((account) => toHex(account.polkadotSigner.publicKey) === from)
+
+  if (!account) {
+    throw new Error("no account")
+  }
+
+  const signer = account.polkadotSigner // 👈 @polkadot-api/signer implementation
+
+  const tx = await createTx(chain.connect)({
+    callData: fromHex(callData),
+    signer,
+  })
+
+  return toHex(tx)
+}
+```
