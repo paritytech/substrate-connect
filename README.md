@@ -1,45 +1,69 @@
-# Substrate Connect
 
-Substrate Connect offers an innovative way to interact with 
-[Substrate](https://substrate.dev/)-based blockchains directly in your browser, 
-eliminating the need for an RPC server. By leveraging the 
-[smoldot](https://github.com/smol-dot/smoldot) WASM light client, it ensures a 
-secure and efficient connection to the blockchain network without dependency 
-on specific third parties.
+<br /><br />
+
+<div align="center">
+   <img height="150" style="object-fit: contain" src="https://substrate.io/img/substrate_og.png" alt="substrate connect">
+  <h4 align="center"> NPM packages that offers an innovative way to interact with <a href="https://substrate.dev/">Substrate</a>-based blockchains directly in your browser.</h4>
+</div>
+
+<br /><br />
+
+## Table of contents
+
+- [Introduction](#introduction)
+- [API Documentation](#comprehensive-api-documentation)
+- [Repository outline](#repository-structure)
+   - [Packages](#packages)
+   - [Usage Showcase](#showcase-projects)
+- [Installation](#development)
+- [Releasing](#releasing)
+- [Useful Links](#useful-links)
+
+## Introduction
+
+Substrate Connect offers an innovative way to interact with [Substrate](https://substrate.dev/)-based blockchains directly in your browser, eliminating the need for an RPC server. By leveraging the [smoldot](https://github.com/smol-dot/smoldot) WASM light client, it ensures a secure and efficient connection to the blockchain network without dependency on specific third parties.
 
 ### Overcoming Browser Limitations
 
-Browser limitations on websockets from HTTPS pages make establishing a robust 
-number of peers challenging, as many nodes must be available with TLS. 
-Substrate Connect addresses this issue through a powerful browser extension, 
-allowing chains to stay synced in the background, thereby significantly 
-enhancing the performance of your applications.
+Browser limitations on websockets from HTTPS pages make establishing a robust number of peers challenging, as many nodes must be available with TLS. 
+Substrate Connect addresses this issue through a powerful browser extension, allowing chains to stay synced in the background, thereby significantly enhancing the performance of your applications.
 
 ### Seamless Integration
 
-When building an application with Substrate Connect, it automatically detects 
-whether the user has the extension installed and utilizes it. If not, it 
-seamlessly creates the WASM light client in-page for them. Built on 
-[Polkadot JS](https://polkadot.js.org/docs/api), Substrate Connect ensures 
-that your development experience is as smooth as using a traditional RPC 
-server node.
+When building an application with Substrate Connect, it automatically detects whether the user has the extension installed and utilizes it. If not, it seamlessly creates the WASM light client in-page for them. Built on [Polkadot JS](https://polkadot.js.org/docs/api), Substrate Connect ensures that your development experience is as smooth as using a traditional RPC server node.
 
-### Comprehensive API Documentation
+## Comprehensive API Documentation
 
-For detailed API usage, refer to the [Substrate Connect API 
-documentation](https://paritytech.github.io/substrate-connect/api/).
+For detailed API usage, refer to the [Substrate Connect API documentation](https://paritytech.github.io/substrate-connect/api/).
+
+## Repository Structure
+
+### [Packages](./packages/README.md)
+   The core implementations of `@subtrate/connect` and `@substrate/discovery`, and some auxiliary packages. 
+   - **[@substrate/discovery](./packages/discovery/)**
+   - **[@substrate/connect](./packages/connect/)**
+   - **[@substrate/connect-known-chains](./packages/connect-known-chains/)**
+   - **[@substrate/connect-discovery](./packages/connect-discovery)** and **[@substrate/smoldot-discovery](./packages/smoldot-discovery/)**
+
+### [Showcase Projects](./projects/)
+
+   Showcase full implementations of `@substrate/connect` and `@substrate/discovery` for a Wallet, Extension or Generic usage.
+
+   - **[Wallet implementation](./projects/wallet-template/)**
+   - **[Extension implementation](./projects/extension/)**
+   - **[Parachain Demo](./projects/demo)**
+
+
+### [Examples](./examples/)
+   dApp and Extensions example implementations of `@substrate/connect` and `@substrate/discovery`. 
 
 ## Development
 
-This repository utilizes [pnpm workspaces](https://pnpm.io/workspaces) and 
-`corepack`, ensuring the correct version of `pnpm` is used. For contributions, 
-please review our [contributing guidelines](./CONTRIBUTING.md) to understand 
-our workflow and how to smoothly integrate your contributions to the project.
+This repository utilizes [pnpm workspaces](https://pnpm.io/workspaces) and `corepack`, ensuring the correct version of `pnpm` is used. For contributions, please review our [contributing guidelines](./CONTRIBUTING.md) to understand our workflow and how to smoothly integrate your contributions to the project.
 
 ### Getting Started
 
-Follow these steps to install everything and launch a demo if you're hacking 
-on this repository:
+Follow these steps to install everything and launch a demo if you're hacking on this repository:
 
 1. **Install Prerequisites** (tested with the following versions):
    - Node.js (node) v20.9.0
@@ -63,8 +87,7 @@ on this repository:
    
 6. **Run the Demo Application**:
    - In terminal C: `cd projects/demo && corepack pnpm dev`
-   - Navigate to the URL logged in the Chrome browser opened in step 5. You 
-   should see the extension activate and the demo app log the latest blocks.
+   - Navigate to the URL logged in the Chrome browser opened in step 5. You should see the extension activate and the demo app log the latest blocks.
 
 ### Cleanup Commands
 
@@ -77,11 +100,6 @@ To clean up all build artifacts and dependencies in workspaces in the repository
 ```bash
 corepack pnpm deep-clean
 ```
-
-## Wallet Template
-
-To understand how to use Substrate Connect as a fully functional light client 
-wallet, visit the [wallet template directory](./projects/wallet-template/).
 
 ## Releasing
 

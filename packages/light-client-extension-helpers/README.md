@@ -1,4 +1,18 @@
-# @substrate/light-client-extension-helpers
+<br /><br />
+
+<div align="center">
+  <h1 align="center">@substrate/light-client-extension-helpers</h1>
+  <p align="center">
+    <a href="https://www.npmjs.com/package/@substrate/light-client-extension-helpers">
+      <img alt="npm" src="https://img.shields.io/npm/v/@substrate/light-client-extension-helpers" />
+    </a>
+    <a href="https://github.com/paritytech/substrate-connect/blob/master/LICENSE">
+      <img alt="GPL-3.0-or-later" src="https://img.shields.io/npm/l/@substrate/light-client-extension-helpers" />
+    </a>
+  </p>
+</div>
+
+<br /><br />
 
 ## Components
 
