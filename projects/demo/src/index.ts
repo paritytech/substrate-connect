@@ -29,7 +29,6 @@ window.onload = () => {
       [[assetHubWestend, WellKnownChain.westend2], "asset-hub-westend"],
     ] as [[spec: string, relaySpec?: string], elementId: string][]
   ).forEach(([specs, elementId]) => followChainBestBlocks(specs, elementId))
-
   showAssetHubPolkadotChainDetails()
 }
 
@@ -46,7 +45,6 @@ const followChainBestBlocks = (
   const client = createClient(
     ScProvider(wellKnownChainOrChainSpec, wellKnownChainOrRelayChainSpec),
   )
-
   getObservableClient(client)
     .chainHead$()
     .bestBlocks$.pipe(
