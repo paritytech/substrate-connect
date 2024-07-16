@@ -21,9 +21,9 @@ runs:
       run: pnpm pack && mv *.tgz ${{ inputs.tarball-name }}.tgz
       shell: bash
       working-directory: ${{ inputs.package-directory }}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.tarball-name }}.tgz
+        name: ${{ inputs.tarball-name }}
         path: ${{ inputs.package-directory }}/${{ inputs.tarball-name }}.tgz
     - name: Publish
       id: publish
@@ -31,6 +31,6 @@ runs:
       with:
         route: POST /repos/paritytech/npm_publish_automation/actions/workflows/publish.yml/dispatches
         ref: main
-        inputs: '${{ format(''{{ "repo": "{0}", "run_id": "{1}", "artifact_name": "{2}.tgz" }}'', github.repository, github.run_id, inputs.tarball-name) }}'
+        inputs: '${{ format(''{{ "repo": "{0}", "run_id": "{1}", "artifact_name": "{2}" }}'', github.repository, github.run_id, inputs.tarball-name) }}'
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
