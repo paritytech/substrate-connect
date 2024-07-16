@@ -211,7 +211,7 @@ client.supervise()
 
 ### tx-helper
 
-The tx-helper package allows you to easily sign transactions. You just need to calldata and an implementation of the
+The tx-helper package allows you to easily sign transactions. You just need the calldata and an implementation of the
 `@polkadot-api/signer` interface.
 
 #### PJS Example Implementation
