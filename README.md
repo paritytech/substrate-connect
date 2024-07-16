@@ -39,9 +39,11 @@ For detailed API usage, refer to the [Substrate Connect API documentation](https
 ## Repository Structure
 
 ### [Packages](./packages/README.md)
-   The core implementations of `@subtrate/connect` and `@substrate/discovery`. 
+   The core implementations of `@subtrate/connect` and `@substrate/discovery`, and some auxiliary packages. 
    - **[@substrate/discovery](./packages/discovery/)**
    - **[@substrate/connect](./packages/connect/)**
+   - **[@substrate/connect-known-chains](./packages/connect-known-chains/)**
+   - **[@substrate/connect-discovery](./packages/connect-discovery)** and **[@substrate/smoldot-discovery](./packages/smoldot-discovery/)**
 
 ### [Showcase Projects](./projects/)
 

@@ -20,4 +20,4 @@ The [`@substrate/discovery`](./discovery/README.md) node module allows developer
 
 ## [Substrate Connect Extension](./light-client-extension-helpers/README.md)
 
-A Browser Extension built upon the @substrate/light-client module that is running the selected light clients inside the extension so that the end-user doesn't need to fire up a light node in every browser tab. This will also allow the light-node to keep syncing as long as the browser window stays open.
+A Browser Extension built upon the smoldot light-client module that is running the selected light clients inside the extension so that the end-user doesn't need to fire up a light node in every browser tab. This will also allow the light-node to keep syncing as long as the browser window stays open.
