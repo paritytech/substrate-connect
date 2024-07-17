@@ -80,7 +80,7 @@ export const createTx: (
         ),
       ).pipe(
         mergeMap((signedExtensions) =>
-          signer.sign(
+          signer.signTx(
             callData,
             Object.fromEntries(
               ctx.metadata.extrinsic.signedExtensions.map(

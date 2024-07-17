@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@polkadot-api/json-rpc-provider": "~0.0.1",
-    "@polkadot-api/polkadot-signer": "~0.0.2",
+    "@polkadot-api/polkadot-signer": "~0.1.0",
     "@types/chrome": "^0.0.268"
   },
   "peerDependencies": {
@@ -57,7 +57,7 @@
     "@polkadot-api/json-rpc-provider-proxy": "^0.1.0",
     "@polkadot-api/metadata-builders": "^0.3.0",
     "@polkadot-api/observable-client": "^0.3.1",
-    "@polkadot-api/signer": "~0.0.2",
+    "@polkadot-api/signer": "~0.1.0",
     "@polkadot-api/substrate-bindings": "^0.6.0",
     "@polkadot-api/substrate-client": "^0.1.4",
     "@polkadot-api/utils": "^0.1.0",
