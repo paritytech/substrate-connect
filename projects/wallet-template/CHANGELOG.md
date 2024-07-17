@@ -1,5 +1,69 @@
 # Changelog
 
+## 0.0.7
+
+### Patch Changes
+
+- f86d7a9: chore(deps-dev): bump web-ext from 7.12.0 to 8.2.0
+
+  Bumps [web-ext](https://github.com/mozilla/web-ext) from 7.12.0 to 8.2.0.
+
+  - [Release notes](https://github.com/mozilla/web-ext/releases)
+  - [Commits](https://github.com/mozilla/web-ext/compare/7.12.0...8.2.0)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: web-ext
+    dependency-type: direct:development
+    update-type: version-update:semver-major
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 1cc638c: chore(deps): bump @polkadot-api/signer from 0.0.1 to 0.1.0
+
+  Bumps [@polkadot-api/signer](https://github.com/polkadot-api/polkadot-api) from 0.0.1 to 0.1.0.
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot-api/signer"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 1cc638c: chore(deps): bump @polkadot-api/polkadot-signer from 0.0.2 to 0.1.0
+
+  Bumps [@polkadot-api/polkadot-signer](https://github.com/polkadot-api/polkadot-api) from 0.0.2 to 0.1.0.
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot-api/polkadot-signer"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- Updated dependencies [1cc638c]
+- Updated dependencies [1cc638c]
+  - @substrate/light-client-extension-helpers@2.1.2
+
 ## 0.0.6
 
 ### Patch Changes
