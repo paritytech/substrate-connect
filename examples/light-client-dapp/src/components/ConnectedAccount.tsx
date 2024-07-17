@@ -19,7 +19,7 @@ const Account = () => {
   const { account, disconnectAccount } = useUnstableProvider()
   const { handleOpen } = useModal()
   const systemAccount = useSystemAccount()
-  const balance = !account ? "N/A" : systemAccount?.data.free ?? 0n
+  const balance = !account ? "N/A" : (systemAccount?.data.free ?? 0n)
   return (
     <article>
       <header>
