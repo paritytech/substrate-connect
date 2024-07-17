@@ -20,6 +20,6 @@ export const ProtectedRoute = ({ children }: { children?: ReactNode }) => {
       }}
     />
   ) : (
-    children ?? <Outlet />
+    (children ?? <Outlet />)
   )
 }
