@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.0.6
+
+### Patch Changes
+
+- 22b335b: chore(deps): bump @headlessui/react from 2.1.1 to 2.1.2
+
+  Bumps [@headlessui/react](https://github.com/tailwindlabs/headlessui/tree/HEAD/packages/@headlessui-react) from 2.1.1 to 2.1.2.
+
+  - [Release notes](https://github.com/tailwindlabs/headlessui/releases)
+  - [Changelog](https://github.com/tailwindlabs/headlessui/blob/main/packages/@headlessui-react/CHANGELOG.md)
+  - [Commits](https://github.com/tailwindlabs/headlessui/commits/@headlessui/react@v2.1.2/packages/@headlessui-react)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@headlessui/react"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- f03e960: update chainspecs
+- Updated dependencies [444503f]
+- Updated dependencies [a6c74cb]
+  - @substrate/smoldot-discovery@0.0.9
+  - @substrate/connect-discovery@0.0.7
+  - @substrate/light-client-extension-helpers@2.1.1
+
 ## 0.0.5
 
 ### Patch Changes

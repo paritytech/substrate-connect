@@ -1,5 +1,13 @@
 # @substrate/light-client-extension-helpers
 
+## 2.1.1
+
+### Patch Changes
+
+- a6c74cb: add docs for tx-helper
+- Updated dependencies [f03e960]
+  - @substrate/connect-known-chains@1.1.10
+
 ## 2.1.0
 
 ### Minor Changes

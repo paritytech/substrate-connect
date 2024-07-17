@@ -1,5 +1,11 @@
 # @substrate/connect-known-chains
 
+## 1.1.10
+
+### Patch Changes
+
+- f03e960: update chainspecs
+
 ## 1.1.9
 
 ### Patch Changes

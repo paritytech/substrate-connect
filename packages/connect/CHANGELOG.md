@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.8
+
+### Patch Changes
+
+- 444503f: chore: update READMEs across repo
+- Updated dependencies [444503f]
+- Updated dependencies [f03e960]
+  - @substrate/smoldot-discovery@0.0.9
+  - @substrate/connect-known-chains@1.1.10
+
 ## 1.0.7
 
 ### Patch Changes
