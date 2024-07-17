@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.6
+
+### Patch Changes
+
+- f03e960: update chainspecs
+- Updated dependencies [444503f]
+- Updated dependencies [a6c74cb]
+  - @substrate/smoldot-discovery@0.0.9
+  - @substrate/light-client-extension-helpers@2.1.1
+
 ## 0.5.5
 
 ### Patch Changes

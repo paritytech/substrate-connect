@@ -1,5 +1,11 @@
 # @substrate/smoldot-discovery
 
+## 0.0.9
+
+### Patch Changes
+
+- 444503f: chore: update READMEs across repo
+
 ## 0.0.8
 
 ### Patch Changes
