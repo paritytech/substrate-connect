@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@polkadot-api/json-rpc-provider": "~0.0.1",
-    "@polkadot-api/polkadot-signer": "~0.0.2",
+    "@polkadot-api/polkadot-signer": "~0.1.0",
     "@types/chrome": "^0.0.268"
   },
   "peerDependencies": {
