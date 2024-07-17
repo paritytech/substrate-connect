@@ -313,8 +313,8 @@ importers:
         specifier: ^0.3.1
         version: 0.3.1(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
       '@polkadot-api/signer':
-        specifier: ~0.0.2
-        version: 0.0.2
+        specifier: ~0.1.0
+        version: 0.1.0
       '@polkadot-api/substrate-bindings':
         specifier: ^0.6.0
         version: 0.6.0
@@ -564,8 +564,8 @@ importers:
         specifier: ~0.1.0
         version: 0.1.0
       '@polkadot-api/signer':
-        specifier: ~0.0.2
-        version: 0.0.2
+        specifier: ~0.1.0
+        version: 0.1.0
       '@polkadot-api/substrate-bindings':
         specifier: ^0.6.0
         version: 0.6.0
@@ -3830,6 +3830,14 @@ packages:
     resolution: {integrity: sha512-nWpzsU8KA27jrS1G6gV3yK4s9LxOsHbySFr3GpCQT0Iz61VHPQ9YLqnkR+J4I7myrHijiRchbMlN/iF08EbAQQ==}
     dependencies:
       '@polkadot-api/polkadot-signer': 0.0.2
+      '@polkadot-api/substrate-bindings': 0.6.0
+      '@polkadot-api/utils': 0.1.0
+    dev: false
+
+  /@polkadot-api/signer@0.1.0:
+    resolution: {integrity: sha512-N9+InkaTYo0YPlQ4Dc1VshWUO7m2VFke4J5P9l4Dxr9bYOWHt6v/emgohcs0l4E7TJqB1JG6U5y2L0uhgwm86A==}
+    dependencies:
+      '@polkadot-api/polkadot-signer': 0.1.0
       '@polkadot-api/substrate-bindings': 0.6.0
       '@polkadot-api/utils': 0.1.0
     dev: false
