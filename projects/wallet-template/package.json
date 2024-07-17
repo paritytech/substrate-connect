@@ -49,7 +49,7 @@
     "vite": "^5.2.11",
     "vite-plugin-web-extension": "^4.1.3",
     "vitest": "^1.5.0",
-    "web-ext": "^7.11.0",
+    "web-ext": "^8.2.0",
     "wxt": "^0.17.12"
   },
   "dependencies": {
