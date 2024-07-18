@@ -10,12 +10,18 @@
 
 ## Table of contents
 
+- [Table of contents](#table-of-contents)
 - [Introduction](#introduction)
-- [API Documentation](#comprehensive-api-documentation)
-- [Repository outline](#repository-structure)
-   - [Packages](#packages)
-   - [Usage Showcase](#showcase-projects)
-- [Installation](#development)
+  - [Overcoming Browser Limitations](#overcoming-browser-limitations)
+  - [Seamless Integration](#seamless-integration)
+- [Comprehensive API Documentation](#comprehensive-api-documentation)
+- [Repository Structure](#repository-structure)
+  - [Packages](#packages)
+  - [Showcase Projects](#showcase-projects)
+  - [Examples](#examples)
+- [Development](#development)
+  - [Getting Started](#getting-started)
+  - [Cleanup Commands](#cleanup-commands)
 - [Releasing](#releasing)
 - [Useful Links](#useful-links)
 
@@ -34,7 +40,7 @@ When building an application with Substrate Connect, it automatically detects wh
 
 ## Comprehensive API Documentation
 
-For detailed API usage, refer to the [Substrate Connect API documentation](https://paritytech.github.io/substrate-connect/api/).
+For detailed API usage, refer to the [Substrate Connect API documentation](https://paritytech.github.io/substrate-connect).
 
 ## Repository Structure
 
