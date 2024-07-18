@@ -26,7 +26,6 @@
     "dev:burnr": "pnpm --filter @substrate/burnr dev",
     "dev:demo": "pnpm --filter @substrate/demo dev",
     "dev:extension": "pnpm --filter @substrate/extension dev",
-    "deploy-projects-and-docs": "./deploy.sh",
     "format": "prettier --write .",
     "prepare": "husky"
   },
