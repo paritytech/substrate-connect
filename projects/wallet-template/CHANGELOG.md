@@ -1,5 +1,86 @@
 # Changelog
 
+## 0.0.8
+
+### Patch Changes
+
+- d79b3f6: chore(deps): bump @radix-ui/react-aspect-ratio from 1.0.3 to 1.1.0
+
+  Bumps [@radix-ui/react-aspect-ratio](https://github.com/radix-ui/primitives) from 1.0.3 to 1.1.0.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-aspect-ratio"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 9259c59: chore(deps): bump @polkadot-api/view-builder from 0.2.1 to 0.2.2
+
+  Bumps [@polkadot-api/view-builder](https://github.com/polkadot-api/polkadot-api) from 0.2.1 to 0.2.2.
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot-api/view-builder"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 1f1ee57: chore(deps): bump @radix-ui/react-menubar from 1.0.4 to 1.1.1
+
+  Bumps [@radix-ui/react-menubar](https://github.com/radix-ui/primitives) from 1.0.4 to 1.1.1.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-menubar"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 328b463: chore(deps-dev): bump tailwindcss from 3.4.4 to 3.4.6
+
+  Bumps [tailwindcss](https://github.com/tailwindlabs/tailwindcss) from 3.4.4 to 3.4.6.
+
+  - [Release notes](https://github.com/tailwindlabs/tailwindcss/releases)
+  - [Changelog](https://github.com/tailwindlabs/tailwindcss/blob/v3.4.6/CHANGELOG.md)
+  - [Commits](https://github.com/tailwindlabs/tailwindcss/compare/v3.4.4...v3.4.6)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: tailwindcss
+    dependency-type: direct:development
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 3efab80: update chainspecs
+  - @substrate/light-client-extension-helpers@2.1.3
+
 ## 0.0.7
 
 ### Patch Changes
