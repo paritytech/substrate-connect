@@ -1,8 +1,0 @@
-export { default as Logo } from "./Logo"
-export { default as light } from "./theme"
-export { MenuContent } from "./MenuContent"
-export { BraveModal } from "./BraveModal"
-export { IconWeb3 } from "./IconWeb3"
-export { Bootnodes } from "./Bootnodes"
-export { Title } from "./Title"
-export { Switch } from "./Switch"

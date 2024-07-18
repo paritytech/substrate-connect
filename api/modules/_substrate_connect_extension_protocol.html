@@ -1,0 +1,111 @@
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>@substrate/connect-extension-protocol - v2.0.0 | Substrate Connect</title><meta name="description" content="Documentation for Substrate Connect"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><div class="table-cell" id="tsd-search" data-base=".."><div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="../assets/icons.svg#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div><div class="field"><div id="tsd-toolbar-links"></div></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">Substrate Connect</a></div><div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><ul class="tsd-breadcrumb"><li><a href="../index.html">Substrate Connect</a></li><li><a href="_substrate_connect_extension_protocol.html">@substrate/connect-extension-protocol</a></li></ul><h1>Module @substrate/connect-extension-protocol - v2.0.0</h1></div><section class="tsd-panel tsd-comment"><div class="tsd-comment tsd-typography"><p>This module contains the types and explanations of the communication
+protocol between the JavaScript code embedded in a web page and the
+substrate-connect extension.</p>
+<a id="md:overview" class="tsd-anchor"></a><h1><a href="#md:overview">Overview</a></h1><p>If a web page wants to use the features of the substrate-connect extension,
+it must first check whether the extension is available by checking whether
+there exists an element on the DOM whose <code>id</code> is equal to
+<a href="../variables/_substrate_connect_extension_protocol.DOM_ELEMENT_ID.html" class="tsd-kind-variable">DOM_ELEMENT_ID</a>. This DOM element is automatically inserted by
+the extension when the page loads.</p>
+<p>If so, the web page can make use of the extension by sending messages on
+its <code>window</code> by using <code>Window.postMessage</code>. These messages must conform to
+the <a href="../types/_substrate_connect_extension_protocol.ToExtension.html" class="tsd-kind-type-alias">ToExtension</a> interface defined below.</p>
+<p>The substrate-connect extension (more precisely, its content-script) listens
+for &quot;message&quot; events (using <code>window.addEventListener(&quot;message&quot;, ...)</code>) and
+replies by sending back messages using <code>Window.postMessage</code> as well. The
+messages sent by the extension conform to the <a href="../types/_substrate_connect_extension_protocol.ToApplication.html" class="tsd-kind-type-alias">ToApplication</a>
+interface defined below.</p>
+<a id="md:detailed-usage" class="tsd-anchor"></a><h1><a href="#md:detailed-usage">Detailed usage</a></h1><p>In order to ask the substrate-connect extension to connect to a certain
+chain, the web page must:</p>
+<ul>
+<li>Randomly generate the so-called <code>chainId</code>, a string that will be used
+to identify this specific chain connection during its lifetime. At least
+48 bits of entropy are recommended in order to avoid accidentally
+generating the same string multiple times.</li>
+<li>Send a <a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionAddChain.html" class="tsd-kind-interface">ToExtensionAddChain</a> message (using <code>Window.postMessage</code>,
+as explained in the previous section) containing this <code>chainid</code> and the
+specification of the chain to connect to.</li>
+</ul>
+<p>Instead of a <a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionAddChain.html" class="tsd-kind-interface">ToExtensionAddChain</a> message, the web page can
+alternatively send a <a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionAddWellKnownChain.html" class="tsd-kind-interface">ToExtensionAddWellKnownChain</a> message and pass
+a chain name recognized by the extension such as &quot;polkadot&quot; or &quot;ksmcc3&quot;, in
+which case the extension will use the chain specification stored internally.
+Doing so provides multiple advantages such as less bandwidth usage (as the
+web page doesn&#39;t have to download the chain specification), and a faster
+initialization as the extension is most likely already connected to that
+chain.</p>
+<p>After a <a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionAddChain.html" class="tsd-kind-interface">ToExtensionAddChain</a> or a
+<a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionAddWellKnownChain.html" class="tsd-kind-interface">ToExtensionAddWellKnownChain</a> message has been sent, the extension
+starts connecting to the chain, and later replies by sending back a
+<a href="../interfaces/_substrate_connect_extension_protocol.ToApplicationChainReady.html" class="tsd-kind-interface">ToApplicationChainReady</a> message in case of success, or a
+<a href="../interfaces/_substrate_connect_extension_protocol.ToApplicationError.html" class="tsd-kind-interface">ToApplicationError</a> message in case of failure. This reply might
+only be sent back after a few seconds or more, and the web page is
+encouraged to display some kind of loading screen in the meanwhile.</p>
+<p>Note that the extension reserves the rights to stop supporting a chain that
+used to be recognized by <a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionAddWellKnownChain.html" class="tsd-kind-interface">ToExtensionAddWellKnownChain</a>. If the web
+page has sent a <a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionAddWellKnownChain.html" class="tsd-kind-interface">ToExtensionAddWellKnownChain</a> and receives back a
+<a href="../interfaces/_substrate_connect_extension_protocol.ToApplicationError.html" class="tsd-kind-interface">ToApplicationError</a>, it should automatically fall back to
+downloading the chain specification and sending a
+<a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionAddChain.html" class="tsd-kind-interface">ToExtensionAddChain</a> instead.</p>
+<p>After a chain has been successfully initialized (i.e. a
+<a href="../interfaces/_substrate_connect_extension_protocol.ToApplicationChainReady.html" class="tsd-kind-interface">ToApplicationChainReady</a> message has been sent to the web page), the
+web page can submit JSON-RPC requests and notifications to the chain client
+by sending <a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionRpc.html" class="tsd-kind-interface">ToExtensionRpc</a> messages. The chain client sends back
+JSON-RPC responses and notifications using <a href="../interfaces/_substrate_connect_extension_protocol.ToApplicationRpc.html" class="tsd-kind-interface">ToApplicationRpc</a>
+messages.</p>
+<p>Once a web page no longer wants to interface with a certain chain, it should
+send a <a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionRemoveChain.html" class="tsd-kind-interface">ToExtensionRemoveChain</a> message to the extension in order for
+resources to be de-allocated. This can also be done before a
+<a href="../interfaces/_substrate_connect_extension_protocol.ToApplicationChainReady.html" class="tsd-kind-interface">ToApplicationChainReady</a> message has been sent back.</p>
+<p>At any point in time after the chain has been initialized, the extension
+can send a <a href="../interfaces/_substrate_connect_extension_protocol.ToApplicationError.html" class="tsd-kind-interface">ToApplicationError</a> message to indicate a critical problem
+with the chain or the extension that prevents execution from continuing.
+This can include for example the extension being disabled by the user, the
+underlying client crashing, an internal error, etc. Contrary to
+<a href="../interfaces/_substrate_connect_extension_protocol.ToApplicationError.html" class="tsd-kind-interface">ToApplicationError</a> messages <em>before</em> a chain has been initialized,
+<a href="../interfaces/_substrate_connect_extension_protocol.ToApplicationError.html" class="tsd-kind-interface">ToApplicationError</a> messages that happen <em>after</em> a chain has been
+initialized are rare and serious. If that happens, the web page is
+encouraged to remove all of its existing chains and stop using the extension
+altogether.</p>
+<p>Note that if the extension sends a <a href="../interfaces/_substrate_connect_extension_protocol.ToApplicationError.html" class="tsd-kind-interface">ToApplicationError</a> message,
+either before of after the chain is ready, the corresponding <code>chainId</code> is
+immediately considered dead/removed, and the web page doesn&#39;t need to send
+a <a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionRemoveChain.html" class="tsd-kind-interface">ToExtensionRemoveChain</a> message.</p>
+<a id="md:other-extensions-implementing-this-protocol" class="tsd-anchor"></a><h1><a href="#md:other-extensions-implementing-this-protocol">Other extensions implementing this protocol</a></h1><p>While the documentation above refers to the substrate-connect extension in
+particular, any other browser extension is free to implement this protocol
+in order to pretend to be the substrate-connect extension.</p>
+<p>In order to avoid conflicts when multiple different extensions implement
+this protocol, extensions must check whether there already exists an element
+on the DOM whose <code>id</code> is equal to <a href="../variables/_substrate_connect_extension_protocol.DOM_ELEMENT_ID.html" class="tsd-kind-variable">DOM_ELEMENT_ID</a> before
+creating one and listening for events.</p>
+</div><div class="tsd-comment tsd-typography"></div></section><section class="tsd-panel tsd-typography"><p><br /><br /></p>
+<div align="center">
+  <h1 align="center">@substrate/connect-extension-protocol</h1>
+  <p align="center">
+    <a href="https://www.npmjs.com/package/@substrate/connect-extension-protocol">
+      <img alt="npm" src="https://img.shields.io/npm/v/@substrate/connect-extension-protocol" />
+    </a>
+    <a href="https://github.com/paritytech/substrate-connect/blob/master/LICENSE">
+      <img alt="GPL-3.0-or-later" src="https://img.shields.io/npm/l/@substrate/connect-extension-protocol" />
+    </a>
+  </p>
+</div>
+
+<p><br /><br /></p>
+<p>This is a module consisting (almost) only of types. These types are the types
+of the messages exchanged between apps using <code>@substrate/connect</code> and the
+browser extension. This package is shared between <code>@substrate/connect</code> and the
+extension in order for the TypeScript compiler to enforce the contract between
+them.</p>
+</section><section class="tsd-panel-group tsd-index-group"><section class="tsd-panel tsd-index-panel"><h3 class="tsd-index-heading uppercase">Index</h3><section class="tsd-index-section"><h3 class="tsd-index-heading">Interfaces</h3><div class="tsd-index-list"><a href="../interfaces/_substrate_connect_extension_protocol.ToApplicationChainReady.html" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-256"></use></svg><span>To<wbr/>Application<wbr/>Chain<wbr/>Ready</span></a>
+<a href="../interfaces/_substrate_connect_extension_protocol.ToApplicationError.html" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-256"></use></svg><span>To<wbr/>Application<wbr/>Error</span></a>
+<a href="../interfaces/_substrate_connect_extension_protocol.ToApplicationHeader.html" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-256"></use></svg><span>To<wbr/>Application<wbr/>Header</span></a>
+<a href="../interfaces/_substrate_connect_extension_protocol.ToApplicationRpc.html" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-256"></use></svg><span>To<wbr/>Application<wbr/>Rpc</span></a>
+<a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionAddChain.html" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-256"></use></svg><span>To<wbr/>Extension<wbr/>Add<wbr/>Chain</span></a>
+<a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionAddWellKnownChain.html" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-256"></use></svg><span>To<wbr/>Extension<wbr/>Add<wbr/>Well<wbr/>Known<wbr/>Chain</span></a>
+<a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionHeader.html" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-256"></use></svg><span>To<wbr/>Extension<wbr/>Header</span></a>
+<a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionRemoveChain.html" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-256"></use></svg><span>To<wbr/>Extension<wbr/>Remove<wbr/>Chain</span></a>
+<a href="../interfaces/_substrate_connect_extension_protocol.ToExtensionRpc.html" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-256"></use></svg><span>To<wbr/>Extension<wbr/>Rpc</span></a>
+</div></section><section class="tsd-index-section"><h3 class="tsd-index-heading">Type Aliases</h3><div class="tsd-index-list"><a href="../types/_substrate_connect_extension_protocol.ToApplication.html" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-2097152"></use></svg><span>To<wbr/>Application</span></a>
+<a href="../types/_substrate_connect_extension_protocol.ToExtension.html" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-2097152"></use></svg><span>To<wbr/>Extension</span></a>
+</div></section><section class="tsd-index-section"><h3 class="tsd-index-heading">Variables</h3><div class="tsd-index-list"><a href="../variables/_substrate_connect_extension_protocol.DOM_ELEMENT_ID.html" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-32"></use></svg><span>DOM_<wbr/>ELEMENT_<wbr/>ID</span></a>
+</div></section></section></section></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-index-accordion"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><h4 class="uppercase">Member Visibility</h4><form><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></form></div><div class="tsd-theme-toggle"><h4 class="uppercase">Theme</h4><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-index-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#md:overview"><span>Overview</span></a><a href="#md:detailed-usage"><span>Detailed usage</span></a><a href="#md:other-extensions-implementing-this-protocol"><span>Other extensions implementing this protocol</span></a></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="../index.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-1"></use></svg><span>Substrate Connect</span></a><ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base=".."><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>

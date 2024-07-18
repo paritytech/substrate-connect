@@ -1,5 +1,0 @@
-packages:
-  - packages/*
-  - projects/*
-  - zombienet-tests
-  - examples/*
