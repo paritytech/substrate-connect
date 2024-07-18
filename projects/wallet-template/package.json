@@ -66,7 +66,7 @@
     "@polkadot-api/substrate-bindings": "^0.6.0",
     "@polkadot-api/substrate-client": "^0.1.4",
     "@polkadot-api/utils": "^0.1.0",
-    "@polkadot-api/view-builder": "^0.2.1",
+    "@polkadot-api/view-builder": "^0.2.2",
     "@polkadot-labs/hdkd": "^0.0.6",
     "@polkadot-labs/hdkd-helpers": "^0.0.6",
     "@polkadot-labs/schnorrkel-wasm": "^0.0.5",

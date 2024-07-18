@@ -576,8 +576,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0
       '@polkadot-api/view-builder':
-        specifier: ^0.2.1
-        version: 0.2.1
+        specifier: ^0.2.2
+        version: 0.2.2
       '@polkadot-labs/hdkd':
         specifier: ^0.0.6
         version: 0.0.6
@@ -3877,10 +3877,10 @@ packages:
   /@polkadot-api/utils@0.1.0:
     resolution: {integrity: sha512-MXzWZeuGxKizPx2Xf/47wx9sr/uxKw39bVJUptTJdsaQn/TGq+z310mHzf1RCGvC1diHM8f593KrnDgc9oNbJA==}
 
-  /@polkadot-api/view-builder@0.2.1:
-    resolution: {integrity: sha512-oCLs7AYcqI9SYc3XcZ0aZHal0cNntDPkbpomrbphcMGCET+1qRMd13TZsP6eqFLTrRr/nTOt1rdo2o/M/QM4OA==}
+  /@polkadot-api/view-builder@0.2.2:
+    resolution: {integrity: sha512-WC2iC0YNXTMsF056Vlj5EncP94hHbtFssE0eALa51U6zMTVLbfnsctlg0KO0wX/sEwFC16pZlvM1vz8jlEQTjQ==}
     dependencies:
-      '@polkadot-api/metadata-builders': 0.3.1
+      '@polkadot-api/metadata-builders': 0.3.2
       '@polkadot-api/substrate-bindings': 0.6.0
       '@polkadot-api/utils': 0.1.0
     dev: false
