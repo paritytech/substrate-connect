@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -146,14 +151,6 @@ jobs:
           token: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
           tarball-name: "substrate-smoldot-discovery"
           package-directory: ./packages/smoldot-discovery
-      - name: Fetch gh-pages
-        if: steps.publish_connect.outputs.type || steps.publish_connect_extension_protocol.outputs.type
-        run: |
-          git remote set-branches origin gh-pages
-          git fetch --depth 1 origin gh-pages
-      - name: Deploy Projects & Docs
-        if: steps.publish_connect.outputs.type || steps.publish_connect_extension_protocol.outputs.type
-        run: pnpm deploy-projects-and-docs
 
   upload-extension-artifacts:
     if: github.ref == 'refs/heads/main'
@@ -176,6 +173,29 @@ jobs:
         with:
           name: substrate-connect-extension-mv3-chrome
           path: ./projects/extension/dist
+
+  docs:
+    if: github.ref == 'refs/heads/main'
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.7
+      - uses: ./.github/actions/turbo-build
+      - name: Generate API Docs
+        run: pnpm api-docs
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          # Upload entire repository
+          path: './docs'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
 
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
