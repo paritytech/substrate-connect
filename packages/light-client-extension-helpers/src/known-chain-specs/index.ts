@@ -2,6 +2,7 @@ import { chainSpec as polkadot } from "./polkadot"
 import { chainSpec as ksmcc3 } from "./ksmcc3"
 import { chainSpec as westend2 } from "./westend2"
 import { chainSpec as rococo_v2_2 } from "./rococo_v2_2"
+import { chainSpec as paseo } from "./paseo"
 
 export * from "@substrate/connect-known-chains"
 
@@ -15,4 +16,5 @@ export const wellKnownChainSpecs = {
     westend2,
   "0x6408de7737c59c238890533af25896a2c20608d8b380bb01029acb392781063e":
     rococo_v2_2,
+  "0x77afd6190f1554ad45fd0d31aee62aacc33c6db0ea801129acb813f913e0764f": paseo,
 }
