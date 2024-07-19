@@ -24,6 +24,7 @@ window.onload = () => {
       [[WellKnownChain.polkadot], "polkadot"],
       [[WellKnownChain.ksmcc3], "kusama"],
       [[WellKnownChain.westend2], "westend"],
+      [[WellKnownChain.paseo], "paseo"],
       [[assetHubPolkadot, WellKnownChain.polkadot], "asset-hub-polkadot"],
       [[assetHubKusama, WellKnownChain.ksmcc3], "asset-hub-kusama"],
       [[assetHubWestend, WellKnownChain.westend2], "asset-hub-westend"],
