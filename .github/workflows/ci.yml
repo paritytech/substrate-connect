@@ -195,7 +195,7 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
 
   all:
     # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
