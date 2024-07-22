@@ -144,9 +144,9 @@ export const Bootnodes = () => {
   }
 
   return (
-    <section className="mx-0 md:mx-12 xl:mx-36 2xl:mx-64 font-roboto max-w-5xl">
-      <div className="font-inter font-bold text-3xl pb-4">Bootnodes</div>
-      <div className="bg-white border border-neutral-200 p-4 rounded-md">
+    <section className="max-w-5xl mx-0 md:mx-12 xl:mx-36 2xl:mx-64 font-roboto">
+      <div className="pb-4 text-3xl font-bold font-inter">Bootnodes</div>
+      <div className="p-4 bg-white border rounded-md border-neutral-200">
         {/* Network selection */}
         <Title>Network</Title>
         <div className="networkSelect">
@@ -160,6 +160,7 @@ export const Bootnodes = () => {
             <option value="polkadot">Polkadot</option>
             <option value="ksmcc3">Kusama</option>
             <option value="westend2">Westend</option>
+            <option value="paseo">Paseo</option>
             <option value="rococo_v2_2">Rococo</option>
           </select>
           <span className="focus"></span>
@@ -168,8 +169,8 @@ export const Bootnodes = () => {
         <Title titleType="small">Default</Title>
         <div className="mb-8">
           {selectedChainDefaultBn?.map((bn) => (
-            <div className="leading-4 flex items-center mb-2 wrap">
-              <div className="text-ellipsis overflow-hidden whitespace-nowrap w-11/12">
+            <div className="flex items-center mb-2 leading-4 wrap">
+              <div className="w-11/12 overflow-hidden text-ellipsis whitespace-nowrap">
                 {bn}
               </div>
               <Switch
@@ -184,12 +185,12 @@ export const Bootnodes = () => {
         <Title titleType="small">Custom</Title>
         <div className="mb-8">
           {customBn.map((c) => (
-            <div className="leading-4 flex items-center mb-2">
-              <div className="text-ellipsis overflow-hidden whitespace-nowrap w-11/12">
+            <div className="flex items-center mb-2 leading-4">
+              <div className="w-11/12 overflow-hidden text-ellipsis whitespace-nowrap">
                 {c.bootnode}
               </div>
               <button
-                className="flex bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-full items-center"
+                className="flex items-center px-4 py-2 text-white bg-red-600 rounded-full hover:bg-red-700"
                 onClick={async () => {
                   await saveToLocalStorage(
                     selectedChain,
@@ -208,7 +209,7 @@ export const Bootnodes = () => {
         </div>
         <Title>Add custom Bootnode</Title>
         <div className="flex flex-col">
-          <div className="flex flex-row mb-4 justify-between">
+          <div className="flex flex-row justify-between mb-4">
             <input
               type="text"
               className="w-10/12 block px-2 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding
