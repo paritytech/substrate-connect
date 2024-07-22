@@ -3,7 +3,6 @@ import { DEV_PHRASE, sr25519, ss58Address } from "@polkadot-labs/hdkd-helpers"
 import { toHex } from "@polkadot-api/utils"
 import { sr25519_secret_from_seed } from "@polkadot-labs/schnorrkel-wasm"
 import { setupWallet } from "./utils"
-import crypto from "crypto"
 
 test("add account", async ({ extensionId, context }) => {
   test.setTimeout(5 * 60 * 1000)
@@ -18,7 +17,7 @@ test("add account", async ({ extensionId, context }) => {
 
   await popupPage.getByText("Next").click()
 
-  for (const chain of ["Polkadot", "Westend", "Kusama"]) {
+  for (const chain of ["Polkadot", "Westend", "Kusama", "Paseo"]) {
     await popupPage.getByLabel(chain).check()
     expect(popupPage.getByLabel(chain)).toBeChecked()
   }
@@ -94,7 +93,7 @@ test("import mnemonic", async ({ extensionId, context }) => {
     .getByLabel("Crypto Key Name", { exact: true })
     .fill("Imported")
 
-  for (const chain of ["Polkadot", "Westend", "Kusama"]) {
+  for (const chain of ["Polkadot", "Westend", "Kusama", "Paseo"]) {
     await popupPage.getByLabel(chain).check()
     expect(popupPage.getByLabel(chain)).toBeChecked()
   }

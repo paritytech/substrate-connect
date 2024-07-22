@@ -6,7 +6,9 @@ export type StorageEntryType<E extends StorageEntry> =
 export async function getDefaultBootnodes(
   chain: string,
 ): Promise<string[] | undefined> {
-  if (["polkadot", "ksmcc3", "westend2", "rococo_v2_2"].includes(chain)) {
+  if (
+    ["polkadot", "ksmcc3", "westend2", "rococo_v2_2", "paseo"].includes(chain)
+  ) {
     const bootNodes = (
       await (
         await fetch(chrome.runtime.getURL(`./chainspecs/${chain}.json`))
