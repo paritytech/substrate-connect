@@ -53,6 +53,7 @@ type FormFields = {
     polkadot: boolean
     westend: boolean
     kusama: boolean
+    paseo: boolean
   }
 }
 
@@ -113,13 +114,16 @@ export function ImportAccounts() {
         polkadot: false,
         westend: false,
         kusama: false,
+        paseo: false,
       },
     },
   })
 
   const activeTab = watch("tab._type")
 
-  const onNetworkChanged = (chain: "kusama" | "polkadot" | "westend") => {
+  const onNetworkChanged = (
+    chain: "kusama" | "polkadot" | "westend" | "paseo",
+  ) => {
     const newValue = !getValues(`networks.${chain}`)
     return {
       ...getValues("networks"),
@@ -335,34 +339,33 @@ export function ImportAccounts() {
                   }}
                   render={({ field }) => (
                     <div className="flex flex-col gap-4">
-                      {(["polkadot", "westend", "kusama"] as const).map(
-                        (chain, idx) => (
-                          <>
-                            <div
-                              className="flex items-center space-x-2"
-                              key={idx}
+                      {(
+                        ["polkadot", "westend", "kusama", "paseo"] as const
+                      ).map((chain, idx) => (
+                        <>
+                          <div
+                            className="flex items-center space-x-2"
+                            key={idx}
+                          >
+                            <Checkbox
+                              id={chain}
+                              checked={field.value[chain]}
+                              onCheckedChange={() =>
+                                field.onChange(onNetworkChanged(chain))
+                              }
+                              aria-checked={field.value[chain]}
+                            />
+                            <label
+                              htmlFor={chain}
+                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                             >
-                              <Checkbox
-                                id={chain}
-                                checked={field.value[chain]}
-                                onCheckedChange={() =>
-                                  field.onChange(onNetworkChanged(chain))
-                                }
-                                aria-checked={field.value[chain]}
-                              />
-                              <label
-                                htmlFor={chain}
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                              >
-                                <span className="text-sm">
-                                  {chain.charAt(0).toUpperCase() +
-                                    chain.slice(1)}
-                                </span>
-                              </label>
-                            </div>
-                          </>
-                        ),
-                      )}
+                              <span className="text-sm">
+                                {chain.charAt(0).toUpperCase() + chain.slice(1)}
+                              </span>
+                            </label>
+                          </div>
+                        </>
+                      ))}
                     </div>
                   )}
                 />
