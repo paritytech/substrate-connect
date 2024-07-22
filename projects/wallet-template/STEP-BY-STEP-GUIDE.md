@@ -36,12 +36,17 @@ Add the light client background extension helper to your background script. This
 **Background Script:**
 
 ```ts
-import { polkadot, ksmcc3, westend2 } from "@substrate/connect-known-chains"
+import {
+  polkadot,
+  ksmcc3,
+  westend2,
+  paseo,
+} from "@substrate/connect-known-chains"
 import { start } from "@substrate/light-client-extension-helpers/smoldot"
 
 const { lightClientPageHelper, addOnAddChainByUserListener } = register({
   smoldotClient: start({ maxLogLevel: 4 }),
-  getWellKnownChainSpecs: async () => [polkadot, ksmcc3, westend2],
+  getWellKnownChainSpecs: async () => [polkadot, ksmcc3, westend2, paseo],
 })
 ```
 
