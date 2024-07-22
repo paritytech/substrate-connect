@@ -22,6 +22,7 @@ const { lightClientPageHelper, addOnAddChainByUserListener } = register({
         "./chainspecs/polkadot.json",
         "./chainspecs/ksmcc3.json",
         "./chainspecs/westend2.json",
+        "./chainspecs/paseo.json",
         // FIXME: remove comment once https://github.com/smol-dot/smoldot/issues/1691 is fixed
         // "./chainspecs/rococo_v2_2.json",
       ].map((path) =>

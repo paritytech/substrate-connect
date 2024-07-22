@@ -68,6 +68,10 @@
     "./westend2_collectives": {
       "import": "./dist/specs/westend2_collectives.js",
       "require": "./dist/specs/westend2_collectives.cjs"
+    },
+    "./paseo": {
+      "import": "./dist/specs/paseo.js",
+      "require": "./dist/specs/paseo.cjs"
     }
   },
   "repository": {

@@ -39,6 +39,13 @@ export async function getSpec(chain: string): Promise<string> {
         )
         break
       }
+      case WellKnownChain.paseo: {
+        chains.set(
+          WellKnownChain.paseo,
+          import("@substrate/connect-known-chains/paseo"),
+        )
+        break
+      }
     }
 
   return (await chains.get(knownChain)!).chainSpec
