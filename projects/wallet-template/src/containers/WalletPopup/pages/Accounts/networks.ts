@@ -27,4 +27,11 @@ export const networks: Network[] = [
     label: "Kusama",
     logo: "https://cryptologos.cc/logos/kusama-ksm-logo.svg",
   },
+  {
+    chainId:
+      "0x77afd6190f1554ad45fd0d31aee62aacc33c6db0ea801129acb813f913e0764f",
+    value: "paseo",
+    label: "Paseo",
+    logo: "https://i.imgur.com/IRSDaj2.png",
+  },
 ]
