@@ -23,6 +23,7 @@ test("sanity", async ({ page: dappPage, extensionId, context }) => {
   for (const chainName of [
     "Polkadot",
     "Kusama",
+    "Paseo",
     "AssetHubPolkadot",
     "AssetHubKusama",
   ]) {
@@ -40,6 +41,7 @@ test("sanity", async ({ page: dappPage, extensionId, context }) => {
   const extensionPageChainNames = [
     "Polkadot",
     "Kusama",
+    "Paseo Testnet",
     "Polkadot Asset Hub",
     "Kusama Asset Hub",
   ]
