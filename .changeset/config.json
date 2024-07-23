@@ -12,6 +12,7 @@
     "@substrate/burnr",
     "light-client-dapp",
     "light-client-extension-helpers-dapp",
-    "light-client-extension-helpers-extension" 
+    "light-client-extension-helpers-extension",
+    "smoldot-discovery-example"
   ]
 }
