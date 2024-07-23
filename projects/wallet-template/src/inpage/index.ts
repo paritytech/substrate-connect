@@ -48,9 +48,7 @@ const lightClientProvider = getLightClientProvider(CHANNEL_ID)
 
 // #region Smoldot Discovery Provider
 {
-  const provider = lightClientProvider.then((provider) =>
-    makeSmoldotDiscoveryConnector(provider),
-  )
+  const provider = lightClientProvider.then(makeSmoldotDiscoveryConnector)
 
   const detail: SmoldotExtensionProviderDetail = Object.freeze({
     kind: "smoldot-v1",

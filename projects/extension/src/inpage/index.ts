@@ -16,8 +16,8 @@ const PROVIDER_INFO = {
 }
 
 const lightClientProvider = getLightClientProvider(DOM_ELEMENT_ID)
-const smoldotV1Provider = lightClientProvider.then((provider) =>
-  makeSmoldotDiscoveryConnector(provider),
+const smoldotV1Provider = lightClientProvider.then(
+  makeSmoldotDiscoveryConnector,
 )
 
 registerSubstrateConnect()
