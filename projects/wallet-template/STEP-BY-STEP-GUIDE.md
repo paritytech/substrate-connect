@@ -11,17 +11,17 @@ extension helpers into your browser extension.
 
 ## Setup
 
-Install these two packages: `@substrate/light-client-extension-helpers` and `@substrate/connect-known-chains`. The former provides methods that instantly equip your extension with light client capabilities, while the latter contains all the well know chains that you need to provide in the background script `register` method.
+First install these three packages: `@substrate/light-client-extension-helpers`, @substrate/smoldot-discovery and `@substrate/connect-known-chains`. We will use these packages to implement a provider for the `@substrate/smoldot-discovery` package.
 
 ```sh
-pnpm i @substrate/light-client-extension-helpers @substrate/connect-known-chains
+pnpm i @substrate/light-client-extension-helpers @substrate/connect-known-chains @substrate/smoldot-discovery
 ```
 
-## Steps
+## @substrate/smoldot-discovery Integration
 
 ### 1. Add Light Client Background Extension Helper
 
-Add the light client background extension helper to your background script. This must be a service worker script using Manifest V3. When your extension launches, it will immediately connect to `smoldot`.
+Start by adding the light client background extension helper to your background script. This must be a service worker script using Manifest V3. When your extension launches, it will immediately connect to `smoldot`.
 
 **Manifest V3 Configuration:**
 
@@ -50,36 +50,15 @@ const { lightClientPageHelper, addOnAddChainByUserListener } = register({
 })
 ```
 
-### 2. Setup Background RPC Client
+### 2. Register Content Script
 
-Use the `substrate/light-client-extension-helpers/utils` package to set up your background RPC client. Refer to the [createBackgroundRpc.ts](./background/createBackgroundRpc.ts) file for implementation details.
-
-**Background RPC Client:**
-
-```ts
-chrome.runtime.onConnect.addListener((port) => {
-  if (!port.name.startsWith("substrate-wallet-template")) return
-  const rpc = createBackgroundRpc((msg) => port.postMessage(msg))
-  port.onMessage.addListener((msg) =>
-    rpc.handle(msg, {
-      lightClientPageHelper,
-      signRequests,
-      port,
-      notifyOnAccountsChanged,
-    }),
-  )
-  port.onDisconnect.addListener(subscribeOnAccountsChanged(rpc))
-})
-```
-
-### 3. Register Content Script
-
-Invoke the register function in your content script and append your image. See the [content script](./content/index.ts) for detailed implementation.
+Then, invoke the register function in your content script and inject your in-page into the DOM. See the [content script](./content/index.ts) for detailed implementation.
 
 **Content Script:**
 
 ```ts
 import { register } from "@substrate/light-client-extension-helpers/content-script"
+
 const CHANNEL_ID = "substrate-wallet-template"
 
 try {
@@ -103,13 +82,17 @@ window.addEventListener("message", ({ data }) => {
 })
 ```
 
-### 4. Inject In-Page Script
+### 3. Inject In-Page Script
 
-In the in-page script injected by the content script, expose your provider using the `@substrate/discovery` protocol. Refer to the [in-page script](./src/inpage/index.ts) for full implementation details.
+Finally, in the in-page script injected by the content script, expose your provider using the `@substrate/discovery` protocol in conjunction with the `@substrate/smoldot-discovery` package. Refer to the [in-page script](./src/inpage/index.ts) for full implementation details.
 
 **In-Page Script:**
 
 ```ts
+import { getLightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
+import type { SmoldotExtensionProviderDetail } from "@substrate/smoldot-discovery/types"
+import { connector as smoldotDiscoveryConnector } from "@substrate/smoldot-discovery"
+
 const CHANNEL_ID = "substrate-wallet-template"
 
 const PROVIDER_INFO = {
@@ -119,37 +102,121 @@ const PROVIDER_INFO = {
   rdns: "io.github.paritytech.SubstrateConnectWalletTemplate",
 }
 
-const provider = getLightClientProvider(CHANNEL_ID).then(
-  (lightClientProvider) => ({
-    ...lightClientProvider,
-    async getAccounts(chainId: string) {
-      return rpc.client.getAccounts(chainId)
-    },
-    async createTx(chainId: string, from: string, callData: string) {
-      return rpc.client.createTx(chainId, from, callData)
-    },
-  }),
-)
+const lightClientProvider = getLightClientProvider(DOM_ELEMENT_ID)
 
-const detail: Unstable.SubstrateConnectProviderDetail = Object.freeze({
-  kind: "substrate-connect-unstable",
-  info: PROVIDER_INFO,
-  provider,
-})
+// #region Smoldot Discovery Provider
+{
+  const provider = lightClientProviderPromise.then((provider) =>
+    connector.make({ lightClientProvider: provider }),
+  )
 
-window.addEventListener(
-  "substrateDiscovery:requestProvider",
-  ({ detail: { onProvider } }) => onProvider(detail),
-)
+  const detail: SmoldotExtensionProviderDetail = Object.freeze({
+    info: PROVIDER_INFO,
+    kind: "smoldot-v1",
+    provider,
+  })
 
-window.dispatchEvent(
-  new CustomEvent("substrateDiscovery:announceProvider", {
-    detail,
-  }),
-)
+  window.addEventListener(
+    "substrateDiscovery:requestProvider",
+    ({ detail: { onProvider } }) => onProvider(detail),
+  )
+
+  window.dispatchEvent(
+    new CustomEvent("substrateDiscovery:announceProvider", {
+      detail,
+    }),
+  )
+}
+// #endregion
 ```
 
-## Conclusion
+### 4. Verify integration
+
+To verify your integration, build your extension and load it into your browser. Then, run the [@substrate/smoldot example](../../examples/smoldot-discovery-example).
+
+If you see your extension in the list, you have completed this integration.
+
+![alt text](./assets/img/smoldot-discovery-example.png)
+
+---
+
+## @substrate/connect-discovery Integration
+
+The next part of this tutorial will extend the steps of the prior integration. It adds support for the @substrate/connect-discovery package. We will use Polkadot JS (PJS) extension as a baseline in this example.
+
+### 1. Install Additional Packages
+
+```sh
+pnpm i @polkadot-api/pjs-signer @polkadot-api/utils @substrate/connect-discovery
+```
+
+### 2. Implement the @substrate/connect-discovry protocol
+
+Use the following code below to implement `createTx` and `getAccounts`. Replace "polkadot-js" with the name of your PJS-compatible extension.
+
+```ts
+// #region Connect Discovery Provider
+{
+  const provider = lightClientProviderPromise.then(
+    (lightClientProvider): Unstable.Provider => ({
+      ...lightClientProvider,
+      async createTx(chainId: string, from: string, callData: string) {
+        const chains = Object.values(lightClientProvider.getChains())
+        const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
+
+        if (!chain) {
+          throw new Error("unknown chain")
+        }
+
+        const injectedExt = await connectInjectedExtension("polkadot-js")
+
+        const account = injectedExt
+          .getAccounts()
+          .find((account) => toHex(account.polkadotSigner.publicKey) === from)
+
+        if (!account) {
+          throw new Error("no account")
+        }
+
+        const signer = account.polkadotSigner
+
+        const tx = await createTx(chain.connect)({
+          callData: fromHex(callData),
+          signer,
+        })
+
+        return toHex(tx)
+      },
+      async getAccounts(_chainId: string) {
+        const injectedExt = await connectInjectedExtension("polkadot-js")
+        const accounts = injectedExt.getAccounts()
+
+        return accounts
+      },
+    }),
+  )
+
+  const detail: Unstable.SubstrateConnectProviderDetail = Object.freeze({
+    info: PROVIDER_INFO,
+    kind: "substrate-connect-unstable",
+    provider,
+  })
+
+  window.addEventListener(
+    "substrateDiscovery:requestProvider",
+    ({ detail: { onProvider } }) => onProvider(detail),
+  )
+
+  window.dispatchEvent(
+    new CustomEvent("substrateDiscovery:announceProvider", {
+      detail,
+    }),
+  )
+}
+// #endregion
+```
+
+### 3. Verify Integration
 
 Once your extension is properly set up, you can test it using the [light client dapp example](../../examples/light-client-dapp).
 
