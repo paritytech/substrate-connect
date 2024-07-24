@@ -11,7 +11,7 @@ extension helpers into your browser extension.
 
 ## Setup
 
-First install these three packages: `@substrate/light-client-extension-helpers`, @substrate/smoldot-discovery and `@substrate/connect-known-chains`. We will use these packages to implement a provider for the `@substrate/smoldot-discovery` package.
+First install these three packages: `@substrate/light-client-extension-helpers`,`@substrate/smoldot-discovery`, `@substrate/smoldot-discovery-connector` and `@substrate/connect-known-chains`. We will use these packages to implement a provider for the `@substrate/smoldot-discovery` package.
 
 ```sh
 pnpm i @substrate/light-client-extension-helpers @substrate/connect-known-chains @substrate/smoldot-discovery
@@ -90,8 +90,10 @@ Finally, in the in-page script injected by the content script, expose your provi
 
 ```ts
 import { getLightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
-import type { SmoldotExtensionProviderDetail } from "@substrate/smoldot-discovery/types"
-import { connector as smoldotDiscoveryConnector } from "@substrate/smoldot-discovery"
+import {
+  make as makeSmoldotDiscoveryConnector,
+  SmoldotExtensionProviderDetail,
+} from "@substrate/smoldot-discovery-connector"
 
 const CHANNEL_ID = "substrate-wallet-template"
 
@@ -106,9 +108,7 @@ const lightClientProvider = getLightClientProvider(DOM_ELEMENT_ID)
 
 // #region Smoldot Discovery Provider
 {
-  const provider = lightClientProviderPromise.then((provider) =>
-    connector.make({ lightClientProvider: provider }),
-  )
+  const provider = lightClientProvider.then(makeSmoldotDiscoveryConnector)
 
   const detail: SmoldotExtensionProviderDetail = Object.freeze({
     info: PROVIDER_INFO,

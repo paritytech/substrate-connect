@@ -3,9 +3,10 @@ import {
   type LightClientProviderDetail,
   getLightClientProvider,
 } from "@substrate/light-client-extension-helpers/web-page"
-import "@substrate/discovery"
-import type { SmoldotExtensionProviderDetail } from "@substrate/smoldot-discovery/types"
-import { connector as smoldotDiscoveryConnector } from "@substrate/smoldot-discovery"
+import {
+  make as makeSmoldotDiscoveryConnector,
+  SmoldotExtensionProviderDetail,
+} from "@substrate/smoldot-discovery-connector"
 
 const PROVIDER_INFO = {
   uuid: crypto.randomUUID(),
@@ -15,8 +16,8 @@ const PROVIDER_INFO = {
 }
 
 const lightClientProvider = getLightClientProvider(DOM_ELEMENT_ID)
-const smoldotV1Provider = lightClientProvider.then((provider) =>
-  smoldotDiscoveryConnector.make({ lightClientProvider: provider }),
+const smoldotV1Provider = lightClientProvider.then(
+  makeSmoldotDiscoveryConnector,
 )
 
 registerSubstrateConnect()

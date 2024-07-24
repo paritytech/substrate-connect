@@ -1,6 +1,6 @@
 {
-  "name": "@substrate/smoldot-discovery",
-  "version": "0.0.9",
+  "name": "@substrate/smoldot-discovery-connector",
+  "version": "0.0.1",
   "author": "Parity Technologies (https://github.com/paritytech)",
   "repository": {
     "type": "git",
@@ -15,14 +15,6 @@
       },
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    },
-    "./types": {
-      "import": {
-        "types": "./dist/types/index.d.mts",
-        "default": "./dist/types/index.mjs"
-      },
-      "require": "./dist/types/index.js",
-      "types": "./dist/types/index.d.ts"
     },
     "./package.json": "./package.json"
   },
@@ -41,6 +33,12 @@
     "trailingComma": "all"
   },
   "dependencies": {
-    "@substrate/discovery": "workspace:^"
+    "@substrate/light-client-extension-helpers": "workspace:^"
+  },
+  "devDependencies": {
+    "@substrate/smoldot-discovery": "workspace:^"
+  },
+  "peerDependencies": {
+    "@substrate/smoldot-discovery": ">=1 && <2"
   }
 }

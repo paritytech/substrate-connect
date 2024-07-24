@@ -4,9 +4,10 @@ import {
 } from "@substrate/light-client-extension-helpers/utils"
 import { getLightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
 import type { Unstable } from "@substrate/connect-discovery"
-import type { SmoldotExtensionProviderDetail } from "@substrate/smoldot-discovery/types"
-import { connector as smoldotDiscoveryConnector } from "@substrate/smoldot-discovery"
-import "@substrate/discovery"
+import {
+  make as makeSmoldotDiscoveryConnector,
+  SmoldotExtensionProviderDetail,
+} from "@substrate/smoldot-discovery-connector"
 
 import type { Account, BackgroundRpcSpec } from "../background/types"
 import { CHANNEL_ID } from "../constants"
@@ -47,9 +48,7 @@ const lightClientProvider = getLightClientProvider(CHANNEL_ID)
 
 // #region Smoldot Discovery Provider
 {
-  const provider = lightClientProvider.then((provider) =>
-    smoldotDiscoveryConnector.make({ lightClientProvider: provider }),
-  )
+  const provider = lightClientProvider.then(makeSmoldotDiscoveryConnector)
 
   const detail: SmoldotExtensionProviderDetail = Object.freeze({
     kind: "smoldot-v1",
