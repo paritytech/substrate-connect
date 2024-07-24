@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.6.0
+
+### Minor Changes
+
+- e35a0e8: add paseo testnet
+
+### Patch Changes
+
+- 4123a5e: use `@substrate/smoldot-discovery-connector` package instead of `@substrate/smoldot-discovery` package.
+- f83aa2b: chore(deps-dev): bump vite from 5.2.13 to 5.3.4
+
+  Bumps [vite](https://github.com/vitejs/vite/tree/HEAD/packages/vite) from 5.2.13 to 5.3.4.
+
+  - [Release notes](https://github.com/vitejs/vite/releases)
+  - [Changelog](https://github.com/vitejs/vite/blob/main/packages/vite/CHANGELOG.md)
+  - [Commits](https://github.com/vitejs/vite/commits/v5.3.4/packages/vite)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: vite
+    dependency-type: direct:development
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- cef7d50: update chainspecs
+- 188bf5b: update chainspecs
+- Updated dependencies [4c5a75b]
+- Updated dependencies [e35a0e8]
+- Updated dependencies [cef7d50]
+- Updated dependencies [188bf5b]
+  - @substrate/light-client-extension-helpers@2.2.0
+  - @substrate/smoldot-discovery-connector@0.0.2
+
 ## 0.5.8
 
 ### Patch Changes

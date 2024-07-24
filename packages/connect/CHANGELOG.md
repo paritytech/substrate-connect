@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.1.0
+
+### Minor Changes
+
+- e35a0e8: add paseo testnet
+
+### Patch Changes
+
+- cef7d50: update chainspecs
+- Updated dependencies [e35a0e8]
+- Updated dependencies [cef7d50]
+- Updated dependencies [188bf5b]
+- Updated dependencies [4123a5e]
+  - @substrate/connect-known-chains@1.2.0
+  - @substrate/smoldot-discovery@1.0.0
+
 ## 1.0.9
 
 ### Patch Changes
