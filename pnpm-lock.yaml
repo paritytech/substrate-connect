@@ -336,6 +336,9 @@ importers:
       '@substrate/discovery':
         specifier: ^0.0.1
         version: link:../../packages/discovery
+      '@substrate/smoldot-discovery':
+        specifier: workspace:^
+        version: link:../../packages/smoldot-discovery
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -394,9 +397,6 @@ importers:
         specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
-      '@substrate/smoldot-discovery':
-        specifier: 0.0.6
-        version: 0.0.6
       '@types/node':
         specifier: ^20.14.10
         version: 20.14.10
@@ -539,10 +539,16 @@ importers:
       '@substrate/discovery':
         specifier: workspace:^
         version: link:../discovery
-    devDependencies:
+
+  packages/smoldot-discovery-connector:
+    dependencies:
       '@substrate/light-client-extension-helpers':
         specifier: workspace:^
         version: link:../light-client-extension-helpers
+    devDependencies:
+      '@substrate/smoldot-discovery':
+        specifier: workspace:^
+        version: link:../smoldot-discovery
 
   projects/burnr:
     dependencies:
@@ -668,15 +674,12 @@ importers:
       '@substrate/connect-extension-protocol':
         specifier: workspace:*
         version: link:../../packages/connect-extension-protocol
-      '@substrate/discovery':
-        specifier: workspace:^
-        version: link:../../packages/discovery
       '@substrate/light-client-extension-helpers':
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers
-      '@substrate/smoldot-discovery':
+      '@substrate/smoldot-discovery-connector':
         specifier: workspace:^
-        version: link:../../packages/smoldot-discovery
+        version: link:../../packages/smoldot-discovery-connector
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -867,18 +870,15 @@ importers:
       '@substrate/connect-discovery':
         specifier: workspace:^
         version: link:../../packages/connect-discovery
-      '@substrate/connect-extension-protocol':
-        specifier: workspace:*
-        version: link:../../packages/connect-extension-protocol
       '@substrate/discovery':
         specifier: workspace:^
         version: link:../../packages/discovery
       '@substrate/light-client-extension-helpers':
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers
-      '@substrate/smoldot-discovery':
+      '@substrate/smoldot-discovery-connector':
         specifier: workspace:^
-        version: link:../../packages/smoldot-discovery
+        version: link:../../packages/smoldot-discovery-connector
       '@zag-js/clipboard':
         specifier: ^0.47.0
         version: 0.47.0
@@ -6983,16 +6983,6 @@ packages:
   /@sindresorhus/is@5.6.0:
     resolution: {integrity: sha512-TV7t8GKYaJWsn00tFDqBw8+Uqmr8A0fRU1tvTQhyZzGv0sJCGRQL3JGMI3ucuKo3XIZdUP+Lx7/gh2t3lewy7g==}
     engines: {node: '>=14.16'}
-    dev: true
-
-  /@substrate/discovery@0.0.1:
-    resolution: {integrity: sha512-ba6Zv2EBs+7KFGg6NJSD4yRy7BztBxvDLsK5for4tgDCbqZMpolTHDLL9RGCHLoeFf5zfsuqnhAhsjVWz8c+vw==}
-    dev: true
-
-  /@substrate/smoldot-discovery@0.0.6:
-    resolution: {integrity: sha512-4rNcxuaQCPOuUGPPK5zrF30sBzpBSA31eRTEqn7NFeoPWPMhYpYDPR+vtiIODrMFSKcl3cY9rrIoyZgPxjN4nA==}
-    dependencies:
-      '@substrate/discovery': 0.0.1
     dev: true
 
   /@substrate/ss58-registry@1.48.0:
