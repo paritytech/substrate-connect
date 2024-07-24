@@ -491,8 +491,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.1
       '@polkadot-api/json-rpc-provider-proxy':
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: ^0.2.0
+        version: 0.2.0
       '@polkadot-api/metadata-builders':
         specifier: ^0.3.0
         version: 0.3.1
@@ -629,8 +629,8 @@ importers:
   projects/demo:
     dependencies:
       '@polkadot-api/json-rpc-provider-proxy':
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: ^0.2.0
+        version: 0.2.0
       '@polkadot-api/observable-client':
         specifier: ^0.3.1
         version: 0.3.1(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
@@ -3711,6 +3711,10 @@ packages:
 
   /@polkadot-api/json-rpc-provider-proxy@0.1.0:
     resolution: {integrity: sha512-8GSFE5+EF73MCuLQm8tjrbCqlgclcHBSRaswvXziJ0ZW7iw3UEMsKkkKvELayWyBuOPa2T5i1nj6gFOeIsqvrg==}
+    dev: false
+
+  /@polkadot-api/json-rpc-provider-proxy@0.2.0:
+    resolution: {integrity: sha512-0jtKSl2Zw2v5OJFMp30KXhpcKpwAj2FpMtHTMn4FDwcudL2Y1efiAJ9Zoc3Bk70OVWSovUHdU2WTBUVL/efw4Q==}
     dev: false
 
   /@polkadot-api/json-rpc-provider@0.0.1:

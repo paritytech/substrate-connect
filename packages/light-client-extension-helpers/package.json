@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@polkadot-api/codegen": "^0.6.0",
-    "@polkadot-api/json-rpc-provider-proxy": "^0.1.0",
+    "@polkadot-api/json-rpc-provider-proxy": "^0.2.0",
     "@polkadot-api/metadata-builders": "^0.3.0",
     "@polkadot-api/observable-client": "^0.3.1",
     "@polkadot-api/signer": "~0.1.0",
