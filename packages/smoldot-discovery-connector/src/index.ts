@@ -1,11 +1,15 @@
 import {
   LightClientProvider,
   RawChain,
+} from "@substrate/light-client-extension-helpers/web-page"
+import {
   Chain,
   JsonRpcCallback,
   SmoldotExtensionAPI,
   WellKnownChain,
-} from "./types"
+} from "@substrate/smoldot-discovery/types"
+export type { LightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
+export type * from "@substrate/smoldot-discovery/types"
 
 export const defaultWellKnownChainGenesisHashes: Record<string, string> = {
   polkadot:
@@ -20,13 +24,16 @@ export const defaultWellKnownChainGenesisHashes: Record<string, string> = {
 
 export type MakeOptions = {
   wellKnownChainGenesisHashes?: Record<string, string>
-  lightClientProvider: LightClientProvider
 }
 
-export const make = ({
-  wellKnownChainGenesisHashes = defaultWellKnownChainGenesisHashes,
-  lightClientProvider,
-}: MakeOptions): SmoldotExtensionAPI => {
+export const make = (
+  lightClientProvider: LightClientProvider,
+  connectOptions?: MakeOptions,
+): SmoldotExtensionAPI => {
+  const wellKnownChainGenesisHashes =
+    connectOptions?.wellKnownChainGenesisHashes ??
+    defaultWellKnownChainGenesisHashes
+
   const internalAddChain = async (
     isWellKnown: boolean,
     chainSpecOrWellKnownName: string,
