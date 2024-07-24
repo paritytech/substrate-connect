@@ -19,6 +19,10 @@ The main implementation of the light-client provider for a given substrate-based
 
 ## Using `@substrate/connect` for library authors
 
+/*
+Can this package be used in isolation to connect to a light client, and then it uses the discovery protocol behind the scenes to see whether it can use one there instead? Or should somebody always use PAPI (which IIRC implements its own decision making around when to use what, but cant recall)?
+*/
+
 Provide a well-known chain name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_2'):
 
 ```js

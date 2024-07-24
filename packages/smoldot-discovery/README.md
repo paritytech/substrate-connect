@@ -16,6 +16,12 @@
 
 A TypeScript package extended from the [`@substrate/discovery`](../discovery/README.md) NPM package, that allows to discover and filter Smoldot extension providers from a list of providers.
 
+/*
+Maybe add something here like?:
+
+Extensions may wish to implement the interface provided here, in order that they can be used by dApps wanting it. To do so, implement the `SmoldotExtensionProviderDetail` interface and expose it by implementing the extension side of the discovery protocol ([see here](../discovery/README.md)) and handing it back.
+*/
+
 ## Installation
 
 You can install the package using npm or yarn:
