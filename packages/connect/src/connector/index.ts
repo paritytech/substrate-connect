@@ -33,7 +33,7 @@ export interface Config {
 /**
  * Returns a {@link ScClient} that connects to chains, either through the substrate-connect
  * extension or by executing a light client directly from JavaScript, depending on whether the
- * extension is installed and available.
+ * extension is installed and available. [< also via the new discovery protocol?]
  */
 export const createScClient = (config?: Config): ScClient => {
   if (config?.forceEmbeddedNode)
@@ -66,6 +66,11 @@ function getSmoldotProviderPromise(): Promise<SmoldotExtensionAPI> | undefined {
   if (typeof document !== "object" || typeof CustomEvent !== "function") return
   const lightClientProvider = getSmoldotExtensionProviders()
     .filter((detail) =>
+      // Ah, so this is to additionally filter to using only using our substrate connect extension
+      // to find a compatible light client. Is there any real benefit to this over just taking the
+      // first smoldot compatible interface we find? Regardless, there is a security thing where we
+      // can't really trust arbitrary extensions with the light client interfaces they return (and any
+      // extension could advertise itself as being our one).
       detail.info.rdns.startsWith("io.github.paritytech.SubstrateConnect"),
     )
     .map((detail) => detail.provider)[0]

@@ -22,12 +22,27 @@ The main export is a function called `getProviders`. This function dispatches an
 
 ## How It Works
 
+/*
+Maybe instead say something like:
+
+"""
+The discovery protocol is quite simple, and can be implemented in these steps:
+1. ...
+2. ...
+3. ...
+
+Refer to src/index.ts in this package for an implementation of this protocol.
+"""
+
+That would feel a little more precise to me as a way to specify what's going on
+*/
+
 The extension injects an inpage script that:
 
 - Registers a listener for the `substrateDiscovery:requestProvider` event and announces the provider by invoking synchronously the `onProvider` callback from the event payload.
 - Optionally, dispatches the `substrateDiscovery:announceProvider` event with the provider details when the script is loaded.
 
-## Basic Example
+## Basic Usage Example
 
 ```ts
 import { getProviders } from "@substrate/discovery"
@@ -39,6 +54,14 @@ console.log(firstProvider)
 ```
 
 ## Example with rDNS Filter
+
+/*
+I wonder; when would somebody use this over filtering by the interface type?
+Should the default example here be more like `.filter(detail => detail.kind)`?
+Or at least we should explain that people can use this specifically to filter
+for specific extensions rather than all extensions matching some interface, if
+needed (but that filtering for anything matching the kind is the "usual" approach).
+*/
 
 ```ts
 import { getProviders } from "@substrate/discovery"

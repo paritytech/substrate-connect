@@ -16,6 +16,16 @@
 
 A TypeScript package extended from the [`@substrate/discovery`](../discovery/README.md) npm module, that allows to discover and filter Substrate Connect Extension providers from a list of providers.
 
+/*
+Maybe add something like?:
+
+"""
+**This interface is currently unstable and is likely to change**
+"""
+
+Also perhaps point to the interface one would need to implement etc, same as the smoldot-discovery readme?
+*/
+
 ## Installation
 
 You can install the package using npm or yarn:
