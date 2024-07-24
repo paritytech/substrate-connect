@@ -1,5 +1,16 @@
 # @substrate/connect-known-chains
 
+## 1.2.0
+
+### Minor Changes
+
+- e35a0e8: add paseo testnet
+
+### Patch Changes
+
+- cef7d50: update chainspecs
+- 188bf5b: update chainspecs
+
 ## 1.1.11
 
 ### Patch Changes

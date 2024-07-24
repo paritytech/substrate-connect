@@ -1,5 +1,151 @@
 # Changelog
 
+## 0.1.0
+
+### Minor Changes
+
+- e35a0e8: add paseo testnet
+
+### Patch Changes
+
+- 4123a5e: use `@substrate/smoldot-discovery-connector` package instead of `@substrate/smoldot-discovery` package.
+- 709d8df: chore(deps): bump @radix-ui/react-dialog from 1.0.5 to 1.1.1
+
+  Bumps [@radix-ui/react-dialog](https://github.com/radix-ui/primitives) from 1.0.5 to 1.1.1.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-dialog"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 9215672: chore(deps): bump @radix-ui/react-avatar from 1.0.4 to 1.1.0
+
+  Bumps [@radix-ui/react-avatar](https://github.com/radix-ui/primitives) from 1.0.4 to 1.1.0.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-avatar"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 1c2ee86: chore(deps): bump @radix-ui/react-toggle from 1.0.3 to 1.1.0
+
+  Bumps [@radix-ui/react-toggle](https://github.com/radix-ui/primitives) from 1.0.3 to 1.1.0.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-toggle"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- f83aa2b: chore(deps-dev): bump vite from 5.2.13 to 5.3.4
+
+  Bumps [vite](https://github.com/vitejs/vite/tree/HEAD/packages/vite) from 5.2.13 to 5.3.4.
+
+  - [Release notes](https://github.com/vitejs/vite/releases)
+  - [Changelog](https://github.com/vitejs/vite/blob/main/packages/vite/CHANGELOG.md)
+  - [Commits](https://github.com/vitejs/vite/commits/v5.3.4/packages/vite)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: vite
+    dependency-type: direct:development
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 8c9ad0b: chore(deps): bump react-router-dom from 6.23.1 to 6.25.1
+
+  Bumps [react-router-dom](https://github.com/remix-run/react-router/tree/HEAD/packages/react-router-dom) from 6.23.1 to 6.25.1.
+
+  - [Release notes](https://github.com/remix-run/react-router/releases)
+  - [Changelog](https://github.com/remix-run/react-router/blob/main/packages/react-router-dom/CHANGELOG.md)
+  - [Commits](https://github.com/remix-run/react-router/commits/react-router-dom@6.25.1/packages/react-router-dom)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: react-router-dom
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 9ade57e: chore(deps): bump @radix-ui/react-tooltip from 1.0.7 to 1.1.2
+
+  Bumps [@radix-ui/react-tooltip](https://github.com/radix-ui/primitives) from 1.0.7 to 1.1.2.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-tooltip"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- a6b6dc6: chore(deps): bump @radix-ui/react-accordion from 1.1.2 to 1.2.0
+
+  Bumps [@radix-ui/react-accordion](https://github.com/radix-ui/primitives) from 1.1.2 to 1.2.0.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-accordion"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- cef7d50: update chainspecs
+- 188bf5b: update chainspecs
+- Updated dependencies [4c5a75b]
+- Updated dependencies [e35a0e8]
+- Updated dependencies [cef7d50]
+- Updated dependencies [188bf5b]
+  - @substrate/light-client-extension-helpers@2.2.0
+  - @substrate/smoldot-discovery-connector@0.0.2
+
 ## 0.0.8
 
 ### Patch Changes
