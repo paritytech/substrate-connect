@@ -23,6 +23,7 @@ The main export is a function called `getProviders`. This function dispatches an
 ## How It Works
 
 The discovery protocol is quite simple and can be implemented in these steps:
+
 1. The extension injects an inpage script that registers a listener for the `substrateDiscovery:requestProvider` event.
 2. The listener announces the provider by invoking the `onProvider` callback from the event payload synchronously.
 3. Optionally, the script can dispatch the `substrateDiscovery:announceProvider` event with the provider details when the script is loaded.
