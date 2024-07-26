@@ -14,17 +14,13 @@
 
 <br /><br />
 
+<div align="center" style="padding: 10px; border: 2px solid red; color: red; font-weight: bold; background-color: #ffe6e6;">
+  ⚠️ WARNING: This interface is currently unstable and is likely to change ⚠️
+</div>
+
+<br /><br />
+
 A TypeScript package extended from the [`@substrate/discovery`](../discovery/README.md) npm module, that allows to discover and filter Substrate Connect Extension providers from a list of providers.
-
-/*
-Maybe add something like?:
-
-"""
-**This interface is currently unstable and is likely to change**
-"""
-
-Also perhaps point to the interface one would need to implement etc, same as the smoldot-discovery readme?
-*/
 
 ## Installation
 

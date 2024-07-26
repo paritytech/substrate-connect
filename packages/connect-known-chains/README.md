@@ -18,9 +18,3 @@ This package contains all the well known chain specifications. It is updated
 daily by a bot via pull request.
 
 You can find the chainspecs in the [specs](./specs/) directory.
-
-/*
-Aside: I wonder whether we should mvoe to pointing here for chainspecs:
-
-https://github.com/paritytech/chainspecs
-*/

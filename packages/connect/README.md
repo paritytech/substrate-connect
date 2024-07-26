@@ -19,11 +19,11 @@ The main implementation of the light-client provider for a given substrate-based
 
 ## Using `@substrate/connect` for library authors
 
-/*
-Can this package be used in isolation to connect to a light client, and then it uses the discovery protocol behind the scenes to see whether it can use one there instead? Or should somebody always use PAPI (which IIRC implements its own decision making around when to use what, but cant recall)?
-*/
+The `connect` package will look for a light client provider via the discovery protocol. If it can't find one, it will spawn a smoldot instance in the user's browser tab.
 
-Provide a well-known chain name ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_2'):
+### Example Usage
+
+To use a well-known chain ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_2'):
 
 ```js
 import { createScClient, WellKnownChain } from '@substrate/connect';
@@ -41,7 +41,7 @@ chain.sendJsonRpc(
 );
 ```
 
-...or provide your custom substrate chain's name and chainspec:
+To use a custom substrate chain's name and chainspec:
 
 ```js
 import { createScClient } from '@substrate/connect';
@@ -62,10 +62,9 @@ chain.sendJsonRpc(
 );
 ```
 
-In order to connect to a parachain, you must first instantiate the relay chain
-this parachain is connected to, then instantiate the parachain on the same
-relay chain. The following example connects to a parachain of the Westend test
-network:
+### Connecting to a Parachain
+
+To connect to a parachain, you must first instantiate the relay chain this parachain is connected to, and then instantiate the parachain on the same relay chain. The following example connects to a parachain of the Westend test network:
 
 ```js
 import { createScClient, WellKnownChain } from '@substrate/connect';
@@ -74,7 +73,7 @@ import jsonParachainSpec from './myParaChainSpec.json';
 const parachainSpec = JSON.stringify(jsonParachainSpec);
 
 const scClient = createScClient();
-const relayChain = await scClient.addWellKnownChain(WellKnownChain.westend2)
+const relayChain = await scClient.addWellKnownChain(WellKnownChain.westend2);
 const parachain = await relayChain.addChain(
   parachainSpec,
   function jsonRpcCallback(response) {

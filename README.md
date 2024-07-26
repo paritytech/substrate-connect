@@ -12,8 +12,9 @@
 
 - [Table of contents](#table-of-contents)
 - [Introduction](#introduction)
-  - [Overcoming Browser Limitations](#overcoming-browser-limitations)
-  - [Seamless Integration](#seamless-integration)
+  - [Write Secure and Effective dApps with the Polkadot Network](#write-secure-and-effective-dapps-with-the-polkadot-network)
+  - [Additional Resources](#additional-resources)
+  - [Why Embed a Light Client in Browser Extensions?](#why-embed-a-light-client-in-browser-extensions)
 - [Comprehensive API Documentation](#comprehensive-api-documentation)
 - [Repository Structure](#repository-structure)
   - [Packages](#packages)
@@ -27,55 +28,33 @@
 
 ## Introduction
 
-Substrate Connect offers an innovative way to interact with [Substrate](https://substrate.dev/)-based blockchains directly in your browser, eliminating the need for an RPC server. By leveraging the [smoldot](https://github.com/smol-dot/smoldot) WASM light client, it ensures a secure and efficient connection to the blockchain network without dependency on specific third parties.
+Substrate Connect provides a groundbreaking method to engage with [Substrate](https://substrate.dev/)-based blockchains directly in your browser, eliminating the need for an RPC server. By utilizing the [smoldot](https://github.com/smol-dot/smoldot) WASM light client, it ensures a secure and efficient connection to the blockchain network without reliance on specific third parties.
 
-/*
-I'm wondering whether it's worth saying something in this intro like:
+### Write Secure and Effective dApps with the Polkadot Network
 
-"""
-Write dApps that with the Polkadot network in a secure and effective way.
+The aim of this repository is to offer NPM packages that can be used to:
 
-The aim of this repository is to provide NPM packages which can be used to:
-- Provide a secure and efficient connection to the Polkadot network via [`@substrate/connect`](./packages/connect/), which leverages the excellent [Smoldot](https://github.com/smol-dot/smoldot) WASM light client.
-- Discover browser extensions which implement [the discovery protocol](./packages/discovery/), including those which expose a light client via [`@substrate/smoldot-discovery`](./packages/smoldot-discovery/). Substrate connect will automatically leverage these where possible.
-- Easily enhance a browser extension with a light client via [`@substrate/light-client-extension-helpers`](./packages/light-client-extension-helpers)
+- **Provide a secure and efficient connection to the Polkadot network** via [`@substrate/connect`](./packages/connect/), leveraging the excellent [Smoldot](https://github.com/smol-dot/smoldot) WASM light client.
+- **Discover browser extensions** that implement [the discovery protocol](./packages/discovery/), including those which expose a light client via [`@substrate/smoldot-discovery`](./packages/smoldot-discovery/). Substrate Connect will automatically leverage these where possible.
+- **Easily enhance a browser extension with a light client** via [`@substrate/light-client-extension-helpers`](./packages/light-client-extension-helpers).
 
-We also provide example projects which use the above, including;
-   - **[Basic light client demo](./projects/demo)**: a demo using `@substrate/connect` to obtain information about chains on the Polkadot network.
-   - **[Light client extension demo](./projects/extension/)**: an example of a browser extension which provides a light client.
-   - **[Wallet extension demo](./projects/wallet-template/)**: an example of a browser extension which provides a full Polkadot wallet leveraging a light client.
+We also provide example projects using the above packages, including:
 
-Finally, we have:
-- A [step by step guide](./projects/wallet-template/STEP-BY-STEP-GUIDE.md) on how to integrate a light client into a browser extension.
-- Details on [the discovery protocol](./packages/discovery/), including how to implement the browser or extension side of it.
-"""
+- **[Basic light client demo](./projects/demo)**: a demo using `@substrate/connect` to obtain information about chains on the Polkadot network.
+- **[Light client extension demo](./projects/extension/)**: an example of a browser extension that provides a light client.
+- **[Wallet extension demo](./projects/wallet-template/)**: an example of a browser extension that provides a full Polkadot wallet leveraging a light client.
 
-Because:
-- I feel like those are the main exports here (but perhaps there's something else worth a mention right here too?). Basically we provide a light client, a protocol for discovering relevant extensions, and a way to easily embed the light client in other extensions. Then the rest are auxiliary packages and examples/demos of how these work.
-- I think we need a clear entry point into the documentation, so it's easy for somebody to start here and know exactly where to go to do whatever it is they want to do.
-- We should link to STEP_BY_STEP_GUIDE.md somewhere prominent, otherwise it's easily missed, especially hidden away in the wallet-template project. Perhaps it needs to be more prominent than the one line above too. Not sure!
-*/
+### Additional Resources
 
-### Overcoming Browser Limitations
+- A [step-by-step guide](./projects/wallet-template/STEP-BY-STEP-GUIDE.md) on how to integrate a light client into a browser extension.
+- Details on [the discovery protocol](./packages/discovery/), including how to implement it on the browser or extension side.
 
-Browser limitations on websockets from HTTPS pages make establishing a robust number of peers challenging, as many nodes must be available with TLS.
-Substrate Connect addresses this issue through a powerful browser extension, allowing chains to stay synced in the background, thereby significantly enhancing the performance of your applications.
+### Why Embed a Light Client in Browser Extensions?
 
-/*
-This section feels like it could be more of a "why embed a light client in browser extensions?", which would be cool to have here after the intro.
+Embedding a light client in browser extensions offers several advantages:
 
-Then the why is something like:
-- Share one light client across multiple dApps, so that it only needs to spend time starting up (syncing) once, and we avoid slowing down dApps etc
-- Overcoming browser limitations, enabling a more robust connection to the Polkadot ecosystem (or something like that)
-*/
-
-### Seamless Integration
-
-When building an application with Substrate Connect, it automatically detects whether the user has the extension installed and utilizes it. If not, it seamlessly creates the WASM light client in-page for them. Built on [Polkadot JS](https://polkadot.js.org/docs/api), Substrate Connect ensures that your development experience is as smooth as using a traditional RPC server node.
-
-/*
-I'm not sure about this section; we could add a bit in the "substrate/connect" bullet point above for instance, or leave it to the substrtae/connect README since it's a bit of an implementation detail? I guess I'm thinking that the main export from this repository now is a means to integrate light clients into extensions and discover them, but I wonder if that's too narrow of a focus; def open to thoughts!
-*/
+- **Shared Light Client Across Multiple dApps:** By sharing a single light client among various decentralized applications (dApps), the time spent on startup and syncing is reduced. This avoids slowing down individual dApps and enhances overall efficiency.
+- **Overcoming Browser Limitations:** Browser limitations on WebSockets from HTTPS pages make it challenging to establish a robust number of peers, as many nodes must be available with TLS. Substrate Connect addresses this issue through a powerful browser extension, enabling chains to stay synced in the background and significantly improving the performance of your applications. This ensures a more robust connection to the Polkadot ecosystem.
 
 ## Comprehensive API Documentation
 
@@ -157,9 +136,3 @@ For releasing a new version of the extension, follow the steps outlined in
 - Download from:
   - [Chrome Store](https://chrome.google.com/webstore/detail/substrate-connect-extensi/khccbhhbocaaklceanjginbdheafklai)
   - [Mozilla Addons](https://addons.mozilla.org/en-US/firefox/addon/substrate-connect/)
-
-/*
-This makes me wonder what we should do with https://substrate.io/developers/substrate-connect/.
-
-My assumption was that we'd move away from this extension (deprecating it eventually), and we'll move towards a world in which wallets can expose light clients, and then lilbraries like PAPI will connect or instantiate one as necessary. (I do wonder what the case is when multiple wallets expose a light client though; which would PAPI pick? We couldn't necessarily trust them after all)
-*/
