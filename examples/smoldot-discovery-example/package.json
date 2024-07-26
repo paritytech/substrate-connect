@@ -46,7 +46,7 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.1.6",
     "input-otp": "^1.2.4",
-    "lucide-react": "^0.403.0",
+    "lucide-react": "^0.416.0",
     "next-themes": "^0.3.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
