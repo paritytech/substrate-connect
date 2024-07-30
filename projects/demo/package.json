@@ -19,7 +19,7 @@
     "lint": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
-    "@polkadot-api/observable-client": "^0.3.1",
+    "@polkadot-api/observable-client": "^0.5.0",
     "@polkadot-api/json-rpc-provider-proxy": "^0.2.0",
     "@polkadot-api/substrate-client": "^0.1.4",
     "@substrate/connect": "workspace:*",

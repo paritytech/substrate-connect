@@ -91,8 +91,8 @@ importers:
         specifier: ^0.3.0
         version: 0.3.0
       '@polkadot-api/observable-client':
-        specifier: ^0.3.1
-        version: 0.3.1(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
+        specifier: ^0.5.0
+        version: 0.5.0(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
       '@polkadot-api/substrate-bindings':
         specifier: ^0.6.0
         version: 0.6.0
@@ -170,8 +170,8 @@ importers:
         specifier: ^2.0.6
         version: 2.0.6
       '@polkadot-api/observable-client':
-        specifier: ^0.3.1
-        version: 0.3.1(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
+        specifier: ^0.5.0
+        version: 0.5.0(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: ^0.1.4
         version: 0.1.4
@@ -497,8 +497,8 @@ importers:
         specifier: ^0.3.0
         version: 0.3.1
       '@polkadot-api/observable-client':
-        specifier: ^0.3.1
-        version: 0.3.1(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
+        specifier: ^0.5.0
+        version: 0.5.0(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
       '@polkadot-api/signer':
         specifier: ~0.1.0
         version: 0.1.0
@@ -632,8 +632,8 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0
       '@polkadot-api/observable-client':
-        specifier: ^0.3.1
-        version: 0.3.1(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
+        specifier: ^0.5.0
+        version: 0.5.0(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: ^0.1.4
         version: 0.1.4
@@ -660,8 +660,8 @@ importers:
   projects/extension:
     dependencies:
       '@polkadot-api/observable-client':
-        specifier: ^0.3.1
-        version: 0.3.1(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
+        specifier: ^0.5.0
+        version: 0.5.0(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: ^0.1.4
         version: 0.1.4
@@ -748,8 +748,8 @@ importers:
         specifier: ^0.3.0
         version: 0.3.0
       '@polkadot-api/observable-client':
-        specifier: ^0.3.1
-        version: 0.3.1(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
+        specifier: ^0.5.0
+        version: 0.5.0(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1)
       '@polkadot-api/polkadot-signer':
         specifier: ~0.1.0
         version: 0.1.0
@@ -3751,6 +3751,21 @@ packages:
       '@polkadot-api/substrate-bindings': 0.6.0
       '@polkadot-api/utils': 0.1.0
 
+  /@polkadot-api/metadata-builders@0.4.1:
+    resolution: {integrity: sha512-QvRp8l7FxuiZfPE6AUAbJgSenJOpAstJ8NYjkslD6HiOAxybVm7Jmpsbp8o6Rz3k9r+dE+2xdA3AmCtOzZyARQ==}
+    dependencies:
+      '@polkadot-api/substrate-bindings': 0.6.2
+      '@polkadot-api/utils': 0.1.1
+    dev: false
+
+  /@polkadot-api/metadata-compatibility@0.1.1:
+    resolution: {integrity: sha512-VcWjdHhznWcuceKeWkfmEgOds7i7SXSF6/786Yaxwac25lHDnZ1UJRlcLLg3Fl5zJWoSUyEZB8OlLgTB7jwTOw==}
+    dependencies:
+      '@polkadot-api/metadata-builders': 0.4.1
+      '@polkadot-api/substrate-bindings': 0.6.2
+      '@polkadot-api/utils': 0.1.1
+    dev: false
+
   /@polkadot-api/observable-client@0.3.1(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1):
     resolution: {integrity: sha512-ioun8PfDwmr2nRCIFPS3X7qMaJxeyotHT8vep0VNVYU13dUIBojaHQCpe9l4jN8MXoG63h1wAVT9dshGSiTDQw==}
     peerDependencies:
@@ -3761,6 +3776,20 @@ packages:
       '@polkadot-api/substrate-bindings': 0.6.0
       '@polkadot-api/substrate-client': 0.1.4
       '@polkadot-api/utils': 0.1.0
+      rxjs: 7.8.1
+    dev: false
+
+  /@polkadot-api/observable-client@0.5.0(@polkadot-api/substrate-client@0.1.4)(rxjs@7.8.1):
+    resolution: {integrity: sha512-ap7CMlM4vlELRTF4EN0i7vhYcM/RyNfVDdqu/ELAvOFE4+zZJVwDHbHQXb11Z2Mn4OZ+ihJO7RI0C6DHwZ9Wiw==}
+    peerDependencies:
+      '@polkadot-api/substrate-client': 0.2.0
+      rxjs: '>=7.8.0'
+    dependencies:
+      '@polkadot-api/metadata-builders': 0.4.1
+      '@polkadot-api/metadata-compatibility': 0.1.1
+      '@polkadot-api/substrate-bindings': 0.6.2
+      '@polkadot-api/substrate-client': 0.1.4
+      '@polkadot-api/utils': 0.1.1
       rxjs: 7.8.1
     dev: false
 
@@ -3837,7 +3866,7 @@ packages:
     dependencies:
       '@noble/hashes': 1.4.0
       '@polkadot-api/utils': 0.1.0
-      '@scure/base': 1.1.6
+      '@scure/base': 1.1.7
       scale-ts: 1.6.0
     dev: false
 
@@ -3848,6 +3877,15 @@ packages:
       '@polkadot-api/utils': 0.1.0
       '@scure/base': 1.1.6
       scale-ts: 1.6.0
+
+  /@polkadot-api/substrate-bindings@0.6.2:
+    resolution: {integrity: sha512-47XEbXeR2bL/3wsTGcCPFGoBkv2p1OYObr80JC7INizZ+qsvNokzziEmrKNXUPW66RqHmbpbYaNFF45JSNbPlQ==}
+    dependencies:
+      '@noble/hashes': 1.4.0
+      '@polkadot-api/utils': 0.1.1
+      '@scure/base': 1.1.7
+      scale-ts: 1.6.0
+    dev: false
 
   /@polkadot-api/substrate-client@0.1.4:
     resolution: {integrity: sha512-MljrPobN0ZWTpn++da9vOvt+Ex+NlqTlr/XT7zi9sqPtDJiQcYl+d29hFAgpaeTqbeQKZwz3WDE9xcEfLE8c5A==}
@@ -3862,6 +3900,10 @@ packages:
 
   /@polkadot-api/utils@0.1.0:
     resolution: {integrity: sha512-MXzWZeuGxKizPx2Xf/47wx9sr/uxKw39bVJUptTJdsaQn/TGq+z310mHzf1RCGvC1diHM8f593KrnDgc9oNbJA==}
+
+  /@polkadot-api/utils@0.1.1:
+    resolution: {integrity: sha512-ho1ORL5jEO96Zl72r/j1YTyX8wfXRD+XXrS8OR2LWdBR24MZqHO96xMboTcFehWK919iMKWAb9rCPNs2NiFS3Q==}
+    dev: false
 
   /@polkadot-api/view-builder@0.2.2:
     resolution: {integrity: sha512-WC2iC0YNXTMsF056Vlj5EncP94hHbtFssE0eALa51U6zMTVLbfnsctlg0KO0wX/sEwFC16pZlvM1vz8jlEQTjQ==}
@@ -4424,7 +4466,7 @@ packages:
       '@polkadot/wasm-util': 7.3.2(@polkadot/util@12.6.2)
       '@polkadot/x-bigint': 12.6.2
       '@polkadot/x-randomvalues': 12.6.2(@polkadot/util@12.6.2)(@polkadot/wasm-util@7.3.2)
-      '@scure/base': 1.1.6
+      '@scure/base': 1.1.7
       tslib: 2.6.3
     dev: false
 
@@ -4914,7 +4956,7 @@ packages:
   /@radix-ui/react-compose-refs@1.1.0(@types/react@18.3.3)(react@18.3.1):
     resolution: {integrity: sha512-b4inOtiaOnYf9KWyO3jAeeCG6FeyfY6ldiEPanbUjWd+xIk5wZeHa8yVwmrJ2vderhu/BQvzCrJI0lHd+wIiqw==}
     peerDependencies:
-      '@types/react': npm:types-react@19.0.0-rc.0
+      '@types/react': '*'
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       '@types/react':
@@ -4992,7 +5034,7 @@ packages:
   /@radix-ui/react-context@1.1.0(@types/react@18.3.3)(react@18.3.1):
     resolution: {integrity: sha512-OKrckBy+sMEgYM/sMmqmErVn0kZqrHPJze+Ql3DzYsDDp0hl0L62nx/2122/Bvps1qz645jlcu2tD9lrRSdf8A==}
     peerDependencies:
-      '@types/react': npm:types-react@19.0.0-rc.0
+      '@types/react': '*'
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       '@types/react':
@@ -5635,8 +5677,8 @@ packages:
   /@radix-ui/react-popper@1.2.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-ZnRMshKF43aBxVWPWvbj21+7TQCvhuULWJ4gNIKYpRlQt5xGRhLx66tMp8pya2UkGHTSlhpXwmjqltDYHhw7Vg==}
     peerDependencies:
-      '@types/react': npm:types-react@19.0.0-rc.0
-      '@types/react-dom': npm:types-react-dom@19.0.0-rc.0
+      '@types/react': '*'
+      '@types/react-dom': '*'
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -5770,8 +5812,8 @@ packages:
   /@radix-ui/react-primitive@2.0.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-ZSpFm0/uHa8zTvKBDjLFWLo8dkr4MBsiDLz0g3gMUwqgLHz9rTaRRGYDgvZPtBJgYCBKXkS9fzmoySgr8CO6Cw==}
     peerDependencies:
-      '@types/react': npm:types-react@19.0.0-rc.0
-      '@types/react-dom': npm:types-react-dom@19.0.0-rc.0
+      '@types/react': '*'
+      '@types/react-dom': '*'
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
@@ -6445,7 +6487,7 @@ packages:
   /@radix-ui/react-use-callback-ref@1.1.0(@types/react@18.3.3)(react@18.3.1):
     resolution: {integrity: sha512-CasTfvsy+frcFkbXtSJ2Zu9JHpN8TYKxkgJGWbjiZhFivxaeW7rMeZt7QELGVLaYVfFMsKHjb7Ak0nMEe+2Vfw==}
     peerDependencies:
-      '@types/react': npm:types-react@19.0.0-rc.0
+      '@types/react': '*'
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       '@types/react':
@@ -6473,7 +6515,7 @@ packages:
   /@radix-ui/react-use-controllable-state@1.1.0(@types/react@18.3.3)(react@18.3.1):
     resolution: {integrity: sha512-MtfMVJiSr2NjzS0Aa90NPTnvTSg6C/JLCV7ma0W6+OMV78vd8OyRpID+Ng9LxzsPbLeuBnWBA1Nq30AtBIDChw==}
     peerDependencies:
-      '@types/react': npm:types-react@19.0.0-rc.0
+      '@types/react': '*'
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       '@types/react':
@@ -6530,7 +6572,7 @@ packages:
   /@radix-ui/react-use-layout-effect@1.1.0(@types/react@18.3.3)(react@18.3.1):
     resolution: {integrity: sha512-+FPE0rOdziWSrH9athwI1R0HDVbWlEhd+FR+aSDk4uWGmSJ9Z54sdZVDQPZAinJhJXwfT+qnj969mCsT2gfm5w==}
     peerDependencies:
-      '@types/react': npm:types-react@19.0.0-rc.0
+      '@types/react': '*'
       react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
     peerDependenciesMeta:
       '@types/react':
@@ -6923,6 +6965,10 @@ packages:
 
   /@scure/base@1.1.6:
     resolution: {integrity: sha512-ok9AWwhcgYuGG3Zfhyqg+zwl+Wn5uE+dwC0NV/2qQkx4dABbb/bx96vWu8NSj+BNjjSjno+JRYRjle1jV08k3g==}
+
+  /@scure/base@1.1.7:
+    resolution: {integrity: sha512-PPNYBslrLNNUQ/Yad37MHYsNQtK67EhWb6WtSvNLLPo7SdVZgkUjD6Dg+5On7zNwmskf8OX7I7Nx5oN+MIWE0g==}
+    dev: false
 
   /@sinclair/typebox@0.27.8:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
