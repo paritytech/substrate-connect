@@ -34,6 +34,14 @@ export interface Config {
  * Returns a {@link ScClient} that connects to chains, either through the substrate-connect
  * extension or by executing a light client directly from JavaScript, depending on whether the
  * extension is installed and available.
+ *
+ * The substrate-connect extension is identified via the `@substrate/discovery` protocol.
+ *
+ * It must:
+ *
+ *  1. Be compliant `@substrate/smoldot-discovery` interface
+ *  2. Include an rdns label starting with `io.github.paritytech.SubstrateConnect`
+ *
  */
 export const createScClient = (config?: Config): ScClient => {
   if (config?.forceEmbeddedNode)
@@ -66,6 +74,7 @@ function getSmoldotProviderPromise(): Promise<SmoldotExtensionAPI> | undefined {
   if (typeof document !== "object" || typeof CustomEvent !== "function") return
   const lightClientProvider = getSmoldotExtensionProviders()
     .filter((detail) =>
+      // Filter for Substrate Connect to find the correct provider among multiple providers.
       detail.info.rdns.startsWith("io.github.paritytech.SubstrateConnect"),
     )
     .map((detail) => detail.provider)[0]

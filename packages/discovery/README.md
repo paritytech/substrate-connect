@@ -22,12 +22,15 @@ The main export is a function called `getProviders`. This function dispatches an
 
 ## How It Works
 
-The extension injects an inpage script that:
+The discovery protocol is quite simple and can be implemented in these steps:
 
-- Registers a listener for the `substrateDiscovery:requestProvider` event and announces the provider by invoking synchronously the `onProvider` callback from the event payload.
-- Optionally, dispatches the `substrateDiscovery:announceProvider` event with the provider details when the script is loaded.
+1. The extension injects an inpage script that registers a listener for the `substrateDiscovery:requestProvider` event.
+2. The listener announces the provider by invoking the `onProvider` callback from the event payload synchronously.
+3. Optionally, the script can dispatch the `substrateDiscovery:announceProvider` event with the provider details when the script is loaded.
 
-## Basic Example
+Refer to `src/index.ts` in this package for an implementation of this protocol.
+
+## Basic Usage Example
 
 ```ts
 import { getProviders } from "@substrate/discovery"
@@ -39,6 +42,8 @@ console.log(firstProvider)
 ```
 
 ## Example with rDNS Filter
+
+This example demonstrates how to filter providers based on a specific rDNS value. This approach is useful when you need to target specific extensions rather than all extensions matching a certain interface.
 
 ```ts
 import { getProviders } from "@substrate/discovery"
