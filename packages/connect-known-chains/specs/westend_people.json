@@ -1,0 +1,28 @@
+{
+  "name": "Westend People",
+  "id": "people-westend",
+  "chainType": "Live",
+  "bootNodes": [
+    "/dns/westend-people-collator-node-0.parity-testnet.parity.io/tcp/30333/p2p/12D3KooWDcLjDLTu9fNhmas9DTWtqdv8eUbFMWQzVwvXRK7QcjHD",
+    "/dns/westend-people-collator-node-0.parity-testnet.parity.io/tcp/443/wss/p2p/12D3KooWDcLjDLTu9fNhmas9DTWtqdv8eUbFMWQzVwvXRK7QcjHD",
+    "/dns/westend-people-collator-node-1.parity-testnet.parity.io/tcp/30333/p2p/12D3KooWM56JbKWAXsDyWh313z73aKYVMp1Hj2nSnAKY3q6MnoC9",
+    "/dns/westend-people-collator-node-1.parity-testnet.parity.io/tcp/443/wss/p2p/12D3KooWM56JbKWAXsDyWh313z73aKYVMp1Hj2nSnAKY3q6MnoC9",
+    "/dns/westend-people-collator-node-2.parity-testnet.parity.io/tcp/30333/p2p/12D3KooWGVYTVKW7tYe51JvetvGvVLDPXzqQX1mueJgz14FgkmHG",
+    "/dns/westend-people-collator-node-2.parity-testnet.parity.io/tcp/443/wss/p2p/12D3KooWGVYTVKW7tYe51JvetvGvVLDPXzqQX1mueJgz14FgkmHG",
+    "/dns/westend-people-collator-node-3.parity-testnet.parity.io/tcp/30333/p2p/12D3KooWCF1eA2Gap69zgXD7Df3e9DqDUsGoByocggTGejoHjK23",
+    "/dns/westend-people-collator-node-3.parity-testnet.parity.io/tcp/443/wss/p2p/12D3KooWCF1eA2Gap69zgXD7Df3e9DqDUsGoByocggTGejoHjK23"
+  ],
+  "telemetryEndpoints": null,
+  "protocolId": null,
+  "properties": {
+    "ss58Format": 0,
+    "tokenDecimals": 10,
+    "tokenSymbol": "DOT"
+  },
+  "relay_chain": "polkadot",
+  "para_id": 1004,
+  "codeSubstitutes": {},
+  "genesis": {
+    "stateRootHash": "0x7a62a14ebf9b2e86292593414d58818324acc5701ea369734c0074f7c962bc0f"
+  }
+}
