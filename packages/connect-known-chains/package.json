@@ -72,6 +72,14 @@
     "./paseo": {
       "import": "./dist/specs/paseo.js",
       "require": "./dist/specs/paseo.cjs"
+    },
+    "./polkadot_people": {
+      "import": "./dist/specs/polkadot_people.js",
+      "require": "./dist/specs/polkadot_people.cjs"
+    },
+    "./westend_people": {
+      "import": "./dist/specs/westend_people.js",
+      "require": "./dist/specs/westend_people.cjs"
     }
   },
   "repository": {
