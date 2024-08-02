@@ -17,9 +17,9 @@
   "properties": {
     "ss58Format": 0,
     "tokenDecimals": 10,
-    "tokenSymbol": "DOT"
+    "tokenSymbol": "WND"
   },
-  "relay_chain": "polkadot",
+  "relay_chain": "westend2",
   "para_id": 1004,
   "codeSubstitutes": {},
   "genesis": {
