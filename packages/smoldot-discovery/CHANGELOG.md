@@ -1,5 +1,14 @@
 # @substrate/smoldot-discovery
 
+## 1.0.1
+
+### Patch Changes
+
+- e8fef4e: update docs
+- 0ce9864: simplify isSmoldotExtension
+- Updated dependencies [e8fef4e]
+  - @substrate/discovery@0.0.2
+
 ## 1.0.0
 
 ### Major Changes

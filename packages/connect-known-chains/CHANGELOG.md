@@ -1,5 +1,13 @@
 # @substrate/connect-known-chains
 
+## 1.2.1
+
+### Patch Changes
+
+- 897f553: chore: update chainspecs
+- 4a45295: add westend people chainspec
+- 4a45295: add polkadot people chainspec
+
 ## 1.2.0
 
 ### Minor Changes

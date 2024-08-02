@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.1
+
+### Patch Changes
+
+- 897f553: chore: update chainspecs
+  - @substrate/light-client-extension-helpers@2.2.1
+  - @substrate/smoldot-discovery-connector@0.0.3
+
 ## 0.6.0
 
 ### Minor Changes

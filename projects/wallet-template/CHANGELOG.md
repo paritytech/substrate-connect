@@ -1,5 +1,88 @@
 # Changelog
 
+## 0.1.1
+
+### Patch Changes
+
+- e8bfa6b: chore(deps): bump @radix-ui/react-progress from 1.0.3 to 1.1.0
+
+  Bumps [@radix-ui/react-progress](https://github.com/radix-ui/primitives) from 1.0.3 to 1.1.0.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-progress"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- b942c9f: chore(deps): bump @radix-ui/react-label from 2.0.2 to 2.1.0
+
+  Bumps [@radix-ui/react-label](https://github.com/radix-ui/primitives) from 2.0.2 to 2.1.0.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-label"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 20cf74d: chore(deps): bump lucide-react from 0.400.0 to 0.417.0
+
+  Bumps [lucide-react](https://github.com/lucide-icons/lucide/tree/HEAD/packages/lucide-react) from 0.400.0 to 0.417.0.
+
+  - [Release notes](https://github.com/lucide-icons/lucide/releases)
+  - [Commits](https://github.com/lucide-icons/lucide/commits/0.417.0/packages/lucide-react)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: lucide-react
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 3c4db1a: chore(deps): bump @radix-ui/react-switch from 1.0.3 to 1.1.0
+
+  Bumps [@radix-ui/react-switch](https://github.com/radix-ui/primitives) from 1.0.3 to 1.1.0.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-switch"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 897f553: chore: update chainspecs
+- Updated dependencies [e8fef4e]
+  - @substrate/connect-discovery@0.0.8
+  - @substrate/discovery@0.0.2
+  - @substrate/light-client-extension-helpers@2.2.1
+  - @substrate/smoldot-discovery-connector@0.0.3
+
 ## 0.1.0
 
 ### Minor Changes
