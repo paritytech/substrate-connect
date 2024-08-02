@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.1.1
+
+### Patch Changes
+
+- 80187a0: docs(substrate-connect): add polkadotjs example
+- e8fef4e: update docs
+- Updated dependencies [897f553]
+- Updated dependencies [e8fef4e]
+- Updated dependencies [0ce9864]
+- Updated dependencies [4a45295]
+- Updated dependencies [4a45295]
+  - @substrate/connect-known-chains@1.2.1
+  - @substrate/smoldot-discovery@1.0.1
+
 ## 1.1.0
 
 ### Minor Changes
