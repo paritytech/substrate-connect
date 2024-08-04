@@ -6,6 +6,7 @@ register("extension-unique-id")
 // TODO: inpage script might not be needed
 try {
   const s = document.createElement("script")
+  s.type = "module"
   s.src = chrome.runtime.getURL("js/inpage.global.js")
   s.onload = function () {
     // @ts-ignore
