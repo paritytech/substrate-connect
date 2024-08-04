@@ -1,6 +1,6 @@
 {
   "name": "@substrate/wallet-template",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Wallet template for substrate-based blockchain light clients",
   "main": "dist/src/index.js",
   "author": "Parity Technologies",
