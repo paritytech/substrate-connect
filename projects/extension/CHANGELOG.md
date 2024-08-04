@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.6.2
+
+### Patch Changes
+
+- c0fa25d: Fix `inpage.js` script variables leaking into the global scope, breaking any webpage with clashing variable names.
+- c1723ec: chore(deps-dev): bump postcss from 8.4.38 to 8.4.40
+
+  Bumps [postcss](https://github.com/postcss/postcss) from 8.4.38 to 8.4.40.
+
+  - [Release notes](https://github.com/postcss/postcss/releases)
+  - [Changelog](https://github.com/postcss/postcss/blob/main/CHANGELOG.md)
+  - [Commits](https://github.com/postcss/postcss/compare/8.4.38...8.4.40)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: postcss
+    dependency-type: direct:development
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 1049be1: update chainspecs
+  - @substrate/light-client-extension-helpers@2.2.2
+  - @substrate/smoldot-discovery-connector@0.0.4
+
 ## 0.6.1
 
 ### Patch Changes

@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.1.2
+
+### Patch Changes
+
+- 0b3053e: chore(deps-dev): bump vitest from 1.6.0 to 2.0.5
+
+  Bumps [vitest](https://github.com/vitest-dev/vitest/tree/HEAD/packages/vitest) from 1.6.0 to 2.0.5.
+
+  - [Release notes](https://github.com/vitest-dev/vitest/releases)
+  - [Commits](https://github.com/vitest-dev/vitest/commits/v2.0.5/packages/vitest)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: vitest
+    dependency-type: direct:development
+    update-type: version-update:semver-major
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- Updated dependencies [1049be1]
+  - @substrate/connect-known-chains@1.2.2
+
 ## 1.1.1
 
 ### Patch Changes

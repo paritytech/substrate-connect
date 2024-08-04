@@ -1,5 +1,51 @@
 # Changelog
 
+## 0.1.2
+
+### Patch Changes
+
+- c0fa25d: Fix `inpage.js` script variables leaking into the global scope, breaking any webpage with clashing variable names.
+- 0b3053e: chore(deps-dev): bump vitest from 1.6.0 to 2.0.5
+
+  Bumps [vitest](https://github.com/vitest-dev/vitest/tree/HEAD/packages/vitest) from 1.6.0 to 2.0.5.
+
+  - [Release notes](https://github.com/vitest-dev/vitest/releases)
+  - [Commits](https://github.com/vitest-dev/vitest/commits/v2.0.5/packages/vitest)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: vitest
+    dependency-type: direct:development
+    update-type: version-update:semver-major
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- c1723ec: chore(deps-dev): bump postcss from 8.4.38 to 8.4.40
+
+  Bumps [postcss](https://github.com/postcss/postcss) from 8.4.38 to 8.4.40.
+
+  - [Release notes](https://github.com/postcss/postcss/releases)
+  - [Changelog](https://github.com/postcss/postcss/blob/main/CHANGELOG.md)
+  - [Commits](https://github.com/postcss/postcss/compare/8.4.38...8.4.40)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: postcss
+    dependency-type: direct:development
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 1049be1: update chainspecs
+  - @substrate/light-client-extension-helpers@2.2.2
+  - @substrate/smoldot-discovery-connector@0.0.4
+
 ## 0.1.1
 
 ### Patch Changes

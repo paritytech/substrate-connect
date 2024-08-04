@@ -1,5 +1,11 @@
 # @substrate/connect-known-chains
 
+## 1.2.2
+
+### Patch Changes
+
+- 1049be1: update chainspecs
+
 ## 1.2.1
 
 ### Patch Changes
