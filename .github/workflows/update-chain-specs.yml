@@ -73,8 +73,8 @@ jobs:
       id: gen_token
       uses: actions/create-github-app-token@v1
       with:
-          app-id: ${{ secrets.PR_APP_ID }}
-          private-key: ${{ secrets.PR_APP_KEY }}
+          app-id: ${{ secrets.SUBSTRATE_CONNECT_PR_APP_ID }}
+          private-key: ${{ secrets.SUBSTRATE_CONNECT_PR_APP_KEY }}
           owner: ${{ github.repository_owner }}
     - uses: actions/checkout@v4.1.7
       with:
