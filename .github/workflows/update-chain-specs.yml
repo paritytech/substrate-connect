@@ -22,13 +22,6 @@ jobs:
       fail-fast: false   # Don't automatically cancel the jobs of the other RPC nodes if one fails
 
     steps:
-    - name: Generate a token
-      id: gen_token
-      uses: actions/create-github-app-token@v1
-      with:
-          app-id: ${{ secrets.PR_APP_ID }}
-          private-key: ${{ secrets.PR_APP_KEY }}
-          owner: ${{ github.repository_owner }}
     - uses: actions/checkout@v4
       with:
         persist-credentials: false
@@ -76,6 +69,13 @@ jobs:
     if: ${{ always() }} # Run this job even if one of the steps of download-spec has failed
     needs: download-spec
     steps:
+    - name: Generate a token
+      id: gen_token
+      uses: actions/create-github-app-token@v1
+      with:
+          app-id: ${{ secrets.PR_APP_ID }}
+          private-key: ${{ secrets.PR_APP_KEY }}
+          owner: ${{ github.repository_owner }}
     - uses: actions/checkout@v4.1.7
       with:
         path: repo
