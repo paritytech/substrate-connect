@@ -1,6 +1,6 @@
 import { createClient } from "@polkadot-api/substrate-client"
 import { getObservableClient } from "@polkadot-api/observable-client"
-import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
+import { getDynamicBuilder, getLookupFn } from "@polkadot-api/metadata-builders"
 import {
   Bytes,
   Struct,
@@ -27,7 +27,7 @@ export const getSignaturePayload = async (
   const metadata = await firstValueFrom(
     metadata$.pipe(filter(Boolean)),
   ).finally(unfollow)
-  const dynamicBuilder = getDynamicBuilder(metadata)
+  const dynamicBuilder = getDynamicBuilder(getLookupFn(metadata))
   const [extra, additionalSigned] = metadata.extrinsic.signedExtensions.reduce<
     [extra: Uint8Array[], additionalSigned: Uint8Array[]]
   >(

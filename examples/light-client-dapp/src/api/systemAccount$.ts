@@ -1,4 +1,4 @@
-import { getDynamicBuilder } from "@polkadot-api/metadata-builders"
+import { getDynamicBuilder, getLookupFn } from "@polkadot-api/metadata-builders"
 
 import { Unstable } from "@substrate/connect-discovery"
 import { combineLatest, distinct, filter, finalize, map, mergeMap } from "rxjs"
@@ -29,10 +29,9 @@ export const systemAccount$ = (
     finalized$.pipe(filter(Boolean)),
   ]).pipe(
     mergeMap(([metadata, blockInfo]) => {
-      const storageAccount = getDynamicBuilder(metadata).buildStorage(
-        "System",
-        "Account",
-      )
+      const storageAccount = getDynamicBuilder(
+        getLookupFn(metadata),
+      ).buildStorage("System", "Account")
       return storage$(blockInfo.hash, "value", () =>
         storageAccount.enc(address),
       ).pipe(

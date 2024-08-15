@@ -1,2 +1,2 @@
 export type * from "./types"
-export { createTxEntry, submit, submit$ } from "./tx"
+export { InvalidTxError, createTxEntry, submit, submit$ } from "./tx"
