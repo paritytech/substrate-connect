@@ -35,6 +35,13 @@ corepack pnpm i @substrate/connect-discovery
 Here's an example of how to use the package:
 
 ```ts
+/* This throws errors.
+  Module '"@substrate/connect-discovery"' has no exported member 'getSubstrateConnectExtensionProviders'.
+  It seems to be defined inside the Unstable namespace
+
+  import { Unstable } from "@substrate/connect-discovery";
+  const connectExtensionProviders = Unstable.getSubstrateConnectExtensionProviders();
+*/ 
 import { getSubstrateConnectExtensionProviders } from "@substrate/connect-discovery"
 
 const connectExtensionProviders = getSubstrateConnectExtensionProviders()

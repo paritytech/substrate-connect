@@ -239,7 +239,7 @@ import { createTx } from "@substrate/light-client-extension-helpers/tx-helper" /
 const CHANNEL_ID = "..."
 const lightClientProvider = await getLightClientProvider(CHANNEL_ID)
 
-const createTx = async (chainId: string, from: string, callData: string) => {
+const createTrx = async (chainId: string, from: string, callData: string) => {
   const chains = Object.values(lightClientProvider.getChains())
   const chain = chains.find(({ genesisHash }) => genesisHash === chainId)
 

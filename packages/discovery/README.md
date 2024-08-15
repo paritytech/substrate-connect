@@ -60,6 +60,9 @@ console.log(provider)
 ## React Example
 
 ```tsx
+
+/* The snippet below throws an error when run because provider can be a promise (Promise {<fulfilled>: {…}}) and cannot be printed like {provider} :) */
+
 import React, { useEffect, useState } from "react"
 import { getProviders } from "@substrate/discovery"
 

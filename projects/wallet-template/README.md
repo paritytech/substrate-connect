@@ -2,7 +2,7 @@
 
 ## Overview
 
-Welcome to Substrate Connect - the ultimate light client wallet template! Substrate Connect leverages the power of [smoldot](https://github.com/smol-dot/smoldot), a light client that implements the JSON RPC Spec to provide a highly resilient, efficient, and user-friendly wallet experience. By using this template, your extension will be able to instantly connect any dapp to any Substrate-based chains without the hassle of waiting for synchronization.
+Welcome to Substrate Connect - the ultimate light client wallet template! Substrate Connect leverages the power of [smoldot](https://github.com/smol-dot/smoldot), a light client that implements the [JSON RPC Spec](https://docs.rs/jsonrpsee/latest/jsonrpsee/) to provide a highly resilient, efficient, and user-friendly wallet experience. By using this template, your extension will be able to instantly connect any dapp to any Substrate-based chains without the hassle of waiting for synchronization.
 
 ## Getting Started
 

@@ -36,12 +36,18 @@ const chain = await scClient.addWellKnownChain(
   }
 );
 
+/* system_health seems to be a legacy call (even though it is still available when you list methods). It could be replaced with "system_properties" or "system_version" or anything else to the liking, to avoid this example failing when the call is completely removed. 
+
+source: https://paritytech.github.io/json-rpc-interface-spec/api/chainHead_v1_follow.html?highlight=system_health#the-withruntime-parameter
+*/
 chain.sendJsonRpc(
   '{"jsonrpc":"2.0","id":"1","method":"system_health","params":[]}'
 );
 ```
 
 To connect to a custom Substrate chain using its name and chainspec:
+
+/* A link to an example of a chainspec would be nice here, e.g. https://github.com/paritytech/substrate-connect/tree/main/packages/connect-known-chains/specs */
 
 ```js
 import { createScClient } from '@substrate/connect';
@@ -88,9 +94,15 @@ parachain.sendJsonRpc(
 
 ### PokladotJs Example
 
+```
+yarn add @polkadot/rpc-provider
+yarn add @polkadot/api
+```
+
 ```ts
 import { ScProvider } from '@polkadot/rpc-provider/substrate-connect';
 import * as Sc from '@substrate/connect';
+import { ApiPromise } from "@polkadot/api"
 
 // Connect to polkadot relay chain
 const provider = new ScProvider(Sc, Sc.WellKnownChain.polkadot);

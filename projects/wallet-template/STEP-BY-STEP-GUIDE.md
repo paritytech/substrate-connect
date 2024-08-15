@@ -11,6 +11,8 @@ extension helpers into your browser extension.
 
 ## Setup
 
+/_ `@substrate/smoldot-discovery-connector` is not an npm package _/
+
 First install these three packages: `@substrate/light-client-extension-helpers`,`@substrate/smoldot-discovery`, `@substrate/smoldot-discovery-connector` and `@substrate/connect-known-chains`. We will use these packages to implement a provider for the `@substrate/smoldot-discovery` package.
 
 ```sh
@@ -31,6 +33,16 @@ Start by adding the light client background extension helper to your background 
   "service_worker": "background/background.js",
   "type": "module"
 },
+"permissions": ["notifications", "storage", "tabs", "alarms"],
+"web_accessible_resources": [
+  {
+    "resources": ["path-to-your/inpage.js"],
+    "matches": ["<all_urls>"],
+  }
+],
+"content_security_policy": {
+  "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
+},
 ```
 
 **Background Script:**
@@ -40,19 +52,21 @@ import {
   polkadot,
   ksmcc3,
   westend2,
-  paseo,
+  // there is no chainspec named paseo in connect-known-chains
 } from "@substrate/connect-known-chains"
+
+import { register } from "@substrate/light-client-extension-helpers/background"
 import { start } from "@substrate/light-client-extension-helpers/smoldot"
 
 const { lightClientPageHelper, addOnAddChainByUserListener } = register({
   smoldotClient: start({ maxLogLevel: 4 }),
-  getWellKnownChainSpecs: async () => [polkadot, ksmcc3, westend2, paseo],
+  getWellKnownChainSpecs: async () => [polkadot, ksmcc3, westend2],
 })
 ```
 
 ### 2. Register Content Script
 
-Then, invoke the register function in your content script and inject your in-page into the DOM. See the [content script](./content/index.ts) for detailed implementation.
+Then, invoke the register function in your content script and inject your in-page into the DOM. See the [content script](./src/content/index.ts) for detailed implementation.
 
 **Content Script:**
 
@@ -95,6 +109,22 @@ import {
   make as makeSmoldotDiscoveryConnector,
   SmoldotExtensionProviderDetail,
 } from "@substrate/smoldot-discovery-connector"
+import { SmoldotExtensionProviderDetail } from "@substrate/smoldot-discovery/types"
+
+/* @substrate/smoldot-discovery-connector is not published on npm
+
+it is used in other examples like this:
+
+"@substrate/smoldot-discovery-connector": "workspace:^"
+(dependency is resolved from within the workspace)
+
+import {
+  getSmoldotExtensionProviders,
+} from "@substrate/smoldot-discovery";
+
+const provider = lightClientProvider.then(getSmoldotExtensionProviders())
+
+*/
 
 const CHANNEL_ID = "substrate-wallet-template"
 
@@ -105,11 +135,13 @@ const PROVIDER_INFO = {
   rdns: "io.github.paritytech.SubstrateConnectWalletTemplate",
 }
 
-const lightClientProvider = getLightClientProvider(DOM_ELEMENT_ID)
+const lightClientProviderPromise = getLightClientProvider(CHANNEL_ID)
 
 // #region Smoldot Discovery Provider
 {
-  const provider = lightClientProvider.then(makeSmoldotDiscoveryConnector)
+  const provider = lightClientProviderPromise.then(
+    makeSmoldotDiscoveryConnector,
+  )
 
   const detail: SmoldotExtensionProviderDetail = Object.freeze({
     info: PROVIDER_INFO,
@@ -151,15 +183,24 @@ The next part of this tutorial will extend the steps of the prior integration. I
 pnpm i @polkadot-api/pjs-signer @polkadot-api/utils @substrate/connect-discovery
 ```
 
-### 2. Implement the @substrate/connect-discovry protocol
+### 2. Implement the @substrate/connect-discovery protocol
 
-Use the following code below to implement `createTx` and `getAccounts`. Replace "polkadot-js" with the name of your PJS-compatible extension.
+Add the following code below to the relevant section of your `inpage.js` file to implement `createTx` and `getAccounts`. Replace "polkadot-js" with the name of your PJS-compatible extension.
 
 ```ts
+import { connectInjectedExtension } from "@polkadot-api/pjs-signer"
+import { toHex, fromHex } from "@polkadot-api/utils"
+import { createTx } from "@substrate/light-client-extension-helpers/tx-helper" // 👈 create-tx import
+import { Unstable } from "@substrate/connect-discovery"
+import {
+  getLightClientProvider,
+  LightClientProvider,
+} from "@substrate/light-client-extension-helpers/web-page"
+
 // #region Connect Discovery Provider
 {
   const provider = lightClientProviderPromise.then(
-    (lightClientProvider): Unstable.Provider => ({
+    (lightClientProvider: LightClientProvider): Unstable.Provider => ({
       ...lightClientProvider,
       async createTx(chainId: string, from: string, callData: string) {
         const chains = Object.values(lightClientProvider.getChains())
