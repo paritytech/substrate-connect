@@ -152,6 +152,12 @@ jobs:
           token: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
           tarball-name: "substrate-smoldot-discovery"
           package-directory: ./packages/smoldot-discovery
+      - name: "@substrate/smoldot-discovery-connector"
+        uses: ./.github/actions/publish-package 
+        with:
+          token: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
+          tarball-name: "substrate-smoldot-discovery-connector"
+          package-directory: ./packages/smoldot-discovery-connector
 
   upload-extension-artifacts:
     if: github.ref == 'refs/heads/main'

@@ -91,7 +91,7 @@ export const createBackgroundRpc = (
           mergeMap((blockInfo) =>
             chainHead$.getRuntimeContext$(blockInfo.hash).pipe(
               take(1),
-              map(({ metadata }) =>
+              map(({ lookup: { metadata } }) =>
                 metadata.extrinsic.signedExtensions
                   .map(({ identifier }) => identifier)
                   .filter(isUserSignedExtensionName),
