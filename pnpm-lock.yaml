@@ -571,11 +571,11 @@ importers:
         specifier: ^12.0.2
         version: 12.0.2
       '@polkadot/keyring':
-        specifier: ^12.5.1
-        version: 12.6.2(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)
+        specifier: ^13.0.2
+        version: 13.0.2(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)
       '@polkadot/react-identicon':
         specifier: ^3.6.6
-        version: 3.6.6(@polkadot/keyring@12.6.2)(@polkadot/networks@12.6.2)(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)
+        version: 3.6.6(@polkadot/keyring@13.0.2)(@polkadot/networks@13.0.2)(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1)
       '@polkadot/rpc-provider':
         specifier: ^12.1.1
         version: 12.1.1
@@ -4242,6 +4242,18 @@ packages:
       tslib: 2.6.3
     dev: false
 
+  /@polkadot/keyring@13.0.2(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2):
+    resolution: {integrity: sha512-NeLbhyKDT5W8LI9seWTZGePxNTOVpDhv2018HSrEDwJq9Ie0C4TZhUf3KNERCkSveuThXjfQJMs+1CF33ZXPWw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@polkadot/util': 13.0.2
+      '@polkadot/util-crypto': 13.0.2
+    dependencies:
+      '@polkadot/util': 12.6.2
+      '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
+      tslib: 2.6.3
+    dev: false
+
   /@polkadot/networks@12.6.2:
     resolution: {integrity: sha512-1oWtZm1IvPWqvMrldVH6NI2gBoCndl5GEwx7lAuQWGr7eNL+6Bdc5K3Z9T0MzFvDGoi2/CBqjX9dRKo39pDC/w==}
     engines: {node: '>=18'}
@@ -4251,7 +4263,16 @@ packages:
       tslib: 2.6.3
     dev: false
 
-  /@polkadot/react-identicon@3.6.6(@polkadot/keyring@12.6.2)(@polkadot/networks@12.6.2)(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1):
+  /@polkadot/networks@13.0.2:
+    resolution: {integrity: sha512-ABAL+vug/gIwkdFEzeh87JoJd0YKrxSYg/HjUrZ+Zis2ucxQEKpvtCpJ34ku+YrjacBfVqIAkkwd3ZdIPGq9aQ==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/util': 13.0.2
+      '@substrate/ss58-registry': 1.48.0
+      tslib: 2.6.3
+    dev: false
+
+  /@polkadot/react-identicon@3.6.6(@polkadot/keyring@13.0.2)(@polkadot/networks@13.0.2)(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)(react-dom@18.3.1)(react-is@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-fcIqfXdQqmfVPquytfCPtG//4CEcdYCZQI7mO0zJCwH1RlUuxmhp5Gmm8TS+4ATOZ5utO6/IB+et9yAZ99PSNg==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -4262,8 +4283,8 @@ packages:
       react-dom: '*'
       react-is: '*'
     dependencies:
-      '@polkadot/keyring': 12.6.2(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)
-      '@polkadot/ui-settings': 3.6.6(@polkadot/networks@12.6.2)(@polkadot/util@12.6.2)
+      '@polkadot/keyring': 13.0.2(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)
+      '@polkadot/ui-settings': 3.6.6(@polkadot/networks@13.0.2)(@polkadot/util@12.6.2)
       '@polkadot/ui-shared': 3.6.6(@polkadot/util-crypto@12.6.2)(@polkadot/util@12.6.2)
       '@polkadot/util': 12.6.2
       '@polkadot/util-crypto': 12.6.2(@polkadot/util@12.6.2)
@@ -4575,14 +4596,14 @@ packages:
       tslib: 2.6.3
     dev: false
 
-  /@polkadot/ui-settings@3.6.6(@polkadot/networks@12.6.2)(@polkadot/util@12.6.2):
+  /@polkadot/ui-settings@3.6.6(@polkadot/networks@13.0.2)(@polkadot/util@12.6.2):
     resolution: {integrity: sha512-DoXXnj4KASxZWE+hnBkNXOkm3AX6CbyyZLzPBAPR4ZyyGTqushJNmyaiTiArqMtBh7rYFT2cDStt+qOa/hjyhQ==}
     engines: {node: '>=18'}
     peerDependencies:
       '@polkadot/networks': '*'
       '@polkadot/util': '*'
     dependencies:
-      '@polkadot/networks': 12.6.2
+      '@polkadot/networks': 13.0.2
       '@polkadot/util': 12.6.2
       eventemitter3: 5.0.1
       store: 2.0.12
@@ -4628,6 +4649,19 @@ packages:
       '@polkadot/x-global': 12.6.2
       '@polkadot/x-textdecoder': 12.6.2
       '@polkadot/x-textencoder': 12.6.2
+      '@types/bn.js': 5.1.5
+      bn.js: 5.2.1
+      tslib: 2.6.3
+    dev: false
+
+  /@polkadot/util@13.0.2:
+    resolution: {integrity: sha512-/6bS9sfhJLhs8QuqWaR1eRapzfDdGC5XAQZEPL9NN5sTTA7HxWos8rVleai0UERm8QUMabjZ9rK9KpzbXl7ojg==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/x-bigint': 13.0.2
+      '@polkadot/x-global': 13.0.2
+      '@polkadot/x-textdecoder': 13.0.2
+      '@polkadot/x-textencoder': 13.0.2
       '@types/bn.js': 5.1.5
       bn.js: 5.2.1
       tslib: 2.6.3
@@ -4718,6 +4752,14 @@ packages:
       tslib: 2.6.3
     dev: false
 
+  /@polkadot/x-bigint@13.0.2:
+    resolution: {integrity: sha512-h2jKT/UaxiEal8LhQeH6+GCjO7GwEqVAD2SNYteCOXff6yNttqAZYJuHZsndbVjVNwqRNf8D5q/zZkD0HUd6xQ==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/x-global': 13.0.2
+      tslib: 2.6.3
+    dev: false
+
   /@polkadot/x-fetch@12.6.2:
     resolution: {integrity: sha512-8wM/Z9JJPWN1pzSpU7XxTI1ldj/AfC8hKioBlUahZ8gUiJaOF7K9XEFCrCDLis/A1BoOu7Ne6WMx/vsJJIbDWw==}
     engines: {node: '>=18'}
@@ -4729,6 +4771,13 @@ packages:
 
   /@polkadot/x-global@12.6.2:
     resolution: {integrity: sha512-a8d6m+PW98jmsYDtAWp88qS4dl8DyqUBsd0S+WgyfSMtpEXu6v9nXDgPZgwF5xdDvXhm+P0ZfVkVTnIGrScb5g==}
+    engines: {node: '>=18'}
+    dependencies:
+      tslib: 2.6.3
+    dev: false
+
+  /@polkadot/x-global@13.0.2:
+    resolution: {integrity: sha512-OoNIXLB5y8vIKpk4R+XmpDPhipNXWSUvEwUnpQT7NAxNLmzgMq1FhbrwBWWPRNHPrQonp7mqxV/X+v5lv1HW/g==}
     engines: {node: '>=18'}
     dependencies:
       tslib: 2.6.3
@@ -4755,11 +4804,27 @@ packages:
       tslib: 2.6.3
     dev: false
 
+  /@polkadot/x-textdecoder@13.0.2:
+    resolution: {integrity: sha512-mauglOkTJxLGmLwLc3J5Jlq/W+SHP53eiy3F8/8JxxfnXrZKgWoQXGpvXYPjFnMZj0MzDSy/6GjyGWnDCgdQFA==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/x-global': 13.0.2
+      tslib: 2.6.3
+    dev: false
+
   /@polkadot/x-textencoder@12.6.2:
     resolution: {integrity: sha512-4N+3UVCpI489tUJ6cv3uf0PjOHvgGp9Dl+SZRLgFGt9mvxnvpW/7+XBADRMtlG4xi5gaRK7bgl5bmY6OMDsNdw==}
     engines: {node: '>=18'}
     dependencies:
       '@polkadot/x-global': 12.6.2
+      tslib: 2.6.3
+    dev: false
+
+  /@polkadot/x-textencoder@13.0.2:
+    resolution: {integrity: sha512-Lq08H2OnVXj97uaOwg7tcmRS7a4VJYkHEeWO4FyEMOk6P6lU6W8OVNjjxG0se9PCEgmyZPUDbJI//1ynzP4cXw==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@polkadot/x-global': 13.0.2
       tslib: 2.6.3
     dev: false
 
