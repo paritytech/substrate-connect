@@ -3,6 +3,7 @@ import { getViewBuilder } from "@polkadot-api/view-builder"
 import { createClient } from "@polkadot-api/substrate-client"
 import { helper } from "@substrate/light-client-extension-helpers/extension-page"
 import { filter, firstValueFrom } from "rxjs"
+import { getLookupFn } from "@polkadot-api/metadata-builders"
 
 export const decodeCallData = async (chainId: string, callData: string) => {
   const chains = await helper.getChains()
@@ -12,7 +13,7 @@ export const decodeCallData = async (chainId: string, callData: string) => {
   const { metadata$, unfollow } = client.chainHead$()
   try {
     const metadata = await firstValueFrom(metadata$.pipe(filter(Boolean)))
-    return getViewBuilder(metadata).callDecoder(callData)
+    return getViewBuilder(getLookupFn(metadata)).callDecoder(callData)
   } finally {
     unfollow()
     client.destroy()

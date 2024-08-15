@@ -1,13 +1,10 @@
-import { map, noop, of } from "rxjs"
 import {
-  V15,
-  Storage,
-  Twox64Concat,
-  u32,
-  V14,
-} from "@polkadot-api/substrate-bindings"
-import { getDynamicBuilder, getLookupFn } from "@polkadot-api/metadata-builders"
+  getDynamicBuilder,
+  MetadataLookup,
+} from "@polkadot-api/metadata-builders"
+import { Storage, Twox64Concat, u32 } from "@polkadot-api/substrate-bindings"
 import { fromHex } from "@polkadot-api/utils"
+import { map, noop, of } from "rxjs"
 import type { ChainExtensionCtx } from "./internal-types"
 
 export const empty = new Uint8Array()
@@ -22,11 +19,13 @@ export const genesisHashFromCtx = (ctx: ChainExtensionCtx) =>
     .storage$(ctx.at, "value", () => genesisHashStorageKey, null)
     .pipe(map((result) => fromHex(result!)))
 
-export const systemVersionProp$ = (propName: string, metadata: V14 | V15) => {
-  const lookupFn = getLookupFn(metadata.lookup)
-  const dynamicBuilder = getDynamicBuilder(metadata)
+export const systemVersionProp$ = (
+  propName: string,
+  lookupFn: MetadataLookup,
+) => {
+  const dynamicBuilder = getDynamicBuilder(lookupFn)
 
-  const constant = metadata.pallets
+  const constant = lookupFn.metadata.pallets
     .find((x) => x.name === "System")!
     .constants!.find((s) => s.name === "Version")!
 

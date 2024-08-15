@@ -55,7 +55,7 @@
     "tsup": "^8.0.2",
     "turbo": "^1.13.2",
     "typedoc": "^0.25.13",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.4"
   },
   "packageManager": "pnpm@8.14.0",
   "pnpm": {
