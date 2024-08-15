@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.7.0
+
+### Minor Changes
+
+- bc9fe42: chore: update chainspecs
+
+### Patch Changes
+
+- 076439e: chore: update polkadot api deps
+- Updated dependencies [076439e]
+- Updated dependencies [bc9fe42]
+  - @substrate/light-client-extension-helpers@2.3.0
+  - @substrate/smoldot-discovery-connector@0.0.5
+
 ## 0.6.2
 
 ### Patch Changes

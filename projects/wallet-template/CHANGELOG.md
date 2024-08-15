@@ -1,5 +1,56 @@
 # Changelog
 
+## 0.2.0
+
+### Minor Changes
+
+- bc9fe42: chore: update chainspecs
+
+### Patch Changes
+
+- 076439e: chore: update polkadot api deps
+- d19aefe: chore(deps): bump @radix-ui/react-collapsible from 1.0.3 to 1.1.0
+
+  Bumps [@radix-ui/react-collapsible](https://github.com/radix-ui/primitives) from 1.0.3 to 1.1.0.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-collapsible"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- b8fd702: chore(deps): bump react-hook-form from 7.52.1 to 7.52.2
+
+  Bumps [react-hook-form](https://github.com/react-hook-form/react-hook-form) from 7.52.1 to 7.52.2.
+
+  - [Release notes](https://github.com/react-hook-form/react-hook-form/releases)
+  - [Changelog](https://github.com/react-hook-form/react-hook-form/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/react-hook-form/react-hook-form/compare/v7.52.1...v7.52.2)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: react-hook-form
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- Updated dependencies [076439e]
+- Updated dependencies [bc9fe42]
+  - @substrate/light-client-extension-helpers@2.3.0
+  - @substrate/smoldot-discovery-connector@0.0.5
+
 ## 0.1.2
 
 ### Patch Changes

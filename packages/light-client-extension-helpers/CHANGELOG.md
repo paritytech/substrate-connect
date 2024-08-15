@@ -1,5 +1,19 @@
 # @substrate/light-client-extension-helpers
 
+## 2.3.0
+
+### Minor Changes
+
+- bc9fe42: chore: update chainspecs
+
+### Patch Changes
+
+- 076439e: chore: update polkadot api deps
+- Updated dependencies [0bd81c2]
+- Updated dependencies [076439e]
+- Updated dependencies [bc9fe42]
+  - @substrate/connect-known-chains@1.3.0
+
 ## 2.2.2
 
 ### Patch Changes
