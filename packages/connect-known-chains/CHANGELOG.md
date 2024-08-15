@@ -1,5 +1,16 @@
 # @substrate/connect-known-chains
 
+## 1.3.0
+
+### Minor Changes
+
+- 0bd81c2: fix missing paseo export
+- bc9fe42: chore: update chainspecs
+
+### Patch Changes
+
+- 076439e: chore: update polkadot api deps
+
 ## 1.2.2
 
 ### Patch Changes

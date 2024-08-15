@@ -1,5 +1,13 @@
 # @substrate/smoldot-discovery-connector
 
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [076439e]
+- Updated dependencies [bc9fe42]
+  - @substrate/light-client-extension-helpers@2.3.0
+
 ## 0.0.4
 
 ### Patch Changes

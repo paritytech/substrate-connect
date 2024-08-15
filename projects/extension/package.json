@@ -1,6 +1,6 @@
 {
   "name": "@substrate/extension",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "description": "Browser extension to manage substrate-based blockchain light clients",
   "main": "dist/src/index.js",
   "author": "Parity Technologies",
