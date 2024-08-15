@@ -1,3 +1,6 @@
+import { BlockInfo, getObservableClient } from "@polkadot-api/observable-client"
+import { PolkadotSigner } from "@polkadot-api/polkadot-signer"
+import { getPolkadotSigner } from "@polkadot-api/signer"
 import {
   AccountId,
   Binary,
@@ -18,27 +21,28 @@ import {
   take,
   throwError,
 } from "rxjs"
+import { PlainDescriptor } from "./descriptors"
 import {
-  BlockInfo,
-  RuntimeContext,
-  getObservableClient,
-} from "@polkadot-api/observable-client"
-import type { CompatibilityHelper, Runtime } from "./runtime"
-import { PolkadotSigner } from "@polkadot-api/polkadot-signer"
-import { getPolkadotSigner } from "@polkadot-api/signer"
-import type { AssetDescriptor } from "./descriptors"
+  CompatibilityHelper,
+  CompatibilityToken,
+  getCompatibilityApi,
+} from "./compatibility"
 import { createTx } from "./create-tx"
+import { InvalidTxError, submit, submit$ } from "./submit-fns"
 import {
   TxCall,
   TxEntry,
-  TxPromise,
   TxObservable,
   TxOptions,
+  TxPromise,
   TxSignFn,
 } from "./types"
-import { submit, submit$ } from "./submit-fns"
+import {
+  isCompatible,
+  mapLookupToTypedef,
+} from "@polkadot-api/metadata-compatibility"
 
-export { submit, submit$ }
+export { submit, submit$, InvalidTxError }
 
 const accountIdEnc = AccountId().enc
 const queryInfoRawDec = Tuple(compact, compact, u8, u128).dec
@@ -47,35 +51,50 @@ const fakeSignature = new Uint8Array(64)
 const getFakeSignature = () => fakeSignature
 
 export const createTxEntry = <
+  D,
   Arg extends {} | undefined,
   Pallet extends string,
   Name extends string,
-  Asset extends AssetDescriptor<any>,
+  Asset extends PlainDescriptor<any>,
 >(
   pallet: Pallet,
   name: Name,
-  assetChecksum: Asset,
   chainHead: ReturnType<ReturnType<typeof getObservableClient>["chainHead$"]>,
   broadcast: (tx: string) => Observable<never>,
-  compatibilityHelper: CompatibilityHelper,
-): TxEntry<Arg, Pallet, Name, Asset["_type"]> => {
-  const { isCompatible, compatibleRuntime$ } = compatibilityHelper((ctx) =>
-    ctx.checksumBuilder.buildCall(pallet, name),
-  )
-  const checksumError = () =>
-    new Error(`Incompatible runtime entry Tx(${pallet}.${name})`)
-
+  {
+    isCompatible: isCompatibleHelper,
+    getCompatibilityLevel,
+    compatibleRuntime$,
+    argsAreCompatible,
+    getRuntimeTypedef,
+  }: CompatibilityHelper,
+): TxEntry<D, Arg, Pallet, Name, Asset> => {
   const fn = (arg?: Arg): any => {
     const getCallDataWithContext = (
-      { dynamicBuilder, asset: [assetEnc, assetCheck] }: RuntimeContext,
+      runtime: CompatibilityToken,
       arg: any,
       txOptions: Partial<{ asset: any }> = {},
     ) => {
+      const ctx = getCompatibilityApi(runtime).runtime()
+      if (!argsAreCompatible(runtime, ctx, arg))
+        throw new Error(`Incompatible runtime entry Tx(${pallet}.${name})`)
+
+      const { dynamicBuilder, assetId, lookup } = ctx
       let returnOptions = txOptions
       if (txOptions.asset) {
-        if (assetChecksum !== assetCheck)
+        if (
+          assetId == null ||
+          !isCompatible(
+            txOptions.asset,
+            mapLookupToTypedef(lookup(assetId)),
+            (id) => getRuntimeTypedef(ctx, id),
+          )
+        )
           throw new Error(`Incompatible runtime asset`)
-        returnOptions = { ...txOptions, asset: assetEnc(txOptions.asset) }
+        returnOptions = {
+          ...txOptions,
+          asset: dynamicBuilder.buildDefinition(assetId).enc(txOptions.asset),
+        }
       }
 
       const { location, codec } = dynamicBuilder.buildCall(pallet, name)
@@ -88,16 +107,17 @@ export const createTxEntry = <
     }
 
     const getCallData$ = (arg: any, options: Partial<{ asset: any }> = {}) =>
-      compatibleRuntime$(chainHead, null, checksumError).pipe(
-        map((ctx) => getCallDataWithContext(ctx, arg, options)),
+      compatibleRuntime$(chainHead, null).pipe(
+        map(([runtime]) => getCallDataWithContext(runtime, arg, options)),
       )
 
-    const getEncodedData: TxCall = (runtime?: Runtime): any => {
-      if (!runtime)
+    const getEncodedData: TxCall = (
+      compatibilityToken?: CompatibilityToken,
+    ): any => {
+      if (!compatibilityToken)
         return firstValueFrom(getCallData$(arg).pipe(map((x) => x.callData)))
 
-      if (!isCompatible(runtime)) throw checksumError()
-      return getCallDataWithContext(runtime._getCtx(), arg).callData
+      return getCallDataWithContext(compatibilityToken, arg).callData
     }
 
     const sign$ = (
@@ -185,5 +205,8 @@ export const createTxEntry = <
     }
   }
 
-  return Object.assign(fn, { isCompatible })
+  return Object.assign(fn, {
+    getCompatibilityLevel,
+    isCompatible: isCompatibleHelper,
+  })
 }

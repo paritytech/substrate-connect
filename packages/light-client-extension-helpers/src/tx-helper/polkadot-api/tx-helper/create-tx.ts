@@ -34,7 +34,7 @@ export const createTx: (
     take(1),
     mergeMap((ctx) => {
       const signedExtensionsCtx = {
-        metadata: ctx.metadata,
+        lookupFn: ctx.lookup,
         chainHead: chainHead,
         callData: callData,
         at: atBlock.hash,
@@ -48,7 +48,7 @@ export const createTx: (
           : undefined // immortal
 
       return combineLatest(
-        ctx.metadata.extrinsic.signedExtensions.map(
+        ctx.lookup.metadata.extrinsic.signedExtensions.map(
           ({ identifier, type, additionalSigned }) => {
             if (identifier === "CheckMortality")
               return CheckMortality(mortality, signedExtensionsCtx)
@@ -83,7 +83,7 @@ export const createTx: (
           signer.signTx(
             callData,
             Object.fromEntries(
-              ctx.metadata.extrinsic.signedExtensions.map(
+              ctx.lookup.metadata.extrinsic.signedExtensions.map(
                 ({ identifier }, idx) => [
                   identifier,
                   { identifier, ...signedExtensions[idx] },

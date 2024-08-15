@@ -1,7 +1,6 @@
 import type { DescriptorValues } from "@polkadot-api/codegen"
 
 export type PlainDescriptor<T> = { _type?: T }
-export type AssetDescriptor<T> = string & { _type?: T }
 export type StorageDescriptor<
   Args extends Array<any>,
   T,
@@ -42,8 +41,8 @@ export type ChainDefinition = {
     pallets: PalletsTypedef<any, any, any, any, any>
     apis: ApisTypedef<any>
   }
-  asset: AssetDescriptor<any>
-  checksums: Promise<string[]>
+  asset: PlainDescriptor<any>
+  metadataTypes: Promise<Uint8Array>
 }
 
 type ExtractStorage<

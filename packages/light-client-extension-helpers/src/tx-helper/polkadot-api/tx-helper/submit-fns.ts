@@ -1,4 +1,9 @@
-import { Blake2256, HexString } from "@polkadot-api/substrate-bindings"
+import {
+  Binary,
+  Blake2256,
+  HexString,
+  ResultPayload,
+} from "@polkadot-api/substrate-bindings"
 import {
   EMPTY,
   Observable,
@@ -30,21 +35,25 @@ const computeState = (
 ) =>
   new Observable<
     | {
+        found: true
         hash: string
+        number: number
         index: number
         events: any
       }
-    | boolean
+    | { found: false; validity: ResultPayload<any, any> | null }
   >((observer) => {
     const analyzedBlocks = new Map<string, AnalyzedBlock>()
     let pinnedBlocks: PinnedBlocks
     let latestState:
       | {
+          found: true
           hash: string
+          number: number
           index: number
           events: any
         }
-      | boolean
+      | { found: false; validity: ResultPayload<any, any> | null }
 
     const computeNextState = () => {
       let current: string = pinnedBlocks.best
@@ -58,32 +67,36 @@ const computeState = (
 
       if (!analyzed) return // this shouldn't happen, though
 
+      const analyzedNumber = pinnedBlocks.blocks.get(analyzed.hash)!.number
       const isFinalized =
-        pinnedBlocks.blocks.get(analyzed.hash)!.number <=
+        analyzedNumber <=
         pinnedBlocks.blocks.get(pinnedBlocks.finalized)!.number
 
       const found = analyzed.found.type
-      if (
-        found &&
-        typeof latestState === "object" &&
-        latestState.hash === analyzed.hash
-      ) {
+      if (found && latestState?.found && latestState.hash === analyzed.hash) {
         if (isFinalized) observer.complete()
         return
       }
 
       observer.next(
-        (latestState = found
+        (latestState = analyzed.found.type
           ? {
+              found: found as true,
               hash: analyzed.hash,
-              ...analyzed.found,
+              number: analyzedNumber,
+              index: analyzed.found.index,
+              events: analyzed.found.events,
             }
-          : analyzed.found.isValid),
+          : {
+              found: found as false,
+              validity: analyzed.found.validity,
+            }),
       )
 
       if (isFinalized) {
         if (found) observer.complete()
-        else if (!analyzed.found.isValid) observer.error(new Error("Invalid"))
+        else if (analyzed.found.validity?.success === false)
+          observer.error(new InvalidTxError(analyzed.found.validity.value))
       }
     }
 
@@ -128,10 +141,59 @@ const getTxSuccessFromSystemEvents = (
     .map((x) => x.event)
 
   const lastEvent = events[events.length - 1]
-  const ok =
-    lastEvent.type === "System" && lastEvent.value.type === "ExtrinsicSuccess"
+  if (
+    lastEvent.type === "System" &&
+    lastEvent.value.type === "ExtrinsicFailed"
+  ) {
+    return {
+      ok: false,
+      events,
+      dispatchError: lastEvent.value.value.dispatch_error,
+    }
+  }
 
-  return { ok, events }
+  return { ok: true, events }
+}
+
+/*
+type TransactionValidityError = Enum<{
+  Invalid: Enum<{
+    Call: undefined
+    Payment: undefined
+    Future: undefined
+    Stale: undefined
+    BadProof: undefined
+    AncientBirthBlock: undefined
+    ExhaustsResources: undefined
+    Custom: number
+    BadMandatory: undefined
+    MandatoryValidation: undefined
+    BadSigner: undefined
+  }>
+  Unknown: Enum<{
+    CannotLookup: undefined
+    NoUnsignedValidator: undefined
+    Custom: number
+  }>
+}>
+*/
+
+export class InvalidTxError extends Error {
+  error: any // likely to be a `TransactionValidityError`
+  constructor(e: any) {
+    super(
+      JSON.stringify(
+        e,
+        (_, value) => {
+          if (typeof value === "bigint") return value.toString()
+          return value instanceof Binary ? value.asHex() : value
+        },
+        2,
+      ),
+    )
+    this.name = "InvalidTxError"
+    this.error = e
+  }
 }
 
 export const submit$ = (
@@ -163,9 +225,9 @@ export const submit$ = (
   const validate$: Observable<never> = at$.pipe(
     mergeMap((at) =>
       chainHead.validateTx$(at, tx).pipe(
-        filter((x) => !x),
-        map(() => {
-          throw new Error("Invalid")
+        filter((x) => !x.success),
+        map((x) => {
+          throw new InvalidTxError(x.value)
         }),
       ),
     ),
@@ -185,16 +247,17 @@ export const submit$ = (
 
   const bestBlockState$ = computeState(track$, chainHead.pinnedBlocks$).pipe(
     map((x) => {
-      if (x === true || x === false)
+      if (!x.found)
         return getTxEvent("txBestBlocksState", {
           found: false,
-          isValid: x,
+          isValid: x.validity?.success !== false,
         })
 
       return getTxEvent("txBestBlocksState", {
         found: true,
         block: {
           index: x.index,
+          number: x.number,
           hash: x.hash,
         },
         ...getTxSuccessFromSystemEvents(x.events, x.index),
