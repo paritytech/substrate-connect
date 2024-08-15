@@ -15,3 +15,5 @@ export { chainSpec as westend2_bridge_hub } from "./specs/westend2_bridge_hub"
 
 export { chainSpec as polkadot_collectives } from "./specs/polkadot_collectives"
 export { chainSpec as westend2_collectives } from "./specs/westend2_collectives"
+
+export { chainSpec as paseo } from "./specs/paseo"
