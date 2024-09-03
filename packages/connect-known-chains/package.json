@@ -1,6 +1,6 @@
 {
   "name": "@substrate/connect-known-chains",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Substrate-connect well known chain specifications",
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",

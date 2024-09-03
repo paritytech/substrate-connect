@@ -1,5 +1,36 @@
 # @substrate/light-client-extension-helpers
 
+## 2.4.0
+
+### Minor Changes
+
+- b476e7e: update build system to tshy
+
+### Patch Changes
+
+- 5f8b9ce: chore(deps-dev): bump @types/chrome from 0.0.268 to 0.0.270
+
+  Bumps [@types/chrome](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/HEAD/types/chrome) from 0.0.268 to 0.0.270.
+
+  - [Release notes](https://github.com/DefinitelyTyped/DefinitelyTyped/releases)
+  - [Commits](https://github.com/DefinitelyTyped/DefinitelyTyped/commits/HEAD/types/chrome)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@types/chrome"
+    dependency-type: direct:development
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- Updated dependencies [6014927]
+- Updated dependencies [b476e7e]
+  - @substrate/connect-known-chains@1.4.0
+  - @substrate/connect-extension-protocol@2.1.0
+
 ## 2.3.0
 
 ### Minor Changes

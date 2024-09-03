@@ -1,5 +1,40 @@
 # Changelog
 
+## 0.3.0
+
+### Minor Changes
+
+- 6014927: update chainspecs
+- b476e7e: update build system to tshy
+
+### Patch Changes
+
+- 69f1537: chore(deps-dev): bump tailwindcss from 3.4.6 to 3.4.10
+
+  Bumps [tailwindcss](https://github.com/tailwindlabs/tailwindcss) from 3.4.6 to 3.4.10.
+
+  - [Release notes](https://github.com/tailwindlabs/tailwindcss/releases)
+  - [Changelog](https://github.com/tailwindlabs/tailwindcss/blob/v3.4.10/CHANGELOG.md)
+  - [Commits](https://github.com/tailwindlabs/tailwindcss/compare/v3.4.6...v3.4.10)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: tailwindcss
+    dependency-type: direct:development
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- Updated dependencies [5f8b9ce]
+- Updated dependencies [b476e7e]
+  - @substrate/light-client-extension-helpers@2.4.0
+  - @substrate/smoldot-discovery-connector@0.1.0
+  - @substrate/connect-discovery@0.1.0
+  - @substrate/discovery@0.1.0
+
 ## 0.2.0
 
 ### Minor Changes
