@@ -1,4 +1,7 @@
-import { AddChain, AddWellKnownChain } from "@substrate/smoldot-discovery/types"
+import type {
+  AddChain,
+  AddWellKnownChain,
+} from "@substrate/smoldot-discovery/types"
 
 /**
  * Client that allows connecting to chains.

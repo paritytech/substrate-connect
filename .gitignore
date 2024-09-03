@@ -20,3 +20,6 @@ init.sh
 .vscode
 packages/connect/src/connector/specs/js
 substrate-connect_*-source-code.zip
+
+.tshy
+.tshy-build

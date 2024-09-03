@@ -1,8 +1,8 @@
 import { map, of } from "rxjs"
 import { Bytes, enhanceEncoder, u16 } from "@polkadot-api/substrate-bindings"
 import { fromHex } from "@polkadot-api/utils"
-import { genesisHashFromCtx } from "../utils"
-import { ChainExtensionCtx, SignedExtension } from "../internal-types"
+import { genesisHashFromCtx } from "../utils.js"
+import type { ChainExtensionCtx, SignedExtension } from "../internal-types.js"
 
 function trailingZeroes(n: number) {
   let i = 0

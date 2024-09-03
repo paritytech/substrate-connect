@@ -1,8 +1,8 @@
 import {
   Binary,
   Blake2256,
-  HexString,
-  ResultPayload,
+  type HexString,
+  type ResultPayload,
 } from "@polkadot-api/substrate-bindings"
 import {
   EMPTY,
@@ -16,14 +16,14 @@ import {
   of,
   take,
 } from "rxjs"
-import {
+import type {
   ChainHead$,
   PinnedBlocks,
   SystemEvent,
 } from "@polkadot-api/observable-client"
-import { AnalyzedBlock } from "@polkadot-api/observable-client"
-import { TxEvent, TxEventsPayload, TxFinalizedPayload } from "./types"
-import { continueWith } from "./utils"
+import type { AnalyzedBlock } from "@polkadot-api/observable-client"
+import type { TxEvent, TxEventsPayload, TxFinalizedPayload } from "./types.js"
+import { continueWith } from "./utils/index.js"
 import { fromHex, toHex } from "@polkadot-api/utils"
 
 // TODO: make it dynamic based on the tx-function of the client

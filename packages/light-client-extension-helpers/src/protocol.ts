@@ -1,8 +1,8 @@
-import {
+import type {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"
-import { CONTEXT, RpcMessageWithOrigin } from "./shared"
+import { CONTEXT, type RpcMessageWithOrigin } from "./shared/index.js"
 
 type PostMessage<T> = {
   channelId: string

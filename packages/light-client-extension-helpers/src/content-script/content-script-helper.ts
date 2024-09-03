@@ -1,6 +1,6 @@
 import type { ToExtension } from "@substrate/connect-extension-protocol"
-import type { ToApplicationMessage } from "@/protocol"
-import type { BackgroundRpcSpec } from "@/background/types"
+import type { ToApplicationMessage } from "../protocol.js"
+import type { BackgroundRpcSpec } from "../background/types.js"
 import {
   CONTEXT,
   KEEP_ALIVE_INTERVAL,
@@ -8,8 +8,8 @@ import {
   isRpcMessageWithOrigin,
   isSubstrateConnectToApplicationMessage,
   isSubstrateConnectToExtensionMessage,
-} from "@/shared"
-import { createRpc, isRpcMessage, type RpcMessage } from "@/utils"
+} from "../shared/index.js"
+import { createRpc, isRpcMessage, type RpcMessage } from "../utils/index.js"
 
 let isRegistered = false
 export const register = (channelId: string) => {

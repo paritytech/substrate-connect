@@ -1,23 +1,23 @@
-import { MetadataLookup } from "@polkadot-api/metadata-builders"
+import type { MetadataLookup } from "@polkadot-api/metadata-builders"
 import {
-  CompatibilityCache,
+  type CompatibilityCache,
   CompatibilityLevel,
-  EntryPoint,
+  type EntryPoint,
   EntryPointCodec,
   TypedefCodec,
-  TypedefNode,
+  type TypedefNode,
   entryPointsAreCompatible,
   mapLookupToTypedef,
   valueIsCompatibleWithDest,
 } from "@polkadot-api/metadata-compatibility"
 import {
-  ChainHead$,
+  type ChainHead$,
   getObservableClient,
-  RuntimeContext,
+  type RuntimeContext,
 } from "@polkadot-api/observable-client"
 import { Tuple, Vector } from "@polkadot-api/substrate-bindings"
 import { Observable, combineLatest, filter, firstValueFrom, map } from "rxjs"
-import { ChainDefinition } from "./descriptors"
+import type { ChainDefinition } from "./descriptors.js"
 
 export class CompatibilityToken<D = unknown> {
   private constructor() {}

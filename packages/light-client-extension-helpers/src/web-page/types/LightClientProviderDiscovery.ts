@@ -1,4 +1,4 @@
-import { LightClientProvider } from "./LightClientProvider"
+import type { LightClientProvider } from "./LightClientProvider.js"
 
 export type LightClientProviderDetail = {
   info: LightClientProviderInfo
@@ -17,7 +17,7 @@ export type LightClientProviderInfo = {
   rdns: string
 }
 
-export declare global {
+declare global {
   interface WindowEventMap {
     "lightClient:announceProvider": LightClientAnnounceProviderEvent
     "lightClient:requestProvider": LightClientRequestProviderEvent

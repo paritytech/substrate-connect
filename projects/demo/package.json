@@ -19,8 +19,8 @@
     "lint": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
-    "@polkadot-api/observable-client": "~0.5.1",
     "@polkadot-api/json-rpc-provider-proxy": "~0.2.0",
+    "@polkadot-api/observable-client": "~0.5.1",
     "@polkadot-api/substrate-client": "~0.2.1",
     "@substrate/connect": "workspace:*",
     "@substrate/connect-known-chains": "workspace:*",
@@ -29,6 +29,7 @@
   "devDependencies": {
     "eslint": "^8.57.0",
     "vite": "^5.3.4",
-    "vite-plugin-html": "^3.2.2"
+    "vite-plugin-html": "^3.2.2",
+    "vitest": "^2.0.5"
   }
 }

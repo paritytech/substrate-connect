@@ -1,4 +1,4 @@
-import { Client, AddChainError } from "./types"
+import { type Client, AddChainError } from "./types.js"
 
 export type SuperviseOptions = {
   repeatScheduleMs?: number

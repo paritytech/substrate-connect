@@ -1,8 +1,8 @@
 import { getObservableClient } from "@polkadot-api/observable-client"
 import { createClient } from "@polkadot-api/substrate-client"
-import { CreateTxOptions, JsonRpcProvider } from "./types"
+import type { CreateTxOptions, JsonRpcProvider } from "./types.js"
 import { filter, firstValueFrom, map, mergeMap, take } from "rxjs"
-import * as polkadotAPI from "./polkadot-api"
+import * as polkadotAPI from "./polkadot-api/index.js"
 
 type UserSignedExtensions = {
   CheckMortality?:
@@ -73,4 +73,4 @@ export const createTx =
     return tx
   }
 
-export type * from "./types"
+export type * from "./types.js"

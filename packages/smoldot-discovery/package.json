@@ -6,32 +6,54 @@
     "type": "git",
     "url": "git+https://github.com/paritytech/substrate-connect.git"
   },
+  "type": "module",
+  "main": "./dist/commonjs/index.js",
+  "types": "./dist/commonjs/index.d.ts",
+  "module": "./dist/esm/index.js",
   "license": "MIT",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
       "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
+        "@substrate-connect/source": "./src/index.ts",
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
       },
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": {
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
     },
     "./types": {
       "import": {
-        "types": "./dist/types/index.d.mts",
-        "default": "./dist/types/index.mjs"
+        "@substrate-connect/source": "./src/types/index.ts",
+        "types": "./dist/esm/types/index.d.ts",
+        "default": "./dist/esm/types/index.js"
       },
-      "require": "./dist/types/index.js",
-      "types": "./dist/types/index.d.ts"
-    },
-    "./package.json": "./package.json"
+      "require": {
+        "types": "./dist/commonjs/types/index.d.ts",
+        "default": "./dist/commonjs/types/index.js"
+      }
+    }
   },
   "files": [
     "dist"
   ],
-  "module": "./dist/index.mjs",
+  "tshy": {
+    "project": "./tsconfig.build.json",
+    "exports": {
+      "./package.json": "./package.json",
+      ".": "./src/index.ts",
+      "./types": "./src/types/index.ts"
+    },
+    "sourceDialects": [
+      "@substrate-connect/source"
+    ]
+  },
   "scripts": {
-    "build": "tsc --noEmit && tsup-node src/index.ts src/types/index.ts --clean --sourcemap --platform neutral --target=es2020 --format esm,cjs --dts",
+    "deep-clean": "rimraf dist node_modules",
+    "clean": "rimraf dist",
+    "build": "npm run clean && tshy",
     "dev": "pnpm build --watch",
     "lint": "prettier --check README.md \"src/**/*.{js,jsx,ts,tsx,json,md}\""
   },
@@ -42,5 +64,8 @@
   },
   "dependencies": {
     "@substrate/discovery": "workspace:^"
+  },
+  "devDependencies": {
+    "vitest": "^2.0.5"
   }
 }

@@ -1,5 +1,5 @@
 import { getProviders, type ProviderDetail } from "@substrate/discovery"
-import { SmoldotExtensionProviderDetail } from "./types"
+import type { SmoldotExtensionProviderDetail } from "./types/index.js"
 
 export const Kind: SmoldotExtensionProviderDetail["kind"] = "smoldot-v1"
 

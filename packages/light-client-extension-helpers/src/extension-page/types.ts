@@ -1,1 +1,1 @@
-export type { LightClientPageHelper, PageChain } from "@/background/types"
+export type { LightClientPageHelper, PageChain } from "../background/types.js"

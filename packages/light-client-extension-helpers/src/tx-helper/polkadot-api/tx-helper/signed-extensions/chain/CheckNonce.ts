@@ -3,8 +3,8 @@ import { compact, u16, u32, u64, u8 } from "@polkadot-api/substrate-bindings"
 import type {
   GetChainSignedExtension,
   SignedExtension,
-} from "../internal-types"
-import { empty } from "../utils"
+} from "../internal-types.js"
+import { empty } from "../utils.js"
 import { fromHex, toHex } from "@polkadot-api/utils"
 
 const NONCE_RUNTIME_CALL = "AccountNonceApi_account_nonce"

@@ -1,8 +1,8 @@
-import { chainSpec as polkadot } from "./polkadot"
-import { chainSpec as ksmcc3 } from "./ksmcc3"
-import { chainSpec as westend2 } from "./westend2"
-import { chainSpec as rococo_v2_2 } from "./rococo_v2_2"
-import { chainSpec as paseo } from "./paseo"
+import { chainSpec as polkadot } from "./polkadot.js"
+import { chainSpec as ksmcc3 } from "./ksmcc3.js"
+import { chainSpec as westend2 } from "./westend2.js"
+import { chainSpec as rococo_v2_2 } from "./rococo_v2_2.js"
+import { chainSpec as paseo } from "./paseo.js"
 
 export * from "@substrate/connect-known-chains"
 

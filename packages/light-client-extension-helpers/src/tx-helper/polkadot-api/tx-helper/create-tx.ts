@@ -1,14 +1,14 @@
 import { Observable, combineLatest, mergeMap, of, take } from "rxjs"
-import { BlockInfo, ChainHead$ } from "@polkadot-api/observable-client"
+import type { BlockInfo, ChainHead$ } from "@polkadot-api/observable-client"
 import {
   ChargeAssetTxPayment,
   ChargeTransactionPayment,
   CheckMortality,
-} from "./signed-extensions/user"
-import * as chainSignedExtensions from "./signed-extensions/chain"
+} from "./signed-extensions/user/index.js"
+import * as chainSignedExtensions from "./signed-extensions/chain/index.js"
 import type { PolkadotSigner } from "@polkadot-api/polkadot-signer"
 import { _void } from "@polkadot-api/substrate-bindings"
-import { empty } from "./signed-extensions/utils"
+import { empty } from "./signed-extensions/utils.js"
 
 type HintedSignedExtensions = Partial<{
   tip: bigint

@@ -1,7 +1,7 @@
-import { JsonRpcProvider } from "@polkadot-api/json-rpc-provider"
+import type { JsonRpcProvider } from "@polkadot-api/json-rpc-provider"
 import { getSyncProvider } from "@polkadot-api/json-rpc-provider-proxy"
-import { getRandomChainId } from "./getRandomChainId"
-import {
+import { getRandomChainId } from "./getRandomChainId.js"
+import type {
   ToApplication,
   ToExtension,
 } from "@substrate/connect-extension-protocol"

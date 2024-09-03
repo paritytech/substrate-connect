@@ -1,11 +1,11 @@
-import {
+import type {
   LightClientProvider,
   RawChain,
 } from "@substrate/light-client-extension-helpers/web-page"
 import {
-  Chain,
-  JsonRpcCallback,
-  SmoldotExtensionAPI,
+  type Chain,
+  type JsonRpcCallback,
+  type SmoldotExtensionAPI,
   WellKnownChain,
 } from "@substrate/smoldot-discovery/types"
 export type { LightClientProvider } from "@substrate/light-client-extension-helpers/web-page"

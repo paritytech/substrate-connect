@@ -1,12 +1,4 @@
 {
-  "extends": "../../tsconfig.base",
-  "include": ["src"],
-  "compilerOptions": {
-    "baseUrl": "./",
-    "moduleResolution": "Bundler",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "noUncheckedIndexedAccess": false
-  }
+  "extends": "../../tsconfig.base.json",
+  "include": ["src", "tests"]
 }

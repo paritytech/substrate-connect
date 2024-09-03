@@ -5,8 +5,8 @@ import {
   Struct,
   compact,
 } from "@polkadot-api/substrate-bindings"
-import { empty } from "../utils"
-import { SignedExtension } from "../internal-types"
+import { empty } from "../utils.js"
+import type { SignedExtension } from "../internal-types.js"
 
 const encoder = Struct({
   tip: compact,

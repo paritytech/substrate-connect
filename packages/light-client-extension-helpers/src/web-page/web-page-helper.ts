@@ -1,16 +1,20 @@
-import type { ToExtensionMessage } from "@/protocol"
+import type { ToExtensionMessage } from "../protocol.js"
 import {
   CONTEXT,
   createBackgroundClientConnectProvider,
   isRpcMessageWithOrigin,
   isSubstrateConnectToApplicationMessage,
-} from "@/shared"
-import { createRpc, type RpcMethodHandlers } from "@/utils"
-import type { LightClientProvider, RawChain, WebPageRpcSpec } from "./types"
-import type { BackgroundRpcSpec } from "@/background/types"
+} from "../shared/index.js"
+import { createRpc, type RpcMethodHandlers } from "../utils/index.js"
+import type {
+  LightClientProvider,
+  RawChain,
+  WebPageRpcSpec,
+} from "./types/index.ts"
+import type { BackgroundRpcSpec } from "../background/types.js"
 import type { ToApplication } from "@substrate/connect-extension-protocol"
 
-export type * from "./types"
+export type * from "./types/index.js"
 
 const postToExtension = (message: ToExtensionMessage) =>
   window.postMessage(message, window.origin)

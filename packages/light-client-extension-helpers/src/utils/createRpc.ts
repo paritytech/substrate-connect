@@ -56,7 +56,7 @@ export const createRpc = <TContext>(
   const innerMethodHandler: RpcMethodMiddlewareNext<TContext> = (
     { method, params },
     context,
-  ) => handlers?.[method](params ?? [], context)
+  ) => handlers?.[method]?.(params ?? [], context)
   const methodHandler = (message: RpcRequestMessage, context: TContext) =>
     applyMiddleware(innerMethodHandler, message, context)
   const request = <T>(method: string, params: any[]) => {
@@ -182,10 +182,10 @@ const createResponseMiddleware =
 
 export class RpcError extends Error {
   constructor(
-    readonly message: string,
+    message: string,
     readonly code: number,
     readonly data?: any,
   ) {
-    super()
+    super(message)
   }
 }

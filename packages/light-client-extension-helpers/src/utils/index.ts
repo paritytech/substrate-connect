@@ -1,1 +1,1 @@
-export * from "./createRpc"
+export * from "./createRpc.js"

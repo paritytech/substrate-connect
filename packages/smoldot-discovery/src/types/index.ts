@@ -1,4 +1,4 @@
-import { type ProviderInfo } from "@substrate/discovery"
+import type { ProviderInfo } from "@substrate/discovery"
 export type * from "@substrate/discovery"
 
 export type SmoldotExtensionAPI = {
