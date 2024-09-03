@@ -1,5 +1,17 @@
 # @substrate/smoldot-discovery-connector
 
+## 0.1.0
+
+### Minor Changes
+
+- b476e7e: update build system to tshy
+
+### Patch Changes
+
+- Updated dependencies [5f8b9ce]
+- Updated dependencies [b476e7e]
+  - @substrate/light-client-extension-helpers@2.4.0
+
 ## 0.0.5
 
 ### Patch Changes

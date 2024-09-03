@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.2.0
+
+### Minor Changes
+
+- b476e7e: update build system to tshy
+  worker is now exported under "browser" conditional export instead of node. "node" conditional export removed.
+
+### Patch Changes
+
+- Updated dependencies [6014927]
+- Updated dependencies [b476e7e]
+  - @substrate/connect-known-chains@1.4.0
+  - @substrate/connect-extension-protocol@2.1.0
+  - @substrate/smoldot-discovery@1.1.0
+
 ## 1.1.3
 
 ### Patch Changes

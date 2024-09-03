@@ -38,7 +38,7 @@
     "@radix-ui/react-toggle": "^1.1.0",
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
-    "@substrate/discovery": "^0.0.2",
+    "@substrate/discovery": "^0.1.0",
     "@substrate/smoldot-discovery": "workspace:^",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

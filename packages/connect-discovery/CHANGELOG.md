@@ -1,5 +1,16 @@
 # @substrate/connect-discovery
 
+## 0.1.0
+
+### Minor Changes
+
+- b476e7e: update build system to tshy
+
+### Patch Changes
+
+- Updated dependencies [b476e7e]
+  - @substrate/discovery@0.1.0
+
 ## 0.0.8
 
 ### Patch Changes
