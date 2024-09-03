@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@polkadot-api/json-rpc-provider-proxy": "~0.2.0",
-    "@polkadot-api/observable-client": "~0.5.1",
+    "@polkadot-api/observable-client": "~0.5.2",
     "@polkadot-api/substrate-client": "~0.2.1",
     "@substrate/connect": "workspace:*",
     "@substrate/connect-known-chains": "workspace:*",
