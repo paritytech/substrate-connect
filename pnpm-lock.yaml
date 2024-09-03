@@ -364,8 +364,8 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@substrate/discovery':
-        specifier: ^0.0.2
-        version: 0.0.2
+        specifier: workspace:^
+        version: link:../../packages/discovery
       '@substrate/smoldot-discovery':
         specifier: workspace:^
         version: link:../../packages/smoldot-discovery
@@ -4148,9 +4148,6 @@ packages:
   '@sindresorhus/merge-streams@4.0.0':
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
-
-  '@substrate/discovery@0.0.2':
-    resolution: {integrity: sha512-STX6ynhi2hRuDPa5f2zw3bIKH430k3DCsyyi1S1i2ZTVqMM/9Isn+egAdg1AX1lkJ2ZcaTEYTTXnuLCC2RSQbQ==}
 
   '@substrate/ss58-registry@1.48.0':
     resolution: {integrity: sha512-lE9TGgtd93fTEIoHhSdtvSFBoCsvTbqiCvQIMvX4m6BO/hESywzzTzTFMVP1doBwDDMAN4lsMfIM3X3pdmt7kQ==}
@@ -12921,8 +12918,6 @@ snapshots:
   '@sindresorhus/is@5.6.0': {}
 
   '@sindresorhus/merge-streams@4.0.0': {}
-
-  '@substrate/discovery@0.0.2': {}
 
   '@substrate/ss58-registry@1.48.0': {}
 
