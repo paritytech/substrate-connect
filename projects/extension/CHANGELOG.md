@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.0
+
+### Minor Changes
+
+- 2a2a25b: chore: update smoldot to 2.0.30
+
 ## 0.8.0
 
 ### Minor Changes
