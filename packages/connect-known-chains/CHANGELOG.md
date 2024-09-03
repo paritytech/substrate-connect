@@ -1,5 +1,12 @@
 # @substrate/connect-known-chains
 
+## 1.4.0
+
+### Minor Changes
+
+- 6014927: update chainspecs
+- b476e7e: update build system to tshy
+
 ## 1.3.0
 
 ### Minor Changes
