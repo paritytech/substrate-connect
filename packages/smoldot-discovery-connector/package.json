@@ -40,7 +40,8 @@
     ]
   },
   "scripts": {
-    "clean": "rimraf dist",
+    "deep-clean": "npm run clean && rimraf dist node_modules",
+    "clean": "rimraf dist .tshy .tshy-build",
     "build": "npm run clean && tshy",
     "dev": "pnpm build --watch",
     "lint": "prettier --check README.md \"src/**/*.{js,jsx,ts,tsx,json,md}\""

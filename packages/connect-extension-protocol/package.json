@@ -36,8 +36,8 @@
     ]
   },
   "scripts": {
-    "deep-clean": "rimraf dist node_modules",
-    "clean": "rimraf dist",
+    "deep-clean": "npm run clean && rimraf dist node_modules",
+    "clean": "rimraf dist .tshy .tshy-build",
     "build": "npm run clean && tshy",
     "test": "exit 0; #This package is only types",
     "lint": "eslint . --ext .js,.ts"

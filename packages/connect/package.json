@@ -73,8 +73,8 @@
   },
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
-    "deep-clean": "rimraf dist node_modules",
-    "clean": "rimraf dist",
+    "deep-clean": "npm run clean && rimraf dist node_modules",
+    "clean": "rimraf dist .tshy .tshy-build",
     "build": "npm run clean && tshy",
     "test": "vitest run --dangerouslyIgnoreUnhandledErrors --environment jsdom",
     "lint": "eslint . --ext .js,.ts"

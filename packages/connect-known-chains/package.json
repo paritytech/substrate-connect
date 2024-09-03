@@ -249,9 +249,9 @@
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
     "build-js-specs": "node scripts/build-js-specs.js",
-    "deep-clean": "rimraf dist node_modules",
-    "clean": "rimraf dist",
-    "build": "pnpm build-js-specs && tsc --noEmit && tshy",
+    "deep-clean": "npm run clean && rimraf dist node_modules",
+    "clean": "rimraf dist .tshy .tshy-build",
+    "build": "pnpm clean && pnpm build-js-specs && tshy",
     "lint": "eslint . --ext .js,.ts"
   },
   "devDependencies": {

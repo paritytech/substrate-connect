@@ -1,6 +1,10 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["tsconfig.base.json", ".prettierrc"],
+  "globalDependencies": [
+    "tsconfig.base.json",
+    "tsconfig.build.json",
+    ".prettierrc"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
