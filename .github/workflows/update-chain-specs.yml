@@ -86,7 +86,7 @@ jobs:
         # Unfortunately, this creates intermediary directories.
         path: .
     - run: cp -r ./chain-spec-*/* ./repo
-    - uses: peter-evans/create-pull-request@v6
+    - uses: peter-evans/create-pull-request@v7
       id: create-pr
       with:
         token: ${{ steps.gen_token.outputs.token }}
