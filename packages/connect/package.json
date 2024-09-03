@@ -8,22 +8,61 @@
     "access": "public"
   },
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/commonjs/index.d.ts",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "browser": {
+        "types": "./dist/browser/index.d.ts",
+        "default": "./dist/browser/index.js"
+      },
+      "import": {
+        "@substrate-connect/source": "./src/index.ts",
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
     },
     "./worker": {
-      "node": {
-        "import": "./dist/worker-node.js",
-        "require": "./dist/worker-node.cjs"
+      "browser": {
+        "types": "./dist/browser/worker.d.ts",
+        "default": "./dist/browser/worker.js"
       },
-      "import": "./dist/worker.js",
-      "require": "./dist/worker.cjs"
+      "import": {
+        "@substrate-connect/source": "./src/worker.ts",
+        "types": "./dist/esm/worker.d.ts",
+        "default": "./dist/esm/worker.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/worker.d.ts",
+        "default": "./dist/commonjs/worker.js"
+      }
     }
+  },
+  "files": [
+    "dist"
+  ],
+  "tshy": {
+    "project": "./tsconfig.build.json",
+    "exports": {
+      "./package.json": "./package.json",
+      ".": "./src/index.ts",
+      "./worker": "./src/worker.ts"
+    },
+    "esmDialects": [
+      "browser"
+    ],
+    "sourceDialects": [
+      "@substrate-connect/source"
+    ],
+    "exclude": [
+      "src/**/*.test.ts"
+    ]
   },
   "repository": {
     "type": "git",
@@ -34,11 +73,10 @@
   },
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
-    "pretest": "pnpm build",
-    "test": "vitest --dangerouslyIgnoreUnhandledErrors --environment jsdom",
-    "deep-clean": "pnpm clean && rm -rf node_modules",
-    "clean": "rm -rf dist",
-    "build": "tsc --noEmit && tsup-node src/index.ts src/worker.ts src/worker-node.ts --clean --sourcemap --platform neutral --target=es2015 --format esm,cjs --dts",
+    "deep-clean": "rimraf dist node_modules",
+    "clean": "rimraf dist",
+    "build": "npm run clean && tshy",
+    "test": "vitest run --dangerouslyIgnoreUnhandledErrors --environment jsdom",
     "lint": "eslint . --ext .js,.ts"
   },
   "dependencies": {
@@ -48,8 +86,6 @@
     "smoldot": "2.0.29"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
-    "jsdom": "^24.0.0",
     "vitest": "^2.0.5"
   }
 }

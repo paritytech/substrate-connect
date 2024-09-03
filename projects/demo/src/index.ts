@@ -1,9 +1,9 @@
 import {
-  Chain,
+  type Chain,
   createScClient,
-  ScClient,
+  type ScClient,
   WellKnownChain,
-  JsonRpcCallback,
+  type JsonRpcCallback,
 } from "@substrate/connect"
 import { createClient } from "@polkadot-api/substrate-client"
 import { getObservableClient } from "@polkadot-api/observable-client"

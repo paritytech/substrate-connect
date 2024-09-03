@@ -1,19 +1,19 @@
-import { ContentScriptRpcSpec } from "@/content-script/types"
+import type { ContentScriptRpcSpec } from "../content-script/types.js"
 import type {
   AddOnAddChainByUserListener,
   BackgroundRpcSpec as BackgroundRpcSpec,
   LightClientPageHelper,
-} from "./types"
-import { PORT } from "@/shared"
+} from "./types.js"
+import { PORT } from "../shared/index.js"
 import {
   createRpc,
   RpcError,
   type RpcMethodHandlers,
   type RpcMessage,
   type RpcMethodMiddleware,
-} from "@/utils"
-import * as storage from "@/storage"
-import { WebPageRpcSpec } from "@/web-page/types"
+} from "../utils/index.js"
+import * as storage from "../storage/index.js"
+import type { WebPageRpcSpec } from "../web-page/types/index.js"
 
 type Context = {
   port: chrome.runtime.Port

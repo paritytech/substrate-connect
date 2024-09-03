@@ -1,5 +1,5 @@
 import * as smoldot from "smoldot"
-import { AddChainOptions, Client, ClientOptions } from "./types"
+import type { AddChainOptions, Client, ClientOptions } from "./types.js"
 
 /**
  * Wraps a smoldot client to add restart functionality.

@@ -1,11 +1,14 @@
-import { CompatibilityFunctions, CompatibilityToken } from "./compatibility"
-import { SystemEvent } from "@polkadot-api/observable-client"
-import { PolkadotSigner } from "@polkadot-api/polkadot-signer"
+import {
+  type CompatibilityFunctions,
+  CompatibilityToken,
+} from "./compatibility.js"
+import type { SystemEvent } from "@polkadot-api/observable-client"
+import type { PolkadotSigner } from "@polkadot-api/polkadot-signer"
 import {
   Binary,
   Enum,
-  HexString,
-  SS58String,
+  type HexString,
+  type SS58String,
 } from "@polkadot-api/substrate-bindings"
 import { Observable } from "rxjs"
 

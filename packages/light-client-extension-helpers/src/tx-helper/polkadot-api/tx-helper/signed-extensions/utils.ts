@@ -1,11 +1,11 @@
 import {
   getDynamicBuilder,
-  MetadataLookup,
+  type MetadataLookup,
 } from "@polkadot-api/metadata-builders"
 import { Storage, Twox64Concat, u32 } from "@polkadot-api/substrate-bindings"
 import { fromHex } from "@polkadot-api/utils"
 import { map, noop, of } from "rxjs"
-import type { ChainExtensionCtx } from "./internal-types"
+import type { ChainExtensionCtx } from "./internal-types.js"
 
 export const empty = new Uint8Array()
 

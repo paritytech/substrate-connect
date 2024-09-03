@@ -1,12 +1,4 @@
 {
   "extends": "../../tsconfig.base",
-  "include": ["src", "../smoldot-discovery/src/smoldot/index.ts"],
-  "compilerOptions": {
-    "baseUrl": "./",
-    "moduleResolution": "Bundler",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "noUncheckedIndexedAccess": false
-  }
+  "include": ["src", "tests"]
 }

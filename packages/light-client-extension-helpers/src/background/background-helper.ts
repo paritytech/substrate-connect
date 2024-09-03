@@ -17,15 +17,24 @@ import type {
   AddOnAddChainByUserListener,
   LightClientPageHelper,
   PageChain,
-} from "./types"
-import { smoldotProvider } from "./smoldot-provider"
-import { ALARM, PORT, isSubstrateConnectToExtensionMessage } from "@/shared"
-import { isRpcMessage, type RpcMessage } from "@/utils"
-import * as storage from "@/storage"
-import { createBackgroundRpc } from "./createBackgroundRpc"
-import { Client, Chain, AddChainOptions, supervise } from "../smoldot"
+} from "./types.js"
+import { smoldotProvider } from "./smoldot-provider.js"
+import {
+  ALARM,
+  PORT,
+  isSubstrateConnectToExtensionMessage,
+} from "../shared/index.js"
+import { isRpcMessage, type RpcMessage } from "../utils/index.js"
+import * as storage from "../storage/index.js"
+import { createBackgroundRpc } from "./createBackgroundRpc.js"
+import {
+  type Client,
+  type Chain,
+  type AddChainOptions,
+  supervise,
+} from "../smoldot/index.js"
 
-export type * from "./types"
+export type * from "./types.js"
 
 let isRegistered = false
 

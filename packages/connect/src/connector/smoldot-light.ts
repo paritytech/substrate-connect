@@ -12,8 +12,8 @@ import {
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
-  JsonRpcCallback,
-  AddChain,
+  type JsonRpcCallback,
+  type AddChain,
   WellKnownChain,
 } from "./types.js"
 

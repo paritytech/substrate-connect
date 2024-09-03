@@ -1,6 +1,6 @@
 import { map } from "rxjs"
-import type { GetChainSignedExtension } from "../internal-types"
-import { empty, genesisHashFromCtx } from "../utils"
+import type { GetChainSignedExtension } from "../internal-types.js"
+import { empty, genesisHashFromCtx } from "../utils.js"
 
 export const CheckGenesis: GetChainSignedExtension = (ctx) =>
   genesisHashFromCtx(ctx).pipe(

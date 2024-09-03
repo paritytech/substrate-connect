@@ -3,7 +3,7 @@ inputs:
   node-version:
     description: Node version
     required: true
-    default: 18.x
+    default: 20.x
 runs:
   using: composite
   steps:
@@ -15,8 +15,6 @@ runs:
         restore-keys: |
           ${{ runner.os }}-turbo-${{ inputs.node-version }}-build-
     - uses: pnpm/action-setup@v2
-      with:
-        version: 8
     - name: Use Node.js ${{ inputs.node-version }}
       uses: actions/setup-node@v4
       with:

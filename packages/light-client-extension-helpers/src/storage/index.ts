@@ -1,4 +1,4 @@
-import { STORAGE_PREFIX } from "@/shared"
+import { STORAGE_PREFIX } from "../shared/index.js"
 
 const chainStoragePrefix = `${STORAGE_PREFIX}_chain_`
 

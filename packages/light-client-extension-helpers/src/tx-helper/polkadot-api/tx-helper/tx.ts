@@ -1,11 +1,14 @@
-import { BlockInfo, getObservableClient } from "@polkadot-api/observable-client"
-import { PolkadotSigner } from "@polkadot-api/polkadot-signer"
+import {
+  type BlockInfo,
+  getObservableClient,
+} from "@polkadot-api/observable-client"
+import type { PolkadotSigner } from "@polkadot-api/polkadot-signer"
 import { getPolkadotSigner } from "@polkadot-api/signer"
 import {
   AccountId,
   Binary,
   Enum,
-  SS58String,
+  type SS58String,
   Tuple,
   compact,
   u128,
@@ -21,22 +24,22 @@ import {
   take,
   throwError,
 } from "rxjs"
-import { PlainDescriptor } from "./descriptors"
+import type { PlainDescriptor } from "./descriptors.js"
 import {
-  CompatibilityHelper,
+  type CompatibilityHelper,
   CompatibilityToken,
   getCompatibilityApi,
-} from "./compatibility"
-import { createTx } from "./create-tx"
-import { InvalidTxError, submit, submit$ } from "./submit-fns"
-import {
+} from "./compatibility.js"
+import { createTx } from "./create-tx.js"
+import { InvalidTxError, submit, submit$ } from "./submit-fns.js"
+import type {
   TxCall,
   TxEntry,
   TxObservable,
   TxOptions,
   TxPromise,
   TxSignFn,
-} from "./types"
+} from "./types.js"
 import {
   isCompatible,
   mapLookupToTypedef,

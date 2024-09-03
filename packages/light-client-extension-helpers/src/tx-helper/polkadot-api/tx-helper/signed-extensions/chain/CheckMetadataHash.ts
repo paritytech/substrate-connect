@@ -1,5 +1,5 @@
 import { of } from "rxjs"
-import type { GetChainSignedExtension } from "../internal-types"
+import type { GetChainSignedExtension } from "../internal-types.js"
 
 export const CheckMetadataHash: GetChainSignedExtension = () =>
   of({

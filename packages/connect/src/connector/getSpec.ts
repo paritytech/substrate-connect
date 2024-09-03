@@ -1,4 +1,4 @@
-import { WellKnownChain } from "./types"
+import { WellKnownChain } from "./types.js"
 
 const chains: Map<WellKnownChain, Promise<{ chainSpec: string }>> = new Map()
 

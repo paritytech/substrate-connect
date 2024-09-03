@@ -1,2 +1,2 @@
-export * as chainSignedExtensions from "./chain"
-export * as userSignedExtensions from "./user"
+export * as chainSignedExtensions from "./chain/index.js"
+export * as userSignedExtensions from "./user/index.js"

@@ -1,12 +1,12 @@
 {
-  "extends": "../../tsconfig.base",
-  "include": ["src", "tests"],
+  "extends": "@total-typescript/tsconfig/bundler/dom/app",
   "compilerOptions": {
-    "moduleResolution": "Bundler",
-    "baseUrl": "src",
+    "baseUrl": ".",
+    "jsx": "preserve",
+    "verbatimModuleSyntax": false,
     "paths": {
-      "@/*": ["*"]
-    },
-    "outDir": "dist/js"
-  }
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "tests"]
 }

@@ -1,4 +1,4 @@
-import type * as smoldot from "../smoldot"
+import type * as smoldot from "../smoldot/index.js"
 
 import type { JsonRpcConnection } from "@polkadot-api/json-rpc-provider"
 import { getSyncProvider } from "@polkadot-api/json-rpc-provider-proxy"

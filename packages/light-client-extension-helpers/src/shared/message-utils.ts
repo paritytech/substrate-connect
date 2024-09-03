@@ -1,8 +1,8 @@
-import {
+import type {
   ToExtension,
   ToApplication,
 } from "@substrate/connect-extension-protocol"
-import { type RpcMessage, isRpcMessage } from "@/utils"
+import { type RpcMessage, isRpcMessage } from "../utils/index.js"
 
 export const isSubstrateConnectMessage = (
   msg: any,

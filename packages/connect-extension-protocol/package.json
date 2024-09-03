@@ -2,28 +2,47 @@
   "name": "@substrate/connect-extension-protocol",
   "version": "2.0.0",
   "description": "Protocol for connect message passing with the extension",
-  "main": "dist/cjs/index.js",
-  "module": "dist/mjs/index.js",
-  "types": "dist/mjs/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/mjs/index.js",
-      "require": "./dist/cjs/index.js"
-    }
-  },
   "author": "Parity Team <admin@parity.io>",
   "license": "GPL-3.0-only",
+  "type": "module",
+  "main": "./dist/commonjs/index.js",
+  "types": "./dist/commonjs/index.d.ts",
+  "module": "./dist/esm/index.js",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": {
+        "@substrate-connect/source": "./src/index.ts",
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
+    }
+  },
   "files": [
-    "dist/"
+    "dist"
   ],
+  "tshy": {
+    "project": "./tsconfig.build.json",
+    "exports": {
+      "./package.json": "./package.json",
+      ".": "./src/index.ts"
+    },
+    "sourceDialects": [
+      "@substrate-connect/source"
+    ]
+  },
   "scripts": {
-    "deep-clean": "pnpm clean && rm -rf node_modules",
-    "clean": "rm -rf dist/ tsconfig.tsbuildinfo",
-    "build": "tsc -p tsconfig-mjs.json && tsc -p tsconfig-cjs.json && bash ./fix-package-type.sh",
+    "deep-clean": "rimraf dist node_modules",
+    "clean": "rimraf dist",
+    "build": "npm run clean && tshy",
     "test": "exit 0; #This package is only types",
     "lint": "eslint . --ext .js,.ts"
   },
   "devDependencies": {
-    "eslint": "^8.57.0"
+    "vitest": "^2.0.5"
   }
 }

@@ -1,4 +1,4 @@
-import { SmoldotExtensionAPI } from "@substrate/smoldot-discovery/types"
+import type { SmoldotExtensionAPI } from "@substrate/smoldot-discovery/types"
 import {
   createScClient as smoldotScClient,
   type Config as EmbeddedNodeConfig,

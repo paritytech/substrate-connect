@@ -1,6 +1,6 @@
 import { Observable } from "rxjs"
 import { getObservableClient } from "@polkadot-api/observable-client"
-import { MetadataLookup } from "@polkadot-api/metadata-builders"
+import type { MetadataLookup } from "@polkadot-api/metadata-builders"
 
 export interface ChainExtensionCtx {
   callData: Uint8Array

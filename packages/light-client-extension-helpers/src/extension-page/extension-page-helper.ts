@@ -1,10 +1,10 @@
-import { PORT, createBackgroundClientConnectProvider } from "@/shared"
-import { createRpc } from "@/utils"
-import * as storage from "@/storage"
-import type { LightClientPageHelper } from "./types"
-import type { BackgroundRpcSpec } from "@/background/types"
+import { PORT, createBackgroundClientConnectProvider } from "../shared/index.js"
+import { createRpc } from "../utils/index.js"
+import * as storage from "../storage/index.js"
+import type { LightClientPageHelper } from "./types.js"
+import type { BackgroundRpcSpec } from "../background/types.js"
 
-export type * from "./types"
+export type * from "./types.js"
 
 // FIXME: re-connect?
 const port = chrome.runtime.connect({ name: PORT.EXTENSION_PAGE })
