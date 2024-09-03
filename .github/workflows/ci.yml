@@ -91,6 +91,13 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - name: Generate a token
+        id: gen_token
+        uses: actions/create-github-app-token@v1
+        with:
+            app-id: ${{ secrets.SUBSTRATE_CONNECT_PR_APP_ID }}
+            private-key: ${{ secrets.SUBSTRATE_CONNECT_PR_APP_KEY }}
+            owner: ${{ github.repository_owner }}
       - uses: actions/checkout@v4.1.7
       - uses: ./.github/actions/turbo-build
       - name: Create Release Pull Request
@@ -99,7 +106,7 @@ jobs:
           commit: "chore: version packages"
           title: "chore: version packages"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.gen_token.outputs.token }}
 
   npm-publish:
     if: github.ref == 'refs/heads/main'
