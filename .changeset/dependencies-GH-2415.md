@@ -1,5 +1,4 @@
 ---
-"substrate-connect": patch
 "@substrate/light-client-extension-helpers": patch
 ---
 
