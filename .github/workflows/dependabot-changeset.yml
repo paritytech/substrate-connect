@@ -11,11 +11,18 @@ jobs:
     if: ${{ github.actor == 'dependabot[bot]' }}
 
     steps:
+      - name: Generate a token
+        id: gen_token
+        uses: actions/create-github-app-token@v1
+        with:
+            app-id: ${{ secrets.SUBSTRATE_CONNECT_PR_APP_ID }}
+            private-key: ${{ secrets.SUBSTRATE_CONNECT_PR_APP_KEY }}
+            owner: ${{ github.repository_owner }}
       - uses: actions/checkout@v4.1.7
       - name: Update PR
         uses: mscharley/dependency-changesets-action@v1.0.11
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.gen_token.outputs.token }}
           use-conventional-commits: false
           author-name: GitHub Action
           author-email: action@github.com
