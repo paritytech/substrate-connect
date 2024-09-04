@@ -538,8 +538,8 @@ importers:
         specifier: ~0.5.2
         version: 0.5.2(@polkadot-api/substrate-client@0.2.1)(rxjs@7.8.1)
       '@polkadot-api/signer':
-        specifier: ~0.1.3
-        version: 0.1.3
+        specifier: ~0.1.4
+        version: 0.1.4
       '@polkadot-api/substrate-bindings':
         specifier: ~0.6.3
         version: 0.6.3
@@ -811,8 +811,8 @@ importers:
         specifier: ~0.1.3
         version: 0.1.3
       '@polkadot-api/signer':
-        specifier: ~0.1.3
-        version: 0.1.3
+        specifier: ~0.1.4
+        version: 0.1.4
       '@polkadot-api/substrate-bindings':
         specifier: ~0.6.3
         version: 0.6.3
@@ -2599,8 +2599,14 @@ packages:
   '@polkadot-api/polkadot-signer@0.1.3':
     resolution: {integrity: sha512-nRBtFUV0rfwZr6n1T9oNIz39tPm+ZinCj6VwsZ9DNGPQKsgLNq3EXqLVXXB7n1hCI44gJ2XTVc5WTt2MDaEPGQ==}
 
+  '@polkadot-api/polkadot-signer@0.1.4':
+    resolution: {integrity: sha512-s7YfsE2wtt5J0+x+C4Ey/aRdmsZxp85SXay4614nJeHRndLVrGVMXby/BeZ6JchbyeyYg2+urmtfCvqMDiSS7g==}
+
   '@polkadot-api/signer@0.1.3':
     resolution: {integrity: sha512-KcLObDYDkOr+JNv1km1ddxUhkNZHlLK8Gzjgc9g9XlZiurx6Ylhho7bbAHFWXGstp67uklUMeqzVRDEh+c6k+A==}
+
+  '@polkadot-api/signer@0.1.4':
+    resolution: {integrity: sha512-XfQM/20W/pWxIHLHZbvZHGZEIT+uZceGjprEJ/iEUcFMxDPf8HA7cWfS24GsCEqU9GrjRd/igqZkA6LR+aLoGA==}
 
   '@polkadot-api/sm-provider@0.1.1':
     resolution: {integrity: sha512-55eA6cl4iDuEhO49tztDvWmFKRx9tGsNT16FbaoPMY4sEZ3yHWKbPf3Tjm4Set7huNELEVzjbBCnS0AoVkj9FA==}
@@ -11058,9 +11064,17 @@ snapshots:
       '@polkadot-api/substrate-bindings': 0.6.3
       '@polkadot-api/utils': 0.1.1
 
+  '@polkadot-api/polkadot-signer@0.1.4': {}
+
   '@polkadot-api/signer@0.1.3':
     dependencies:
       '@polkadot-api/polkadot-signer': 0.1.3
+      '@polkadot-api/substrate-bindings': 0.6.3
+      '@polkadot-api/utils': 0.1.1
+
+  '@polkadot-api/signer@0.1.4':
+    dependencies:
+      '@polkadot-api/polkadot-signer': 0.1.4
       '@polkadot-api/substrate-bindings': 0.6.3
       '@polkadot-api/utils': 0.1.1
 
