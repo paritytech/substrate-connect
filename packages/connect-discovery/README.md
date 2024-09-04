@@ -35,9 +35,10 @@ corepack pnpm i @substrate/connect-discovery
 Here's an example of how to use the package:
 
 ```ts
-import { getSubstrateConnectExtensionProviders } from "@substrate/connect-discovery"
+import { Unstable } from "@substrate/connect-discovery"
 
-const connectExtensionProviders = getSubstrateConnectExtensionProviders()
+const connectExtensionProviders =
+  Unstable.getSubstrateConnectExtensionProviders()
 
 console.log(connectExtensionProviders)
 ```

@@ -26,40 +26,40 @@ The `connect` package searches for a light client provider via the discovery pro
 To connect to a well-known chain ('polkadot', 'ksmcc3', 'westend2', 'rococo_v2_2'):
 
 ```js
-import { createScClient, WellKnownChain } from '@substrate/connect';
+import { createScClient, WellKnownChain } from "@substrate/connect"
 
-const scClient = createScClient();
+const scClient = createScClient()
 const chain = await scClient.addWellKnownChain(
   WellKnownChain.westend2,
   function jsonRpcCallback(response) {
-    console.log("response", response);
-  }
-);
+    console.log("response", response)
+  },
+)
 
 chain.sendJsonRpc(
-  '{"jsonrpc":"2.0","id":"1","method":"system_health","params":[]}'
-);
+  '{"jsonrpc":"2.0","id":"1","method":"system_health","params":[]}',
+)
 ```
 
 To connect to a custom Substrate chain using its name and chainspec:
 
 ```js
-import { createScClient } from '@substrate/connect';
-import myJsonChainSpec from './mySubstrateChainSpec.json';
+import { createScClient } from "@substrate/connect"
+import myJsonChainSpec from "./mySubstrateChainSpec.json"
 
-const myChainSpec = JSON.stringify(myJsonChainSpec);
+const myChainSpec = JSON.stringify(myJsonChainSpec)
 
-const scClient = createScClient();
+const scClient = createScClient()
 const chain = await scClient.addChain(
   myChainSpec,
   function jsonRpcCallback(response) {
-    console.log("response", response);
-  }
-);
+    console.log("response", response)
+  },
+)
 
 chain.sendJsonRpc(
-  '{"jsonrpc":"2.0","id":"1","method":"system_health","params":[]}'
-);
+  '{"jsonrpc":"2.0","id":"1","method":"system_health","params":[]}',
+)
 ```
 
 ### Connecting to a Parachain
@@ -67,44 +67,50 @@ chain.sendJsonRpc(
 To connect to a parachain, first instantiate the relay chain it is connected to, then instantiate the parachain on the same relay chain. The following example connects to a parachain on the Westend test network:
 
 ```js
-import { createScClient, WellKnownChain } from '@substrate/connect';
-import jsonParachainSpec from './myParaChainSpec.json';
+import { createScClient, WellKnownChain } from "@substrate/connect"
+import jsonParachainSpec from "./myParaChainSpec.json"
 
-const parachainSpec = JSON.stringify(jsonParachainSpec);
+const parachainSpec = JSON.stringify(jsonParachainSpec)
 
-const scClient = createScClient();
-const relayChain = await scClient.addWellKnownChain(WellKnownChain.westend2);
+const scClient = createScClient()
+const relayChain = await scClient.addWellKnownChain(WellKnownChain.westend2)
 const parachain = await relayChain.addChain(
   parachainSpec,
   function jsonRpcCallback(response) {
-    console.log("response", response);
-  }
-);
+    console.log("response", response)
+  },
+)
 
 parachain.sendJsonRpc(
-  '{"jsonrpc":"2.0","id":"1","method":"system_health","params":[]}'
-);
+  '{"jsonrpc":"2.0","id":"1","method":"system_health","params":[]}',
+)
 ```
 
-### PokladotJs Example
+### PolkadotJs Example
+
+```sh
+yarn add @polkadot/rpc-provider
+yarn add @polkadot/api
+```
 
 ```ts
-import { ScProvider } from '@polkadot/rpc-provider/substrate-connect';
-import * as Sc from '@substrate/connect';
+import { ScProvider } from "@polkadot/rpc-provider/substrate-connect"
+import * as Sc from "@substrate/connect"
+import { ApiPromise } from "@polkadot/api"
 
 // Connect to polkadot relay chain
-const provider = new ScProvider(Sc, Sc.WellKnownChain.polkadot);
-await provider.connect();
+const provider = new ScProvider(Sc, Sc.WellKnownChain.polkadot)
+await provider.connect()
 const api = await ApiPromise.create({ provider })
 
 // Connect to parachain
-const provider2 = new ScProvider(Sc, Sc.WellKnownChain.people, provider);
-await provider2.connect();
+const provider2 = new ScProvider(Sc, Sc.WellKnownChain.people, provider)
+await provider2.connect()
 const api2 = await ApiPromise.create({ provider })
 ```
 
 ## Scripts
 
-* `pnpm test` to run the unit tests
-* `pnpm build` to build @substrate-connect
-* `pnpm lint` to run linter for @substrate-connect
+- `pnpm test` to run the unit tests
+- `pnpm build` to build @substrate-connect
+- `pnpm lint` to run linter for @substrate-connect

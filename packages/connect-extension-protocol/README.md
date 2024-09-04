@@ -14,7 +14,6 @@
 
 <br /><br />
 
-
 This is a module consisting (almost) only of types. These types are the types
 of the messages exchanged between apps using `@substrate/connect` and the
 browser extension. This package is shared between `@substrate/connect` and the

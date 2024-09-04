@@ -31,6 +31,16 @@ Start by adding the light client background extension helper to your background 
   "service_worker": "background/background.js",
   "type": "module"
 },
+"permissions": ["notifications", "storage", "tabs", "alarms"],
+"web_accessible_resources": [
+  {
+    "resources": ["path-to-your/inpage.js"],
+    "matches": ["<all_urls>"],
+  }
+],
+"content_security_policy": {
+  "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
+},
 ```
 
 **Background Script:**
@@ -42,6 +52,7 @@ import {
   westend2,
   paseo,
 } from "@substrate/connect-known-chains"
+import { register } from "@substrate/light-client-extension-helpers/background"
 import { start } from "@substrate/light-client-extension-helpers/smoldot"
 
 const { lightClientPageHelper, addOnAddChainByUserListener } = register({
@@ -52,7 +63,7 @@ const { lightClientPageHelper, addOnAddChainByUserListener } = register({
 
 ### 2. Register Content Script
 
-Then, invoke the register function in your content script and inject your in-page into the DOM. See the [content script](./content/index.ts) for detailed implementation.
+Then, invoke the register function in your content script and inject your in-page into the DOM. See the [content script](./src/content/index.ts) for detailed implementation.
 
 **Content Script:**
 
@@ -105,7 +116,7 @@ const PROVIDER_INFO = {
   rdns: "io.github.paritytech.SubstrateConnectWalletTemplate",
 }
 
-const lightClientProvider = getLightClientProvider(DOM_ELEMENT_ID)
+const lightClientProviderPromise = getLightClientProvider(CHANNEL_ID)
 
 // #region Smoldot Discovery Provider
 {
@@ -151,11 +162,20 @@ The next part of this tutorial will extend the steps of the prior integration. I
 pnpm i @polkadot-api/pjs-signer @polkadot-api/utils @substrate/connect-discovery
 ```
 
-### 2. Implement the @substrate/connect-discovry protocol
+### 2. Implement the @substrate/connect-discovery protocol
 
-Use the following code below to implement `createTx` and `getAccounts`. Replace "polkadot-js" with the name of your PJS-compatible extension.
+Add the following code below to the relevant section of your `inpage.js` file to implement `createTx` and `getAccounts`. Replace "polkadot-js" with the name of your PJS-compatible extension.
 
 ```ts
+import { connectInjectedExtension } from "@polkadot-api/pjs-signer"
+import { toHex, fromHex } from "@polkadot-api/utils"
+import { createTx } from "@substrate/light-client-extension-helpers/tx-helper" // 👈 create-tx import
+import { Unstable } from "@substrate/connect-discovery"
+import {
+  getLightClientProvider,
+  LightClientProvider,
+} from "@substrate/light-client-extension-helpers/web-page"
+
 // #region Connect Discovery Provider
 {
   const provider = lightClientProviderPromise.then(
