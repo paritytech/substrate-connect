@@ -38,7 +38,7 @@
   "devDependencies": {
     "@playwright/test": "^1.43.1",
     "@vitejs/plugin-react-swc": "^3.6.0",
-    "autoprefixer": "^10.4.19",
+    "autoprefixer": "^10.4.20",
     "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
     "postcss": "^8.4.44",
