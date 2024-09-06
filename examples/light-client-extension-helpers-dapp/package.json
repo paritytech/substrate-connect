@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@picocss/pico": "^2.0.6",
-    "@polkadot-api/observable-client": "~0.5.1",
+    "@polkadot-api/observable-client": "~0.5.2",
     "@polkadot-api/substrate-client": "~0.2.1",
     "@substrate/connect-known-chains": "workspace:*",
     "@substrate/light-client-extension-helpers": "workspace:*",
@@ -22,7 +22,7 @@
   "devDependencies": {
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.2.25",
-    "@typescript-eslint/eslint-plugin": "^7.7.0",
+    "@typescript-eslint/eslint-plugin": "^8.4.0",
     "@typescript-eslint/parser": "^7.11.0",
     "@vitejs/plugin-react-swc": "^3.6.0",
     "eslint": "^8.57.0",

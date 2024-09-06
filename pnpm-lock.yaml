@@ -109,8 +109,8 @@ importers:
         specifier: ~0.5.0
         version: 0.5.0
       '@polkadot-api/observable-client':
-        specifier: ~0.5.1
-        version: 0.5.1(@polkadot-api/substrate-client@0.2.1)(rxjs@7.8.1)
+        specifier: ~0.5.2
+        version: 0.5.2(@polkadot-api/substrate-client@0.2.1)(rxjs@7.8.1)
       '@polkadot-api/substrate-bindings':
         specifier: ~0.6.3
         version: 0.6.3
@@ -161,8 +161,8 @@ importers:
         specifier: ^18.2.25
         version: 18.3.0
       '@typescript-eslint/eslint-plugin':
-        specifier: ^7.7.0
-        version: 7.13.0(@typescript-eslint/parser@7.13.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)
+        specifier: ^8.4.0
+        version: 8.4.0(@typescript-eslint/parser@7.13.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)
       '@typescript-eslint/parser':
         specifier: ^7.11.0
         version: 7.13.0(eslint@8.57.0)(typescript@5.5.4)
@@ -191,8 +191,8 @@ importers:
         specifier: ^2.0.6
         version: 2.0.6
       '@polkadot-api/observable-client':
-        specifier: ~0.5.1
-        version: 0.5.1(@polkadot-api/substrate-client@0.2.1)(rxjs@7.8.1)
+        specifier: ~0.5.2
+        version: 0.5.2(@polkadot-api/substrate-client@0.2.1)(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: ~0.2.1
         version: 0.2.1
@@ -219,8 +219,8 @@ importers:
         specifier: ^18.2.25
         version: 18.3.0
       '@typescript-eslint/eslint-plugin':
-        specifier: ^7.7.0
-        version: 7.13.0(@typescript-eslint/parser@7.13.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)
+        specifier: ^8.4.0
+        version: 8.4.0(@typescript-eslint/parser@7.13.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)
       '@typescript-eslint/parser':
         specifier: ^7.11.0
         version: 7.13.0(eslint@8.57.0)(typescript@5.5.4)
@@ -437,8 +437,8 @@ importers:
         specifier: ^18.3.0
         version: 18.3.0
       '@typescript-eslint/eslint-plugin':
-        specifier: ^7.15.0
-        version: 7.17.0(@typescript-eslint/parser@7.17.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)
+        specifier: ^8.4.0
+        version: 8.4.0(@typescript-eslint/parser@7.17.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)
       '@typescript-eslint/parser':
         specifier: ^7.15.0
         version: 7.17.0(eslint@8.57.0)(typescript@5.5.4)
@@ -535,11 +535,11 @@ importers:
         specifier: ~0.1.2
         version: 0.1.2
       '@polkadot-api/observable-client':
-        specifier: ~0.5.1
-        version: 0.5.1(@polkadot-api/substrate-client@0.2.1)(rxjs@7.8.1)
+        specifier: ~0.5.2
+        version: 0.5.2(@polkadot-api/substrate-client@0.2.1)(rxjs@7.8.1)
       '@polkadot-api/signer':
-        specifier: ~0.1.3
-        version: 0.1.3
+        specifier: ~0.1.4
+        version: 0.1.4
       '@polkadot-api/substrate-bindings':
         specifier: ~0.6.3
         version: 0.6.3
@@ -683,8 +683,8 @@ importers:
         specifier: ~0.2.0
         version: 0.2.0
       '@polkadot-api/observable-client':
-        specifier: ~0.5.1
-        version: 0.5.1(@polkadot-api/substrate-client@0.2.1)(rxjs@7.8.1)
+        specifier: ~0.5.2
+        version: 0.5.2(@polkadot-api/substrate-client@0.2.1)(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: ~0.2.1
         version: 0.2.1
@@ -714,8 +714,8 @@ importers:
   projects/extension:
     dependencies:
       '@polkadot-api/observable-client':
-        specifier: ~0.5.1
-        version: 0.5.1(@polkadot-api/substrate-client@0.2.1)(rxjs@7.8.1)
+        specifier: ~0.5.2
+        version: 0.5.2(@polkadot-api/substrate-client@0.2.1)(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: ~0.2.1
         version: 0.2.1
@@ -741,8 +741,8 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
       react-icons:
-        specifier: ^5.2.1
-        version: 5.2.1(react@18.3.1)
+        specifier: ^5.3.0
+        version: 5.3.0(react@18.3.1)
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1
@@ -805,14 +805,14 @@ importers:
         specifier: ~0.5.0
         version: 0.5.0
       '@polkadot-api/observable-client':
-        specifier: ~0.5.1
-        version: 0.5.1(@polkadot-api/substrate-client@0.2.1)(rxjs@7.8.1)
+        specifier: ~0.5.2
+        version: 0.5.2(@polkadot-api/substrate-client@0.2.1)(rxjs@7.8.1)
       '@polkadot-api/polkadot-signer':
         specifier: ~0.1.3
         version: 0.1.3
       '@polkadot-api/signer':
-        specifier: ~0.1.3
-        version: 0.1.3
+        specifier: ~0.1.4
+        version: 0.1.4
       '@polkadot-api/substrate-bindings':
         specifier: ~0.6.3
         version: 0.6.3
@@ -907,8 +907,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-toast':
-        specifier: ^1.1.5
-        version: 1.1.5(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.2.1
+        version: 1.2.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-toggle':
         specifier: ^1.1.0
         version: 1.1.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -982,8 +982,8 @@ importers:
         specifier: ^7.52.2
         version: 7.52.2(react@18.3.1)
       react-icons:
-        specifier: ^5.2.1
-        version: 5.2.1(react@18.3.1)
+        specifier: ^5.3.0
+        version: 5.3.0(react@18.3.1)
       react-json-view:
         specifier: ^1.21.3
         version: 1.21.3(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2572,11 +2572,20 @@ packages:
   '@polkadot-api/metadata-builders@0.5.0':
     resolution: {integrity: sha512-hHAEYziHsaf7GFOyrrSrToBtBekEMYSCc0GTU3iZ7vnGHdT8wv0vdo90iHU2lL4Di1sUZJz6Vc+ZUJACf2aeVg==}
 
+  '@polkadot-api/metadata-builders@0.6.0':
+    resolution: {integrity: sha512-Q+7oinRbGuWDaj1Xl4PYGcQMy/RIhPErHgDbqR2rFSDt1vjhd6l1XMBWq2uKpwHS4ZNWEvy3r6/I1QbDTLIj2w==}
+
   '@polkadot-api/metadata-compatibility@0.1.2':
     resolution: {integrity: sha512-oT2rxjmjGV7mnmAGe+FzNFVtT6oZMHJkaX1Gr00bQobKeK3pcO+jEDt7XwWYHcSXOI5psgVJUb6BQxIzlNDTZg==}
 
   '@polkadot-api/observable-client@0.5.1':
     resolution: {integrity: sha512-lNm+saHPKHzjCU67esWs2eHHAV5q1r3CY+UL+8v20Gfb0lnQ9UcEqlxCAL9kTw1sujz6fBTlI0WO9R+i1xcg7A==}
+    peerDependencies:
+      '@polkadot-api/substrate-client': 0.2.1
+      rxjs: '>=7.8.0'
+
+  '@polkadot-api/observable-client@0.5.2':
+    resolution: {integrity: sha512-E1hRi2YkcOAHXpXT4HpzowjZoctrhuM/8rbuDQju+Xin/PbXpnzol5UOMyToXdyZM4vKa4tc89PJB0TkoANLbA==}
     peerDependencies:
       '@polkadot-api/substrate-client': 0.2.1
       rxjs: '>=7.8.0'
@@ -2590,8 +2599,14 @@ packages:
   '@polkadot-api/polkadot-signer@0.1.3':
     resolution: {integrity: sha512-nRBtFUV0rfwZr6n1T9oNIz39tPm+ZinCj6VwsZ9DNGPQKsgLNq3EXqLVXXB7n1hCI44gJ2XTVc5WTt2MDaEPGQ==}
 
+  '@polkadot-api/polkadot-signer@0.1.4':
+    resolution: {integrity: sha512-s7YfsE2wtt5J0+x+C4Ey/aRdmsZxp85SXay4614nJeHRndLVrGVMXby/BeZ6JchbyeyYg2+urmtfCvqMDiSS7g==}
+
   '@polkadot-api/signer@0.1.3':
     resolution: {integrity: sha512-KcLObDYDkOr+JNv1km1ddxUhkNZHlLK8Gzjgc9g9XlZiurx6Ylhho7bbAHFWXGstp67uklUMeqzVRDEh+c6k+A==}
+
+  '@polkadot-api/signer@0.1.4':
+    resolution: {integrity: sha512-XfQM/20W/pWxIHLHZbvZHGZEIT+uZceGjprEJ/iEUcFMxDPf8HA7cWfS24GsCEqU9GrjRd/igqZkA6LR+aLoGA==}
 
   '@polkadot-api/sm-provider@0.1.1':
     resolution: {integrity: sha512-55eA6cl4iDuEhO49tztDvWmFKRx9tGsNT16FbaoPMY4sEZ3yHWKbPf3Tjm4Set7huNELEVzjbBCnS0AoVkj9FA==}
@@ -3726,19 +3741,6 @@ packages:
       '@types/react-dom':
         optional: true
 
-  '@radix-ui/react-toast@1.1.5':
-    resolution: {integrity: sha512-fRLn227WHIBRSzuRzGJ8W+5YALxofH23y0MlPLddaIpLpCDqdE0NZlS2NRQDRiptfxDeeCjgFIpexB1/zkxDlw==}
-    peerDependencies:
-      '@types/react': '*'
-      '@types/react-dom': '*'
-      react: ^16.8 || ^17.0 || ^18.0
-      react-dom: ^16.8 || ^17.0 || ^18.0
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      '@types/react-dom':
-        optional: true
-
   '@radix-ui/react-toast@1.2.1':
     resolution: {integrity: sha512-5trl7piMXcZiCq7MW6r8YYmu0bK5qDpTWz+FdEPdKyft2UixkspheYbjbrLXVN5NGKHFbOP7lm8eD0biiSqZqg==}
     peerDependencies:
@@ -4453,23 +4455,12 @@ packages:
       typescript:
         optional: true
 
-  '@typescript-eslint/eslint-plugin@7.13.0':
-    resolution: {integrity: sha512-FX1X6AF0w8MdVFLSdqwqN/me2hyhuQg4ykN6ZpVhh1ij/80pTvDKclX1sZB9iqex8SjQfVhwMKs3JtnnMLzG9w==}
-    engines: {node: ^18.18.0 || >=20.0.0}
+  '@typescript-eslint/eslint-plugin@8.4.0':
+    resolution: {integrity: sha512-rg8LGdv7ri3oAlenMACk9e+AR4wUV0yrrG+XKsGKOK0EVgeEDqurkXMPILG2836fW4ibokTB5v4b6Z9+GYQDEw==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
-      '@typescript-eslint/parser': ^7.0.0
-      eslint: ^8.56.0
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
-  '@typescript-eslint/eslint-plugin@7.17.0':
-    resolution: {integrity: sha512-pyiDhEuLM3PuANxH7uNYan1AaFs5XE0zw1hq69JBvGvE7gSuEoQl1ydtEe/XQeoC3GQxLXyOVa5kNOATgM638A==}
-    engines: {node: ^18.18.0 || >=20.0.0}
-    peerDependencies:
-      '@typescript-eslint/parser': ^7.0.0
-      eslint: ^8.56.0
+      '@typescript-eslint/parser': ^8.0.0 || ^8.0.0-alpha.0
+      eslint: ^8.57.0 || ^9.0.0
       typescript: '*'
     peerDependenciesMeta:
       typescript:
@@ -4523,6 +4514,10 @@ packages:
     resolution: {integrity: sha512-0P2jTTqyxWp9HiKLu/Vemr2Rg1Xb5B7uHItdVZ6iAenXmPo4SZ86yOPCJwMqpCyaMiEHTNqizHfsbmCFT1x9SA==}
     engines: {node: ^18.18.0 || >=20.0.0}
 
+  '@typescript-eslint/scope-manager@8.4.0':
+    resolution: {integrity: sha512-n2jFxLeY0JmKfUqy3P70rs6vdoPjHK8P/w+zJcV3fk0b0BwRXC/zxRTEnAsgYT7MwdQDt/ZEbtdzdVC+hcpF0A==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
   '@typescript-eslint/type-utils@5.62.0':
     resolution: {integrity: sha512-xsSQreu+VnfbqQpW5vnCJdq1Z3Q0U31qiWmRhr98ONQmcp/yhiPJFPq8MXiJVLiksmOKSjIldZzkebzHuCGzew==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -4533,21 +4528,10 @@ packages:
       typescript:
         optional: true
 
-  '@typescript-eslint/type-utils@7.13.0':
-    resolution: {integrity: sha512-xMEtMzxq9eRkZy48XuxlBFzpVMDurUAfDu5Rz16GouAtXm0TaAoTFzqWUFPPuQYXI/CDaH/Bgx/fk/84t/Bc9A==}
-    engines: {node: ^18.18.0 || >=20.0.0}
+  '@typescript-eslint/type-utils@8.4.0':
+    resolution: {integrity: sha512-pu2PAmNrl9KX6TtirVOrbLPLwDmASpZhK/XU7WvoKoCUkdtq9zF7qQ7gna0GBZFN0hci0vHaSusiL2WpsQk37A==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
-      eslint: ^8.56.0
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
-  '@typescript-eslint/type-utils@7.17.0':
-    resolution: {integrity: sha512-XD3aaBt+orgkM/7Cei0XNEm1vwUxQ958AOLALzPlbPqb8C1G8PZK85tND7Jpe69Wualri81PLU+Zc48GVKIMMA==}
-    engines: {node: ^18.18.0 || >=20.0.0}
-    peerDependencies:
-      eslint: ^8.56.0
       typescript: '*'
     peerDependenciesMeta:
       typescript:
@@ -4564,6 +4548,10 @@ packages:
   '@typescript-eslint/types@7.17.0':
     resolution: {integrity: sha512-a29Ir0EbyKTKHnZWbNsrc/gqfIBqYPwj3F2M+jWE/9bqfEHg0AMtXzkbUkOG6QgEScxh2+Pz9OXe11jHDnHR7A==}
     engines: {node: ^18.18.0 || >=20.0.0}
+
+  '@typescript-eslint/types@8.4.0':
+    resolution: {integrity: sha512-T1RB3KQdskh9t3v/qv7niK6P8yvn7ja1mS7QK7XfRVL6wtZ8/mFs/FHf4fKvTA0rKnqnYxl/uHFNbnEt0phgbw==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@typescript-eslint/typescript-estree@5.62.0':
     resolution: {integrity: sha512-CmcQ6uY7b9y694lKdRB8FEel7JbU/40iSAPomu++SjLMntB+2Leay2LO6i8VnJk58MtE9/nQSFIH6jpyRWyYzA==}
@@ -4592,23 +4580,26 @@ packages:
       typescript:
         optional: true
 
+  '@typescript-eslint/typescript-estree@8.4.0':
+    resolution: {integrity: sha512-kJ2OIP4dQw5gdI4uXsaxUZHRwWAGpREJ9Zq6D5L0BweyOrWsL6Sz0YcAZGWhvKnH7fm1J5YFE1JrQL0c9dd53A==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    peerDependencies:
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   '@typescript-eslint/utils@5.62.0':
     resolution: {integrity: sha512-n8oxjeb5aIbPFEtmQxQYOLI0i9n5ySBEY/ZEHHZqKQSFnxio1rv6dthascc9dLuwrL0RC5mPCxB7vnAVGAYWAQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
 
-  '@typescript-eslint/utils@7.13.0':
-    resolution: {integrity: sha512-jceD8RgdKORVnB4Y6BqasfIkFhl4pajB1wVxrF4akxD2QPM8GNYjgGwEzYS+437ewlqqrg7Dw+6dhdpjMpeBFQ==}
-    engines: {node: ^18.18.0 || >=20.0.0}
+  '@typescript-eslint/utils@8.4.0':
+    resolution: {integrity: sha512-swULW8n1IKLjRAgciCkTCafyTHHfwVQFt8DovmaF69sKbOxTSFMmIZaSHjqO9i/RV0wIblaawhzvtva8Nmm7lQ==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
-      eslint: ^8.56.0
-
-  '@typescript-eslint/utils@7.17.0':
-    resolution: {integrity: sha512-r+JFlm5NdB+JXc7aWWZ3fKSm1gn0pkswEwIYsrGPdsT2GjsRATAKXiNtp3vgAAO1xZhX8alIOEQnNMl3kbTgJw==}
-    engines: {node: ^18.18.0 || >=20.0.0}
-    peerDependencies:
-      eslint: ^8.56.0
+      eslint: ^8.57.0 || ^9.0.0
 
   '@typescript-eslint/visitor-keys@5.62.0':
     resolution: {integrity: sha512-07ny+LHRzQXepkGg6w0mFY41fVUNBrL2Roj/++7V1txKugfjm/Ci/qSND03r2RhlJhJYMcTn9AhhSSqQp0Ysyw==}
@@ -4621,6 +4612,10 @@ packages:
   '@typescript-eslint/visitor-keys@7.17.0':
     resolution: {integrity: sha512-RVGC9UhPOCsfCdI9pU++K4nD7to+jTcMIbXTSOcrLqUEW6gF2pU1UUbYJKc9cvcRSK1UDeMJ7pdMxf4bhMpV/A==}
     engines: {node: ^18.18.0 || >=20.0.0}
+
+  '@typescript-eslint/visitor-keys@8.4.0':
+    resolution: {integrity: sha512-zTQD6WLNTre1hj5wp09nBIDiOc2U5r/qmzo7wxPn4ZgAjHql09EofqhF9WF+fZHzL5aCyaIpPcT2hyxl73kr9A==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
@@ -7913,8 +7908,8 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
 
-  react-icons@5.2.1:
-    resolution: {integrity: sha512-zdbW5GstTzXaVKvGSyTaBalt7HSfuK5ovrzlpyiWHAFXndXTdd/1hdDHI4xBM1Mn7YriT6aqESucFl9kEXzrdw==}
+  react-icons@5.3.0:
+    resolution: {integrity: sha512-DnUk8aFbTyQPSkCfF8dbX6kQjXA9DktMeJqfjrg6cK9vwQVMxmcA3BfP4QoiztVmEHtwlTgLFsPuH2NskKT6eg==}
     peerDependencies:
       react: '*'
 
@@ -11087,6 +11082,11 @@ snapshots:
       '@polkadot-api/substrate-bindings': 0.6.3
       '@polkadot-api/utils': 0.1.1
 
+  '@polkadot-api/metadata-builders@0.6.0':
+    dependencies:
+      '@polkadot-api/substrate-bindings': 0.6.3
+      '@polkadot-api/utils': 0.1.1
+
   '@polkadot-api/metadata-compatibility@0.1.2':
     dependencies:
       '@polkadot-api/metadata-builders': 0.5.0
@@ -11097,6 +11097,14 @@ snapshots:
     dependencies:
       '@polkadot-api/metadata-builders': 0.5.0
       '@polkadot-api/metadata-compatibility': 0.1.2
+      '@polkadot-api/substrate-bindings': 0.6.3
+      '@polkadot-api/substrate-client': 0.2.1
+      '@polkadot-api/utils': 0.1.1
+      rxjs: 7.8.1
+
+  '@polkadot-api/observable-client@0.5.2(@polkadot-api/substrate-client@0.2.1)(rxjs@7.8.1)':
+    dependencies:
+      '@polkadot-api/metadata-builders': 0.6.0
       '@polkadot-api/substrate-bindings': 0.6.3
       '@polkadot-api/substrate-client': 0.2.1
       '@polkadot-api/utils': 0.1.1
@@ -11119,9 +11127,17 @@ snapshots:
       '@polkadot-api/substrate-bindings': 0.6.3
       '@polkadot-api/utils': 0.1.1
 
+  '@polkadot-api/polkadot-signer@0.1.4': {}
+
   '@polkadot-api/signer@0.1.3':
     dependencies:
       '@polkadot-api/polkadot-signer': 0.1.3
+      '@polkadot-api/substrate-bindings': 0.6.3
+      '@polkadot-api/utils': 0.1.1
+
+  '@polkadot-api/signer@0.1.4':
+    dependencies:
+      '@polkadot-api/polkadot-signer': 0.1.4
       '@polkadot-api/substrate-bindings': 0.6.3
       '@polkadot-api/utils': 0.1.1
 
@@ -12750,27 +12766,6 @@ snapshots:
       '@types/react': 18.3.3
       '@types/react-dom': 18.3.0
 
-  '@radix-ui/react-toast@1.1.5(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@babel/runtime': 7.24.7
-      '@radix-ui/primitive': 1.0.1
-      '@radix-ui/react-collection': 1.0.3(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.3.3)(react@18.3.1)
-      '@radix-ui/react-context': 1.0.1(@types/react@18.3.3)(react@18.3.1)
-      '@radix-ui/react-dismissable-layer': 1.0.5(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-portal': 1.0.4(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-presence': 1.0.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.3.3)(react@18.3.1)
-      '@radix-ui/react-use-controllable-state': 1.0.1(@types/react@18.3.3)(react@18.3.1)
-      '@radix-ui/react-use-layout-effect': 1.0.1(@types/react@18.3.3)(react@18.3.1)
-      '@radix-ui/react-visually-hidden': 1.0.3(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-    optionalDependencies:
-      '@types/react': 18.3.3
-      '@types/react-dom': 18.3.0
-
   '@radix-ui/react-toast@1.2.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@radix-ui/primitive': 1.1.0
@@ -13391,14 +13386,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/eslint-plugin@7.13.0(@typescript-eslint/parser@7.13.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)':
+  '@typescript-eslint/eslint-plugin@8.4.0(@typescript-eslint/parser@7.13.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)':
     dependencies:
       '@eslint-community/regexpp': 4.10.1
       '@typescript-eslint/parser': 7.13.0(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/scope-manager': 7.13.0
-      '@typescript-eslint/type-utils': 7.13.0(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/utils': 7.13.0(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/visitor-keys': 7.13.0
+      '@typescript-eslint/scope-manager': 8.4.0
+      '@typescript-eslint/type-utils': 8.4.0(eslint@8.57.0)(typescript@5.5.4)
+      '@typescript-eslint/utils': 8.4.0(eslint@8.57.0)(typescript@5.5.4)
+      '@typescript-eslint/visitor-keys': 8.4.0
       eslint: 8.57.0
       graphemer: 1.4.0
       ignore: 5.3.1
@@ -13409,14 +13404,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/eslint-plugin@7.17.0(@typescript-eslint/parser@7.17.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)':
+  '@typescript-eslint/eslint-plugin@8.4.0(@typescript-eslint/parser@7.17.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)':
     dependencies:
       '@eslint-community/regexpp': 4.10.1
       '@typescript-eslint/parser': 7.17.0(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/scope-manager': 7.17.0
-      '@typescript-eslint/type-utils': 7.17.0(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/utils': 7.17.0(eslint@8.57.0)(typescript@5.5.4)
-      '@typescript-eslint/visitor-keys': 7.17.0
+      '@typescript-eslint/scope-manager': 8.4.0
+      '@typescript-eslint/type-utils': 8.4.0(eslint@8.57.0)(typescript@5.5.4)
+      '@typescript-eslint/utils': 8.4.0(eslint@8.57.0)(typescript@5.5.4)
+      '@typescript-eslint/visitor-keys': 8.4.0
       eslint: 8.57.0
       graphemer: 1.4.0
       ignore: 5.3.1
@@ -13488,6 +13483,11 @@ snapshots:
       '@typescript-eslint/types': 7.17.0
       '@typescript-eslint/visitor-keys': 7.17.0
 
+  '@typescript-eslint/scope-manager@8.4.0':
+    dependencies:
+      '@typescript-eslint/types': 8.4.0
+      '@typescript-eslint/visitor-keys': 8.4.0
+
   '@typescript-eslint/type-utils@5.62.0(eslint@8.57.0)(typescript@5.5.4)':
     dependencies:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.5.4)
@@ -13500,28 +13500,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/type-utils@7.13.0(eslint@8.57.0)(typescript@5.5.4)':
+  '@typescript-eslint/type-utils@8.4.0(eslint@8.57.0)(typescript@5.5.4)':
     dependencies:
-      '@typescript-eslint/typescript-estree': 7.13.0(typescript@5.5.4)
-      '@typescript-eslint/utils': 7.13.0(eslint@8.57.0)(typescript@5.5.4)
+      '@typescript-eslint/typescript-estree': 8.4.0(typescript@5.5.4)
+      '@typescript-eslint/utils': 8.4.0(eslint@8.57.0)(typescript@5.5.4)
       debug: 4.3.5(supports-color@5.5.0)
-      eslint: 8.57.0
       ts-api-utils: 1.3.0(typescript@5.5.4)
     optionalDependencies:
       typescript: 5.5.4
     transitivePeerDependencies:
-      - supports-color
-
-  '@typescript-eslint/type-utils@7.17.0(eslint@8.57.0)(typescript@5.5.4)':
-    dependencies:
-      '@typescript-eslint/typescript-estree': 7.17.0(typescript@5.5.4)
-      '@typescript-eslint/utils': 7.17.0(eslint@8.57.0)(typescript@5.5.4)
-      debug: 4.3.5(supports-color@5.5.0)
-      eslint: 8.57.0
-      ts-api-utils: 1.3.0(typescript@5.5.4)
-    optionalDependencies:
-      typescript: 5.5.4
-    transitivePeerDependencies:
+      - eslint
       - supports-color
 
   '@typescript-eslint/types@5.62.0': {}
@@ -13529,6 +13517,8 @@ snapshots:
   '@typescript-eslint/types@7.13.0': {}
 
   '@typescript-eslint/types@7.17.0': {}
+
+  '@typescript-eslint/types@8.4.0': {}
 
   '@typescript-eslint/typescript-estree@5.62.0(typescript@5.5.4)':
     dependencies:
@@ -13574,6 +13564,21 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@typescript-eslint/typescript-estree@8.4.0(typescript@5.5.4)':
+    dependencies:
+      '@typescript-eslint/types': 8.4.0
+      '@typescript-eslint/visitor-keys': 8.4.0
+      debug: 4.3.5(supports-color@5.5.0)
+      fast-glob: 3.3.2
+      is-glob: 4.0.3
+      minimatch: 9.0.4
+      semver: 7.6.2
+      ts-api-utils: 1.3.0(typescript@5.5.4)
+    optionalDependencies:
+      typescript: 5.5.4
+    transitivePeerDependencies:
+      - supports-color
+
   '@typescript-eslint/utils@5.62.0(eslint@8.57.0)(typescript@5.5.4)':
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
@@ -13589,23 +13594,12 @@ snapshots:
       - supports-color
       - typescript
 
-  '@typescript-eslint/utils@7.13.0(eslint@8.57.0)(typescript@5.5.4)':
+  '@typescript-eslint/utils@8.4.0(eslint@8.57.0)(typescript@5.5.4)':
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
-      '@typescript-eslint/scope-manager': 7.13.0
-      '@typescript-eslint/types': 7.13.0
-      '@typescript-eslint/typescript-estree': 7.13.0(typescript@5.5.4)
-      eslint: 8.57.0
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
-
-  '@typescript-eslint/utils@7.17.0(eslint@8.57.0)(typescript@5.5.4)':
-    dependencies:
-      '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
-      '@typescript-eslint/scope-manager': 7.17.0
-      '@typescript-eslint/types': 7.17.0
-      '@typescript-eslint/typescript-estree': 7.17.0(typescript@5.5.4)
+      '@typescript-eslint/scope-manager': 8.4.0
+      '@typescript-eslint/types': 8.4.0
+      '@typescript-eslint/typescript-estree': 8.4.0(typescript@5.5.4)
       eslint: 8.57.0
     transitivePeerDependencies:
       - supports-color
@@ -13624,6 +13618,11 @@ snapshots:
   '@typescript-eslint/visitor-keys@7.17.0':
     dependencies:
       '@typescript-eslint/types': 7.17.0
+      eslint-visitor-keys: 3.4.3
+
+  '@typescript-eslint/visitor-keys@8.4.0':
+    dependencies:
+      '@typescript-eslint/types': 8.4.0
       eslint-visitor-keys: 3.4.3
 
   '@ungap/structured-clone@1.2.0': {}
@@ -17458,7 +17457,7 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  react-icons@5.2.1(react@18.3.1):
+  react-icons@5.3.0(react@18.3.1):
     dependencies:
       react: 18.3.1
 
