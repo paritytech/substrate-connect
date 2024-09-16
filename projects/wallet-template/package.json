@@ -106,7 +106,7 @@
     "@substrate/smoldot-discovery-connector": "workspace:^",
     "@zag-js/clipboard": "^0.47.0",
     "@zag-js/react": "^0.47.0",
-    "@zag-js/tabs": "^0.58.3",
+    "@zag-js/tabs": "^0.68.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
