@@ -107,11 +107,19 @@ export const register = (channelId: string) => {
           break
       }
   })
+
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+      extensionRelayer = undefined
+      internalRpc = undefined
+    }
+  })
 }
 
 let extensionRelayer:
   | { postMessage(msg: RpcMessage | ToExtension): void }
   | undefined
+
 const getOrCreateExtensionRelayer = (
   onMessage: (msg: any) => void,
   onDisconnect?: (port: chrome.runtime.Port) => void,
