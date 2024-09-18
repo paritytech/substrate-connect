@@ -200,6 +200,7 @@ export const createScClient = (config?: Config): ScClient => {
     jsonRpcCallback?: (msg: string) => void,
     databaseContent?: string,
     relayChain?: SChain,
+    onError?: (err: unknown) => void,
   ): Promise<Chain> => {
     const client = await getClientAndIncRef(configOrDefault)
 
@@ -216,7 +217,10 @@ export const createScClient = (config?: Config): ScClient => {
           let jsonRpcResponse
           try {
             jsonRpcResponse = await internalChain.nextJsonRpcResponse()
-          } catch (_) {
+          } catch (err) {
+            try {
+              onError?.(err)
+            } catch {}
             break
           }
 
@@ -289,13 +293,25 @@ export const createScClient = (config?: Config): ScClient => {
     }
   }
 
-  const addChain: AddChain = (chainSpec, jsonRpcCallback, databaseContent) =>
-    internalAddChain(chainSpec, jsonRpcCallback, databaseContent)
+  const addChain: AddChain = (
+    chainSpec,
+    jsonRpcCallback,
+    databaseContent,
+    onError,
+  ) =>
+    internalAddChain(
+      chainSpec,
+      jsonRpcCallback,
+      databaseContent,
+      undefined,
+      onError,
+    )
 
   const addWellKnownChain: AddWellKnownChain = async (
-    supposedChain: WellKnownChain,
-    jsonRpcCallback?: (msg: string) => void,
-    databaseContent?: string,
+    supposedChain,
+    jsonRpcCallback,
+    databaseContent,
+    onError,
   ): Promise<Chain> => {
     // the following line ensures that the http request for the dynamic import
     // of smoldot and the request for the dynamic import of the spec
@@ -307,6 +323,8 @@ export const createScClient = (config?: Config): ScClient => {
         await getSpec(supposedChain),
         jsonRpcCallback,
         databaseContent,
+        undefined,
+        onError,
       )
     } finally {
       decRef(configOrDefault)

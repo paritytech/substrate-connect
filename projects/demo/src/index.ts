@@ -120,25 +120,33 @@ const noop = () => {}
 let client: ScClient
 const ScProvider = (input: string, relayChainSpec?: string) => {
   client ??= createScClient()
-  const addChain = (input: string, jsonRpcCallback?: JsonRpcCallback) =>
+  const addChain = (
+    input: string,
+    jsonRpcCallback?: JsonRpcCallback,
+    onError?: (err: unknown) => void,
+  ) =>
     isWellKnownChain(input)
-      ? client.addWellKnownChain(input, jsonRpcCallback)
-      : client.addChain(input, jsonRpcCallback)
+      ? client.addWellKnownChain(input, jsonRpcCallback, undefined, onError)
+      : client.addChain(input, jsonRpcCallback, undefined, onError)
 
   return getSyncProvider(async () => {
     let listener: (message: string) => void = noop
+    let onErrorListener: (err: unknown) => void = noop
     const onMessage = (msg: string) => {
       listener(msg)
+    }
+    const onError = (err: unknown) => {
+      onErrorListener(err)
     }
 
     let chain: Chain
     try {
       const relayChain = relayChainSpec
-        ? await addChain(relayChainSpec)
+        ? await addChain(relayChainSpec, onError)
         : undefined
       chain = relayChain
-        ? await relayChain.addChain(input, onMessage)
-        : await addChain(input, onMessage)
+        ? await relayChain.addChain(input, onMessage, undefined, onError)
+        : await addChain(input, onMessage, onError)
     } catch (e) {
       console.warn(
         `couldn't create chain with: ${input} ${relayChainSpec ?? ""}`,
@@ -147,8 +155,9 @@ const ScProvider = (input: string, relayChainSpec?: string) => {
       throw e
     }
 
-    return (onMessage) => {
+    return (onMessage, onError) => {
       listener = onMessage
+      onErrorListener = onError
       return {
         send(msg: string) {
           chain.sendJsonRpc(msg)

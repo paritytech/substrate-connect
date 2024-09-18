@@ -112,12 +112,14 @@ export type AddChain = (
   chainSpec: string,
   jsonRpcCallback?: JsonRpcCallback,
   databaseContent?: string,
+  onError?: (err: unknown) => void,
 ) => Promise<Chain>
 
 export type AddWellKnownChain = (
   id: WellKnownChain,
   jsonRpcCallback?: JsonRpcCallback,
   databaseContent?: string,
+  onError?: (err: unknown) => void,
 ) => Promise<Chain>
 
 export class AlreadyDestroyedError extends Error {
