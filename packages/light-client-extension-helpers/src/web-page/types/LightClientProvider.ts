@@ -1,3 +1,5 @@
+import type { JsonRpcProvider } from "@polkadot-api/json-rpc-provider"
+
 type Callback<T> = (value: T) => void
 type UnsubscribeFn = () => void
 
@@ -20,20 +22,6 @@ type RawChains = Record<string, RawChain>
 
 export interface RawChain {
   genesisHash: string
-
   name: string
-
-  connect: (
-    // the listener callback that the JsonRpcProvider will be sending messages to.
-    onMessage: Callback<string>,
-  ) => JsonRpcProvider
-}
-
-export interface JsonRpcProvider {
-  // it sends messages to the JSON RPC Server
-  send: Callback<string>
-
-  // it disconnects from the JSON RPC Server and it de-registers
-  // the `onMessage` and `onStatusChange` callbacks that was previously registered
-  disconnect: UnsubscribeFn
+  connect: JsonRpcProvider
 }

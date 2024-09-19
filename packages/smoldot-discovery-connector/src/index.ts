@@ -55,14 +55,14 @@ export const make = (
       )
     }
 
-    const jsonRpcProvider = chain.connect(jsonRpcCallback)
+    const jsonRpcConnection = chain.connect(jsonRpcCallback)
 
     return {
       sendJsonRpc(rpc: string): void {
-        jsonRpcProvider.send(rpc)
+        jsonRpcConnection.send(rpc)
       },
       remove() {
-        jsonRpcProvider.disconnect()
+        jsonRpcConnection.disconnect()
       },
       addChain: function (
         chainSpec: string,
@@ -79,11 +79,9 @@ export const make = (
   }
 
   return {
-    addChain: (chainSpec: string, jsonRpcCallback?: JsonRpcCallback) =>
+    addChain: (chainSpec, jsonRpcCallback) =>
       internalAddChain(false, chainSpec, jsonRpcCallback),
-    addWellKnownChain: (
-      name: WellKnownChain,
-      jsonRpcCallback?: JsonRpcCallback,
-    ) => internalAddChain(true, name, jsonRpcCallback),
+    addWellKnownChain: (name, jsonRpcCallback) =>
+      internalAddChain(true, name, jsonRpcCallback),
   }
 }
