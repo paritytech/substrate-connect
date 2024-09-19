@@ -1,5 +1,6 @@
 import type { ToApplication } from "@substrate/connect-extension-protocol"
 import {
+  type JsonRpcConnection,
   type SubstrateClient,
   createClient,
 } from "@polkadot-api/substrate-client"
@@ -33,6 +34,7 @@ import {
   type AddChainOptions,
   supervise,
 } from "../smoldot/index.js"
+import * as JSONRpcProvider from "./json-rpc-provider.js"
 
 export type * from "./types.js"
 
@@ -302,7 +304,7 @@ export const register = ({
     Record<
       string,
       {
-        chain: Chain
+        chain: JsonRpcConnection
         genesisHash: string
         chainSpec: string
         relayChainGenesisHash?: string
@@ -339,7 +341,7 @@ export const register = ({
       if (!activeChains[tabId]) return
       for (const [chainId, { chain }] of Object.entries(activeChains[tabId])) {
         try {
-          chain.remove()
+          chain.disconnect()
         } catch (error) {
           console.error("error removing chain", error)
         }
@@ -438,42 +440,21 @@ export const register = ({
 
               const [smoldotChain, { genesisHash, name, ss58Format }] =
                 await Promise.all([
-                  smoldotClient.addChain(addChainOptions),
+                  JSONRpcProvider.make(smoldotClient, addChainOptions),
                   getChainData({ smoldotClient, addChainOptions }),
                 ])
 
-              ;(async () => {
-                while (true) {
-                  let jsonRpcMessage: string | undefined
-                  try {
-                    jsonRpcMessage = await smoldotChain.nextJsonRpcResponse()
-                  } catch (_) {
-                    break
-                  }
-
-                  if (isPortDisconnected) break
-
-                  // `nextJsonRpcResponse` throws an exception if we pass `disableJsonRpc: true` in the
-                  // config. We pass `disableJsonRpc: true` if `jsonRpcCallback` is undefined. Therefore,
-                  // this code is never reachable if `jsonRpcCallback` is undefined.
-                  try {
-                    postMessage({
-                      origin: "substrate-connect-extension",
-                      type: "rpc",
-                      chainId: msg.chainId,
-                      jsonRpcMessage,
-                    })
-                  } catch (error) {
-                    console.error(
-                      "JSON-RPC callback has thrown an exception:",
-                      error,
-                    )
-                  }
-                }
-              })()
+              const jsonRpcConnection = smoldotChain((jsonRpcMessage) =>
+                postMessage({
+                  origin: "substrate-connect-extension",
+                  type: "rpc",
+                  chainId: msg.chainId,
+                  jsonRpcMessage,
+                }),
+              )
 
               if (!pendingAddChains[msg.chainId]) {
-                smoldotChain.remove()
+                jsonRpcConnection.disconnect()
                 return
               }
               delete pendingAddChains[msg.chainId]
@@ -493,7 +474,7 @@ export const register = ({
               }
 
               activeChains[tabId][msg.chainId] = {
-                chain: smoldotChain,
+                chain: jsonRpcConnection,
                 genesisHash,
                 relayChainGenesisHash,
                 chainSpec: addChainOptions.chainSpec,
@@ -535,19 +516,8 @@ export const register = ({
             if (!chain) return
 
             try {
-              chain.sendJsonRpc(msg.jsonRpcMessage)
-            } catch (error) {
-              removeChain(tabId, msg.chainId)
-              postMessage({
-                origin: "substrate-connect-extension",
-                type: "error",
-                chainId: msg.chainId,
-                errorMessage:
-                  error instanceof Error
-                    ? error.toString()
-                    : "Unknown error when sending RPC message",
-              })
-            }
+              chain.send(msg.jsonRpcMessage)
+            } catch {}
 
             break
           }
@@ -577,7 +547,7 @@ export const register = ({
     const chain = activeChains?.[tabId]?.[chainId]?.chain
     delete activeChains?.[tabId]?.[chainId]
     try {
-      chain?.remove()
+      chain?.disconnect()
     } catch (error) {
       console.error("error removing chain", error)
     }
