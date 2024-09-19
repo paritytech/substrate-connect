@@ -1,5 +1,12 @@
 # @substrate/connect-known-chains
 
+## 1.4.1
+
+### Patch Changes
+
+- 972af65: chore: update chainspecs
+- b2c7737: chore: update chainspecs
+
 ## 1.4.0
 
 ### Minor Changes

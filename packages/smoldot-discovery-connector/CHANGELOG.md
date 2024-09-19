@@ -1,5 +1,16 @@
 # @substrate/smoldot-discovery-connector
 
+## 0.1.1
+
+### Patch Changes
+
+- d42336d: refactor: fix json rpc provider naming
+- Updated dependencies [02b2fd0]
+- Updated dependencies [a55d6f2]
+- Updated dependencies [972af65]
+- Updated dependencies [bb4a50b]
+  - @substrate/light-client-extension-helpers@2.4.1
+
 ## 0.1.0
 
 ### Minor Changes
