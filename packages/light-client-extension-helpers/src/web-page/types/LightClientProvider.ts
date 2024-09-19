@@ -25,3 +25,5 @@ export interface RawChain {
   name: string
   connect: JsonRpcProvider
 }
+
+export type { JsonRpcProvider }
