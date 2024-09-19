@@ -1,5 +1,134 @@
 # Changelog
 
+## 0.4.1
+
+### Patch Changes
+
+- 5ab06be: chore(deps-dev): bump postcss from 8.4.40 to 8.4.44
+
+  Bumps [postcss](https://github.com/postcss/postcss) from 8.4.40 to 8.4.44.
+
+  - [Release notes](https://github.com/postcss/postcss/releases)
+  - [Changelog](https://github.com/postcss/postcss/blob/main/CHANGELOG.md)
+  - [Commits](https://github.com/postcss/postcss/compare/8.4.40...8.4.44)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: postcss
+    dependency-type: direct:development
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 02b2fd0: chore(deps): bump @polkadot-api/observable-client from 0.5.1 to 0.5.2
+
+  Bumps [@polkadot-api/observable-client](https://github.com/polkadot-api/polkadot-api) from 0.5.1 to 0.5.2.
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot-api/observable-client"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- bd1ef9d: chore(deps): bump @polkadot/extension-inject from 0.48.1 to 0.52.3
+
+  Bumps [@polkadot/extension-inject](https://github.com/polkadot-js/extension/tree/HEAD/packages/extension-inject) from 0.48.1 to 0.52.3.
+
+  - [Release notes](https://github.com/polkadot-js/extension/releases)
+  - [Changelog](https://github.com/polkadot-js/extension/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/extension/commits/v0.52.3/packages/extension-inject)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot/extension-inject"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- a55d6f2: chore(deps): bump @polkadot-api/signer from 0.1.3 to 0.1.4
+
+  Bumps [@polkadot-api/signer](https://github.com/polkadot-api/polkadot-api) from 0.1.3 to 0.1.4.
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot-api/signer"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- cc3ad48: chore(deps): bump react-icons from 5.2.1 to 5.3.0
+
+  Bumps [react-icons](https://github.com/react-icons/react-icons) from 5.2.1 to 5.3.0.
+
+  - [Release notes](https://github.com/react-icons/react-icons/releases)
+  - [Commits](https://github.com/react-icons/react-icons/compare/v5.2.1...v5.3.0)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: react-icons
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 9e234a8: chore(deps): bump @radix-ui/react-toast from 1.1.5 to 1.2.1
+
+  Bumps [@radix-ui/react-toast](https://github.com/radix-ui/primitives) from 1.1.5 to 1.2.1.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-toast"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- d0316d7: update docs
+- 972af65: chore: update chainspecs
+- b2c7737: chore: update chainspecs
+- Updated dependencies [02b2fd0]
+- Updated dependencies [a55d6f2]
+- Updated dependencies [d42336d]
+- Updated dependencies [d0316d7]
+- Updated dependencies [972af65]
+- Updated dependencies [bb4a50b]
+  - @substrate/light-client-extension-helpers@2.4.1
+  - @substrate/smoldot-discovery-connector@0.1.1
+  - @substrate/connect-discovery@0.1.1
+
 ## 0.4.0
 
 ### Minor Changes

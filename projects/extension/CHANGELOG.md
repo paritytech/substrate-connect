@@ -1,5 +1,75 @@
 # Changelog
 
+## 0.9.1
+
+### Patch Changes
+
+- 5ab06be: chore(deps-dev): bump postcss from 8.4.40 to 8.4.44
+
+  Bumps [postcss](https://github.com/postcss/postcss) from 8.4.40 to 8.4.44.
+
+  - [Release notes](https://github.com/postcss/postcss/releases)
+  - [Changelog](https://github.com/postcss/postcss/blob/main/CHANGELOG.md)
+  - [Commits](https://github.com/postcss/postcss/compare/8.4.40...8.4.44)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: postcss
+    dependency-type: direct:development
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 02b2fd0: chore(deps): bump @polkadot-api/observable-client from 0.5.1 to 0.5.2
+
+  Bumps [@polkadot-api/observable-client](https://github.com/polkadot-api/polkadot-api) from 0.5.1 to 0.5.2.
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot-api/observable-client"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- cc3ad48: chore(deps): bump react-icons from 5.2.1 to 5.3.0
+
+  Bumps [react-icons](https://github.com/react-icons/react-icons) from 5.2.1 to 5.3.0.
+
+  - [Release notes](https://github.com/react-icons/react-icons/releases)
+  - [Commits](https://github.com/react-icons/react-icons/compare/v5.2.1...v5.3.0)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: react-icons
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 972af65: chore: update chainspecs
+- b2c7737: chore: update chainspecs
+- Updated dependencies [02b2fd0]
+- Updated dependencies [a55d6f2]
+- Updated dependencies [d42336d]
+- Updated dependencies [972af65]
+- Updated dependencies [bb4a50b]
+  - @substrate/light-client-extension-helpers@2.4.1
+  - @substrate/smoldot-discovery-connector@0.1.1
+
 ## 0.9.0
 
 ### Minor Changes
