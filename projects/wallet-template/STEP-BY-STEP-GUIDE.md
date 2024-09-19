@@ -7,7 +7,7 @@ extension helpers into your browser extension.
 ## Requirements
 
 - Manifest V3: This is required in both Chrome and Firefox because we need to use service workers to run [smoldot](https://github.com/smol-dot/smoldot). For more details, you can refer to the [Chrome Manifest V3 documentation](https://developer.chrome.com/docs/extensions/mv3/intro/) and the [Firefox Manifest V3 documentation](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/background).
-- Ensure the following permissions are enabled in your manifest: `["notifications", "storage", "tabs", "alarms"]`.
+- Ensure the following permissions are enabled in your manifest: `["storage", "tabs", "alarms"]`.
 
 ## Setup
 
@@ -31,7 +31,7 @@ Start by adding the light client background extension helper to your background 
   "service_worker": "background/background.js",
   "type": "module"
 },
-"permissions": ["notifications", "storage", "tabs", "alarms"],
+"permissions": ["storage", "tabs", "alarms"],
 "web_accessible_resources": [
   {
     "resources": ["path-to-your/inpage.js"],
