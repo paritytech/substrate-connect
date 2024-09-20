@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.2
+
+### Patch Changes
+
+- 4dffe29: change smoldot log level back to 3 to save on cpu cycles
+
 ## 0.9.1
 
 ### Patch Changes
