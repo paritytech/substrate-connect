@@ -121,8 +121,8 @@ importers:
         specifier: ~0.1.1
         version: 0.1.1
       '@polkadot-labs/hdkd-helpers':
-        specifier: ^0.0.6
-        version: 0.0.6
+        specifier: ^0.0.8
+        version: 0.0.8
       '@substrate/connect-known-chains':
         specifier: workspace:^
         version: link:../../packages/connect-known-chains
@@ -176,8 +176,8 @@ importers:
         specifier: ^4.6.2
         version: 4.6.2(eslint@8.57.0)
       eslint-plugin-react-refresh:
-        specifier: ^0.4.6
-        version: 0.4.7(eslint@8.57.0)
+        specifier: ^0.4.12
+        version: 0.4.12(eslint@8.57.0)
       vite:
         specifier: ^5.3.4
         version: 5.3.4(@types/node@22.3.0)(terser@5.31.1)
@@ -234,8 +234,8 @@ importers:
         specifier: ^4.6.2
         version: 4.6.2(eslint@8.57.0)
       eslint-plugin-react-refresh:
-        specifier: ^0.4.6
-        version: 0.4.7(eslint@8.57.0)
+        specifier: ^0.4.12
+        version: 0.4.12(eslint@8.57.0)
       vite:
         specifier: ^5.3.4
         version: 5.3.4(@types/node@22.3.0)(terser@5.31.1)
@@ -455,8 +455,8 @@ importers:
         specifier: ^4.6.2
         version: 4.6.2(eslint@8.57.0)
       eslint-plugin-react-refresh:
-        specifier: ^0.4.7
-        version: 0.4.7(eslint@8.57.0)
+        specifier: ^0.4.12
+        version: 0.4.12(eslint@8.57.0)
       postcss:
         specifier: ^8.4.44
         version: 8.4.44
@@ -829,8 +829,8 @@ importers:
         specifier: ^0.0.6
         version: 0.0.6
       '@polkadot-labs/hdkd-helpers':
-        specifier: ^0.0.6
-        version: 0.0.6
+        specifier: ^0.0.8
+        version: 0.0.8
       '@polkadot-labs/schnorrkel-wasm':
         specifier: ^0.0.5
         version: 0.0.5
@@ -2506,9 +2506,17 @@ packages:
   '@noble/curves@1.4.0':
     resolution: {integrity: sha512-p+4cb332SFCrReJkCYe8Xzm0OWi4Jji5jVdIZRL/PmacmDkFNw6MrrV+gGpiPxLHbV+zKFRywUWbaseT+tZRXg==}
 
+  '@noble/curves@1.6.0':
+    resolution: {integrity: sha512-TlaHRXDehJuRNR9TfZDNQ45mMEd5dwUwmicsafcIX4SsNiqnCHKjE/1alYPd/lDRVhxdhUAlv8uEhMCI5zjIJQ==}
+    engines: {node: ^14.21.3 || >=16}
+
   '@noble/hashes@1.4.0':
     resolution: {integrity: sha512-V1JJ1WTRUqHHrOSh597hURcMqVKVGL/ea3kv0gSnEdsEZ0/+VyPghM1lMNGc00z7CIQorSvbKpuJkxvuHbvdbg==}
     engines: {node: '>= 16'}
+
+  '@noble/hashes@1.5.0':
+    resolution: {integrity: sha512-1j6kQFb7QRru7eKN3ZDvRcP13rugwdxZqCjbiAVZfIJwgj2A65UmT4TgARXGlXgnRkORLTDTrO19ZErt7+QXgA==}
+    engines: {node: ^14.21.3 || >=16}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -2636,6 +2644,9 @@ packages:
 
   '@polkadot-labs/hdkd-helpers@0.0.6':
     resolution: {integrity: sha512-Gbyf1+aQERjOVWmfCEbnuW0VYvv3pFfjBJOISeGmmAiC6tlH9zCUht/STCCEduyA6ShnjSFXELBX2H1A2D72Sw==}
+
+  '@polkadot-labs/hdkd-helpers@0.0.8':
+    resolution: {integrity: sha512-nTJOinTKuINHwKsUXR+Q1Hld0DU+EYVxcfQqiJz9PH8L+48K3gPfpAHDApIuOW6Uq6yVb5/pgcDPNCaJS5nYsg==}
 
   '@polkadot-labs/hdkd@0.0.6':
     resolution: {integrity: sha512-PSakvU3q89Dx0QunlGDGKKxevpGK+gZQhErugSngj8SQmPZNy45z353x2SmiJjgfCQifRBP2YX8xzASRCnx7FA==}
@@ -4197,11 +4208,11 @@ packages:
     peerDependencies:
       rxjs: '>=7'
 
-  '@scure/base@1.1.6':
-    resolution: {integrity: sha512-ok9AWwhcgYuGG3Zfhyqg+zwl+Wn5uE+dwC0NV/2qQkx4dABbb/bx96vWu8NSj+BNjjSjno+JRYRjle1jV08k3g==}
-
   '@scure/base@1.1.7':
     resolution: {integrity: sha512-PPNYBslrLNNUQ/Yad37MHYsNQtK67EhWb6WtSvNLLPo7SdVZgkUjD6Dg+5On7zNwmskf8OX7I7Nx5oN+MIWE0g==}
+
+  '@scure/base@1.1.9':
+    resolution: {integrity: sha512-8YKhl8GHiNI/pU2VMaofa2Tor7PJRAjwQLBBuilkJ9L5+13yVbC7JO/wS7piioAvPSwR3JKM1IJ/u4xQzbcXKg==}
 
   '@sec-ant/readable-stream@0.4.1':
     resolution: {integrity: sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==}
@@ -5922,8 +5933,8 @@ packages:
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0
 
-  eslint-plugin-react-refresh@0.4.7:
-    resolution: {integrity: sha512-yrj+KInFmwuQS2UQcg1SF83ha1tuHC1jMQbRNyuWtlEzzKRDgAl7L4Yp4NlDUZTZNlWvHEzOtJhMi40R7JxcSw==}
+  eslint-plugin-react-refresh@0.4.12:
+    resolution: {integrity: sha512-9neVjoGv20FwYtCP6CB1dzR1vr57ZDNOXst21wd2xJ/cTlM2xLq0GWVlSNTdMn/4BtP6cHYBMCSp1wFBJ9jBsg==}
     peerDependencies:
       eslint: '>=7'
 
@@ -11020,7 +11031,13 @@ snapshots:
     dependencies:
       '@noble/hashes': 1.4.0
 
+  '@noble/curves@1.6.0':
+    dependencies:
+      '@noble/hashes': 1.5.0
+
   '@noble/hashes@1.4.0': {}
+
+  '@noble/hashes@1.5.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -11228,10 +11245,18 @@ snapshots:
 
   '@polkadot-labs/hdkd-helpers@0.0.6':
     dependencies:
-      '@noble/curves': 1.4.0
-      '@noble/hashes': 1.4.0
+      '@noble/curves': 1.6.0
+      '@noble/hashes': 1.5.0
       '@polkadot-labs/schnorrkel-wasm': 0.0.5
-      '@scure/base': 1.1.6
+      '@scure/base': 1.1.9
+      scale-ts: 1.6.0
+
+  '@polkadot-labs/hdkd-helpers@0.0.8':
+    dependencies:
+      '@noble/curves': 1.6.0
+      '@noble/hashes': 1.5.0
+      '@polkadot-labs/schnorrkel-wasm': 0.0.5
+      '@scure/base': 1.1.9
       scale-ts: 1.6.0
 
   '@polkadot-labs/hdkd@0.0.6':
@@ -11703,15 +11728,15 @@ snapshots:
 
   '@polkadot/util-crypto@13.0.2(@polkadot/util@13.0.2)':
     dependencies:
-      '@noble/curves': 1.4.0
-      '@noble/hashes': 1.4.0
+      '@noble/curves': 1.6.0
+      '@noble/hashes': 1.5.0
       '@polkadot/networks': 13.0.2
       '@polkadot/util': 13.0.2
       '@polkadot/wasm-crypto': 7.3.2(@polkadot/util@13.0.2)(@polkadot/x-randomvalues@13.0.2(@polkadot/util@13.0.2)(@polkadot/wasm-util@7.3.2(@polkadot/util@12.6.2)))
       '@polkadot/wasm-util': 7.3.2(@polkadot/util@13.0.2)
       '@polkadot/x-bigint': 13.0.2
       '@polkadot/x-randomvalues': 13.0.2(@polkadot/util@13.0.2)(@polkadot/wasm-util@7.3.2(@polkadot/util@12.6.2))
-      '@scure/base': 1.1.7
+      '@scure/base': 1.1.9
       tslib: 2.6.3
 
   '@polkadot/util@12.6.2':
@@ -13180,9 +13205,9 @@ snapshots:
     dependencies:
       rxjs: 7.8.1
 
-  '@scure/base@1.1.6': {}
-
   '@scure/base@1.1.7': {}
+
+  '@scure/base@1.1.9': {}
 
   '@sec-ant/readable-stream@0.4.1': {}
 
@@ -15334,7 +15359,7 @@ snapshots:
     dependencies:
       eslint: 8.57.0
 
-  eslint-plugin-react-refresh@0.4.7(eslint@8.57.0):
+  eslint-plugin-react-refresh@0.4.12(eslint@8.57.0):
     dependencies:
       eslint: 8.57.0
 

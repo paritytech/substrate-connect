@@ -3,7 +3,7 @@ import { startHeartbeat } from "./heartbeat"
 import { start } from "@substrate/light-client-extension-helpers/smoldot"
 
 register({
-  smoldotClient: start({ maxLogLevel: 4 }),
+  smoldotClient: start({ maxLogLevel: 3 }),
   getWellKnownChainSpecs: () =>
     // Note that this list doesn't necessarily always have to match the list of well-known
     // chains in `@substrate/connect`. The list of well-known chains is not part of the stability
