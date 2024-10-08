@@ -592,6 +592,9 @@ importers:
       '@polkadot-api/codegen':
         specifier: catalog:polkadot-api
         version: 0.12.3
+      '@polkadot-api/json-rpc-provider':
+        specifier: catalog:polkadot-api
+        version: 0.0.4
       '@polkadot-api/json-rpc-provider-proxy':
         specifier: catalog:polkadot-api
         version: 0.2.3
@@ -604,6 +607,9 @@ importers:
       '@polkadot-api/observable-client':
         specifier: catalog:polkadot-api
         version: 0.5.8(@polkadot-api/substrate-client@0.2.2)(rxjs@7.8.1)
+      '@polkadot-api/polkadot-signer':
+        specifier: catalog:polkadot-api
+        version: 0.1.6
       '@polkadot-api/signer':
         specifier: catalog:polkadot-api
         version: 0.1.7
@@ -626,12 +632,6 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
     devDependencies:
-      '@polkadot-api/json-rpc-provider':
-        specifier: catalog:polkadot-api
-        version: 0.0.4
-      '@polkadot-api/polkadot-signer':
-        specifier: catalog:polkadot-api
-        version: 0.1.6
       '@types/chrome':
         specifier: ^0.0.270
         version: 0.0.270
