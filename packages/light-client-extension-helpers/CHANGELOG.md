@@ -1,5 +1,20 @@
 # @substrate/light-client-extension-helpers
 
+## 2.5.0
+
+### Minor Changes
+
+- 8ac12d3: chore: remove unnecessary papi peer dependencies
+- 198b375: chore: catalog and upgrade papi dependencies
+
+### Patch Changes
+
+- Updated dependencies [f2163cb]
+- Updated dependencies [198b375]
+- Updated dependencies [0de443d]
+  - @substrate/connect-known-chains@1.5.0
+  - @substrate/connect-extension-protocol@2.2.0
+
 ## 2.4.1
 
 ### Patch Changes

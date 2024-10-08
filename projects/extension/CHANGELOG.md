@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.10.0
+
+### Minor Changes
+
+- 198b375: chore: catalog and upgrade papi dependencies
+
+### Patch Changes
+
+- f2163cb: chore: update changesets
+- 0de443d: chore: update chainspecs
+- Updated dependencies [8ac12d3]
+- Updated dependencies [198b375]
+  - @substrate/light-client-extension-helpers@2.5.0
+  - @substrate/connect-extension-protocol@2.2.0
+  - @substrate/smoldot-discovery-connector@0.2.0
+
 ## 0.9.2
 
 ### Patch Changes

@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.3.0
+
+### Minor Changes
+
+- 198b375: chore: catalog and upgrade papi dependencies
+
+### Patch Changes
+
+- Updated dependencies [f2163cb]
+- Updated dependencies [198b375]
+- Updated dependencies [0de443d]
+  - @substrate/connect-known-chains@1.5.0
+  - @substrate/connect-extension-protocol@2.2.0
+  - @substrate/smoldot-discovery@1.2.0
+
 ## 1.2.1
 
 ### Patch Changes
