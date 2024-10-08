@@ -255,6 +255,7 @@
     "lint": "eslint . --ext .js,.ts"
   },
   "devDependencies": {
+    "typescript": "catalog:",
     "vitest": "^2.0.5"
   }
 }

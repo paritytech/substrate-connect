@@ -36,6 +36,7 @@
   },
   "keywords": [],
   "devDependencies": {
+    "typescript": "catalog:",
     "@playwright/test": "^1.43.1",
     "@types/node": "^20.14.10",
     "@vitejs/plugin-react-swc": "^3.6.0",
@@ -45,7 +46,6 @@
     "eslint": "^8.57.0",
     "postcss": "^8.4.44",
     "tailwindcss": "^3.4.10",
-    "typescript": "^5.6.2",
     "vite": "^5.3.4",
     "vite-plugin-web-extension": "^4.2.0",
     "vitest": "^2.0.5",
