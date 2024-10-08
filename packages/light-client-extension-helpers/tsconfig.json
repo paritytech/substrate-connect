@@ -1,4 +1,7 @@
 {
   "extends": "../../tsconfig.base",
+  "compilerOptions": {
+    "noUncheckedIndexedAccess": false
+  },
   "include": ["src", "tests"]
 }

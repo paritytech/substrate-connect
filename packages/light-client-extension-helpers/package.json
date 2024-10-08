@@ -205,8 +205,8 @@
   },
   "devDependencies": {
     "typescript": "catalog:",
-    "@polkadot-api/json-rpc-provider": "~0.0.3",
-    "@polkadot-api/polkadot-signer": "~0.1.3",
+    "@polkadot-api/json-rpc-provider": "catalog:polkadot-api",
+    "@polkadot-api/polkadot-signer": "catalog:polkadot-api",
     "@types/chrome": "^0.0.270",
     "smoldot": "2.0.30",
     "vitest": "^2.0.5"
@@ -225,15 +225,15 @@
     }
   },
   "dependencies": {
-    "@polkadot-api/codegen": "~0.8.0",
-    "@polkadot-api/json-rpc-provider-proxy": "~0.2.0",
-    "@polkadot-api/metadata-builders": "~0.5.0",
-    "@polkadot-api/metadata-compatibility": "~0.1.2",
-    "@polkadot-api/observable-client": "~0.5.2",
-    "@polkadot-api/signer": "~0.1.4",
-    "@polkadot-api/substrate-bindings": "~0.6.3",
-    "@polkadot-api/substrate-client": "~0.2.1",
-    "@polkadot-api/utils": "~0.1.1",
+    "@polkadot-api/codegen": "catalog:polkadot-api",
+    "@polkadot-api/json-rpc-provider-proxy": "catalog:polkadot-api",
+    "@polkadot-api/metadata-builders": "catalog:polkadot-api",
+    "@polkadot-api/metadata-compatibility": "catalog:polkadot-api",
+    "@polkadot-api/observable-client": "catalog:polkadot-api",
+    "@polkadot-api/signer": "catalog:polkadot-api",
+    "@polkadot-api/substrate-bindings": "catalog:polkadot-api",
+    "@polkadot-api/substrate-client": "catalog:polkadot-api",
+    "@polkadot-api/utils": "catalog:polkadot-api",
     "@substrate/connect-extension-protocol": "workspace:^",
     "@substrate/connect-known-chains": "workspace:^",
     "rxjs": "^7.8.1"

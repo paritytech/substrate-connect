@@ -7,17 +7,15 @@ import { getPolkadotSigner } from "@polkadot-api/signer"
 import {
   AccountId,
   Binary,
+  type Decoder,
   Enum,
   type SS58String,
-  Tuple,
-  compact,
-  u128,
   u32,
-  u8,
 } from "@polkadot-api/substrate-bindings"
 import { fromHex, mergeUint8, toHex } from "@polkadot-api/utils"
 import {
   Observable,
+  combineLatest,
   firstValueFrom,
   map,
   mergeMap,
@@ -29,10 +27,12 @@ import {
   type CompatibilityHelper,
   CompatibilityToken,
   getCompatibilityApi,
+  RuntimeToken,
 } from "./compatibility.js"
 import { createTx } from "./create-tx.js"
 import { InvalidTxError, submit, submit$ } from "./submit-fns.js"
 import type {
+  PaymentInfo,
   TxCall,
   TxEntry,
   TxObservable,
@@ -48,8 +48,6 @@ import {
 export { submit, submit$, InvalidTxError }
 
 const accountIdEnc = AccountId().enc
-const queryInfoRawDec = Tuple(compact, compact, u8, u128).dec
-const queryInfoDec = (input: string): bigint => queryInfoRawDec(input)[3]
 const fakeSignature = new Uint8Array(64)
 const getFakeSignature = () => fakeSignature
 
@@ -71,18 +69,25 @@ export const createTxEntry = <
     argsAreCompatible,
     getRuntimeTypedef,
   }: CompatibilityHelper,
+  checkCompatibility: boolean,
 ): TxEntry<D, Arg, Pallet, Name, Asset> => {
   const fn = (arg?: Arg): any => {
     const getCallDataWithContext = (
-      runtime: CompatibilityToken,
+      runtime: CompatibilityToken | RuntimeToken,
       arg: any,
       txOptions: Partial<{ asset: any }> = {},
     ) => {
       const ctx = getCompatibilityApi(runtime).runtime()
-      if (!argsAreCompatible(runtime, ctx, arg))
+      const { dynamicBuilder, assetId, lookup } = ctx
+      let codecs
+      try {
+        codecs = dynamicBuilder.buildCall(pallet, name)
+      } catch {
+        throw new Error(`Runtime entry Tx(${pallet}.${name}) not found`)
+      }
+      if (checkCompatibility && !argsAreCompatible(runtime, ctx, arg))
         throw new Error(`Incompatible runtime entry Tx(${pallet}.${name})`)
 
-      const { dynamicBuilder, assetId, lookup } = ctx
       let returnOptions = txOptions
       if (txOptions.asset) {
         if (
@@ -100,7 +105,7 @@ export const createTxEntry = <
         }
       }
 
-      const { location, codec } = dynamicBuilder.buildCall(pallet, name)
+      const { location, codec } = codecs
       return {
         callData: Binary.fromBytes(
           mergeUint8(new Uint8Array(location), codec.enc(arg)),
@@ -115,12 +120,12 @@ export const createTxEntry = <
       )
 
     const getEncodedData: TxCall = (
-      compatibilityToken?: CompatibilityToken,
+      token?: CompatibilityToken | RuntimeToken,
     ): any => {
-      if (!compatibilityToken)
+      if (!token)
         return firstValueFrom(getCallData$(arg).pipe(map((x) => x.callData)))
 
-      return getCallDataWithContext(compatibilityToken, arg).callData
+      return getCallDataWithContext(token, arg).callData
     }
 
     const sign$ = (
@@ -176,7 +181,7 @@ export const createTxEntry = <
         ),
       )
 
-    const getEstimatedFees = async (
+    const getPaymentInfo = async (
       from: Uint8Array | SS58String,
       _options?: any,
     ) => {
@@ -188,14 +193,35 @@ export const createTxEntry = <
       const encoded = fromHex(await sign(fakeSigner, _options))
       const args = toHex(mergeUint8(encoded, u32.enc(encoded.length)))
 
+      const decoder$: Observable<Decoder<PaymentInfo>> = chainHead
+        .getRuntimeContext$(null)
+        .pipe(
+          map(
+            ({ dynamicBuilder: { buildRuntimeCall } }) =>
+              buildRuntimeCall("TransactionPaymentApi", "query_info").value[1],
+          ),
+        )
+
+      const call$ = chainHead.call$(
+        null,
+        "TransactionPaymentApi_query_info",
+        args,
+      )
+
       return firstValueFrom(
-        chainHead
-          .call$(null, "TransactionPaymentApi_query_info", args)
-          .pipe(map(queryInfoDec)),
+        combineLatest([call$, decoder$]).pipe(
+          map(([result, decoder]) => decoder(result)),
+        ),
       )
     }
 
+    const getEstimatedFees = async (
+      from: Uint8Array | SS58String,
+      _options?: any,
+    ) => (await getPaymentInfo(from, _options)).partial_fee
+
     return {
+      getPaymentInfo,
       getEstimatedFees,
       decodedCall: {
         type: pallet,

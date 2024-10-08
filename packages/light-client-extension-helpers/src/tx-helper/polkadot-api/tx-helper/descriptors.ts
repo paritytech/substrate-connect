@@ -34,7 +34,7 @@ export type ApisTypedef<
   T extends DescriptorEntry<RuntimeDescriptor<any, any>>,
 > = T
 
-export { DescriptorValues }
+export type { DescriptorValues }
 
 export type ChainDefinition = {
   descriptors: Promise<DescriptorValues> & {
