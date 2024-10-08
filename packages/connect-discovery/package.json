@@ -54,6 +54,7 @@
     "@substrate/discovery": "workspace:^"
   },
   "devDependencies": {
+    "typescript": "catalog:",
     "vitest": "^2.0.5"
   }
 }

@@ -51,6 +51,7 @@
     "trailingComma": "all"
   },
   "devDependencies": {
+    "typescript": "catalog:",
     "vitest": "^2.0.5"
   }
 }

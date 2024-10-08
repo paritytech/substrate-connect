@@ -20,6 +20,7 @@
     "smoldot": "2.0.30"
   },
   "devDependencies": {
+    "typescript": "catalog:",
     "@playwright/test": "^1.43.1",
     "@types/chrome": "^0.0.270",
     "@types/node": "^20.14.10",
