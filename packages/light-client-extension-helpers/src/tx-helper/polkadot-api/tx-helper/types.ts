@@ -1,6 +1,7 @@
 import {
   type CompatibilityFunctions,
   CompatibilityToken,
+  RuntimeToken,
 } from "./compatibility.js"
 import type { SystemEvent } from "@polkadot-api/observable-client"
 import type { PolkadotSigner } from "@polkadot-api/polkadot-signer"
@@ -56,10 +57,16 @@ export type TxEventsPayload = {
 } & (
   | {
       ok: true
+      /**
+       * Dispatch Error found at `System.ExtrinsicFailed` event.
+       */
       dispatchError?: undefined
     }
   | {
       ok: false
+      /**
+       * Dispatch Error found at `System.ExtrinsicFailed` event.
+       */
       dispatchError: {
         type: string
         value: unknown
@@ -71,6 +78,7 @@ export type TxFinalized = {
   type: "finalized"
   txHash: HexString
 } & TxEventsPayload
+export type TxFinalizedPayload = { txHash: HexString } & TxEventsPayload
 
 export type TxOptions<Asset> = Partial<
   void extends Asset
@@ -119,7 +127,6 @@ export type TxOptions<Asset> = Partial<
       }
 >
 
-export type TxFinalizedPayload = Omit<TxFinalized, "type">
 export type TxPromise<Asset> = (
   from: PolkadotSigner,
   txOptions?: TxOptions<Asset>,
@@ -147,12 +154,42 @@ export interface TxCall {
   (compatibilityToken: CompatibilityToken): Binary
 }
 
+export interface UnsafeTxCall {
+  /**
+   * SCALE-encoded callData of the transaction.
+   *
+   * @returns Promise resolving in the encoded data.
+   */
+  (): Promise<Binary>
+  /**
+   * SCALE-encoded callData of the transaction.
+   *
+   * @param runtimeToken  Token from got with `await typedApi.runtimeToken`
+   * @returns Synchronously returns encoded data.
+   */
+  (runtimeToken: RuntimeToken): Binary
+}
+
 export type TxSignFn<Asset> = (
   from: PolkadotSigner,
   txOptions?: TxOptions<Asset>,
 ) => Promise<HexString>
 
-export type Transaction<
+export type PaymentInfo = {
+  weight: {
+    ref_time: bigint
+    proof_size: bigint
+  }
+  class: Enum<{
+    Normal: undefined
+    Operational: undefined
+    Mandatory: undefined
+  }>
+  partial_fee: bigint
+}
+
+export type InnerTransaction<
+  Unsafe,
   Arg extends {} | undefined,
   Pallet extends string,
   Name extends string,
@@ -193,7 +230,7 @@ export type Transaction<
   /**
    * SCALE-encoded callData of the transaction.
    */
-  getEncodedData: TxCall
+  getEncodedData: Unsafe extends true ? UnsafeTxCall : TxCall
   /**
    * Estimate fees against the latest known `finalizedBlock`
    *
@@ -206,27 +243,132 @@ export type Transaction<
     txOptions?: TxOptions<Asset>,
   ) => Promise<bigint>
   /**
+   * Payment info against the latest known `finalizedBlock`
+   *
+   * @param from       Public key or address from the potencial sender.
+   * @param txOptions  Optionally pass any number of txOptions.
+   * @returns PaymentInfo for the given transaction (weight, estimated fees
+   *          and class).
+   */
+  getPaymentInfo: (
+    from: Uint8Array | SS58String,
+    txOptions?: TxOptions<Asset>,
+  ) => Promise<PaymentInfo>
+
+  /**
    * PAPI way of expressing an extrinsic with arguments.
    * It's useful to pass as a parameter to extrinsics that accept calls.
    */
   decodedCall: Enum<{ [P in Pallet]: Enum<{ [N in Name]: Arg }> }>
 }
 
-export interface TxEntry<
+export type Transaction<
+  Arg extends {} | undefined,
+  Pallet extends string,
+  Name extends string,
+  Asset,
+> = InnerTransaction<false, Arg, Pallet, Name, Asset>
+
+export type UnsafeTransaction<
+  Arg extends {} | undefined,
+  Pallet extends string,
+  Name extends string,
+  Asset,
+> = InnerTransaction<true, Arg, Pallet, Name, Asset>
+
+export type InnerTxEntry<
+  Unsafe,
   D,
   Arg extends {} | undefined,
   Pallet extends string,
   Name extends string,
   Asset,
-> extends CompatibilityFunctions<D> {
-  /**
-   * Synchronously create the transaction object ready to sign, submit, estimate
-   * fees, etc.
-   *
-   * @param args  All parameters required by the transaction.
-   * @returns Transaction object.
-   */
-  (
-    ...args: Arg extends undefined ? [] : [data: Arg]
-  ): Transaction<Arg, Pallet, Name, Asset>
-}
+> = Unsafe extends true
+  ? {
+      /**
+       * Synchronously create the transaction object ready to sign, submit,
+       * estimate fees, etc.
+       *
+       * @param args  All parameters required by the transaction.
+       * @returns Transaction object.
+       */
+      (
+        ...args: Arg extends undefined ? [] : [data: Arg]
+      ): UnsafeTransaction<Arg, Pallet, Name, Asset>
+    }
+  : {
+      /**
+       * Synchronously create the transaction object ready to sign, submit,
+       * estimate fees, etc.
+       *
+       * @param args  All parameters required by the transaction.
+       * @returns Transaction object.
+       */
+      (
+        ...args: Arg extends undefined ? [] : [data: Arg]
+      ): Transaction<Arg, Pallet, Name, Asset>
+    } & CompatibilityFunctions<D>
+
+export type TxEntry<
+  D,
+  Arg extends {} | undefined,
+  Pallet extends string,
+  Name extends string,
+  Asset,
+> = InnerTxEntry<false, D, Arg, Pallet, Name, Asset>
+
+export type UnsafeTxEntry<
+  D,
+  Arg extends {} | undefined,
+  Pallet extends string,
+  Name extends string,
+  Asset,
+> = InnerTxEntry<true, D, Arg, Pallet, Name, Asset>
+
+export type TxFromBinary<Unsafe, Asset> = Unsafe extends true
+  ? {
+      /**
+       * Asynchronously create the transaction object from a binary call data
+       * ready to sign, submit, estimate fees, etc.
+       *
+       * @param callData  SCALE-encoded call data.
+       * @returns Transaction object.
+       */
+      (callData: Binary): Promise<UnsafeTransaction<any, string, string, Asset>>
+      /**
+       * Synchronously create the transaction object from a binary call data
+       * ready to sign, submit, estimate fees, etc.
+       *
+       * @param callData      SCALE-encoded call data.
+       * @param runtimeToken  Token from got with `await
+       *                      typedApi.runtimeToken`
+       * @returns Transaction object.
+       */
+      (
+        callData: Binary,
+        runtimeToken: RuntimeToken,
+      ): UnsafeTransaction<any, string, string, Asset>
+    }
+  : {
+      /**
+       * Asynchronously create the transaction object from a binary call data
+       * ready to sign, submit, estimate fees, etc.
+       *
+       * @param callData  SCALE-encoded call data.
+       * @returns Transaction object.
+       */
+      (callData: Binary): Promise<Transaction<any, string, string, Asset>>
+      /**
+       * Synchronously create the transaction object from a binary call data
+       * ready to sign, submit, estimate fees, etc.
+       *
+       * @param callData            SCALE-encoded call data.
+       * @param compatibilityToken  Token from got with `await
+       *                            typedApi.compatibilityToken`
+       * @returns Transaction object.
+       */
+      (
+        callData: Binary,
+        compatibilityToken: CompatibilityToken,
+      ): Transaction<any, string, string, Asset>
+    }

@@ -58,16 +58,17 @@ const computeState = (
     const computeNextState = () => {
       let current: string = pinnedBlocks.best
       let analyzed: AnalyzedBlock | undefined = analyzedBlocks.get(current)
+      let analyzedNumber = pinnedBlocks.blocks.get(current)!.number
 
       while (!analyzed) {
         const block = pinnedBlocks.blocks.get(current)
         if (!block) break
         analyzed = analyzedBlocks.get((current = block.parent))
+        analyzedNumber--
       }
 
       if (!analyzed) return // this shouldn't happen, though
 
-      const analyzedNumber = pinnedBlocks.blocks.get(analyzed.hash)!.number
       const isFinalized =
         analyzedNumber <=
         pinnedBlocks.blocks.get(pinnedBlocks.finalized)!.number
@@ -219,7 +220,10 @@ export const submit$ = (
 
   const at$ = chainHead.pinnedBlocks$.pipe(
     take(1),
-    map((blocks) => blocks.blocks.get(at!)?.hash ?? blocks.finalized),
+    map((blocks) => {
+      const block = blocks.blocks.get(at!)
+      return block && !block.unpinned ? block.hash : blocks.finalized
+    }),
   )
 
   const validate$: Observable<never> = at$.pipe(
