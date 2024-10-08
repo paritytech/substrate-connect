@@ -18,7 +18,7 @@
     "@polkadot-api/utils": "catalog:polkadot-api",
     "@polkadot-labs/hdkd-helpers": "^0.0.8",
     "@substrate/connect-known-chains": "workspace:^",
-    "@zag-js/react": "^0.48.0",
+    "@zag-js/react": "^0.73.1",
     "@zag-js/select": "^0.48.0",
     "@zag-js/toast": "^0.48.0",
     "polkadot-api": "catalog:polkadot-api",
