@@ -55,6 +55,7 @@
     "@substrate/light-client-extension-helpers": "workspace:^"
   },
   "devDependencies": {
+    "typescript": "catalog:",
     "@substrate/smoldot-discovery": "workspace:^",
     "vitest": "^2.0.5"
   },

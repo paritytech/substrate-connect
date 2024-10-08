@@ -86,6 +86,7 @@
     "smoldot": "2.0.30"
   },
   "devDependencies": {
+    "typescript": "catalog:",
     "vitest": "^2.0.5"
   }
 }

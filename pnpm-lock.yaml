@@ -4,6 +4,12 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    typescript:
+      specifier: 5.6.2
+      version: 5.6.2
+
 overrides:
   '@substrate/connect': workspace:^
   smoldot: 2.0.30
@@ -178,6 +184,9 @@ importers:
       eslint-plugin-react-refresh:
         specifier: ^0.4.12
         version: 0.4.12(eslint@8.57.0)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.2
       vite:
         specifier: ^5.3.4
         version: 5.3.4(@types/node@22.3.0)(terser@5.31.1)
@@ -236,6 +245,9 @@ importers:
       eslint-plugin-react-refresh:
         specifier: ^0.4.12
         version: 0.4.12(eslint@8.57.0)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.2
       vite:
         specifier: ^5.3.4
         version: 5.3.4(@types/node@22.3.0)(terser@5.31.1)
@@ -270,6 +282,9 @@ importers:
       tsup:
         specifier: ^8.0.2
         version: 8.2.4(@swc/core@1.5.27(@swc/helpers@0.5.11))(jiti@1.21.6)(postcss@8.4.44)(typescript@5.6.2)(yaml@2.5.1)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.2
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@20.14.10)(jsdom@24.1.0)(terser@5.31.1)
@@ -464,7 +479,7 @@ importers:
         specifier: ^3.4.10
         version: 3.4.10
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.6.2
       vite:
         specifier: ^5.3.2
@@ -488,6 +503,9 @@ importers:
         specifier: 2.0.30
         version: 2.0.30
     devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.2
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.3.0)(jsdom@24.1.0)(terser@5.31.1)
@@ -498,6 +516,9 @@ importers:
         specifier: workspace:^
         version: link:../discovery
     devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.2
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.3.0)(jsdom@24.1.0)(terser@5.31.1)
@@ -510,12 +531,18 @@ importers:
 
   packages/connect-known-chains:
     devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.2
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.3.0)(jsdom@24.1.0)(terser@5.31.1)
 
   packages/discovery:
     devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.2
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.3.0)(jsdom@24.1.0)(terser@5.31.1)
@@ -571,6 +598,9 @@ importers:
       smoldot:
         specifier: 2.0.30
         version: 2.0.30
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.2
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.3.0)(jsdom@24.1.0)(terser@5.31.1)
@@ -581,6 +611,9 @@ importers:
         specifier: workspace:^
         version: link:../discovery
     devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.2
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.3.0)(jsdom@24.1.0)(terser@5.31.1)
@@ -594,6 +627,9 @@ importers:
       '@substrate/smoldot-discovery':
         specifier: workspace:^
         version: link:../smoldot-discovery
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.2
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.3.0)(jsdom@24.1.0)(terser@5.31.1)
@@ -667,6 +703,9 @@ importers:
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.2
       vite:
         specifier: ^5.3.4
         version: 5.3.4(@types/node@22.3.0)(terser@5.31.1)
@@ -701,6 +740,9 @@ importers:
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.2
       vite:
         specifier: ^5.3.4
         version: 5.3.4(@types/node@22.3.0)(terser@5.31.1)
@@ -771,6 +813,9 @@ importers:
       tailwindcss:
         specifier: ^3.4.10
         version: 3.4.10
+      typescript:
+        specifier: 'catalog:'
+        version: 5.6.2
       vite:
         specifier: ^5.3.4
         version: 5.3.4(@types/node@22.3.0)(terser@5.31.1)
@@ -1049,7 +1094,7 @@ importers:
         specifier: ^3.4.10
         version: 3.4.10
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.6.2
       vite:
         specifier: ^5.3.4
