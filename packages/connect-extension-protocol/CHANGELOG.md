@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.0
+
+### Minor Changes
+
+- 198b375: chore: catalog and upgrade papi dependencies
+
 ## 2.1.0
 
 ### Minor Changes

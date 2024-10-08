@@ -1,5 +1,113 @@
 # Changelog
 
+## 0.5.0
+
+### Minor Changes
+
+- 198b375: chore: catalog and upgrade papi dependencies
+
+### Patch Changes
+
+- f2163cb: chore: update changesets
+- 97c86a9: chore(deps): bump @noble/ciphers from 0.5.3 to 1.0.0
+
+  Bumps [@noble/ciphers](https://github.com/paulmillr/noble-ciphers) from 0.5.3 to 1.0.0.
+
+  - [Release notes](https://github.com/paulmillr/noble-ciphers/releases)
+  - [Commits](https://github.com/paulmillr/noble-ciphers/compare/0.5.3...1.0.0)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@noble/ciphers"
+    dependency-type: direct:production
+    update-type: version-update:semver-major
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 146432b: chore(deps): bump @radix-ui/react-dropdown-menu from 2.0.6 to 2.1.1
+
+  Bumps [@radix-ui/react-dropdown-menu](https://github.com/radix-ui/primitives) from 2.0.6 to 2.1.1.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-dropdown-menu"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 6195b71: chore(deps-dev): bump typescript from 5.5.4 to 5.6.2
+
+  Bumps [typescript](https://github.com/microsoft/TypeScript) from 5.5.4 to 5.6.2.
+
+  - [Release notes](https://github.com/microsoft/TypeScript/releases)
+  - [Changelog](https://github.com/microsoft/TypeScript/blob/main/azure-pipelines.release.yml)
+  - [Commits](https://github.com/microsoft/TypeScript/compare/v5.5.4...v5.6.2)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: typescript
+    dependency-type: direct:development
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- f8cea5c: chore(deps-dev): bump vite-plugin-web-extension from 4.1.4 to 4.2.0
+
+  Bumps [vite-plugin-web-extension](https://github.com/aklinker1/vite-plugin-web-extension) from 4.1.4 to 4.2.0.
+
+  - [Release notes](https://github.com/aklinker1/vite-plugin-web-extension/releases)
+  - [Commits](https://github.com/aklinker1/vite-plugin-web-extension/compare/v4.1.4...v4.2.0)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: vite-plugin-web-extension
+    dependency-type: direct:development
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- d405d48: chore(deps): bump @radix-ui/react-navigation-menu from 1.1.4 to 1.2.1
+
+  Bumps [@radix-ui/react-navigation-menu](https://github.com/radix-ui/primitives) from 1.1.4 to 1.2.1.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-navigation-menu"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 0de443d: chore: update chainspecs
+- Updated dependencies [8ac12d3]
+- Updated dependencies [198b375]
+  - @substrate/light-client-extension-helpers@2.5.0
+  - @substrate/connect-discovery@0.2.0
+  - @substrate/discovery@0.2.0
+  - @substrate/smoldot-discovery-connector@0.2.0
+
 ## 0.4.2
 
 ### Patch Changes

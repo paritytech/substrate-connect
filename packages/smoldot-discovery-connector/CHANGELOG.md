@@ -1,5 +1,17 @@
 # @substrate/smoldot-discovery-connector
 
+## 0.2.0
+
+### Minor Changes
+
+- 198b375: chore: catalog and upgrade papi dependencies
+
+### Patch Changes
+
+- Updated dependencies [8ac12d3]
+- Updated dependencies [198b375]
+  - @substrate/light-client-extension-helpers@2.5.0
+
 ## 0.1.1
 
 ### Patch Changes

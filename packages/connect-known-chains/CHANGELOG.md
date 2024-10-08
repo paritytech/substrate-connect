@@ -1,5 +1,16 @@
 # @substrate/connect-known-chains
 
+## 1.5.0
+
+### Minor Changes
+
+- 198b375: chore: catalog and upgrade papi dependencies
+
+### Patch Changes
+
+- f2163cb: chore: update changesets
+- 0de443d: chore: update chainspecs
+
 ## 1.4.1
 
 ### Patch Changes
