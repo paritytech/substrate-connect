@@ -53,7 +53,7 @@
     "wxt": "^0.17.12"
   },
   "dependencies": {
-    "@headlessui/react": "^2.1.2",
+    "@headlessui/react": "^2.1.9",
     "@hookform/resolvers": "^3.9.0",
     "@noble/ciphers": "^1.0.0",
     "@noble/hashes": "^1.4.0",
