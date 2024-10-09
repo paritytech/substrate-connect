@@ -30,7 +30,7 @@
     "@polkadot/keyring": "^13.1.1",
     "@polkadot/react-identicon": "^3.6.6",
     "@polkadot/rpc-provider": "^12.1.1",
-    "@polkadot/types": "^12.4.2",
+    "@polkadot/types": "^14.0.1",
     "@polkadot/util": "^12.5.1",
     "@polkadot/util-crypto": "^12.5.1",
     "@substrate/connect": "workspace:*",
