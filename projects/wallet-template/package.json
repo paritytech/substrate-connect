@@ -44,7 +44,7 @@
     "autoprefixer": "^10.4.19",
     "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
-    "postcss": "^8.4.44",
+    "postcss": "^8.4.47",
     "tailwindcss": "^3.4.10",
     "vite": "^5.3.4",
     "vite-plugin-web-extension": "^4.2.0",
@@ -53,7 +53,7 @@
     "wxt": "^0.17.12"
   },
   "dependencies": {
-    "@headlessui/react": "^2.1.2",
+    "@headlessui/react": "^2.1.9",
     "@hookform/resolvers": "^3.9.0",
     "@noble/ciphers": "^1.0.0",
     "@noble/hashes": "^1.4.0",
@@ -94,7 +94,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
-    "@radix-ui/react-toast": "^1.2.1",
+    "@radix-ui/react-toast": "^1.2.2",
     "@radix-ui/react-toggle": "^1.1.0",
     "@radix-ui/react-toggle-group": "^1.0.4",
     "@radix-ui/react-tooltip": "^1.1.2",
