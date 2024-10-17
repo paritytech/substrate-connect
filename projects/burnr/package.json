@@ -31,7 +31,7 @@
     "@polkadot/react-identicon": "^3.6.6",
     "@polkadot/rpc-provider": "^12.1.1",
     "@polkadot/types": "^14.0.1",
-    "@polkadot/util": "^12.5.1",
+    "@polkadot/util": "^13.1.1",
     "@polkadot/util-crypto": "^12.5.1",
     "@substrate/connect": "workspace:*",
     "bn.js": "^5.2.1",
