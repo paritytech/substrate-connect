@@ -1,0 +1,13 @@
+name: Pull Request CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+permissions: read-all
+
+jobs:
+  run-ci:
+    uses: ./.github/workflows/reusable-ci.yml
+    with:
+      upload-artifacts: false
