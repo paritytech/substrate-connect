@@ -1,5 +1,54 @@
 # Changelog
 
+## 0.11.0
+
+### Minor Changes
+
+- a1a7412: chore: update changesets
+
+### Patch Changes
+
+- 5ffa3aa: chore(deps-dev): bump postcss from 8.4.44 to 8.4.47
+
+  Bumps [postcss](https://github.com/postcss/postcss) from 8.4.44 to 8.4.47.
+
+  - [Release notes](https://github.com/postcss/postcss/releases)
+  - [Changelog](https://github.com/postcss/postcss/blob/main/CHANGELOG.md)
+  - [Commits](https://github.com/postcss/postcss/compare/8.4.44...8.4.47)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: postcss
+    dependency-type: direct:development
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 8beed96: chore(deps-dev): bump tailwindcss from 3.4.10 to 3.4.14
+
+  Bumps [tailwindcss](https://github.com/tailwindlabs/tailwindcss) from 3.4.10 to 3.4.14.
+
+  - [Release notes](https://github.com/tailwindlabs/tailwindcss/releases)
+  - [Changelog](https://github.com/tailwindlabs/tailwindcss/blob/v3.4.14/CHANGELOG.md)
+  - [Commits](https://github.com/tailwindlabs/tailwindcss/compare/v3.4.10...v3.4.14)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: tailwindcss
+    dependency-type: direct:development
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+  - @substrate/light-client-extension-helpers@2.5.1
+  - @substrate/smoldot-discovery-connector@0.2.1
+
 ## 0.10.0
 
 ### Minor Changes

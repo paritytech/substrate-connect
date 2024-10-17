@@ -1,5 +1,11 @@
 # @substrate/connect-known-chains
 
+## 1.6.0
+
+### Minor Changes
+
+- a1a7412: chore: update changesets
+
 ## 1.5.0
 
 ### Minor Changes
