@@ -1,5 +1,255 @@
 # Changelog
 
+## 0.6.0
+
+### Minor Changes
+
+- a1a7412: chore: update changesets
+
+### Patch Changes
+
+- ccb0e99: chore(deps): bump @headlessui/react from 2.1.2 to 2.1.9
+
+  Bumps [@headlessui/react](https://github.com/tailwindlabs/headlessui/tree/HEAD/packages/@headlessui-react) from 2.1.2 to 2.1.9.
+
+  - [Release notes](https://github.com/tailwindlabs/headlessui/releases)
+  - [Changelog](https://github.com/tailwindlabs/headlessui/blob/main/packages/@headlessui-react/CHANGELOG.md)
+  - [Commits](https://github.com/tailwindlabs/headlessui/commits/@headlessui/react@v2.1.9/packages/@headlessui-react)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@headlessui/react"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 948ec99: chore(deps): bump @radix-ui/react-toast from 1.2.1 to 1.2.2
+
+  Bumps [@radix-ui/react-toast](https://github.com/radix-ui/primitives) from 1.2.1 to 1.2.2.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-toast"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 5ffa3aa: chore(deps-dev): bump postcss from 8.4.44 to 8.4.47
+
+  Bumps [postcss](https://github.com/postcss/postcss) from 8.4.44 to 8.4.47.
+
+  - [Release notes](https://github.com/postcss/postcss/releases)
+  - [Changelog](https://github.com/postcss/postcss/blob/main/CHANGELOG.md)
+  - [Commits](https://github.com/postcss/postcss/compare/8.4.44...8.4.47)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: postcss
+    dependency-type: direct:development
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- ddc0314: chore(deps): bump @polkadot/extension-inject from 0.52.3 to 0.53.1
+
+  Bumps [@polkadot/extension-inject](https://github.com/polkadot-js/extension/tree/HEAD/packages/extension-inject) from 0.52.3 to 0.53.1.
+
+  - [Release notes](https://github.com/polkadot-js/extension/releases)
+  - [Changelog](https://github.com/polkadot-js/extension/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/extension/commits/v0.53.1/packages/extension-inject)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot/extension-inject"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- f9ff6c8: chore(deps): bump @radix-ui/react-checkbox from 1.0.4 to 1.1.2
+
+  Bumps [@radix-ui/react-checkbox](https://github.com/radix-ui/primitives) from 1.0.4 to 1.1.2.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-checkbox"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 2b907fb: chore(deps): bump @radix-ui/react-select from 2.0.0 to 2.1.2
+
+  Bumps [@radix-ui/react-select](https://github.com/radix-ui/primitives) from 2.0.0 to 2.1.2.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-select"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- f37add7: chore(deps): bump @noble/hashes from 1.4.0 to 1.5.0
+
+  Bumps [@noble/hashes](https://github.com/paulmillr/noble-hashes) from 1.4.0 to 1.5.0.
+
+  - [Release notes](https://github.com/paulmillr/noble-hashes/releases)
+  - [Commits](https://github.com/paulmillr/noble-hashes/compare/1.4.0...1.5.0)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@noble/hashes"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 76d24c7: chore(deps): bump @headlessui/react from 2.1.9 to 2.1.10
+
+  Bumps [@headlessui/react](https://github.com/tailwindlabs/headlessui/tree/HEAD/packages/@headlessui-react) from 2.1.9 to 2.1.10.
+
+  - [Release notes](https://github.com/tailwindlabs/headlessui/releases)
+  - [Changelog](https://github.com/tailwindlabs/headlessui/blob/main/packages/@headlessui-react/CHANGELOG.md)
+  - [Commits](https://github.com/tailwindlabs/headlessui/commits/@headlessui/react@v2.1.10/packages/@headlessui-react)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@headlessui/react"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- d3f3fc5: chore(deps): bump @radix-ui/react-radio-group from 1.2.0 to 1.2.1
+
+  Bumps [@radix-ui/react-radio-group](https://github.com/radix-ui/primitives) from 1.2.0 to 1.2.1.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-radio-group"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 91471e8: chore(deps): bump @radix-ui/react-avatar from 1.1.0 to 1.1.1
+
+  Bumps [@radix-ui/react-avatar](https://github.com/radix-ui/primitives) from 1.1.0 to 1.1.1.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-avatar"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 70f78ab: chore(deps): bump @radix-ui/react-context-menu from 2.1.5 to 2.2.2
+
+  Bumps [@radix-ui/react-context-menu](https://github.com/radix-ui/primitives) from 2.1.5 to 2.2.2.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-context-menu"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 75da709: chore(deps): bump @radix-ui/react-separator from 1.0.3 to 1.1.0
+
+  Bumps [@radix-ui/react-separator](https://github.com/radix-ui/primitives) from 1.0.3 to 1.1.0.
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-separator"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 8beed96: chore(deps-dev): bump tailwindcss from 3.4.10 to 3.4.14
+
+  Bumps [tailwindcss](https://github.com/tailwindlabs/tailwindcss) from 3.4.10 to 3.4.14.
+
+  - [Release notes](https://github.com/tailwindlabs/tailwindcss/releases)
+  - [Changelog](https://github.com/tailwindlabs/tailwindcss/blob/v3.4.14/CHANGELOG.md)
+  - [Commits](https://github.com/tailwindlabs/tailwindcss/compare/v3.4.10...v3.4.14)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: tailwindcss
+    dependency-type: direct:development
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+  - @substrate/light-client-extension-helpers@2.5.1
+  - @substrate/smoldot-discovery-connector@0.2.1
+
 ## 0.5.0
 
 ### Minor Changes
