@@ -1,9 +1,7 @@
-name: Substrate Connect CI
+name: Continuous Integration and Deployment
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
 
 permissions:
@@ -13,82 +11,13 @@ permissions:
   pull-requests: write
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-
-    steps:
-    - uses: actions/checkout@v4.1.7
-    - uses: ./.github/actions/turbo-build 
-      with:
-        node-version: ${{ matrix.node-version }}
-
-  playwright-test-extension:
-    needs: [build]
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4.1.7
-    - uses: ./.github/actions/turbo-build
-    - name: Build extension with Manifest v3 for Chrome
-      run: pnpm build:chrome
-      working-directory: ./projects/extension
-    - run: pnpm playwright:install
-      working-directory: ./projects/extension
-    - name: Test projects/extension
-      run: pnpm playwright:chromium --trace on
-      working-directory: ./projects/extension
-    - uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: playwright-report-substrate-connect-extension-mv3-chrome
-        path: ./projects/extension/playwright-report
-
-  playwright-test-examples:
-    needs: [build]
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4.1.7
-    - uses: ./.github/actions/turbo-build
-    - run: pnpm playwright:install
-      working-directory: ./examples/light-client-extension-helpers-extension
-    - name: Test examples/light-client-extension-helpers-extension
-      run: pnpm playwright:chromium --trace on
-      working-directory: ./examples/light-client-extension-helpers-extension
-    - uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: playwright-report-light-client-extension-helpers-extension-mv3-chrome
-        path: ./examples/light-client-extension-helpers-extension/playwright-report
-
-  playwright-test-wallet-template:
-    needs: [build]
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4.1.7
-    - uses: ./.github/actions/turbo-build
-    - name: Build extension with Manifest v3 for Chrome
-      run: pnpm build:chrome
-      working-directory: ./projects/wallet-template
-    - run: pnpm playwright:install
-      working-directory: ./projects/wallet-template
-    - name: Test projects/wallet-template
-      run: pnpm playwright:chromium --trace on
-      working-directory: ./projects/wallet-template
-    - uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: playwright-report-substrate-connect-wallet-template-mv3-chrome
-        path: ./projects/wallet-template/playwright-report
+  run-ci:
+    uses: ./.github/workflows/reusable-ci.yml
+    with:
+      upload-artifacts: true
 
   changesets:
-    if: github.ref == 'refs/heads/main'
-    needs: [build]
+    needs: [run-ci]
     runs-on: ubuntu-latest
     steps:
       - name: Generate a token
@@ -109,8 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.gen_token.outputs.token }}
 
   npm-publish:
-    if: github.ref == 'refs/heads/main'
-    needs: [build]
+    needs: [run-ci]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.7
@@ -167,8 +95,7 @@ jobs:
           package-directory: ./packages/smoldot-discovery-connector
 
   upload-extension-artifacts:
-    if: github.ref == 'refs/heads/main'
-    needs: [build]
+    needs: [run-ci]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.7
@@ -189,32 +116,31 @@ jobs:
           path: ./projects/extension/dist
 
   docs:
-    if: github.ref == 'refs/heads/main'
-    needs: [build]
+    needs: [run-ci]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.7
       - uses: ./.github/actions/turbo-build
       - name: Generate API Docs
         run: pnpm api-docs
-
       - name: Setup Pages
         uses: actions/configure-pages@v3
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          # Upload entire repository
           path: './docs'
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
 
   all:
-    # This dummy job depends on all the mandatory checks. It succeeds if and only if all CI checks
-    # are successful.
-    needs: [build, playwright-test-extension, playwright-test-examples, playwright-test-wallet-template]
+    needs: [run-ci, changesets, npm-publish, upload-extension-artifacts, docs]
     runs-on: ubuntu-latest
+    if: always()
     steps:
-     - run: echo Success
+      - name: Check job status
+        if: contains(needs.*.result, 'failure')
+        run: exit 1
+      - name: All jobs completed successfully
+        if: success()
+        run: echo "All jobs completed successfully!"
