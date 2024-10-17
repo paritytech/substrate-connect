@@ -8,9 +8,17 @@ updates:
     schedule:
       interval: daily
     open-pull-requests-limit: 4
-    ignore:
-      - dependency-name: "@polkadot-api*"
-        versions: ["0.0.*"]
+    groups:
+      polkadot-api:
+        patterns:
+          - "@polkadot-api/*"
+          - "polkadot-api"
+      pjs:
+        patterns:
+          - "@polkadot/*"
+      radix-ui:
+        patterns:
+          - "@radix-ui/*"
 
   - package-ecosystem: github-actions
     directory: '/'
