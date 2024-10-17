@@ -27,7 +27,9 @@ jobs:
             app-id: ${{ secrets.SUBSTRATE_CONNECT_PR_APP_ID }}
             private-key: ${{ secrets.SUBSTRATE_CONNECT_PR_APP_KEY }}
             owner: ${{ github.repository_owner }}
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.gen_token.outputs.token }}
       - uses: ./.github/actions/turbo-build
       - name: Create Release Pull Request
         uses: changesets/action@v1
