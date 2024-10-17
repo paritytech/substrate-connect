@@ -70,7 +70,7 @@
     "@polkadot-labs/hdkd": "^0.0.6",
     "@polkadot-labs/hdkd-helpers": "^0.0.8",
     "@polkadot-labs/schnorrkel-wasm": "^0.0.5",
-    "@polkadot/extension-inject": "^0.53.1",
+    "@polkadot/extension-inject": "^0.54.1",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
