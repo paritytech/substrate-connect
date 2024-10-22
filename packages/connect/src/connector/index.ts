@@ -53,19 +53,11 @@ export const createScClient = (config?: Config): ScClient => {
     : smoldotScClient(config?.embeddedNodeConfig)
 
   return {
-    async addChain(chainSpec, jsonRpcCallback, databaseContent) {
-      return (await client).addChain(
-        chainSpec,
-        jsonRpcCallback,
-        databaseContent,
-      )
+    async addChain(chainSpec, options) {
+      return (await client).addChain(chainSpec, options)
     },
-    async addWellKnownChain(id, jsonRpcCallback, databaseContent) {
-      return (await client).addWellKnownChain(
-        id,
-        jsonRpcCallback,
-        databaseContent,
-      )
+    async addWellKnownChain(id, options) {
+      return (await client).addWellKnownChain(id, options)
     },
   }
 }
