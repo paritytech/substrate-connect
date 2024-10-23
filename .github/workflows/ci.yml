@@ -36,6 +36,7 @@ jobs:
         with:
           commit: "chore: version packages"
           title: "chore: version packages"
+          publish: npx @changesets/cli tag 
         env:
           GITHUB_TOKEN: ${{ steps.gen_token.outputs.token }}
 
