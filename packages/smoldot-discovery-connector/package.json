@@ -1,6 +1,6 @@
 {
   "name": "@substrate/smoldot-discovery-connector",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": "Parity Technologies (https://github.com/paritytech)",
   "repository": {
     "type": "git",
@@ -52,14 +52,15 @@
     "trailingComma": "all"
   },
   "dependencies": {
-    "@substrate/light-client-extension-helpers": "workspace:^"
+    "@substrate/light-client-extension-helpers": "workspace:^",
+    "effect": "^3.10.0"
   },
   "devDependencies": {
-    "typescript": "catalog:",
     "@substrate/smoldot-discovery": "workspace:^",
+    "typescript": "catalog:",
     "vitest": "^2.0.5"
   },
   "peerDependencies": {
-    "@substrate/smoldot-discovery": ">=1 && <2"
+    "@substrate/smoldot-discovery": "^2"
   }
 }

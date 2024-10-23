@@ -12,20 +12,21 @@ import {
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
-  type JsonRpcCallback,
   type AddChain,
   WellKnownChain,
+  QueueFullError,
 } from "./types.js"
+import type { AddChainOptions } from "@substrate/smoldot-discovery/types"
 
 const isBrowser = ![typeof window, typeof document].includes("undefined")
 
-let QueueFullError = class {}
+let _QueueFullError = class {}
 
 let startPromise: Promise<(options: ClientOptions) => Client> | null = null
 const getStart = () => {
   if (startPromise) return startPromise
   startPromise = import("smoldot").then((sm) => {
-    QueueFullError = sm.QueueFullError
+    _QueueFullError = sm.QueueFullError
     return sm.start
   })
   return startPromise
@@ -151,6 +152,7 @@ const transformErrors = (thunk: () => void) => {
     if (error?.name === "CrashError") throw new CrashError(error.message)
     if (error?.name === "AlreadyDestroyedError")
       throw new AlreadyDestroyedError()
+    if (error instanceof _QueueFullError) throw new QueueFullError()
     throw new CrashError(
       e instanceof Error ? e.message : `Unexpected error ${e}`,
     )
@@ -197,70 +199,26 @@ export const createScClient = (config?: Config): ScClient => {
 
   const internalAddChain = async (
     chainSpec: string,
-    jsonRpcCallback?: (msg: string) => void,
-    databaseContent?: string,
-    relayChain?: SChain,
+    options?: AddChainOptions & { relayChain?: SChain },
   ): Promise<Chain> => {
     const client = await getClientAndIncRef(configOrDefault)
 
     try {
       const internalChain = await client.addChain({
         chainSpec,
-        potentialRelayChains: relayChain ? [relayChain] : undefined,
-        disableJsonRpc: jsonRpcCallback === undefined,
-        databaseContent,
+        potentialRelayChains: options?.relayChain
+          ? [options.relayChain]
+          : undefined,
+        disableJsonRpc: options?.disableJsonRpc,
+        databaseContent: options?.databaseContent,
       })
-
-      ;(async () => {
-        while (true) {
-          let jsonRpcResponse
-          try {
-            jsonRpcResponse = await internalChain.nextJsonRpcResponse()
-          } catch (_) {
-            break
-          }
-
-          // `nextJsonRpcResponse` throws an exception if we pass `disableJsonRpc: true` in the
-          // config. We pass `disableJsonRpc: true` if `jsonRpcCallback` is undefined. Therefore,
-          // this code is never reachable if `jsonRpcCallback` is undefined.
-          try {
-            jsonRpcCallback!(jsonRpcResponse)
-          } catch (error) {
-            console.error("JSON-RPC callback has thrown an exception:", error)
-          }
-        }
-      })()
 
       return {
         sendJsonRpc: (rpc) => {
-          transformErrors(() => {
-            try {
-              internalChain.sendJsonRpc(rpc)
-            } catch (error) {
-              if (error instanceof QueueFullError) {
-                // If the queue is full, we immediately send back a JSON-RPC response indicating
-                // the error.
-                try {
-                  const parsedRq = JSON.parse(rpc)
-                  jsonRpcCallback!(
-                    JSON.stringify({
-                      jsonrpc: "v2",
-                      id: parsedRq.id,
-                      error: {
-                        code: -32000,
-                        message: "JSON-RPC server is too busy",
-                      },
-                    }),
-                  )
-                } catch (_error) {
-                  // An error here counts as a malformed JSON-RPC request, which are ignored.
-                }
-              } else {
-                throw error
-              }
-            }
-          })
+          transformErrors(() => internalChain.sendJsonRpc(rpc))
         },
+        nextJsonRpcResponse: () => internalChain.nextJsonRpcResponse(),
+        jsonRpcResponses: internalChain.jsonRpcResponses,
         remove: () => {
           try {
             transformErrors(() => {
@@ -272,15 +230,12 @@ export const createScClient = (config?: Config): ScClient => {
         },
         addChain: (
           chainSpec: string,
-          jsonRpcCallback?: JsonRpcCallback | undefined,
-          databaseContent?: string | undefined,
+          options?: AddChainOptions,
         ): Promise<Chain> => {
-          return internalAddChain(
-            chainSpec,
-            jsonRpcCallback,
-            databaseContent,
-            internalChain,
-          )
+          return internalAddChain(chainSpec, {
+            ...options,
+            relayChain: internalChain,
+          })
         },
       }
     } catch (error) {
@@ -289,13 +244,12 @@ export const createScClient = (config?: Config): ScClient => {
     }
   }
 
-  const addChain: AddChain = (chainSpec, jsonRpcCallback, databaseContent) =>
-    internalAddChain(chainSpec, jsonRpcCallback, databaseContent)
+  const addChain: AddChain = (chainSpec, options) =>
+    internalAddChain(chainSpec, options)
 
   const addWellKnownChain: AddWellKnownChain = async (
     supposedChain: WellKnownChain,
-    jsonRpcCallback?: (msg: string) => void,
-    databaseContent?: string,
+    options,
   ): Promise<Chain> => {
     // the following line ensures that the http request for the dynamic import
     // of smoldot and the request for the dynamic import of the spec
@@ -303,11 +257,7 @@ export const createScClient = (config?: Config): ScClient => {
     getClientAndIncRef(configOrDefault)
 
     try {
-      return await internalAddChain(
-        await getSpec(supposedChain),
-        jsonRpcCallback,
-        databaseContent,
-      )
+      return await internalAddChain(await getSpec(supposedChain), options)
     } finally {
       decRef(configOrDefault)
     }

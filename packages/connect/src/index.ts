@@ -95,11 +95,4 @@
  * @packageDocumentation
  */
 
-export { WellKnownChain } from "@substrate/smoldot-discovery/types"
 export * from "./connector/index.js"
-export type {
-  JsonRpcCallback,
-  Chain,
-  AddChain,
-  AddWellKnownChain,
-} from "./connector/index.js"

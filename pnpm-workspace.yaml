@@ -13,6 +13,7 @@ catalogs:
     "@polkadot-api/codegen": "~0.12.3"
     "@polkadot-api/metadata-builders": "~0.8.1"
     "@polkadot-api/observable-client": "~0.5.8"
+    "@polkadot-api/sm-provider": "~0.1.3"
     "@polkadot-api/substrate-bindings": "~0.9.1"
     "@polkadot-api/substrate-client": "~0.2.2"
     "@polkadot-api/json-rpc-provider": "~0.0.4"
