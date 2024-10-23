@@ -16,6 +16,7 @@
   "license": "GPL-3.0-only",
   "private": true,
   "scripts": {
+    "ci:publish": "pnpm publish -r",
     "downloadSpecs": "node bin/downloadSpecs.js",
     "api-docs": "typedoc",
     "deep-clean": "pnpm -r deep-clean && rm -rf node_modules",
