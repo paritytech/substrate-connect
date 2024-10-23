@@ -1,6 +1,6 @@
 {
   "name": "@substrate/smoldot-discovery-connector",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": "Parity Technologies (https://github.com/paritytech)",
   "repository": {
     "type": "git",
@@ -61,6 +61,6 @@
     "vitest": "^2.0.5"
   },
   "peerDependencies": {
-    "@substrate/smoldot-discovery": "^3"
+    "@substrate/smoldot-discovery": "^2"
   }
 }

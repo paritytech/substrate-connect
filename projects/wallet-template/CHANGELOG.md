@@ -1,5 +1,216 @@
 # Changelog
 
+## 0.6.1
+
+### Patch Changes
+
+- 01d4c2e: chore(deps): bump the radix-ui group with 14 updates
+
+  Bumps the radix-ui group with 14 updates:
+
+  | Package                                                                 | From    | To      |
+  | ----------------------------------------------------------------------- | ------- | ------- |
+  | [@radix-ui/react-accordion](https://github.com/radix-ui/primitives)     | `1.2.0` | `1.2.1` |
+  | [@radix-ui/react-alert-dialog](https://github.com/radix-ui/primitives)  | `1.1.1` | `1.1.2` |
+  | [@radix-ui/react-collapsible](https://github.com/radix-ui/primitives)   | `1.1.0` | `1.1.1` |
+  | [@radix-ui/react-dialog](https://github.com/radix-ui/primitives)        | `1.1.1` | `1.1.2` |
+  | [@radix-ui/react-dropdown-menu](https://github.com/radix-ui/primitives) | `2.1.1` | `2.1.2` |
+  | [@radix-ui/react-hover-card](https://github.com/radix-ui/primitives)    | `1.0.7` | `1.1.2` |
+  | [@radix-ui/react-menubar](https://github.com/radix-ui/primitives)       | `1.1.1` | `1.1.2` |
+  | [@radix-ui/react-popover](https://github.com/radix-ui/primitives)       | `1.1.1` | `1.1.2` |
+  | [@radix-ui/react-scroll-area](https://github.com/radix-ui/primitives)   | `1.1.0` | `1.2.0` |
+  | [@radix-ui/react-slider](https://github.com/radix-ui/primitives)        | `1.1.2` | `1.2.1` |
+  | [@radix-ui/react-switch](https://github.com/radix-ui/primitives)        | `1.1.0` | `1.1.1` |
+  | [@radix-ui/react-tabs](https://github.com/radix-ui/primitives)          | `1.1.0` | `1.1.1` |
+  | [@radix-ui/react-toggle-group](https://github.com/radix-ui/primitives)  | `1.0.4` | `1.1.0` |
+  | [@radix-ui/react-tooltip](https://github.com/radix-ui/primitives)       | `1.1.2` | `1.1.3` |
+
+  Updates `@radix-ui/react-accordion` from 1.2.0 to 1.2.1
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-alert-dialog` from 1.1.1 to 1.1.2
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-collapsible` from 1.1.0 to 1.1.1
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-dialog` from 1.1.1 to 1.1.2
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-dropdown-menu` from 2.1.1 to 2.1.2
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-hover-card` from 1.0.7 to 1.1.2
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-menubar` from 1.1.1 to 1.1.2
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-popover` from 1.1.1 to 1.1.2
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-scroll-area` from 1.1.0 to 1.2.0
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-slider` from 1.1.2 to 1.2.1
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-switch` from 1.1.0 to 1.1.1
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-tabs` from 1.1.0 to 1.1.1
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-toggle-group` from 1.0.4 to 1.1.0
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-tooltip` from 1.1.2 to 1.1.3
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-accordion"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-alert-dialog"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-collapsible"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-dialog"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-dropdown-menu"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-hover-card"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-menubar"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-popover"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-scroll-area"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-slider"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-switch"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-tabs"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-toggle-group"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-tooltip"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 90fda0c: chore(deps): bump @zag-js/tabs from 0.58.3 to 0.74.2
+
+  Bumps [@zag-js/tabs](https://github.com/chakra-ui/zag) from 0.58.3 to 0.74.2.
+
+  - [Release notes](https://github.com/chakra-ui/zag/releases)
+  - [Changelog](https://github.com/chakra-ui/zag/blob/main/CHANGELOG.md)
+  - [Commits](https://github.com/chakra-ui/zag/compare/@zag-js/tabs@0.58.3...@zag-js/tabs@0.74.2)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@zag-js/tabs"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- d183f3d: chore(deps): bump the npm_and_yarn group with 2 updates
+
+  Bumps the npm_and_yarn group with 2 updates: [vite](https://github.com/vitejs/vite/tree/HEAD/packages/vite) and [rollup](https://github.com/rollup/rollup).
+
+  Updates `vite` from 5.3.4 to 5.3.6
+
+  - [Release notes](https://github.com/vitejs/vite/releases)
+  - [Changelog](https://github.com/vitejs/vite/blob/v5.3.6/packages/vite/CHANGELOG.md)
+  - [Commits](https://github.com/vitejs/vite/commits/v5.3.6/packages/vite)
+
+  Updates `rollup` from 4.18.0 to 4.20.0
+
+  - [Release notes](https://github.com/rollup/rollup/releases)
+  - [Changelog](https://github.com/rollup/rollup/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/rollup/rollup/compare/v4.18.0...v4.20.0)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: vite
+    dependency-type: direct:development
+    dependency-group: npm_and_yarn
+  - dependency-name: rollup
+    dependency-type: indirect
+    dependency-group: npm_and_yarn
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- Updated dependencies [e2a5cef]
+  - @substrate/smoldot-discovery-connector@0.3.0
+
 ## 0.6.0
 
 ### Minor Changes
