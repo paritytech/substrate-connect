@@ -74,10 +74,9 @@ export {
   AlreadyDestroyedError,
   CrashError,
   JsonRpcDisabledError,
-} from "@substrate/smoldot-discovery/types"
-export type {
-  Chain,
-  JsonRpcCallback,
-  AddChain,
-  AddWellKnownChain,
+  QueueFullError,
+  type Chain,
+  type AddChain,
+  type AddWellKnownChain,
+  type AddChainOptions,
 } from "@substrate/smoldot-discovery/types"

@@ -2,12 +2,12 @@ import type {
   LightClientProvider,
   RawChain,
 } from "@substrate/light-client-extension-helpers/web-page"
-import {
-  type Chain,
-  type JsonRpcCallback,
-  type SmoldotExtensionAPI,
-  WellKnownChain,
+import type {
+  AddChainOptions,
+  Chain,
+  SmoldotExtensionAPI,
 } from "@substrate/smoldot-discovery/types"
+import { Effect, Runtime, Queue, Stream, pipe, Deferred } from "effect"
 export type { LightClientProvider } from "@substrate/light-client-extension-helpers/web-page"
 export type * from "@substrate/smoldot-discovery/types"
 
@@ -34,13 +34,13 @@ export const make = (
     connectOptions?.wellKnownChainGenesisHashes ??
     defaultWellKnownChainGenesisHashes
 
-  const internalAddChain = async (
+  const getChain = async (
     isWellKnown: boolean,
     chainSpecOrWellKnownName: string,
-    jsonRpcCallback: JsonRpcCallback = () => {},
     relayChainGenesisHash?: string,
-  ): Promise<Chain> => {
+  ) => {
     let chain: RawChain
+
     if (isWellKnown) {
       const foundChain = Object.values(lightClientProvider.getChains()).find(
         ({ genesisHash }) =>
@@ -55,33 +55,78 @@ export const make = (
       )
     }
 
-    const jsonRpcConnection = chain.connect(jsonRpcCallback)
+    return chain
+  }
 
-    return {
-      sendJsonRpc(rpc: string): void {
-        jsonRpcConnection.send(rpc)
-      },
-      remove() {
-        jsonRpcConnection.disconnect()
-      },
-      addChain: function (
-        chainSpec: string,
-        jsonRpcCallback?: JsonRpcCallback | undefined,
-      ): Promise<Chain> {
-        return internalAddChain(
-          false,
-          chainSpec,
-          jsonRpcCallback,
-          chain.genesisHash,
+  const internalAddChain = async (
+    isWellKnown: boolean,
+    chainSpecOrWellKnownName: string,
+    _?: AddChainOptions,
+    relayChainGenesisHash?: string,
+  ): Promise<Chain> => {
+    let resolveChain: (queue: Chain) => void
+    const chainPromise = new Promise<Chain>((resolve) => {
+      resolveChain = resolve
+    })
+
+    Effect.gen(function* () {
+      const exit = yield* Deferred.make()
+      const runtime = yield* Effect.runtime()
+      const queue = yield* Queue.unbounded<string>()
+      const chain = yield* Effect.tryPromise(() =>
+        getChain(isWellKnown, chainSpecOrWellKnownName, relayChainGenesisHash),
+      )
+
+      const jsonRpcCallback = (msg: string) =>
+        Queue.offer(queue, msg).pipe(
+          Effect.andThen(() => Effect.void),
+          Runtime.runPromise(runtime),
         )
-      },
-    }
+      const jsonRpcConnection = yield* Effect.sync(() =>
+        chain.connect(jsonRpcCallback),
+      )
+
+      const nextJsonRpcResponse = () =>
+        Queue.take(queue).pipe(Runtime.runPromise(runtime))
+
+      const jsonRpcResponses: AsyncIterableIterator<string> = {
+        async next() {
+          const value = await nextJsonRpcResponse()
+          return { value, done: false }
+        },
+        [Symbol.asyncIterator]() {
+          return this
+        },
+      }
+
+      yield* Effect.sync(() =>
+        resolveChain({
+          sendJsonRpc: (rpc) => jsonRpcConnection.send(rpc),
+          remove: () => {
+            Effect.all(
+              [
+                Effect.sync(() => jsonRpcConnection.disconnect()),
+                Deferred.succeed(exit, void 0),
+              ],
+              { mode: "either" },
+            ).pipe(Runtime.runPromise(runtime))
+          },
+          nextJsonRpcResponse,
+          jsonRpcResponses,
+          addChain: (chainSpec) =>
+            internalAddChain(false, chainSpec, {}, chain.genesisHash),
+        } satisfies Chain),
+      )
+
+      yield* Deferred.await(exit)
+    }).pipe(Effect.forkDaemon, Effect.runPromise)
+
+    return chainPromise
   }
 
   return {
-    addChain: (chainSpec, jsonRpcCallback) =>
-      internalAddChain(false, chainSpec, jsonRpcCallback),
-    addWellKnownChain: (name, jsonRpcCallback) =>
-      internalAddChain(true, name, jsonRpcCallback),
+    addChain: (chainSpec, options) =>
+      internalAddChain(false, chainSpec, options),
+    addWellKnownChain: (name, options) => internalAddChain(true, name, options),
   }
 }

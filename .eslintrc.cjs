@@ -14,6 +14,7 @@ module.exports = {
         devDependencies: ["**/*.test.ts", "**/*.spec.ts", "**/*.bench.ts"],
       },
     ],
+    "@typescript-eslint/no-redeclare": "off",
   },
   env: {
     browser: true,

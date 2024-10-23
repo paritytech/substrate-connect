@@ -1,13 +1,11 @@
 import {
-  type Chain,
   createScClient,
   type ScClient,
   WellKnownChain,
-  type JsonRpcCallback,
+  type AddChainOptions,
 } from "@substrate/connect"
 import { createClient } from "@polkadot-api/substrate-client"
 import { getObservableClient } from "@polkadot-api/observable-client"
-import { getSyncProvider } from "@polkadot-api/json-rpc-provider-proxy"
 import { filter, map } from "rxjs"
 
 import UI, { emojis } from "./view"
@@ -17,6 +15,7 @@ import {
   westend2_asset_hub as assetHubWestend,
   ksmcc3_asset_hub as assetHubKusama,
 } from "@substrate/connect-known-chains"
+import { getSmProvider } from "@polkadot-api/sm-provider"
 
 window.onload = () => {
   ;(
@@ -115,49 +114,25 @@ const wellKnownChains: ReadonlySet<string> = new Set<WellKnownChain>(
 )
 const isWellKnownChain = (input: string): input is WellKnownChain =>
   wellKnownChains.has(input)
-const noop = () => {}
 
 let client: ScClient
 const ScProvider = (input: string, relayChainSpec?: string) => {
   client ??= createScClient()
-  const addChain = (input: string, jsonRpcCallback?: JsonRpcCallback) =>
+  const addChain = (input: string, options?: AddChainOptions) =>
     isWellKnownChain(input)
-      ? client.addWellKnownChain(input, jsonRpcCallback)
-      : client.addChain(input, jsonRpcCallback)
+      ? client.addWellKnownChain(input, options)
+      : client.addChain(input, options)
 
-  return getSyncProvider(async () => {
-    let listener: (message: string) => void = noop
-    const onMessage = (msg: string) => {
-      listener(msg)
-    }
-
-    let chain: Chain
-    try {
+  return getSmProvider(
+    (async () => {
       const relayChain = relayChainSpec
-        ? await addChain(relayChainSpec)
+        ? await addChain(relayChainSpec, { disableJsonRpc: true })
         : undefined
-      chain = relayChain
-        ? await relayChain.addChain(input, onMessage)
-        : await addChain(input, onMessage)
-    } catch (e) {
-      console.warn(
-        `couldn't create chain with: ${input} ${relayChainSpec ?? ""}`,
-      )
-      console.error(e)
-      throw e
-    }
+      const chain = relayChain
+        ? await relayChain.addChain(input)
+        : await addChain(input)
 
-    return (onMessage) => {
-      listener = onMessage
-      return {
-        send(msg: string) {
-          chain.sendJsonRpc(msg)
-        },
-        disconnect() {
-          listener = noop
-          chain.remove()
-        },
-      }
-    }
-  })
+      return chain
+    })(),
+  )
 }
