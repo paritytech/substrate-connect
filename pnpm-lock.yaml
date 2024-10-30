@@ -722,8 +722,8 @@ importers:
         specifier: ^5.2.1
         version: 5.2.1
       qrcode.react:
-        specifier: ^3.1.0
-        version: 3.1.0(react@18.3.1)
+        specifier: ^4.1.0
+        version: 4.1.0(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -7681,8 +7681,8 @@ packages:
   pure-rand@6.1.0:
     resolution: {integrity: sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==}
 
-  qrcode.react@3.1.0:
-    resolution: {integrity: sha512-oyF+Urr3oAMUG/OiOuONL3HXM+53wvuH3mtIWQrYmsXoAq0DkvZp2RYUWFSMFtbdOpuS++9v+WAkzNVkMlNW6Q==}
+  qrcode.react@4.1.0:
+    resolution: {integrity: sha512-uqXVIIVD/IPgWLYxbOczCNAQw80XCM/LulYDADF+g2xDsPj5OoRwSWtIS4jGyp295wyjKstfG1qIv/I2/rNWpQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
@@ -16852,7 +16852,7 @@ snapshots:
 
   pure-rand@6.1.0: {}
 
-  qrcode.react@3.1.0(react@18.3.1):
+  qrcode.react@4.1.0(react@18.3.1):
     dependencies:
       react: 18.3.1
 
