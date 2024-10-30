@@ -701,8 +701,8 @@ importers:
         specifier: ^13.2.2
         version: 13.2.2(@polkadot/util-crypto@13.2.2(@polkadot/util@13.2.2))(@polkadot/util@13.2.2)
       '@polkadot/react-identicon':
-        specifier: ^3.11.1
-        version: 3.11.1(@polkadot/keyring@13.2.2(@polkadot/util-crypto@13.2.2(@polkadot/util@13.2.2))(@polkadot/util@13.2.2))(@polkadot/networks@13.2.2)(@polkadot/util-crypto@13.2.2(@polkadot/util@13.2.2))(@polkadot/util@13.2.2)(react-dom@18.3.1(react@18.3.1))(react-is@18.3.1)(react@18.3.1)
+        specifier: ^3.11.2
+        version: 3.11.2(@polkadot/keyring@13.2.2(@polkadot/util-crypto@13.2.2(@polkadot/util@13.2.2))(@polkadot/util@13.2.2))(@polkadot/networks@13.2.2)(@polkadot/util-crypto@13.2.2(@polkadot/util@13.2.2))(@polkadot/util@13.2.2)(react-dom@18.3.1(react@18.3.1))(react-is@18.3.1)(react@18.3.1)
       '@polkadot/rpc-provider':
         specifier: ^14.2.1
         version: 14.2.1
@@ -929,8 +929,8 @@ importers:
         specifier: ^0.0.5
         version: 0.0.5
       '@polkadot/extension-inject':
-        specifier: ^0.55.1
-        version: 0.55.1(@polkadot/api@14.2.1)(@polkadot/util@13.2.2)
+        specifier: ^0.56.1
+        version: 0.56.1(@polkadot/api@14.2.1)(@polkadot/util@13.2.2)
       '@radix-ui/react-accordion':
         specifier: ^1.2.1
         version: 1.2.1(@types/react-dom@18.3.1)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2811,8 +2811,8 @@ packages:
     resolution: {integrity: sha512-vYYOvCbGzKWq2auv7e3r71lp0N9hLi4Wfvdb+PjDlUWy4CBydDPgNRL7eC/pJyY4/8zs5dAWVmmu5SQsdpM93g==}
     engines: {node: '>=18'}
 
-  '@polkadot/extension-inject@0.55.1':
-    resolution: {integrity: sha512-XCKahIYhq2C7RvkEmuGBFPZrGt+zmypABYs30fWUrVsSVWYuuSxrYek6ksnE+ZGzGKNupVIZ4IJq1CdPEGc+LA==}
+  '@polkadot/extension-inject@0.56.1':
+    resolution: {integrity: sha512-faLXyirnuHlIeBkAv3N9z1QD5LGYjMl9lIpEK33iZY7TKVyR7pvQ2vMhtrGIqJQYS0XAIvWRXY3IpdCAjpdJDw==}
     engines: {node: '>=18'}
     peerDependencies:
       '@polkadot/api': '*'
@@ -2829,8 +2829,8 @@ packages:
     resolution: {integrity: sha512-di3dLB9BcLQ9ARcDe/nizl7jZZnQbQlxB8kXtAXqTIVFtshtKT+zYcji6dTX7xX9/O9tZB7qnrvuIuI0MkwJ5A==}
     engines: {node: '>=18'}
 
-  '@polkadot/react-identicon@3.11.1':
-    resolution: {integrity: sha512-kwSoLCt/H0t0XwU5m1xQ9QJNRCrcUzvueZCTKhX1+0gd2YE4w8nH+78PZ1NS7PePGpDr+wLk9gBV4DpR8VQuAA==}
+  '@polkadot/react-identicon@3.11.2':
+    resolution: {integrity: sha512-niadQLUXk0+pW/NFWnJB06fnAU/luj7RwhcjNmEFJmWksiZilxUQ+aTwx5gtnBCMhM1wM21iQifWUypb+CF9OQ==}
     engines: {node: '>=18'}
     peerDependencies:
       '@polkadot/keyring': '*'
@@ -2876,15 +2876,15 @@ packages:
     resolution: {integrity: sha512-C4mf3257vefKDCF5dPtw3WPztE/cTgHjI/fmimwxjGakX3u1mni19wqvBXKg69tuzJ31YMagqMkD2YFZ/zGSPg==}
     engines: {node: '>=18'}
 
-  '@polkadot/ui-settings@3.11.1':
-    resolution: {integrity: sha512-y1amA7TyrMYEodpPCM0bERhQ+vsSamy0Kb9VQgPBxzbFIaGucFsesxfSGzq6N8P3AlO0zluY1IclS5NueXnuhA==}
+  '@polkadot/ui-settings@3.11.2':
+    resolution: {integrity: sha512-iuhi0mfBv4UpkB7KEbcTs8JzEbbJ/7UvHcxtCnVebfTbPXTlFeRwCllgTIf2pJG3LjZywbbdjXqL9HRa81Wz/g==}
     engines: {node: '>=18'}
     peerDependencies:
       '@polkadot/networks': '*'
       '@polkadot/util': '*'
 
-  '@polkadot/ui-shared@3.11.1':
-    resolution: {integrity: sha512-IM3Hbn/UWjviiCov2/iSnfLDwQGePipX6oRRcqtvjpSNt/ItBq+Au8oPbsxabCSzW0f0KRfdE0SgjWgGuhScmw==}
+  '@polkadot/ui-shared@3.11.2':
+    resolution: {integrity: sha512-hAKwazzUuh/h6NwayEGprt9+d1BrUIF3DoxivX7h6Q7Lu6/T8hTCrZ32e6bTq1KXi3YdxYu9UXmmojVTIfzL8A==}
     engines: {node: '>=18'}
     peerDependencies:
       '@polkadot/util': '*'
@@ -11246,7 +11246,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@polkadot/extension-inject@0.55.1(@polkadot/api@14.2.1)(@polkadot/util@13.2.2)':
+  '@polkadot/extension-inject@0.56.1(@polkadot/api@14.2.1)(@polkadot/util@13.2.2)':
     dependencies:
       '@polkadot/api': 14.2.1
       '@polkadot/rpc-provider': 14.2.1
@@ -11272,11 +11272,11 @@ snapshots:
       '@substrate/ss58-registry': 1.51.0
       tslib: 2.8.0
 
-  '@polkadot/react-identicon@3.11.1(@polkadot/keyring@13.2.2(@polkadot/util-crypto@13.2.2(@polkadot/util@13.2.2))(@polkadot/util@13.2.2))(@polkadot/networks@13.2.2)(@polkadot/util-crypto@13.2.2(@polkadot/util@13.2.2))(@polkadot/util@13.2.2)(react-dom@18.3.1(react@18.3.1))(react-is@18.3.1)(react@18.3.1)':
+  '@polkadot/react-identicon@3.11.2(@polkadot/keyring@13.2.2(@polkadot/util-crypto@13.2.2(@polkadot/util@13.2.2))(@polkadot/util@13.2.2))(@polkadot/networks@13.2.2)(@polkadot/util-crypto@13.2.2(@polkadot/util@13.2.2))(@polkadot/util@13.2.2)(react-dom@18.3.1(react@18.3.1))(react-is@18.3.1)(react@18.3.1)':
     dependencies:
       '@polkadot/keyring': 13.2.2(@polkadot/util-crypto@13.2.2(@polkadot/util@13.2.2))(@polkadot/util@13.2.2)
-      '@polkadot/ui-settings': 3.11.1(@polkadot/networks@13.2.2)(@polkadot/util@13.2.2)
-      '@polkadot/ui-shared': 3.11.1(@polkadot/util-crypto@13.2.2(@polkadot/util@13.2.2))(@polkadot/util@13.2.2)
+      '@polkadot/ui-settings': 3.11.2(@polkadot/networks@13.2.2)(@polkadot/util@13.2.2)
+      '@polkadot/ui-shared': 3.11.2(@polkadot/util-crypto@13.2.2(@polkadot/util@13.2.2))(@polkadot/util@13.2.2)
       '@polkadot/util': 13.2.2
       '@polkadot/util-crypto': 13.2.2(@polkadot/util@13.2.2)
       ethereum-blockies-base64: 1.0.2
@@ -11380,7 +11380,7 @@ snapshots:
       rxjs: 7.8.1
       tslib: 2.8.0
 
-  '@polkadot/ui-settings@3.11.1(@polkadot/networks@13.2.2)(@polkadot/util@13.2.2)':
+  '@polkadot/ui-settings@3.11.2(@polkadot/networks@13.2.2)(@polkadot/util@13.2.2)':
     dependencies:
       '@polkadot/networks': 13.2.2
       '@polkadot/util': 13.2.2
@@ -11388,7 +11388,7 @@ snapshots:
       store: 2.0.12
       tslib: 2.8.0
 
-  '@polkadot/ui-shared@3.11.1(@polkadot/util-crypto@13.2.2(@polkadot/util@13.2.2))(@polkadot/util@13.2.2)':
+  '@polkadot/ui-shared@3.11.2(@polkadot/util-crypto@13.2.2(@polkadot/util@13.2.2))(@polkadot/util@13.2.2)':
     dependencies:
       '@polkadot/util': 13.2.2
       '@polkadot/util-crypto': 13.2.2(@polkadot/util@13.2.2)
