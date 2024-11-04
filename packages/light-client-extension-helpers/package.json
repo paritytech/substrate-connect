@@ -228,7 +228,7 @@
     "@polkadot-api/polkadot-signer": "~0.1.6",
     "@types/chrome": "^0.0.270",
     "smoldot": "2.0.30",
-    "vitest": "^2.0.5"
+    "vitest": "^2.1.4"
   },
   "peerDependencies": {
     "smoldot": "2.x"
