@@ -7,12 +7,14 @@ updates:
     - "automerge"
     schedule:
       interval: daily
-    open-pull-requests-limit: 4
     groups:
       polkadot-api:
         patterns:
           - "@polkadot-api/*"
           - "polkadot-api"
+      polkadot-labs:
+        patterns:
+          - "@polkadot-labs/*"
       pjs:
         patterns:
           - "@polkadot/*"
