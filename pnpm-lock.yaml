@@ -871,8 +871,8 @@ importers:
         specifier: ~0.3.11
         version: 0.3.11
       '@polkadot-labs/hdkd':
-        specifier: ^0.0.6
-        version: 0.0.6
+        specifier: ^0.0.8
+        version: 0.0.8
       '@polkadot-labs/hdkd-helpers':
         specifier: ^0.0.8
         version: 0.0.8
@@ -2743,14 +2743,11 @@ packages:
   '@polkadot-api/ws-provider@0.3.4':
     resolution: {integrity: sha512-2gpWV284jcVFgGlwTqoLJVjAUQY/wfeXAGFUnr6HGpxBUEjPPbRk0giqz2g8uOgKF0wfzBUMENLjdsZzp3wOqQ==}
 
-  '@polkadot-labs/hdkd-helpers@0.0.6':
-    resolution: {integrity: sha512-Gbyf1+aQERjOVWmfCEbnuW0VYvv3pFfjBJOISeGmmAiC6tlH9zCUht/STCCEduyA6ShnjSFXELBX2H1A2D72Sw==}
-
   '@polkadot-labs/hdkd-helpers@0.0.8':
     resolution: {integrity: sha512-nTJOinTKuINHwKsUXR+Q1Hld0DU+EYVxcfQqiJz9PH8L+48K3gPfpAHDApIuOW6Uq6yVb5/pgcDPNCaJS5nYsg==}
 
-  '@polkadot-labs/hdkd@0.0.6':
-    resolution: {integrity: sha512-PSakvU3q89Dx0QunlGDGKKxevpGK+gZQhErugSngj8SQmPZNy45z353x2SmiJjgfCQifRBP2YX8xzASRCnx7FA==}
+  '@polkadot-labs/hdkd@0.0.8':
+    resolution: {integrity: sha512-gpcHtJ28FfugQ7uRj+EQzdhbtm1qchcW9hC1Gsf+IvMiB//Dx/K3tPS9uKtPDu7OoX4p/McpPcLm7IomdlYJbg==}
 
   '@polkadot-labs/schnorrkel-wasm@0.0.5':
     resolution: {integrity: sha512-oUKF4Qu+V1bPxEjq3kmzI3FZrMIr1kK/4cxntoHSBDTZn/Ymab9LXVhRNrbVend5JrwDANePcYqbK5Fdn9NGhQ==}
@@ -11165,14 +11162,6 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@polkadot-labs/hdkd-helpers@0.0.6':
-    dependencies:
-      '@noble/curves': 1.6.0
-      '@noble/hashes': 1.5.0
-      '@polkadot-labs/schnorrkel-wasm': 0.0.5
-      '@scure/base': 1.1.9
-      scale-ts: 1.6.1
-
   '@polkadot-labs/hdkd-helpers@0.0.8':
     dependencies:
       '@noble/curves': 1.6.0
@@ -11181,9 +11170,9 @@ snapshots:
       '@scure/base': 1.1.9
       scale-ts: 1.6.0
 
-  '@polkadot-labs/hdkd@0.0.6':
+  '@polkadot-labs/hdkd@0.0.8':
     dependencies:
-      '@polkadot-labs/hdkd-helpers': 0.0.6
+      '@polkadot-labs/hdkd-helpers': 0.0.8
       '@polkadot-labs/schnorrkel-wasm': 0.0.5
 
   '@polkadot-labs/schnorrkel-wasm@0.0.5': {}
