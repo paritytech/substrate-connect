@@ -36,7 +36,7 @@
   },
   "keywords": [],
   "devDependencies": {
-    "typescript": "catalog:",
+    "typescript": "5.6.2",
     "@playwright/test": "^1.43.1",
     "@vitejs/plugin-react-swc": "^3.6.0",
     "autoprefixer": "^10.4.19",
@@ -49,8 +49,8 @@
     "web-ext": "^8.2.0"
   },
   "dependencies": {
-    "@polkadot-api/observable-client": "catalog:polkadot-api",
-    "@polkadot-api/substrate-client": "catalog:polkadot-api",
+    "@polkadot-api/observable-client": "~0.5.8",
+    "@polkadot-api/substrate-client": "~0.2.2",
     "@react-rxjs/core": "^0.10.7",
     "@react-rxjs/utils": "^0.9.7",
     "@substrate/connect-extension-protocol": "workspace:*",
