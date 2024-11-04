@@ -7,7 +7,6 @@ updates:
     - "automerge"
     schedule:
       interval: daily
-    open-pull-requests-limit: 4
     groups:
       polkadot-api:
         patterns:
