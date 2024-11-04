@@ -1,5 +1,4 @@
 ---
-"substrate-connect": patch
 ---
 
 chore(deps-dev): bump turbo from 2.1.3 to 2.2.3
