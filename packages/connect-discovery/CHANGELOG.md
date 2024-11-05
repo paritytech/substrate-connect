@@ -1,5 +1,30 @@
 # @substrate/connect-discovery
 
+## 0.2.1
+
+### Patch Changes
+
+- 09f1c22: chore(deps-dev): bump vitest from 2.0.5 to 2.1.4
+
+  Bumps [vitest](https://github.com/vitest-dev/vitest/tree/HEAD/packages/vitest) from 2.0.5 to 2.1.4.
+
+  - [Release notes](https://github.com/vitest-dev/vitest/releases)
+  - [Commits](https://github.com/vitest-dev/vitest/commits/v2.1.4/packages/vitest)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: vitest
+    dependency-type: direct:development
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- Updated dependencies [09f1c22]
+  - @substrate/discovery@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes
