@@ -1,5 +1,524 @@
 # Changelog
 
+## 0.7.0
+
+### Minor Changes
+
+- 9107ccc: chore: update chainspecs
+
+### Patch Changes
+
+- c3074e3: chore(deps): bump embla-carousel-react from 8.1.3 to 8.3.0
+
+  Bumps [embla-carousel-react](https://github.com/davidjerleke/embla-carousel) from 8.1.3 to 8.3.0.
+
+  - [Release notes](https://github.com/davidjerleke/embla-carousel/releases)
+  - [Commits](https://github.com/davidjerleke/embla-carousel/compare/v8.1.3...v8.3.0)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: embla-carousel-react
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- c5add59: chore(deps-dev): bump vite from 5.3.6 to 5.4.10
+
+  Bumps [vite](https://github.com/vitejs/vite/tree/HEAD/packages/vite) from 5.3.6 to 5.4.10.
+
+  - [Release notes](https://github.com/vitejs/vite/releases)
+  - [Changelog](https://github.com/vitejs/vite/blob/v5.4.10/packages/vite/CHANGELOG.md)
+  - [Commits](https://github.com/vitejs/vite/commits/v5.4.10/packages/vite)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: vite
+    dependency-type: direct:development
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- c271bbe: chore(deps): bump the pjs group across 1 directory with 9 updates
+
+  Bumps the pjs group with 9 updates in the / directory:
+
+  | Package                                                                                                    | From      | To       |
+  | ---------------------------------------------------------------------------------------------------------- | --------- | -------- |
+  | [@polkadot/api](https://github.com/polkadot-js/api/tree/HEAD/packages/api)                                 | `10.13.1` | `14.2.1` |
+  | [@polkadot/api-augment](https://github.com/polkadot-js/api/tree/HEAD/packages/api-augment)                 | `12.0.2`  | `14.2.1` |
+  | [@polkadot/keyring](https://github.com/polkadot-js/common/tree/HEAD/packages/keyring)                      | `13.1.1`  | `13.2.2` |
+  | [@polkadot/react-identicon](https://github.com/polkadot-js/ui/tree/HEAD/packages/react-identicon)          | `3.6.6`   | `3.11.1` |
+  | [@polkadot/rpc-provider](https://github.com/polkadot-js/api/tree/HEAD/packages/rpc-provider)               | `12.1.1`  | `14.2.1` |
+  | [@polkadot/types](https://github.com/polkadot-js/api/tree/HEAD/packages/types)                             | `14.0.1`  | `14.2.1` |
+  | [@polkadot/util](https://github.com/polkadot-js/common/tree/HEAD/packages/util)                            | `13.1.1`  | `13.2.2` |
+  | [@polkadot/util-crypto](https://github.com/polkadot-js/common/tree/HEAD/packages/util-crypto)              | `12.6.2`  | `13.2.2` |
+  | [@polkadot/extension-inject](https://github.com/polkadot-js/extension/tree/HEAD/packages/extension-inject) | `0.53.1`  | `0.55.1` |
+
+  Updates `@polkadot/api` from 10.13.1 to 14.2.1
+
+  - [Release notes](https://github.com/polkadot-js/api/releases)
+  - [Changelog](https://github.com/polkadot-js/api/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/api/commits/v14.2.1/packages/api)
+
+  Updates `@polkadot/api-augment` from 12.0.2 to 14.2.1
+
+  - [Release notes](https://github.com/polkadot-js/api/releases)
+  - [Changelog](https://github.com/polkadot-js/api/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/api/commits/v14.2.1/packages/api-augment)
+
+  Updates `@polkadot/keyring` from 13.1.1 to 13.2.2
+
+  - [Release notes](https://github.com/polkadot-js/common/releases)
+  - [Changelog](https://github.com/polkadot-js/common/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/common/commits/v13.2.2/packages/keyring)
+
+  Updates `@polkadot/react-identicon` from 3.6.6 to 3.11.1
+
+  - [Release notes](https://github.com/polkadot-js/ui/releases)
+  - [Changelog](https://github.com/polkadot-js/ui/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/ui/commits/v3.11.1/packages/react-identicon)
+
+  Updates `@polkadot/rpc-provider` from 12.1.1 to 14.2.1
+
+  - [Release notes](https://github.com/polkadot-js/api/releases)
+  - [Changelog](https://github.com/polkadot-js/api/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/api/commits/v14.2.1/packages/rpc-provider)
+
+  Updates `@polkadot/types` from 14.0.1 to 14.2.1
+
+  - [Release notes](https://github.com/polkadot-js/api/releases)
+  - [Changelog](https://github.com/polkadot-js/api/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/api/commits/v14.2.1/packages/types)
+
+  Updates `@polkadot/util` from 13.1.1 to 13.2.2
+
+  - [Release notes](https://github.com/polkadot-js/common/releases)
+  - [Changelog](https://github.com/polkadot-js/common/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/common/commits/v13.2.2/packages/util)
+
+  Updates `@polkadot/util-crypto` from 12.6.2 to 13.2.2
+
+  - [Release notes](https://github.com/polkadot-js/common/releases)
+  - [Changelog](https://github.com/polkadot-js/common/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/common/commits/v13.2.2/packages/util-crypto)
+
+  Updates `@polkadot/extension-inject` from 0.53.1 to 0.55.1
+
+  - [Release notes](https://github.com/polkadot-js/extension/releases)
+  - [Changelog](https://github.com/polkadot-js/extension/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/extension/commits/v0.55.1/packages/extension-inject)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot/api"
+    dependency-type: direct:production
+    update-type: version-update:semver-major
+    dependency-group: pjs
+  - dependency-name: "@polkadot/api-augment"
+    dependency-type: direct:production
+    update-type: version-update:semver-major
+    dependency-group: pjs
+  - dependency-name: "@polkadot/keyring"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: pjs
+  - dependency-name: "@polkadot/react-identicon"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: pjs
+  - dependency-name: "@polkadot/rpc-provider"
+    dependency-type: direct:production
+    update-type: version-update:semver-major
+    dependency-group: pjs
+  - dependency-name: "@polkadot/types"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: pjs
+  - dependency-name: "@polkadot/util"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: pjs
+  - dependency-name: "@polkadot/util-crypto"
+    dependency-type: direct:production
+    update-type: version-update:semver-major
+    dependency-group: pjs
+  - dependency-name: "@polkadot/extension-inject"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: pjs
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 09f1c22: chore(deps-dev): bump vitest from 2.0.5 to 2.1.4
+
+  Bumps [vitest](https://github.com/vitest-dev/vitest/tree/HEAD/packages/vitest) from 2.0.5 to 2.1.4.
+
+  - [Release notes](https://github.com/vitest-dev/vitest/releases)
+  - [Commits](https://github.com/vitest-dev/vitest/commits/v2.1.4/packages/vitest)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: vitest
+    dependency-type: direct:development
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- de98edc: chore(deps): bump the pjs group across 1 directory with 6 updates
+
+  Bumps the pjs group with 6 updates in the / directory:
+
+  | Package                                                                                                    | From     | To       |
+  | ---------------------------------------------------------------------------------------------------------- | -------- | -------- |
+  | [@polkadot/api](https://github.com/polkadot-js/api/tree/HEAD/packages/api)                                 | `14.2.1` | `14.2.2` |
+  | [@polkadot/api-augment](https://github.com/polkadot-js/api/tree/HEAD/packages/api-augment)                 | `14.2.1` | `14.2.2` |
+  | [@polkadot/react-identicon](https://github.com/polkadot-js/ui/tree/HEAD/packages/react-identicon)          | `3.11.1` | `3.11.2` |
+  | [@polkadot/rpc-provider](https://github.com/polkadot-js/api/tree/HEAD/packages/rpc-provider)               | `14.2.1` | `14.2.2` |
+  | [@polkadot/types](https://github.com/polkadot-js/api/tree/HEAD/packages/types)                             | `14.2.1` | `14.2.2` |
+  | [@polkadot/extension-inject](https://github.com/polkadot-js/extension/tree/HEAD/packages/extension-inject) | `0.55.1` | `0.56.1` |
+
+  Updates `@polkadot/api` from 14.2.1 to 14.2.2
+
+  - [Release notes](https://github.com/polkadot-js/api/releases)
+  - [Changelog](https://github.com/polkadot-js/api/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/api/commits/v14.2.2/packages/api)
+
+  Updates `@polkadot/api-augment` from 14.2.1 to 14.2.2
+
+  - [Release notes](https://github.com/polkadot-js/api/releases)
+  - [Changelog](https://github.com/polkadot-js/api/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/api/commits/v14.2.2/packages/api-augment)
+
+  Updates `@polkadot/react-identicon` from 3.11.1 to 3.11.2
+
+  - [Release notes](https://github.com/polkadot-js/ui/releases)
+  - [Changelog](https://github.com/polkadot-js/ui/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/ui/commits/v3.11.2/packages/react-identicon)
+
+  Updates `@polkadot/rpc-provider` from 14.2.1 to 14.2.2
+
+  - [Release notes](https://github.com/polkadot-js/api/releases)
+  - [Changelog](https://github.com/polkadot-js/api/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/api/commits/v14.2.2/packages/rpc-provider)
+
+  Updates `@polkadot/types` from 14.2.1 to 14.2.2
+
+  - [Release notes](https://github.com/polkadot-js/api/releases)
+  - [Changelog](https://github.com/polkadot-js/api/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/api/commits/v14.2.2/packages/types)
+
+  Updates `@polkadot/extension-inject` from 0.55.1 to 0.56.1
+
+  - [Release notes](https://github.com/polkadot-js/extension/releases)
+  - [Changelog](https://github.com/polkadot-js/extension/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/extension/commits/v0.56.1/packages/extension-inject)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot/api"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: pjs
+  - dependency-name: "@polkadot/api-augment"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: pjs
+  - dependency-name: "@polkadot/react-identicon"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: pjs
+  - dependency-name: "@polkadot/rpc-provider"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: pjs
+  - dependency-name: "@polkadot/types"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: pjs
+  - dependency-name: "@polkadot/extension-inject"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: pjs
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 0467f6b: chore(deps): bump the polkadot-api group with 8 updates
+
+  Bumps the polkadot-api group with 8 updates:
+
+  | Package                                                                              | From     | To       |
+  | ------------------------------------------------------------------------------------ | -------- | -------- |
+  | [@polkadot-api/codegen](https://github.com/polkadot-api/polkadot-api)                | `0.12.3` | `0.12.7` |
+  | [@polkadot-api/metadata-builders](https://github.com/polkadot-api/polkadot-api)      | `0.8.1`  | `0.9.1`  |
+  | [@polkadot-api/metadata-compatibility](https://github.com/polkadot-api/polkadot-api) | `0.1.8`  | `0.1.11` |
+  | [@polkadot-api/observable-client](https://github.com/polkadot-api/polkadot-api)      | `0.5.8`  | `0.5.14` |
+  | [@polkadot-api/signer](https://github.com/polkadot-api/polkadot-api)                 | `0.1.7`  | `0.1.10` |
+  | [@polkadot-api/substrate-bindings](https://github.com/polkadot-api/polkadot-api)     | `0.9.1`  | `0.9.3`  |
+  | [@polkadot-api/view-builder](https://github.com/polkadot-api/polkadot-api)           | `0.3.8`  | `0.3.11` |
+  | [polkadot-api](https://github.com/polkadot-api/polkadot-api)                         | `1.4.1`  | `1.6.7`  |
+
+  Updates `@polkadot-api/codegen` from 0.12.3 to 0.12.7
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  Updates `@polkadot-api/metadata-builders` from 0.8.1 to 0.9.1
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits/polkadot-api@0.9.1)
+
+  Updates `@polkadot-api/metadata-compatibility` from 0.1.8 to 0.1.11
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  Updates `@polkadot-api/observable-client` from 0.5.8 to 0.5.14
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  Updates `@polkadot-api/signer` from 0.1.7 to 0.1.10
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  Updates `@polkadot-api/substrate-bindings` from 0.9.1 to 0.9.3
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  Updates `@polkadot-api/view-builder` from 0.3.8 to 0.3.11
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  Updates `polkadot-api` from 1.4.1 to 1.6.7
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot-api/codegen"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: polkadot-api
+  - dependency-name: "@polkadot-api/metadata-builders"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: polkadot-api
+  - dependency-name: "@polkadot-api/metadata-compatibility"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: polkadot-api
+  - dependency-name: "@polkadot-api/observable-client"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: polkadot-api
+  - dependency-name: "@polkadot-api/signer"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: polkadot-api
+  - dependency-name: "@polkadot-api/substrate-bindings"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: polkadot-api
+  - dependency-name: "@polkadot-api/view-builder"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: polkadot-api
+  - dependency-name: polkadot-api
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: polkadot-api
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- f3c4ae6: chore(deps): bump date-fns from 3.6.0 to 4.1.0
+
+  Bumps [date-fns](https://github.com/date-fns/date-fns) from 3.6.0 to 4.1.0.
+
+  - [Release notes](https://github.com/date-fns/date-fns/releases)
+  - [Changelog](https://github.com/date-fns/date-fns/blob/main/CHANGELOG.md)
+  - [Commits](https://github.com/date-fns/date-fns/compare/v3.6.0...v4.1.0)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: date-fns
+    dependency-type: direct:production
+    update-type: version-update:semver-major
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 4478658: chore(deps): bump @hookform/resolvers from 3.9.0 to 3.9.1
+
+  Bumps [@hookform/resolvers](https://github.com/react-hook-form/resolvers) from 3.9.0 to 3.9.1.
+
+  - [Release notes](https://github.com/react-hook-form/resolvers/releases)
+  - [Commits](https://github.com/react-hook-form/resolvers/compare/v3.9.0...v3.9.1)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@hookform/resolvers"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 869cca5: chore(deps-dev): bump @playwright/test from 1.44.1 to 1.48.2
+
+  Bumps [@playwright/test](https://github.com/microsoft/playwright) from 1.44.1 to 1.48.2.
+
+  - [Release notes](https://github.com/microsoft/playwright/releases)
+  - [Commits](https://github.com/microsoft/playwright/compare/v1.44.1...v1.48.2)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@playwright/test"
+    dependency-type: direct:development
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 6988766: chore(deps): bump next-themes from 0.3.0 to 0.4.1
+
+  Bumps [next-themes](https://github.com/pacocoursey/next-themes) from 0.3.0 to 0.4.1.
+
+  - [Release notes](https://github.com/pacocoursey/next-themes/releases)
+  - [Commits](https://github.com/pacocoursey/next-themes/compare/v0.3.0...v0.4.1)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: next-themes
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- a8dcac5: chore(deps): bump react-resizable-panels from 2.0.19 to 2.1.6
+
+  Bumps [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels) from 2.0.19 to 2.1.6.
+
+  - [Release notes](https://github.com/bvaughn/react-resizable-panels/releases)
+  - [Commits](https://github.com/bvaughn/react-resizable-panels/compare/2.0.19...2.1.6)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: react-resizable-panels
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 2536bd0: chore(deps): bump @polkadot-labs/hdkd in the polkadot-labs group
+
+  Bumps the polkadot-labs group with 1 update: [@polkadot-labs/hdkd](https://github.com/polkadot-labs/hdkd).
+
+  Updates `@polkadot-labs/hdkd` from 0.0.6 to 0.0.8
+
+  - [Release notes](https://github.com/polkadot-labs/hdkd/releases)
+  - [Changelog](https://github.com/polkadot-labs/hdkd/blob/main/release-please-config.json)
+  - [Commits](https://github.com/polkadot-labs/hdkd/compare/hdkd-v0.0.6...hdkd-v0.0.8)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot-labs/hdkd"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: polkadot-labs
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- c9ea319: chore(deps): bump react-router-dom from 6.25.1 to 6.27.0
+
+  Bumps [react-router-dom](https://github.com/remix-run/react-router/tree/HEAD/packages/react-router-dom) from 6.25.1 to 6.27.0.
+
+  - [Release notes](https://github.com/remix-run/react-router/releases)
+  - [Changelog](https://github.com/remix-run/react-router/blob/react-router-dom@6.27.0/packages/react-router-dom/CHANGELOG.md)
+  - [Commits](https://github.com/remix-run/react-router/commits/react-router-dom@6.27.0/packages/react-router-dom)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: react-router-dom
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 3686203: chore(deps-dev): bump @vitejs/plugin-react-swc from 3.7.0 to 3.7.1
+
+  Bumps [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) from 3.7.0 to 3.7.1.
+
+  - [Release notes](https://github.com/vitejs/vite-plugin-react-swc/releases)
+  - [Changelog](https://github.com/vitejs/vite-plugin-react-swc/blob/main/CHANGELOG.md)
+  - [Commits](https://github.com/vitejs/vite-plugin-react-swc/compare/v3.7.0...v3.7.1)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@vitejs/plugin-react-swc"
+    dependency-type: direct:development
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- Updated dependencies [09f1c22]
+- Updated dependencies [0467f6b]
+  - @substrate/connect-discovery@0.2.1
+  - @substrate/discovery@0.2.1
+  - @substrate/light-client-extension-helpers@2.5.2
+  - @substrate/smoldot-discovery-connector@0.3.1
+
 ## 0.6.1
 
 ### Patch Changes
