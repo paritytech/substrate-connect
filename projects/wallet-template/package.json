@@ -113,7 +113,7 @@
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.3.0",
     "input-otp": "^1.2.4",
-    "lucide-react": "^0.417.0",
+    "lucide-react": "^0.454.0",
     "next-themes": "^0.4.1",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
