@@ -1,5 +1,4 @@
 ---
-"substrate-connect": patch
 ---
 
 chore(deps-dev): bump typedoc from 0.26.10 to 0.26.11
