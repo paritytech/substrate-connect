@@ -21,9 +21,9 @@
   },
   "dependencies": {
     "@polkadot-api/json-rpc-provider-proxy": "~0.2.3",
-    "@polkadot-api/observable-client": "~0.5.14",
-    "@polkadot-api/sm-provider": "~0.1.3",
-    "@polkadot-api/substrate-client": "~0.2.2",
+    "@polkadot-api/observable-client": "~0.6.2",
+    "@polkadot-api/sm-provider": "~0.1.6",
+    "@polkadot-api/substrate-client": "~0.3.0",
     "@substrate/connect": "workspace:*",
     "@substrate/connect-known-chains": "workspace:*",
     "rxjs": "^7.8.1"
