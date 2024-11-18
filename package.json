@@ -34,7 +34,7 @@
     "*.{js,jsx,ts,tsx,json,md}": "prettier --write"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.27.7",
+    "@changesets/cli": "^2.27.9",
     "@total-typescript/tsconfig": "^1.0.4",
     "@types/chrome": "^0.0.270",
     "@types/node": "^20.14.10",
