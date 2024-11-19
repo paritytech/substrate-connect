@@ -6,7 +6,7 @@ settings:
 
 overrides:
   '@substrate/connect': workspace:^
-  smoldot: 2.0.30
+  smoldot: 2.0.33
 
 importers:
 
@@ -137,7 +137,7 @@ importers:
         version: 0.48.0
       polkadot-api:
         specifier: ^1.7.4
-        version: 1.7.4(@swc/core@1.8.0(@swc/helpers@0.5.11))(postcss@8.4.47)(rxjs@7.8.1)
+        version: 1.7.4(@swc/core@1.8.0(@swc/helpers@0.5.11))(jiti@1.21.6)(postcss@8.4.47)(rxjs@7.8.1)(yaml@2.5.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -258,8 +258,8 @@ importers:
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers
       smoldot:
-        specifier: 2.0.30
-        version: 2.0.30
+        specifier: 2.0.33
+        version: 2.0.33
     devDependencies:
       '@playwright/test':
         specifier: ^1.48.2
@@ -494,8 +494,8 @@ importers:
         specifier: workspace:^
         version: link:../smoldot-discovery
       smoldot:
-        specifier: 2.0.30
-        version: 2.0.30
+        specifier: 2.0.33
+        version: 2.0.33
     devDependencies:
       typescript:
         specifier: 5.6.2
@@ -590,8 +590,8 @@ importers:
         specifier: ^0.0.270
         version: 0.0.270
       smoldot:
-        specifier: 2.0.30
-        version: 2.0.30
+        specifier: 2.0.33
+        version: 2.0.33
       typescript:
         specifier: 5.6.2
         version: 5.6.2
@@ -789,8 +789,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.0.30
-        version: 2.0.30
+        specifier: 2.0.33
+        version: 2.0.33
     devDependencies:
       '@playwright/test':
         specifier: ^1.48.2
@@ -1042,8 +1042,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.0.30
-        version: 2.0.30
+        specifier: 2.0.33
+        version: 2.0.33
       sonner:
         specifier: ^1.4.41
         version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -7961,8 +7961,8 @@ packages:
     resolution: {integrity: sha512-bSiSngZ/jWeX93BqeIAbImyTbEihizcwNjFoRUIY/T1wWQsfsm2Vw1agPKylXvQTU7iASGdHhyqRlqQzfz+Htg==}
     engines: {node: '>=18'}
 
-  smoldot@2.0.30:
-    resolution: {integrity: sha512-5/KaEdIlTHg4+Hs8YovrCkwI+Y9QsKtoyWkHRqz15kXMZFsePf+KdMAPpDgReINK+at6t+D+uEVrCkd+r9JpyQ==}
+  smoldot@2.0.33:
+    resolution: {integrity: sha512-EnGqFb2oJSYjR04WsvL4tZNPrkdSiScBk3yQUhvWwJqpJ2bBu8Sq/hQgyVB20J1NxJ6FL0cgldjnGJmH1iQCTg==}
 
   sonic-boom@3.8.1:
     resolution: {integrity: sha512-y4Z8LCDBuum+PBP3lSV7RHrXscqksve/bi0as7mhwVnBW+/wUqKT/2Kb7um8yqcFy0duYbbPxzt89Zy2nOCaxg==}
@@ -10788,7 +10788,7 @@ snapshots:
       '@pnpm/network.ca-file': 1.0.2
       config-chain: 1.1.13
 
-  '@polkadot-api/cli@0.9.18(@swc/core@1.8.0(@swc/helpers@0.5.11))(postcss@8.4.47)':
+  '@polkadot-api/cli@0.9.18(@swc/core@1.8.0(@swc/helpers@0.5.11))(jiti@1.21.6)(postcss@8.4.47)(yaml@2.5.1)':
     dependencies:
       '@commander-js/extra-typings': 12.1.0(commander@12.1.0)
       '@polkadot-api/codegen': 0.12.8
@@ -10908,7 +10908,7 @@ snapshots:
   '@polkadot-api/smoldot@0.3.5':
     dependencies:
       '@types/node': 22.3.0
-      smoldot: 2.0.30
+      smoldot: 2.0.33
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -12626,6 +12626,14 @@ snapshots:
       magic-string: 0.30.12
     optionalDependencies:
       vite: 5.4.10(@types/node@20.14.10)(terser@5.31.1)
+
+  '@vitest/mocker@2.1.4(vite@5.4.10(@types/node@22.3.0)(terser@5.31.1))':
+    dependencies:
+      '@vitest/spy': 2.1.4
+      estree-walker: 3.0.3
+      magic-string: 0.30.12
+    optionalDependencies:
+      vite: 5.4.10(@types/node@22.3.0)(terser@5.31.1)
 
   '@vitest/pretty-format@2.1.4':
     dependencies:
@@ -16284,9 +16292,9 @@ snapshots:
 
   polite-json@5.0.0: {}
 
-  polkadot-api@1.7.4(@swc/core@1.8.0(@swc/helpers@0.5.11))(postcss@8.4.47)(rxjs@7.8.1):
+  polkadot-api@1.7.4(@swc/core@1.8.0(@swc/helpers@0.5.11))(jiti@1.21.6)(postcss@8.4.47)(rxjs@7.8.1)(yaml@2.5.1):
     dependencies:
-      '@polkadot-api/cli': 0.9.18(@swc/core@1.8.0(@swc/helpers@0.5.11))(postcss@8.4.47)
+      '@polkadot-api/cli': 0.9.18(@swc/core@1.8.0(@swc/helpers@0.5.11))(jiti@1.21.6)(postcss@8.4.47)(yaml@2.5.1)
       '@polkadot-api/ink-contracts': 0.2.1
       '@polkadot-api/json-rpc-provider': 0.0.4
       '@polkadot-api/known-chains': 0.5.6
@@ -16999,7 +17007,7 @@ snapshots:
       ansi-styles: 6.2.1
       is-fullwidth-code-point: 5.0.0
 
-  smoldot@2.0.30:
+  smoldot@2.0.33:
     dependencies:
       ws: 8.18.0
     transitivePeerDependencies:
@@ -17923,7 +17931,7 @@ snapshots:
   vitest@2.1.4(@types/node@22.3.0)(jsdom@24.1.0)(terser@5.31.1):
     dependencies:
       '@vitest/expect': 2.1.4
-      '@vitest/mocker': 2.1.4(vite@5.4.10(@types/node@20.14.10)(terser@5.31.1))
+      '@vitest/mocker': 2.1.4(vite@5.4.10(@types/node@22.3.0)(terser@5.31.1))
       '@vitest/pretty-format': 2.1.4
       '@vitest/runner': 2.1.4
       '@vitest/snapshot': 2.1.4
