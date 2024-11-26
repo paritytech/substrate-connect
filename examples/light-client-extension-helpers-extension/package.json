@@ -25,7 +25,6 @@
     "@types/chrome": "^0.0.270",
     "@types/node": "^20.14.10",
     "concurrently": "^8.2.2",
-    "tsup": "^8.0.2",
     "vitest": "^2.1.4",
     "web-ext": "^8.2.0"
   }

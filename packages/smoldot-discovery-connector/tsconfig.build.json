@@ -1,4 +1,8 @@
 {
   "extends": "../../tsconfig.build.json",
-  "include": ["src"]
+  "include": ["src"],
+  "compilerOptions": {
+    "incremental": false,
+    "composite": false
+  }
 }

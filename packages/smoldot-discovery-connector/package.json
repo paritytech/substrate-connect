@@ -17,32 +17,22 @@
         "default": "./dist/esm/index.js"
       },
       "require": {
-        "types": "./dist/commonjs/index.d.ts",
-        "default": "./dist/commonjs/index.js"
+        "types": "./dist/commonjs/index.d.cts",
+        "default": "./dist/commonjs/index.cjs"
       }
     }
   },
-  "main": "./dist/commonjs/index.js",
-  "types": "./dist/commonjs/index.d.ts",
+  "main": "./dist/commonjs/index.cjs",
+  "types": "./dist/commonjs/index.d.cts",
   "module": "./dist/esm/index.js",
   "files": [
     "dist"
   ],
-  "tshy": {
-    "selfLink": false,
-    "project": "./tsconfig.build.json",
-    "exports": {
-      "./package.json": "./package.json",
-      ".": "./src/index.ts"
-    },
-    "sourceDialects": [
-      "@substrate-connect/source"
-    ]
-  },
   "scripts": {
     "deep-clean": "npm run clean && rimraf dist node_modules",
     "clean": "rimraf dist .tshy .tshy-build",
-    "build": "npm run clean && tshy",
+    "build": "pnpm run clean && tsup",
+    "typecheck": "tsc --noEmit",
     "dev": "pnpm build --watch",
     "lint": "prettier --check README.md \"src/**/*.{js,jsx,ts,tsx,json,md}\""
   },
