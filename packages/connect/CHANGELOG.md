@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.1.0
+
+### Minor Changes
+
+- ff20390: chore: update chainspecs
+- f6cef04: chore: update changesets
+
+### Patch Changes
+
+- 7ee9c18: chore: update smoldot to 2.0.34
+- 20eea99: chore: update smoldot
+- Updated dependencies [ff20390]
+- Updated dependencies [f6cef04]
+  - @substrate/connect-known-chains@1.8.0
+
 ## 2.0.1
 
 ### Patch Changes

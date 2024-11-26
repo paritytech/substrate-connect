@@ -1,5 +1,12 @@
 # @substrate/connect-known-chains
 
+## 1.8.0
+
+### Minor Changes
+
+- ff20390: chore: update chainspecs
+- f6cef04: chore: update changesets
+
 ## 1.7.0
 
 ### Minor Changes
