@@ -124,8 +124,8 @@ importers:
         specifier: ~0.1.2
         version: 0.1.2
       '@polkadot-labs/hdkd-helpers':
-        specifier: ^0.0.8
-        version: 0.0.8
+        specifier: ^0.0.9
+        version: 0.0.9
       '@substrate/connect-known-chains':
         specifier: workspace:^
         version: link:../../packages/connect-known-chains
@@ -871,11 +871,11 @@ importers:
         specifier: ~0.3.12
         version: 0.3.12
       '@polkadot-labs/hdkd':
-        specifier: ^0.0.8
-        version: 0.0.8
+        specifier: ^0.0.9
+        version: 0.0.9
       '@polkadot-labs/hdkd-helpers':
-        specifier: ^0.0.8
-        version: 0.0.8
+        specifier: ^0.0.9
+        version: 0.0.9
       '@polkadot-labs/schnorrkel-wasm':
         specifier: ^0.0.5
         version: 0.0.5
@@ -2624,8 +2624,20 @@ packages:
     resolution: {integrity: sha512-TlaHRXDehJuRNR9TfZDNQ45mMEd5dwUwmicsafcIX4SsNiqnCHKjE/1alYPd/lDRVhxdhUAlv8uEhMCI5zjIJQ==}
     engines: {node: ^14.21.3 || >=16}
 
+  '@noble/curves@1.7.0':
+    resolution: {integrity: sha512-UTMhXK9SeDhFJVrHeUJ5uZlI6ajXg10O6Ddocf9S6GjbSBVZsJo88HzKwXznNfGpMTRDyJkqMjNDPYgf0qFWnw==}
+    engines: {node: ^14.21.3 || >=16}
+
   '@noble/hashes@1.5.0':
     resolution: {integrity: sha512-1j6kQFb7QRru7eKN3ZDvRcP13rugwdxZqCjbiAVZfIJwgj2A65UmT4TgARXGlXgnRkORLTDTrO19ZErt7+QXgA==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@noble/hashes@1.6.0':
+    resolution: {integrity: sha512-YUULf0Uk4/mAA89w+k3+yUYh6NrEvxZa5T6SY3wlMvE2chHkxFUUIDI8/XW1QSC357iA5pSnqt7XEhvFOqmDyQ==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@noble/hashes@1.6.1':
+    resolution: {integrity: sha512-pq5D8h10hHBjyqX+cfBm0i8JUXJ0UhczFc4r74zbuT9XgewFo2E3J1cOaGtdZynILNmQ685YWGzGE1Zv6io50w==}
     engines: {node: ^14.21.3 || >=16}
 
   '@nodelib/fs.scandir@2.1.5':
@@ -2743,11 +2755,11 @@ packages:
   '@polkadot-api/ws-provider@0.3.6':
     resolution: {integrity: sha512-D2+rvcDc9smt24qUKqFoCuKKNhyBVDQEtnsqHiUN/Ym8UGP+Acegac3b9VOig70EpCcRBoYeXY2gEog2ybx1Kg==}
 
-  '@polkadot-labs/hdkd-helpers@0.0.8':
-    resolution: {integrity: sha512-nTJOinTKuINHwKsUXR+Q1Hld0DU+EYVxcfQqiJz9PH8L+48K3gPfpAHDApIuOW6Uq6yVb5/pgcDPNCaJS5nYsg==}
+  '@polkadot-labs/hdkd-helpers@0.0.9':
+    resolution: {integrity: sha512-EU3vSD6M1wzhx2gUvxkGMPLizBtPgod8ZW9e7MleGYxVBr5tI2xPXYJWs+avH2WmeEcJ4YABGyv7WSPAUHFAgg==}
 
-  '@polkadot-labs/hdkd@0.0.8':
-    resolution: {integrity: sha512-gpcHtJ28FfugQ7uRj+EQzdhbtm1qchcW9hC1Gsf+IvMiB//Dx/K3tPS9uKtPDu7OoX4p/McpPcLm7IomdlYJbg==}
+  '@polkadot-labs/hdkd@0.0.9':
+    resolution: {integrity: sha512-6cN46B+aSOo95b6KEsZnRq2m0twtX4Erhofu1f0lH8WN+1cS57cHeTGinT7l3lcte5ABw1iQuoM7uTQahq1plA==}
 
   '@polkadot-labs/schnorrkel-wasm@0.0.5':
     resolution: {integrity: sha512-oUKF4Qu+V1bPxEjq3kmzI3FZrMIr1kK/4cxntoHSBDTZn/Ymab9LXVhRNrbVend5JrwDANePcYqbK5Fdn9NGhQ==}
@@ -6860,6 +6872,9 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
+  micro-sr25519@0.1.0:
+    resolution: {integrity: sha512-at5zfxiKNhh07v4GPb8Sc6wCW+jd18FMMgPM0ACIQMcgvMfB9a34mfOlXr5B04J4yFZ6imlvJfRaFbOxMA7ytw==}
+
   micromark-util-character@2.1.0:
     resolution: {integrity: sha512-KvOVV+X1yLBfs9dCBSopq/+G1PcgT3lAK07mC4BzXi5E7ahzMAF8oIupDDJ6mievI6F+lAATkbQQlQixJfT3aQ==}
 
@@ -7986,9 +8001,6 @@ packages:
   saxes@6.0.0:
     resolution: {integrity: sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==}
     engines: {node: '>=v12.22.7'}
-
-  scale-ts@1.6.0:
-    resolution: {integrity: sha512-Ja5VCjNZR8TGKhUumy9clVVxcDpM+YFjAnkMuwQy68Hixio3VRRvWdE3g8T/yC+HXA0ZDQl2TGyUmtmbcVl40Q==}
 
   scale-ts@1.6.1:
     resolution: {integrity: sha512-PBMc2AWc6wSEqJYBDPcyCLUj9/tMKnLX70jLOSndMtcUoLQucP/DM0vnQo1wJAYjTrQiq8iG9rD0q6wFzgjH7g==}
@@ -10907,7 +10919,15 @@ snapshots:
     dependencies:
       '@noble/hashes': 1.5.0
 
+  '@noble/curves@1.7.0':
+    dependencies:
+      '@noble/hashes': 1.6.0
+
   '@noble/hashes@1.5.0': {}
+
+  '@noble/hashes@1.6.0': {}
+
+  '@noble/hashes@1.6.1': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -11106,18 +11126,17 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@polkadot-labs/hdkd-helpers@0.0.8':
+  '@polkadot-labs/hdkd-helpers@0.0.9':
     dependencies:
-      '@noble/curves': 1.6.0
-      '@noble/hashes': 1.5.0
-      '@polkadot-labs/schnorrkel-wasm': 0.0.5
+      '@noble/curves': 1.7.0
+      '@noble/hashes': 1.6.1
       '@scure/base': 1.1.9
-      scale-ts: 1.6.0
+      micro-sr25519: 0.1.0
+      scale-ts: 1.6.1
 
-  '@polkadot-labs/hdkd@0.0.8':
+  '@polkadot-labs/hdkd@0.0.9':
     dependencies:
-      '@polkadot-labs/hdkd-helpers': 0.0.8
-      '@polkadot-labs/schnorrkel-wasm': 0.0.5
+      '@polkadot-labs/hdkd-helpers': 0.0.9
 
   '@polkadot-labs/schnorrkel-wasm@0.0.5': {}
 
@@ -15949,6 +15968,11 @@ snapshots:
 
   merge2@1.4.1: {}
 
+  micro-sr25519@0.1.0:
+    dependencies:
+      '@noble/curves': 1.7.0
+      '@noble/hashes': 1.6.1
+
   micromark-util-character@2.1.0:
     dependencies:
       micromark-util-symbol: 2.0.0
@@ -17162,8 +17186,6 @@ snapshots:
   saxes@6.0.0:
     dependencies:
       xmlchars: 2.2.0
-
-  scale-ts@1.6.0: {}
 
   scale-ts@1.6.1: {}
 
