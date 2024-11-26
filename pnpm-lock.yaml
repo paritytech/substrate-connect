@@ -6,7 +6,7 @@ settings:
 
 overrides:
   '@substrate/connect': workspace:^
-  smoldot: 2.0.33
+  smoldot: ^2.0.34
 
 importers:
 
@@ -261,8 +261,8 @@ importers:
         specifier: workspace:^
         version: link:../../packages/light-client-extension-helpers
       smoldot:
-        specifier: 2.0.33
-        version: 2.0.33
+        specifier: ^2.0.34
+        version: 2.0.34
     devDependencies:
       '@playwright/test':
         specifier: ^1.48.2
@@ -494,8 +494,8 @@ importers:
         specifier: workspace:^
         version: link:../smoldot-discovery
       smoldot:
-        specifier: 2.0.33
-        version: 2.0.33
+        specifier: ^2.0.34
+        version: 2.0.34
     devDependencies:
       typescript:
         specifier: 5.6.2
@@ -590,8 +590,8 @@ importers:
         specifier: ^0.0.270
         version: 0.0.270
       smoldot:
-        specifier: 2.0.33
-        version: 2.0.33
+        specifier: ^2.0.34
+        version: 2.0.34
       typescript:
         specifier: 5.6.2
         version: 5.6.2
@@ -789,8 +789,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.0.33
-        version: 2.0.33
+        specifier: ^2.0.34
+        version: 2.0.34
     devDependencies:
       '@playwright/test':
         specifier: ^1.48.2
@@ -1042,8 +1042,8 @@ importers:
         specifier: ^7.8.1
         version: 7.8.1
       smoldot:
-        specifier: 2.0.33
-        version: 2.0.33
+        specifier: ^2.0.34
+        version: 2.0.34
       sonner:
         specifier: ^1.4.41
         version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -8098,8 +8098,8 @@ packages:
     resolution: {integrity: sha512-bSiSngZ/jWeX93BqeIAbImyTbEihizcwNjFoRUIY/T1wWQsfsm2Vw1agPKylXvQTU7iASGdHhyqRlqQzfz+Htg==}
     engines: {node: '>=18'}
 
-  smoldot@2.0.33:
-    resolution: {integrity: sha512-EnGqFb2oJSYjR04WsvL4tZNPrkdSiScBk3yQUhvWwJqpJ2bBu8Sq/hQgyVB20J1NxJ6FL0cgldjnGJmH1iQCTg==}
+  smoldot@2.0.34:
+    resolution: {integrity: sha512-mw9tCbGEhEp0koMqLL0jBEixVY1MIN/xI3pE6ZY1TuOPU+LnYy8FloODVyzkvzQPaBYrETXJdRlmA/+k6g3gow==}
 
   sonic-boom@3.8.1:
     resolution: {integrity: sha512-y4Z8LCDBuum+PBP3lSV7RHrXscqksve/bi0as7mhwVnBW+/wUqKT/2Kb7um8yqcFy0duYbbPxzt89Zy2nOCaxg==}
@@ -11070,7 +11070,7 @@ snapshots:
   '@polkadot-api/smoldot@0.3.7':
     dependencies:
       '@types/node': 22.10.0
-      smoldot: 2.0.33
+      smoldot: 2.0.34
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -17271,7 +17271,7 @@ snapshots:
       ansi-styles: 6.2.1
       is-fullwidth-code-point: 5.0.0
 
-  smoldot@2.0.33:
+  smoldot@2.0.34:
     dependencies:
       ws: 8.18.0
     transitivePeerDependencies:

@@ -227,10 +227,10 @@
     "@polkadot-api/json-rpc-provider": "~0.0.4",
     "@polkadot-api/polkadot-signer": "~0.1.6",
     "@types/chrome": "^0.0.270",
-    "smoldot": "2.0.33",
+    "smoldot": "^2.0.34",
     "vitest": "^2.1.4"
   },
   "peerDependencies": {
-    "smoldot": "2.x"
+    "smoldot": "^2"
   }
 }
