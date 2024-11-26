@@ -1,5 +1,18 @@
 # @substrate/smoldot-discovery-connector
 
+## 0.3.2
+
+### Patch Changes
+
+- cb1b051: fix: smoldot discovery connector webpack bundler issues
+- Updated dependencies [29b6ebf]
+- Updated dependencies [ca4769f]
+- Updated dependencies [ff20390]
+- Updated dependencies [f6cef04]
+- Updated dependencies [7ee9c18]
+- Updated dependencies [20eea99]
+  - @substrate/light-client-extension-helpers@2.6.0
+
 ## 0.3.1
 
 ### Patch Changes
