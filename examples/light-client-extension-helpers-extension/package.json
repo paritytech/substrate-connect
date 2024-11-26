@@ -17,7 +17,7 @@
   "dependencies": {
     "@polkadot-api/substrate-client": "~0.3.0",
     "@substrate/light-client-extension-helpers": "workspace:^",
-    "smoldot": "2.0.33"
+    "smoldot": "^2.0.34"
   },
   "devDependencies": {
     "typescript": "5.6.2",

@@ -83,7 +83,7 @@
     "@substrate/connect-extension-protocol": "workspace:^",
     "@substrate/connect-known-chains": "workspace:^",
     "@substrate/smoldot-discovery": "workspace:^",
-    "smoldot": "2.0.33"
+    "smoldot": "^2.0.34"
   },
   "devDependencies": {
     "typescript": "5.6.2",

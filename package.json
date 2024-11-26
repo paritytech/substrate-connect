@@ -69,7 +69,7 @@
   "pnpm": {
     "overrides": {
       "@substrate/connect": "workspace:^",
-      "smoldot": "2.0.33"
+      "smoldot": "^2.0.34"
     }
   }
 }
