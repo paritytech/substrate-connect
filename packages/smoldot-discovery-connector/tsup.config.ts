@@ -17,7 +17,7 @@ export default defineConfig([
     entry: {
       index: "src/index.ts",
     },
-    outDir: "dist/cjs",
+    outDir: "dist/commonjs",
     format: ["cjs"],
     dts: true,
     sourcemap: true,
