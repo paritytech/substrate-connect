@@ -27,4 +27,4 @@ updates:
     labels:
     - "automerge"
     schedule:
-      interval: daily
+      interval: weekly
