@@ -1,0 +1,33 @@
+diff --git a/dist/web/esm/web.mjs b/dist/web/esm/web.mjs
+index 241ec3bf8ebec5d7cfee0dc98fd95309b1298135..6aa173d56ed6702387325974b4ef912a5168abe9 100644
+--- a/dist/web/esm/web.mjs
++++ b/dist/web/esm/web.mjs
+@@ -3,5 +3,5 @@ export { WsEvent } from './types.mjs';
+ 
+ const getWsProvider = getInternalWsProvider(WebSocket);
+ 
+-export { getWsProvider };
++export { getWsProvider, getInternalWsProvider };
+ //# sourceMappingURL=web.mjs.map
+diff --git a/dist/web/web.d.ts b/dist/web/web.d.ts
+index d426010c36aa1ef4696409cc81036597d15f43b3..dc525d2d35ee5011eaeb9c0519ebe3f91dbbd2fa 100644
+--- a/dist/web/web.d.ts
++++ b/dist/web/web.d.ts
+@@ -49,5 +49,6 @@ interface GetWsProviderInput {
+ }
+ 
+ declare const getWsProvider: GetWsProviderInput;
++declare const getInternalWsProvider: (wsCtor: typeof globalThis.WebSocket) => GetWsProviderInput;
+ 
+-export { type GetWsProviderInput, type StatusChange, type WsClose, type WsConnected, type WsConnecting, type WsError, WsEvent, type WsJsonRpcProvider, type WsProviderConfig, getWsProvider };
++export { type GetWsProviderInput, type StatusChange, type WsClose, type WsConnected, type WsConnecting, type WsError, WsEvent, type WsJsonRpcProvider, type WsProviderConfig, getWsProvider, getInternalWsProvider };
+diff --git a/dist/web/web.js b/dist/web/web.js
+index 0fa7cd8079fb1834bda11013eca4af81b3c12106..d533a1bd65deb63e7e3d1c5f690cacdf7ffbda15 100644
+--- a/dist/web/web.js
++++ b/dist/web/web.js
+@@ -227,4 +227,5 @@ const getWsProvider = getInternalWsProvider(WebSocket);
+ 
+ exports.WsEvent = WsEvent;
+ exports.getWsProvider = getWsProvider;
++exports.getInternalWsProvider = getInternalWsProvider;
+ //# sourceMappingURL=web.js.map

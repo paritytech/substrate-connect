@@ -70,6 +70,9 @@
     "overrides": {
       "@substrate/connect": "workspace:^",
       "smoldot": "^2.0.34"
+    },
+    "patchedDependencies": {
+      "@polkadot-api/ws-provider": "patches/@polkadot-api__ws-provider.patch"
     }
   }
 }
