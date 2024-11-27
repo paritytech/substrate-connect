@@ -1,5 +1,11 @@
 # @substrate/smoldot-discovery-connector
 
+## 0.3.3
+
+### Patch Changes
+
+- 5baa034: fix: smoldot discovery connector cjs imports
+
 ## 0.3.2
 
 ### Patch Changes
