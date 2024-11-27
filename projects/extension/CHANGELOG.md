@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.13.1
+
+### Patch Changes
+
+- Updated dependencies [5baa034]
+  - @substrate/smoldot-discovery-connector@0.3.3
+
 ## 0.13.0
 
 ### Minor Changes
