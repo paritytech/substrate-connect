@@ -96,6 +96,12 @@ jobs:
           token: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
           tarball-name: "substrate-smoldot-discovery-connector"
           package-directory: ./packages/smoldot-discovery-connector
+      - name: "@substrate/ws-provider"
+        uses: ./.github/actions/publish-package 
+        with:
+          token: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
+          tarball-name: "substrate-ws-provider"
+          package-directory: ./packages/ws-provider
 
   upload-extension-artifacts:
     needs: [run-ci]
