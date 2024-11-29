@@ -1,1 +1,1 @@
-# @substrate/ws-provider
+# @substrate/logs-provider
