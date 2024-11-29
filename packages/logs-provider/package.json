@@ -8,20 +8,20 @@
   },
   "license": "MIT",
   "type": "module",
-  "main": "./dist/commonjs/index.js",
-  "types": "./dist/commonjs/index.d.ts",
-  "module": "./dist/esm/index.js",
+  "main": "./dist/commonjs/mod.js",
+  "types": "./dist/commonjs/mod.d.ts",
+  "module": "./dist/esm/mod.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "import": {
-        "@substrate-connect/source": "./src/index.ts",
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
+        "@substrate-connect/source": "./src/mod.ts",
+        "types": "./dist/esm/mod.d.ts",
+        "default": "./dist/esm/mod.js"
       },
       "require": {
-        "types": "./dist/commonjs/index.d.ts",
-        "default": "./dist/commonjs/index.js"
+        "types": "./dist/commonjs/mod.d.ts",
+        "default": "./dist/commonjs/mod.js"
       }
     }
   },
@@ -32,7 +32,7 @@
     "project": "./tsconfig.build.json",
     "exports": {
       "./package.json": "./package.json",
-      ".": "./src/index.ts"
+      ".": "./src/mod.ts"
     },
     "sourceDialects": [
       "@substrate-connect/source"
