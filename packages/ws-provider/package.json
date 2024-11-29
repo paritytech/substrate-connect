@@ -17,13 +17,13 @@
         "default": "./dist/esm/index.js"
       },
       "require": {
-        "types": "./dist/commonjs/index.d.ts",
-        "default": "./dist/commonjs/index.js"
+        "types": "./dist/commonjs/index.d.cts",
+        "default": "./dist/commonjs/index.cjs"
       }
     }
   },
-  "main": "./dist/commonjs/index.js",
-  "types": "./dist/commonjs/index.d.ts",
+  "main": "./dist/commonjs/index.cjs",
+  "types": "./dist/commonjs/index.d.cts",
   "module": "./dist/esm/index.js",
   "files": [
     "dist"
