@@ -1,0 +1,62 @@
+{
+  "name": "@substrate/logs-provider",
+  "version": "0.0.6",
+  "author": "Parity Technologies (https://github.com/paritytech)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paritytech/substrate-connect.git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/commonjs/index.js",
+  "types": "./dist/commonjs/index.d.ts",
+  "module": "./dist/esm/index.js",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": {
+        "@substrate-connect/source": "./src/index.ts",
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "tshy": {
+    "project": "./tsconfig.build.json",
+    "exports": {
+      "./package.json": "./package.json",
+      ".": "./src/index.ts"
+    },
+    "sourceDialects": [
+      "@substrate-connect/source"
+    ]
+  },
+  "scripts": {
+    "deep-clean": "npm run clean && rimraf dist node_modules",
+    "clean": "rimraf dist .tshy .tshy-build",
+    "build": "npm run clean && tshy",
+    "typecheck": "tsc --noEmit",
+    "dev": "pnpm build --watch",
+    "lint": "prettier --check README.md \"src/**/*.{js,jsx,ts,tsx,json,md}\""
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": false,
+    "trailingComma": "all"
+  },
+  "dependencies": {
+    "@polkadot-api/logs-provider": "0.0.6"
+  },
+  "devDependencies": {
+    "typescript": "5.6.2",
+    "vitest": "^2.1.4"
+  },
+  "peerDependencies": {}
+}
