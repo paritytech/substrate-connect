@@ -102,6 +102,12 @@ jobs:
           token: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
           tarball-name: "substrate-ws-provider"
           package-directory: ./packages/ws-provider
+      - name: "@substrate/logs-provider"
+        uses: ./.github/actions/publish-package 
+        with:
+          token: ${{ secrets.NPM_PUBLISH_AUTOMATION_TOKEN }}
+          tarball-name: "substrate-logs-provider"
+          package-directory: ./packages/logs-provider
 
   upload-extension-artifacts:
     needs: [run-ci]
