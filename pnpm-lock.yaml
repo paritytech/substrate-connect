@@ -657,10 +657,10 @@ importers:
       '@polkadot-api/json-rpc-provider-proxy':
         specifier: 0.2.4
         version: 0.2.4
+    devDependencies:
       '@polkadot-api/ws-provider':
         specifier: 0.3.6
         version: 0.3.6(patch_hash=movrkpuzjy6i3qk43pefldjxp4)
-    devDependencies:
       typescript:
         specifier: 5.6.2
         version: 5.6.2
