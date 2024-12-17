@@ -1,6 +1,6 @@
 {
   "name": "@substrate/ws-provider",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "author": "Parity Technologies (https://github.com/paritytech)",
   "repository": {
     "type": "git",
@@ -41,11 +41,11 @@
     "trailingComma": "all"
   },
   "dependencies": {
-    "@polkadot-api/ws-provider": "0.3.6",
     "@polkadot-api/json-rpc-provider-proxy": "0.2.4",
     "@polkadot-api/json-rpc-provider": "0.0.4"
   },
   "devDependencies": {
+    "@polkadot-api/ws-provider": "0.3.6",
     "typescript": "5.6.2",
     "vitest": "^2.1.4"
   },
