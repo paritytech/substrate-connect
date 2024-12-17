@@ -60,7 +60,7 @@
     "@polkadot-api/codegen": "~0.12.11",
     "@polkadot-api/json-rpc-provider": "~0.0.4",
     "@polkadot-api/metadata-builders": "~0.9.3",
-    "@polkadot-api/observable-client": "~0.6.4",
+    "@polkadot-api/observable-client": "~0.6.5",
     "@polkadot-api/polkadot-signer": "~0.1.6",
     "@polkadot-api/signer": "~0.1.12",
     "@polkadot-api/substrate-bindings": "~0.10.0",
