@@ -64,8 +64,7 @@ const DecodedPrimitiveValue = ({ value }: DecodedPrimitiveProps) => {
     case "bool":
     case "char":
     case "str":
-    case "Bytes":
-    case "BytesArray": {
+    case "Bytes": {
       return <div>{value.value}</div>
     }
     case "AccountId": {
@@ -105,6 +104,9 @@ type DecodedComplexProps = {
 }
 const DecodedComplexValue = ({ value }: DecodedComplexProps) => {
   switch (value.codec) {
+    case "BytesArray": {
+      return <div>{value.value}</div>
+    }
     case "Tuple":
     case "Sequence":
     case "Array": {
@@ -167,7 +169,6 @@ const PRIMITIVE_CODECS: PrimitiveDecoded["codec"][] = [
   "compactNumber",
   "compactBn",
   "Bytes",
-  "BytesArray",
   "AccountId",
 ]
 const isPrimitiveDecoded = (value: Decoded): value is PrimitiveDecoded =>

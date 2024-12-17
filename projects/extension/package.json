@@ -49,7 +49,7 @@
     "web-ext": "^8.2.0"
   },
   "dependencies": {
-    "@polkadot-api/observable-client": "~0.6.3",
+    "@polkadot-api/observable-client": "~0.6.4",
     "@polkadot-api/substrate-client": "~0.3.0",
     "@react-rxjs/core": "^0.10.7",
     "@react-rxjs/utils": "^0.9.7",
