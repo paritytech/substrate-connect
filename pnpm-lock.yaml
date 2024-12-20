@@ -114,14 +114,14 @@ importers:
         specifier: ^2.0.6
         version: 2.0.6
       '@polkadot-api/metadata-builders':
-        specifier: ~0.9.3
-        version: 0.9.3
-      '@polkadot-api/observable-client':
-        specifier: ~0.6.4
-        version: 0.6.4(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
-      '@polkadot-api/substrate-bindings':
         specifier: ~0.10.0
         version: 0.10.0
+      '@polkadot-api/observable-client':
+        specifier: ~0.7.0
+        version: 0.7.0(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
+      '@polkadot-api/substrate-bindings':
+        specifier: ~0.11.0
+        version: 0.11.0
       '@polkadot-api/substrate-client':
         specifier: ~0.3.0
         version: 0.3.0
@@ -144,8 +144,8 @@ importers:
         specifier: ^0.48.0
         version: 0.48.0
       polkadot-api:
-        specifier: ^1.7.8
-        version: 1.7.8(@swc/core@1.8.0(@swc/helpers@0.5.11))(jiti@1.21.6)(postcss@8.4.47)(rxjs@7.8.1)(yaml@2.5.1)
+        specifier: ^1.8.1
+        version: 1.8.1(@swc/core@1.8.0(@swc/helpers@0.5.11))(jiti@1.21.6)(postcss@8.4.47)(rxjs@7.8.1)(yaml@2.5.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -176,7 +176,7 @@ importers:
         version: 7.13.0(eslint@8.57.0)(typescript@5.6.2)
       '@vitejs/plugin-react-swc':
         specifier: ^3.7.1
-        version: 3.7.1(@swc/helpers@0.5.11)(vite@5.4.10(@types/node@22.10.0)(terser@5.31.1))
+        version: 3.7.1(@swc/helpers@0.5.11)(vite@5.4.10(@types/node@22.10.2)(terser@5.31.1))
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
@@ -191,10 +191,10 @@ importers:
         version: 5.6.2
       vite:
         specifier: ^5.4.10
-        version: 5.4.10(@types/node@22.10.0)(terser@5.31.1)
+        version: 5.4.10(@types/node@22.10.2)(terser@5.31.1)
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
 
   examples/light-client-extension-helpers-dapp:
     dependencies:
@@ -202,8 +202,8 @@ importers:
         specifier: ^2.0.6
         version: 2.0.6
       '@polkadot-api/observable-client':
-        specifier: ~0.6.4
-        version: 0.6.4(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
+        specifier: ~0.7.0
+        version: 0.7.0(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: ~0.3.0
         version: 0.3.0
@@ -237,7 +237,7 @@ importers:
         version: 7.13.0(eslint@8.57.0)(typescript@5.6.2)
       '@vitejs/plugin-react-swc':
         specifier: ^3.7.1
-        version: 3.7.1(@swc/helpers@0.5.11)(vite@5.4.10(@types/node@22.10.0)(terser@5.31.1))
+        version: 3.7.1(@swc/helpers@0.5.11)(vite@5.4.10(@types/node@22.10.2)(terser@5.31.1))
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
@@ -252,10 +252,10 @@ importers:
         version: 5.6.2
       vite:
         specifier: ^5.4.10
-        version: 5.4.10(@types/node@22.10.0)(terser@5.31.1)
+        version: 5.4.10(@types/node@22.10.2)(terser@5.31.1)
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
 
   examples/light-client-extension-helpers-extension:
     dependencies:
@@ -507,7 +507,7 @@ importers:
         version: 5.6.2
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
 
   packages/connect-discovery:
     dependencies:
@@ -520,13 +520,13 @@ importers:
         version: 5.6.2
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
 
   packages/connect-extension-protocol:
     devDependencies:
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
 
   packages/connect-known-chains:
     devDependencies:
@@ -535,7 +535,7 @@ importers:
         version: 5.6.2
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
 
   packages/discovery:
     devDependencies:
@@ -544,13 +544,13 @@ importers:
         version: 5.6.2
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
 
   packages/light-client-extension-helpers:
     dependencies:
       '@polkadot-api/codegen':
-        specifier: ~0.12.11
-        version: 0.12.11
+        specifier: ~0.12.12
+        version: 0.12.12
       '@polkadot-api/json-rpc-provider':
         specifier: ~0.0.4
         version: 0.0.4
@@ -558,23 +558,23 @@ importers:
         specifier: ~0.2.4
         version: 0.2.4
       '@polkadot-api/metadata-builders':
-        specifier: ~0.9.3
-        version: 0.9.3
+        specifier: ~0.10.0
+        version: 0.10.0
       '@polkadot-api/metadata-compatibility':
-        specifier: ~0.1.13
-        version: 0.1.13
+        specifier: ~0.1.14
+        version: 0.1.14
       '@polkadot-api/observable-client':
-        specifier: ~0.6.4
-        version: 0.6.4(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
+        specifier: ~0.7.0
+        version: 0.7.0(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
       '@polkadot-api/polkadot-signer':
         specifier: ~0.1.6
         version: 0.1.6
       '@polkadot-api/signer':
-        specifier: ~0.1.12
-        version: 0.1.12
+        specifier: ~0.1.13
+        version: 0.1.13
       '@polkadot-api/substrate-bindings':
-        specifier: ~0.10.0
-        version: 0.10.0
+        specifier: ~0.11.0
+        version: 0.11.0
       '@polkadot-api/substrate-client':
         specifier: ~0.3.0
         version: 0.3.0
@@ -602,7 +602,7 @@ importers:
         version: 5.6.2
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
 
   packages/logs-provider:
     dependencies:
@@ -615,7 +615,7 @@ importers:
         version: 5.6.2
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
 
   packages/smoldot-discovery:
     dependencies:
@@ -628,7 +628,7 @@ importers:
         version: 5.6.2
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
 
   packages/smoldot-discovery-connector:
     dependencies:
@@ -647,7 +647,7 @@ importers:
         version: 5.6.2
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
 
   packages/ws-provider:
     dependencies:
@@ -666,7 +666,7 @@ importers:
         version: 5.6.2
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
 
   projects/burnr:
     dependencies:
@@ -733,7 +733,7 @@ importers:
     devDependencies:
       '@vitejs/plugin-react':
         specifier: ^4.3.2
-        version: 4.3.2(vite@5.4.10(@types/node@22.10.0)(terser@5.31.1))
+        version: 4.3.2(vite@5.4.10(@types/node@22.10.2)(terser@5.31.1))
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
@@ -742,13 +742,13 @@ importers:
         version: 5.6.2
       vite:
         specifier: ^5.4.10
-        version: 5.4.10(@types/node@22.10.0)(terser@5.31.1)
+        version: 5.4.10(@types/node@22.10.2)(terser@5.31.1)
       vite-plugin-html:
         specifier: ^3.2.2
-        version: 3.2.2(vite@5.4.10(@types/node@22.10.0)(terser@5.31.1))
+        version: 3.2.2(vite@5.4.10(@types/node@22.10.2)(terser@5.31.1))
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
 
   projects/demo:
     dependencies:
@@ -756,8 +756,8 @@ importers:
         specifier: ~0.2.4
         version: 0.2.4
       '@polkadot-api/observable-client':
-        specifier: ~0.6.4
-        version: 0.6.4(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
+        specifier: ~0.7.0
+        version: 0.7.0(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
       '@polkadot-api/sm-provider':
         specifier: ~0.1.7
         version: 0.1.7(@polkadot-api/smoldot@0.3.8)
@@ -782,19 +782,19 @@ importers:
         version: 5.6.2
       vite:
         specifier: ^5.4.10
-        version: 5.4.10(@types/node@22.10.0)(terser@5.31.1)
+        version: 5.4.10(@types/node@22.10.2)(terser@5.31.1)
       vite-plugin-html:
         specifier: ^3.2.2
-        version: 3.2.2(vite@5.4.10(@types/node@22.10.0)(terser@5.31.1))
+        version: 3.2.2(vite@5.4.10(@types/node@22.10.2)(terser@5.31.1))
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
 
   projects/extension:
     dependencies:
       '@polkadot-api/observable-client':
-        specifier: ~0.6.4
-        version: 0.6.4(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
+        specifier: ~0.7.0
+        version: 0.7.0(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
       '@polkadot-api/substrate-client':
         specifier: ~0.3.0
         version: 0.3.0
@@ -834,7 +834,7 @@ importers:
         version: 1.48.2
       '@vitejs/plugin-react-swc':
         specifier: ^3.7.1
-        version: 3.7.1(@swc/helpers@0.5.11)(vite@5.4.10(@types/node@22.10.0)(terser@5.31.1))
+        version: 3.7.1(@swc/helpers@0.5.11)(vite@5.4.10(@types/node@22.10.2)(terser@5.31.1))
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.19(postcss@8.4.47)
@@ -855,10 +855,10 @@ importers:
         version: 5.6.2
       vite:
         specifier: ^5.4.10
-        version: 5.4.10(@types/node@22.10.0)(terser@5.31.1)
+        version: 5.4.10(@types/node@22.10.2)(terser@5.31.1)
       vitest:
         specifier: ^2.1.4
-        version: 2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1)
+        version: 2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1)
       web-ext:
         specifier: ^8.2.0
         version: 8.2.0
@@ -878,26 +878,26 @@ importers:
         specifier: ^1.5.0
         version: 1.5.0
       '@polkadot-api/codegen':
-        specifier: ~0.12.11
-        version: 0.12.11
+        specifier: ~0.12.12
+        version: 0.12.12
       '@polkadot-api/json-rpc-provider':
         specifier: ~0.0.4
         version: 0.0.4
       '@polkadot-api/metadata-builders':
-        specifier: ~0.9.3
-        version: 0.9.3
+        specifier: ~0.10.0
+        version: 0.10.0
       '@polkadot-api/observable-client':
-        specifier: ~0.6.4
-        version: 0.6.4(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
+        specifier: ~0.7.0
+        version: 0.7.0(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
       '@polkadot-api/polkadot-signer':
         specifier: ~0.1.6
         version: 0.1.6
       '@polkadot-api/signer':
-        specifier: ~0.1.12
-        version: 0.1.12
+        specifier: ~0.1.13
+        version: 0.1.13
       '@polkadot-api/substrate-bindings':
-        specifier: ~0.10.0
-        version: 0.10.0
+        specifier: ~0.11.0
+        version: 0.11.0
       '@polkadot-api/substrate-client':
         specifier: ~0.3.0
         version: 0.3.0
@@ -905,8 +905,8 @@ importers:
         specifier: ~0.1.2
         version: 0.1.2
       '@polkadot-api/view-builder':
-        specifier: ~0.4.0
-        version: 0.4.0
+        specifier: ~0.4.1
+        version: 0.4.1
       '@polkadot-labs/hdkd':
         specifier: ^0.0.10
         version: 0.0.10
@@ -2714,15 +2714,15 @@ packages:
     resolution: {integrity: sha512-UA91GwWPhFExt3IizW6bOeY/pQ0BkuNwKjk9iQW9KqxluGCrg4VenZ0/L+2Y0+ZOtme72EVvg6v0zo3AMQRCeA==}
     engines: {node: '>=12'}
 
-  '@polkadot-api/cli@0.9.22':
-    resolution: {integrity: sha512-nslmAuAeMVExZz9AOUnV2u76PhYhObj9aW64vRqPp7kwAgA/ojOSVwS0Xk7OCeYq8VDSEGxvNPEKn1DW2FjXHg==}
+  '@polkadot-api/cli@0.10.0':
+    resolution: {integrity: sha512-ItuM4l3ZPJYy1dx4X50X3rZK7TpWT0unBGRe+mMRcY4TyRkWK2nIMwcA+ggqBiEaM22SpFh9DCixZtRt43OKkg==}
     hasBin: true
 
-  '@polkadot-api/codegen@0.12.11':
-    resolution: {integrity: sha512-JbQJ4HrdUnHzYkVj4W4uS/lxoRO97DBWKpISx5nLyneZ5kq3V4SDaSjwDTpO+7xWZAniL9b6wA2UiM8F9C9vXw==}
+  '@polkadot-api/codegen@0.12.12':
+    resolution: {integrity: sha512-0jurC0ziMs0CEmHCZ8o2b4kE2pJz0rb/7LzeX/r0ngx60IJV14KSAFoAfipEMgmui3uTsP9goT/q4RmgnZ/2CQ==}
 
-  '@polkadot-api/ink-contracts@0.2.3':
-    resolution: {integrity: sha512-gjwpeTMtKAMG0k1RqKAECJmX8CWsY1TP2xiGP4rqbelhXTirootMHqMzYvS9Bn6CVYnipuN97UWiT8wBHpEr6g==}
+  '@polkadot-api/ink-contracts@0.2.4':
+    resolution: {integrity: sha512-peBYPJ0UNMpfTk6iNnDv9293miuOyc8L29UbdtcnEBUKgEnhX4U0ke4oFmbuknYMATHU9nyMY3ftXPcYDpTmwQ==}
 
   '@polkadot-api/json-rpc-provider-proxy@0.2.4':
     resolution: {integrity: sha512-nuGoY9QpBAiRU7xmXN3nugFvPcnSu3IxTLm1OWcNTGlZ1LW5bvdQHz3JLk56+Jlyb3GJ971hqdg2DJsMXkKCOg==}
@@ -2730,26 +2730,26 @@ packages:
   '@polkadot-api/json-rpc-provider@0.0.4':
     resolution: {integrity: sha512-9cDijLIxzHOBuq6yHqpqjJ9jBmXrctjc1OFqU+tQrS96adQze3mTIH6DTgfb/0LMrqxzxffz1HQGrIlEH00WrA==}
 
-  '@polkadot-api/known-chains@0.5.8':
-    resolution: {integrity: sha512-4UoxnqPeJ2viRykArIhUmYsgo2fc84mqC8o/qvmJ0w3r7qwO2/7NS2zpwMuricGtNvdNKyJRMGHAeJdrIfCB3A==}
+  '@polkadot-api/known-chains@0.6.0':
+    resolution: {integrity: sha512-qVNJhqqtjPYgpyEb70KyZPIKunhgR4D3AcZwx5D7QCOumSigEi3vB95pfHHsqER+44jYrlFqzGWauaMMZqQl2Q==}
 
   '@polkadot-api/logs-provider@0.0.6':
     resolution: {integrity: sha512-4WgHlvy+xee1ADaaVf6+MlK/+jGMtsMgAzvbQOJZnP4PfQuagoTqaeayk8HYKxXGphogLlPbD06tANxcb+nvAg==}
 
-  '@polkadot-api/metadata-builders@0.9.3':
-    resolution: {integrity: sha512-QFG/2r8I5vdty8nSV1zg1V8NIYgR0kJ/LazM6yzUZ704Xf+yFhMC1psqLfjmoiAYs1AR5suV8skaJ/+V9ZY30w==}
+  '@polkadot-api/metadata-builders@0.10.0':
+    resolution: {integrity: sha512-IQ9WHnyo0nuWudC39wW1wpRl2QZLL8O8WizwB2JjMv+UODJPsSouZpnGLfQo6mX2umGI1IDsTklb2frQOgVuWg==}
 
-  '@polkadot-api/metadata-compatibility@0.1.13':
-    resolution: {integrity: sha512-KWsGg6m6vJAezl1ECEIMHKc9fOhLXukK7mybngmOsURaICkqxyPJqgha/KExj1qnL11eH8+Z7jWKQ5I7att2FA==}
+  '@polkadot-api/metadata-compatibility@0.1.14':
+    resolution: {integrity: sha512-O7b2+d1uMYFWpe6yW6kY84PGwzdEPBeLopAX9vJl3WTBavF4GYjztM/BD9GjnZ6n2ehmSRjowqZu7EVxYvQYvQ==}
 
-  '@polkadot-api/observable-client@0.6.4':
-    resolution: {integrity: sha512-2wgafHvZP5VroqOHLgoeSBWZRh3vuwTVUqPBI3VmHwDbSfMlUB3dm3ySo6tecXcQWonuKVquCPxBxuY0BV2mBw==}
+  '@polkadot-api/observable-client@0.7.0':
+    resolution: {integrity: sha512-ssDilIFNR+tEMbb9GE/fRXjhKvuFV32DANn5BuQWKOyDbE/d/G206SxLIgBPEQ4HbEzASxFSXJ5L1goDNkJdUA==}
     peerDependencies:
       '@polkadot-api/substrate-client': 0.3.0
       rxjs: '>=7.8.0'
 
-  '@polkadot-api/pjs-signer@0.6.2':
-    resolution: {integrity: sha512-NOkzD6/4zHivr6nhLcWnlZguuyJVtsgrdA37VQj112YmIW5AHpcAbmnO4Vub19wjntlppXwVSQC5B89MkOwhkg==}
+  '@polkadot-api/pjs-signer@0.6.3':
+    resolution: {integrity: sha512-xXLwtDACcFRi5gyze1sfS/GBTjvs1E12R4zvB6TiIzUskFoc26+5xEqjpgo6VRnuIMVv5kWkCEQt+b5F7t76sw==}
 
   '@polkadot-api/polkadot-sdk-compat@2.3.1':
     resolution: {integrity: sha512-rb8IWmPRhKWD9NG4zh2n4q0HlEAvq+Cv1CbD+8YxH0XAqIIiFA+ch5JeDCIxQYngkn/43B0Gs7Gtzh18yv2yoA==}
@@ -2757,11 +2757,11 @@ packages:
   '@polkadot-api/polkadot-signer@0.1.6':
     resolution: {integrity: sha512-X7ghAa4r7doETtjAPTb50IpfGtrBmy3BJM5WCfNKa1saK04VFY9w+vDn+hwEcM4p0PcDHt66Ts74hzvHq54d9A==}
 
-  '@polkadot-api/signer@0.1.12':
-    resolution: {integrity: sha512-Fpsb0DdfsFnKXrKDTkVssfzOVKqGZ087pLsezOTr7Jf2BvlUoFLraDn4QQdnSFFiUskMWtJBUl1mBJBlKIU1AQ==}
+  '@polkadot-api/signer@0.1.13':
+    resolution: {integrity: sha512-QFBeupXDoK/XVno9RdnUoh5HiPC8YC+HtbL0Jz61WrfnBRo77Trv5b0w7pUngpqjQzRY1w68TbETNTqRPtZOFA==}
 
-  '@polkadot-api/signers-common@0.1.3':
-    resolution: {integrity: sha512-Sd68OvuyBLRHRovU3OJgq407OlGoOTb/KLtlV5SnHGRKXDdTI0ArxnGEWICGUm7w4MpbNn5rrnbXGjKS51/YjA==}
+  '@polkadot-api/signers-common@0.1.4':
+    resolution: {integrity: sha512-KMJuu6IMB0K17ppCZM6TSwshTQ8Zgx59+BPVouqnU8pxr+h7EqWf7wv72WyytEAbThWIqFr1VHIdaCj54eeVlg==}
 
   '@polkadot-api/sm-provider@0.1.7':
     resolution: {integrity: sha512-BhNKVeIFZdawpPVadXszLl8IP4EDjcLHe/GchfRRFkvoNFuwS2nNv/npYIqCviXV+dd2R8VnEELxwScsf380Og==}
@@ -2771,8 +2771,8 @@ packages:
   '@polkadot-api/smoldot@0.3.8':
     resolution: {integrity: sha512-dbJSMRFtELDW+rZIWRwKE/K8oy7+gYaGl+DvaOjARoBW2n80rJ7RAMOCCu+b5h2zgl3elftFBwMNAuAWgHT/Zg==}
 
-  '@polkadot-api/substrate-bindings@0.10.0':
-    resolution: {integrity: sha512-0YcYdZ7gU4f/yE8eZ+xDiUDlWOnKSdZI77PZT8Dz0TnXdeYhRehh6PGPp7zY0UoT6d5zGrEq7E7x1FPMCR0Rfw==}
+  '@polkadot-api/substrate-bindings@0.11.0':
+    resolution: {integrity: sha512-UGCa0xYtfcS/5LJAcro1vhIwxF31fsF5f42mzro9G85T854cbXPzqABDICYmJqdF72tBRMrnJlx6okGtLx9TKA==}
 
   '@polkadot-api/substrate-client@0.3.0':
     resolution: {integrity: sha512-0hEvQLKH2zhaFzE8DPkWehvJilec8u2O2wbIEUStm0OJ8jIFtJ40MFjXQfB01dXBWUz1KaVBqS6xd3sZA90Dpw==}
@@ -2780,8 +2780,8 @@ packages:
   '@polkadot-api/utils@0.1.2':
     resolution: {integrity: sha512-yhs5k2a8N1SBJcz7EthZoazzLQUkZxbf+0271Xzu42C5AEM9K9uFLbsB+ojzHEM72O5X8lPtSwGKNmS7WQyDyg==}
 
-  '@polkadot-api/view-builder@0.4.0':
-    resolution: {integrity: sha512-Yd7g4JmUCXL+QdnIWT/EIZDD++KgUDw9J3jv56G3YMTcDj9dp9GJ6ANP7oNJfp8J6d7SEak1lZs4ihJ1FA8O2w==}
+  '@polkadot-api/view-builder@0.4.1':
+    resolution: {integrity: sha512-cnAdii568RZ+ZYuHWe81eV+tRP7pAWuoc7PF9jWtXyhYivhI692DMWyG0sztaNKwK3s9XbLwdYgUwkWL9ZrhYA==}
 
   '@polkadot-api/wasm-executor@0.1.2':
     resolution: {integrity: sha512-a5wGenltB3EFPdf72u8ewi6HsUg2qubUAf3ekJprZf24lTK3+w8a/GUF/y6r08LJF35MALZ32SAtLqtVTIOGnQ==}
@@ -4070,8 +4070,8 @@ packages:
   '@types/node@20.14.10':
     resolution: {integrity: sha512-MdiXf+nDuMvY0gJKxyfZ7/6UFsETO7mGKF54MVD/ekJS6HdFtpZFBgrh6Pseu64XTb2MLyFPlbW6hj8HYRQNOQ==}
 
-  '@types/node@22.10.0':
-    resolution: {integrity: sha512-XC70cRZVElFHfIUB40FgZOBbgJYFKKMa5nb9lxcwYstFG/Mi+/Y0bGS+rs6Dmhmkpq4pnNiLiuZAbc02YCOnmA==}
+  '@types/node@22.10.2':
+    resolution: {integrity: sha512-Xxr6BBRCAOQixvonOye19wnzyDiUtTeqldOOmj3CkeblonbccA12PFwlufvRdrpjXxqnmUaeiU5EOA+7s5diUQ==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -5756,8 +5756,8 @@ packages:
     resolution: {integrity: sha512-VyhnebXciFV2DESc+p6B+y0LjSm0krU4OgJN44qFAhBY0TJ+1V61tYD2+wHusZ6F9n5K+vl8k0sTy7PEfV4qpg==}
     engines: {node: '>=16.17'}
 
-  execa@9.5.1:
-    resolution: {integrity: sha512-QY5PPtSonnGwhhHDNI7+3RvY285c7iuJFFB+lU+oEzMY/gEGJ808owqJsrr8Otd1E/x07po1LkUBmdAc5duPAg==}
+  execa@9.5.2:
+    resolution: {integrity: sha512-EHlpxMCpHWSAh1dgS6bVeoLAXGnJNdR93aabr4QCGbzOM73o5XmRfM/e5FUqsw3aagP8S8XEWUWFAxnRBnAF0Q==}
     engines: {node: ^18.19.0 || >=20.5.0}
 
   expect-type@1.1.0:
@@ -7490,8 +7490,8 @@ packages:
     resolution: {integrity: sha512-OLS/0XeUAcE8a2fdwemNja+udKgXNnY6yKVIXqAD2zVRx1KvY6Ato/rZ2vdzbxqYwPW0u6SCNC/bAMPNzpzxbw==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  polkadot-api@1.7.8:
-    resolution: {integrity: sha512-cMmzGbzcwi4IB+5r5Z/nAzHlZ2D5qRLoPAkMBDtF27icMr6W3YsWoaQgxnPFh/5r2W8FdNj2VtzKgtL18TUeOw==}
+  polkadot-api@1.8.1:
+    resolution: {integrity: sha512-E2Jh9tiO6eB/fjnwr68mnZAZ/UuoZPBZQKjplHSMjVgNNQEkNZSqDcFvH18Rag5x4z7oJzuEk9+Hj62u/+D1PQ==}
     hasBin: true
     peerDependencies:
       rxjs: '>=7.8.0'
@@ -11009,26 +11009,26 @@ snapshots:
       '@pnpm/network.ca-file': 1.0.2
       config-chain: 1.1.13
 
-  '@polkadot-api/cli@0.9.22(@swc/core@1.8.0(@swc/helpers@0.5.11))(jiti@1.21.6)(postcss@8.4.47)(yaml@2.5.1)':
+  '@polkadot-api/cli@0.10.0(@swc/core@1.8.0(@swc/helpers@0.5.11))(jiti@1.21.6)(postcss@8.4.47)(yaml@2.5.1)':
     dependencies:
       '@commander-js/extra-typings': 12.1.0(commander@12.1.0)
-      '@polkadot-api/codegen': 0.12.11
-      '@polkadot-api/ink-contracts': 0.2.3
+      '@polkadot-api/codegen': 0.12.12
+      '@polkadot-api/ink-contracts': 0.2.4
       '@polkadot-api/json-rpc-provider': 0.0.4
-      '@polkadot-api/known-chains': 0.5.8
-      '@polkadot-api/metadata-compatibility': 0.1.13
-      '@polkadot-api/observable-client': 0.6.4(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
+      '@polkadot-api/known-chains': 0.6.0
+      '@polkadot-api/metadata-compatibility': 0.1.14
+      '@polkadot-api/observable-client': 0.7.0(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
       '@polkadot-api/polkadot-sdk-compat': 2.3.1
       '@polkadot-api/sm-provider': 0.1.7(@polkadot-api/smoldot@0.3.8)
       '@polkadot-api/smoldot': 0.3.8
-      '@polkadot-api/substrate-bindings': 0.10.0
+      '@polkadot-api/substrate-bindings': 0.11.0
       '@polkadot-api/substrate-client': 0.3.0
       '@polkadot-api/utils': 0.1.2
       '@polkadot-api/wasm-executor': 0.1.2
       '@polkadot-api/ws-provider': 0.3.6(patch_hash=movrkpuzjy6i3qk43pefldjxp4)
-      '@types/node': 22.10.0
+      '@types/node': 22.10.2
       commander: 12.1.0
-      execa: 9.5.1
+      execa: 9.5.2
       fs.promises.exists: 1.1.4
       ora: 8.1.1
       read-pkg: 9.0.1
@@ -11048,18 +11048,18 @@ snapshots:
       - utf-8-validate
       - yaml
 
-  '@polkadot-api/codegen@0.12.11':
+  '@polkadot-api/codegen@0.12.12':
     dependencies:
-      '@polkadot-api/ink-contracts': 0.2.3
-      '@polkadot-api/metadata-builders': 0.9.3
-      '@polkadot-api/metadata-compatibility': 0.1.13
-      '@polkadot-api/substrate-bindings': 0.10.0
+      '@polkadot-api/ink-contracts': 0.2.4
+      '@polkadot-api/metadata-builders': 0.10.0
+      '@polkadot-api/metadata-compatibility': 0.1.14
+      '@polkadot-api/substrate-bindings': 0.11.0
       '@polkadot-api/utils': 0.1.2
 
-  '@polkadot-api/ink-contracts@0.2.3':
+  '@polkadot-api/ink-contracts@0.2.4':
     dependencies:
-      '@polkadot-api/metadata-builders': 0.9.3
-      '@polkadot-api/substrate-bindings': 0.10.0
+      '@polkadot-api/metadata-builders': 0.10.0
+      '@polkadot-api/substrate-bindings': 0.11.0
       '@polkadot-api/utils': 0.1.2
       scale-ts: 1.6.1
 
@@ -11067,36 +11067,36 @@ snapshots:
 
   '@polkadot-api/json-rpc-provider@0.0.4': {}
 
-  '@polkadot-api/known-chains@0.5.8': {}
+  '@polkadot-api/known-chains@0.6.0': {}
 
   '@polkadot-api/logs-provider@0.0.6':
     dependencies:
       '@polkadot-api/json-rpc-provider': 0.0.4
 
-  '@polkadot-api/metadata-builders@0.9.3':
+  '@polkadot-api/metadata-builders@0.10.0':
     dependencies:
-      '@polkadot-api/substrate-bindings': 0.10.0
+      '@polkadot-api/substrate-bindings': 0.11.0
       '@polkadot-api/utils': 0.1.2
 
-  '@polkadot-api/metadata-compatibility@0.1.13':
+  '@polkadot-api/metadata-compatibility@0.1.14':
     dependencies:
-      '@polkadot-api/metadata-builders': 0.9.3
-      '@polkadot-api/substrate-bindings': 0.10.0
+      '@polkadot-api/metadata-builders': 0.10.0
+      '@polkadot-api/substrate-bindings': 0.11.0
 
-  '@polkadot-api/observable-client@0.6.4(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)':
+  '@polkadot-api/observable-client@0.7.0(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)':
     dependencies:
-      '@polkadot-api/metadata-builders': 0.9.3
-      '@polkadot-api/substrate-bindings': 0.10.0
+      '@polkadot-api/metadata-builders': 0.10.0
+      '@polkadot-api/substrate-bindings': 0.11.0
       '@polkadot-api/substrate-client': 0.3.0
       '@polkadot-api/utils': 0.1.2
       rxjs: 7.8.1
 
-  '@polkadot-api/pjs-signer@0.6.2':
+  '@polkadot-api/pjs-signer@0.6.3':
     dependencies:
-      '@polkadot-api/metadata-builders': 0.9.3
+      '@polkadot-api/metadata-builders': 0.10.0
       '@polkadot-api/polkadot-signer': 0.1.6
-      '@polkadot-api/signers-common': 0.1.3
-      '@polkadot-api/substrate-bindings': 0.10.0
+      '@polkadot-api/signers-common': 0.1.4
+      '@polkadot-api/substrate-bindings': 0.11.0
       '@polkadot-api/utils': 0.1.2
 
   '@polkadot-api/polkadot-sdk-compat@2.3.1':
@@ -11105,19 +11105,19 @@ snapshots:
 
   '@polkadot-api/polkadot-signer@0.1.6': {}
 
-  '@polkadot-api/signer@0.1.12':
+  '@polkadot-api/signer@0.1.13':
     dependencies:
       '@noble/hashes': 1.6.1
       '@polkadot-api/polkadot-signer': 0.1.6
-      '@polkadot-api/signers-common': 0.1.3
-      '@polkadot-api/substrate-bindings': 0.10.0
+      '@polkadot-api/signers-common': 0.1.4
+      '@polkadot-api/substrate-bindings': 0.11.0
       '@polkadot-api/utils': 0.1.2
 
-  '@polkadot-api/signers-common@0.1.3':
+  '@polkadot-api/signers-common@0.1.4':
     dependencies:
-      '@polkadot-api/metadata-builders': 0.9.3
+      '@polkadot-api/metadata-builders': 0.10.0
       '@polkadot-api/polkadot-signer': 0.1.6
-      '@polkadot-api/substrate-bindings': 0.10.0
+      '@polkadot-api/substrate-bindings': 0.11.0
       '@polkadot-api/utils': 0.1.2
 
   '@polkadot-api/sm-provider@0.1.7(@polkadot-api/smoldot@0.3.8)':
@@ -11128,13 +11128,13 @@ snapshots:
 
   '@polkadot-api/smoldot@0.3.8':
     dependencies:
-      '@types/node': 22.10.0
+      '@types/node': 22.10.2
       smoldot: 2.0.34
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@polkadot-api/substrate-bindings@0.10.0':
+  '@polkadot-api/substrate-bindings@0.11.0':
     dependencies:
       '@noble/hashes': 1.6.1
       '@polkadot-api/utils': 0.1.2
@@ -11148,10 +11148,10 @@ snapshots:
 
   '@polkadot-api/utils@0.1.2': {}
 
-  '@polkadot-api/view-builder@0.4.0':
+  '@polkadot-api/view-builder@0.4.1':
     dependencies:
-      '@polkadot-api/metadata-builders': 0.9.3
-      '@polkadot-api/substrate-bindings': 0.10.0
+      '@polkadot-api/metadata-builders': 0.10.0
+      '@polkadot-api/substrate-bindings': 0.11.0
       '@polkadot-api/utils': 0.1.2
 
   '@polkadot-api/wasm-executor@0.1.2': {}
@@ -12560,7 +12560,7 @@ snapshots:
     dependencies:
       undici-types: 5.26.5
 
-  '@types/node@22.10.0':
+  '@types/node@22.10.2':
     dependencies:
       undici-types: 6.20.0
 
@@ -12873,10 +12873,10 @@ snapshots:
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@vitejs/plugin-react-swc@3.7.1(@swc/helpers@0.5.11)(vite@5.4.10(@types/node@22.10.0)(terser@5.31.1))':
+  '@vitejs/plugin-react-swc@3.7.1(@swc/helpers@0.5.11)(vite@5.4.10(@types/node@22.10.2)(terser@5.31.1))':
     dependencies:
       '@swc/core': 1.8.0(@swc/helpers@0.5.11)
-      vite: 5.4.10(@types/node@22.10.0)(terser@5.31.1)
+      vite: 5.4.10(@types/node@22.10.2)(terser@5.31.1)
     transitivePeerDependencies:
       - '@swc/helpers'
 
@@ -12891,14 +12891,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@4.3.2(vite@5.4.10(@types/node@22.10.0)(terser@5.31.1))':
+  '@vitejs/plugin-react@4.3.2(vite@5.4.10(@types/node@22.10.2)(terser@5.31.1))':
     dependencies:
       '@babel/core': 7.25.7
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.25.7)
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.25.7)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.10(@types/node@22.10.0)(terser@5.31.1)
+      vite: 5.4.10(@types/node@22.10.2)(terser@5.31.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -12917,13 +12917,13 @@ snapshots:
     optionalDependencies:
       vite: 5.4.10(@types/node@20.14.10)(terser@5.31.1)
 
-  '@vitest/mocker@2.1.4(vite@5.4.10(@types/node@22.10.0)(terser@5.31.1))':
+  '@vitest/mocker@2.1.4(vite@5.4.10(@types/node@22.10.2)(terser@5.31.1))':
     dependencies:
       '@vitest/spy': 2.1.4
       estree-walker: 3.0.3
       magic-string: 0.30.12
     optionalDependencies:
-      vite: 5.4.10(@types/node@22.10.0)(terser@5.31.1)
+      vite: 5.4.10(@types/node@22.10.2)(terser@5.31.1)
 
   '@vitest/pretty-format@2.1.4':
     dependencies:
@@ -14779,7 +14779,7 @@ snapshots:
       signal-exit: 4.1.0
       strip-final-newline: 3.0.0
 
-  execa@9.5.1:
+  execa@9.5.2:
     dependencies:
       '@sindresorhus/merge-streams': 4.0.0
       cross-spawn: 7.0.3
@@ -16606,26 +16606,27 @@ snapshots:
 
   polite-json@5.0.0: {}
 
-  polkadot-api@1.7.8(@swc/core@1.8.0(@swc/helpers@0.5.11))(jiti@1.21.6)(postcss@8.4.47)(rxjs@7.8.1)(yaml@2.5.1):
+  polkadot-api@1.8.1(@swc/core@1.8.0(@swc/helpers@0.5.11))(jiti@1.21.6)(postcss@8.4.47)(rxjs@7.8.1)(yaml@2.5.1):
     dependencies:
-      '@polkadot-api/cli': 0.9.22(@swc/core@1.8.0(@swc/helpers@0.5.11))(jiti@1.21.6)(postcss@8.4.47)(yaml@2.5.1)
-      '@polkadot-api/ink-contracts': 0.2.3
+      '@polkadot-api/cli': 0.10.0(@swc/core@1.8.0(@swc/helpers@0.5.11))(jiti@1.21.6)(postcss@8.4.47)(yaml@2.5.1)
+      '@polkadot-api/ink-contracts': 0.2.4
       '@polkadot-api/json-rpc-provider': 0.0.4
-      '@polkadot-api/known-chains': 0.5.8
+      '@polkadot-api/known-chains': 0.6.0
       '@polkadot-api/logs-provider': 0.0.6
-      '@polkadot-api/metadata-builders': 0.9.3
-      '@polkadot-api/metadata-compatibility': 0.1.13
-      '@polkadot-api/observable-client': 0.6.4(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
-      '@polkadot-api/pjs-signer': 0.6.2
+      '@polkadot-api/metadata-builders': 0.10.0
+      '@polkadot-api/metadata-compatibility': 0.1.14
+      '@polkadot-api/observable-client': 0.7.0(@polkadot-api/substrate-client@0.3.0)(rxjs@7.8.1)
+      '@polkadot-api/pjs-signer': 0.6.3
       '@polkadot-api/polkadot-sdk-compat': 2.3.1
       '@polkadot-api/polkadot-signer': 0.1.6
-      '@polkadot-api/signer': 0.1.12
+      '@polkadot-api/signer': 0.1.13
       '@polkadot-api/sm-provider': 0.1.7(@polkadot-api/smoldot@0.3.8)
       '@polkadot-api/smoldot': 0.3.8
-      '@polkadot-api/substrate-bindings': 0.10.0
+      '@polkadot-api/substrate-bindings': 0.11.0
       '@polkadot-api/substrate-client': 0.3.0
       '@polkadot-api/utils': 0.1.2
       '@polkadot-api/ws-provider': 0.3.6(patch_hash=movrkpuzjy6i3qk43pefldjxp4)
+      '@rx-state/core': 0.1.4(rxjs@7.8.1)
       rxjs: 7.8.1
     transitivePeerDependencies:
       - '@microsoft/api-extractor'
@@ -18182,12 +18183,12 @@ snapshots:
       - supports-color
       - terser
 
-  vite-node@2.1.4(@types/node@22.10.0)(terser@5.31.1):
+  vite-node@2.1.4(@types/node@22.10.2)(terser@5.31.1):
     dependencies:
       cac: 6.7.14
       debug: 4.3.7
       pathe: 1.1.2
-      vite: 5.4.10(@types/node@22.10.0)(terser@5.31.1)
+      vite: 5.4.10(@types/node@22.10.2)(terser@5.31.1)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -18199,7 +18200,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-html@3.2.2(vite@5.4.10(@types/node@22.10.0)(terser@5.31.1)):
+  vite-plugin-html@3.2.2(vite@5.4.10(@types/node@22.10.2)(terser@5.31.1)):
     dependencies:
       '@rollup/pluginutils': 4.2.1
       colorette: 2.0.20
@@ -18213,7 +18214,7 @@ snapshots:
       html-minifier-terser: 6.1.0
       node-html-parser: 5.4.2
       pathe: 0.2.0
-      vite: 5.4.10(@types/node@22.10.0)(terser@5.31.1)
+      vite: 5.4.10(@types/node@22.10.2)(terser@5.31.1)
 
   vite-plugin-web-extension@4.2.0(@types/node@20.14.10)(terser@5.31.1):
     dependencies:
@@ -18263,13 +18264,13 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.31.1
 
-  vite@5.4.10(@types/node@22.10.0)(terser@5.31.1):
+  vite@5.4.10(@types/node@22.10.2)(terser@5.31.1):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.47
       rollup: 4.20.0
     optionalDependencies:
-      '@types/node': 22.10.0
+      '@types/node': 22.10.2
       fsevents: 2.3.3
       terser: 5.31.1
 
@@ -18309,10 +18310,10 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@2.1.4(@types/node@22.10.0)(jsdom@24.1.0)(terser@5.31.1):
+  vitest@2.1.4(@types/node@22.10.2)(jsdom@24.1.0)(terser@5.31.1):
     dependencies:
       '@vitest/expect': 2.1.4
-      '@vitest/mocker': 2.1.4(vite@5.4.10(@types/node@22.10.0)(terser@5.31.1))
+      '@vitest/mocker': 2.1.4(vite@5.4.10(@types/node@22.10.2)(terser@5.31.1))
       '@vitest/pretty-format': 2.1.4
       '@vitest/runner': 2.1.4
       '@vitest/snapshot': 2.1.4
@@ -18328,11 +18329,11 @@ snapshots:
       tinyexec: 0.3.1
       tinypool: 1.0.1
       tinyrainbow: 1.2.0
-      vite: 5.4.10(@types/node@22.10.0)(terser@5.31.1)
-      vite-node: 2.1.4(@types/node@22.10.0)(terser@5.31.1)
+      vite: 5.4.10(@types/node@22.10.2)(terser@5.31.1)
+      vite-node: 2.1.4(@types/node@22.10.2)(terser@5.31.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 22.10.0
+      '@types/node': 22.10.2
       jsdom: 24.1.0
     transitivePeerDependencies:
       - less
