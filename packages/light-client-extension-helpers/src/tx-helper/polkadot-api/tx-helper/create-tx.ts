@@ -7,8 +7,10 @@ import {
 } from "./signed-extensions/user/index.js"
 import * as chainSignedExtensions from "./signed-extensions/chain/index.js"
 import type { PolkadotSigner } from "@polkadot-api/polkadot-signer"
-import { _void } from "@polkadot-api/substrate-bindings"
+import { _void, type Encoder } from "@polkadot-api/substrate-bindings"
 import { empty } from "./signed-extensions/utils.js"
+import type { CustomSignedExtensionValues } from "./types.js"
+import { mapObject } from "@polkadot-api/utils"
 
 type HintedSignedExtensions = Partial<{
   tip: bigint
@@ -17,17 +19,48 @@ type HintedSignedExtensions = Partial<{
   nonce: number
 }>
 
+const empty$ = of({
+  value: empty,
+  additionalSigned: empty,
+})
+
+const getCustomSignExt = <T extends Record<string, any>>(
+  obj: T,
+  key: string,
+  encoder: Encoder<any>,
+) => {
+  if (!(key in obj)) return empty
+  const x = obj[key] as any
+  return x instanceof Uint8Array ? x : encoder(x)
+}
+
+const getEncodedSignExtFromCustom = (
+  custom: CustomSignedExtensionValues,
+  valueEnc: Encoder<any>,
+  additionalSignedEnc: Encoder<any>,
+) =>
+  of({
+    value: getCustomSignExt(custom, "value", valueEnc),
+    additionalSigned: getCustomSignExt(
+      custom,
+      "additionalSigned",
+      additionalSignedEnc,
+    ),
+  })
+
 export const createTx: (
   chainHead: ChainHead$,
   signer: PolkadotSigner,
   callData: Uint8Array,
   atBlock: BlockInfo,
+  customSignExt: Record<string, CustomSignedExtensionValues>,
   hinted?: HintedSignedExtensions,
 ) => Observable<Uint8Array> = (
   chainHead,
   signer,
   callData,
   atBlock,
+  customSignedExtensions,
   hinted = {},
 ) =>
   chainHead.getRuntimeContext$(atBlock.hash).pipe(
@@ -35,6 +68,7 @@ export const createTx: (
     mergeMap((ctx) => {
       const signedExtensionsCtx = {
         lookupFn: ctx.lookup,
+        dynamicBuilder: ctx.dynamicBuilder,
         chainHead: chainHead,
         callData: callData,
         at: atBlock.hash,
@@ -48,48 +82,51 @@ export const createTx: (
           : undefined // immortal
 
       return combineLatest(
-        ctx.lookup.metadata.extrinsic.signedExtensions.map(
-          ({ identifier, type, additionalSigned }) => {
-            if (identifier === "CheckMortality")
-              return CheckMortality(mortality, signedExtensionsCtx)
+        Object.fromEntries(
+          ctx.lookup.metadata.extrinsic.signedExtensions
+            .map(({ identifier, type, additionalSigned }) => {
+              const stream = () => {
+                if (identifier === "CheckMortality")
+                  return CheckMortality(mortality, signedExtensionsCtx)
 
-            if (identifier === "ChargeTransactionPayment")
-              return ChargeTransactionPayment(hinted.tip ?? 0n)
+                if (identifier === "ChargeTransactionPayment")
+                  return ChargeTransactionPayment(hinted.tip ?? 0n)
 
-            if (identifier === "ChargeAssetTxPayment")
-              return ChargeAssetTxPayment(hinted.tip ?? 0n, hinted.asset)
+                if (identifier === "ChargeAssetTxPayment")
+                  return ChargeAssetTxPayment(hinted.tip ?? 0n, hinted.asset)
 
-            if (identifier === "CheckNonce" && "nonce" in hinted)
-              return chainSignedExtensions.getNonce(hinted.nonce!)
+                if (identifier === "CheckNonce" && "nonce" in hinted)
+                  return chainSignedExtensions.getNonce(hinted.nonce!)
 
-            const fn = chainSignedExtensions[identifier as "CheckGenesis"]
-            if (!fn) {
-              if (
-                ctx.dynamicBuilder.buildDefinition(type) === _void &&
-                ctx.dynamicBuilder.buildDefinition(additionalSigned) === _void
-              )
-                return of({
-                  value: empty,
-                  additionalSigned: empty,
-                })
+                const fn = chainSignedExtensions[identifier as "CheckGenesis"]
+                const [valueEnc] = ctx.dynamicBuilder.buildDefinition(type)
+                const [additionalSignedEnc] =
+                  ctx.dynamicBuilder.buildDefinition(additionalSigned)
+                return fn
+                  ? fn(signedExtensionsCtx)
+                  : valueEnc === _void[0] && additionalSignedEnc === _void[0]
+                    ? empty$
+                    : identifier in customSignedExtensions
+                      ? getEncodedSignExtFromCustom(
+                          customSignedExtensions[identifier],
+                          valueEnc,
+                          additionalSignedEnc,
+                        )
+                      : null
+              }
 
-              throw new Error(`Unsupported signed-extension: ${identifier}`)
-            }
-            return fn(signedExtensionsCtx)
-          },
+              return [identifier, stream()!] as const
+            })
+            .filter((x) => x[1]),
         ),
       ).pipe(
         mergeMap((signedExtensions) =>
           signer.signTx(
             callData,
-            Object.fromEntries(
-              ctx.lookup.metadata.extrinsic.signedExtensions.map(
-                ({ identifier }, idx) => [
-                  identifier,
-                  { identifier, ...signedExtensions[idx] },
-                ],
-              ),
-            ),
+            mapObject(signedExtensions, (v, identifier: string) => ({
+              identifier,
+              ...v,
+            })),
             ctx.metadataRaw,
             atBlock.number,
           ),

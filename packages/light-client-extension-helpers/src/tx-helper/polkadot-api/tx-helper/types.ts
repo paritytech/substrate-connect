@@ -38,6 +38,9 @@ export type TxInBestBlocksFound = {
   found: true
 } & TxEventsPayload
 
+export type EventWithTopics = SystemEvent["event"] & {
+  topics: SystemEvent["topics"]
+}
 export type TxEventsPayload = {
   /**
    * Verify if extrinsic was successful, i.e. check if `System.ExtrinsicSuccess`
@@ -48,7 +51,7 @@ export type TxEventsPayload = {
    * Array of all events emitted by the tx. Ordered as they are emitted
    * on-chain.
    */
-  events: Array<SystemEvent["event"]>
+  events: Array<EventWithTopics>
   /**
    * Block information where the tx is found. `hash` of the block, `number` of
    * the block, `index` of the tx in the block.
@@ -80,6 +83,18 @@ export type TxFinalized = {
 } & TxEventsPayload
 export type TxFinalizedPayload = { txHash: HexString } & TxEventsPayload
 
+export type CustomSignedExtensionValues =
+  | {
+      value: any
+      additionalSigned: any
+    }
+  | {
+      value: any
+    }
+  | {
+      additionalSigned: any
+    }
+
 export type TxOptions<Asset> = Partial<
   void extends Asset
     ? {
@@ -100,6 +115,17 @@ export type TxOptions<Asset> = Partial<
          * finalized block.
          */
         nonce: number
+        /**
+         * Custom values for chains that have custom signed-extensions.
+         * The key of the Object should be the signed-extension name and the
+         * value is an Object that accepts 2 possible keys: one for `value`
+         * and the other one for `additionallySigned`. They both receive either
+         * the encoded value as a `Uint8Array` that should be used for the
+         * signed-extension, or the decoded value that PAPI will encode using
+         * its dynamic codecs. At least one of the 2 values must be included
+         * into the signed-extension Object.
+         */
+        customSignedExtensions: Record<string, CustomSignedExtensionValues>
       }
     : {
         /**
@@ -124,6 +150,17 @@ export type TxOptions<Asset> = Partial<
          * finalized block.
          */
         nonce: number
+        /**
+         * Custom values for chains that have custom signed-extensions.
+         * The key of the Object should be the signed-extension name and the
+         * value is an Object that accepts 2 possible keys: one for `value`
+         * and the other one for `additionallySigned`. They both receive either
+         * the encoded value as a `Uint8Array` that should be used for the
+         * signed-extension, or the decoded value that PAPI will encode using
+         * its dynamic codecs. At least one of the 2 values must be included
+         * into the signed-extension Object.
+         */
+        customSignedExtensions: Record<string, CustomSignedExtensionValues>
       }
 >
 
@@ -372,3 +409,5 @@ export type TxFromBinary<Unsafe, Asset> = Unsafe extends true
         compatibilityToken: CompatibilityToken,
       ): Transaction<any, string, string, Asset>
     }
+
+export type FixedSizeArray<L extends number, T> = Array<T> & { length: L }
