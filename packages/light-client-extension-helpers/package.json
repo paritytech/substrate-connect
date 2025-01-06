@@ -1,6 +1,6 @@
 {
   "name": "@substrate/light-client-extension-helpers",
-  "version": "2.6.1",
+  "version": "2.7.0",
   "author": "Matias Volpe (https://github.com/kratico)",
   "type": "module",
   "repository": {
