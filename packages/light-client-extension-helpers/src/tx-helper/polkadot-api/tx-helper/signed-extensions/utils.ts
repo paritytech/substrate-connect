@@ -2,22 +2,31 @@ import {
   getDynamicBuilder,
   type MetadataLookup,
 } from "@polkadot-api/metadata-builders"
-import { Storage, Twox64Concat, u32 } from "@polkadot-api/substrate-bindings"
 import { fromHex } from "@polkadot-api/utils"
-import { map, noop, of } from "rxjs"
+import { map, of } from "rxjs"
 import type { ChainExtensionCtx } from "./internal-types.js"
 
 export const empty = new Uint8Array()
 
-const genesisHashStorageKey = Storage("System")("BlockHash", noop, [
-  u32,
-  Twox64Concat,
-]).enc(0)
-
-export const genesisHashFromCtx = (ctx: ChainExtensionCtx) =>
-  ctx.chainHead
-    .storage$(ctx.at, "value", () => genesisHashStorageKey, null)
+export const genesisHashFromCtx = (ctx: ChainExtensionCtx) => {
+  // there are chains (e.g. kilt) that use u64 as block number
+  // u64 is encoded as bigint
+  // using dynamic builder for safety
+  const {
+    keys: { enc },
+  } = ctx.dynamicBuilder.buildStorage("System", "BlockHash")
+  let key: string
+  try {
+    // for u32
+    key = enc(0)
+  } catch {
+    // for u64
+    key = enc(0n)
+  }
+  return ctx.chainHead
+    .storage$(ctx.at, "value", () => key, null)
     .pipe(map((result) => fromHex(result!)))
+}
 
 export const systemVersionProp$ = (
   propName: string,

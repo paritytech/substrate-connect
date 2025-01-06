@@ -10,10 +10,9 @@ import {
   mapLookupToTypedef,
   valueIsCompatibleWithDest,
 } from "@polkadot-api/metadata-compatibility"
-import {
-  type ChainHead$,
-  getObservableClient,
-  type RuntimeContext,
+import type {
+  ChainHead$,
+  RuntimeContext,
 } from "@polkadot-api/observable-client"
 import { Tuple, Vector } from "@polkadot-api/substrate-bindings"
 import { Observable, combineLatest, filter, firstValueFrom, map } from "rxjs"
@@ -70,7 +69,7 @@ const TypesCodec = Tuple(EntryPointsCodec, TypedefsCodec)
 
 export const createCompatibilityToken = <D extends ChainDefinition>(
   chainDefinition: D,
-  chainHead: ReturnType<ReturnType<typeof getObservableClient>["chainHead$"]>,
+  chainHead: ChainHead$,
 ): Promise<CompatibilityToken<D>> => {
   const awaitedRuntime = new Promise<() => RuntimeContext>(async (resolve) => {
     const loadedRuntime$ = chainHead.runtime$.pipe(filter((v) => v != null))
@@ -90,10 +89,18 @@ export const createCompatibilityToken = <D extends ChainDefinition>(
     compatibilityTokenApi.set(token, {
       runtime,
       getPalletEntryPoint(opType, pallet, name) {
-        return entryPoints[descriptors[opType][pallet][name]]
+        const idx = descriptors[opType]?.[pallet]?.[name]
+        if (idx == null)
+          throw new Error(
+            `Descriptor for ${opType} ${pallet}.${name} does not exist`,
+          )
+        return entryPoints[idx]
       },
       getApiEntryPoint(name, method) {
-        return entryPoints[descriptors.apis[name][method]]
+        const idx = descriptors.apis?.[name]?.[method]
+        if (idx == null)
+          throw new Error(`Descriptor for API ${name}.${method} does not exist`)
+        return entryPoints[idx]
       },
       typedefNodes,
     })
@@ -105,7 +112,7 @@ export const createCompatibilityToken = <D extends ChainDefinition>(
 }
 
 export const createRuntimeToken = <D>(
-  chainHead: ReturnType<ReturnType<typeof getObservableClient>["chainHead$"]>,
+  chainHead: ChainHead$,
 ): Promise<RuntimeToken<D>> => {
   const awaitedRuntime = new Promise<() => RuntimeContext>(async (resolve) => {
     const loadedRuntime$ = chainHead.runtime$.pipe(filter((v) => v != null))
@@ -149,7 +156,7 @@ const getMetadataCache = (ctx: RuntimeContext) => {
 export const compatibilityHelper = (
   descriptors: Promise<RuntimeToken | CompatibilityToken>,
   getDescriptorEntryPoint: (descriptorApi: CompatibilityTokenApi) => EntryPoint,
-  getRuntimeEntryPoint: (ctx: RuntimeContext) => EntryPoint,
+  getRuntimeEntryPoint: (ctx: RuntimeContext) => EntryPoint | null,
 ) => {
   const getRuntimeTypedef = (ctx: RuntimeContext, id: number) => {
     const cache = getMetadataCache(ctx)
@@ -176,6 +183,11 @@ export const compatibilityHelper = (
     ctx ||= compatibilityApi.runtime()
     const descriptorEntryPoint = getDescriptorEntryPoint(compatibilityApi)
     const runtimeEntryPoint = getRuntimeEntryPoint(ctx)
+    if (runtimeEntryPoint == null)
+      return {
+        args: CompatibilityLevel.Incompatible,
+        values: CompatibilityLevel.Incompatible,
+      }
     const descriptorNodes = compatibilityApi.typedefNodes
 
     const cache = getMetadataCache(ctx)
@@ -198,9 +210,8 @@ export const compatibilityHelper = (
       getCompatibilityLevel(runtime) >= threshold,
   )
 
-  const waitDescriptors = () => descriptors
   const compatibleRuntime$ = (chainHead: ChainHead$, hash: string | null) =>
-    combineLatest([waitDescriptors(), chainHead.getRuntimeContext$(hash)])
+    combineLatest([descriptors, chainHead.getRuntimeContext$(hash)])
 
   const withCompatibleRuntime =
     <T>(chainHead: ChainHead$, mapper: (x: T) => string) =>
@@ -209,7 +220,7 @@ export const compatibilityHelper = (
     ): Observable<[T, CompatibilityToken | RuntimeToken, RuntimeContext]> =>
       combineLatest([
         source$.pipe(chainHead.withRuntime(mapper)),
-        waitDescriptors(),
+        descriptors,
       ]).pipe(map(([[x, ctx], descriptors]) => [x, descriptors, ctx]))
 
   const argsAreCompatible = (
@@ -225,6 +236,7 @@ export const compatibilityHelper = (
     if (levels.values === CompatibilityLevel.Incompatible) return false
 
     const entryPoint = getRuntimeEntryPoint(ctx)
+    if (entryPoint == null) return false
 
     return valueIsCompatibleWithDest(
       entryPoint.args,
@@ -257,7 +269,7 @@ export const compatibilityHelper = (
     isCompatible,
     getCompatibilityLevel,
     getCompatibilityLevels,
-    waitDescriptors,
+    descriptors,
     withCompatibleRuntime,
     compatibleRuntime$,
     argsAreCompatible,

@@ -139,7 +139,7 @@ const getTxSuccessFromSystemEvents = (
 ): Omit<TxEventsPayload, "block"> => {
   const events = systemEvents
     .filter((x) => x.phase.type === "ApplyExtrinsic" && x.phase.value === txIdx)
-    .map((x) => x.event)
+    .map((x) => ({ ...x.event, topics: x.topics }))
 
   const lastEvent = events[events.length - 1]
   if (

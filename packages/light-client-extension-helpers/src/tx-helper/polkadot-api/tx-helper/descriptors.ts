@@ -1,11 +1,14 @@
 import type { DescriptorValues } from "@polkadot-api/codegen"
+import type { OpaqueKeyHash } from "@polkadot-api/substrate-bindings"
+import type { FixedSizeArray } from "./types.js"
 
 export type PlainDescriptor<T> = { _type?: T }
 export type StorageDescriptor<
   Args extends Array<any>,
   T,
   Optional extends true | false,
-> = { _type: T; _args: Args; _optional: Optional }
+  Opaque extends string,
+> = { _type: T; _args: Args; _optional: Optional; _Opaque: Opaque }
 
 export type TxDescriptor<Args extends {} | undefined> = {
   ___: Args
@@ -17,7 +20,7 @@ export type RuntimeDescriptor<Args extends Array<any>, T> = [Args, T]
 export type DescriptorEntry<T> = Record<string, Record<string, T>>
 
 export type PalletsTypedef<
-  St extends DescriptorEntry<StorageDescriptor<any, any, any>>,
+  St extends DescriptorEntry<StorageDescriptor<any, any, any, any>>,
   Tx extends DescriptorEntry<TxDescriptor<any>>,
   Ev extends DescriptorEntry<PlainDescriptor<any>>,
   Err extends DescriptorEntry<PlainDescriptor<any>>,
@@ -45,17 +48,36 @@ export type ChainDefinition = {
   metadataTypes: Promise<Uint8Array>
 }
 
+type BuildTuple<L extends number, E, R extends Array<E>> = R["length"] extends L
+  ? R
+  : BuildTuple<L, E, [E, ...R]>
+type UnwrapFixedSizeArray<T extends Array<any>> = T extends [] | [any, ...any[]]
+  ? T
+  : T extends FixedSizeArray<infer L, infer E>
+    ? number extends L
+      ? T
+      : BuildTuple<L, E, []>
+    : T
+type RemapKeys<Key extends Array<any>, Opaque> = {
+  [K in keyof Key]: K extends Opaque ? OpaqueKeyHash : Key[K]
+}
+type ApplyOpaque<Key extends Array<any>, Opaque> = never extends Opaque
+  ? Key
+  : RemapKeys<UnwrapFixedSizeArray<Key>, Opaque>
+
 type ExtractStorage<
-  T extends DescriptorEntry<StorageDescriptor<any, any, any>>,
+  T extends DescriptorEntry<StorageDescriptor<any, any, any, any>>,
 > = {
   [K in keyof T]: {
     [KK in keyof T[K]]: T[K][KK] extends StorageDescriptor<
       infer Key,
       infer Value,
-      infer Optional
+      infer Optional,
+      infer Opaque
     >
       ? {
           KeyArgs: Key
+          KeyArgsOut: ApplyOpaque<Key, Opaque>
           Value: Value
           IsOptional: Optional
         }
