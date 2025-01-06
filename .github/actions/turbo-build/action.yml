@@ -3,7 +3,7 @@ inputs:
   node-version:
     description: Node version
     required: true
-    default: 20.x
+    default: 22.x
 runs:
   using: composite
   steps:
