@@ -175,8 +175,8 @@ importers:
         specifier: ^7.11.0
         version: 7.13.0(eslint@8.57.0)(typescript@5.6.2)
       '@vitejs/plugin-react-swc':
-        specifier: ^3.7.1
-        version: 3.7.1(@swc/helpers@0.5.11)(vite@6.0.7(@types/node@22.10.5)(jiti@1.21.6)(terser@5.31.1)(yaml@2.5.1))
+        specifier: ^3.7.2
+        version: 3.7.2(@swc/helpers@0.5.11)(vite@6.0.7(@types/node@22.10.5)(jiti@1.21.6)(terser@5.31.1)(yaml@2.5.1))
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
@@ -236,8 +236,8 @@ importers:
         specifier: ^7.11.0
         version: 7.13.0(eslint@8.57.0)(typescript@5.6.2)
       '@vitejs/plugin-react-swc':
-        specifier: ^3.7.1
-        version: 3.7.1(@swc/helpers@0.5.11)(vite@6.0.7(@types/node@22.10.5)(jiti@1.21.6)(terser@5.31.1)(yaml@2.5.1))
+        specifier: ^3.7.2
+        version: 3.7.2(@swc/helpers@0.5.11)(vite@6.0.7(@types/node@22.10.5)(jiti@1.21.6)(terser@5.31.1)(yaml@2.5.1))
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
@@ -833,8 +833,8 @@ importers:
         specifier: ^1.48.2
         version: 1.48.2
       '@vitejs/plugin-react-swc':
-        specifier: ^3.7.1
-        version: 3.7.1(@swc/helpers@0.5.11)(vite@6.0.7(@types/node@22.10.5)(jiti@1.21.6)(terser@5.31.1)(yaml@2.5.1))
+        specifier: ^3.7.2
+        version: 3.7.2(@swc/helpers@0.5.11)(vite@6.0.7(@types/node@22.10.5)(jiti@1.21.6)(terser@5.31.1)(yaml@2.5.1))
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.19(postcss@8.4.47)
@@ -1110,8 +1110,8 @@ importers:
         specifier: ^20.14.10
         version: 20.14.10
       '@vitejs/plugin-react-swc':
-        specifier: ^3.7.1
-        version: 3.7.1(@swc/helpers@0.5.11)(vite@6.0.7(@types/node@20.14.10)(jiti@1.21.6)(terser@5.31.1)(yaml@2.5.1))
+        specifier: ^3.7.2
+        version: 3.7.2(@swc/helpers@0.5.11)(vite@6.0.7(@types/node@20.14.10)(jiti@1.21.6)(terser@5.31.1)(yaml@2.5.1))
       '@webext-core/storage':
         specifier: ^1.2.0
         version: 1.2.0
@@ -4344,10 +4344,10 @@ packages:
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
-  '@vitejs/plugin-react-swc@3.7.1':
-    resolution: {integrity: sha512-vgWOY0i1EROUK0Ctg1hwhtC3SdcDjZcdit4Ups4aPkDcB1jYhmo+RMYWY87cmXMhvtD5uf8lV89j2w16vkdSVg==}
+  '@vitejs/plugin-react-swc@3.7.2':
+    resolution: {integrity: sha512-y0byko2b2tSVVf5Gpng1eEhX1OvPC7x8yns1Fx8jDzlJp4LS6CMkCPfLw47cjyoMrshQDoQw4qcgjsU9VvlCew==}
     peerDependencies:
-      vite: ^4 || ^5
+      vite: ^4 || ^5 || ^6
 
   '@vitejs/plugin-react@4.3.2':
     resolution: {integrity: sha512-hieu+o05v4glEBucTcKMK3dlES0OeJlD9YVOAPraVMOInBCwzumaIFiUjr4bHK7NPgnAHgiskUoceKercrN8vg==}
@@ -12983,14 +12983,14 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vitejs/plugin-react-swc@3.7.1(@swc/helpers@0.5.11)(vite@6.0.7(@types/node@20.14.10)(jiti@1.21.6)(terser@5.31.1)(yaml@2.5.1))':
+  '@vitejs/plugin-react-swc@3.7.2(@swc/helpers@0.5.11)(vite@6.0.7(@types/node@20.14.10)(jiti@1.21.6)(terser@5.31.1)(yaml@2.5.1))':
     dependencies:
       '@swc/core': 1.8.0(@swc/helpers@0.5.11)
       vite: 6.0.7(@types/node@20.14.10)(jiti@1.21.6)(terser@5.31.1)(yaml@2.5.1)
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@vitejs/plugin-react-swc@3.7.1(@swc/helpers@0.5.11)(vite@6.0.7(@types/node@22.10.5)(jiti@1.21.6)(terser@5.31.1)(yaml@2.5.1))':
+  '@vitejs/plugin-react-swc@3.7.2(@swc/helpers@0.5.11)(vite@6.0.7(@types/node@22.10.5)(jiti@1.21.6)(terser@5.31.1)(yaml@2.5.1))':
     dependencies:
       '@swc/core': 1.8.0(@swc/helpers@0.5.11)
       vite: 6.0.7(@types/node@22.10.5)(jiti@1.21.6)(terser@5.31.1)(yaml@2.5.1)
