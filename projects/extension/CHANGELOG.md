@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.14.1
+
+### Patch Changes
+
+- 4339cdc: chore(deps-dev): bump @vitejs/plugin-react-swc from 3.7.1 to 3.7.2
+
+  Bumps [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) from 3.7.1 to 3.7.2.
+
+  - [Release notes](https://github.com/vitejs/vite-plugin-react-swc/releases)
+  - [Changelog](https://github.com/vitejs/vite-plugin-react-swc/blob/main/CHANGELOG.md)
+  - [Commits](https://github.com/vitejs/vite-plugin-react-swc/compare/v3.7.1...v3.7.2)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@vitejs/plugin-react-swc"
+    dependency-type: direct:development
+    update-type: version-update:semver-patch
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+  - @substrate/light-client-extension-helpers@2.7.1
+  - @substrate/smoldot-discovery-connector@0.3.6
+
 ## 0.14.0
 
 ### Minor Changes
