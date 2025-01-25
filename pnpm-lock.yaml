@@ -426,8 +426,8 @@ importers:
         specifier: ^2.15.0
         version: 2.15.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       sonner:
-        specifier: ^1.5.0
-        version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.7.2
+        version: 1.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       tailwind-merge:
         specifier: ^2.4.0
         version: 2.4.0
@@ -1082,8 +1082,8 @@ importers:
         specifier: ^2.0.34
         version: 2.0.34
       sonner:
-        specifier: ^1.4.41
-        version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.7.2
+        version: 1.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       swr:
         specifier: ^2.2.5
         version: 2.2.5(react@18.3.1)
@@ -8298,11 +8298,11 @@ packages:
   sonic-boom@3.8.1:
     resolution: {integrity: sha512-y4Z8LCDBuum+PBP3lSV7RHrXscqksve/bi0as7mhwVnBW+/wUqKT/2Kb7um8yqcFy0duYbbPxzt89Zy2nOCaxg==}
 
-  sonner@1.5.0:
-    resolution: {integrity: sha512-FBjhG/gnnbN6FY0jaNnqZOMmB73R+5IiyYAw8yBj7L54ER7HB3fOSE5OFiQiE2iXWxeXKvg6fIP4LtVppHEdJA==}
+  sonner@1.7.2:
+    resolution: {integrity: sha512-zMbseqjrOzQD1a93lxahm+qMGxWovdMxBlkTbbnZdNqVLt4j+amF9PQxUCL32WfztOFt9t9ADYkejAL3jF9iNA==}
     peerDependencies:
-      react: ^18.0.0
-      react-dom: ^18.0.0
+      react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+      react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
 
   sort-keys@5.1.0:
     resolution: {integrity: sha512-aSbHV0DaBcr7u0PVHXzM6NbZNAtrr9sF6+Qfs9UUVG7Ll3jQ6hHi8F/xqIIcn2rvIVbr0v/2zyjSdwSV47AgLQ==}
@@ -17604,7 +17604,7 @@ snapshots:
     dependencies:
       atomic-sleep: 1.0.0
 
-  sonner@1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  sonner@1.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
