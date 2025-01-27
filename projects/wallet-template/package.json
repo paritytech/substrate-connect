@@ -127,7 +127,7 @@
     "smoldot": "^2.0.34",
     "sonner": "^1.7.2",
     "swr": "^2.2.5",
-    "tailwind-merge": "^2.4.0",
+    "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "usehooks-ts": "^3.1.0",
     "vaul": "^0.9.1",
