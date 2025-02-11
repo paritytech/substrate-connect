@@ -20,7 +20,7 @@ jobs:
             owner: ${{ github.repository_owner }}
       - uses: actions/checkout@v4.1.7
       - name: Update PR
-        uses: mscharley/dependency-changesets-action@v1.1.2
+        uses: mscharley/dependency-changesets-action@v1.1.3
         with:
           token: ${{ steps.gen_token.outputs.token }}
           use-conventional-commits: false
