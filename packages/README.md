@@ -14,7 +14,7 @@ The `@substrate/connect-known-chains` NPM package implements a list of well-know
 
 ## [`@substrate/discovery`](./discovery/README.md)
 
-The [`@substrate/discovery`](./discovery/README.md) NPM package allows developers to implement compliant extenstion discovery functionality into their application by using a predefined interface.
+The [`@substrate/discovery`](./discovery/README.md) NPM package allows developers to implement compliant extension discovery functionality into their application by using a predefined interface.
 
 [`@substrate/smoldot-discovery`](./smoldot-discovery/README.md) and [`@substrate/connect-discovery`](./connect-discovery/README.md) are an extension of [`@substrate/discovery`](./discovery/README.md) and allow to find and filter extension providers implementing smoldot and substrate-connect functionality respectively.
 
