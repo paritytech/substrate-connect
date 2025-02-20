@@ -63,7 +63,7 @@ For detailed API usage, refer to the [Substrate Connect API documentation](https
 ## Repository Structure
 
 ### [Packages](./packages/README.md)
-   The core implementations of `@subtrate/connect` and `@substrate/discovery`, and some auxiliary packages.
+   The core implementations of `@substrate/connect` and `@substrate/discovery`, and some auxiliary packages.
    - **[@substrate/discovery](./packages/discovery/)**
    - **[@substrate/connect](./packages/connect/)**
    - **[@substrate/connect-known-chains](./packages/connect-known-chains/)**
