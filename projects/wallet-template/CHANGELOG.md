@@ -1,5 +1,48 @@
 # Changelog
 
+## 0.9.2
+
+### Patch Changes
+
+- 8480a6f: chore(deps-dev): bump vite from 6.0.7 to 6.0.9 in the npm_and_yarn group
+
+  Bumps the npm_and_yarn group with 1 update: [vite](https://github.com/vitejs/vite/tree/HEAD/packages/vite).
+
+  Updates `vite` from 6.0.7 to 6.0.9
+
+  - [Release notes](https://github.com/vitejs/vite/releases)
+  - [Changelog](https://github.com/vitejs/vite/blob/main/packages/vite/CHANGELOG.md)
+  - [Commits](https://github.com/vitejs/vite/commits/v6.0.9/packages/vite)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: vite
+    dependency-type: direct:development
+    dependency-group: npm_and_yarn
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- e4569e2: chore(deps): bump sonner from 1.5.0 to 1.7.2
+
+  Bumps [sonner](https://github.com/emilkowalski/sonner) from 1.5.0 to 1.7.2.
+
+  - [Release notes](https://github.com/emilkowalski/sonner/releases)
+  - [Commits](https://github.com/emilkowalski/sonner/compare/v.1.5.0...v.1.7.2)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: sonner
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
 ## 0.9.1
 
 ### Patch Changes
