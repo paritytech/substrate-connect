@@ -28,7 +28,7 @@
     "@polkadot/api": "^15.6.1",
     "@polkadot/api-augment": "^15.6.1",
     "@polkadot/keyring": "^13.4.3",
-    "@polkadot/react-identicon": "^3.12.1",
+    "@polkadot/react-identicon": "^3.12.2",
     "@polkadot/rpc-provider": "^15.6.1",
     "@polkadot/types": "^15.6.1",
     "@polkadot/util": "^13.4.3",
