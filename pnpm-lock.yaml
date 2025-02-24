@@ -129,8 +129,8 @@ importers:
         specifier: ~0.1.2
         version: 0.1.2
       '@polkadot-labs/hdkd-helpers':
-        specifier: ^0.0.10
-        version: 0.0.10
+        specifier: ^0.0.11
+        version: 0.0.11
       '@substrate/connect-known-chains':
         specifier: workspace:^
         version: link:../../packages/connect-known-chains
@@ -908,14 +908,14 @@ importers:
         specifier: ~0.4.2
         version: 0.4.2
       '@polkadot-labs/hdkd':
-        specifier: ^0.0.10
-        version: 0.0.10
+        specifier: ^0.0.11
+        version: 0.0.11
       '@polkadot-labs/hdkd-helpers':
-        specifier: ^0.0.10
-        version: 0.0.10
+        specifier: ^0.0.11
+        version: 0.0.11
       '@polkadot-labs/schnorrkel-wasm':
-        specifier: ^0.0.6
-        version: 0.0.6
+        specifier: ^0.0.7
+        version: 0.0.7
       '@polkadot/extension-inject':
         specifier: ^0.58.3
         version: 0.58.3(@polkadot/api@15.6.1)(@polkadot/util@13.4.3)
@@ -2997,14 +2997,14 @@ packages:
   '@polkadot-api/ws-provider@0.3.6':
     resolution: {integrity: sha512-D2+rvcDc9smt24qUKqFoCuKKNhyBVDQEtnsqHiUN/Ym8UGP+Acegac3b9VOig70EpCcRBoYeXY2gEog2ybx1Kg==}
 
-  '@polkadot-labs/hdkd-helpers@0.0.10':
-    resolution: {integrity: sha512-wBKenhN7TjNiMXxBvQWzFf+su8xTaRGqyOKAlAfpyY9oWTOt3G05yMvDHEZ4g/NRLoE4P3fQYQ0bdcMKl7KkDw==}
+  '@polkadot-labs/hdkd-helpers@0.0.11':
+    resolution: {integrity: sha512-qPlWqC3NNV/2NYc5GEy+Ovi4UBAgkMGvMfyiYuj2BQN4lW59Q1T9coNx0Yp6XzsnJ1ddaF9PWaUtxj3LdM0IDw==}
 
-  '@polkadot-labs/hdkd@0.0.10':
-    resolution: {integrity: sha512-jD8l+Ls/kZjvZja4T2Y0G6Be3rfGn0qNs3hvcNeV2CmOMtI7yRkkWPXI7WiJ8AyEoBwBuZt0rm6yzGla6o2HXQ==}
+  '@polkadot-labs/hdkd@0.0.11':
+    resolution: {integrity: sha512-1s375PlIup6cV7EYZ1+Y1eLGLQlYnv7Gdvo20aA5PzXH2VskKHSOOgXH1t1umJIAG8J0pGXlCDG0kNc7nm8+ww==}
 
-  '@polkadot-labs/schnorrkel-wasm@0.0.6':
-    resolution: {integrity: sha512-yQ0kCAmdNoRMZX+CRWNKElKERk4Cs021h/pEupX21tv5L2ZGU4c+nvYulkSAosR1s3VG12TBLYK+74ibqY2LPw==}
+  '@polkadot-labs/schnorrkel-wasm@0.0.7':
+    resolution: {integrity: sha512-CVvKDsNAYfrJF30Er3uEND8xMoGfjIZvrlB6CMWMEKrACUFAwSbohLigfYj4CcR/aUInhwKglT3bG3yfoahsDA==}
 
   '@polkadot/api-augment@15.6.1':
     resolution: {integrity: sha512-bJehdpk7/JyHoBbaSKgNB4gWqhG46BEjFGFO+/EJ7FnUDiq3GpnEZR5pJt2dvRYro2/xE5JI4QJIXsgtp1j1Hg==}
@@ -11844,19 +11844,19 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@polkadot-labs/hdkd-helpers@0.0.10':
+  '@polkadot-labs/hdkd-helpers@0.0.11':
     dependencies:
-      '@noble/curves': 1.7.0
-      '@noble/hashes': 1.6.1
-      '@scure/base': 1.2.1
+      '@noble/curves': 1.8.1
+      '@noble/hashes': 1.7.1
+      '@scure/base': 1.2.4
       micro-sr25519: 0.1.0
       scale-ts: 1.6.1
 
-  '@polkadot-labs/hdkd@0.0.10':
+  '@polkadot-labs/hdkd@0.0.11':
     dependencies:
-      '@polkadot-labs/hdkd-helpers': 0.0.10
+      '@polkadot-labs/hdkd-helpers': 0.0.11
 
-  '@polkadot-labs/schnorrkel-wasm@0.0.6': {}
+  '@polkadot-labs/schnorrkel-wasm@0.0.7': {}
 
   '@polkadot/api-augment@15.6.1':
     dependencies:
