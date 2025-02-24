@@ -1,5 +1,4 @@
 ---
-"substrate-connect": patch
 "@substrate/connect-discovery": patch
 "@substrate/connect-extension-protocol": patch
 "@substrate/connect-known-chains": patch
