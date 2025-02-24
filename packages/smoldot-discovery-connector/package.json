@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@substrate/light-client-extension-helpers": "workspace:^",
-    "effect": "^3.10.0"
+    "effect": "^3.13.2"
   },
   "devDependencies": {
     "@substrate/smoldot-discovery": "workspace:^",
