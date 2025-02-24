@@ -1,1 +1,1 @@
-corepack pnpm lint-staged
+COREPACK_INTEGRITY_KEYS=0 corepack pnpm lint-staged
