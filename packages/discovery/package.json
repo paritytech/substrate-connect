@@ -1,6 +1,6 @@
 {
   "name": "@substrate/discovery",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Parity Technologies (https://github.com/paritytech)",
   "repository": {
     "type": "git",

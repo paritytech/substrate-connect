@@ -1,5 +1,684 @@
 # Changelog
 
+## 0.9.2
+
+### Patch Changes
+
+- 8480a6f: chore(deps-dev): bump vite from 6.0.7 to 6.0.9 in the npm_and_yarn group
+
+  Bumps the npm_and_yarn group with 1 update: [vite](https://github.com/vitejs/vite/tree/HEAD/packages/vite).
+
+  Updates `vite` from 6.0.7 to 6.0.9
+
+  - [Release notes](https://github.com/vitejs/vite/releases)
+  - [Changelog](https://github.com/vitejs/vite/blob/main/packages/vite/CHANGELOG.md)
+  - [Commits](https://github.com/vitejs/vite/commits/v6.0.9/packages/vite)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: vite
+    dependency-type: direct:development
+    dependency-group: npm_and_yarn
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- e4569e2: chore(deps): bump sonner from 1.5.0 to 1.7.2
+
+  Bumps [sonner](https://github.com/emilkowalski/sonner) from 1.5.0 to 1.7.2.
+
+  - [Release notes](https://github.com/emilkowalski/sonner/releases)
+  - [Commits](https://github.com/emilkowalski/sonner/compare/v.1.5.0...v.1.7.2)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: sonner
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 5a33922: chore(deps-dev): bump concurrently from 8.2.2 to 9.1.2
+
+  Bumps [concurrently](https://github.com/open-cli-tools/concurrently) from 8.2.2 to 9.1.2.
+
+  - [Release notes](https://github.com/open-cli-tools/concurrently/releases)
+  - [Commits](https://github.com/open-cli-tools/concurrently/compare/v8.2.2...v9.1.2)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: concurrently
+    dependency-type: direct:development
+    update-type: version-update:semver-major
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 6de41a0: chore(deps): bump tailwind-merge from 2.4.0 to 3.0.1
+
+  Bumps [tailwind-merge](https://github.com/dcastil/tailwind-merge) from 2.4.0 to 3.0.1.
+
+  - [Release notes](https://github.com/dcastil/tailwind-merge/releases)
+  - [Commits](https://github.com/dcastil/tailwind-merge/compare/v2.4.0...v3.0.1)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: tailwind-merge
+    dependency-type: direct:production
+    update-type: version-update:semver-major
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 96e6189: chore(deps): bump the polkadot-api group across 1 directory with 7 updates
+
+  Bumps the polkadot-api group with 7 updates in the / directory:
+
+  | Package                                                                              | From      | To       |
+  | ------------------------------------------------------------------------------------ | --------- | -------- |
+  | [@polkadot-api/codegen](https://github.com/polkadot-api/polkadot-api)                | `0.12.12` | `0.13.0` |
+  | [@polkadot-api/metadata-builders](https://github.com/polkadot-api/polkadot-api)      | `0.10.0`  | `0.10.1` |
+  | [@polkadot-api/metadata-compatibility](https://github.com/polkadot-api/polkadot-api) | `0.1.14`  | `0.1.15` |
+  | [@polkadot-api/observable-client](https://github.com/polkadot-api/polkadot-api)      | `0.7.0`   | `0.8.0`  |
+  | [@polkadot-api/signer](https://github.com/polkadot-api/polkadot-api)                 | `0.1.13`  | `0.1.14` |
+  | [@polkadot-api/view-builder](https://github.com/polkadot-api/polkadot-api)           | `0.4.1`   | `0.4.2`  |
+  | [polkadot-api](https://github.com/polkadot-api/polkadot-api)                         | `1.8.2`   | `1.9.0`  |
+
+  Updates `@polkadot-api/codegen` from 0.12.12 to 0.13.0
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  Updates `@polkadot-api/metadata-builders` from 0.10.0 to 0.10.1
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  Updates `@polkadot-api/metadata-compatibility` from 0.1.14 to 0.1.15
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  Updates `@polkadot-api/observable-client` from 0.7.0 to 0.8.0
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/compare/polkadot-api@0.7.0...polkadot-api@0.8.0)
+
+  Updates `@polkadot-api/signer` from 0.1.13 to 0.1.14
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  Updates `@polkadot-api/view-builder` from 0.4.1 to 0.4.2
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/commits)
+
+  Updates `polkadot-api` from 1.8.2 to 1.9.0
+
+  - [Release notes](https://github.com/polkadot-api/polkadot-api/releases)
+  - [Changelog](https://github.com/polkadot-api/polkadot-api/blob/main/NEWS.md)
+  - [Commits](https://github.com/polkadot-api/polkadot-api/compare/polkadot-api@1.8.2...polkadot-api@1.9.0)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot-api/codegen"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: polkadot-api
+  - dependency-name: "@polkadot-api/metadata-builders"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: polkadot-api
+  - dependency-name: "@polkadot-api/metadata-compatibility"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: polkadot-api
+  - dependency-name: "@polkadot-api/observable-client"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: polkadot-api
+  - dependency-name: "@polkadot-api/signer"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: polkadot-api
+  - dependency-name: "@polkadot-api/view-builder"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: polkadot-api
+  - dependency-name: polkadot-api
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: polkadot-api
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 92316c0: chore(deps-dev): bump vitest in the npm_and_yarn group
+
+  Bumps the npm_and_yarn group with 1 update: [vitest](https://github.com/vitest-dev/vitest/tree/HEAD/packages/vitest).
+
+  Updates `vitest` from 2.1.4 to 2.1.9
+
+  - [Release notes](https://github.com/vitest-dev/vitest/releases)
+  - [Commits](https://github.com/vitest-dev/vitest/commits/v2.1.9/packages/vitest)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: vitest
+    dependency-type: direct:development
+    dependency-group: npm_and_yarn
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- b425055: chore(deps): bump the pjs group across 1 directory with 8 updates
+
+  Bumps the pjs group with 8 updates in the / directory:
+
+  | Package                                                                                                    | From     | To       |
+  | ---------------------------------------------------------------------------------------------------------- | -------- | -------- |
+  | [@polkadot/api](https://github.com/polkadot-js/api/tree/HEAD/packages/api)                                 | `15.3.1` | `15.6.1` |
+  | [@polkadot/api-augment](https://github.com/polkadot-js/api/tree/HEAD/packages/api-augment)                 | `15.3.1` | `15.6.1` |
+  | [@polkadot/keyring](https://github.com/polkadot-js/common/tree/HEAD/packages/keyring)                      | `13.3.1` | `13.4.3` |
+  | [@polkadot/rpc-provider](https://github.com/polkadot-js/api/tree/HEAD/packages/rpc-provider)               | `15.3.1` | `15.6.1` |
+  | [@polkadot/types](https://github.com/polkadot-js/api/tree/HEAD/packages/types)                             | `15.3.1` | `15.6.1` |
+  | [@polkadot/util](https://github.com/polkadot-js/common/tree/HEAD/packages/util)                            | `13.3.1` | `13.4.3` |
+  | [@polkadot/util-crypto](https://github.com/polkadot-js/common/tree/HEAD/packages/util-crypto)              | `13.3.1` | `13.4.3` |
+  | [@polkadot/extension-inject](https://github.com/polkadot-js/extension/tree/HEAD/packages/extension-inject) | `0.58.1` | `0.58.3` |
+
+  Updates `@polkadot/api` from 15.3.1 to 15.6.1
+
+  - [Release notes](https://github.com/polkadot-js/api/releases)
+  - [Changelog](https://github.com/polkadot-js/api/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/api/commits/v15.6.1/packages/api)
+
+  Updates `@polkadot/api-augment` from 15.3.1 to 15.6.1
+
+  - [Release notes](https://github.com/polkadot-js/api/releases)
+  - [Changelog](https://github.com/polkadot-js/api/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/api/commits/v15.6.1/packages/api-augment)
+
+  Updates `@polkadot/keyring` from 13.3.1 to 13.4.3
+
+  - [Release notes](https://github.com/polkadot-js/common/releases)
+  - [Changelog](https://github.com/polkadot-js/common/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/common/commits/v13.4.3/packages/keyring)
+
+  Updates `@polkadot/rpc-provider` from 15.3.1 to 15.6.1
+
+  - [Release notes](https://github.com/polkadot-js/api/releases)
+  - [Changelog](https://github.com/polkadot-js/api/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/api/commits/v15.6.1/packages/rpc-provider)
+
+  Updates `@polkadot/types` from 15.3.1 to 15.6.1
+
+  - [Release notes](https://github.com/polkadot-js/api/releases)
+  - [Changelog](https://github.com/polkadot-js/api/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/api/commits/v15.6.1/packages/types)
+
+  Updates `@polkadot/util` from 13.3.1 to 13.4.3
+
+  - [Release notes](https://github.com/polkadot-js/common/releases)
+  - [Changelog](https://github.com/polkadot-js/common/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/common/commits/v13.4.3/packages/util)
+
+  Updates `@polkadot/util-crypto` from 13.3.1 to 13.4.3
+
+  - [Release notes](https://github.com/polkadot-js/common/releases)
+  - [Changelog](https://github.com/polkadot-js/common/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/common/commits/v13.4.3/packages/util-crypto)
+
+  Updates `@polkadot/extension-inject` from 0.58.1 to 0.58.3
+
+  - [Release notes](https://github.com/polkadot-js/extension/releases)
+  - [Changelog](https://github.com/polkadot-js/extension/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/extension/commits/v0.58.3/packages/extension-inject)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot/api"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: pjs
+  - dependency-name: "@polkadot/api-augment"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: pjs
+  - dependency-name: "@polkadot/keyring"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: pjs
+  - dependency-name: "@polkadot/rpc-provider"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: pjs
+  - dependency-name: "@polkadot/types"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: pjs
+  - dependency-name: "@polkadot/util"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: pjs
+  - dependency-name: "@polkadot/util-crypto"
+    dependency-type: direct:production
+    update-type: version-update:semver-minor
+    dependency-group: pjs
+  - dependency-name: "@polkadot/extension-inject"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: pjs
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 6cfce59: chore(deps): bump the polkadot-labs group with 3 updates
+
+  Bumps the polkadot-labs group with 3 updates: [@polkadot-labs/hdkd](https://github.com/polkadot-labs/hdkd), [@polkadot-labs/hdkd-helpers](https://github.com/polkadot-labs/hdkd) and [@polkadot-labs/schnorrkel-wasm](https://github.com/polkadot-labs/hdkd).
+
+  Updates `@polkadot-labs/hdkd` from 0.0.10 to 0.0.11
+
+  - [Release notes](https://github.com/polkadot-labs/hdkd/releases)
+  - [Changelog](https://github.com/polkadot-labs/hdkd/blob/main/release-please-config.json)
+  - [Commits](https://github.com/polkadot-labs/hdkd/compare/hdkd-v0.0.10...hdkd-v0.0.11)
+
+  Updates `@polkadot-labs/hdkd-helpers` from 0.0.10 to 0.0.11
+
+  - [Release notes](https://github.com/polkadot-labs/hdkd/releases)
+  - [Changelog](https://github.com/polkadot-labs/hdkd/blob/main/release-please-config.json)
+  - [Commits](https://github.com/polkadot-labs/hdkd/compare/hdkd-v0.0.10...hdkd-v0.0.11)
+
+  Updates `@polkadot-labs/schnorrkel-wasm` from 0.0.6 to 0.0.7
+
+  - [Release notes](https://github.com/polkadot-labs/hdkd/releases)
+  - [Changelog](https://github.com/polkadot-labs/hdkd/blob/main/release-please-config.json)
+  - [Commits](https://github.com/polkadot-labs/hdkd/compare/hdkd-v0.0.6...hdkd-v0.0.7)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot-labs/hdkd"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: polkadot-labs
+  - dependency-name: "@polkadot-labs/hdkd-helpers"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: polkadot-labs
+  - dependency-name: "@polkadot-labs/schnorrkel-wasm"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: polkadot-labs
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 1ffa07a: chore(deps): bump the pjs group with 2 updates
+
+  Bumps the pjs group with 2 updates: [@polkadot/react-identicon](https://github.com/polkadot-js/ui/tree/HEAD/packages/react-identicon) and [@polkadot/extension-inject](https://github.com/polkadot-js/extension/tree/HEAD/packages/extension-inject).
+
+  Updates `@polkadot/react-identicon` from 3.12.1 to 3.12.2
+
+  - [Release notes](https://github.com/polkadot-js/ui/releases)
+  - [Changelog](https://github.com/polkadot-js/ui/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/ui/commits/v3.12.2/packages/react-identicon)
+
+  Updates `@polkadot/extension-inject` from 0.58.3 to 0.58.4
+
+  - [Release notes](https://github.com/polkadot-js/extension/releases)
+  - [Changelog](https://github.com/polkadot-js/extension/blob/master/CHANGELOG.md)
+  - [Commits](https://github.com/polkadot-js/extension/commits/v0.58.4/packages/extension-inject)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@polkadot/react-identicon"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: pjs
+  - dependency-name: "@polkadot/extension-inject"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: pjs
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 0cd7d41: chore(deps): bump the radix-ui group with 27 updates
+
+  Bumps the radix-ui group with 27 updates:
+
+  | Package                                                                   | From    | To      |
+  | ------------------------------------------------------------------------- | ------- | ------- |
+  | [@radix-ui/react-accordion](https://github.com/radix-ui/primitives)       | `1.2.2` | `1.2.3` |
+  | [@radix-ui/react-alert-dialog](https://github.com/radix-ui/primitives)    | `1.1.5` | `1.1.6` |
+  | [@radix-ui/react-aspect-ratio](https://github.com/radix-ui/primitives)    | `1.1.1` | `1.1.2` |
+  | [@radix-ui/react-avatar](https://github.com/radix-ui/primitives)          | `1.1.2` | `1.1.3` |
+  | [@radix-ui/react-checkbox](https://github.com/radix-ui/primitives)        | `1.1.3` | `1.1.4` |
+  | [@radix-ui/react-collapsible](https://github.com/radix-ui/primitives)     | `1.1.2` | `1.1.3` |
+  | [@radix-ui/react-context-menu](https://github.com/radix-ui/primitives)    | `2.2.5` | `2.2.6` |
+  | [@radix-ui/react-dialog](https://github.com/radix-ui/primitives)          | `1.1.5` | `1.1.6` |
+  | [@radix-ui/react-dropdown-menu](https://github.com/radix-ui/primitives)   | `2.1.5` | `2.1.6` |
+  | [@radix-ui/react-hover-card](https://github.com/radix-ui/primitives)      | `1.1.5` | `1.1.6` |
+  | [@radix-ui/react-label](https://github.com/radix-ui/primitives)           | `2.1.1` | `2.1.2` |
+  | [@radix-ui/react-menubar](https://github.com/radix-ui/primitives)         | `1.1.5` | `1.1.6` |
+  | [@radix-ui/react-navigation-menu](https://github.com/radix-ui/primitives) | `1.2.4` | `1.2.5` |
+  | [@radix-ui/react-popover](https://github.com/radix-ui/primitives)         | `1.1.5` | `1.1.6` |
+  | [@radix-ui/react-progress](https://github.com/radix-ui/primitives)        | `1.1.1` | `1.1.2` |
+  | [@radix-ui/react-radio-group](https://github.com/radix-ui/primitives)     | `1.2.2` | `1.2.3` |
+  | [@radix-ui/react-scroll-area](https://github.com/radix-ui/primitives)     | `1.2.2` | `1.2.3` |
+  | [@radix-ui/react-select](https://github.com/radix-ui/primitives)          | `2.1.5` | `2.1.6` |
+  | [@radix-ui/react-separator](https://github.com/radix-ui/primitives)       | `1.1.1` | `1.1.2` |
+  | [@radix-ui/react-slider](https://github.com/radix-ui/primitives)          | `1.2.2` | `1.2.3` |
+  | [@radix-ui/react-slot](https://github.com/radix-ui/primitives)            | `1.1.1` | `1.1.2` |
+  | [@radix-ui/react-switch](https://github.com/radix-ui/primitives)          | `1.1.2` | `1.1.3` |
+  | [@radix-ui/react-tabs](https://github.com/radix-ui/primitives)            | `1.1.2` | `1.1.3` |
+  | [@radix-ui/react-toast](https://github.com/radix-ui/primitives)           | `1.2.5` | `1.2.6` |
+  | [@radix-ui/react-toggle](https://github.com/radix-ui/primitives)          | `1.1.1` | `1.1.2` |
+  | [@radix-ui/react-toggle-group](https://github.com/radix-ui/primitives)    | `1.1.1` | `1.1.2` |
+  | [@radix-ui/react-tooltip](https://github.com/radix-ui/primitives)         | `1.1.7` | `1.1.8` |
+
+  Updates `@radix-ui/react-accordion` from 1.2.2 to 1.2.3
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-alert-dialog` from 1.1.5 to 1.1.6
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-aspect-ratio` from 1.1.1 to 1.1.2
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-avatar` from 1.1.2 to 1.1.3
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-checkbox` from 1.1.3 to 1.1.4
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-collapsible` from 1.1.2 to 1.1.3
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-context-menu` from 2.2.5 to 2.2.6
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-dialog` from 1.1.5 to 1.1.6
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-dropdown-menu` from 2.1.5 to 2.1.6
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-hover-card` from 1.1.5 to 1.1.6
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-label` from 2.1.1 to 2.1.2
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-menubar` from 1.1.5 to 1.1.6
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-navigation-menu` from 1.2.4 to 1.2.5
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-popover` from 1.1.5 to 1.1.6
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-progress` from 1.1.1 to 1.1.2
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-radio-group` from 1.2.2 to 1.2.3
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-scroll-area` from 1.2.2 to 1.2.3
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-select` from 2.1.5 to 2.1.6
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-separator` from 1.1.1 to 1.1.2
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-slider` from 1.2.2 to 1.2.3
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-slot` from 1.1.1 to 1.1.2
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-switch` from 1.1.2 to 1.1.3
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-tabs` from 1.1.2 to 1.1.3
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-toast` from 1.2.5 to 1.2.6
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-toggle` from 1.1.1 to 1.1.2
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-toggle-group` from 1.1.1 to 1.1.2
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  Updates `@radix-ui/react-tooltip` from 1.1.7 to 1.1.8
+
+  - [Changelog](https://github.com/radix-ui/primitives/blob/main/release-process.md)
+  - [Commits](https://github.com/radix-ui/primitives/commits)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: "@radix-ui/react-accordion"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-alert-dialog"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-aspect-ratio"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-avatar"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-checkbox"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-collapsible"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-context-menu"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-dialog"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-dropdown-menu"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-hover-card"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-label"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-menubar"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-navigation-menu"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-popover"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-progress"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-radio-group"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-scroll-area"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-select"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-separator"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-slider"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-slot"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-switch"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-tabs"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-toast"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-toggle"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-toggle-group"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+  - dependency-name: "@radix-ui/react-tooltip"
+    dependency-type: direct:production
+    update-type: version-update:semver-patch
+    dependency-group: radix-ui
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- 544e63e: chore(deps-dev): bump vite-plugin-web-extension from 4.2.0 to 4.4.3
+
+  Bumps [vite-plugin-web-extension](https://github.com/aklinker1/vite-plugin-web-extension) from 4.2.0 to 4.4.3.
+
+  - [Release notes](https://github.com/aklinker1/vite-plugin-web-extension/releases)
+  - [Commits](https://github.com/aklinker1/vite-plugin-web-extension/compare/v4.2.0...v4.4.3)
+
+  ***
+
+  updated-dependencies:
+
+  - dependency-name: vite-plugin-web-extension
+    dependency-type: direct:development
+    update-type: version-update:semver-minor
+    ...
+
+  Signed-off-by: dependabot[bot] <support@github.com>
+
+- e29f033: chore: update changesets
+- Updated dependencies [96e6189]
+- Updated dependencies [92316c0]
+  - @substrate/light-client-extension-helpers@2.7.2
+  - @substrate/connect-discovery@0.2.2
+  - @substrate/discovery@0.2.2
+  - @substrate/smoldot-discovery-connector@0.3.7
+
 ## 0.9.1
 
 ### Patch Changes

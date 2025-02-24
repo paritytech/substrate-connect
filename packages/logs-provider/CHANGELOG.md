@@ -1,6 +1,6 @@
-# @substrate/ws-provider
+# @substrate/logs-provider
 
-## 0.3.9
+## 0.0.7
 
 ### Patch Changes
 
@@ -23,15 +23,3 @@
     ...
 
   Signed-off-by: dependabot[bot] <support@github.com>
-
-## 0.3.8
-
-### Patch Changes
-
-- 85f3d52: chore: make @polkadot-api/ws-provider a dev dependency
-
-## 0.3.7
-
-### Patch Changes
-
-- 2dc16b1: fix(ws-provider): exports
