@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.14.3
+
+### Patch Changes
+
+- ae70d90: chore: update chainspecs
+  - @substrate/light-client-extension-helpers@2.7.3
+  - @substrate/smoldot-discovery-connector@0.3.8
+
 ## 0.14.2
 
 ### Patch Changes
