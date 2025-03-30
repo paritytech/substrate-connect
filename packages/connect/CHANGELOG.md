@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.1.5
+
+### Patch Changes
+
+- Updated dependencies [ae70d90]
+  - @substrate/connect-known-chains@1.9.3
+
 ## 2.1.4
 
 ### Patch Changes

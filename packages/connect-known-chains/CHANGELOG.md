@@ -1,5 +1,11 @@
 # @substrate/connect-known-chains
 
+## 1.9.3
+
+### Patch Changes
+
+- ae70d90: chore: update chainspecs
+
 ## 1.9.2
 
 ### Patch Changes
