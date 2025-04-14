@@ -1,5 +1,18 @@
 # @substrate/connect-known-chains
 
+## 1.10.0
+
+### Minor Changes
+
+- 3cc9e6d: feat: update people parachain specs
+
+  - Adds Kusama People
+  - Fixes Missing Westend People and Polkadot People exports
+
+### Patch Changes
+
+- 543b163: chore: update chainspecs
+
 ## 1.9.3
 
 ### Patch Changes
