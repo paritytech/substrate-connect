@@ -17,3 +17,7 @@ export { chainSpec as polkadot_collectives } from "./specs/polkadot_collectives.
 export { chainSpec as westend2_collectives } from "./specs/westend2_collectives.js"
 
 export { chainSpec as paseo } from "./specs/paseo.js"
+
+export { chainSpec as ksmcc3_people } from "./specs/ksmcc3_people.js"
+export { chainSpec as westend_people } from "./specs/westend_people.js"
+export { chainSpec as polkadot_people } from "./specs/polkadot_people.js"
