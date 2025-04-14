@@ -29,6 +29,7 @@
     "dist"
   ],
   "scripts": {
+    "prepare": "corepack pnpm turbo build",
     "deep-clean": "npm run clean && rimraf dist node_modules",
     "clean": "rimraf dist .tshy .tshy-build",
     "build": "pnpm run clean && tsup",

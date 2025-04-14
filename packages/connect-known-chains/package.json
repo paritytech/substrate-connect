@@ -260,6 +260,7 @@
   },
   "homepage": "https://github.com/paritytech/substrate-connect#readme",
   "scripts": {
+    "prepare": "corepack pnpm turbo build",
     "build-js-specs": "node scripts/build-js-specs.js",
     "deep-clean": "npm run clean && rimraf dist node_modules",
     "clean": "rimraf dist .tshy .tshy-build",

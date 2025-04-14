@@ -8,7 +8,14 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".tshy", ".tshy-build"]
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "tsconfig.json",
+        "tsconfig.build.json",
+        "tsup.config.ts",
+        "package.json"
+      ],
+      "outputs": ["dist/**", ".turbo/**", ".tshy", ".tshy-build"]
     },
     "test": {
       "dependsOn": ["build"]

@@ -29,6 +29,7 @@
     "dist"
   ],
   "scripts": {
+    "prepare": "corepack pnpm turbo build",
     "deep-clean": "rimraf dist node_modules",
     "build": "tsup",
     "typecheck": "tsc --noEmit",
