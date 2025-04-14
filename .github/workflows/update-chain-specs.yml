@@ -71,7 +71,7 @@ jobs:
     steps:
     - name: Generate a token
       id: gen_token
-      uses: actions/create-github-app-token@v1
+      uses: actions/create-github-app-token@v2
       with:
           app-id: ${{ secrets.SUBSTRATE_CONNECT_PR_APP_ID }}
           private-key: ${{ secrets.SUBSTRATE_CONNECT_PR_APP_KEY }}
