@@ -207,6 +207,17 @@
         "types": "./dist/commonjs/specs/westend_people.d.ts",
         "default": "./dist/commonjs/specs/westend_people.js"
       }
+    },
+    "./ksmcc3_people": {
+      "import": {
+        "@substrate-connect/source": "./src/specs/ksmcc3_people.ts",
+        "types": "./dist/esm/specs/ksmcc3_people.d.ts",
+        "default": "./dist/esm/specs/ksmcc3_people.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/specs/ksmcc3_people.d.ts",
+        "default": "./dist/commonjs/specs/ksmcc3_people.js"
+      }
     }
   },
   "files": [
@@ -233,7 +244,8 @@
       "./westend2_collectives": "./src/specs/westend2_collectives.ts",
       "./paseo": "./src/specs/paseo.ts",
       "./polkadot_people": "./src/specs/polkadot_people.ts",
-      "./westend_people": "./src/specs/westend_people.ts"
+      "./westend_people": "./src/specs/westend_people.ts",
+      "./ksmcc3_people": "./src/specs/ksmcc3_people.ts"
     },
     "sourceDialects": [
       "@substrate-connect/source"
