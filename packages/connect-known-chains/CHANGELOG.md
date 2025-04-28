@@ -1,5 +1,11 @@
 # @substrate/connect-known-chains
 
+## 1.10.1
+
+### Patch Changes
+
+- 3a98d1d: chore: update chainspecs and bootnodes
+
 ## 1.10.0
 
 ### Minor Changes
