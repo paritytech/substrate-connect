@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.1.8
+
+### Patch Changes
+
+- Updated dependencies [1666696]
+  - @substrate/connect-known-chains@1.10.2
+
 ## 2.1.7
 
 ### Patch Changes
