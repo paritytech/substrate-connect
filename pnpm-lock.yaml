@@ -135,8 +135,8 @@ importers:
         specifier: workspace:^
         version: link:../../packages/connect-known-chains
       '@zag-js/react':
-        specifier: ^0.48.0
-        version: 0.48.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.0.2
+        version: 1.0.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@zag-js/select':
         specifier: ^0.48.0
         version: 0.48.0
@@ -1022,8 +1022,8 @@ importers:
         specifier: ^0.47.0
         version: 0.47.0
       '@zag-js/react':
-        specifier: ^0.47.0
-        version: 0.47.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.0.2
+        version: 1.0.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@zag-js/tabs':
         specifier: ^0.74.2
         version: 0.74.2
@@ -4745,6 +4745,9 @@ packages:
   '@zag-js/core@0.74.2':
     resolution: {integrity: sha512-UAnj9WJdFYeTxbwSCdX8zRYhtLvlJqfqy9cn2NEugpxf+9W/GA89JzH1ZdKLyVJUIuIPoqGd4ZaAgv2p64DZ1Q==}
 
+  '@zag-js/core@1.0.2':
+    resolution: {integrity: sha512-ZMpbmR7IUNiz6Htom64z/Biw7xGdORfpfOs1+Fops12rn76BWM1NdKAe78HcHHrepWn4fQ14l5762Ot75o+B2g==}
+
   '@zag-js/dismissable@0.48.0':
     resolution: {integrity: sha512-JJv0GwTYM2yV3vbf/ekwM4mRaGnhoCpjV+xUTTJfTtgtyfs46gQUgOht/YCIdPouUwtz0lOTqvZygKk19noqpg==}
 
@@ -4763,6 +4766,9 @@ packages:
   '@zag-js/dom-query@0.74.2':
     resolution: {integrity: sha512-g+7wIdhT1nlY5yhQWoMDzin8uYoBXeQk8TNUj3GZH/1dTX9YC0vs7vz7rotzunLkEA7nEGfLNzdO5CRQBhGp0w==}
 
+  '@zag-js/dom-query@1.0.2':
+    resolution: {integrity: sha512-11sASmQiPcIm6Cs3/dL/cYHh3HgJ+Ac4GTUmzSin8+gEkqRRsrngfGYJgccpt/TW1beWihnqldmaAFdVoK6+JA==}
+
   '@zag-js/element-rect@0.74.2':
     resolution: {integrity: sha512-FK+bQ4nhdcR52868uE0rlmmq4+un5P++WDoe6S4Aldrx7FJS2XTtWMBdx09zBe48DvUYjGM4o3RbuxbCQoD0BQ==}
 
@@ -4775,14 +4781,8 @@ packages:
   '@zag-js/popper@0.48.0':
     resolution: {integrity: sha512-GgABuOPO1tKuXGl3hMxugSGNGC6uiBboLvswofysLdLqPkhUZdRum4ntvILdnvITOtltlys8Nac3fY0CJNU2YQ==}
 
-  '@zag-js/react@0.47.0':
-    resolution: {integrity: sha512-WaqIQsysYo21v5jMRxy6HdFoY7DmDssT8eVvBPwonfFE1uhzL89ilYjVIzNxfADrvX7OfEF3COfyxdNjg1+eiA==}
-    peerDependencies:
-      react: '>=18.0.0'
-      react-dom: '>=18.0.0'
-
-  '@zag-js/react@0.48.0':
-    resolution: {integrity: sha512-prVuD0CdspNPeVO0sk6l0fn8JRaQBGpdciobkRJzwYFJW1kyhO7BU3FYHGfumMerxBqPn1Ehp5g4EqIQbAn8PA==}
+  '@zag-js/react@1.0.2':
+    resolution: {integrity: sha512-2TDIEVEtVEnddf5NX2I9x8PdAMnJJxd8NFyHEfDfzf2/r5kOBUr/dmmbilhnpNBlxG3tBteV6ZEESYCyxZ6Kpg==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -4798,6 +4798,9 @@ packages:
 
   '@zag-js/store@0.74.2':
     resolution: {integrity: sha512-LXCSyIVf6G4SvoPojNxOUiK45Lg1Qo/I8NCIoWAgSh6WgthuyEP05oLlW0OdvfHWLsnSwUjJmfuoRQAQNS3M8Q==}
+
+  '@zag-js/store@1.0.2':
+    resolution: {integrity: sha512-PvYza6PSOFoB236nuqH7d2L/WXz3LOofONwmI+2pjue1QNt/+R03JskH75fuOV+ueqWXT+imzo4mSs7nFknSBQ==}
 
   '@zag-js/tabbable@0.48.0':
     resolution: {integrity: sha512-3Dqx/ZT3psDsJd5g5RFfp1DNjsAdTsbW2C2JsTIQrc4/VzRf6YwwWVaeEIbUaHd849JtCykAwePg/gYgif7Hzg==}
@@ -4823,6 +4826,9 @@ packages:
   '@zag-js/types@0.74.2':
     resolution: {integrity: sha512-UYdHh5Jj2LZZwP8Amm9YEoj9f/zYNWuuw+HRGCLZew6moHvKj/HHKJHLooPPjGztFIeRsnicE1mJ9E2bDllBaw==}
 
+  '@zag-js/types@1.0.2':
+    resolution: {integrity: sha512-aopaCYV2jV53qusmCznsuqBpvXxdspMzgjmr0mMhTLoaDosaz2mvoPKDNKGiAZ2c89Z4LN+fUZgSnK+OU5xf6w==}
+
   '@zag-js/utils@0.47.0':
     resolution: {integrity: sha512-Pz8Mpi4G9DTgQKWYKzZkWBQ2C1j/OUGNso/s3VL78MGUGKQUa8rJDRCDBByJwlVt/YBiSe73NNyQkf3jujOL3g==}
 
@@ -4831,6 +4837,9 @@ packages:
 
   '@zag-js/utils@0.74.2':
     resolution: {integrity: sha512-WtIsNyDvnslCjtIIP/bRzx3bJMaT0cIgI3f+TgiFWhtQMlUZMpBkwkKVfvUwI5qcZ+ZOMeoonAWFqFECCb3h3g==}
+
+  '@zag-js/utils@1.0.2':
+    resolution: {integrity: sha512-wVRjY4otBhezwO65Zzj6Md+w2KTHxVfuemWZw6jLZR0KQUuujBfCv3MLQo4VxQoOv81Z7hjLOfDkHj2iyeBgvg==}
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -8090,6 +8099,9 @@ packages:
 
   proxy-compare@3.0.0:
     resolution: {integrity: sha512-y44MCkgtZUCT9tZGuE278fB7PWVf7fRYy0vbRXAts2o5F0EfC4fIQrvQQGBJo1WJbFcVLXzApOscyJuZqHQc1w==}
+
+  proxy-compare@3.0.1:
+    resolution: {integrity: sha512-V9plBAt3qjMlS1+nC8771KNf6oJ12gExvaxnNzN/9yVRLdTv/lc+oJlnSzrdYDAvBfTStPCoiaCOTmTs0adv7Q==}
 
   pseudomap@1.0.2:
     resolution: {integrity: sha512-b/YwNhb8lk1Zz2+bXXpS/LK9OisiZZ1SNsSLxN1x2OXVEhW2Ckr/7mWE5vrC1ZTiJlD9g19jWszTmJsB+oEpFQ==}
@@ -13762,6 +13774,11 @@ snapshots:
       '@zag-js/utils': 0.74.2
       klona: 2.0.6
 
+  '@zag-js/core@1.0.2':
+    dependencies:
+      '@zag-js/dom-query': 1.0.2
+      '@zag-js/utils': 1.0.2
+
   '@zag-js/dismissable@0.48.0':
     dependencies:
       '@zag-js/dom-event': 0.48.0
@@ -13787,6 +13804,10 @@ snapshots:
 
   '@zag-js/dom-query@0.74.2': {}
 
+  '@zag-js/dom-query@1.0.2':
+    dependencies:
+      '@zag-js/types': 1.0.2
+
   '@zag-js/element-rect@0.74.2': {}
 
   '@zag-js/form-utils@0.48.0': {}
@@ -13804,21 +13825,12 @@ snapshots:
       '@zag-js/dom-query': 0.48.0
       '@zag-js/utils': 0.48.0
 
-  '@zag-js/react@0.47.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@zag-js/react@1.0.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@zag-js/core': 0.47.0
-      '@zag-js/store': 0.47.0
-      '@zag-js/types': 0.47.0
-      proxy-compare: 2.6.0
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@zag-js/react@0.48.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@zag-js/core': 0.48.0
-      '@zag-js/store': 0.48.0
-      '@zag-js/types': 0.48.0
-      proxy-compare: 2.6.0
+      '@zag-js/core': 1.0.2
+      '@zag-js/store': 1.0.2
+      '@zag-js/types': 1.0.2
+      '@zag-js/utils': 1.0.2
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
@@ -13846,6 +13858,10 @@ snapshots:
   '@zag-js/store@0.74.2':
     dependencies:
       proxy-compare: 3.0.0
+
+  '@zag-js/store@1.0.2':
+    dependencies:
+      proxy-compare: 3.0.1
 
   '@zag-js/tabbable@0.48.0':
     dependencies:
@@ -13891,11 +13907,17 @@ snapshots:
     dependencies:
       csstype: 3.1.3
 
+  '@zag-js/types@1.0.2':
+    dependencies:
+      csstype: 3.1.3
+
   '@zag-js/utils@0.47.0': {}
 
   '@zag-js/utils@0.48.0': {}
 
   '@zag-js/utils@0.74.2': {}
+
+  '@zag-js/utils@1.0.2': {}
 
   abort-controller@3.0.0:
     dependencies:
@@ -17629,6 +17651,8 @@ snapshots:
   proxy-compare@2.6.0: {}
 
   proxy-compare@3.0.0: {}
+
+  proxy-compare@3.0.1: {}
 
   pseudomap@1.0.2: {}
 
