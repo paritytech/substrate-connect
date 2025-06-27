@@ -1,5 +1,11 @@
 # @substrate/connect-known-chains
 
+## 1.10.3
+
+### Patch Changes
+
+- b38fcc2: chore: update chainspecs
+
 ## 1.10.2
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @substrate/light-client-extension-helpers
 
+## 2.7.7
+
+### Patch Changes
+
+- Updated dependencies [b38fcc2]
+  - @substrate/connect-known-chains@1.10.3
+
 ## 2.7.6
 
 ### Patch Changes
