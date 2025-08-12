@@ -22,7 +22,7 @@ jobs:
       fail-fast: false   # Don't automatically cancel the jobs of the other RPC nodes if one fails
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
         path: repo
@@ -76,7 +76,7 @@ jobs:
           app-id: ${{ secrets.SUBSTRATE_CONNECT_PR_APP_ID }}
           private-key: ${{ secrets.SUBSTRATE_CONNECT_PR_APP_KEY }}
           owner: ${{ github.repository_owner }}
-    - uses: actions/checkout@v4.1.7
+    - uses: actions/checkout@v5
       with:
         path: repo
         ref: main
