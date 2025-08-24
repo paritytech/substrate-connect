@@ -271,7 +271,7 @@ export type InnerTransaction<
   /**
    * Estimate fees against the latest known `finalizedBlock`
    *
-   * @param from       Public key or address from the potencial sender.
+   * @param from       Public key or address from the potential sender.
    * @param txOptions  Optionally pass any number of txOptions.
    * @returns Fees in fundamental units.
    */
@@ -282,7 +282,7 @@ export type InnerTransaction<
   /**
    * Payment info against the latest known `finalizedBlock`
    *
-   * @param from       Public key or address from the potencial sender.
+   * @param from       Public key or address from the potential sender.
    * @param txOptions  Optionally pass any number of txOptions.
    * @returns PaymentInfo for the given transaction (weight, estimated fees
    *          and class).

@@ -166,7 +166,7 @@ export const createTxEntry = <
                   block: atBlock,
                 })),
               )
-            : throwError(() => new Error(`Uknown block ${at}`)),
+            : throwError(() => new Error(`Unknown block ${at}`)),
         ),
       )
     }
