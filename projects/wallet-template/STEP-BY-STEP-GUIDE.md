@@ -116,7 +116,7 @@ const PROVIDER_INFO = {
   rdns: "io.github.paritytech.SubstrateConnectWalletTemplate",
 }
 
-const lightClientProviderPromise = getLightClientProvider(CHANNEL_ID)
+const lightClientProvider = getLightClientProvider(CHANNEL_ID)
 
 // #region Smoldot Discovery Provider
 {
