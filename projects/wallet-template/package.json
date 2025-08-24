@@ -105,7 +105,7 @@
     "@substrate/light-client-extension-helpers": "workspace:^",
     "@substrate/smoldot-discovery-connector": "workspace:^",
     "@zag-js/clipboard": "^0.47.0",
-    "@zag-js/react": "^0.47.0",
+    "@zag-js/react": "^1.21.8",
     "@zag-js/tabs": "^0.74.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
