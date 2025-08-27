@@ -15,7 +15,7 @@ jobs:
       matrix:
         node-version: [22.x, 23.x]
     steps:
-    - uses: actions/checkout@v4.1.7
+    - uses: actions/checkout@v5
     - uses: ./.github/actions/turbo-build 
       with:
         node-version: ${{ matrix.node-version }}
@@ -25,7 +25,7 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.1.7
+    - uses: actions/checkout@v5
     - uses: ./.github/actions/turbo-build
     - name: Build extension with Manifest v3 for Chrome
       run: pnpm build:chrome
@@ -46,7 +46,7 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.1.7
+    - uses: actions/checkout@v5
     - uses: ./.github/actions/turbo-build
     - run: pnpm playwright:install
       working-directory: ./examples/light-client-extension-helpers-extension
@@ -64,7 +64,7 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.1.7
+    - uses: actions/checkout@v5
     - uses: ./.github/actions/turbo-build
     - name: Build extension with Manifest v3 for Chrome
       run: pnpm build:chrome
