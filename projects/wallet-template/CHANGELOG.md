@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.8
+
+### Patch Changes
+
+- updated chainspecs
+
 ## 0.9.7
 
 ### Patch Changes
