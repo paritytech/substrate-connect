@@ -1,6 +1,6 @@
 {
   "name": "@substrate/extension",
-  "version": "0.14.7",
+  "version": "0.14.8",
   "description": "Browser extension to manage substrate-based blockchain light clients",
   "main": "dist/src/index.js",
   "author": "Parity Technologies",
@@ -37,7 +37,7 @@
   "keywords": [],
   "devDependencies": {
     "typescript": "5.6.2",
-    "@playwright/test": "^1.48.2",
+    "@playwright/test": "^1.55.0",
     "@vitejs/plugin-react-swc": "^3.7.2",
     "autoprefixer": "^10.4.19",
     "concurrently": "^9.1.2",
