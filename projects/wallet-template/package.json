@@ -1,6 +1,6 @@
 {
   "name": "@substrate/wallet-template",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "description": "Wallet template for substrate-based blockchain light clients",
   "main": "dist/src/index.js",
   "author": "Parity Technologies",
@@ -37,7 +37,7 @@
   "keywords": [],
   "devDependencies": {
     "typescript": "5.6.2",
-    "@playwright/test": "^1.48.2",
+    "@playwright/test": "^1.55.0",
     "@types/node": "^20.14.10",
     "@vitejs/plugin-react-swc": "^3.7.2",
     "@webext-core/storage": "^1.2.0",
