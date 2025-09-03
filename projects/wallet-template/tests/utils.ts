@@ -1,4 +1,4 @@
-import { Page } from "@playwright/test"
+import { type Page } from "@playwright/test"
 import { expect } from "./fixtures"
 
 export const setupWallet = async (page: Page, extensionId: string) => {
