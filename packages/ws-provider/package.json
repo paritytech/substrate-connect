@@ -46,7 +46,7 @@
     "@polkadot-api/json-rpc-provider": "0.0.4"
   },
   "devDependencies": {
-    "@polkadot-api/ws-provider": "0.4.0",
+    "@polkadot-api/ws-provider": "0.5.0",
     "typescript": "5.6.2",
     "vitest": "^2.1.9"
   },
