@@ -213,7 +213,7 @@ const adaptLegacyToExtensionMessageToRpcMessage = (
 ) => {
   return {
     id: `legacy:${msg.type}:${msg.id}`,
-    orign: msg.origin,
+    origin: msg.origin,
     method: msg.type,
     params:
       msg.type === "getChains"
