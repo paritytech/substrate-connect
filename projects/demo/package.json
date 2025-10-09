@@ -20,10 +20,10 @@
     "lint": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
-    "@polkadot-api/json-rpc-provider-proxy": "~0.2.4",
-    "@polkadot-api/observable-client": "~0.8.6",
-    "@polkadot-api/sm-provider": "~0.1.7",
-    "@polkadot-api/substrate-client": "~0.3.0",
+    "@polkadot-api/json-rpc-provider-proxy": "~0.2.5",
+    "@polkadot-api/observable-client": "~0.15.2",
+    "@polkadot-api/sm-provider": "~0.1.12",
+    "@polkadot-api/substrate-client": "~0.4.7",
     "@substrate/connect": "workspace:*",
     "@substrate/connect-known-chains": "workspace:*",
     "rxjs": "^7.8.1"
