@@ -80,7 +80,7 @@ jobs:
       with:
         path: repo
         ref: main
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v5
       with:
         # Since we're not passing a name, this automatically downloads *all* artifacts
         # Unfortunately, this creates intermediary directories.
