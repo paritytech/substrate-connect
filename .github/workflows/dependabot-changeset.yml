@@ -18,7 +18,7 @@ jobs:
             app-id: ${{ secrets.SUBSTRATE_CONNECT_PR_APP_ID }}
             private-key: ${{ secrets.SUBSTRATE_CONNECT_PR_APP_KEY }}
             owner: ${{ github.repository_owner }}
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@v5
       - name: Update PR
         uses: mscharley/dependency-changesets-action@v1.1.9
         with:
