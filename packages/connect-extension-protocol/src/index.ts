@@ -116,7 +116,7 @@
 // planned.
 
 /**
- * `id` of the DOM elemeent automatically inserted by the extension when a web page loads.
+ * `id` of the DOM element automatically inserted by the extension when a web page loads.
  */
 export const DOM_ELEMENT_ID = "substrateConnectExtensionAvailableV2"
 
