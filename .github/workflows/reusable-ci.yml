@@ -35,7 +35,7 @@ jobs:
     - name: Test projects/extension
       run: pnpm playwright:chromium --trace on
       working-directory: ./projects/extension
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       if: failure() || inputs.upload-artifacts
       with:
         name: playwright-report-substrate-connect-extension-mv3-chrome
@@ -53,7 +53,7 @@ jobs:
     - name: Test examples/light-client-extension-helpers-extension
       run: pnpm playwright:chromium --trace on
       working-directory: ./examples/light-client-extension-helpers-extension
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       if: failure() || inputs.upload-artifacts
       with:
         name: playwright-report-light-client-extension-helpers-extension-mv3-chrome
@@ -74,7 +74,7 @@ jobs:
     - name: Test projects/wallet-template
       run: pnpm playwright:chromium --trace on
       working-directory: ./projects/wallet-template
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       if: failure() || inputs.upload-artifacts
       with:
         name: playwright-report-substrate-connect-wallet-template-mv3-chrome

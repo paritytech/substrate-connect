@@ -114,18 +114,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.7
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: substrate-connect-extension-source-code
           path: ./projects/extension
       - uses: ./.github/actions/turbo-build
       - run: pnpm --filter @substrate/extension build:firefox
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: substrate-connect-extension-mv3-firefox
           path: ./projects/extension/dist
       - run: pnpm --filter @substrate/extension build:chrome
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: substrate-connect-extension-mv3-chrome
           path: ./projects/extension/dist
