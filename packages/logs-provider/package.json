@@ -53,7 +53,7 @@
     "trailingComma": "all"
   },
   "dependencies": {
-    "@polkadot-api/logs-provider": "0.0.6"
+    "@polkadot-api/logs-provider": "0.2.0"
   },
   "devDependencies": {
     "typescript": "5.6.2",
